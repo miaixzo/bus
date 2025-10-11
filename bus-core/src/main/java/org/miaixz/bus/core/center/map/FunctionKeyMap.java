@@ -32,10 +32,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * 自定义函数Key风格的Map
+ * A {@link CustomKeyMap} implementation that allows for custom key transformation using a {@link Function}. This class
+ * provides a flexible way to define how keys are stored and retrieved in the map, while leaving the values
+ * untransformed.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys in the map.
+ * @param <V> The type of values in the map.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -44,13 +46,18 @@ public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
     @Serial
     private static final long serialVersionUID = 2852273768203L;
 
+    /**
+     * The function used to transform keys.
+     */
     private final Function<Object, K> keyFunc;
 
     /**
-     * 构造 注意提供的Map中不能有键值对，否则可能导致自定义key失效
+     * Constructs a new {@code FunctionKeyMap} with a pre-existing empty map and a custom key transformation function.
+     * It is crucial that the provided map is empty, as existing entries will not have their keys transformed, which
+     * could lead to inconsistent behavior.
      *
-     * @param emptyMap Map，提供的空map
-     * @param keyFunc  自定义KEY的函数
+     * @param emptyMap The empty map to be wrapped. Must be empty to ensure custom key transformations are effective.
+     * @param keyFunc  The function to customize keys. Must not be {@code null}.
      */
     public FunctionKeyMap(final Map<K, V> emptyMap, final Function<Object, K> keyFunc) {
         super(emptyMap);
@@ -58,10 +65,11 @@ public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
     }
 
     /**
-     * 根据函数自定义键
+     * Transforms the given key using the provided {@link #keyFunc}. This method is called by the parent
+     * {@link CustomKeyMap} for all key-based operations.
      *
-     * @param key KEY
-     * @return 驼峰Key
+     * @param key The original key.
+     * @return The transformed key.
      */
     @Override
     protected K customKey(final Object key) {

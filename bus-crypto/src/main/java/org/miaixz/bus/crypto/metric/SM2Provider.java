@@ -36,7 +36,7 @@ import org.miaixz.bus.crypto.builtin.asymmetric.KeyType;
 import org.miaixz.bus.crypto.center.SM2;
 
 /**
- * RSA 加密解密算法
+ * SM2 encryption and decryption algorithm provider.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,11 +44,11 @@ import org.miaixz.bus.crypto.center.SM2;
 public class SM2Provider implements Provider {
 
     /**
-     * 加密
+     * Encrypts the given content.
      *
-     * @param key     密钥
-     * @param content 需要加密的内容
-     * @return 加密结果
+     * @param key     The key.
+     * @param content The content to be encrypted.
+     * @return The encrypted result.
      */
     @Override
     public byte[] encrypt(String key, byte[] content) {
@@ -62,11 +62,11 @@ public class SM2Provider implements Provider {
     }
 
     /**
-     * 解密
+     * Decrypts the given content.
      *
-     * @param key     密钥
-     * @param content 需要解密的内容
-     * @return 解密结果
+     * @param key     The key.
+     * @param content The content to be decrypted.
+     * @return The decrypted result.
      */
     @Override
     public byte[] decrypt(String key, byte[] content) {

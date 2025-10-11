@@ -27,76 +27,72 @@
 */
 package org.miaixz.bus.cache.metric;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.cache.CacheX;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.CacheLoader;
-import com.github.benmanes.caffeine.cache.LoadingCache;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Caffeine 缓存支持
+ * An implementation of {@link CacheX} backed by a Caffeine {@link LoadingCache}.
  * <p>
- * 基于Caffeine实现的高性能本地缓存，提供接近最优的命中率。 支持设置最大容量、过期时间等配置参数，并提供批量读写操作。
+ * This class provides a high-performance, in-memory caching solution known for its near-optimal hit rates. It supports
+ * configuration of maximum size, time-based expiration, and other advanced features.
  * </p>
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys.
+ * @param <V> The type of values.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CaffeineCache<K, V> implements CacheX<K, V> {
 
     /**
-     * Caffeine 缓存实例
+     * The underlying Caffeine cache instance.
      */
-    private LoadingCache<K, V> cache;
+    private final LoadingCache<K, V> cache;
 
     /**
-     * 构造函数
+     * Constructs a {@code CaffeineCache} with a specified maximum size and expiration time.
      * <p>
-     * 使用指定的大小和过期时间创建缓存实例
+     * The cache is configured to expire entries after a fixed duration since they were last written.
      * </p>
      *
-     * @param size   最大缓存条目数
-     * @param expire 过期时间（毫秒）
+     * @param size   The maximum number of entries the cache can hold.
+     * @param expire The expiration time in milliseconds, applied as `expireAfterWrite`.
      */
     public CaffeineCache(long size, long expire) {
-        this.cache = Caffeine.newBuilder()
-                // 设置最大缓存条目数
-                .maximumSize(size)
-                // 设置写入后过期时间
-                .expireAfterWrite(expire, TimeUnit.MILLISECONDS)
-                // 构建缓存
-                .build(key -> null);
+        this.cache = Caffeine.newBuilder().maximumSize(size).expireAfterWrite(expire, TimeUnit.MILLISECONDS)
+                .build(key -> null); // Default loader returns null for misses.
     }
 
     /**
-     * 构造方法
+     * Constructs a {@code CaffeineCache} from a {@link Properties} object.
      * <p>
-     * 使用Properties配置创建缓存实例，支持配置最大容量、过期时间等参数
-     * </p>
+     * Supported properties:
+     * <ul>
+     * <li>`maximumSize`: Max entries (default: 1000).</li>
+     * <li>`expireAfterAccess`: TTI in ms.</li>
+     * <li>`expireAfterWrite`: TTL in ms.</li>
+     * <li>`initialCapacity`: Initial map size.</li>
+     * </ul>
      *
-     * @param properties 配置属性
+     * @param properties The configuration properties.
      */
     public CaffeineCache(Properties properties) {
-        // 获取参数前缀
-        String prefix = StringKit.isNotEmpty(properties.getProperty("prefix")) ? properties.getProperty("prefix")
-                : Normal.EMPTY;
-        // 获取所有配置值
+        String prefix = properties.getProperty("prefix", Normal.EMPTY);
         String maximumSize = properties.getProperty(prefix + "maximumSize");
         String expireAfterAccess = properties.getProperty(prefix + "expireAfterAccess");
         String expireAfterWrite = properties.getProperty(prefix + "expireAfterWrite");
         String initialCapacity = properties.getProperty(prefix + "initialCapacity");
-        // 使用链式调用构建CacheBuilder
+
         this.cache = Caffeine.newBuilder()
                 .maximumSize(StringKit.isNotEmpty(maximumSize) ? Long.parseLong(maximumSize) : 1000)
                 .expireAfterAccess(Long.parseLong(expireAfterAccess), TimeUnit.MILLISECONDS)
@@ -105,119 +101,114 @@ public class CaffeineCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 构造函数（支持异步加载）
-     * <p>
-     * 使用指定的大小、过期时间和缓存加载器创建缓存实例
-     * </p>
+     * Constructs a {@code CaffeineCache} with a custom {@link CacheLoader} for automatic loading.
      *
-     * @param size        最大缓存条目数
-     * @param expire      过期时间（毫秒）
-     * @param cacheLoader 缓存加载器
+     * @param size        The maximum number of entries the cache can hold.
+     * @param expire      The expiration time in milliseconds, applied as `expireAfterWrite`.
+     * @param cacheLoader The loader to use for fetching values on cache misses.
      */
     public CaffeineCache(long size, long expire, CacheLoader<K, V> cacheLoader) {
-        this.cache = Caffeine.newBuilder()
-                // 设置最大缓存条目数
-                .maximumSize(size)
-                // 设置写入后过期时间
-                .expireAfterWrite(expire, TimeUnit.MILLISECONDS)
-                // 设置缓存加载器
+        this.cache = Caffeine.newBuilder().maximumSize(size).expireAfterWrite(expire, TimeUnit.MILLISECONDS)
                 .build(cacheLoader);
     }
 
     /**
-     * 从缓存中读取单个值
+     * Reads a single value from the cache.
      *
-     * @param key 键
-     * @return 值，如果不存在则返回null
+     * @param key The key whose associated value is to be returned.
+     * @return The value associated with the key, or {@code null} if the key is not present.
      */
     @Override
     public V read(K key) {
-        // 使用 getIfPresent 方法，如果键不存在则返回 null
         return this.cache.getIfPresent(key);
     }
 
     /**
-     * 从缓存中批量读取值
+     * Reads multiple values from the cache in a batch.
      *
-     * @param keys 键集合
-     * @return 键值映射
+     * @param keys A collection of keys to retrieve.
+     * @return A map of keys to their corresponding values for all keys present in the cache.
      */
     @Override
     public Map<K, V> read(Collection<K> keys) {
-        // 使用 getAllPresent 方法批量获取存在的键值对
         return this.cache.getAllPresent(keys);
     }
 
     /**
-     * 向缓存中写入单个键值对
+     * Writes a key-value pair to the cache.
+     * <p>
+     * <strong>Note:</strong> This implementation ignores the {@code expire} parameter. The expiration policy is
+     * determined by the cache-wide settings configured at construction time.
+     * </p>
      *
-     * @param key    键
-     * @param value  值
-     * @param expire 过期时间（毫秒）
+     * @param key    The key to write.
+     * @param value  The value to associate with the key.
+     * @param expire This parameter is ignored.
      */
     @Override
     public void write(K key, V value, long expire) {
-        // Caffeine 的 put 方法不直接支持单个键的过期时间设置
-        // 过期时间在构建缓存时统一设置，这里忽略参数中的 expire
         this.cache.put(key, value);
     }
 
     /**
-     * 向缓存中批量写入键值对
+     * Writes multiple key-value pairs to the cache.
+     * <p>
+     * <strong>Note:</strong> This implementation ignores the {@code expire} parameter. The expiration policy is
+     * determined by the cache-wide settings configured at construction time.
+     * </p>
      *
-     * @param keyValueMap 键值映射
-     * @param expire      过期时间（毫秒）
+     * @param keyValueMap A map of key-value pairs to write.
+     * @param expire      This parameter is ignored.
      */
     @Override
     public void write(Map<K, V> keyValueMap, long expire) {
-        // 批量写入键值对，同样忽略参数中的 expire
         this.cache.putAll(keyValueMap);
     }
 
     /**
-     * 从缓存中移除指定的键
+     * Removes one or more entries from the cache.
      *
-     * @param keys 要移除的键
+     * @param keys The keys of the entries to remove.
      */
     @Override
     public void remove(K... keys) {
-        // 使用 invalidateAll 方法批量删除指定的键
         this.cache.invalidateAll(Arrays.asList(keys));
     }
 
     /**
-     * 清空缓存
+     * Clears all entries from the cache.
+     * <p>
+     * This method invalidates all entries and then performs a cleanup to remove them.
+     * </p>
      */
     @Override
     public void clear() {
-        // 使用 invalidateAll 方法清空整个缓存
         this.cache.invalidateAll();
-        // 执行维护操作，清理被标记为删除的条目
         this.cache.cleanUp();
     }
 
     /**
-     * 获取缓存统计信息
+     * Gets a string representation of the current cache statistics.
      *
-     * @return 缓存统计信息
+     * @return A string containing detailed cache statistics.
      */
     public String getStats() {
         return this.cache.stats().toString();
     }
 
     /**
-     * 获取缓存估算大小
+     * Returns the approximate number of entries in this cache.
      *
-     * @return 缓存估算大小
+     * @return The number of entries.
      */
     public long estimatedSize() {
         return this.cache.estimatedSize();
     }
 
     /**
-     * 获取内部缓存实例（用于高级操作）
+     * Returns the underlying Caffeine {@link Cache} instance for advanced operations.
      *
-     * @return 内部缓存实例
+     * @return The native Caffeine cache instance.
      */
     public Cache<K, V> getNativeCache() {
         return this.cache;

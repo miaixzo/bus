@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供线程及高并发封装
+ * Provides encapsulation for threading and high concurrency functionalities.
  *
  * @author Kimi Liu
  * @since Java 17+

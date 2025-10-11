@@ -40,38 +40,65 @@ import org.miaixz.bus.limiter.Provider;
 import org.miaixz.bus.limiter.magic.StrategyMode;
 
 /**
- * HOT_METHOD 模式处理
+ * Implements the {@link Provider} interface for handling the HOT_METHOD strategy mode. This provider is responsible for
+ * caching method invocation results for a specified duration to optimize performance for frequently accessed methods
+ * (hot methods).
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MethodProvider implements Provider {
 
+    /**
+     * A timed cache to store results of hot method invocations. The cache key is a combination of the method name and
+     * its arguments, and the value is the method's return result. Entries are automatically pruned after their
+     * expiration time, which is configured by {@link Holder#load()}.getSeconds().
+     */
     private final TimedCache<String, Object> cache;
 
+    /**
+     * Constructs a new {@code MethodProvider} and initializes the timed cache. The cache's time-to-live (TTL) is
+     * determined by the {@code seconds} property loaded from the global {@link Holder} context. A pruning schedule is
+     * also set up to clean expired entries.
+     */
     public MethodProvider() {
         cache = CacheKit.newTimedCache(1000L * Holder.load().getSeconds());
         cache.schedulePrune(1000);
     }
 
+    /**
+     * Returns the strategy mode supported by this provider, which is {@link StrategyMode#HOT_METHOD}.
+     *
+     * @return The {@link StrategyMode#HOT_METHOD} enum value.
+     */
     @Override
     public StrategyMode get() {
         return StrategyMode.HOT_METHOD;
     }
 
+    /**
+     * Processes the method invocation by first checking if the result is available in the cache. If the result is
+     * cached and not expired, it is returned directly. Otherwise, the method is invoked, its result is stored in the
+     * cache, and then returned.
+     *
+     * @param bean   The target object on which the method is invoked.
+     * @param method The {@link Method} being invoked.
+     * @param args   The arguments passed to the method invocation.
+     * @return The result of the method invocation, either from cache or actual execution.
+     */
     @Override
     public Object process(Object bean, Method method, Object[] args) {
-        // 获取方法对应的key
+        // Generate a unique key for the hot method based on its name and arguments
         String hotKey = StringKit.format(
                 "{}-{}",
                 Builder.resolveMethodName(method),
                 org.miaixz.bus.crypto.Builder.md5Hex(JsonKit.toJsonString(args)));
 
-        // 缓存操作
+        // Cache operation
         if (cache.containsKey(hotKey)) {
             return cache.get(hotKey, false);
         } else {
-            // 执行后缓存
+            // Execute the method and cache the result
             Object result = MethodKit.invoke(bean, method, args);
             cache.put(hotKey, result);
             return result;

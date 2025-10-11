@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 梅雨
+ * Provides classes related to the "Plum Rain" (梅雨) season, a period of continuous rain in East Asia.
  *
  * @author Kimi Liu
  * @since Java 17+

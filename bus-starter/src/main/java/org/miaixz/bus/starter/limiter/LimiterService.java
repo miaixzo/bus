@@ -32,19 +32,38 @@ import org.miaixz.bus.limiter.Holder;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
- *
+ * A service that initializes the global context for the rate limiting and circuit breaking framework.
+ * <p>
+ * This class implements {@link InitializingBean} to ensure that the limiter {@link Context} is set in a static
+ * {@link Holder} as soon as the Spring bean is initialized. This makes the context globally accessible to the
+ * framework's components, such as proxies and strategy providers.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LimiterService implements InitializingBean {
 
-    public Context context;
+    /**
+     * The limiter context, containing configuration and strategy information.
+     */
+    public final Context context;
 
+    /**
+     * Constructs a new LimiterService with the given context.
+     *
+     * @param context The limiter context to be set globally.
+     */
     public LimiterService(Context context) {
         this.context = context;
     }
 
+    /**
+     * Called by the Spring container after the bean has been constructed and all properties have been set.
+     * <p>
+     * This method sets the provided {@link Context} into the static {@link Holder}, making it available throughout the
+     * application for the limiter framework.
+     * </p>
+     */
     @Override
     public void afterPropertiesSet() {
         Holder.set(context);

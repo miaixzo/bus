@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供通信解码具体实现
+ * Provides concrete implementations for communication decoders.
  *
  * @author Kimi Liu
  * @since Java 17+

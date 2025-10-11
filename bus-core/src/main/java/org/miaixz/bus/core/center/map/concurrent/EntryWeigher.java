@@ -28,25 +28,26 @@
 package org.miaixz.bus.core.center.map.concurrent;
 
 /**
- * A class that can determine the selector of an entry. The total selector threshold is used to determine when an
- * eviction is required.
+ * A strategy interface that determines the "weight" or cost of a map entry (key-value pair). This is typically used in
+ * size-bounded caches to manage eviction policies based on the combined weight of stored entries, rather than just the
+ * count of entries.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of the key in the map entry.
+ * @param <V> The type of the value in the map entry.
  * @author Kimi Liu
- * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">
- *      http://code.google.com/p/concurrentlinkedhashmap/</a>
+ * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">ConcurrentLinkedHashMap Project</a>
  * @since Java 17+
  */
 public interface EntryWeigher<K, V> {
 
     /**
-     * Measures an entry's selector to determine how many units of capacity that the data and value consumes. An entry
-     * must consume a minimum of one unit.
+     * Measures the weight of a given map entry (key-value pair). The returned weight must be non-negative. A weight of
+     * zero means the entry consumes no capacity. An entry must consume a minimum of one unit of capacity if it is to be
+     * stored in the map.
      *
-     * @param key   the data to weigh
-     * @param value the value to weigh
-     * @return the entry's selector
+     * @param key   The key of the entry to weigh.
+     * @param value The value of the entry to weigh.
+     * @return The non-negative weight of the entry.
      */
     int weightOf(K key, V value);
 

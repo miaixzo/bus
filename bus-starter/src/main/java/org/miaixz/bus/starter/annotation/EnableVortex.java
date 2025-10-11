@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.vortex.VortexConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用路由匹配
+ * Enables Vortex reactive routing and gateway features.
+ * <p>
+ * This annotation imports the {@link VortexConfiguration}, which sets up the WebFlux-based routing engine. It
+ * configures a series of filters for concerns like security, rate limiting, and authorization, and establishes the core
+ * routing logic.
  *
  * @author Kimi Liu
  * @since Java 17+

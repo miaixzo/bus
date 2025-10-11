@@ -28,9 +28,10 @@
 package org.miaixz.bus.core.lang.ref;
 
 /**
- * 针对{@link java.lang.ref.Reference}的接口定义，用于扩展功能 例如提供自定义的无需回收对象
+ * An interface for {@link java.lang.ref.Reference} to extend functionality, for example, to provide custom objects that
+ * do not need to be recycled.
  *
- * @param <T> 对象类型
+ * @param <T> the type of the referenced object
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -38,9 +39,9 @@ package org.miaixz.bus.core.lang.ref;
 public interface Ref<T> {
 
     /**
-     * 获取引用的原始对象
+     * Returns the referenced object.
      *
-     * @return 原始对象
+     * @return the referenced object.
      */
     T get();
 

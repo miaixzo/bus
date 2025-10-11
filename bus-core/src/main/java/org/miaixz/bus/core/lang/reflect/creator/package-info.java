@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 对象实例化器，对象创建器
+ * Provides object instantiators and object creators. This package contains interfaces and implementations for creating
+ * new instances of objects, including handling various types like primitives, interfaces, abstract classes, enums, and
+ * arrays, and utilizing different constructor invocation strategies.
  *
  * @author Kimi Liu
  * @since Java 17+

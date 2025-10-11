@@ -34,35 +34,50 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * {@link AtomicReference}转换器
+ * Converts an object to an {@link AtomicReference}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AtomicReferenceConverter extends AbstractConverter {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852265266938L;
 
+    /**
+     * The converter used to convert the object wrapped by the {@link AtomicReference}.
+     */
     private final Converter converter;
 
     /**
-     * 构造
+     * Constructs a new {@code AtomicReferenceConverter}.
      *
-     * @param converter 用于转换AtomicReference包装的对象类型
+     * @param converter The converter for the referenced object.
      */
     public AtomicReferenceConverter(final Converter converter) {
         this.converter = converter;
     }
 
+    /**
+     * Internally converts the given value to an {@link AtomicReference}.
+     *
+     * @param targetClass The target class, which should be {@link AtomicReference}.
+     * @param value       The value to be converted.
+     * @return The converted {@link AtomicReference} object.
+     */
     @Override
     protected AtomicReference<?> convertInternal(final Class<?> targetClass, final Object value) {
-        // 尝试将值转换为Reference泛型的类型
+        // Attempt to convert the value to the generic type of the AtomicReference.
         Object targetValue = null;
         final Type paramType = TypeKit.getTypeArgument(AtomicReference.class);
-        if (!TypeKit.isUnknown(paramType)) {
+        if (null != paramType && !TypeKit.isUnknown(paramType)) {
             targetValue = converter.convert(paramType, value);
         }
+
+        // If conversion is not possible or not needed, use the original value.
         if (null == targetValue) {
             targetValue = value;
         }

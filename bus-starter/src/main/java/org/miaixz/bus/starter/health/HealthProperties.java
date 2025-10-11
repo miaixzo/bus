@@ -27,15 +27,14 @@
 */
 package org.miaixz.bus.starter.health;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.health.builtin.TID;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 健康状态配置属性。
+ * Configuration properties for health status endpoints.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,7 +45,8 @@ import lombok.Setter;
 public class HealthProperties {
 
     /**
-     * 返回类型。{@link TID}
+     * The default type of health information to return when no 'tid' parameter is specified. This can be a single value
+     * or a comma-separated list of values from {@link TID}. For example: "cpu,memory,diskstore".
      */
     private String type;
 

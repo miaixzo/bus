@@ -23,10 +23,12 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 基于https://github.com/vdurmont/emoji-java的Emoji表情工具类
+ * Provides a utility class for handling emoji characters, based on the emoji-java library. This package offers
+ * functionalities for converting between emoji characters, aliases, and HTML representations. Project homepage:
+ * <a href="https://github.com/vdurmont/emoji-java">https://github.com/vdurmont/emoji-java</a>
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -27,15 +27,6 @@
 */
 package org.miaixz.bus.http;
 
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.util.List;
-import java.util.Objects;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.accord.Connection;
@@ -43,79 +34,99 @@ import org.miaixz.bus.http.accord.ConnectionSuite;
 import org.miaixz.bus.http.secure.Authenticator;
 import org.miaixz.bus.http.secure.CertificatePinner;
 
+import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.util.List;
+import java.util.Objects;
+
 /**
- * 到源服务器的连接规范
+ * A specification for a connection to an origin server. For an HTTP client, this is the server that terminates the HTTP
+ * request.
+ *
  * <p>
- * 定义了连接源服务器的配置，包括主机名、端口、代理、协议和安全设置。 共享相同 {@code Address} 的 HTTP 请求可能复用相同的 {@link Connection}。
- * </p>
+ * This class holds the configuration for a connection, including the server's hostname, port, proxy, and security
+ * settings. HTTP requests that share the same {@code Address} may also share the same underlying {@link Connection}.
  *
  * @author Kimi Liu
+ * @see Connection
+ * @see UnoUrl
  * @since Java 17+
  */
-public class Address {
+public final class Address {
 
     /**
-     * 服务器的 URL
+     * The URL of the origin server. The path, query, and fragment of this URL are always empty. This is never null.
      */
     final UnoUrl url;
+
     /**
-     * DNS 解析服务
+     * The DNS service for resolving hostnames. This is never null.
      */
     final DnsX dns;
+
     /**
-     * 套接字工厂
+     * The socket factory for creating connections. This is never null.
      */
     final SocketFactory socketFactory;
+
     /**
-     * 代理身份验证器
+     * The authenticator for proxy servers. This is never null.
      */
     final Authenticator proxyAuthenticator;
+
     /**
-     * 支持的协议列表
+     * The list of supported application-layer protocols, such as {@code http/1.1} and {@code h2}. This is never null.
      */
     final List<Protocol> protocols;
+
     /**
-     * 支持的连接套件列表
+     * The list of connection suites to use for TLS connections. This is never null.
      */
     final List<ConnectionSuite> connectionSuites;
+
     /**
-     * 代理选择器
+     * The proxy selector for choosing a proxy server. This is never null.
      */
     final ProxySelector proxySelector;
+
     /**
-     * 显式指定的代理
+     * The explicitly specified proxy, or null for no proxy.
      */
     final Proxy proxy;
+
     /**
-     * SSL 套接字工厂
+     * The SSL socket factory for HTTPS connections. This is null for non-HTTPS connections.
      */
     final SSLSocketFactory sslSocketFactory;
+
     /**
-     *
-     * 主机名验证器
+     * The verifier for hostnames in SSL certificates. This is null for non-HTTPS connections.
      */
     final HostnameVerifier hostnameVerifier;
+
     /**
-     * 证书固定器
+     * The certificate pinner for verifying server certificates. This is null for non-HTTPS connections.
      */
     final CertificatePinner certificatePinner;
 
     /**
-     * 构造函数，初始化 Address 实例
+     * Constructs a new Address.
      *
-     * @param uriHost            主机名
-     * @param uriPort            端口
-     * @param dns                DNS 解析服务
-     * @param socketFactory      套接字工厂
-     * @param sslSocketFactory   SSL 套接字工厂
-     * @param hostnameVerifier   主机名验证器
-     * @param certificatePinner  证书固定器
-     * @param proxyAuthenticator 代理身份验证器
-     * @param proxy              显式代理
-     * @param protocols          支持的协议列表
-     * @param connectionSuites   支持的连接套件列表
-     * @param proxySelector      代理选择器
-     * @throws NullPointerException 如果必需参数为 null
+     * @param uriHost            the hostname of the origin server.
+     * @param uriPort            the port of the origin server.
+     * @param dns                the DNS service.
+     * @param socketFactory      the socket factory.
+     * @param sslSocketFactory   the SSL socket factory, or null for non-HTTPS connections.
+     * @param hostnameVerifier   the hostname verifier, or null for non-HTTPS connections.
+     * @param certificatePinner  the certificate pinner, or null for non-HTTPS connections.
+     * @param proxyAuthenticator the proxy authenticator.
+     * @param proxy              the explicit proxy, or null to use the proxy selector.
+     * @param protocols          the list of supported protocols.
+     * @param connectionSuites   the list of supported connection suites.
+     * @param proxySelector      the proxy selector.
      */
     public Address(String uriHost, int uriPort, DnsX dns, SocketFactory socketFactory,
             SSLSocketFactory sslSocketFactory, HostnameVerifier hostnameVerifier, CertificatePinner certificatePinner,
@@ -124,12 +135,14 @@ public class Address {
         this.url = new UnoUrl.Builder().scheme(null != sslSocketFactory ? Protocol.HTTPS.name : Protocol.HTTP.name)
                 .host(uriHost).port(uriPort).build();
 
-        if (null == dns)
+        if (null == dns) {
             throw new NullPointerException("dns == null");
+        }
         this.dns = dns;
 
-        if (null == socketFactory)
+        if (null == socketFactory) {
             throw new NullPointerException("socketFactory == null");
+        }
         this.socketFactory = socketFactory;
 
         if (null == proxyAuthenticator) {
@@ -137,16 +150,19 @@ public class Address {
         }
         this.proxyAuthenticator = proxyAuthenticator;
 
-        if (null == protocols)
+        if (null == protocols) {
             throw new NullPointerException("protocols == null");
+        }
         this.protocols = Builder.immutableList(protocols);
 
-        if (null == connectionSuites)
+        if (null == connectionSuites) {
             throw new NullPointerException("connectionSpecs == null");
+        }
         this.connectionSuites = Builder.immutableList(connectionSuites);
 
-        if (null == proxySelector)
+        if (null == proxySelector) {
             throw new NullPointerException("proxySelector == null");
+        }
         this.proxySelector = proxySelector;
 
         this.proxy = proxy;
@@ -156,109 +172,112 @@ public class Address {
     }
 
     /**
-     * 获取服务器 URL
+     * Returns the URL of the origin server.
+     * <p>
+     * The path, query, and fragment of this URL are always empty.
      *
-     * @return 服务器的 URL（路径、查询和片段为空）
+     * @return the server's URL.
      */
     public UnoUrl url() {
         return url;
     }
 
     /**
-     * 获取 DNS 解析服务
+     * Returns the DNS service used to resolve hostnames for this address.
      *
-     * @return DNS 解析服务
+     * @return the DNS service.
      */
     public DnsX dns() {
         return dns;
     }
 
     /**
-     * 获取套接字工厂
+     * Returns the socket factory for this address.
      *
-     * @return 套接字工厂
+     * @return the socket factory.
      */
     public SocketFactory socketFactory() {
         return socketFactory;
     }
 
     /**
-     * 获取代理身份验证器
+     * Returns the authenticator for proxy servers.
      *
-     * @return 代理身份验证器
+     * @return the proxy authenticator.
      */
     public Authenticator proxyAuthenticator() {
         return proxyAuthenticator;
     }
 
     /**
-     * 获取支持的协议列表
+     * Returns the list of protocols supported by this address, such as {@code http/1.1} and {@code h2}.
      *
-     * @return 不可修改的协议列表（至少包含 HTTP/1.1）
+     * @return an immutable list of protocols.
      */
     public List<Protocol> protocols() {
         return protocols;
     }
 
     /**
-     * 获取支持的连接套件列表
+     * Returns the list of connection suites supported by this address.
      *
-     * @return 不可修改的连接套件列表
+     * @return an immutable list of connection suites.
      */
     public List<ConnectionSuite> connectionSpecs() {
         return connectionSuites;
     }
 
     /**
-     * 获取代理选择器
+     * Returns this address's proxy selector.
      *
-     * @return 代理选择器
+     * @return the proxy selector.
      */
     public ProxySelector proxySelector() {
         return proxySelector;
     }
 
     /**
-     * 获取显式指定的代理
+     * Returns this address's explicitly specified proxy. This is null if a proxy selector is preferred.
      *
-     * @return 显式代理（可能为 null）
+     * @return the explicit proxy, which may be null.
      */
     public Proxy proxy() {
         return proxy;
     }
 
     /**
-     * 获取 SSL 套接字工厂
+     * Returns the SSL socket factory for this address, or null if this is not an HTTPS address.
      *
-     * @return SSL 套接字工厂（非 HTTPS 时为 null）
+     * @return the SSL socket factory, or null.
      */
     public SSLSocketFactory sslSocketFactory() {
         return sslSocketFactory;
     }
 
     /**
-     * 获取主机名验证器
+     * Returns the hostname verifier for this address, or null if this is not an HTTPS address.
      *
-     * @return 主机名验证器（非 HTTPS 时为 null）
+     * @return the hostname verifier, or null.
      */
     public HostnameVerifier hostnameVerifier() {
         return hostnameVerifier;
     }
 
     /**
-     * 获取证书固定器
+     * Returns the certificate pinner for this address, or null if this is not an HTTPS address.
      *
-     * @return 证书固定器（非 HTTPS 时为 null）
+     * @return the certificate pinner, or null.
      */
     public CertificatePinner certificatePinner() {
         return certificatePinner;
     }
 
     /**
-     * 比较两个 Address 对象是否相等
+     * Indicates whether some other object is "equal to" this one. Two addresses are equal if they share the same URL
+     * and non-host properties.
      *
-     * @param other 另一个对象
-     * @return true 如果两个 Address 对象相等
+     * @param other the reference object with which to compare.
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
      */
     @Override
     public boolean equals(Object other) {
@@ -266,9 +285,10 @@ public class Address {
     }
 
     /**
-     * 计算 Address 对象的哈希码
+     * Returns a hash code value for the object. This is computed from the URL, DNS, proxy authenticator, protocols,
+     * connection suites, proxy selector, and SSL/TLS settings.
      *
-     * @return 哈希码值
+     * @return a hash code value for this object.
      */
     @Override
     public int hashCode() {
@@ -287,10 +307,11 @@ public class Address {
     }
 
     /**
-     * 比较非主机相关的属性是否相等
+     * Compares the non-host properties of two addresses for equality. This includes DNS, proxy settings, protocols, and
+     * SSL configuration.
      *
-     * @param that 另一个 Address 对象
-     * @return true 如果非主机属性相等
+     * @param that the other Address object to compare.
+     * @return true if the non-host properties are equal, false otherwise.
      */
     boolean equalsNonHost(Address that) {
         return this.dns.equals(that.dns) && this.proxyAuthenticator.equals(that.proxyAuthenticator)
@@ -303,9 +324,9 @@ public class Address {
     }
 
     /**
-     * 返回 Address 的字符串表示
+     * Returns a string representation of this address, including the host, port, and proxy information.
      *
-     * @return 包含主机名、端口和代理信息的字符串
+     * @return a string representation of this address.
      */
     @Override
     public String toString() {

@@ -47,71 +47,76 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.SetKit;
 
 /**
- * 字典对象，扩充了LinkedHashMap中的方法
+ * A flexible and powerful dictionary class that extends {@link CustomKeyMap} and implements {@link TypeGetter}. It
+ * serves as a versatile data carrier, offering type-safe getters, seamless bean conversion, and support for
+ * case-insensitive keys.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Dictionary extends CustomKeyMap<String, Object> implements TypeGetter<String> {
 
+    /**
+     * The serialization version identifier for this class.
+     */
     @Serial
     private static final long serialVersionUID = 2852273032017L;
     /**
-     * 是否大小写不敏感
+     * Flag indicating whether keys in this dictionary are case-insensitive.
      */
     protected boolean caseInsensitive;
 
     /**
-     * 构造
+     * Constructs an empty, case-sensitive {@code Dictionary}.
      */
     public Dictionary() {
         this(false);
     }
 
     /**
-     * 构造
+     * Constructs an empty {@code Dictionary} with a specified case-insensitivity setting.
      *
-     * @param caseInsensitive 是否大小写不敏感
+     * @param caseInsensitive If {@code true}, keys will be treated as case-insensitive (stored as lowercase).
      */
     public Dictionary(final boolean caseInsensitive) {
         this(Normal._16, caseInsensitive);
     }
 
     /**
-     * 构造
+     * Constructs an empty, case-sensitive {@code Dictionary} with a specified initial capacity.
      *
-     * @param initialCapacity 初始容量
+     * @param initialCapacity The initial capacity of the map.
      */
     public Dictionary(final int initialCapacity) {
         this(initialCapacity, false);
     }
 
     /**
-     * 构造
+     * Constructs an empty {@code Dictionary} with a specified initial capacity and case-insensitivity.
      *
-     * @param initialCapacity 初始容量
-     * @param caseInsensitive 是否大小写不敏感
+     * @param initialCapacity The initial capacity of the map.
+     * @param caseInsensitive If {@code true}, keys will be treated as case-insensitive.
      */
     public Dictionary(final int initialCapacity, final boolean caseInsensitive) {
         this(initialCapacity, Normal.DEFAULT_LOAD_FACTOR, caseInsensitive);
     }
 
     /**
-     * 构造
+     * Constructs an empty, case-sensitive {@code Dictionary} with a specified capacity and load factor.
      *
-     * @param initialCapacity 初始容量
-     * @param loadFactor      容量增长因子，0~1，即达到容量的百分之多少时扩容
+     * @param initialCapacity The initial capacity.
+     * @param loadFactor      The load factor.
      */
     public Dictionary(final int initialCapacity, final float loadFactor) {
         this(initialCapacity, loadFactor, false);
     }
 
     /**
-     * 构造
+     * Constructs an empty {@code Dictionary} with a specified capacity, load factor, and case-insensitivity.
      *
-     * @param initialCapacity 初始容量
-     * @param loadFactor      容量增长因子，0~1，即达到容量的百分之多少时扩容
-     * @param caseInsensitive 是否大小写不敏感
+     * @param initialCapacity The initial capacity.
+     * @param loadFactor      The load factor.
+     * @param caseInsensitive If {@code true}, keys will be treated as case-insensitive.
      */
     public Dictionary(final int initialCapacity, final float loadFactor, final boolean caseInsensitive) {
         super(new LinkedHashMap<>(initialCapacity, loadFactor));
@@ -119,39 +124,39 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 构造
+     * Constructs a {@code Dictionary} from an existing {@link Map}.
      *
-     * @param m Map
+     * @param m The map to initialize the dictionary with. If {@code null}, an empty map is created.
      */
     public Dictionary(final Map<String, Object> m) {
         super((null == m) ? new HashMap<>() : m);
     }
 
     /**
-     * 创建Dict
+     * Creates a new, empty {@code Dictionary} instance.
      *
-     * @return Dictionary
+     * @return A new {@code Dictionary}.
      */
     public static Dictionary of() {
         return new Dictionary();
     }
 
     /**
-     * 将PO对象转为Dict
+     * Creates a {@code Dictionary} from a Java Bean, using its properties as key-value pairs.
      *
-     * @param <T>  Bean类型
-     * @param bean Bean对象
-     * @return Vo
+     * @param <T>  The type of the bean.
+     * @param bean The bean to convert.
+     * @return A new {@code Dictionary} populated with the bean's properties.
      */
     public static <T> Dictionary parse(final T bean) {
         return of().parseBean(bean);
     }
 
     /**
-     * 根据给定的Entry数组创建Dict对象
+     * Creates a {@code Dictionary} from an array of {@link Map.Entry} objects.
      *
-     * @param pairs 键值对
-     * @return Dictionary
+     * @param pairs An array of key-value entries.
+     * @return A new {@code Dictionary} populated with the given entries.
      */
     @SafeVarargs
     public static Dictionary ofEntries(final Map.Entry<String, Object>... pairs) {
@@ -163,105 +168,91 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 根据给定的键值对数组创建Dict对象，传入参数必须为key,value,data,value...
-     *
+     * Creates a {@code Dictionary} from an array of alternating keys and values. Keys are converted to strings.
      * <p>
-     * 奇数参数必须为key，key最后会转换为String类型。
-     * </p>
-     * <p>
-     * 偶数参数必须为value，可以为任意类型。
-     * </p>
+     * Example: {@code Dictionary.ofKvs("name", "John", "age", 30)}
      *
-     * <pre>
-     * 
-     * Dictionary dict = Dictionary.of("RED", "#FF0000", "GREEN", "#00FF00", "BLUE", "#0000FF");
-     * </pre>
-     *
-     * @param keysAndValues 键值对列表，必须奇数参数为key，偶数参数为value
-     * @return Dictionary
+     * @param keysAndValues An array of alternating keys and values.
+     * @return A new {@code Dictionary} populated with the key-value pairs.
      */
     public static Dictionary ofKvs(final Object... keysAndValues) {
         final Dictionary dictionary = of();
-
         String key = null;
         for (int i = 0; i < keysAndValues.length; i++) {
-            // 偶数
-            if ((i & 1) == 0) {
+            if ((i & 1) == 0) { // Even index is key
                 key = Convert.toString(keysAndValues[i]);
-            } else {
+            } else { // Odd index is value
                 dictionary.put(key, keysAndValues[i]);
             }
         }
-
         return dictionary;
     }
 
     /**
-     * 转换为Bean对象
+     * Populates a Java Bean with the values from this dictionary.
      *
-     * @param <T>  Bean类型
-     * @param bean Bean
-     * @return Bean
+     * @param <T>  The type of the bean.
+     * @param bean The bean instance to populate.
+     * @return The populated bean instance.
      */
     public <T> T toBean(final T bean) {
         return BeanKit.fillBeanWithMap(this, bean, CopyOptions.of());
     }
 
     /**
-     * 转换为Bean对象
+     * Populates a Java Bean with the values from this dictionary, ignoring case when matching keys to properties.
      *
-     * @param <T>  Bean类型
-     * @param bean Bean
-     * @return Bean
+     * @param <T>  The type of the bean.
+     * @param bean The bean instance to populate.
+     * @return The populated bean instance.
      */
     public <T> T toBeanIgnoreCase(final T bean) {
         return BeanKit.fillBeanWithMap(this, bean, CopyOptions.of().setIgnoreCase(true));
     }
 
     /**
-     * 填充Value Object对象
+     * Converts this dictionary into a new instance of the specified bean class.
      *
-     * @param <T>   Bean类型
-     * @param clazz Value Object（或者POJO）的类
-     * @return vo
+     * @param <T>   The type of the bean.
+     * @param clazz The class of the bean to create.
+     * @return A new bean instance populated with values from this dictionary.
      */
     public <T> T toBean(final Class<T> clazz) {
         return BeanKit.toBean(this, clazz);
     }
 
     /**
-     * 填充Value Object对象，忽略大小写
+     * Converts this dictionary into a new instance of the specified bean class, ignoring case.
      *
-     * @param <T>   Bean类型
-     * @param clazz Value Object（或者POJO）的类
-     * @return vo
+     * @param <T>   The type of the bean.
+     * @param clazz The class of the bean to create.
+     * @return A new bean instance populated with values from this dictionary.
      */
     public <T> T toBeanIgnoreCase(final Class<T> clazz) {
         return BeanKit.toBean(this, clazz, CopyOptions.of().setIgnoreCase(true));
     }
 
     /**
-     * 将值对象转换为Dict 类名会被当作表名，小写第一个字母
+     * Populates this dictionary with the properties of a given bean.
      *
-     * @param <T>  Bean类型
-     * @param bean 值对象
-     * @return 自己
+     * @param <T>  The type of the bean.
+     * @param bean The bean to parse. Must not be {@code null}.
+     * @return This {@code Dictionary} instance for method chaining.
      */
     public <T> Dictionary parseBean(final T bean) {
         Assert.notNull(bean, "Bean must not be null");
-        // 一次性使用，避免先生成Map，再复制造成空间浪费
         this.putAll(BeanKit.toBeanMap(bean));
         return this;
     }
 
     /**
-     * 将值对象转换为Dict 类名会被当作表名，小写第一个字母
+     * Populates this dictionary with bean properties, with options for key casing and null handling.
      *
-     * @param <T>               Bean类型
-     * @param bean              值对象
-     * @param isToUnderlineCase 是否转换为下划线模式
-     * @param ignoreNullValue   是否忽略值为空的字段
-     * @return 自己
+     * @param <T>               The type of the bean.
+     * @param bean              The bean to parse. Must not be {@code null}.
+     * @param isToUnderlineCase If {@code true}, property names are converted to snake_case.
+     * @param ignoreNullValue   If {@code true}, properties with {@code null} values are skipped.
+     * @return This {@code Dictionary} instance for method chaining.
      */
     public <T> Dictionary parseBean(final T bean, final boolean isToUnderlineCase, final boolean ignoreNullValue) {
         Assert.notNull(bean, "Bean must not be null");
@@ -270,11 +261,12 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 与给定实体对比并去除相同的部分 此方法用于在更新操作时避免所有字段被更新，跳过不需要更新的字段 version from 2.0.0
+     * Removes entries from this dictionary that have the same key-value pair as the given dictionary. This is useful
+     * for finding the differences between two data sets.
      *
-     * @param <T>          字典对象类型
-     * @param dict         字典对象
-     * @param withoutNames 不需要去除的字段名
+     * @param <T>          The type of the dictionary to compare against.
+     * @param dict         The dictionary to compare with.
+     * @param withoutNames Field names to exclude from this comparison (i.e., they will be kept even if equal).
      */
     public <T extends Dictionary> void removeEqual(final T dict, final String... withoutNames) {
         final HashSet<String> withoutSet = SetKit.of(withoutNames);
@@ -282,7 +274,6 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
             if (withoutSet.contains(entry.getKey())) {
                 continue;
             }
-
             final Object value = this.get(entry.getKey());
             if (Objects.equals(value, entry.getValue())) {
                 this.remove(entry.getKey());
@@ -291,14 +282,13 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 过滤Map保留指定键值对，如果键不存在跳过
+     * Creates a new dictionary containing only the entries with the specified keys.
      *
-     * @param keys 键列表
-     * @return Dictionary 结果
+     * @param keys The keys to retain.
+     * @return A new {@code Dictionary} with only the filtered entries.
      */
     public Dictionary filterNew(final String... keys) {
         final Dictionary result = new Dictionary(keys.length, 1);
-
         for (final String key : keys) {
             if (this.containsKey(key)) {
                 result.put(key, this.get(key));
@@ -308,21 +298,21 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 过滤Map去除指定键值对，如果键不存在跳过
+     * Creates a new dictionary excluding the entries with the specified keys.
      *
-     * @param keys 键列表
-     * @return Dictionary 结果
+     * @param keys The keys to remove.
+     * @return A new {@code Dictionary} without the specified entries.
      */
     public Dictionary removeNew(final String... keys) {
         return MapKit.removeAny(this.clone(), keys);
     }
 
     /**
-     * 设置列
+     * Sets a key-value pair in the dictionary.
      *
-     * @param attr  属性
-     * @param value 值
-     * @return 本身
+     * @param attr  The attribute (key) to set.
+     * @param value The value to associate with the attribute.
+     * @return This {@code Dictionary} instance for method chaining.
      */
     public Dictionary set(final String attr, final Object value) {
         this.put(attr, value);
@@ -330,11 +320,11 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 设置列，当键或值为null时忽略
+     * Sets a key-value pair only if both the key and value are not {@code null}.
      *
-     * @param attr  属性
-     * @param value 值
-     * @return 本身
+     * @param attr  The attribute (key) to set.
+     * @param value The value to associate with the attribute.
+     * @return This {@code Dictionary} instance for method chaining.
      */
     public Dictionary setIgnoreNull(final String attr, final Object value) {
         if (null != attr && null != value) {
@@ -343,18 +333,27 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
         return this;
     }
 
+    /**
+     * Retrieves the value for the specified key, returning a default value if the key is not found.
+     *
+     * @param key          The key whose value is to be returned.
+     * @param defaultValue The default value to return if the key is not present.
+     * @return The value associated with the key, or the default value.
+     */
     @Override
     public Object getObject(final String key, final Object defaultValue) {
         return getOrDefault(key, defaultValue);
     }
 
     /**
-     * 根据lambda的方法引用，获取
+     * Retrieves a value using a Lambda method reference as the key.
+     * <p>
+     * Example: {@code String name = dict.get(User::getName);}
      *
-     * @param func 方法引用
-     * @param <P>  参数类型
-     * @param <T>  返回值类型
-     * @return 获取表达式对应属性和返回的对象
+     * @param <P>  The type of the class containing the method.
+     * @param <T>  The return type of the method.
+     * @param func A method reference (e.g., {@code User::getName}).
+     * @return The value corresponding to the property name derived from the method reference.
      */
     public <P, T> T get(final FunctionX<P, T> func) {
         final LambdaX lambdaX = LambdaKit.resolve(func);
@@ -362,26 +361,22 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 获得特定类型值
+     * Retrieves a value and casts it to the specified type.
      *
-     * @param <T>  值类型
-     * @param attr 字段名
-     * @return 字段值
+     * @param <T>  The target type.
+     * @param attr The attribute (key) of the value to retrieve.
+     * @return The value, cast to type {@code T}.
      */
     public <T> T getBean(final String attr) {
         return (T) get(attr);
     }
 
     /**
-     * 通过表达式获取JSON中嵌套的对象
-     * <ol>
-     * <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
-     * <li>[]表达式，可以获取集合等对象中对应index的值</li>
-     * </ol>
+     * Retrieves a nested value using a bean path expression (e.g., "user.address.city").
      *
-     * @param <T>        目标类型
-     * @param expression 表达式
-     * @return 对象
+     * @param <T>        The target type.
+     * @param expression The bean path expression.
+     * @return The value at the specified path.
      * @see BeanPath#getValue(Object)
      */
     public <T> T getByPath(final String expression) {
@@ -389,23 +384,24 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 通过表达式获取JSON中嵌套的对象
-     * <ol>
-     * <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
-     * <li>[]表达式，可以获取集合等对象中对应index的值</li>
-     * </ol>
-     * 获取表达式对应值后转换为对应类型的值
+     * Retrieves and converts a nested value using a bean path expression.
      *
-     * @param <T>        返回值类型
-     * @param expression 表达式
-     * @param resultType 返回值类型
-     * @return 对象
+     * @param <T>        The target type.
+     * @param expression The bean path expression.
+     * @param resultType The type to convert the result to.
+     * @return The converted value at the specified path.
      * @see BeanPath#getValue(Object)
      */
     public <T> T getByPath(final String expression, final Type resultType) {
         return Convert.convert(resultType, getByPath(expression));
     }
 
+    /**
+     * Creates and returns a shallow copy of this {@code Dictionary} instance.
+     *
+     * @return A clone of this instance.
+     * @throws CloneException if cloning is not supported.
+     */
     @Override
     public Dictionary clone() {
         try {
@@ -415,24 +411,29 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
         }
     }
 
+    /**
+     * Customizes the key before it is used. If case-insensitivity is enabled, the key is converted to lowercase.
+     *
+     * @param key The original key.
+     * @return The transformed key.
+     */
     @Override
     protected String customKey(Object key) {
         if (this.caseInsensitive && null != key) {
-            key = ((String) key).toLowerCase();
+            key = key.toString().toLowerCase();
         }
         return (String) key;
     }
 
     /**
-     * 通过lambda批量设置值 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * Sets multiple key-value pairs using an array of getter method references. The key is derived from the method
+     * name, and the value is obtained by invoking the method.
+     * <p>
+     * Example: {@code dict.setFields(user::getName, user::getAge);}
+     * 
      *
-     * <pre>
-     * User user = GenericBuilder.of(User::new).with(User::setUsername, "name").build();
-     * Dictionary.create().setFields(user::getNickname, user::getUsername);
-     * </pre>
-     *
-     * @param fields lambda,不能为空
-     * @return this
+     * @param fields An array of getter method references (e.g., {@code user::getNickname}).
+     * @return This {@code Dictionary} instance for method chaining.
      */
     public Dictionary setFields(final SupplierX<?>... fields) {
         Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.get()));

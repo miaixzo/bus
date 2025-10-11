@@ -54,7 +54,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.unix.LibCAPI;
 
 /**
- * 通用工具方法
+ * General utility methods.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -62,27 +62,40 @@ import com.sun.jna.platform.unix.LibCAPI;
 @ThreadSafe
 public final class Builder {
 
-    /** Unix 纪元时间，当 WMI DateTime 查询无返回值时使用的默认值 */
+    /**
+     * Unix epoch time, used as a default when WMI DateTime queries return no value.
+     */
     public static final OffsetDateTime UNIX_EPOCH = OffsetDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
 
-    /** 通配符模式前缀：glob */
+    /**
+     * Wildcard pattern prefix: glob
+     */
     private static final String GLOB_PREFIX = "glob:";
 
-    /** 正则表达式模式前缀：regex */
+    /**
+     * Regex pattern prefix: regex
+     */
     private static final String REGEX_PREFIX = "regex:";
 
-    /** 日志消息：正在读取文件 */
+    /**
+     * Log message: Reading file
+     */
     private static final String READING_LOG = "Reading file {}";
 
-    /** 日志消息：已读取内容 */
+    /**
+     * Log message: Content read
+     */
     private static final String READ_LOG = "Read {}";
 
     /**
-     * 测试字符串是否与通配符模式匹配。
+     * Tests if a string matches a wildcard pattern.
      *
-     * @param text    要测试的字符串
-     * @param pattern 包含通配符的模式字符串，其中 ? 表示单个字符，* 表示任意数量的字符。 如果模式的第一个字符是 ^，则对剩余字符进行测试，并返回相反的结果。
-     * @return 如果字符串匹配，或者模式以 ^ 开头且剩余部分不匹配，则返回 true
+     * @param text    The string to test.
+     * @param pattern The pattern string, with {@code ?} matching a single character and {@code *} matching any number
+     *                of characters. If the first character of the pattern is {@code ^}, the remaining characters are
+     *                tested and the opposite result is returned.
+     * @return {@code true} if the string matches, or if the pattern starts with {@code ^} and the remainder does not
+     *         match.
      */
     public static boolean wildcardMatch(String text, String pattern) {
         if (!pattern.isEmpty() && pattern.charAt(0) == '^') {
@@ -92,9 +105,10 @@ public final class Builder {
     }
 
     /**
-     * 如果给定的指针是 Memory 类的实例，则调用其 close 方法以释放本地分配的内存。
+     * If the given pointer is an instance of the Memory class, calls its close method to free the natively allocated
+     * memory.
      *
-     * @param p 指针
+     * @param p The pointer.
      */
     public static void freeMemory(Pointer p) {
         if (p instanceof Memory) {
@@ -103,29 +117,32 @@ public final class Builder {
     }
 
     /**
-     * 测试用户在设备上的会话是否有效。
+     * Tests if a user's session on a device is valid.
      *
-     * @param user      登录的用户
-     * @param device    用户使用的设备
-     * @param loginTime 用户的登录时间
-     * @return 如果会话有效返回 true；如果用户或设备为空，或登录时间小于 0 或大于当前时间，则返回 false
+     * @param user      The logged-in user.
+     * @param device    The device the user is using.
+     * @param loginTime The user's login time.
+     * @return {@code true} if the session is valid; {@code false} if the user or device is empty, or if the login time
+     *         is less than 0 or greater than the current time.
      */
     public static boolean isSessionValid(String user, String device, Long loginTime) {
         return !(user.isEmpty() || device.isEmpty() || loginTime < 0 || loginTime > System.currentTimeMillis());
     }
 
     /**
-     * 根据配置判断文件存储（由 {@code path} 和 {@code volume} 标识）是否应被排除。
+     * Determines if a file store (identified by {@code path} and {@code volume}) should be excluded based on
+     * configuration.
      * <p>
-     * 包含优先于排除。如果未指定排除/包含模式，则文件存储不被排除。
+     * Inclusions take precedence over exclusions. If no exclude/include patterns are specified, the file store is not
+     * excluded.
      *
-     * @param path           文件存储的挂载点
-     * @param volume         文件存储卷
-     * @param pathIncludes   路径包含模式列表
-     * @param pathExcludes   路径排除模式列表
-     * @param volumeIncludes 卷包含模式列表
-     * @param volumeExcludes 卷排除模式列表
-     * @return 如果文件存储应被排除返回 true，否则返回 false
+     * @param path           The mount point of the file store.
+     * @param volume         The file store volume.
+     * @param pathIncludes   A list of path inclusion patterns.
+     * @param pathExcludes   A list of path exclusion patterns.
+     * @param volumeIncludes A list of volume inclusion patterns.
+     * @param volumeExcludes A list of volume exclusion patterns.
+     * @return {@code true} if the file store should be excluded, {@code false} otherwise.
      */
     public static boolean isFileStoreExcluded(
             String path,
@@ -143,10 +160,10 @@ public final class Builder {
     }
 
     /**
-     * 从配置加载并解析文件系统包含/排除行。
+     * Loads and parses file system include/exclude lines from configuration.
      *
-     * @param configPropertyName 包含要解析行的配置属性名称
-     * @return 用于匹配文件存储卷和路径的 PathMatcher 列表
+     * @param configPropertyName The name of the configuration property containing the lines to parse.
+     * @return A list of {@link PathMatcher} for matching file store volumes and paths.
      */
     public static List<PathMatcher> loadAndParseFileSystemConfig(String configPropertyName) {
         String config = Config.get(configPropertyName, Normal.EMPTY);
@@ -154,17 +171,17 @@ public final class Builder {
     }
 
     /**
-     * 解析文件系统包含/排除行。
+     * Parses file system include/exclude lines.
      *
-     * @param config 要解析的配置行
-     * @return 用于匹配文件存储卷和路径的 PathMatcher 列表
+     * @param config The configuration line to parse.
+     * @return A list of {@link PathMatcher} for matching file store volumes and paths.
      */
     public static List<PathMatcher> parseFileSystemConfig(String config) {
-        FileSystem fs = FileSystems.getDefault(); // 不可关闭
+        FileSystem fs = FileSystems.getDefault(); // Not closable
         List<PathMatcher> patterns = new ArrayList<>();
         for (String item : config.split(Symbol.COMMA)) {
             if (item.length() > 0) {
-                // 默认使用 glob: 前缀，除非用户指定了 glob 或 regex
+                // Default to glob: prefix unless user specified glob or regex
                 if (!(item.startsWith(GLOB_PREFIX) || item.startsWith(REGEX_PREFIX))) {
                     item = GLOB_PREFIX + item;
                 }
@@ -175,11 +192,11 @@ public final class Builder {
     }
 
     /**
-     * 检查 {@code text} 是否与 {@param patterns} 中的任意模式匹配。
+     * Checks if {@code text} matches any of the patterns in {@code patterns}.
      *
-     * @param text     要匹配的文本
-     * @param patterns 模式列表
-     * @return 如果给定文本至少匹配一个 glob 模式返回 true，否则返回 false
+     * @param text     The text to match.
+     * @param patterns The list of patterns.
+     * @return {@code true} if the given text matches at least one glob pattern, {@code false} otherwise.
      * @see <a href="https://en.wikipedia.org/wiki/Glob_(programming)">Wikipedia - glob (programming)</a>
      */
     public static boolean matches(Path text, List<PathMatcher> patterns) {
@@ -192,13 +209,13 @@ public final class Builder {
     }
 
     /**
-     * 从字节 8 和 9 中的（最多）3 个 5 位字符获取制造商 ID。
+     * Gets the manufacturer ID from bytes 8 and 9, which represent (up to) 3 five-bit characters.
      *
-     * @param edid EDID 字节数组
-     * @return 制造商 ID
+     * @param edid The EDID byte array.
+     * @return The manufacturer ID.
      */
     public static String getManufacturerID(byte[] edid) {
-        // 字节 8-9 是制造商 ID，用 3 个 5 位字符表示
+        // Bytes 8-9 are manufacturer ID, 3 5-bit characters
         String temp = String.format(
                 Locale.ROOT,
                 "%8s%8s",
@@ -214,25 +231,25 @@ public final class Builder {
     }
 
     /**
-     * 获取产品 ID，字节 10 和 11。
+     * Gets the product ID, bytes 10 and 11.
      *
-     * @param edid EDID 字节数组
-     * @return 产品 ID
+     * @param edid The EDID byte array.
+     * @return The product ID.
      */
     public static String getProductID(byte[] edid) {
-        // 字节 10-11 是产品 ID，以十六进制字符表示
+        // Bytes 10-11 are product ID, in hex characters
         return Integer.toHexString(
                 ByteBuffer.wrap(Arrays.copyOfRange(edid, 10, 12)).order(ByteOrder.LITTLE_ENDIAN).getShort() & 0xffff);
     }
 
     /**
-     * 获取序列号，字节 12-15。
+     * Gets the serial number, bytes 12-15.
      *
-     * @param edid EDID 字节数组
-     * @return 如果所有 4 个字节表示字母数字字符，则返回 4 字符字符串；否则返回十六进制字符串
+     * @param edid The EDID byte array.
+     * @return A 4-character string if all 4 bytes represent alphanumeric characters, otherwise a hex string.
      */
     public static String getSerialNo(byte[] edid) {
-        // 字节 12-15 是序列号（最后 4 个字符）
+        // Bytes 12-15 are serial number (last 4 chars)
         if (Logger.isDebugEnabled()) {
             Logger.debug("Serial number: {}", Arrays.toString(Arrays.copyOfRange(edid, 12, 16)));
         }
@@ -246,10 +263,10 @@ public final class Builder {
     }
 
     /**
-     * 将字节转换为字母数字字符或十六进制表示。
+     * Converts a byte to an alphanumeric character or its hex representation.
      *
-     * @param b 要转换的字节
-     * @return 如果字节是字母或数字，返回对应的字符；否则返回两位十六进制字符串
+     * @param b The byte to convert.
+     * @return The corresponding character if the byte is a letter or digit; otherwise, a two-digit hex string.
      */
     private static String getAlphaNumericOrHex(byte b) {
         return Character.isLetterOrDigit((char) b) ? String.format(Locale.ROOT, "%s", (char) b)
@@ -257,78 +274,78 @@ public final class Builder {
     }
 
     /**
-     * 返回制造年份的周数。
+     * Returns the week of manufacture.
      *
-     * @param edid EDID 字节数组
-     * @return 制造周数
+     * @param edid The EDID byte array.
+     * @return The week of manufacture.
      */
     public static byte getWeek(byte[] edid) {
-        // 字节 16 是制造周
+        // Byte 16 is week of manufacture
         return edid[16];
     }
 
     /**
-     * 返回制造年份。
+     * Returns the year of manufacture.
      *
-     * @param edid EDID 字节数组
-     * @return 制造年份
+     * @param edid The EDID byte array.
+     * @return The year of manufacture.
      */
     public static int getYear(byte[] edid) {
-        // 字节 17 是制造年份减去 1990
+        // Byte 17 is year of manufacture minus 1990
         byte temp = edid[17];
         Logger.debug("Year-1990: {}", temp);
         return temp + 1990;
     }
 
     /**
-     * 返回 EDID 版本。
+     * Returns the EDID version.
      *
-     * @param edid EDID 字节数组
-     * @return EDID 版本
+     * @param edid The EDID byte array.
+     * @return The EDID version.
      */
     public static String getVersion(byte[] edid) {
-        // 字节 18-19 是 EDID 版本
+        // Bytes 18-19 are EDID version
         return edid[18] + "." + edid[19];
     }
 
     /**
-     * 根据字节 20 测试此 EDID 是否为数字显示器。
+     * Tests if this EDID is for a digital monitor, based on byte 20.
      *
-     * @param edid EDID 字节数组
-     * @return 如果 EDID 表示数字显示器返回 true，否则返回 false
+     * @param edid The EDID byte array.
+     * @return {@code true} if the EDID indicates a digital monitor, {@code false} otherwise.
      */
     public static boolean isDigital(byte[] edid) {
-        // 字节 20 是视频输入参数
+        // Byte 20 is video input parameter
         return 1 == (edid[20] & 0xff) >> 7;
     }
 
     /**
-     * 获取显示器宽度（厘米）。
+     * Gets the monitor width in centimeters.
      *
-     * @param edid EDID 字节数组
-     * @return 显示器宽度（厘米）
+     * @param edid The EDID byte array.
+     * @return The monitor width in centimeters.
      */
     public static int getHcm(byte[] edid) {
-        // 字节 21 是水平尺寸（厘米）
+        // Byte 21 is horizontal size in cm
         return edid[21];
     }
 
     /**
-     * 获取显示器高度（厘米）。
+     * Gets the monitor height in centimeters.
      *
-     * @param edid EDID 字节数组
-     * @return 显示器高度（厘米）
+     * @param edid The EDID byte array.
+     * @return The monitor height in centimeters.
      */
     public static int getVcm(byte[] edid) {
-        // 字节 22 是垂直尺寸（厘米）
+        // Byte 22 is vertical size in cm
         return edid[22];
     }
 
     /**
-     * 获取 VESA 描述符。
+     * Gets the VESA descriptors.
      *
-     * @param edid EDID 字节数组
-     * @return 一个包含四个 18 字节元素的二维数组，表示 VESA 描述符
+     * @param edid The EDID byte array.
+     * @return A two-dimensional array containing four 18-byte elements, representing the VESA descriptors.
      */
     public static byte[][] getDescriptors(byte[] edid) {
         byte[][] desc = new byte[4][18];
@@ -339,20 +356,20 @@ public final class Builder {
     }
 
     /**
-     * 获取 VESA 描述符类型。
+     * Gets the VESA descriptor type.
      *
-     * @param desc 18 字节的 VESA 描述符
-     * @return 表示 VESA 描述符前四个字节的整数
+     * @param desc An 18-byte VESA descriptor.
+     * @return An integer representing the first four bytes of the VESA descriptor.
      */
     public static int getDescriptorType(byte[] desc) {
         return ByteBuffer.wrap(Arrays.copyOfRange(desc, 0, 4)).getInt();
     }
 
     /**
-     * 解析详细时序描述符。
+     * Parses a detailed timing descriptor.
      *
-     * @param desc 18 字节的 VESA 描述符
-     * @return 描述详细时序描述符部分的字符串
+     * @param desc An 18-byte VESA descriptor.
+     * @return A string describing the detailed timing descriptor portion.
      */
     public static String getTimingDescriptor(byte[] desc) {
         int clock = ByteBuffer.wrap(Arrays.copyOfRange(desc, 0, 2)).order(ByteOrder.LITTLE_ENDIAN).getShort() / 100;
@@ -362,10 +379,10 @@ public final class Builder {
     }
 
     /**
-     * 解析描述符范围限制。
+     * Parses descriptor range limits.
      *
-     * @param desc 18 字节的 VESA 描述符
-     * @return 描述部分范围限制的字符串
+     * @param desc An 18-byte VESA descriptor.
+     * @return A string describing the range limits portion.
      */
     public static String getDescriptorRangeLimits(byte[] desc) {
         return String.format(
@@ -379,22 +396,24 @@ public final class Builder {
     }
 
     /**
-     * 解析描述符文本。
+     * Parses descriptor text.
      *
-     * @param desc 18 字节的 VESA 描述符
-     * @return 从第 4 个字节开始的纯文本
+     * @param desc An 18-byte VESA descriptor.
+     * @return The plain text starting from the 4th byte.
      */
     public static String getDescriptorText(byte[] desc) {
         return new String(Arrays.copyOfRange(desc, 4, 18), Charset.US_ASCII).trim();
     }
 
     /**
-     * 获取显示器的首选分辨率（例如：1920x1080）
+     * Retrieves the preferred resolution of the monitor (e.g., 1920x1080).
      * <p>
-     * 该方法通过解析EDID（扩展显示器识别数据）字节数组中的详细时序描述（DTD）部分， 提取并计算显示器的首选分辨率。
+     * This method parses the Detailed Timing Descriptor (DTD) section within the EDID (Extended Display Identification
+     * Data) byte array to extract and calculate the preferred resolution of the monitor.
      *
-     * @param edid EDID字节数组，包含显示器的硬件信息
-     * @return 首选分辨率的字符串表示，格式为"水平分辨率x垂直分辨率"
+     * @param edid The EDID byte array, containing hardware information about the monitor.
+     * @return A string representation of the preferred resolution, in the format "horizontalResolution x
+     *         verticalResolution".
      */
     public static String getPreferredResolution(byte[] edid) {
         int dtd = 54;
@@ -404,10 +423,10 @@ public final class Builder {
     }
 
     /**
-     * 从EDID中获取显示器型号
+     * Retrieves the monitor model from the EDID.
      *
-     * @param edid EDID字节数组
-     * @return 纯文本显示器型号
+     * @param edid The EDID byte array.
+     * @return The plain text monitor model.
      */
     public static String getModel(byte[] edid) {
         byte[][] desc = getDescriptors(edid);
@@ -427,10 +446,10 @@ public final class Builder {
     }
 
     /**
-     * 将 EDID 字节数组解析为用户可读信息。
+     * Parses an EDID byte array into human-readable information.
      *
-     * @param edid EDID 字节数组
-     * @return EDID 表示的用户可读文本
+     * @param edid The EDID byte array.
+     * @return Human-readable text representing the EDID.
      */
     public static String getEdid(byte[] edid) {
         StringBuilder sb = new StringBuilder();
@@ -490,21 +509,25 @@ public final class Builder {
     }
 
     /**
-     * 一次性读取整个文件。主要用于 Linux /proc 文件系统，以避免在迭代读取时重新计算文件内容。
+     * Reads an entire file at once. Primarily used for Linux /proc filesystem to avoid recalculating file contents when
+     * iterating through reads.
      *
-     * @param filename 要读取的文件
-     * @return 表示文件每行的字符串列表，如果文件无法读取或为空则返回空列表
+     * @param filename The file to read.
+     * @return A list of strings representing each line of the file, or an empty list if the file cannot be read or is
+     *         empty.
      */
     public static List<String> readFile(String filename) {
         return readFile(filename, true);
     }
 
     /**
-     * 一次性读取整个文件。主要用于 Linux /proc 文件系统，以避免在迭代读取时重新计算文件内容。
+     * Reads an entire file at once. Primarily used for Linux /proc filesystem to avoid recalculating file contents when
+     * iterating through reads.
      *
-     * @param filename    要读取的文件
-     * @param reportError 是否记录读取文件的错误
-     * @return 表示文件每行的字符串列表，如果文件无法读取或为空则返回空列表
+     * @param filename    The file to read.
+     * @param reportError Whether to log errors when reading the file.
+     * @return A list of strings representing each line of the file, or an empty list if the file cannot be read or is
+     *         empty.
      */
     public static List<String> readFile(String filename, boolean reportError) {
         Path path = Paths.get(filename);
@@ -528,23 +551,27 @@ public final class Builder {
     }
 
     /**
-     * 从文件中读取指定行数。主要用于 Linux /proc 文件系统，以避免在迭代读取时重新计算文件内容。
+     * Reads a specified number of lines from a file. Primarily used for Linux /proc filesystem to avoid recalculating
+     * file contents when iterating through reads.
      *
-     * @param filename 要读取的文件
-     * @param count    要读取的行数
-     * @return 表示文件前 count 行的字符串列表，如果文件无法读取或为空则返回空列表
+     * @param filename The file to read.
+     * @param count    The number of lines to read.
+     * @return A list of strings representing the first {@code count} lines of the file, or an empty list if the file
+     *         cannot be read or is empty.
      */
     public static List<String> readLines(String filename, int count) {
         return readLines(filename, count, true);
     }
 
     /**
-     * 从文件中读取指定行数。主要用于 Linux /proc 文件系统，以避免在迭代读取时重新计算文件内容。
+     * Reads a specified number of lines from a file. Primarily used for Linux /proc filesystem to avoid recalculating
+     * file contents when iterating through reads.
      *
-     * @param filename    要读取的文件
-     * @param count       要读取的行数
-     * @param reportError 是否记录读取文件的错误
-     * @return 表示文件前 count 行的字符串列表，如果文件无法读取或为空则返回空列表
+     * @param filename    The file to read.
+     * @param count       The number of lines to read.
+     * @param reportError Whether to log errors when reading the file.
+     * @return A list of strings representing the first {@code count} lines of the file, or an empty list if the file
+     *         cannot be read or is empty.
      */
     public static List<String> readLines(String filename, int count, boolean reportError) {
         Path file = Paths.get(filename);
@@ -576,21 +603,23 @@ public final class Builder {
     }
 
     /**
-     * 一次性读取整个文件。主要用于 Linux /proc 文件系统，以避免在迭代读取时重新计算文件内容。
+     * Reads an entire file at once. Primarily used for Linux /proc filesystem to avoid recalculating file contents when
+     * iterating through reads.
      *
-     * @param filename 要读取的文件
-     * @return 表示文件的字节数组
+     * @param filename The file to read.
+     * @return A byte array representing the file.
      */
     public static byte[] readAllBytes(String filename) {
         return readAllBytes(filename, true);
     }
 
     /**
-     * 一次性读取整个文件。主要用于 Linux /proc 文件系统，以避免在迭代读取时重新计算文件内容。
+     * Reads an entire file at once. Primarily used for Linux /proc filesystem to avoid recalculating file contents when
+     * iterating through reads.
      *
-     * @param filename    要读取的文件
-     * @param reportError 是否记录读取文件的错误
-     * @return 表示文件的字节数组
+     * @param filename    The file to read.
+     * @param reportError Whether to log errors when reading the file.
+     * @return A byte array representing the file.
      */
     public static byte[] readAllBytes(String filename, boolean reportError) {
         Path path = Paths.get(filename);
@@ -614,10 +643,11 @@ public final class Builder {
     }
 
     /**
-     * 一次性读取整个文件。主要用于 Unix /proc 二进制文件，以避免在迭代读取时重新计算文件内容。
+     * Reads an entire file at once. Primarily used for Unix /proc binary files to avoid recalculating file contents
+     * when iterating through reads.
      *
-     * @param filename 要读取的文件
-     * @return 如果读取成功，返回表示文件的 ByteBuffer；否则返回 null
+     * @param filename The file to read.
+     * @return A {@link ByteBuffer} representing the file if read successfully; otherwise, {@code null}.
      */
     public static ByteBuffer readAllBytesAsBuffer(String filename) {
         byte[] bytes = readAllBytes(filename, false);
@@ -631,10 +661,10 @@ public final class Builder {
     }
 
     /**
-     * 从 ByteBuffer 读取字节值。
+     * Reads a byte value from a {@link ByteBuffer}.
      *
-     * @param buff 要读取的 ByteBuffer
-     * @return 下一个字节值
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next byte value.
      */
     public static byte readByteFromBuffer(ByteBuffer buff) {
         if (buff.position() < buff.limit()) {
@@ -644,10 +674,10 @@ public final class Builder {
     }
 
     /**
-     * 从 ByteBuffer 读取短整型值。
+     * Reads a short integer value from a {@link ByteBuffer}.
      *
-     * @param buff 要读取的 ByteBuffer
-     * @return 下一个短整型值
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next short integer value.
      */
     public static short readShortFromBuffer(ByteBuffer buff) {
         if (buff.position() <= buff.limit() - 2) {
@@ -657,10 +687,10 @@ public final class Builder {
     }
 
     /**
-     * 从 ByteBuffer 读取整型值。
+     * Reads an integer value from a {@link ByteBuffer}.
      *
-     * @param buff 要读取的 ByteBuffer
-     * @return 下一个整型值
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next integer value.
      */
     public static int readIntFromBuffer(ByteBuffer buff) {
         if (buff.position() <= buff.limit() - 4) {
@@ -670,10 +700,10 @@ public final class Builder {
     }
 
     /**
-     * 从 ByteBuffer 读取长整型值。
+     * Reads a long integer value from a {@link ByteBuffer}.
      *
-     * @param buff 要读取的 ByteBuffer
-     * @return 下一个长整型值
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next long integer value.
      */
     public static long readLongFromBuffer(ByteBuffer buff) {
         if (buff.position() <= buff.limit() - 8) {
@@ -683,30 +713,30 @@ public final class Builder {
     }
 
     /**
-     * 从 ByteBuffer 读取 NativeLong 值。
+     * Reads a {@link NativeLong} value from a {@link ByteBuffer}.
      *
-     * @param buff 要读取的 ByteBuffer
-     * @return 下一个 NativeLong 值
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next {@link NativeLong} value.
      */
     public static NativeLong readNativeLongFromBuffer(ByteBuffer buff) {
         return new NativeLong(Native.LONG_SIZE == 4 ? readIntFromBuffer(buff) : readLongFromBuffer(buff));
     }
 
     /**
-     * 从 ByteBuffer 读取 size_t 值。
+     * Reads a size_t value from a {@link ByteBuffer}.
      *
-     * @param buff 要读取的 ByteBuffer
-     * @return 下一个 size_t 值
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next size_t value.
      */
     public static LibCAPI.size_t readSizeTFromBuffer(ByteBuffer buff) {
         return new LibCAPI.size_t(Native.SIZE_T_SIZE == 4 ? readIntFromBuffer(buff) : readLongFromBuffer(buff));
     }
 
     /**
-     * 从 ByteBuffer 读取字节数组值。
+     * Reads a byte array value from a {@link ByteBuffer}.
      *
-     * @param buff  要读取的 ByteBuffer
-     * @param array 要读取数据的目标数组
+     * @param buff  The {@link ByteBuffer} to read from.
+     * @param array The target array to read data into.
      */
     public static void readByteArrayFromBuffer(ByteBuffer buff, byte[] array) {
         if (buff.position() <= buff.limit() - array.length) {
@@ -715,10 +745,10 @@ public final class Builder {
     }
 
     /**
-     * 从 ByteBuffer 读取 Pointer 值。
+     * Reads a {@link Pointer} value from a {@link ByteBuffer}.
      *
-     * @param buff 要读取的 ByteBuffer
-     * @return 下一个 Pointer 值
+     * @param buff The {@link ByteBuffer} to read from.
+     * @return The next {@link Pointer} value.
      */
     public static Pointer readPointerFromBuffer(ByteBuffer buff) {
         if (buff.position() <= buff.limit() - Native.POINTER_SIZE) {
@@ -728,10 +758,10 @@ public final class Builder {
     }
 
     /**
-     * 读取文件并返回其中包含的长整型值。主要用于 Linux /sys 文件系统。
+     * Reads a file and returns the long integer value contained within it. Primarily used for Linux /sys filesystem.
      *
-     * @param filename 要读取的文件
-     * @return 文件中包含的值，如果无值则返回 0
+     * @param filename The file to read.
+     * @return The value contained in the file, or 0 if no value is present.
      */
     public static long getLongFromFile(String filename) {
         if (Logger.isDebugEnabled()) {
@@ -748,10 +778,11 @@ public final class Builder {
     }
 
     /**
-     * 读取文件并返回其中包含的无符号长整型值（作为长整型）。主要用于 Linux /sys 文件系统。
+     * Reads a file and returns the unsigned long integer value (as a long) contained within it. Primarily used for
+     * Linux /sys filesystem.
      *
-     * @param filename 要读取的文件
-     * @return 文件中包含的值，如果无值则返回 0
+     * @param filename The file to read.
+     * @return The value contained in the file, or 0 if no value is present.
      */
     public static long getUnsignedLongFromFile(String filename) {
         if (Logger.isDebugEnabled()) {
@@ -768,10 +799,10 @@ public final class Builder {
     }
 
     /**
-     * 读取文件并返回其中包含的整型值。主要用于 Linux /sys 文件系统。
+     * Reads a file and returns the integer value contained within it. Primarily used for Linux /sys filesystem.
      *
-     * @param filename 要读取的文件
-     * @return 文件中包含的值，如果无值则返回 0
+     * @param filename The file to read.
+     * @return The value contained in the file, or 0 if no value is present.
      */
     public static int getIntFromFile(String filename) {
         if (Logger.isDebugEnabled()) {
@@ -792,10 +823,10 @@ public final class Builder {
     }
 
     /**
-     * 读取文件并返回其中包含的字符串值。主要用于 Linux /sys 文件系统。
+     * Reads a file and returns the string value contained within it. Primarily used for Linux /sys filesystem.
      *
-     * @param filename 要读取的文件
-     * @return 文件中包含的值，如果无值则返回空字符串
+     * @param filename The file to read.
+     * @return The value contained in the file, or an empty string if no value is present.
      */
     public static String getStringFromFile(String filename) {
         if (Logger.isDebugEnabled()) {
@@ -812,11 +843,13 @@ public final class Builder {
     }
 
     /**
-     * 读取文件并返回其中包含的字符串键值对映射。主要用于 Linux {@code /proc/[pid]} 文件， 以提供比 API 更详细或准确的信息。
+     * Reads a file and returns a map of string key-value pairs contained within it. Primarily used for Linux
+     * {@code /proc/[pid]} files to provide more detailed or accurate information than the API.
      *
-     * @param filename  要读取的文件
-     * @param separator 文件每行中分隔键和值的字符
-     * @return 文件中由分隔符分隔的键值对映射，值已去除空格。如果无法解析键值对，返回空映射
+     * @param filename  The file to read.
+     * @param separator The character that separates keys and values in each line of the file.
+     * @return A map of key-value pairs from the file, with values trimmed of whitespace. Returns an empty map if no
+     *         key-value pairs can be parsed.
      */
     public static Map<String, String> getKeyValueMapFromFile(String filename, String separator) {
         Map<String, String> map = new HashMap<>();
@@ -834,10 +867,10 @@ public final class Builder {
     }
 
     /**
-     * 读取符号链接的目标。
+     * Reads the target of a symbolic link.
      *
-     * @param file 要读取的文件
-     * @return 符号链接名称，如果读取失败则返回 null
+     * @param file The file to read.
+     * @return The symbolic link name, or {@code null} if the read fails.
      */
     public static String readSymlinkTarget(File file) {
         try {
@@ -848,11 +881,11 @@ public final class Builder {
     }
 
     /**
-     * 将键值对追加到 {@code StringBuilder}
+     * Appends a key-value pair to a {@code StringBuilder}.
      *
-     * @param builder {@code StringBuilder} 对象
-     * @param caption 标题
-     * @param value   值
+     * @param builder The {@code StringBuilder} object.
+     * @param caption The caption (key).
+     * @param value   The value.
      */
     public static void append(StringBuilder builder, String caption, Object value) {
         builder.append(caption).append(ObjectKit.defaultIfNull(Convert.toString(value), "[n/a]")).append(Symbol.LF);

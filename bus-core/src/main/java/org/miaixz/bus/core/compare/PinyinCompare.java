@@ -31,7 +31,7 @@ import java.io.Serial;
 import java.util.Locale;
 
 /**
- * 按照GBK拼音顺序对给定的汉字字符串排序
+ * A comparator for sorting Chinese character strings in Pinyin order (based on GBK).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,16 +42,16 @@ public class PinyinCompare extends LocaleCompare {
     private static final long serialVersionUID = 2852262615223L;
 
     /**
-     * 构造，{@code null}最大，排在最后
+     * Constructs a new {@code PinyinCompare}, with {@code null} values placed at the end.
      */
     public PinyinCompare() {
         this(true);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code PinyinCompare}.
      *
-     * @param nullGreater 是否{@code null}最大，排在最后
+     * @param nullGreater whether {@code null} values should be placed at the end.
      */
     public PinyinCompare(final boolean nullGreater) {
         super(nullGreater, Locale.CHINESE);

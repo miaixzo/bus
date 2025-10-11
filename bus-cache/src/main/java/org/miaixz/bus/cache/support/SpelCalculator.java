@@ -36,9 +36,10 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
 /**
- * SpEL表达式计算器
+ * A utility class for calculating Spring Expression Language (SpEL) expressions.
  * <p>
- * 提供SpEL(Spring Expression Language)表达式的计算功能，用于解析和执行SpEL表达式。 支持带上下文和不带上下文的表达式计算，用于缓存注解中的条件判断和键值生成。
+ * This class provides methods to parse and execute SpEL expressions, which are used for conditional caching and dynamic
+ * key generation within the cache annotations.
  * </p>
  *
  * @author Kimi Liu
@@ -47,21 +48,22 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 public class SpelCalculator {
 
     /**
-     * SpEL表达式解析器
+     * The shared SpEL expression parser instance.
      */
     private static final ExpressionParser parser = new SpelExpressionParser();
 
     /**
-     * 计算带上下文的SpEL表达式值
+     * Calculates the value of a SpEL expression within a given evaluation context.
      * <p>
-     * 在给定的上下文中计算SpEL表达式的值，上下文包含方法参数名和参数值的映射关系。 支持原始参数名和生成的xArg格式的参数名。
+     * The context is populated with the method's argument names and their corresponding values. It supports both the
+     * original parameter names (if available) and synthetic names (e.g., `args0`, `args1`).
      * </p>
      *
-     * @param spel         SpEL表达式字符串
-     * @param argNames     参数名数组
-     * @param argValues    参数值数组
-     * @param defaultValue 默认值，当表达式为空时返回
-     * @return 表达式计算结果
+     * @param spel         The SpEL expression string to evaluate.
+     * @param argNames     An array of the method's parameter names.
+     * @param argValues    An array of the method's argument values.
+     * @param defaultValue The value to return if the SpEL expression is null or empty.
+     * @return The result of the expression evaluation.
      */
     public static Object calcSpelValueWithContext(
             String spel,
@@ -72,16 +74,18 @@ public class SpelCalculator {
             return defaultValue;
         }
 
-        // 将[参数名->参数值]导入spel环境
+        // Create the evaluation context and populate it with argument names and values.
         EvaluationContext context = new StandardEvaluationContext();
-        Assert.isTrue(argNames.length == argValues.length);
+        Assert.isTrue(
+                argNames.length == argValues.length,
+                "Argument names and values arrays must have the same length");
 
-        // 设置原始参数名到参数值的映射
+        // Map original argument names to their values.
         for (int i = 0; i < argValues.length; ++i) {
             context.setVariable(argNames[i], argValues[i]);
         }
 
-        // 设置生成的xArg格式参数名到参数值的映射
+        // Also map synthetic argument names (e.g., "args0", "args1") to their values.
         String[] xArgNames = Builder.getXArgNames(argValues.length);
         for (int i = 0; i < argValues.length; ++i) {
             context.setVariable(xArgNames[i], argValues[i]);
@@ -91,14 +95,14 @@ public class SpelCalculator {
     }
 
     /**
-     * 计算不带上下文的SpEL表达式值
+     * Calculates the value of a SpEL expression against a root object, without a full context.
      * <p>
-     * 在给定的默认对象上下文中计算SpEL表达式的值，主要用于处理对象属性访问。
+     * This is primarily used for accessing properties of a given object.
      * </p>
      *
-     * @param spel         SpEL表达式字符串
-     * @param defaultValue 默认值，当表达式为空时返回
-     * @return 表达式计算结果
+     * @param spel         The SpEL expression string to evaluate.
+     * @param defaultValue The object to use as the root for the expression evaluation.
+     * @return The result of the expression evaluation.
      */
     public static Object calcSpelWithNoContext(String spel, Object defaultValue) {
         if (StringKit.isEmpty(spel)) {

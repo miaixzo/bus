@@ -42,7 +42,7 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 
 /**
- * Baseboard data obtained from ioreg
+ * Baseboard data obtained from ioreg.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,6 +52,12 @@ final class MacBaseboard extends AbstractBaseboard {
 
     private final Supplier<Tuple> manufModelVersSerial = Memoizer.memoize(MacBaseboard::queryPlatform);
 
+    /**
+     * Queries the platform information from the I/O Registry to populate baseboard details.
+     *
+     * @return A {@link Tuple} containing the manufacturer, model, version, and serial number of the baseboard. Returns
+     *         {@link Normal#UNKNOWN} for any field that cannot be determined.
+     */
     private static Tuple queryPlatform() {
         String manufacturer = null;
         String model = null;
@@ -93,21 +99,33 @@ final class MacBaseboard extends AbstractBaseboard {
                 StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getManufacturer() {
         return manufModelVersSerial.get().get(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getModel() {
         return manufModelVersSerial.get().get(1);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getVersion() {
         return manufModelVersSerial.get().get(2);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getSerialNumber() {
         return manufModelVersSerial.get().get(3);

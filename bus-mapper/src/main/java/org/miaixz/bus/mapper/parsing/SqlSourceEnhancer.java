@@ -35,7 +35,7 @@ import org.apache.ibatis.mapping.SqlSource;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 
 /**
- * 支持定制化处理 {@link SqlSource} 的接口
+ * An interface for customizing the processing of {@link SqlSource}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,23 +43,23 @@ import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 public interface SqlSourceEnhancer {
 
     /**
-     * 默认 SPI 实现，加载并依次调用所有 KeySqlSource 实现类
+     * The default SPI implementation, which loads and sequentially calls all {@link SqlSourceEnhancer} implementations.
      */
     SqlSourceEnhancer SPI = new SqlSourceEnhancer() {
 
         /**
-         * 通过 SPI 加载的定制化 KeySqlSource 实现列表
+         * A list of customized {@link SqlSourceEnhancer} implementations loaded via SPI.
          */
         private final List<SqlSourceEnhancer> customizes = NormalSpiLoader.loadList(false, SqlSourceEnhancer.class);
 
         /**
-         * 依次调用所有定制化实现对 SqlSource 进行处理
+         * Sequentially calls all customized implementations to process the {@link SqlSource}.
          *
-         * @param sqlSource 原始 SqlSource
-         * @param entity    实体表信息
-         * @param ms        MappedStatement
-         * @param context   调用方法上下文
-         * @return 定制化后的 SqlSource
+         * @param sqlSource The original {@link SqlSource}.
+         * @param entity    The entity table information.
+         * @param ms        The {@link MappedStatement}.
+         * @param context   The invocation method context.
+         * @return The customized {@link SqlSource}.
          */
         @Override
         public SqlSource customize(SqlSource sqlSource, TableMeta entity, MappedStatement ms, ProviderContext context) {
@@ -71,13 +71,13 @@ public interface SqlSourceEnhancer {
     };
 
     /**
-     * 定制化处理 SqlSource
+     * Customizes the processing of {@link SqlSource}.
      *
-     * @param sqlSource 原始 SqlSource
-     * @param entity    实体表信息
-     * @param ms        MappedStatement
-     * @param context   调用方法上下文
-     * @return 定制化后的 SqlSource
+     * @param sqlSource The original {@link SqlSource}.
+     * @param entity    The entity table information.
+     * @param ms        The {@link MappedStatement}.
+     * @param context   The invocation method context.
+     * @return The customized {@link SqlSource}.
      */
     SqlSource customize(SqlSource sqlSource, TableMeta entity, MappedStatement ms, ProviderContext context);
 

@@ -28,7 +28,8 @@
 package org.miaixz.bus.pager.dialect;
 
 /**
- * 替换和还原 SQL
+ * Interface for replacing and restoring SQL statements. Implementations of this interface can modify SQL for parsing
+ * and then revert it to its original form.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,18 +37,18 @@ package org.miaixz.bus.pager.dialect;
 public interface ReplaceSql {
 
     /**
-     * 临时替换后用于 jsqlparser 解析
+     * Temporarily replaces parts of the SQL statement for jsqlparser parsing.
      *
-     * @param sql SQL
-     * @return the string
+     * @param sql the original SQL statement
+     * @return the modified SQL statement suitable for parsing
      */
     String replace(String sql);
 
     /**
-     * 还原经过解析后的 sql
+     * Restores the SQL statement after it has been parsed and potentially modified.
      *
-     * @param sql SQL
-     * @return the string
+     * @param sql the SQL statement that was previously replaced and parsed
+     * @return the restored SQL statement
      */
     String restore(String sql);
 

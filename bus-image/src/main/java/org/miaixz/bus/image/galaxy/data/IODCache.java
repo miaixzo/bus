@@ -33,17 +33,34 @@ import java.util.HashMap;
 import org.miaixz.bus.image.IOD;
 
 /**
+ * A cache for {@link IOD} (Information Object Definition) instances, mapped by their URI. This class helps to avoid
+ * redundant loading of IODs by storing previously loaded instances.
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
 public class IODCache {
 
+    /**
+     * The internal map that stores IOD instances, keyed by their URI.
+     */
     private final HashMap<String, IOD> map = new HashMap<>();
 
+    /**
+     * Clears all cached {@link IOD} instances from this cache.
+     */
     public void clear() {
         map.clear();
     }
 
+    /**
+     * Retrieves an {@link IOD} instance from the cache based on its URI. If the IOD is not found in the cache, it is
+     * loaded using {@link IOD#load(String)}, stored in the cache, and then returned.
+     * 
+     * @param uri The URI of the IOD to retrieve.
+     * @return The {@link IOD} instance corresponding to the given URI.
+     * @throws IOException if an I/O error occurs during loading of the IOD.
+     */
     public IOD get(String uri) throws IOException {
         IOD iod = map.get(uri);
         if (iod == null)

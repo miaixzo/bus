@@ -30,16 +30,32 @@ package org.miaixz.bus.socket.metric.decoder;
 import java.nio.ByteBuffer;
 
 /**
- * 指定长度的解码器
+ * A decoder that frames messages based on a fixed length.
+ * <p>
+ * This decoder reads bytes from a {@link ByteBuffer} until a predefined fixed length is reached. It is suitable for
+ * protocols where message lengths are known in advance.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FixedLengthFrameDecoder implements SocketDecoder {
 
+    /**
+     * The internal buffer to accumulate bytes until the fixed length is reached.
+     */
     private ByteBuffer buffer;
+    /**
+     * A flag indicating whether the fixed-length frame has been fully read.
+     */
     private boolean finishRead;
 
+    /**
+     * Constructs a {@code FixedLengthFrameDecoder} with the specified frame length.
+     *
+     * @param frameLength the fixed length of each frame
+     * @throws IllegalArgumentException if {@code frameLength} is not a positive integer
+     */
     public FixedLengthFrameDecoder(int frameLength) {
         if (frameLength <= 0) {
             throw new IllegalArgumentException("frameLength must be a positive integer: " + frameLength);
@@ -48,6 +64,13 @@ public class FixedLengthFrameDecoder implements SocketDecoder {
         }
     }
 
+    /**
+     * Decodes bytes from the provided {@link ByteBuffer} to fill the fixed-length frame.
+     *
+     * @param byteBuffer the buffer containing the data to decode
+     * @return {@code true} if the fixed-length frame has been fully decoded, {@code false} otherwise
+     * @throws RuntimeException if the decoder has already finished reading a frame
+     */
     public boolean decode(ByteBuffer byteBuffer) {
         if (finishRead) {
             throw new RuntimeException("delimiter has finish read");
@@ -69,6 +92,11 @@ public class FixedLengthFrameDecoder implements SocketDecoder {
         return true;
     }
 
+    /**
+     * Returns the internal buffer containing the decoded fixed-length frame.
+     *
+     * @return the {@link ByteBuffer} with the decoded frame
+     */
     public ByteBuffer getBuffer() {
         return buffer;
     }

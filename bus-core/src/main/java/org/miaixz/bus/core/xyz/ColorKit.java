@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.ansi.*;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * 颜色工具类
+ * Color utility class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,7 +50,7 @@ public class ColorKit {
 
     private static final Map<String, Color> COLOR_MAPPING;
     /**
-     * RGB颜色范围上限
+     * Upper bound for RGB color values.
      */
     private static final int RGB_COLOR_BOUND = 256;
 
@@ -60,18 +60,18 @@ public class ColorKit {
                 .put("DARKGRAY", Color.DARK_GRAY).put("DARK_GRAY", Color.DARK_GRAY).put("RED", Color.RED)
                 .put("PINK", Color.PINK).put("ORANGE", Color.ORANGE).put("YELLOW", Color.YELLOW)
                 .put("GREEN", Color.GREEN).put("MAGENTA", Color.MAGENTA).put("CYAN", Color.CYAN).put("BLUE", Color.BLUE)
-                // 暗金色
+                // Dark Gold
                 .put("DARKGOLD", hexToColor("#9e7e67")).put("DARK_GOLD", hexToColor("#9e7e67"))
-                // 亮金色
+                // Light Gold
                 .put("LIGHTGOLD", hexToColor("#ac9c85")).put("LIGHT_GOLD", hexToColor("#ac9c85")).build();
         COLOR_MAPPING = MapKit.view(colorMap);
     }
 
     /**
-     * 将颜色转换为CSS的rgba表示形式，输出结果格式为：rgba(red, green, blue)
+     * Converts a Color to its CSS `rgb()` representation, e.g., `rgb(255, 0, 0)`.
      *
-     * @param color AWT颜色
-     * @return rgb(red, green, blue)
+     * @param color The AWT color.
+     * @return The `rgb(red, green, blue)` string.
      */
     public static String toCssRgb(final Color color) {
         return StringKit.builder().append("rgb(").append(color.getRed()).append(Symbol.COMMA).append(color.getGreen())
@@ -79,10 +79,10 @@ public class ColorKit {
     }
 
     /**
-     * 将颜色转换为CSS的rgba表示形式，输出结果格式为：rgba(red, green, blue, alpha)
+     * Converts a Color to its CSS `rgba()` representation, e.g., `rgba(255, 0, 0, 0.5)`.
      *
-     * @param color AWT颜色
-     * @return rgba(red, green, blue, alpha)
+     * @param color The AWT color.
+     * @return The `rgba(red, green, blue, alpha)` string.
      */
     public static String toCssRgba(final Color color) {
         return StringKit.builder().append("rgba(").append(color.getRed()).append(Symbol.COMMA).append(color.getGreen())
@@ -91,43 +91,42 @@ public class ColorKit {
     }
 
     /**
-     * Color对象转16进制表示，例如#fcf6d6
+     * Converts a {@link Color} object to its hex representation, e.g., `#fcf6d6`.
      *
-     * @param color {@link Color}
-     * @return 16进制的颜色值，例如#fcf6d6
+     * @param color The {@link Color}.
+     * @return The hexadecimal color string.
      */
     public static String toHex(final Color color) {
         return toHex(color.getRed(), color.getGreen(), color.getBlue());
     }
 
     /**
-     * RGB颜色值转换成十六进制颜色码
+     * Converts RGB integer values to a hexadecimal color code.
      *
-     * @param r 红(R)
-     * @param g 绿(G)
-     * @param b 蓝(B)
-     * @return 返回字符串形式的 十六进制颜色码 如
+     * @param r Red component (0-255).
+     * @param g Green component (0-255).
+     * @param b Blue component (0-255).
+     * @return The hexadecimal color string (e.g., #FF0000).
      */
     public static String toHex(final int r, final int g, final int b) {
-        // rgb 小于 255
         if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
-            throw new IllegalArgumentException("RGB must be 0~255!");
+            throw new IllegalArgumentException("RGB values must be between 0 and 255!");
         }
         return String.format("#%02X%02X%02X", r, g, b);
     }
 
     /**
-     * 将颜色值转换成具体的颜色类型 汇集了常用的颜色集，支持以下几种形式：
-     *
+     * Converts a color string into a {@link Color} object. Supports the following formats:
+     * 
      * <pre>
-     * 1. 颜色的英文名（大小写皆可）
-     * 2. 16进制表示，例如：#fcf6d6或者$fcf6d6
-     * 3. RGB形式，例如：13,148,252
-     * 4. RGBA形式，例如：13,148,252,1
+     * 1. English color names (case-insensitive)
+     * 2. Hexadecimal format, e.g., `#fcf6d6` or `$fcf6d6`
+     * 3. RGB format, e.g., `13,148,252`
+     * 4. RGBA format, e.g., `13,148,252,1` or `13,148,252,0.5`
      * </pre>
      *
-     * @param colorName 颜色的英文名，16进制表示或RGB表示
-     * @return {@link Color}
+     * @param colorName The color name, hex string, or RGB(A) string.
+     * @return A {@link Color} object.
      */
     public static Color getColor(String colorName) {
         if (StringKit.isBlank(colorName)) {
@@ -135,35 +134,30 @@ public class ColorKit {
         }
         colorName = colorName.toUpperCase();
 
-        // 预定义颜色别名
         final Color color = COLOR_MAPPING.get(colorName);
         if (null != color) {
             return color;
         }
 
-        // 16进制
         if (StringKit.startWith(colorName, Symbol.C_HASH)) {
             return hexToColor(colorName);
         } else if (StringKit.startWith(colorName, Symbol.C_DOLLAR)) {
-            // 由于#在URL传输中无法传输，因此用$代替#
+            // '$' can be used as a substitute for '#' in URLs
             return hexToColor(Symbol.HASH + colorName.substring(1));
         }
 
-        // RGB值和RGBA
         final List<String> rgb = CharsBacker.split(colorName, Symbol.COMMA);
         final int size = rgb.size();
 
         if (3 == size) {
-            // RGB
             final Integer[] rgbIntegers = Convert.toIntArray(rgb);
             return new Color(rgbIntegers[0], rgbIntegers[1], rgbIntegers[2]);
         }
         if (4 == size) {
-            // RGBA
             final Float[] rgbFloats = Convert.toFloatArray(rgb);
             Float a = rgbFloats[3];
-            if (a < 1) {
-                // 识别CSS形式
+            if (a <= 1) {
+                // Handle CSS alpha format (0.0 to 1.0)
                 a *= 255;
             }
             return new Color(rgbFloats[0], rgbFloats[1], rgbFloats[2], a);
@@ -173,21 +167,21 @@ public class ColorKit {
     }
 
     /**
-     * 获取一个RGB值对应的颜色
+     * Gets a {@link Color} from a single integer RGB value.
      *
-     * @param rgb RGB值
-     * @return {@link Color}
+     * @param rgb The RGB value.
+     * @return A {@link Color} object.
      */
     public static Color getColor(final int rgb) {
         return new Color(rgb);
     }
 
     /**
-     * 从rgba数组或gray值中获取RGB颜色
+     * Gets a {@link Color} from an RGBA array or a grayscale value.
      *
-     * @param gray 在单色显示器上呈现时的单个灰色无符号值。单位在p值中指定， 从最小的0x0000(黑色)到最大的0xFFFF(白色)。
-     * @param rgba 指定RGB[A]颜色的无符号值数组(可选的)
-     * @return {@link Color}
+     * @param gray A single grayscale value (0x0000 black to 0xFFFF white).
+     * @param rgba An optional array of RGBA values.
+     * @return A {@link Color} object.
      */
     public static Color getColor(int gray, int[] rgba) {
         int r, g, b, a = 255;
@@ -205,21 +199,21 @@ public class ColorKit {
     }
 
     /**
-     * 16进制的颜色值转换为Color对象，例如#fcf6d6
+     * Converts a hexadecimal color string (e.g., `#fcf6d6`) to a `Color` object.
      *
-     * @param hex 16进制的颜色值，例如#fcf6d6
-     * @return {@link Color}
+     * @param hex The hexadecimal color string.
+     * @return A {@link Color} object.
      */
     public static Color hexToColor(final String hex) {
         return getColor(Integer.parseInt(StringKit.removePrefix(hex, Symbol.HASH), 16));
     }
 
     /**
-     * 叠加颜色
+     * Blends two colors together based on their alpha values.
      *
-     * @param color1 颜色1
-     * @param color2 颜色2
-     * @return 叠加后的颜色
+     * @param color1 The first color.
+     * @param color2 The second color.
+     * @return The blended color.
      */
     public static Color add(final Color color1, final Color color2) {
         final double r1 = color1.getRed();
@@ -239,19 +233,19 @@ public class ColorKit {
     }
 
     /**
-     * 生成随机颜色
+     * Generates a random color.
      *
-     * @return 随机颜色
+     * @return A random color.
      */
     public static Color randomColor() {
         return randomColor(null);
     }
 
     /**
-     * 生成随机颜色
+     * Generates a random color using a specific `Random` instance.
      *
-     * @param random 随机对象 {@link Random}
-     * @return 随机颜色
+     * @param random The {@link Random} instance.
+     * @return A random color.
      */
     public static Color randomColor(Random random) {
         if (null == random) {
@@ -262,18 +256,17 @@ public class ColorKit {
     }
 
     /**
-     * 生成随机颜色，与指定颜色有一定的区分度
+     * Generates a random color that has a minimum distance from a given comparison color.
      *
-     * @param compareColor 比较颜色，{@code null}表示无区分要求
-     * @param minDistance  最小色差，按三维坐标计算的距离值。小于等于0表示无区分要求
-     * @return 随机颜色
+     * @param compareColor The color to compare against.
+     * @param minDistance  The minimum color distance.
+     * @return A random color.
      */
     public static Color randomColor(final Color compareColor, final int minDistance) {
         Color color = randomColor();
         if (null != compareColor && minDistance > 0) {
-            // 注意minDistance太大会增加循环次数，保证至少1/3的概率生成成功
             Assert.isTrue(
-                    minDistance < maxDistance(compareColor) / 3 * 2,
+                    minDistance < maxDistance(compareColor) * 2 / 3,
                     "minDistance is too large, there are too few remaining colors!");
             while (computeColorDistance(compareColor, color) < minDistance) {
                 color = randomColor();
@@ -283,11 +276,11 @@ public class ColorKit {
     }
 
     /**
-     * 计算两个颜色之间的色差，按三维坐标距离计算
+     * Calculates the color distance between two colors using Euclidean distance in the RGB space.
      *
-     * @param color1 颜色1
-     * @param color2 颜色2
-     * @return 色差，按三维坐标距离值
+     * @param color1 The first color.
+     * @param color2 The second color.
+     * @return The color distance value.
      */
     public static int computeColorDistance(final Color color1, final Color color2) {
         if (null == color1 || null == color2) {
@@ -299,24 +292,24 @@ public class ColorKit {
     }
 
     /**
-     * AWT的{@link Color}颜色转换为ANSI颜色，由于取最接近颜色，故可能有色差
+     * Converts an AWT {@link Color} to the nearest matching ANSI color.
      *
-     * @param rgb          RGB颜色
-     * @param is8Bit       是否8bit的ANSI颜色
-     * @param isBackground 是否背景色
-     * @return ANSI颜色
+     * @param rgb          The RGB color value.
+     * @param is8Bit       If true, uses 8-bit ANSI colors; otherwise, uses 4-bit.
+     * @param isBackground If true, returns the background color version.
+     * @return The ANSI color element.
      */
     public static AnsiElement toAnsiColor(final int rgb, final boolean is8Bit, final boolean isBackground) {
         return toAnsiColor(getColor(rgb), is8Bit, isBackground);
     }
 
     /**
-     * AWT的{@link Color}颜色转换为ANSI颜色，由于取最接近颜色，故可能有色差
+     * Converts an AWT {@link Color} to the nearest matching ANSI color.
      *
-     * @param color        {@link Color}
-     * @param is8Bit       是否8bit的ANSI颜色
-     * @param isBackground 是否背景色
-     * @return ANSI颜色
+     * @param color        The {@link Color}.
+     * @param is8Bit       If true, uses 8-bit ANSI colors; otherwise, uses 4-bit.
+     * @param isBackground If true, returns the background color version.
+     * @return The ANSI color element.
      */
     public static AnsiElement toAnsiColor(final Color color, final boolean is8Bit, final boolean isBackground) {
         if (is8Bit) {
@@ -335,11 +328,11 @@ public class ColorKit {
     }
 
     /**
-     * 获取给定图片的主色调，背景填充用
+     * Gets the dominant color from a given image.
      *
-     * @param image      {@link BufferedImage}
-     * @param rgbFilters 过滤多种颜色
-     * @return {@link String} #ffffff
+     * @param image      The {@link BufferedImage}.
+     * @param rgbFilters Optional RGB colors to filter out.
+     * @return The dominant color as a hex string (e.g., "#ffffff").
      */
     public static String getMainColor(final BufferedImage image, final int[]... rgbFilters) {
         int r, g, b;
@@ -381,10 +374,10 @@ public class ColorKit {
     }
 
     /**
-     * 计算给定点与其他点之间的最大可能距离。
+     * Calculates the maximum possible color distance from a given color.
      *
-     * @param color 指定颜色
-     * @return 其余颜色与color的最大距离
+     * @param color The color.
+     * @return The maximum possible distance.
      */
     public static int maxDistance(final Color color) {
         final int maxX = RGB_COLOR_BOUND - 2 * color.getRed();
@@ -394,13 +387,13 @@ public class ColorKit {
     }
 
     /**
-     * 给定RGB是否匹配过滤器中任何一个RGB颜色
+     * Checks if a given RGB value matches any of the RGB filters.
      *
-     * @param r          R
-     * @param g          G
-     * @param b          B
-     * @param rgbFilters 颜色过滤器
-     * @return 是否匹配
+     * @param r          The red component.
+     * @param g          The green component.
+     * @param b          The blue component.
+     * @param rgbFilters The color filters.
+     * @return {@code true} if there is a match.
      */
     private static boolean matchFilters(final int r, final int g, final int b, final int[]... rgbFilters) {
         if (ArrayKit.isNotEmpty(rgbFilters)) {

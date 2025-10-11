@@ -35,10 +35,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.miaixz.bus.core.xyz.DateKit;
 
 /**
- * 缓存对象
+ * Represents an object stored in the cache, containing the key, value, and metadata.
  *
- * @param <K> Key类型
- * @param <V> Value类型
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -48,32 +48,32 @@ public class CacheObject<K, V> implements Serializable {
     private static final long serialVersionUID = 2852231019717L;
 
     /**
-     * 键
+     * The key of the cached object.
      */
     protected final K key;
     /**
-     * 值对象
+     * The value of the cached object.
      */
     protected final V object;
     /**
-     * 对象存活时长，0表示永久存活
+     * The Time-To-Live (TTL) for this object in milliseconds. A value of 0 means it never expires.
      */
     protected final long ttl;
     /**
-     * 上次访问时间
+     * The timestamp of the last access to this object.
      */
     protected volatile long lastAccess;
     /**
-     * 访问次数
+     * The number of times this object has been accessed.
      */
     protected AtomicLong accessCount = new AtomicLong();
 
     /**
-     * 构造
+     * Constructs a new cache object.
      *
-     * @param key    键
-     * @param object 值
-     * @param ttl    超时时长
+     * @param key    The key.
+     * @param object The value.
+     * @param ttl    The Time-To-Live (TTL) in milliseconds.
      */
     protected CacheObject(final K key, final V object, final long ttl) {
         this.key = key;
@@ -83,36 +83,36 @@ public class CacheObject<K, V> implements Serializable {
     }
 
     /**
-     * 获取键
+     * Gets the key of the cached object.
      *
-     * @return 键
+     * @return The key.
      */
     public K getKey() {
         return this.key;
     }
 
     /**
-     * 获取值
+     * Gets the value of the cached object.
      *
-     * @return 值
+     * @return The value.
      */
     public V getValue() {
         return this.object;
     }
 
     /**
-     * 获取对象存活时长，即超时总时长，0表示无限
+     * Gets the Time-To-Live (TTL) for this object. A value of 0 indicates it is permanent.
      *
-     * @return 对象存活时长
+     * @return The TTL in milliseconds.
      */
     public long getTtl() {
         return this.ttl;
     }
 
     /**
-     * 获取过期时间，返回{@code null}表示永不过期
+     * Gets the expiration time for this object.
      *
-     * @return 此对象的过期时间，返回{@code null}表示永不过期
+     * @return The expiration time as a {@link Date}, or {@code null} if the object never expires.
      */
     public Date getExpiredTime() {
         if (this.ttl > 0) {
@@ -122,9 +122,9 @@ public class CacheObject<K, V> implements Serializable {
     }
 
     /**
-     * 获取上次访问时间
+     * Gets the timestamp of the last access.
      *
-     * @return 上次访问时间
+     * @return The last access time in milliseconds.
      */
     public long getLastAccess() {
         return this.lastAccess;
@@ -132,28 +132,28 @@ public class CacheObject<K, V> implements Serializable {
 
     @Override
     public String toString() {
-        return "CacheObject [data=" + key + ", object=" + object + ", lastAccess=" + lastAccess + ", accessCount="
+        return "CacheObject [key=" + key + ", value=" + object + ", lastAccess=" + lastAccess + ", accessCount="
                 + accessCount + ", ttl=" + ttl + "]";
     }
 
     /**
-     * 判断是否过期
+     * Checks if the cached object has expired.
      *
-     * @return 是否过期
+     * @return {@code true} if the object has expired, otherwise {@code false}.
      */
     protected boolean isExpired() {
         if (this.ttl > 0) {
-            // 此处不考虑时间回拨
+            // This check does not account for system time being moved backward.
             return (System.currentTimeMillis() - this.lastAccess) > this.ttl;
         }
         return false;
     }
 
     /**
-     * 获取值
+     * Retrieves the value and optionally updates the last access time.
      *
-     * @param isUpdateLastAccess 是否更新最后访问时间
-     * @return 获得对象
+     * @param isUpdateLastAccess Whether to update the last access time.
+     * @return The cached value.
      */
     protected V get(final boolean isUpdateLastAccess) {
         if (isUpdateLastAccess) {

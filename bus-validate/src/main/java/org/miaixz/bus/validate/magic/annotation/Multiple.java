@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.metric.MultipleMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 多重校验器, 可以配置多个校验器
+ * A multiple validator that allows for the configuration of several validators to be applied to a single field.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,44 +46,46 @@ import org.miaixz.bus.validate.metric.MultipleMatcher;
 public @interface Multiple {
 
     /**
-     * 校验器名称数组,优先使用校验器名称中的校验器,并忽略校验器类中的校验器
+     * An array of validator names. If this is not empty, validators will be looked up by these names, and the
+     * {@code classes} attribute will be ignored.
      *
-     * @return the array
+     * @return an array of validator names.
      */
+    @Filler("value")
     String[] value() default {};
 
     /**
-     * 校验器类数组, 当校验器名称数组为空时,使用校验器类数组中的校验器
+     * An array of validator classes. This is used when the {@code value} array (validator names) is empty.
      *
-     * @return the object
+     * @return an array of {@link Matcher} classes.
      */
     Class<? extends Matcher>[] classes() default {};
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}参数校验失败";
+    String errmsg() default "Validation failed for parameter ${field}";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

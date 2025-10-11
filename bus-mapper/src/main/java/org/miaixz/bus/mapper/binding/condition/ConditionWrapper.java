@@ -46,24 +46,33 @@ import org.miaixz.bus.mapper.criteria.Criteria;
 import org.miaixz.bus.mapper.criteria.OrCriteria;
 
 /**
- * 封装 Condition 查询条件，提供链式调用接口以构建复杂查询
+ * Wraps a {@link Condition} object to provide a fluent, chainable API for building complex queries.
  *
- * @param <T> 实体类类型
- * @param <I> 主键类型
+ * @param <T> The type of the entity class.
+ * @param <I> The type of the primary key.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ConditionWrapper<T, I extends Serializable> {
 
+    /**
+     * The underlying mapper instance for executing queries.
+     */
     private final BasicMapper<T, I> basicMapper;
+    /**
+     * The condition object that stores the query criteria.
+     */
     private final Condition<T> condition;
+    /**
+     * The current criteria being built.
+     */
     private Criteria<T> current;
 
     /**
-     * 构造函数，初始化基本 Mapper 和 Condition
+     * Constructs a new ConditionWrapper.
      *
-     * @param basicMapper 基本 Mapper 实例
-     * @param condition   查询条件对象
+     * @param basicMapper The basic mapper instance.
+     * @param condition   The condition object.
      */
     public ConditionWrapper(BasicMapper<T, I> basicMapper, Condition<T> condition) {
         this.basicMapper = basicMapper;
@@ -72,9 +81,9 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 添加一组 OR 条件
+     * Adds a new group of OR conditions.
      *
-     * @return 当前包装器对象
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> or() {
         this.current = this.condition.or();
@@ -82,18 +91,18 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 获取当前查询条件
+     * Gets the underlying {@link Condition} object.
      *
-     * @return 当前 Condition 对象
+     * @return The current condition object.
      */
     public Condition<T> condition() {
         return condition;
     }
 
     /**
-     * 清除所有条件并重置为新条件
+     * Clears all conditions and resets to a new state.
      *
-     * @return 当前包装器对象
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> clear() {
         this.condition.clear();
@@ -102,10 +111,10 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 指定查询列
+     * Specifies the columns to be selected.
      *
-     * @param fns 方法引用数组
-     * @return 当前包装器对象
+     * @param fns An array of method references representing the columns.
+     * @return This wrapper instance for chaining.
      */
     @SafeVarargs
     public final ConditionWrapper<T, I> select(Fn<T, Object>... fns) {
@@ -114,10 +123,10 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 排除指定查询列
+     * Excludes specified columns from the selection.
      *
-     * @param fns 方法引用数组
-     * @return 当前包装器对象
+     * @param fns An array of method references representing the columns to exclude.
+     * @return This wrapper instance for chaining.
      */
     @SafeVarargs
     public final ConditionWrapper<T, I> exclude(Fn<T, Object>... fns) {
@@ -126,10 +135,10 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 设置起始 SQL
+     * Sets a SQL fragment to be prepended to the query.
      *
-     * @param startSql 起始 SQL
-     * @return 当前包装器对象
+     * @param startSql The starting SQL fragment.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> startSql(String startSql) {
         this.condition.setStartSql(startSql);
@@ -137,10 +146,10 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 设置结尾 SQL
+     * Sets a SQL fragment to be appended to the query.
      *
-     * @param endSql 结尾 SQL
-     * @return 当前包装器对象
+     * @param endSql The ending SQL fragment.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> endSql(String endSql) {
         this.condition.setEndSql(endSql);
@@ -148,11 +157,11 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 设置排序字段
+     * Adds an ORDER BY clause.
      *
-     * @param fn    排序列方法引用
-     * @param order 排序方式（ASC/DESC）
-     * @return 当前包装器对象
+     * @param fn    A method reference to the column.
+     * @param order The sort order ("ASC" or "DESC").
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> orderBy(Fn<T, Object> fn, String order) {
         this.condition.orderBy(fn, order);
@@ -160,10 +169,10 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 设置字符串形式的排序，不覆盖已有排序
+     * Adds a raw string ORDER BY clause. This does not overwrite existing clauses.
      *
-     * @param orderByCondition 排序表达式
-     * @return 当前包装器对象
+     * @param orderByCondition The sorting expression.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> orderBy(String orderByCondition) {
         this.condition.orderBy(orderByCondition);
@@ -171,10 +180,10 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 设置动态构造的排序
+     * Adds a dynamically constructed ORDER BY clause.
      *
-     * @param orderByCondition 排序表达式提供者
-     * @return 当前包装器对象
+     * @param orderByCondition A supplier for the sorting expression.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> orderBy(Supplier<String> orderByCondition) {
         this.condition.orderBy(orderByCondition);
@@ -182,21 +191,21 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件设置动态构造的排序
+     * Conditionally adds a dynamically constructed ORDER BY clause.
      *
-     * @param useOrderBy       是否启用排序
-     * @param orderByCondition 排序表达式提供者
-     * @return 当前包装器对象
+     * @param useOrderBy       Whether to apply the ordering.
+     * @param orderByCondition A supplier for the sorting expression.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> orderBy(boolean useOrderBy, Supplier<String> orderByCondition) {
         return useOrderBy ? this.orderBy(orderByCondition) : this;
     }
 
     /**
-     * 设置升序排序
+     * Adds an ascending ORDER BY clause for the specified columns.
      *
-     * @param fns 排序列方法引用数组
-     * @return 当前包装器对象
+     * @param fns An array of method references to the columns.
+     * @return This wrapper instance for chaining.
      */
     @SafeVarargs
     public final ConditionWrapper<T, I> orderByAsc(Fn<T, Object>... fns) {
@@ -205,10 +214,10 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 设置降序排序
+     * Adds a descending ORDER BY clause for the specified columns.
      *
-     * @param fns 排序列方法引用数组
-     * @return 当前包装器对象
+     * @param fns An array of method references to the columns.
+     * @return This wrapper instance for chaining.
      */
     @SafeVarargs
     public final ConditionWrapper<T, I> orderByDesc(Fn<T, Object>... fns) {
@@ -217,9 +226,9 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 启用 DISTINCT 查询
+     * Enables DISTINCT for the query.
      *
-     * @return 当前包装器对象
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> distinct() {
         this.condition.setDistinct(true);
@@ -227,21 +236,21 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件设置更新字段和值
+     * Conditionally adds a field and value to be updated in a SET clause.
      *
-     * @param useSet 是否启用
-     * @param setSql SET 子句，如 "column = value"
-     * @return 当前包装器对象
+     * @param useSet Whether to apply the set operation.
+     * @param setSql The SET clause (e.g., "column = value").
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> set(boolean useSet, String setSql) {
         return useSet ? set(setSql) : this;
     }
 
     /**
-     * 设置更新字段和值
+     * Adds a field and value to be updated in a SET clause.
      *
-     * @param setSql SET 子句，如 "column = value"
-     * @return 当前包装器对象
+     * @param setSql The SET clause (e.g., "column = value").
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> set(String setSql) {
         this.condition.set(setSql);
@@ -249,35 +258,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件设置更新字段和值
+     * Conditionally adds a field and value to be updated in a SET clause.
      *
-     * @param useSet 是否启用
-     * @param fn     字段方法引用
-     * @param value  值
-     * @return 当前包装器对象
+     * @param useSet Whether to apply the set operation.
+     * @param fn     A method reference to the field.
+     * @param value  The value to set.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> set(boolean useSet, Fn<T, Object> fn, Object value) {
         return useSet ? set(fn, value) : this;
     }
 
     /**
-     * 条件设置更新字段和动态值
+     * Conditionally adds a field and a dynamically supplied value to be updated in a SET clause.
      *
-     * @param useSet   是否启用
-     * @param fn       字段方法引用
-     * @param supplier 值提供者
-     * @return 当前包装器对象
+     * @param useSet   Whether to apply the set operation.
+     * @param fn       A method reference to the field.
+     * @param supplier A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> set(boolean useSet, Fn<T, Object> fn, Supplier<Object> supplier) {
         return useSet ? set(fn, supplier.get()) : this;
     }
 
     /**
-     * 设置更新字段和值
+     * Adds a field and value to be updated in a SET clause.
      *
-     * @param fn    字段方法引用
-     * @param value 值
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The value to set.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> set(Fn<T, Object> fn, Object value) {
         this.condition.set(fn, value);
@@ -285,21 +294,21 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段为 NULL
+     * Conditionally adds an "IS NULL" condition for a specified field.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> isNull(boolean useCondition, Fn<T, Object> fn) {
         return useCondition ? isNull(fn) : this;
     }
 
     /**
-     * 指定字段为 NULL
+     * Adds an "IS NULL" condition for a specified field.
      *
-     * @param fn 字段方法引用
-     * @return 当前包装器对象
+     * @param fn A method reference to the field.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> isNull(Fn<T, Object> fn) {
         this.current.andIsNull(fn);
@@ -307,21 +316,21 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段非 NULL
+     * Conditionally adds an "IS NOT NULL" condition for a specified field.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> isNotNull(boolean useCondition, Fn<T, Object> fn) {
         return useCondition ? isNotNull(fn) : this;
     }
 
     /**
-     * 指定字段非 NULL
+     * Adds an "IS NOT NULL" condition for a specified field.
      *
-     * @param fn 字段方法引用
-     * @return 当前包装器对象
+     * @param fn A method reference to the field.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> isNotNull(Fn<T, Object> fn) {
         this.current.andIsNotNull(fn);
@@ -329,35 +338,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段等于值
+     * Conditionally adds an "equal to" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> eq(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? eq(fn, value) : this;
     }
 
     /**
-     * 条件指定字段等于动态值
+     * Conditionally adds an "equal to" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> eq(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
         return useCondition ? eq(fn, supplier.get()) : this;
     }
 
     /**
-     * 指定字段等于值
+     * Adds an "equal to" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> eq(Fn<T, Object> fn, Object value) {
         this.current.andEqualTo(fn, value);
@@ -365,35 +374,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段不等于动态值
+     * Conditionally adds a "not equal to" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> ne(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
         return useCondition ? ne(fn, supplier.get()) : this;
     }
 
     /**
-     * 条件指定字段不等于值
+     * Conditionally adds a "not equal to" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> ne(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? ne(fn, value) : this;
     }
 
     /**
-     * 指定字段不等于值
+     * Adds a "not equal to" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> ne(Fn<T, Object> fn, Object value) {
         this.current.andNotEqualTo(fn, value);
@@ -401,35 +410,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段大于动态值
+     * Conditionally adds a "greater than" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> gt(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
         return useCondition ? gt(fn, supplier.get()) : this;
     }
 
     /**
-     * 条件指定字段大于值
+     * Conditionally adds a "greater than" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> gt(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? gt(fn, value) : this;
     }
 
     /**
-     * 指定字段大于值
+     * Adds a "greater than" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> gt(Fn<T, Object> fn, Object value) {
         this.current.andGreaterThan(fn, value);
@@ -437,35 +446,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段大于等于动态值
+     * Conditionally adds a "greater than or equal to" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> ge(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
         return useCondition ? ge(fn, supplier.get()) : this;
     }
 
     /**
-     * 条件指定字段大于等于值
+     * Conditionally adds a "greater than or equal to" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> ge(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? ge(fn, value) : this;
     }
 
     /**
-     * 指定字段大于等于值
+     * Adds a "greater than or equal to" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> ge(Fn<T, Object> fn, Object value) {
         this.current.andGreaterThanOrEqualTo(fn, value);
@@ -473,35 +482,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段小于动态值
+     * Conditionally adds a "less than" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> lt(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
         return useCondition ? lt(fn, supplier.get()) : this;
     }
 
     /**
-     * 条件指定字段小于值
+     * Conditionally adds a "less than" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> lt(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? lt(fn, value) : this;
     }
 
     /**
-     * 指定字段小于值
+     * Adds a "less than" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> lt(Fn<T, Object> fn, Object value) {
         this.current.andLessThan(fn, value);
@@ -509,35 +518,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段小于等于值
+     * Conditionally adds a "less than or equal to" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> le(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? le(fn, value) : this;
     }
 
     /**
-     * 条件指定字段小于等于动态值
+     * Conditionally adds a "less than or equal to" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> le(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
         return useCondition ? le(fn, supplier.get()) : this;
     }
 
     /**
-     * 指定字段小于等于值
+     * Adds a "less than or equal to" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The value to compare.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> le(Fn<T, Object> fn, Object value) {
         this.current.andLessThanOrEqualTo(fn, value);
@@ -545,35 +554,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段在值集合中
+     * Conditionally adds an "IN" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param values       值集合
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param values       A collection of values.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> in(boolean useCondition, Fn<T, Object> fn, Iterable<?> values) {
         return useCondition ? in(fn, values) : this;
     }
 
     /**
-     * 条件指定字段在动态值集合中
+     * Conditionally adds an "IN" condition with a dynamically supplied collection of values.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值集合提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the collection of values.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> in(boolean useCondition, Fn<T, Object> fn, Supplier<Iterable<?>> supplier) {
         return useCondition ? in(fn, supplier.get()) : this;
     }
 
     /**
-     * 指定字段在值集合中
+     * Adds an "IN" condition.
      *
-     * @param fn     字段方法引用
-     * @param values 值集合
-     * @return 当前包装器对象
+     * @param fn     A method reference to the field.
+     * @param values A collection of values.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> in(Fn<T, Object> fn, Iterable<?> values) {
         this.current.andIn(fn, values);
@@ -581,35 +590,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段不在值集合中
+     * Conditionally adds a "NOT IN" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param values       值集合
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param values       A collection of values.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> notIn(boolean useCondition, Fn<T, Object> fn, Iterable<?> values) {
         return useCondition ? notIn(fn, values) : this;
     }
 
     /**
-     * 条件指定字段不在动态值集合中
+     * Conditionally adds a "NOT IN" condition with a dynamically supplied collection of values.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值集合提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the collection of values.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> notIn(boolean useCondition, Fn<T, Object> fn, Supplier<Iterable<?>> supplier) {
         return useCondition ? notIn(fn, supplier.get()) : this;
     }
 
     /**
-     * 指定字段不在值集合中
+     * Adds a "NOT IN" condition.
      *
-     * @param fn     字段方法引用
-     * @param values 值集合
-     * @return 当前包装器对象
+     * @param fn     A method reference to the field.
+     * @param values A collection of values.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> notIn(Fn<T, Object> fn, Iterable<?> values) {
         this.current.andNotIn(fn, values);
@@ -617,26 +626,26 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段在值区间内
+     * Conditionally adds a "BETWEEN" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value1       区间起始值
-     * @param value2       区间结束值
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value1       The starting value of the range.
+     * @param value2       The ending value of the range.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> between(boolean useCondition, Fn<T, Object> fn, Object value1, Object value2) {
         return useCondition ? between(fn, value1, value2) : this;
     }
 
     /**
-     * 条件指定字段在动态值区间内
+     * Conditionally adds a "BETWEEN" condition with dynamically supplied values.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier1    区间起始值提供者
-     * @param supplier2    区间结束值提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier1    A supplier for the starting value.
+     * @param supplier2    A supplier for the ending value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> between(
             boolean useCondition,
@@ -647,12 +656,12 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 指定字段在值区间内
+     * Adds a "BETWEEN" condition.
      *
-     * @param fn     字段方法引用
-     * @param value1 区间起始值
-     * @param value2 区间结束值
-     * @return 当前包装器对象
+     * @param fn     A method reference to the field.
+     * @param value1 The starting value of the range.
+     * @param value2 The ending value of the range.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> between(Fn<T, Object> fn, Object value1, Object value2) {
         this.current.andBetween(fn, value1, value2);
@@ -660,26 +669,26 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段不在值区间内
+     * Conditionally adds a "NOT BETWEEN" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value1       区间起始值
-     * @param value2       区间结束值
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value1       The starting value of the range.
+     * @param value2       The ending value of the range.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> notBetween(boolean useCondition, Fn<T, Object> fn, Object value1, Object value2) {
         return useCondition ? notBetween(fn, value1, value2) : this;
     }
 
     /**
-     * 条件指定字段不在动态值区间内
+     * Conditionally adds a "NOT BETWEEN" condition with dynamically supplied values.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier1    区间起始值提供者
-     * @param supplier2    区间结束值提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier1    A supplier for the starting value.
+     * @param supplier2    A supplier for the ending value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> notBetween(
             boolean useCondition,
@@ -690,12 +699,12 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 指定字段不在值区间内
+     * Adds a "NOT BETWEEN" condition.
      *
-     * @param fn     字段方法引用
-     * @param value1 区间起始值
-     * @param value2 区间结束值
-     * @return 当前包装器对象
+     * @param fn     A method reference to the field.
+     * @param value1 The starting value of the range.
+     * @param value2 The ending value of the range.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> notBetween(Fn<T, Object> fn, Object value1, Object value2) {
         this.current.andNotBetween(fn, value1, value2);
@@ -703,35 +712,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段包含值（LIKE %值%）
+     * Conditionally adds a "LIKE '%value%'" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值，两侧自动添加 %
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The value to search for (will be wrapped with '%').
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> contains(boolean useCondition, Fn<T, Object> fn, String value) {
         return useCondition ? contains(fn, value) : this;
     }
 
     /**
-     * 条件指定字段包含动态值（LIKE %值%）
+     * Conditionally adds a "LIKE '%value%'" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者，两侧自动添加 %
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> contains(boolean useCondition, Fn<T, Object> fn, Supplier<String> supplier) {
         return useCondition ? contains(fn, supplier.get()) : this;
     }
 
     /**
-     * 指定字段包含值（LIKE %值%）
+     * Adds a "LIKE '%value%'" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值，两侧自动添加 %
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The value to search for (will be wrapped with '%').
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> contains(Fn<T, Object> fn, String value) {
         this.current.addCriterion(fn.toColumn() + " LIKE", Symbol.PERCENT + value + Symbol.PERCENT);
@@ -739,35 +748,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段以前缀值开头（LIKE 值%）
+     * Conditionally adds a "LIKE 'value%'" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值，右侧自动添加 %
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The prefix to search for (will have '%' appended).
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> startsWith(boolean useCondition, Fn<T, Object> fn, String value) {
         return useCondition ? startsWith(fn, value) : this;
     }
 
     /**
-     * 条件指定字段以动态前缀值开头（LIKE 值%）
+     * Conditionally adds a "LIKE 'value%'" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者，右侧自动添加 %
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> startsWith(boolean useCondition, Fn<T, Object> fn, Supplier<String> supplier) {
         return useCondition ? startsWith(fn, supplier.get()) : this;
     }
 
     /**
-     * 指定字段以前缀值开头（LIKE 值%）
+     * Adds a "LIKE 'value%'" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值，右侧自动添加 %
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The prefix to search for (will have '%' appended).
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> startsWith(Fn<T, Object> fn, String value) {
         this.current.addCriterion(fn.toColumn() + " LIKE", value + Symbol.PERCENT);
@@ -775,35 +784,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段以后缀值结尾（LIKE %值）
+     * Conditionally adds a "LIKE '%value'" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值，左侧自动添加 %
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The suffix to search for (will have '%' prepended).
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> endsWith(boolean useCondition, Fn<T, Object> fn, String value) {
         return useCondition ? endsWith(fn, value) : this;
     }
 
     /**
-     * 条件指定字段以动态后缀值结尾（LIKE %值）
+     * Conditionally adds a "LIKE '%value'" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者，左侧自动添加 %
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> endsWith(boolean useCondition, Fn<T, Object> fn, Supplier<String> supplier) {
         return useCondition ? endsWith(fn, supplier.get()) : this;
     }
 
     /**
-     * 指定字段以后缀值结尾（LIKE %值）
+     * Adds a "LIKE '%value'" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值，左侧自动添加 %
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The suffix to search for (will have '%' prepended).
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> endsWith(Fn<T, Object> fn, String value) {
         this.current.addCriterion(fn.toColumn() + " LIKE", Symbol.PERCENT + value);
@@ -811,35 +820,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段模糊匹配值
+     * Conditionally adds a "LIKE" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值，需指定 % 或 _ 进行模糊匹配
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The value, which should contain wildcards ('%' or '_').
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> like(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? like(fn, value) : this;
     }
 
     /**
-     * 条件指定字段模糊匹配动态值
+     * Conditionally adds a "LIKE" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者，需指定 % 或 _ 进行模糊匹配
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> like(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
         return useCondition ? like(fn, supplier.get()) : this;
     }
 
     /**
-     * 指定字段模糊匹配值
+     * Adds a "LIKE" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值，需指定 % 或 _ 进行模糊匹配
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The value, which should contain wildcards ('%' or '_').
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> like(Fn<T, Object> fn, Object value) {
         this.current.andLike(fn, value);
@@ -847,35 +856,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件指定字段不模糊匹配值
+     * Conditionally adds a "NOT LIKE" condition.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param value        值，需指定 % 进行模糊匹配
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param value        The value, which should contain wildcards ('%').
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> notLike(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? notLike(fn, value) : this;
     }
 
     /**
-     * 条件指定字段不模糊匹配动态值
+     * Conditionally adds a "NOT LIKE" condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param fn           字段方法引用
-     * @param supplier     值提供者，需指定 % 进行模糊匹配
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           A method reference to the field.
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> notLike(boolean useCondition, Fn<T, Object> fn, Supplier<Object> supplier) {
         return useCondition ? notLike(fn, supplier.get()) : this;
     }
 
     /**
-     * 指定字段不模糊匹配值
+     * Adds a "NOT LIKE" condition.
      *
-     * @param fn    字段方法引用
-     * @param value 值，需指定 % 进行模糊匹配
-     * @return 当前包装器对象
+     * @param fn    A method reference to the field.
+     * @param value The value, which should contain wildcards ('%').
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> notLike(Fn<T, Object> fn, Object value) {
         this.current.andNotLike(fn, value);
@@ -883,21 +892,21 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件添加任意查询条件
+     * Conditionally adds an arbitrary query condition.
      *
-     * @param useCondition 是否启用
-     * @param condition    自定义条件
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param condition    The custom condition string.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> anyCondition(boolean useCondition, String condition) {
         return useCondition ? anyCondition(condition) : this;
     }
 
     /**
-     * 添加任意查询条件
+     * Adds an arbitrary query condition.
      *
-     * @param condition 自定义条件
-     * @return 当前包装器对象
+     * @param condition The custom condition string.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> anyCondition(String condition) {
         this.current.andCondition(condition);
@@ -905,35 +914,35 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 条件添加自定义条件和值
+     * Conditionally adds a custom condition and value.
      *
-     * @param useCondition 是否启用
-     * @param condition    自定义条件，如 "length(column) ="
-     * @param value        值
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param condition    The custom condition string (e.g., "length(column) =").
+     * @param value        The value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> anyCondition(boolean useCondition, String condition, Object value) {
         return useCondition ? anyCondition(condition, value) : this;
     }
 
     /**
-     * 条件添加自定义条件和动态值
+     * Conditionally adds a custom condition with a dynamically supplied value.
      *
-     * @param useCondition 是否启用
-     * @param condition    自定义条件，如 "length(column) ="
-     * @param supplier     值提供者
-     * @return 当前包装器对象
+     * @param useCondition Whether to apply the condition.
+     * @param condition    The custom condition string (e.g., "length(column) =").
+     * @param supplier     A supplier for the value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> anyCondition(boolean useCondition, String condition, Supplier<Object> supplier) {
         return useCondition ? anyCondition(condition, supplier.get()) : this;
     }
 
     /**
-     * 添加自定义条件和值
+     * Adds a custom condition and value.
      *
-     * @param condition 自定义条件，如 "length(column) ="
-     * @param value     值
-     * @return 当前包装器对象
+     * @param condition The custom condition string (e.g., "length(column) =").
+     * @param value     The value.
+     * @return This wrapper instance for chaining.
      */
     public ConditionWrapper<T, I> anyCondition(String condition, Object value) {
         this.current.andCondition(condition, value);
@@ -941,10 +950,11 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 嵌套 OR 查询，多个条件块以 OR 连接，块内为 AND
+     * Adds a nested OR query, where multiple condition blocks are connected by OR, and conditions within a block are
+     * connected by AND.
      *
-     * @param orParts OR 条件块函数
-     * @return 当前包装器对象
+     * @param orParts An array of functions that define the OR condition blocks.
+     * @return This wrapper instance for chaining.
      */
     @SafeVarargs
     public final ConditionWrapper<T, I> or(Function<OrCriteria<T>, OrCriteria<T>>... orParts) {
@@ -957,106 +967,106 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 根据当前条件删除记录
+     * Deletes records based on the current conditions.
      *
-     * @return 受影响的行数
+     * @return The number of affected rows.
      */
     public int delete() {
         return basicMapper.deleteByCondition(condition);
     }
 
     /**
-     * 更新符合条件的记录为 SET 设置的值
+     * Updates records matching the conditions with the values set via the `set` methods.
      *
-     * @return 受影响的行数
+     * @return The number of affected rows.
      */
     public int update() {
-        Assert.notEmpty(condition.getSetValues(), "必须通过 set 方法设置更新的列和值");
+        Assert.notEmpty(condition.getSetValues(), "Update columns and values must be set using the 'set' method");
         return basicMapper.updateByConditionSetValues(condition);
     }
 
     /**
-     * 更新符合条件的记录为指定实体值
+     * Updates records matching the conditions with the values from the given entity.
      *
-     * @param t 实体对象
-     * @return 受影响的行数
+     * @param t The entity object.
+     * @return The number of affected rows.
      */
     public int update(T t) {
         return basicMapper.updateByCondition(t, condition);
     }
 
     /**
-     * 更新符合条件的记录为指定实体非空值
+     * Updates non-null fields of records matching the conditions with the values from the given entity.
      *
-     * @param t 实体对象
-     * @return 受影响的行数
+     * @param t The entity object.
+     * @return The number of affected rows.
      */
     public int updateSelective(T t) {
         return basicMapper.updateByConditionSelective(t, condition);
     }
 
     /**
-     * 查询符合条件的记录列表
+     * Retrieves a list of records matching the conditions.
      *
-     * @return 实体对象列表
+     * @return A list of entity objects.
      */
     public List<T> list() {
         return basicMapper.selectByCondition(condition);
     }
 
     /**
-     * 分页查询符合条件的记录
+     * Retrieves a paginated list of records matching the conditions.
      *
-     * @param pageNum  页码
-     * @param pageSize 每页大小
-     * @return 实体对象列表
+     * @param pageNum  The page number.
+     * @param pageSize The number of records per page.
+     * @return A list of entity objects for the specified page.
      */
     public List<T> page(int pageNum, int pageSize) {
         return basicMapper.selectByCondition(condition, new RowBounds((pageNum - 1) * pageSize, pageSize));
     }
 
     /**
-     * 偏移量查询符合条件的记录
+     * Retrieves a list of records matching the conditions with an offset and limit.
      *
-     * @param offset 偏移量
-     * @param limit  限制数量
-     * @return 实体对象列表
+     * @param offset The starting offset.
+     * @param limit  The maximum number of records to retrieve.
+     * @return A list of entity objects.
      */
     public List<T> offset(int offset, int limit) {
         return basicMapper.selectByCondition(condition, new RowBounds(offset, limit));
     }
 
     /**
-     * 获取符合条件的记录游标
+     * Retrieves a cursor for records matching the conditions.
      *
-     * @return 实体对象游标
+     * @return A cursor of entity objects.
      */
     public Cursor<T> cursor() {
         return basicMapper.selectCursorByCondition(condition);
     }
 
     /**
-     * 查询符合条件的记录流
+     * Retrieves a stream of records matching the conditions.
      *
-     * @return 实体对象流
+     * @return A stream of entity objects.
      */
     public Stream<T> stream() {
         return list().stream();
     }
 
     /**
-     * 查询符合条件的唯一记录，若多条记录则抛出异常
+     * Retrieves a single record matching the conditions. Throws an exception if multiple records are found.
      *
-     * @return 可能为空的实体对象
+     * @return An {@link Optional} containing the entity object, or an empty Optional if not found.
      */
     public Optional<T> one() {
         return basicMapper.selectOneByCondition(condition);
     }
 
     /**
-     * 查询符合条件的第一条记录
+     * Retrieves the first record matching the conditions.
      *
-     * @return 可能为空的实体对象
+     * @return An {@link Optional} containing the entity object, or an empty Optional if not found.
      */
     public Optional<T> first() {
         List<T> result = basicMapper.selectByCondition(condition, new RowBounds(0, 1));
@@ -1064,19 +1074,19 @@ public class ConditionWrapper<T, I extends Serializable> {
     }
 
     /**
-     * 查询符合条件的前 n 条记录
+     * Retrieves the top N records matching the conditions.
      *
-     * @param n 记录数
-     * @return 实体对象列表
+     * @param n The number of records to retrieve.
+     * @return A list of entity objects.
      */
     public List<T> top(int n) {
         return basicMapper.selectByCondition(condition, new RowBounds(0, n));
     }
 
     /**
-     * 查询符合条件的记录总数
+     * Counts the total number of records matching the conditions.
      *
-     * @return 记录总数
+     * @return The total number of records.
      */
     public long count() {
         return basicMapper.countByCondition(condition);

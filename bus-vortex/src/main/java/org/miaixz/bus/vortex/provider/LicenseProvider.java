@@ -30,28 +30,34 @@ package org.miaixz.bus.vortex.provider;
 import org.miaixz.bus.core.lang.exception.LicenseException;
 
 /**
- * 许可证校验提供者接口。
+ * License validation provider interface.
  * <p>
- * 定义了校验许可证有效性的核心功能。实现此接口的服务应包含具体的许可证校验逻辑， 例如检查有效期、绑定的硬件信息、域名等。
+ * Defines the core functionality for validating license effectiveness. Implementations of this interface should contain
+ * specific license validation logic, such as checking validity period, bound hardware information, domain names, etc.
  * </p>
  */
 public interface LicenseProvider {
 
     /**
-     * 执行许可证验证操作。
+     * Executes the license validation operation.
      * <p>
-     * <b>实现约定:</b>
+     * <b>Implementation Contract:</b>
      * <ul>
-     * <li>如果许可证对给定的验证主体有效，此方法应正常返回，不执行任何操作。</li>
-     * <li>如果许可证无效（如过期、主体不匹配、签名错误等），此方法应抛出 {@link LicenseException} 或其他运行时异常来中断操作。</li>
+     * <li>If the license is valid for the given principal, this method should return normally without any
+     * operation.</li>
+     * <li>If the license is invalid (e.g., expired, principal mismatch, signature error, etc.), this method should
+     * throw {@link LicenseException} or another runtime exception to interrupt the operation.</li>
      * </ul>
      *
-     * @param principal 用于验证许可证的实体标识，例如域名 (e.g., "example.com:443") * 或公司名称 (e.g., "Acme Corporation")。
-     * @throws LicenseException 如果许可证校验失败。
+     * @param principal The entity identifier used for license validation, e.g., a domain name (e.g., "example.com:443")
+     *                  or a company name (e.g., "Acme Corporation").
+     * @return {@code true} if the license is valid, {@code false} otherwise. The default implementation returns
+     *         {@code true}.
+     * @throws LicenseException If license validation fails.
      */
     default boolean validate(String principal) {
-        // 默认实现为空，允许在某些环境中禁用许可证检查。
-        // 具体的校验逻辑应由实现类提供。
+        // The default implementation is empty, allowing license checks to be disabled in some environments.
+        // Specific validation logic should be provided by the implementing class.
         return true;
     }
 

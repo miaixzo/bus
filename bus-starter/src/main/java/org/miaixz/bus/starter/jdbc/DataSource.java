@@ -32,7 +32,11 @@ import org.miaixz.bus.core.lang.Normal;
 import java.lang.annotation.*;
 
 /**
- * 多数据源支持
+ * Annotation for supporting multiple data sources.
+ * <p>
+ * This annotation can be applied to methods, types, or parameters to specify which data source should be used for the
+ * execution of a method. It is typically used in conjunction with an Aspect-Oriented Programming (AOP) setup to switch
+ * the data source context dynamically.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,12 +47,20 @@ import java.lang.annotation.*;
 public @interface DataSource {
 
     /**
-     * 数据源名称，为空时使用默认数据源
+     * The name of the data source. If left empty, the default data source will be used.
+     *
+     * @return The data source name.
      */
     String value() default Normal.EMPTY;
 
     /**
-     * 是否在方法执行后清除数据源设置
+     * Whether to clear the data source setting after the method execution.
+     * <p>
+     * If set to {@code true}, the data source context will be reset to its previous state after the annotated method
+     * completes.
+     * </p>
+     *
+     * @return {@code true} to clear the data source setting, {@code false} otherwise.
      */
     boolean clear() default true;
 

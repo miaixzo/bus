@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Httpz 实现
+ * Provides a fluent, builder-based API (Httpz) for making HTTP requests, simplifying interactions with the core
+ * {@code Httpd} client.
  *
  * @author Kimi Liu
  * @since Java 17+

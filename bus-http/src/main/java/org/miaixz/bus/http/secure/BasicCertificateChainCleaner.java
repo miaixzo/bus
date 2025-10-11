@@ -35,7 +35,10 @@ import java.util.*;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
 /**
- * 使用一组可信根证书来构建可信链的证书链清理器。 这个类复制了在TLS握手期间执行的clean chain构建。我们更喜欢它们 存在的其他机制，比如{@code AndroidCertificateChainCleaner}
+ * A certificate chain cleaner that builds a trust chain starting from a server certificate, following the chain of
+ * issuers until a trusted root certificate is found. This class duplicates the clean chain building that is performed
+ * by the TLS implementation. It is used when other mechanisms, such as those provided by the platform (e.g., on
+ * Android), are not available.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,12 +46,20 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 public class BasicCertificateChainCleaner extends CertificateChainCleaner {
 
     /**
-     * 链中最大的签名者数。我们使用9表示与OpenSSL的一致性.
+     * The maximum number of signers in a certificate chain. We use 9 for consistency with OpenSSL.
      */
     private static final int MAX_SIGNERS = 9;
 
+    /**
+     * An index of trusted root certificates.
+     */
     private final TrustRootIndex trustRootIndex;
 
+    /**
+     * Constructs a new BasicCertificateChainCleaner.
+     *
+     * @param trustRootIndex An index of trusted root certificates to use for building the chain.
+     */
     public BasicCertificateChainCleaner(TrustRootIndex trustRootIndex) {
         this.trustRootIndex = trustRootIndex;
     }
@@ -57,6 +68,11 @@ public class BasicCertificateChainCleaner extends CertificateChainCleaner {
      * Returns a cleaned chain for {@code chain}. This method throws if the complete chain to a trusted CA certificate
      * cannot be constructed. This is unexpected unless the trust root index in this class has a different trust manager
      * than what was used to establish {@code chain}.
+     *
+     * @param chain    The raw certificate chain from the peer.
+     * @param hostname The hostname of the peer.
+     * @return A validated and cleaned certificate chain.
+     * @throws SSLPeerUnverifiedException if the chain cannot be validated.
      */
     @Override
     public List<Certificate> clean(List<Certificate> chain, String hostname) throws SSLPeerUnverifiedException {
@@ -68,22 +84,24 @@ public class BasicCertificateChainCleaner extends CertificateChainCleaner {
         followIssuerChain: for (int c = 0; c < MAX_SIGNERS; c++) {
             X509Certificate toVerify = (X509Certificate) result.get(result.size() - 1);
 
-            // 如果此证书已由可信证书签署，请使用该证书。将受信任证书添加到链的末尾，除非它已经存在
-            // (如果链中的第一个证书本身是自签名和受信任的CA证书，则会发生这种情况)
+            // If this certificate is signed by a trusted certificate, use it. Add the trusted
+            // certificate to the end of the chain unless it's already present (which happens if
+            // the first certificate in the chain is a self-signed, trusted CA).
             X509Certificate trustedCert = trustRootIndex.findByIssuerAndSignature(toVerify);
             if (trustedCert != null) {
                 if (result.size() > 1 || !toVerify.equals(trustedCert)) {
                     result.add(trustedCert);
                 }
                 if (verifySignature(trustedCert, trustedCert)) {
-                    // 自签名证书是根CA
+                    // A self-signed certificate is a root CA.
                     return result;
                 }
                 foundTrustedCertificate = true;
                 continue;
             }
 
-            // 在签署此证书的链中搜索证书。这通常是链中的下一个元素,但它可以是任何元素.
+            // Search for a certificate in the chain that signed this certificate. This is typically
+            // the next element in the chain, but it could be any element.
             for (Iterator<Certificate> i = queue.iterator(); i.hasNext();) {
                 X509Certificate signingCert = (X509Certificate) i.next();
                 if (verifySignature(toVerify, signingCert)) {
@@ -93,12 +111,12 @@ public class BasicCertificateChainCleaner extends CertificateChainCleaner {
                 }
             }
 
-            // 我们已经到了链条的末端。如果链中的任何证书是可信的,我们就完成了.
+            // We've reached the end of the chain. If any certificate in the chain is trusted, we're done.
             if (foundTrustedCertificate) {
                 return result;
             }
 
-            // 最后一个链接不可信,失败
+            // The last link isn't trusted. Fail.
             throw new SSLPeerUnverifiedException("Failed to find a trusted cert that signed " + toVerify);
         }
 
@@ -107,6 +125,10 @@ public class BasicCertificateChainCleaner extends CertificateChainCleaner {
 
     /**
      * Returns true if {@code toVerify} was signed by {@code signingCert}'s public key.
+     *
+     * @param toVerify    The certificate to be verified.
+     * @param signingCert The potential signing certificate.
+     * @return true if the signature is valid, false otherwise.
      */
     private boolean verifySignature(X509Certificate toVerify, X509Certificate signingCert) {
         if (!toVerify.getIssuerDN().equals(signingCert.getSubjectDN()))

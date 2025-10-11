@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * setting配置文件实现封装
+ * Provides a utility class for easily accessing cached {@code Setting} instances.
  *
  * @author Kimi Liu
  * @since Java 17+

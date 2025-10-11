@@ -35,9 +35,9 @@ import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Bean字段排序器 参阅feilong-core中的PropertyComparator
+ * Comparator for sorting beans based on a specific field.
  *
- * @param <T> 被比较的Bean
+ * @param <T> the type of the bean to be compared.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -47,30 +47,31 @@ public class FieldCompare<T> extends FunctionCompare<T> {
     private static final long serialVersionUID = 2852260880753L;
 
     /**
-     * 构造
+     * Constructs a new {@code FieldCompare}.
      *
-     * @param beanClass Bean类
-     * @param fieldName 字段名
+     * @param beanClass the class of the bean.
+     * @param fieldName the name of the field to compare by.
      */
     public FieldCompare(final Class<T> beanClass, final String fieldName) {
         this(getNonNullField(beanClass, fieldName));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FieldCompare}.
      *
-     * @param field 字段
+     * @param field the field to compare by.
      */
     public FieldCompare(final Field field) {
         this(true, true, field);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FieldCompare}.
      *
-     * @param nullGreater 是否{@code null}在后
-     * @param compareSelf 在字段值相同情况下，是否比较对象本身。 如果此项为{@code false}，字段值比较后为0会导致对象被认为相同，可能导致被去重。
-     * @param field       字段
+     * @param nullGreater whether {@code null} values should be placed at the end.
+     * @param compareSelf whether to compare the objects themselves if the field values are equal. If {@code false},
+     *                    objects with the same field value will be considered equal, which may lead to deduplication.
+     * @param field       the field to compare by.
      */
     public FieldCompare(final boolean nullGreater, final boolean compareSelf, final Field field) {
         super(nullGreater, compareSelf, (bean) -> (Comparable<?>) FieldKit
@@ -78,11 +79,12 @@ public class FieldCompare<T> extends FunctionCompare<T> {
     }
 
     /**
-     * 获取字段，附带检查字段不存在的问题。
+     * Gets the specified field and checks if it exists.
      *
-     * @param beanClass Bean类
-     * @param fieldName 字段名
-     * @return 非null字段
+     * @param beanClass the class of the bean.
+     * @param fieldName the name of the field.
+     * @return the non-null {@link Field}.
+     * @throws IllegalArgumentException if the field is not found.
      */
     private static Field getNonNullField(final Class<?> beanClass, final String fieldName) {
         final Field field = FieldKit.getField(beanClass, fieldName);

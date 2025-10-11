@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 统一下单-结算信息
+ * Model for the Settlement Info object in the V3 Unified Order API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,11 +47,11 @@ import lombok.experimental.SuperBuilder;
 public class SettleInfo {
 
     /**
-     * 是否指定分账
+     * Whether to enable profit sharing for this order.
      */
     private boolean profit_sharing;
     /**
-     * 补差金额
+     * The subsidy amount in cents.
      */
     private Integer subsidy_amount;
 

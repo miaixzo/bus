@@ -33,11 +33,11 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * 默认日期基本信息类，提供默认的日期格式、时区和地域设置。
+ * Default date basic information class, providing default date format, time zone, and locale settings.
  * <ul>
- * <li>{@link #getPattern()} 返回 {@code null}</li>
- * <li>{@link #getTimeZone()} 返回 {@link TimeZone#getDefault()}</li>
- * <li>{@link #getLocale()} 返回 {@link Locale#getDefault()}</li>
+ * <li>{@link #getPattern()} returns {@code null}</li>
+ * <li>{@link #getTimeZone()} returns {@link TimeZone#getDefault()}</li>
+ * <li>{@link #getLocale()} returns {@link Locale#getDefault()}</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -49,9 +49,9 @@ public class DefaultDatePrinter implements DatePrinter, Serializable {
     private static final long serialVersionUID = 2852257378058L;
 
     /**
-     * 获取日期格式模式。
+     * Gets the date format pattern.
      *
-     * @return 始终返回 null
+     * @return Always returns null.
      */
     @Override
     public String getPattern() {
@@ -59,9 +59,9 @@ public class DefaultDatePrinter implements DatePrinter, Serializable {
     }
 
     /**
-     * 获取时区。
+     * Gets the time zone.
      *
-     * @return 默认时区
+     * @return The default time zone.
      */
     @Override
     public TimeZone getTimeZone() {
@@ -69,9 +69,9 @@ public class DefaultDatePrinter implements DatePrinter, Serializable {
     }
 
     /**
-     * 获取地域设置。
+     * Gets the locale settings.
      *
-     * @return 默认地域
+     * @return The default locale.
      */
     @Override
     public Locale getLocale() {

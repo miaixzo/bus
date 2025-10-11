@@ -35,7 +35,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 存储所有 {@link SpecificThread} 的 {@link ThreadLocal} 变量的内部数据结构。 请注意，此类仅供内部使用。除非知道自己在做什么，否则请使用 {@link SpecificThread}
+ * An internal data structure that stores all {@link ThreadLocal} variables for a {@link SpecificThread}. This class is
+ * intended for internal use only. Unless you know exactly what you are doing, please use {@link SpecificThread}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,47 +44,49 @@ import org.miaixz.bus.core.lang.Normal;
 public final class ThreadLocalMap {
 
     /**
-     * 无效的value值（占位符），不使用null做无效值的原因是因为netty认为null也是一个有效值，
-     * 例如：假设没有重写FastThreadLocal的initialValue()方法，则该方法返回为null，会将null作为有效值直接存储起来
+     * A placeholder value indicating an unset or invalid value. This is used instead of {@code null} because
+     * {@code null} can be a valid value for a {@link FastThreadLocal} (e.g., if {@code initialValue()} returns
+     * {@code null}).
      */
     public static final Object UNSET = new Object();
     /**
-     * 线程缓存
+     * A {@link ThreadLocal} used to store {@link ThreadLocalMap} instances for regular {@link Thread}s that are not
+     * {@link SpecificThread}s.
      */
     private static final ThreadLocal<ThreadLocalMap> SLOW_THREAD_LOCAL_MAP = new ThreadLocal<>();
     /**
-     * 下一索引
+     * An atomic integer used to generate unique indices for {@link FastThreadLocal} variables.
      */
     private static final AtomicInteger NEXT_INDEX = new AtomicInteger();
     /**
-     * 要删除的变量索引
+     * The index reserved for storing a {@link Set} of {@link FastThreadLocal} variables that need to be removed.
      */
     public static final int VARIABLES_TO_REMOVE_INDEX = nextVariableIndex();
     /**
-     * 索引变量 {@link FastThreadLocal} index就是FastThreadLocal的唯一索引index value是相对应的FastThreadLocal所要存储的值
+     * An array to store the values of {@link FastThreadLocal} variables. The index in this array corresponds to the
+     * unique index assigned to each {@link FastThreadLocal}.
      */
     private Object[] indexedVariables;
     /**
-     * BitSet简要原理： BitSet默认底层数据结构是一个long[]数组，开始时长度为1，即只有long[0],而一个long有64bit。
-     * 当BitSet.set(1)的时候，表示将long[0]的第二位设置为true，即0000 0000 ... 0010（64bit）,则long[0]==2
-     * 当BitSet.get(1)的时候，第二位为1，则表示true；如果是0，则表示false 当BitSet.set(64)的时候，表示设置第65位，此时long[0]已经不够用了，扩容处long[1]来，进行存储
-     * <p>
-     * 存储类似 {index:boolean} 键值对，用于防止一个FastThreadLocal多次启动清理线程
-     * 将index位置的bit设为true，表示该InternalThreadLocalMap中对该FastThreadLocal已经启动了清理线程
+     * A {@link BitSet} used to track which {@link FastThreadLocal} variables have initiated a cleanup thread for this
+     * {@code ThreadLocalMap}. Setting a bit to {@code true} at a specific index indicates that a cleanup thread has
+     * been started for the {@link FastThreadLocal} corresponding to that index.
      */
     private BitSet cleanerFlags;
 
     /**
-     * 构造 创建indexedVariables数组，并将每一个元素初始化为UNSET
+     * Constructs a new {@code ThreadLocalMap}. Initializes the {@code indexedVariables} array with a default capacity
+     * and fills it with the {@link #UNSET} placeholder.
      */
     private ThreadLocalMap() {
         indexedVariables = newIndexedVariableTable();
     }
 
     /**
-     * 获取ThreadLocalMap实例
+     * Retrieves the {@code ThreadLocalMap} instance for the current thread. If the current thread is a
+     * {@link SpecificThread}, it uses optimized access. Otherwise, it uses a regular {@link ThreadLocal} for storage.
      *
-     * @return {@link ThreadLocalMap}
+     * @return The {@code ThreadLocalMap} instance for the current thread.
      */
     public static ThreadLocalMap get() {
         Thread thread = Thread.currentThread();
@@ -95,10 +98,11 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 获取hreadLocalMap实例，如果为null会创建新的；如果不为null，也直接返回
+     * Retrieves the {@code ThreadLocalMap} instance for a {@link SpecificThread}. If the map does not exist, a new one
+     * is created and associated with the thread.
      *
-     * @param thread 快速访问变量
-     * @return {@link ThreadLocalMap}
+     * @param thread The {@link SpecificThread} to get the map for.
+     * @return The {@code ThreadLocalMap} instance for the given thread.
      */
     private static ThreadLocalMap fastGet(SpecificThread thread) {
         ThreadLocalMap threadLocalMap = thread.getThreadLocalMap();
@@ -109,9 +113,10 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 获取当前线程信息
+     * Retrieves the {@code ThreadLocalMap} instance for a regular {@link Thread}. If the map does not exist, a new one
+     * is created and stored in a {@link ThreadLocal}.
      *
-     * @return {@link ThreadLocalMap}
+     * @return The {@code ThreadLocalMap} instance for the current thread.
      */
     private static ThreadLocalMap slowGet() {
         ThreadLocalMap ret = SLOW_THREAD_LOCAL_MAP.get();
@@ -123,9 +128,10 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 获取当前线程信息
+     * Retrieves the {@code ThreadLocalMap} instance for the current thread if it has been set. This method returns
+     * {@code null} if no {@code ThreadLocalMap} is associated with the current thread.
      *
-     * @return {@link ThreadLocalMap}
+     * @return The {@code ThreadLocalMap} instance for the current thread, or {@code null} if not set.
      */
     public static ThreadLocalMap getIfSet() {
         Thread thread = Thread.currentThread();
@@ -136,7 +142,8 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 删除当前线程的ThreadLocalMap
+     * Removes the {@code ThreadLocalMap} associated with the current thread. This effectively clears all
+     * {@link FastThreadLocal} variables for the current thread.
      */
     public static void remove() {
         Thread thread = Thread.currentThread();
@@ -148,16 +155,17 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 销毁线程信息
+     * Destroys the {@code ThreadLocalMap} associated with the current thread. This is an alias for {@link #remove()}.
      */
     public static void destroy() {
         SLOW_THREAD_LOCAL_MAP.remove();
     }
 
     /**
-     * 获取FastThreadLocal的唯一索引
+     * Generates and returns the next unique index for a {@link FastThreadLocal} variable.
      *
-     * @return the int
+     * @return The next available unique index.
+     * @throws IllegalStateException if too many thread-local indexed variables have been created.
      */
     public static int nextVariableIndex() {
         int index = NEXT_INDEX.getAndIncrement();
@@ -169,9 +177,9 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 新的索引变量表
+     * Creates a new array for indexed variables, initialized with {@link #UNSET} values.
      *
-     * @return the object
+     * @return A new {@code Object[]} array for storing indexed variables.
      */
     private static Object[] newIndexedVariableTable() {
         Object[] array = new Object[Normal._32];
@@ -180,9 +188,9 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 当前线程大小
+     * Returns the number of active {@link FastThreadLocal} variables currently set in this map.
      *
-     * @return the int
+     * @return The count of set variables.
      */
     public int size() {
         int count = 0;
@@ -195,10 +203,10 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 是否索引变量集
+     * Checks if an indexed variable at the given index is set (i.e., not {@link #UNSET}).
      *
-     * @param index 索引
-     * @return the true/false
+     * @param index The index of the variable to check.
+     * @return {@code true} if the variable at the given index is set; {@code false} otherwise.
      */
     public boolean isIndexedVariableSet(int index) {
         Object[] lookup = indexedVariables;
@@ -206,10 +214,10 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 获取指定位置的元素
+     * Retrieves the value of the indexed variable at the specified index.
      *
-     * @param index 索引
-     * @return the object
+     * @param index The index of the variable to retrieve.
+     * @return The value of the variable, or {@link #UNSET} if the index is out of bounds or the variable is not set.
      */
     public Object indexedVariable(int index) {
         Object[] lookup = indexedVariables;
@@ -217,11 +225,13 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 设置索引变量
+     * Sets the value of the indexed variable at the specified index. If the index is out of bounds, the internal array
+     * is expanded.
      *
-     * @param index 索引
-     * @param value 变量值
-     * @return @code true} 当且仅当创建了新的线程局部变量时
+     * @param index The index of the variable to set.
+     * @param value The new value for the variable.
+     * @return {@code true} if a new thread-local variable was created (i.e., the old value was {@link #UNSET});
+     *         {@code false} otherwise.
      */
     public boolean setIndexedVariable(int index, Object value) {
         Object[] lookup = indexedVariables;
@@ -236,10 +246,11 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 删除指定位置的对象
+     * Removes the indexed variable at the specified index by setting its value to {@link #UNSET}.
      *
-     * @param index 索引
-     * @return the object
+     * @param index The index of the variable to remove.
+     * @return The old value of the variable, or {@link #UNSET} if the index is out of bounds or the variable was not
+     *         set.
      */
     public Object removeIndexedVariable(int index) {
         Object[] lookup = indexedVariables;
@@ -253,7 +264,10 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 设置当前索引位置index（FastThreadLocal）的bit为1
+     * Sets the bit at the specified index in the {@code cleanerFlags} {@link BitSet} to {@code true}. This indicates
+     * that a cleanup thread has been initiated for the {@link FastThreadLocal} at this index.
+     *
+     * @param index The index of the {@link FastThreadLocal} for which to set the cleaner flag.
      */
     public void setCleanerFlags(int index) {
         if (cleanerFlags == null) {
@@ -263,17 +277,21 @@ public final class ThreadLocalMap {
     }
 
     /**
-     * 获取 当前index的bit值，1表示true，0表示false（默认值）
+     * Checks if the cleaner flag is set for the {@link FastThreadLocal} at the specified index.
+     *
+     * @param index The index of the {@link FastThreadLocal} to check.
+     * @return {@code true} if the cleaner flag is set; {@code false} otherwise.
      */
     public boolean isCleanerFlags(int index) {
         return cleanerFlags != null && cleanerFlags.get(index);
     }
 
     /**
-     * 展开索引变量表和集合
+     * Expands the {@code indexedVariables} array to accommodate a new variable at the given index and sets the new
+     * value. The array capacity is expanded to the next power of two that can hold the index.
      *
-     * @param index 索引
-     * @param value 索引值
+     * @param index The index of the new variable.
+     * @param value The value to set at the new index.
      */
     private void expandIndexedVariableTableAndSet(int index, Object value) {
         Object[] oldArray = indexedVariables;
@@ -286,13 +304,13 @@ public final class ThreadLocalMap {
         newCapacity |= newCapacity >>> 16;
         newCapacity++;
 
-        // 创建新数组并拷贝旧数组的元素到新数组
+        // Create a new array and copy elements from the old array to the new array.
         Object[] newArray = Arrays.copyOf(oldArray, newCapacity);
-        // 初始化扩容出来的部分的元素
+        // Initialize the newly expanded part of the array with UNSET.
         Arrays.fill(newArray, oldCapacity, newArray.length, UNSET);
-        // 设置变量
+        // Set the variable at the specified index.
         newArray[index] = value;
-        // 将新数组设置给成员变量
+        // Update the indexedVariables reference to the new array.
         indexedVariables = newArray;
     }
 

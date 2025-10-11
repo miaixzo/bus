@@ -27,30 +27,34 @@
 */
 package org.miaixz.bus.socket;
 
-import java.nio.ByteBuffer;
-
 import org.miaixz.bus.socket.accord.AioClient;
 import org.miaixz.bus.socket.accord.AioServer;
 
+import java.nio.ByteBuffer;
+
 /**
- * 消息传输采用的模式
+ * Defines the message protocol for data transfer.
  * <p>
- * 根据通信双方约定的模式规范实现{@code Message}接口，使用时将该实现类注册至服务启动类{@link AioClient}、{@link AioServer}
+ * Implementations of this interface define how messages are encoded and decoded according to a specific protocol. The
+ * implemented class should be registered with the server startup classes, such as {@link AioClient} or
+ * {@link AioServer}.
  * </p>
- * 注意：框架本身的所有Socket链路复用同一个Message，请勿在其实现类的成员变量中存储特定链路的数据。
+ * Note: All Socket links within the framework reuse the same Message instance. Therefore, do not store link-specific
+ * data in the member variables of the implementation class.
  *
- * @param <T> 消息对象实体类型
+ * @param <T> the type of the message object entity
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Message<T> {
 
     /**
-     * 对于从Socket流中获取到的数据采用当前Protocol的实现类协议进行解析。
+     * Decodes data from the socket stream according to the current protocol implementation.
      *
-     * @param readBuffer 待处理的读buffer
-     * @param session    本次需要解码的session
-     * @return 本次解码成功后封装的业务消息对象, 返回null则表示解码未完成
+     * @param readBuffer the {@link ByteBuffer} containing the data to be decoded
+     * @param session    the {@link Session} for which the message is being decoded
+     * @return the business message object encapsulated after successful decoding, or {@code null} if decoding is not
+     *         yet complete
      */
     T decode(final ByteBuffer readBuffer, Session session);
 

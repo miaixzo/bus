@@ -26,9 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供简易缓存实现，此模块参考了jodd中的相应模块
- *
- * 高级功能/支持详见 bus-cache 模块
+ * Provides a simple cache implementation, inspired by the corresponding module in Jodd.
+ * <p>
+ * For advanced features and support, please refer to the {@code bus-cache} module.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -31,9 +31,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 记录模块刷新的状态模型，用于跟踪和记录Spring模块刷新过程中的各项指标。
+ * A metrics model for recording module refresh status, used to track and record various indicators during the Spring
+ * module refresh process.
  * <p>
- * 该类继承自 {@link ChildrenMetrics<BeanMetrics>}，可以管理多个BeanMetrics子指标， 同时记录执行刷新操作的线程名称，用于监控和分析模块刷新性能。
+ * This class extends {@link ChildrenMetrics<BeanMetrics>} and can manage multiple {@link BeanMetrics} sub-indicators.
+ * It also records the name of the thread that performed the refresh operation, used for monitoring and analyzing module
+ * refresh performance.
  * </p>
  *
  * @author Kimi Liu
@@ -44,9 +47,9 @@ import lombok.Setter;
 public class ModuleMetrics extends ChildrenMetrics<BeanMetrics> {
 
     /**
-     * 执行模块刷新操作的线程名称
+     * The name of the thread that executed the module refresh operation.
      * <p>
-     * 记录执行刷新操作的线程名称，用于分析并发性能和线程使用情况
+     * Records the thread name to analyze concurrency performance and thread usage.
      * </p>
      */
     private String threadName;

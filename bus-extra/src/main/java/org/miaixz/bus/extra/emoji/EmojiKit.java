@@ -36,8 +36,9 @@ import com.vdurmont.emoji.EmojiParser;
 import com.vdurmont.emoji.EmojiParser.FitzpatrickAction;
 
 /**
- * 基于https://github.com/vdurmont/emoji-java的Emoji表情工具类
- * emoji-java文档以及别名列表见：<a href="https://github.com/vdurmont/emoji-java">...</a>
+ * A utility class for handling emoji characters, based on the emoji-java library. For detailed documentation and a list
+ * of aliases, please refer to the emoji-java project:
+ * <a href="https://github.com/vdurmont/emoji-java">https://github.com/vdurmont/emoji-java</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,156 +46,153 @@ import com.vdurmont.emoji.EmojiParser.FitzpatrickAction;
 public class EmojiKit {
 
     /**
-     * 是否为Emoji表情的Unicode符
+     * Checks if the given string consists of a single emoji character.
      *
-     * @param text 被测试的字符串
-     * @return 是否为Emoji表情的Unicode符
+     * @param text The string to be tested.
+     * @return {@code true} if the string is a single emoji, {@code false} otherwise.
      */
     public static boolean isEmoji(final String text) {
         return EmojiManager.isEmoji(text);
     }
 
     /**
-     * 是否包含Emoji表情的Unicode符
+     * Checks if the given string contains any emoji characters.
      *
-     * @param text 被测试的字符串
-     * @return 是否包含Emoji表情的Unicode符
+     * @param text The string to be tested.
+     * @return {@code true} if the string contains at least one emoji, {@code false} otherwise.
      */
     public static boolean containsEmoji(final String text) {
         return EmojiManager.containsEmoji(text);
     }
 
     /**
-     * 通过tag方式获取对应的所有Emoji表情
+     * Retrieves a set of all emojis associated with a given tag.
      *
-     * @param tag tag标签，例如“happy”
-     * @return Emoji表情集合，如果找不到返回null
+     * @param tag The tag to search for, e.g., "happy".
+     * @return A {@link Set} of {@link Emoji} objects, or null if no emojis are found for the tag.
      */
     public static Set<Emoji> getByTag(final String tag) {
         return EmojiManager.getForTag(tag);
     }
 
     /**
-     * 通过别名获取Emoji
+     * Retrieves an {@link Emoji} object for a given alias.
      *
-     * @param alias 别名，例如“smile”
-     * @return Emoji对象，如果找不到返回null
+     * @param alias The alias to search for, e.g., "smile".
+     * @return The {@link Emoji} object, or null if the alias is not found.
      */
     public static Emoji get(final String alias) {
         return EmojiManager.getForAlias(alias);
     }
 
     /**
-     * 将子串中的Emoji别名（两个":"包围的格式）和其HTML表示形式替换为为Unicode Emoji符号
+     * Converts emoji aliases (e.g., {@code :smile:}) and their HTML representations (e.g., {@code &#128516;}) in a
+     * string to their corresponding Unicode emoji characters.
      * <p>
-     * 例如：
-     *
+     * Examples:
+     * 
      * <pre>
-     *  {@code :smile:}  替换为 {@code 😄}
-     * {@code &#128516;} 替换为 {@code 😄}
-     * {@code :boy|type_6:} 替换为 {@code 👦🏿}
+     *  {@code :smile:} is replaced by {@code 😄}
+     *  {@code &#128516;} is replaced by {@code 😄}
+     *  {@code :boy|type_6:} is replaced by {@code 👦🏿}
      * </pre>
      *
-     * @param text 包含Emoji别名或者HTML表现形式的字符串
-     * @return 替换后的字符串
+     * @param text The string containing emoji aliases or HTML representations.
+     * @return The string with aliases and HTML representations replaced by Unicode characters.
      */
     public static String toUnicode(final String text) {
         return EmojiParser.parseToUnicode(text);
     }
 
     /**
-     * 将字符串中的Unicode Emoji字符转换为别名表现形式（两个":"包围的格式）
+     * Converts Unicode emoji characters in a string to their alias representation (e.g., {@code :smile:}). The default
+     * {@link FitzpatrickAction} is {@link FitzpatrickAction#PARSE}, which includes the Fitzpatrick modifier type in the
+     * alias.
      * <p>
-     * 例如： {@code 😄} 转换为 {@code :smile:}
+     * Example: {@code 😄} is converted to {@code :smile:}
+     * <p>
+     * With {@link FitzpatrickAction#PARSE}: {@code 👦🏿} is converted to {@code :boy|type_6:}
+     * <p>
+     * With {@link FitzpatrickAction#REMOVE}: {@code 👦🏿} is converted to {@code :boy:}
+     * <p>
+     * With {@link FitzpatrickAction#IGNORE}: {@code 👦🏿} is converted to {@code :boy:🏿}
      *
-     * <p>
-     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#PARSE}，则别名后会增加"|"并追加fitzpatrick类型
-     * <p>
-     * 例如：{@code 👦🏿} 转换为 {@code :boy|type_6:}
-     *
-     * <p>
-     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#REMOVE}，则别名后的"|"和类型将被去除
-     * <p>
-     * 例如：{@code 👦🏿} 转换为 {@code :boy:}
-     *
-     * <p>
-     * {@link FitzpatrickAction}参数被设置为{@link FitzpatrickAction#IGNORE}，则别名后的类型将被忽略
-     * <p>
-     * 例如：{@code 👦🏿} 转换为 {@code :boy:🏿}
-     *
-     * @param text 包含Emoji Unicode字符的字符串
-     * @return 替换后的字符串
+     * @param text The string containing Unicode emoji characters.
+     * @return The string with Unicode emojis replaced by their aliases.
      */
     public static String toAlias(final String text) {
         return toAlias(text, FitzpatrickAction.PARSE);
     }
 
     /**
-     * 将字符串中的Unicode Emoji字符转换为别名表现形式（两个":"包围的格式），别名后会增加"|"并追加fitzpatrick类型 例如：{@code 👦🏿} 转换为 {@code :boy|type_6:}
+     * Converts Unicode emoji characters in a string to their alias representation, with a specified
+     * {@link FitzpatrickAction}.
      *
-     * @param text              包含Emoji Unicode字符的字符串
-     * @param fitzpatrickAction {@link FitzpatrickAction}
-     * @return 替换后的字符串
+     * @param text              The string containing Unicode emoji characters.
+     * @param fitzpatrickAction The action to perform for Fitzpatrick modifiers.
+     * @return The string with Unicode emojis replaced by their aliases.
      */
     public static String toAlias(final String text, final FitzpatrickAction fitzpatrickAction) {
         return EmojiParser.parseToAliases(text, fitzpatrickAction);
     }
 
     /**
-     * 将字符串中的Unicode Emoji字符转换为HTML 16进制表现形式
+     * Converts Unicode emoji characters in a string to their HTML hexadecimal representation.
      * <p>
-     * 例如：{@code 👦🏿} 转换为 {@code &#x1f466;}
+     * Example: {@code 👦🏿} is converted to {@code &#x1f466;}
      *
-     * @param text 包含Emoji Unicode字符的字符串
-     * @return 替换后的字符串
+     * @param text The string containing Unicode emoji characters.
+     * @return The string with Unicode emojis replaced by their HTML hexadecimal representations.
      */
     public static String toHtmlHex(final String text) {
         return toHtml(text, true);
     }
 
     /**
-     * 将字符串中的Unicode Emoji字符转换为HTML表现形式（Hex方式）
+     * Converts Unicode emoji characters in a string to their HTML decimal representation.
      * <p>
-     * 例如：{@code 👦🏿} 转换为 {@code &#128102;}
+     * Example: {@code 👦🏿} is converted to {@code &#128102;}
      *
-     * @param text 包含Emoji Unicode字符的字符串
-     * @return 替换后的字符串
+     * @param text The string containing Unicode emoji characters.
+     * @return The string with Unicode emojis replaced by their HTML decimal representations.
      */
     public static String toHtml(final String text) {
         return toHtml(text, false);
     }
 
     /**
-     * 将字符串中的Unicode Emoji字符转换为HTML表现形式，例如：
+     * Converts Unicode emoji characters in a string to their HTML representation (either hexadecimal or decimal).
+     * <p>
+     * Examples:
      * 
      * <pre>
-     * 如果为hex形式，{@code 👦🏿} 转换为 {@code &#x1f466;}
-     * 否则，{@code 👦🏿} 转换为 {@code &#128102;}
+     * If isHex is true: {@code 👦🏿} is converted to {@code &#x1f466;}
+     * If isHex is false: {@code 👦🏿} is converted to {@code &#128102;}
      * </pre>
      *
-     * @param text  包含Emoji Unicode字符的字符串
-     * @param isHex 是否hex形式
-     * @return 替换后的字符串
+     * @param text  The string containing Unicode emoji characters.
+     * @param isHex If {@code true}, converts to hexadecimal; otherwise, converts to decimal.
+     * @return The string with Unicode emojis replaced by their HTML representations.
      */
     public static String toHtml(final String text, final boolean isHex) {
         return isHex ? EmojiParser.parseToHtmlHexadecimal(text) : EmojiParser.parseToHtmlDecimal(text);
     }
 
     /**
-     * 去除字符串中所有的Emoji Unicode字符
+     * Removes all emoji characters from a string.
      *
-     * @param text 包含Emoji字符的字符串
-     * @return 替换后的字符串
+     * @param text The string containing emoji characters.
+     * @return The string with all emoji characters removed.
      */
     public static String removeAllEmojis(final String text) {
         return EmojiParser.removeAllEmojis(text);
     }
 
     /**
-     * 提取字符串中所有的Emoji Unicode
+     * Extracts all emoji characters from a string.
      *
-     * @param text 包含Emoji字符的字符串
-     * @return Emoji字符列表
+     * @param text The string containing emoji characters.
+     * @return A {@link List} of all emoji characters found in the string.
      */
     public static List<String> extractEmojis(final String text) {
         return EmojiParser.extractEmojis(text);

@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.net;
 
 /**
- * HTTP 相关常量
+ * HTTP related constants.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,71 +36,71 @@ package org.miaixz.bus.core.net;
 public class HTTP {
 
     /**
-     * HTTP Method ALL
+     * HTTP Method ALL.
      */
     public static final String ALL = "ALL";
     /**
-     * HTTP Method NONE
+     * HTTP Method NONE.
      */
     public static final String NONE = "NONE";
     /**
-     * HTTP Method GET
+     * HTTP Method GET.
      */
     public static final String GET = "GET";
     /**
-     * HTTP Method POST
+     * HTTP Method POST.
      */
     public static final String POST = "POST";
     /**
-     * HTTP Method PUT
+     * HTTP Method PUT.
      */
     public static final String PUT = "PUT";
     /**
-     * HTTP Method PATCH
+     * HTTP Method PATCH.
      */
     public static final String PATCH = "PATCH";
     /**
-     * HTTP Method DELETE
+     * HTTP Method DELETE.
      */
     public static final String DELETE = "DELETE";
     /**
-     * HTTP Method HEAD
+     * HTTP Method HEAD.
      */
     public static final String HEAD = "HEAD";
     /**
-     * HTTP Method TRACE
+     * HTTP Method TRACE.
      */
     public static final String TRACE = "TRACE";
     /**
-     * HTTP Method CONNECT
+     * HTTP Method CONNECT.
      */
     public static final String CONNECT = "CONNECT";
     /**
-     * HTTP Method OPTIONS
+     * HTTP Method OPTIONS.
      */
     public static final String OPTIONS = "OPTIONS";
     /**
-     * HTTP Method BEFORE
+     * HTTP Method BEFORE.
      */
     public static final String BEFORE = "BEFORE";
     /**
-     * HTTP Method AFTER
+     * HTTP Method AFTER.
      */
     public static final String AFTER = "AFTER";
     /**
-     * HTTP Method MOVE
+     * HTTP Method MOVE.
      */
     public static final String MOVE = "MOVE";
     /**
-     * HTTP Method PROPPATCH
+     * HTTP Method PROPPATCH.
      */
     public static final String PROPPATCH = "PROPPATCH";
     /**
-     * HTTP Method REPORT
+     * HTTP Method REPORT.
      */
     public static final String REPORT = "REPORT";
     /**
-     * HTTP Method PROPFIND
+     * HTTP Method PROPFIND.
      */
     public static final String PROPFIND = "PROPFIND";
 
@@ -290,289 +290,289 @@ public class HTTP {
     public static final int INITIAL_WINDOW_SIZE = 7;
 
     /**
-     * The header Host
+     * The header Host.
      */
     public static final String HOST = "Host";
     /**
-     * The header Server
+     * The header Server.
      */
     public static final String SERVER = "Server";
     /**
-     * The header Age
+     * The header Age.
      */
     public static final String AGE = "Age";
     /**
-     * The header Allow
+     * The header Allow.
      */
     public static final String ALLOW = "Allow";
     /**
-     * The header Expires
+     * The header Expires.
      */
     public static final String EXPIRES = "Expires";
     /**
-     * The header Cookie
+     * The header Cookie.
      */
     public static final String COOKIE = "Cookie";
     /**
-     * The header Set-Cookie
+     * The header Set-Cookie.
      */
     public static final String SET_COOKIE = "Set-Cookie";
     /**
-     * The header Encoding
+     * The header Encoding.
      */
     public static final String ENCODING = "Encoding";
     /**
-     * The header Upgrade
+     * The header Upgrade.
      */
     public static final String UPGRADE = "Upgrade";
     /**
-     * The header Trailers
+     * The header Trailers.
      */
     public static final String TRAILERS = "Trailers";
     /**
-     * The header Location
+     * The header Location.
      */
     public static final String LOCATION = "Location";
     /**
-     * The header Connection
+     * The header Connection.
      */
     public static final String CONNECTION = "Connection";
     /**
-     * The header Date
+     * The header Date.
      */
     public static final String DATE = "Date";
     /**
-     * The header Etag
+     * The header Etag.
      */
     public static final String ETAG = "Etag";
     /**
-     * The header Expect
+     * The header Expect.
      */
     public static final String EXPECT = "Expect";
     /**
-     * The header From
+     * The header From.
      */
     public static final String FROM = "From";
     /**
-     * The header Link
+     * The header Link.
      */
     public static final String LINK = "Link";
     /**
-     * The header Vary
+     * The header Vary.
      */
     public static final String VARY = "Vary";
     /**
-     * The header Via
+     * The header Via.
      */
     public static final String VIA = "Via";
     /**
-     * The header Range
+     * The header Range.
      */
     public static final String RANGE = "Range";
     /**
-     * The header Referer
+     * The header Referer.
      */
     public static final String REFERER = "Referer";
     /**
-     * The header Refresh
+     * The header Refresh.
      */
     public static final String REFRESH = "Refresh";
     /**
-     * The header te
+     * The header te.
      */
     public static final String TE = "te";
     /**
-     * The header If-Match
+     * The header If-Match.
      */
     public static final String IF_MATCH = "If-Match";
     /**
-     * The header If-Range
+     * The header If-Range.
      */
     public static final String IF_RANGE = "If-Range";
     /**
-     * The header Accept
+     * The header Accept.
      */
     public static final String ACCEPT = "Accept";
     /**
-     * The header Accept-Charset
+     * The header Accept-Charset.
      */
     public static final String ACCEPT_CHARSET = "Accept-Charset";
     /**
-     * The header Accept-Encoding
+     * The header Accept-Encoding.
      */
     public static final String ACCEPT_ENCODING = "Accept-Encoding";
     /**
-     * The header Accept-Language
+     * The header Accept-Language.
      */
     public static final String ACCEPT_LANGUAGE = "Accept-Language";
     /**
-     * The header Accept-Ranges
+     * The header Accept-Ranges.
      */
     public static final String ACCEPT_RANGES = "Accept-Ranges";
     /**
-     * The header Content-Encoding
+     * The header Content-Encoding.
      */
     public static final String CONTENT_ENCODING = "Content-Encoding";
     /**
-     * The header Content-Language
+     * The header Content-Language.
      */
     public static final String CONTENT_LANGUAGE = "Content-Language";
     /**
-     * The header Content-Length
+     * The header Content-Length.
      */
     public static final String CONTENT_LENGTH = "Content-Length";
     /**
-     * The header Content-Location
+     * The header Content-Location.
      */
     public static final String CONTENT_LOCATION = "Content-Location";
     /**
-     * The header Content-MD5
+     * The header Content-MD5.
      */
     public static final String CONTENT_MD5 = "Content-MD5";
     /**
-     * The header Content-Range
+     * The header Content-Range.
      */
     public static final String CONTENT_RANGE = "Content-Range";
     /**
-     * The header Content-Type
+     * The header Content-Type.
      */
     public static final String CONTENT_TYPE = "Content-Type";
     /**
-     * The header Content-Disposition
+     * The header Content-Disposition.
      */
     public static final String CONTENT_DISPOSITION = "Content-Disposition";
     /**
-     * The header Transfer-Encoding
+     * The header Transfer-Encoding.
      */
     public static final String TRANSFER_ENCODING = "Transfer-Encoding";
     /**
-     * The header Cache-Control
+     * The header Cache-Control.
      */
     public static final String CACHE_CONTROL = "Cache-Control";
     /**
-     * The header User-Agent
+     * The header User-Agent.
      */
     public static final String USER_AGENT = "User-Agent";
     /**
-     * The header Retry-After
+     * The header Retry-After.
      */
     public static final String RETRY_AFTER = "Retry-After";
     /**
-     * The header Max-Forwards
+     * The header Max-Forwards.
      */
     public static final String MAX_FORWARDS = "Max-Forwards";
     /**
-     * The header Keep-Alive
+     * The header Keep-Alive.
      */
     public static final String KEEP_ALIVE = "Keep-Alive";
     /**
-     * The header Authorization
+     * The header Authorization.
      */
     public static final String AUTHORIZATION = "Authorization";
     /**
-     * The header Proxy-Authorization
+     * The header Proxy-Authorization.
      */
     public static final String PROXY_AUTHORIZATION = "Proxy-Authorization";
     /**
-     * The header Proxy-Connection
+     * The header Proxy-Connection.
      */
     public static final String PROXY_CONNECTION = "Proxy-Connection";
     /**
-     * The header WWW-Authenticate
+     * The header WWW-Authenticate.
      */
     public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
     /**
-     * The header Proxy-Authenticate
+     * The header Proxy-Authenticate.
      */
     public static final String PROXY_AUTHENTICATE = "Proxy-Authenticate";
     /**
-     * The header Httpd-Preemptive
+     * The header Httpd-Preemptive.
      */
     public static final String HTTPD_PREEMPTIVE = "Httpd-Preemptive";
     /**
-     * The header Last-Modified
+     * The header Last-Modified.
      */
     public static final String LAST_MODIFIED = "Last-Modified";
     /**
-     * The header If-Unmodified-Since
+     * The header If-Unmodified-Since.
      */
     public static final String IF_UNMODIFIED_SINCE = "If-Unmodified-Since";
     /**
-     * The header If-Modified-Since
+     * The header If-Modified-Since.
      */
     public static final String IF_MODIFIED_SINCE = "If-Modified-Since";
     /**
-     * The header If-None-Match
+     * The header If-None-Match.
      */
     public static final String IF_NONE_MATCH = "If-None-Match";
     /**
-     * The header Sec-WebSocket-Key
+     * The header Sec-WebSocket-Key.
      */
     public static final String SEC_WEBSOCKET_KEY = "Sec-WebSocket-Key";
     /**
-     * The header Sec-WebSocket-Accept
+     * The header Sec-WebSocket-Accept.
      */
     public static final String SEC_WEBSOCKET_ACCEPT = "Sec-WebSocket-Accept";
     /**
-     * The header Sec-WebSocket-Version
+     * The header Sec-WebSocket-Version.
      */
     public static final String SEC_WEBSOCKET_VERSION = "Sec-WebSocket-Version";
     /**
-     * The header Sec-WebSocket-Version
+     * The header Access-Control-Allow-Origin.
      */
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
     /**
-     * The header Sec-WebSocket-Version
+     * The header Strict-Transport-Security.
      */
     public static final String STRICT_TRANSPORT_SECURITY = "Strict-Transport-Security";
     /**
-     * The header SOAPAction
+     * The header SOAPAction.
      */
     public static final String SOAPACTION = "SOAPAction";
 
     /**
-     * The use method
+     * The use method for HTTP/2.
      */
     public static final String TARGET_METHOD_UTF8 = ":method";
     /**
-     * The use status
+     * The use status for HTTP/2.
      */
     public static final String RESPONSE_STATUS_UTF8 = ":status";
     /**
-     * The use path
+     * The use path for HTTP/2.
      */
     public static final String TARGET_PATH_UTF8 = ":path";
     /**
-     * The use scheme
+     * The use scheme for HTTP/2.
      */
     public static final String TARGET_SCHEME_UTF8 = ":scheme";
     /**
-     * The use authority
+     * The use authority for HTTP/2.
      */
     public static final String TARGET_AUTHORITY_UTF8 = ":authority";
 
     /**
-     * The use form data
+     * The form data.
      */
     public static final String FORM = "form";
     /**
-     * The use json data
+     * The json data.
      */
     public static final String JSON = "json";
     /**
-     * The use xml data
+     * The xml data.
      */
     public static final String XML = "xml";
     /**
-     * The use protobuf data
+     * The protobuf data.
      */
     public static final String PROTOBUF = "protobuf";
 
     /**
-     * WebDAV
+     * Returns true if the method invalidates the cache.
      *
-     * @param method 请求方式
-     * @return the boolean
+     * @param method the HTTP method.
+     * @return true if the method invalidates the cache.
      */
     public static boolean invalidatesCache(String method) {
         return POST.equals(method) || PUT.equals(method) || PATCH.equals(method) || DELETE.equals(method)
@@ -580,10 +580,10 @@ public class HTTP {
     }
 
     /**
-     * WebDAV CalDAV/CardDAV(在WebDAV版本中定义)
+     * Returns true if the method requires a request body.
      *
-     * @param method 请求方式
-     * @return the boolean
+     * @param method the HTTP method.
+     * @return true if the method requires a request body.
      */
     public static boolean requiresRequestBody(String method) {
         return POST.equals(method) || PUT.equals(method) || PATCH.equals(method) || PROPPATCH.equals(method)
@@ -591,30 +591,30 @@ public class HTTP {
     }
 
     /**
-     * 许可维护请求体
+     * Returns true if the method permits a request body.
      *
-     * @param method 请求方式
-     * @return the boolean
+     * @param method the HTTP method.
+     * @return true if the method permits a request body.
      */
     public static boolean permitsRequestBody(String method) {
         return !GET.equals(method) || HEAD.equals(method);
     }
 
     /**
-     * (WebDAV)重定向也应该维护请求体
+     * Returns true if a redirect for this method should maintain the request body.
      *
-     * @param method 请求方式
-     * @return the boolean
+     * @param method the HTTP method.
+     * @return true if a redirect for this method should maintain the request body.
      */
     public static boolean redirectsWithBody(String method) {
         return PROPFIND.equals(method);
     }
 
     /**
-     * 除了PROPFIND之外的所有请求都应该重定向到GET请求
+     * Returns true if this method should be redirected to a GET request.
      *
-     * @param method 请求方式
-     * @return the boolean
+     * @param method the HTTP method.
+     * @return true if this method should be redirected to a GET request.
      */
     public static boolean redirectsToGet(String method) {
         return !PROPFIND.equals(method);

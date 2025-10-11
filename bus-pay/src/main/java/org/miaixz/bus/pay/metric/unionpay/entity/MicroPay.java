@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 云闪付-付款码支付
+ * UnionPay Cloud QuickPass - Micropay model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,30 +48,105 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class MicroPay extends Material {
 
+    /**
+     * Service name.
+     */
     private String service;
+    /**
+     * Version number.
+     */
     private String version;
+    /**
+     * Character set.
+     */
     private String charset;
+    /**
+     * Signature type.
+     */
     private String sign_type;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Merchant order number.
+     */
     private String out_trade_no;
+    /**
+     * Device information.
+     */
     private String device_info;
+    /**
+     * Body of the request.
+     */
     private String body;
+    /**
+     * Goods detail.
+     */
     private String goods_detail;
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Attached data.
+     */
     private String attach;
+    /**
+     * Whether a receipt is needed.
+     */
     private String need_receipt;
+    /**
+     * Total fee.
+     */
     private String total_fee;
+    /**
+     * Merchant creation IP.
+     */
     private String mch_create_ip;
+    /**
+     * Authorization code.
+     */
     private String auth_code;
+    /**
+     * Transaction start time.
+     */
     private String time_start;
+    /**
+     * Transaction expiration time.
+     */
     private String time_expire;
+    /**
+     * Operator ID.
+     */
     private String op_user_id;
+    /**
+     * Operator shop ID.
+     */
     private String op_shop_id;
+    /**
+     * Operator device ID.
+     */
     private String op_device_id;
+    /**
+     * Goods tag.
+     */
     private String goods_tag;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Agent signature number.
+     */
     private String sign_agentno;
+    /**
+     * Group number.
+     */
     private String groupno;
 
 }

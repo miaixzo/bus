@@ -30,7 +30,9 @@ package org.miaixz.bus.core.io.buffer;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 快速缓冲抽象类，用于快速读取、写入数据到缓冲区，减少内存复制 相对于普通Buffer，使用二维数组扩展长度，减少内存复制，提升性能
+ * Abstract base class for fast buffers, designed for efficient reading and writing of data, minimizing memory copying.
+ * Compared to standard buffers, this implementation uses a two-dimensional array to extend length, reducing memory
+ * copying and improving performance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,31 +40,32 @@ import org.miaixz.bus.core.lang.Normal;
 public abstract class FastBuffer {
 
     /**
-     * 一个缓冲区的最小字节数
+     * The minimum byte length for a single chunk (segment) within the buffer.
      */
     protected final int minChunkLen;
 
     /**
-     * 缓冲数
+     * The total number of chunks (buffers) currently allocated.
      */
     protected int buffersCount;
     /**
-     * 当前缓冲索引
+     * The index of the currently active buffer chunk.
      */
     protected int currentBufferIndex = -1;
     /**
-     * 当前缓冲偏移量
+     * The current offset within the active buffer chunk.
      */
     protected int offset;
     /**
-     * 缓冲字节数
+     * The total size of the data currently stored in the buffer.
      */
     protected int size;
 
     /**
-     * 构造
+     * Constructs a {@code FastBuffer} with a specified minimum chunk size. If the provided size is non-positive, it
+     * defaults to {@link Normal#_8192}.
      *
-     * @param size 一个缓冲区的最小字节数
+     * @param size The minimum byte length for a single chunk.
      */
     public FastBuffer(int size) {
         if (size <= 0) {
@@ -72,25 +75,25 @@ public abstract class FastBuffer {
     }
 
     /**
-     * 当前缓冲位于缓冲区的索引位
+     * Returns the index of the current buffer chunk.
      *
-     * @return {@link #currentBufferIndex}
+     * @return The index of the current buffer chunk.
      */
     public int index() {
         return this.currentBufferIndex;
     }
 
     /**
-     * 获取当前缓冲偏移量
+     * Returns the current offset within the active buffer chunk.
      *
-     * @return 当前缓冲偏移量
+     * @return The current offset.
      */
     public int offset() {
         return this.offset;
     }
 
     /**
-     * 复位缓冲
+     * Resets the buffer to its initial empty state, clearing all data and resetting internal pointers.
      */
     public void reset() {
         this.size = 0;
@@ -100,36 +103,38 @@ public abstract class FastBuffer {
     }
 
     /**
-     * 获取缓冲总长度
+     * Returns the total size of the data currently stored in the buffer.
      *
-     * @return 缓冲总长度
+     * @return The total size of the buffer in bytes.
      */
     public int size() {
         return this.size;
     }
 
     /**
-     * 获取缓冲总长度
+     * Returns the total length of the data currently stored in the buffer. This method is an alias for {@link #size()}.
      *
-     * @return 缓冲总长度
+     * @return The total length of the buffer in bytes.
      */
     public int length() {
         return this.size;
     }
 
     /**
-     * 是否为空
+     * Checks if the buffer is empty.
      *
-     * @return 是否为空
+     * @return {@code true} if the buffer contains no data, {@code false} otherwise.
      */
     public boolean isEmpty() {
         return this.size == 0;
     }
 
     /**
-     * 检查现有缓冲区是否满足capacity，不满足则分配新的区域分配下一个缓冲区，不会小于1024
+     * Ensures that the buffer has enough capacity to accommodate the specified amount of data. If the existing buffer
+     * is insufficient, a new buffer chunk will be allocated. The allocated chunk will not be smaller than the minimum
+     * chunk length.
      *
-     * @param capacity 理想缓冲区字节数
+     * @param capacity The desired capacity in bytes.
      */
     abstract protected void ensureCapacity(final int capacity);
 

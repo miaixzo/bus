@@ -26,7 +26,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * MyBatis Mapper
+ * Provides the core components for the MyBatis Mapper framework.
+ * <p>
+ * This package contains fundamental classes, interfaces, and utilities that form the foundation of the mapper. It
+ * includes constants, caching mechanisms, context holders, and base mapper interfaces.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+

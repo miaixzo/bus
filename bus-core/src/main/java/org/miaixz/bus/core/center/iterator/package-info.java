@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * {@link java.util.Iterator}和{@link java.lang.Iterable}相关封装
+ * Provides utility classes and interfaces for working with {@link java.util.Iterator} and {@link java.lang.Iterable}.
  *
  * @author Kimi Liu
  * @since Java 17+

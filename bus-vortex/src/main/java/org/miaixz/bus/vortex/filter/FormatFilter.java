@@ -28,8 +28,9 @@
 package org.miaixz.bus.vortex.filter;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Format;
+import org.miaixz.bus.vortex.Formats;
 import org.reactivestreams.Publisher;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -44,7 +45,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * 响应格式化过滤器，确保所有响应数据都是JSON格式
+ * Response formatting filter that ensures all response data is in JSON format.
  *
  * @author Justubborn
  * @since Java 17+
@@ -53,24 +54,28 @@ import java.util.List;
 public class FormatFilter extends AbstractFilter {
 
     /**
-     * 内部过滤方法，执行响应格式化逻辑
+     * Internal filtering method, executing the response formatting logic.
+     * <p>
+     * This method logs the start of the request. If the request explicitly asks for XML format, it intercepts the
+     * response and ensures it is converted to JSON format before being sent.
+     * </p>
      *
-     * @param exchange 当前的 ServerWebExchange 对象
-     * @param chain    过滤器链
-     * @param context  请求上下文
-     * @return {@link Mono<Void>} 表示异步处理完成
+     * @param exchange The current {@link ServerWebExchange} object.
+     * @param chain    The filter chain.
+     * @param context  The request context.
+     * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
      */
     @Override
     protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
-        Format.info(
-                exchange,
-                "REQUEST_START",
-                "Method: " + exchange.getRequest().getMethod() + ", Path: " + exchange.getRequest().getPath().value()
-                        + ", Query: " + exchange.getRequest().getQueryParams());
+        Logger.info(
+                "==>     Filter: Request started - Method: {}, Path: {}, Query: {}",
+                exchange.getRequest().getMethod(),
+                exchange.getRequest().getPath().value(),
+                exchange.getRequest().getQueryParams());
 
-        // 如果请求明确要求XML格式，则转换为JSON
-        if (Format.XML.equals(context.getFormat())) {
-            Format.info(exchange, "FORMAT_CONVERT_TO_JSON", "Converting XML request to JSON response");
+        // If the request explicitly asks for XML format, convert to JSON
+        if (Formats.XML.equals(context.getFormats())) {
+            Logger.info("==>     Filter: Converting XML request to JSON response");
             exchange = exchange.mutate().response(process(exchange)).build();
         }
 
@@ -78,50 +83,61 @@ public class FormatFilter extends AbstractFilter {
     }
 
     /**
-     * 创建响应装饰器，确保响应数据为JSON格式
+     * Creates a response decorator to ensure response data is in JSON format.
+     * <p>
+     * This method wraps the original response and overrides the method to intercept the response body. It collects all
+     * data buffers, merges them, and then uses the context's specified provider to serialize the message into the
+     * desired format (JSON in this case). The formatted data is then written back to the response.
+     * </p>
      *
-     * @param exchange ServerWebExchange 对象
-     * @return 装饰后的 ServerHttpResponseDecorator
+     * @param exchange The {@link ServerWebExchange} object.
+     * @return The decorated {@link ServerHttpResponseDecorator}.
      */
     private ServerHttpResponseDecorator process(ServerWebExchange exchange) {
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
 
             /**
-             * 重写响应写入逻辑，处理数据格式化
+             * Overrides the response writing logic to handle data formatting.
+             * <p>
+             * This method converts the response data stream to a Flux, collects all data buffers, merges them into a
+             * single byte array, and then converts it to a string. It then uses the context's specified provider to
+             * serialize the message. The formatted data is then wrapped into a new data buffer and written to the
+             * response.
+             * </p>
              *
-             * @param body 响应数据流
-             * @return {@link Mono<Void>} 表示异步写入完成
+             * @param body The response data stream.
+             * @return {@link Mono<Void>} indicating the asynchronous completion of writing.
              */
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                // 将响应数据流转换为Flux
+                // Convert response data stream to Flux
                 Flux<? extends DataBuffer> flux = Flux.from(body);
 
-                // 收集所有数据缓冲区
+                // Collect all data buffers
                 return flux.collectList().flatMap(dataBuffers -> {
-                    // 合并所有数据缓冲区
+                    // Merge all data buffers
                     byte[] allBytes = merge(dataBuffers);
 
-                    // 获取上下文
+                    // Get the context
                     Context context = Context.get(exchange);
 
-                    // 设置响应内容类型为上下文指定的媒体类型
-                    exchange.getResponse().getHeaders().setContentType(context.getFormat().getMediaType());
+                    // Set the response content type to the media type specified in the context
+                    exchange.getResponse().getHeaders().setContentType(context.getFormats().getMediaType());
 
-                    // 将字节数组转换为字符串
+                    // Convert byte array to string
                     String bodyString = new String(allBytes, Charset.UTF_8);
 
-                    // 使用上下文指定的提供者序列化消息
-                    String formatBody = context.getFormat().getProvider().serialize(bodyString);
+                    // Serialize the message using the provider specified in the context
+                    String formatBody = context.getFormats().getProvider().serialize(bodyString);
 
-                    // 记录 TRACE 日志（如果启用）
-                    Format.trace(exchange, "RESPONSE_FORMATTED", formatBody);
+                    // Log TRACE (if enabled)
+                    Logger.trace("==>     Filter: Response formatted: {}", formatBody);
 
-                    // 将格式化后的数据写入新缓冲区
+                    // Wrap the formatted data into a new data buffer
                     DataBufferFactory bufferFactory = bufferFactory();
                     DataBuffer formattedBuffer = bufferFactory.wrap(formatBody.getBytes(Charset.UTF_8));
 
-                    // 写入格式化后的响应
+                    // Write the formatted response
                     return super.writeWith(Mono.just(formattedBuffer));
                 });
             }
@@ -129,19 +145,19 @@ public class FormatFilter extends AbstractFilter {
     }
 
     /**
-     * 合并多个数据缓冲区为一个字节数组
+     * Merges multiple data buffers into a single byte array.
      *
-     * @param dataBuffers 数据缓冲区列表
-     * @return 合并后的字节数组
+     * @param dataBuffers The list of data buffers.
+     * @return The merged byte array.
      */
     private byte[] merge(List<? extends DataBuffer> dataBuffers) {
-        // 计算总字节数
+        // Calculate total bytes
         int totalBytes = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
 
-        // 创建结果数组
+        // Create result array
         byte[] result = new byte[totalBytes];
 
-        // 填充数据
+        // Fill data
         int position = 0;
         for (DataBuffer buffer : dataBuffers) {
             int length = buffer.readableByteCount();

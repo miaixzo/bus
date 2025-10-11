@@ -28,15 +28,17 @@
 package org.miaixz.bus.http.plugin.httpv;
 
 /**
+ * An interface for operations that can be canceled.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Cancelable {
 
     /**
-     * 取消
+     * Cancels the operation.
      *
-     * @return 取消是否成功
+     * @return {@code true} if the cancellation was successful.
      */
     boolean cancel();
 

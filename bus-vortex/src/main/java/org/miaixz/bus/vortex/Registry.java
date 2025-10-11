@@ -28,55 +28,56 @@
 package org.miaixz.bus.vortex;
 
 /**
- * 通用注册表接口，用于管理和操作键值对数据（如路由、限流配置等）
+ * Generic registry interface for managing and operating key-value pair data (e.g., routes, rate limiting
+ * configurations).
  *
- * @param <T> 注册表中存储的值类型
+ * @param <T> The type of value stored in the registry.
  * @author Justubborn
  * @since Java 17+
  */
 public interface Registry<T> {
 
     /**
-     * 初始化注册表，加载初始数据或配置
+     * Initializes the registry, loading initial data or configurations.
      */
     void init();
 
     /**
-     * 添加键值对到注册表
+     * Adds a key-value pair to the registry.
      *
-     * @param key 键，唯一标识
-     * @param reg 值，待注册的对象
-     * @return 如果添加成功返回 true，否则返回 false
+     * @param key The unique identifier key.
+     * @param reg The object to be registered.
+     * @return {@code true} if the addition was successful, {@code false} otherwise.
      */
     boolean add(String key, T reg);
 
     /**
-     * 从注册表中移除指定键的记录
+     * Removes a record with the specified key from the registry.
      *
-     * @param key 键，唯一标识
-     * @return 如果移除成功返回 true，否则返回 false
+     * @param key The unique identifier key.
+     * @return {@code true} if the removal was successful, {@code false} otherwise.
      */
     boolean remove(String key);
 
     /**
-     * 修改注册表中的键值对
+     * Modifies a key-value pair in the registry.
      *
-     * @param key 键，唯一标识
-     * @param reg 新的值
-     * @return 如果修改成功返回 true，否则返回 false
+     * @param key The unique identifier key.
+     * @param reg The new value.
+     * @return {@code true} if the modification was successful, {@code false} otherwise.
      */
     boolean amend(String key, T reg);
 
     /**
-     * 刷新注册表，重新加载数据或清空后初始化
+     * Refreshes the registry, reloading data or clearing and reinitializing.
      */
     void refresh();
 
     /**
-     * 获取指定键对应的值
+     * Retrieves the value corresponding to the specified key.
      *
-     * @param id 键，唯一标识
-     * @return 对应的值，若不存在返回 null
+     * @param id The unique identifier key.
+     * @return The corresponding value, or {@code null} if not found.
      */
     T get(String id);
 

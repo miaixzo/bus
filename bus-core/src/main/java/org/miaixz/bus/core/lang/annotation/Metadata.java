@@ -30,7 +30,14 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 元注解
+ * A meta-annotation that marks another annotation as a "metadata" annotation.
+ * <p>
+ * This annotation serves as a general-purpose marker for other annotations that are intended to provide metadata for
+ * frameworks, tools, or other components. By using {@code @Metadata}, you can create a common category for your custom
+ * annotations, making them easier to discover and process through reflection.
+ * <p>
+ * Since it is annotated with {@link Inherited}, any class that is annotated with a {@code @Metadata}-annotated
+ * annotation will have that annotation inherited by its subclasses.
  *
  * @author Kimi Liu
  * @since Java 17+

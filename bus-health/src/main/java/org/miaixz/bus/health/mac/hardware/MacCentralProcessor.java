@@ -58,6 +58,9 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
 
 /**
+ * <p>
+ * MacCentralProcessor class.
+ * </p>
  * A CPU.
  *
  * @author Kimi Liu
@@ -84,6 +87,11 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     private long performanceCoreFrequency = DEFAULT_FREQUENCY;
     private long efficiencyCoreFrequency = DEFAULT_FREQUENCY;
 
+    /**
+     * Queries the platform expert device for the CPU manufacturer.
+     *
+     * @return The CPU manufacturer string, or "Apple Inc." if not found.
+     */
     private static String platformExpert() {
         String manufacturer = null;
         IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
@@ -98,8 +106,11 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer;
     }
 
-    // Called by initProcessorCount in the constructor
-    // These populate the physical processor id strings
+    /**
+     * Queries compatible strings for each CPU from the I/O Registry.
+     *
+     * @return A map where the key is the processor ID and the value is the compatible string.
+     */
     private static Map<Integer, String> queryCompatibleStrings() {
         Map<Integer, String> compatibleStrMap = new HashMap<>();
         // All CPUs are an IOPlatformDevice
@@ -128,6 +139,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return compatibleStrMap;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
         String cpuName = SysctlKit.sysctl("machdep.cpu.brand_string", Normal.EMPTY);
@@ -193,6 +207,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                 processorID, cpu64bit, cpuFreq);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Tuple initProcessorCounts() {
         int logicalProcessorCount = SysctlKit.sysctl("hw.logicalcpu", 1);
@@ -222,6 +239,12 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return new Tuple(logProcs, physProcs, caches, featureFlags);
     }
 
+    /**
+     * Retrieves processor cache values from sysctl.
+     *
+     * @param perflevels The number of performance levels.
+     * @return A set of {@link CentralProcessor.ProcessorCache} objects.
+     */
     private Set<CentralProcessor.ProcessorCache> getCacheValues(int perflevels) {
         int linesize = (int) SysctlKit.sysctl("hw.cachelinesize", 0L);
         int l1associativity = SysctlKit.sysctl("machdep.cpu.cache.L1_associativity", 0, false);
@@ -256,6 +279,11 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return caches;
     }
 
+    /**
+     * Retrieves CPU feature flags from sysctl.
+     *
+     * @return A list of feature flag strings.
+     */
     private List<String> getFeatureFlagsFromSysctl() {
         List<String> x86Features = Arrays.asList("features", "extfeatures", "leaf7_features").stream().map(f -> {
             String key = "machdep.cpu." + f;
@@ -265,12 +293,16 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return x86Features.isEmpty() ? Executor.runNative("sysctl -a hw.optional") : x86Features;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long[] querySystemCpuLoadTicks() {
         long[] ticks = new long[CentralProcessor.TickType.values().length];
         int machPort = SystemB.INSTANCE.mach_host_self();
         try (Struct.CloseableHostCpuLoadInfo cpuLoadInfo = new Struct.CloseableHostCpuLoadInfo();
-                ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(cpuLoadInfo.size())) {
+                ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(
+                        cpuLoadInfo.size() / SystemB.INT_SIZE)) {
             if (0 != SystemB.INSTANCE.host_statistics(machPort, SystemB.HOST_CPU_LOAD_INFO, cpuLoadInfo, size)) {
                 Logger.error("Failed to get System CPU ticks. Error code: {} ", Native.getLastError());
                 return ticks;
@@ -285,6 +317,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double[] getSystemLoadAverage(int nelem) {
         if (nelem < 1 || nelem > 3) {
@@ -298,6 +333,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return average;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long[] queryCurrentFreq() {
         if (isArmCpu) {
@@ -312,6 +350,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return new long[] { getProcessorIdentifier().getVendorFreq() };
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long queryContextSwitches() {
         // Not available on macOS since at least 10.3.9. Early versions may have
@@ -320,6 +361,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return 0L;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long queryInterrupts() {
         // Not available on macOS since at least 10.3.9. Early versions may have
@@ -328,6 +372,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return 0L;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long queryMaxFreq() {
         if (isArmCpu) {
@@ -336,6 +383,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return SysctlKit.sysctl("hw.cpufrequency_max", getProcessorIdentifier().getVendorFreq());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long[][] queryProcessorCpuLoadTicks() {
         long[][] ticks = new long[getLogicalProcessorCount()][CentralProcessor.TickType.values().length];
@@ -370,13 +420,20 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         return ticks;
     }
 
-    // Called when initiating instance variables which occurs after constructor has
-    // populated physical processors
+    /**
+     * Determines if the CPU is an ARM-based CPU.
+     *
+     * @return {@code true} if the CPU is ARM-based, {@code false} otherwise.
+     */
     private boolean isArmCpu() {
         return getPhysicalProcessors().stream().map(CentralProcessor.PhysicalProcessor::getIdString)
                 .anyMatch(id -> id.contains("arm"));
     }
 
+    /**
+     * Calculates the nominal frequencies for performance and efficiency cores on Apple Silicon. This method queries the
+     * I/O Registry for specific properties related to CPU voltage states.
+     */
     private void calculateNominalFrequencies() {
         IOIterator iter = IOKitUtil.getMatchingServices("AppleARMIODevice");
         if (iter != null) {
@@ -405,6 +462,12 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         }
     }
 
+    /**
+     * Extracts the maximum frequency from a byte array property.
+     *
+     * @param data The byte array containing frequency data.
+     * @return The maximum frequency in Hz, or {@link #DEFAULT_FREQUENCY} if extraction fails.
+     */
     private long getMaxFreqFromByteArray(byte[] data) {
         // Max freq is 8 bytes from the end of the array
         if (data != null && data.length >= 8) {

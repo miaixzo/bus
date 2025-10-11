@@ -49,20 +49,27 @@ import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
 
 /**
- * 存储服务-Gitlab
+ * Storage service provider for GitLab. This provider integrates with GitLab for file storage operations, treating
+ * GitLab repositories as storage buckets.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GitlabFileProvider extends AbstractProvider {
 
+    /**
+     * The GitLab API client instance for interacting with the GitLab server.
+     */
     private final GitLabApi client;
 
     /**
-     * 使用给定的上下文构造 Gitlab 提供者。初始化 GitLab 客户端，使用提供的凭证和端点配置
+     * Constructs a GitLab file provider with the given context. Initializes the GitLab API client using the provided
+     * endpoint and access token.
      *
-     * @param context 存储上下文，包含端点、存储桶（项目ID）、访问密钥等配置
-     * @throws IllegalArgumentException 如果缺少或无效的必需上下文参数
+     * @param context The storage context, containing the GitLab API endpoint, project ID (as bucket), and private token
+     *                (as access key).
+     * @throws IllegalArgumentException If required context parameters (endpoint, bucket, accessKey) are missing or
+     *                                  invalid.
      */
     public GitlabFileProvider(Context context) {
         this.context = context;
@@ -75,10 +82,11 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从默认存储桶下载文件。
+     * Downloads a file from the default GitLab project (bucket).
      *
-     * @param fileName 文件名
-     * @return 处理结果 {@link Message}
+     * @param fileName The name of the file to download.
+     * @return A {@link Message} containing the result of the operation, including the file content stream if
+     *         successful.
      */
     @Override
     public Message download(String fileName) {
@@ -86,11 +94,12 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶下载文件。
+     * Downloads a file from the specified GitLab project (bucket).
      *
-     * @param bucket   存储桶（项目ID）
-     * @param fileName 文件名
-     * @return 处理结果 {@link Message}
+     * @param bucket   The ID of the GitLab project (bucket).
+     * @param fileName The name of the file to download.
+     * @return A {@link Message} containing the result of the operation, including the file content stream if
+     *         successful.
      */
     @Override
     public Message download(String bucket, String fileName) {
@@ -110,11 +119,11 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从默认存储桶下载文件并保存到本地文件。
+     * Downloads a file from the default GitLab project (bucket) and saves it to a local file.
      *
-     * @param fileName 文件名
-     * @param file     文件
-     * @return 处理结果 {@link Message}
+     * @param fileName The name of the file to download.
+     * @param file     The target local file to save the downloaded content.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message download(String fileName, File file) {
@@ -122,12 +131,12 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶下载文件并保存到本地文件。
+     * Downloads a file from the specified GitLab project (bucket) and saves it to a local file.
      *
-     * @param bucket   存储桶（项目ID）
-     * @param fileName 文件名
-     * @param file     文件
-     * @return 处理结果 {@link Message}
+     * @param bucket   The ID of the GitLab project (bucket).
+     * @param fileName The name of the file to download.
+     * @param file     The target local file to save the downloaded content.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message download(String bucket, String fileName, File file) {
@@ -153,26 +162,29 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 列出默认存储桶中的文件。
+     * Lists files in the default GitLab project (bucket).
      *
-     * @return 处理结果 {@link Message}
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Material} objects if
+     *         successful.
      */
     @Override
     public Message list() {
         try {
             String prefix = StringKit.isBlank(context.getPrefix()) ? null
                     : Builder.buildNormalizedPrefix(context.getPrefix()) + "/";
-            // 使用 getTree 方法获取存储库树，分支为 "master"
+            // Use getTree method to retrieve the repository tree, with "master" as the branch.
             List<TreeItem> treeItems = client.getRepositoryApi()
                     .getTree(this.context.getBucket(), prefix, "master", true);
             return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
                     .data(
                             treeItems.stream()
-                                    // 过滤文件类型（假设 TreeItem 有 getType 方法，值为 "blob" 表示文件）
+                                    // Filter for file types (assuming TreeItem has a getType method, where "blob"
+                                    // indicates a file).
                                     .filter(item -> "blob".equals(item.getType())).map(item -> {
                                         Map<String, Object> extend = new HashMap<>();
-                                        // 由于 getCommitId 不存在，暂时将 lastModified 设置为 null
-                                        // 若需最后提交 ID，可通过 RepositoryFileApi 或 CommitsApi 获取
+                                        // As getCommitId does not exist, lastModified is temporarily set to null.
+                                        // If the last commit ID is needed, it can be obtained via RepositoryFileApi or
+                                        // CommitsApi.
                                         extend.put("lastModified", null);
                                         return Material.builder().name(item.getPath()).size("0").extend(extend).build();
                                     }).collect(Collectors.toList()))
@@ -184,11 +196,11 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 重命名文件。
+     * Renames a file in the default GitLab project (bucket).
      *
-     * @param oldName 原文件名
-     * @param newName 新文件名
-     * @return 处理结果 {@link Message}
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String oldName, String newName) {
@@ -196,12 +208,12 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 在默认存储桶中重命名文件。
+     * Renames a file within a specified path in the default GitLab project (bucket).
      *
-     * @param path    路径
-     * @param oldName 原文件名
-     * @param newName 新文件名
-     * @return 处理结果 {@link Message}
+     * @param path    The path where the file is located.
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String path, String oldName, String newName) {
@@ -209,13 +221,13 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 在指定存储桶和路径中重命名文件。
+     * Renames a file within the specified GitLab project (bucket) and path.
      *
-     * @param bucket  存储桶（项目ID）
-     * @param path    路径
-     * @param oldName 原文件名
-     * @param newName 新文件名
-     * @return 处理结果 {@link Message}
+     * @param bucket  The ID of the GitLab project (bucket).
+     * @param path    The path where the file is located.
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String bucket, String path, String oldName, String newName) {
@@ -246,11 +258,11 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传字节数组内容到默认存储桶。
+     * Uploads a byte array to the default GitLab project (bucket).
      *
-     * @param fileName 文件名
-     * @param content  字节数组
-     * @return 处理结果 {@link Message}
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String fileName, byte[] content) {
@@ -258,12 +270,12 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传字节数组内容到指定存储桶。
+     * Uploads a byte array to a specified path in the default GitLab project (bucket).
      *
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  字节数组
-     * @return 处理结果 {@link Message}
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String path, String fileName, byte[] content) {
@@ -271,13 +283,13 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传字节数组内容到指定存储桶和路径。
+     * Uploads a byte array to the specified GitLab project (bucket) and path.
      *
-     * @param bucket   存储桶（项目ID）
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  字节数组
-     * @return 处理结果 {@link Message}
+     * @param bucket   The ID of the GitLab project (bucket).
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, byte[] content) {
@@ -285,11 +297,11 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传输入流内容到默认存储桶。
+     * Uploads an input stream to the default GitLab project (bucket).
      *
-     * @param fileName 文件名
-     * @param content  输入流
-     * @return 处理结果 {@link Message}
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String fileName, InputStream content) {
@@ -297,12 +309,12 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传输入流内容到默认存储桶指定路径。
+     * Uploads an input stream to a specified path in the default GitLab project (bucket).
      *
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  输入流
-     * @return 处理结果 {@link Message}
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String path, String fileName, InputStream content) {
@@ -310,13 +322,13 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传输入流内容到指定存储桶和路径。
+     * Uploads an input stream to the specified GitLab project (bucket) and path.
      *
-     * @param bucket   存储桶（项目ID）
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  输入流
-     * @return 处理结果 {@link Message}
+     * @param bucket   The ID of the GitLab project (bucket).
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation, including material details if successful.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
@@ -344,10 +356,10 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从默认存储桶删除文件。
+     * Removes a file from the default GitLab project (bucket).
      *
-     * @param fileName 文件名
-     * @return 处理结果 {@link Message}
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String fileName) {
@@ -355,11 +367,11 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶删除文件。
+     * Removes a file from a specified path in the default GitLab project (bucket).
      *
-     * @param path     路径
-     * @param fileName 文件名
-     * @return 处理结果 {@link Message}
+     * @param path     The storage path where the file is located.
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String path, String fileName) {
@@ -367,12 +379,12 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶和路径删除文件。
+     * Removes a file from the specified GitLab project (bucket) and path.
      *
-     * @param bucket   存储桶（项目ID）
-     * @param path     路径
-     * @param fileName 文件名
-     * @return 处理结果 {@link Message}
+     * @param bucket   The ID of the GitLab project (bucket).
+     * @param path     The storage path where the file is located.
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, String path, String fileName) {
@@ -394,11 +406,11 @@ public class GitlabFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶删除文件（基于路径）。
+     * Removes a file from the specified GitLab project (bucket) based on its path.
      *
-     * @param bucket 存储桶（项目ID）
-     * @param path   要删除的文件路径
-     * @return 处理结果 {@link Message}
+     * @param bucket The ID of the GitLab project (bucket).
+     * @param path   The target path of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, Path path) {

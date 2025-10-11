@@ -50,21 +50,39 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 微博 登录
+ * Weibo login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WeiboProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code WeiboProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public WeiboProvider(Context context) {
         super(context, Registry.WEIBO);
     }
 
+    /**
+     * Constructs a {@code WeiboProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public WeiboProvider(Context context, CacheX cache) {
         super(context, Registry.WEIBO, cache);
     }
 
+    /**
+     * Retrieves the access token from Weibo's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
@@ -92,6 +110,13 @@ public class WeiboProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Weibo's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String accessToken = authToken.getAccessToken();
@@ -135,10 +160,10 @@ public class WeiboProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken AuthToken
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
@@ -146,6 +171,13 @@ public class WeiboProvider extends AbstractProvider {
                 .queryParam("uid", authToken.getUid()).build();
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
@@ -153,6 +185,13 @@ public class WeiboProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * Revokes the authorization for the given access token.
+     *
+     * @param authToken the token information to revoke
+     * @return a {@link Message} indicating the result of the revocation
+     * @throws AuthorizedException if parsing the response fails or an error occurs during revocation
+     */
     @Override
     public Message revoke(AuthToken authToken) {
         String response = doGetRevoke(authToken);

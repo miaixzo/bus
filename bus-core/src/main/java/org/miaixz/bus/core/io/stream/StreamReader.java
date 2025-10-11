@@ -36,21 +36,29 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * {@link InputStream}读取器
+ * A utility class for reading data from an {@link InputStream}. This class provides various methods to read bytes,
+ * convert to output streams, and deserialize objects, with options for closing the stream after reading.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StreamReader {
 
+    /**
+     * The underlying input stream to read from.
+     */
     private final InputStream in;
+    /**
+     * Flag indicating whether the input stream should be closed after reading operations.
+     */
     private final boolean closeAfterRead;
 
     /**
-     * 构造
+     * Constructs a new {@code StreamReader} with the specified input stream and a flag indicating whether the stream
+     * should be closed after reading.
      *
-     * @param in             {@link InputStream}
-     * @param closeAfterRead 读取结束后是否关闭输入流
+     * @param in             The {@link InputStream} to read from.
+     * @param closeAfterRead {@code true} if the input stream should be closed after reading, {@code false} otherwise.
      */
     public StreamReader(final InputStream in, final boolean closeAfterRead) {
         this.in = in;
@@ -58,32 +66,32 @@ public class StreamReader {
     }
 
     /**
-     * 创建读取器
+     * Creates a new {@code StreamReader} instance.
      *
-     * @param in             {@link InputStream}
-     * @param closeAfterRead 读取结束后是否关闭输入流
-     * @return StreamReader
+     * @param in             The {@link InputStream} to read from.
+     * @param closeAfterRead {@code true} if the input stream should be closed after reading, {@code false} otherwise.
+     * @return A new {@code StreamReader} instance.
      */
     public static StreamReader of(final InputStream in, final boolean closeAfterRead) {
         return new StreamReader(in, closeAfterRead);
     }
 
     /**
-     * 从流中读取bytes
+     * Reads all bytes from the input stream.
      *
-     * @return bytes
-     * @throws InternalException IO异常
+     * @return An array of bytes containing the entire content of the stream.
+     * @throws InternalException If an I/O error occurs.
      */
     public byte[] readBytes() throws InternalException {
         return readBytes(-1);
     }
 
     /**
-     * 读取指定长度的byte数组
+     * Reads a specified number of bytes from the input stream.
      *
-     * @param length 长度，小于0表示读取全部
-     * @return bytes
-     * @throws InternalException IO异常
+     * @param length The maximum number of bytes to read. If less than 0, all available bytes will be read.
+     * @return An array of bytes containing the read content.
+     * @throws InternalException If an I/O error occurs.
      */
     public byte[] readBytes(final int length) throws InternalException {
         final InputStream in = this.in;
@@ -94,21 +102,23 @@ public class StreamReader {
     }
 
     /**
-     * 从流中读取内容，读到输出流中，读取完毕后可选是否关闭流
+     * Reads the entire content of the input stream into a {@link FastByteArrayOutputStream}. The input stream may be
+     * closed after reading, depending on the {@code closeAfterRead} flag.
      *
-     * @return 输出流
-     * @throws InternalException IO异常
+     * @return A {@link FastByteArrayOutputStream} containing the content of the stream.
+     * @throws InternalException If an I/O error occurs.
      */
     public FastByteArrayOutputStream read() throws InternalException {
         return read(-1);
     }
 
     /**
-     * 从流中读取内容，读到输出流中，读取完毕后可选是否关闭流
+     * Reads a limited amount of content from the input stream into a {@link FastByteArrayOutputStream}. The input
+     * stream may be closed after reading, depending on the {@code closeAfterRead} flag.
      *
-     * @param limit 限制最大拷贝长度，-1表示无限制
-     * @return 输出流
-     * @throws InternalException IO异常
+     * @param limit The maximum number of bytes to copy. A value of -1 indicates no limit.
+     * @return A {@link FastByteArrayOutputStream} containing the read content.
+     * @throws InternalException If an I/O error occurs.
      */
     public FastByteArrayOutputStream read(final int limit) throws InternalException {
         final InputStream in = this.in;
@@ -124,11 +134,11 @@ public class StreamReader {
     }
 
     /**
-     * 从流中读取内容，直到遇到给定token满足{@link Predicate#test(Object)}
+     * Reads content from the input stream until a given token satisfies the provided {@link Predicate}.
      *
-     * @param predicate 读取结束条件, {@link Predicate#test(Object)}返回true表示结束
-     * @return 输出流
-     * @throws InternalException IO异常
+     * @param predicate The predicate to test each read byte. Reading stops when the predicate returns {@code true}.
+     * @return A {@link FastByteArrayOutputStream} containing the content read until the predicate was satisfied.
+     * @throws InternalException If an I/O error occurs.
      */
     public FastByteArrayOutputStream readTo(final Predicate<Integer> predicate) throws InternalException {
         final InputStream in = this.in;
@@ -148,23 +158,23 @@ public class StreamReader {
     }
 
     /**
-     * 从流中读取对象，即对象的反序列化
+     * Reads an object from the input stream by deserialization.
      *
      * <p>
-     * 注意！！！ 此方法不会检查反序列化安全，可能存在反序列化漏洞风险！！！
-     * </p>
+     * WARNING: This method does not perform deserialization safety checks and may be vulnerable to deserialization
+     * attacks!
      *
      * <p>
-     * 此方法使用了{@link ValidateObjectInputStream}中的黑白名单方式过滤类，用于避免反序列化漏洞
-     * 通过构造{@link ValidateObjectInputStream}，调用{@link ValidateObjectInputStream#accept(Class[])}
-     * 或者{@link ValidateObjectInputStream#refuse(Class[])}方法添加可以被序列化的类或者禁止序列化的类。
-     * </p>
+     * This method uses a whitelist/blacklist approach via {@link ValidateObjectInputStream} to filter classes, helping
+     * to mitigate deserialization vulnerabilities. You can configure allowed or forbidden classes by constructing a
+     * {@link ValidateObjectInputStream} and calling {@link ValidateObjectInputStream#accept(Class[])} or
+     * {@link ValidateObjectInputStream#refuse(Class[])} methods.
      *
-     * @param <T>           读取对象的类型
-     * @param acceptClasses 读取对象类型
-     * @return 输出流
-     * @throws InternalException IO异常
-     * @throws InternalException ClassNotFoundException包装
+     * @param <T>           The type of the object to be read.
+     * @param acceptClasses An array of classes that are explicitly allowed for deserialization.
+     * @return The deserialized object.
+     * @throws InternalException If an I/O error occurs during deserialization.
+     * @throws InternalException If the class of a serialized object cannot be found.
      */
     public <T> T readObject(final Class<?>... acceptClasses) throws InternalException {
         final InputStream in = this.in;
@@ -172,7 +182,7 @@ public class StreamReader {
             return null;
         }
 
-        // 转换
+        // Convert or create ValidateObjectInputStream
         final ValidateObjectInputStream validateIn;
         if (in instanceof ValidateObjectInputStream) {
             validateIn = (ValidateObjectInputStream) in;
@@ -185,7 +195,7 @@ public class StreamReader {
             }
         }
 
-        // 读取
+        // Read the object
         try {
             return (T) validateIn.readObject();
         } catch (final IOException e) {

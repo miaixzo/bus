@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Jcseg分词引擎实现 项目地址：https://gitee.com/lionsoul/jcseg
+ * Provides the Jcseg word segmentation engine implementation. This package contains classes that integrate with the
+ * Jcseg NLP library for Chinese word segmentation, adapting its functionalities to the common NLP interfaces. Project
+ * homepage: <a href="https://gitee.com/lionsoul/jcseg">https://gitee.com/lionsoul/jcseg</a>
  *
  * @author Kimi Liu
  * @since Java 17+

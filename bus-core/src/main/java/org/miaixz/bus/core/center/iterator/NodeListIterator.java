@@ -35,7 +35,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * 包装 {@link NodeList} 的{@link Iterator} 此 iterator 不支持 {@link #remove()} 方法。
+ * An {@link Iterator} wrapper for {@link NodeList}. This iterator allows iterating over the nodes in a
+ * {@link NodeList}. The {@link #remove()} method is not supported by this iterator.
  *
  * @author Kimi Liu
  * @see NodeList
@@ -43,26 +44,42 @@ import org.w3c.dom.NodeList;
  */
 public class NodeListIterator implements ResettableIterator<Node> {
 
+    /**
+     * The underlying {@link NodeList} to iterate over.
+     */
     private final NodeList nodeList;
     /**
-     * 当前位置索引
+     * The current index of the iterator within the {@link NodeList}.
      */
     private int index = 0;
 
     /**
-     * 构造, 根据给定{@link NodeList} 创建{@code NodeListIterator}
+     * Constructs a {@code NodeListIterator} from the given {@link NodeList}.
      *
-     * @param nodeList {@link NodeList}，非空
+     * @param nodeList the {@link NodeList} to iterate over, must not be {@code null}
+     * @throws NullPointerException if {@code nodeList} is {@code null}
      */
     public NodeListIterator(final NodeList nodeList) {
         this.nodeList = Assert.notNull(nodeList, "NodeList must not be null.");
     }
 
+    /**
+     * Returns {@code true} if the iteration has more elements. (In other words, returns {@code true} if {@link #next}
+     * would return an element rather than throwing an exception.)
+     *
+     * @return {@code true} if the iteration has more elements
+     */
     @Override
     public boolean hasNext() {
         return nodeList != null && index < nodeList.getLength();
     }
 
+    /**
+     * Returns the next element in the iteration.
+     *
+     * @return the next element in the iteration
+     * @throws NoSuchElementException if the iteration has no more elements
+     */
     @Override
     public Node next() {
         if (nodeList != null && index < nodeList.getLength()) {
@@ -72,7 +89,7 @@ public class NodeListIterator implements ResettableIterator<Node> {
     }
 
     /**
-     * Throws {@link UnsupportedOperationException}.
+     * This operation is not supported by this iterator.
      *
      * @throws UnsupportedOperationException always
      */
@@ -81,6 +98,9 @@ public class NodeListIterator implements ResettableIterator<Node> {
         throw new UnsupportedOperationException("remove() method not supported for a NodeListIterator.");
     }
 
+    /**
+     * Resets the iterator to its initial state, allowing it to iterate from the beginning again.
+     */
     @Override
     public void reset() {
         this.index = 0;

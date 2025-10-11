@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.shade.beans;
 
-import java.io.Serializable;
-
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
- * 获取到数据库的信息
+ * Represents information about a database column, including its name, JDBC type, comment, corresponding Java property
+ * name, and Java type.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,14 +43,31 @@ import lombok.Setter;
 @Setter
 public class PropertyInfo implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
+    /**
+     * The name of the database column.
+     */
     private String column;
 
+    /**
+     * The JDBC type of the column.
+     */
     private String jdbcType;
 
+    /**
+     * The comment associated with the column in the database.
+     */
     private String comment;
 
+    /**
+     * The corresponding Java property name for the column.
+     */
     private String property;
 
+    /**
+     * The Java type of the property.
+     */
     private String javaType;
 
 }

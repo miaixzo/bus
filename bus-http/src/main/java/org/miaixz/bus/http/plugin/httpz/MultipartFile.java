@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
-import java.io.File;
-import java.io.InputStream;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.File;
+import java.io.InputStream;
+
 /**
- * 文件上传
+ * Represents a file or data source to be uploaded as part of a multipart request. It can hold content from a byte
+ * array, a {@link File}, or an {@link InputStream}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,23 +49,24 @@ import lombok.Setter;
 public class MultipartFile {
 
     /**
-     * 文件名称
+     * The name of the file to be used in the 'filename' parameter of the 'Content-Disposition' header.
      */
     public String name;
     /**
-     * 拆分信息
+     * The name of the multipart form field (the 'name' parameter of the 'Content-Disposition' header).
      */
     public String part;
     /**
-     * 文件内容
+     * The content of the file as a byte array. Use this for small files or in-memory data.
      */
     public byte[] content;
     /**
-     * 文件主体
+     * The {@link File} object to upload. Use this for uploading files from the filesystem.
      */
     public File file;
     /**
-     * 文件输入流
+     * The {@link InputStream} providing the file content. Use this for streaming data. The stream will be fully read
+     * during the request.
      */
     public InputStream in;
 

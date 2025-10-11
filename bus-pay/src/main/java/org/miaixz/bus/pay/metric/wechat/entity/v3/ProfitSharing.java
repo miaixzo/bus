@@ -27,19 +27,19 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
-import java.util.List;
-
-import org.miaixz.bus.pay.magic.Material;
-import org.miaixz.bus.pay.metric.wechat.entity.Receiver;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.pay.magic.Material;
+import org.miaixz.bus.pay.metric.wechat.entity.Receiver;
+
+import java.util.List;
 
 /**
- * V3 分账 支持: 请求单次分账、请求多次分账、添加分账接收方、删除分账接收方、完结分账
+ * Model for the V3 Profit Sharing API. Supports single/multiple profit sharing requests, adding/deleting receivers, and
+ * finishing profit sharing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,31 +52,34 @@ import lombok.experimental.SuperBuilder;
 public class ProfitSharing extends Material {
 
     /**
-     * 微信支付分配的服务商商户号,兼容V2接口
+     * Service provider's merchant ID, assigned by WeChat Pay. Compatible with V2 API.
      */
     private String mch_id;
     /**
-     * 微信支付分配的子商户号，即分账的出资商户号
+     * Sub-merchant ID assigned by WeChat Pay, who is the fund contributor for the profit sharing.
      */
     private String sub_mchid;
     /**
-     * 微信分配的子商户公众账号ID，分账接收方类型包含PERSONAL_SUB_OPENID时必填
+     * Sub-merchant's AppID. Required when the receiver type includes PERSONAL_SUB_OPENID.
      */
     private String sub_appid;
     /**
-     * 微信支付订单号
+     * WeChat Pay's order number.
      */
     private String transaction_id;
     /**
-     * 服务商系统内部的分账单号，在服务商系统内部唯一，同一分账单号多次请求等同一次。只能是数字、大小写字母_-|*@
+     * The merchant's internal profit sharing order number. Must be unique within the merchant's system. Retrying with
+     * the same number is treated as the same request.
      */
     private String out_order_no;
     /**
-     * 分账接收方列表，可以设置出资商户作为分账接受方，最多可有50个分账接收方
+     * A list of profit sharing receivers, up to 50. The contributing merchant can also be a receiver.
      */
     private List<Receiver> receivers;
     /**
-     * 是否解冻剩余未分资金 1、如果为true，该笔订单剩余未分账的金额会解冻回分账方商户； 2、如果为false，该笔订单剩余未分账的金额不会解冻回分账方商户，可以对该笔订单再次进行分账。
+     * Whether to unfreeze any remaining unallocated funds. If true, the remaining amount is unfrozen and returned to
+     * the contributing merchant. If false, the remaining amount is not unfrozen, and further profit sharing can be
+     * performed on this order.
      */
     private boolean unfreeze_unsplit;
 

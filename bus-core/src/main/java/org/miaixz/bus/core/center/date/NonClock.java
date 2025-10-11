@@ -33,8 +33,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 系统时钟 高并发场景下System.currentTimeMillis()的性能问题的优化 System.currentTimeMillis()的调用比new一个普通对象要耗时的多（具体耗时高出多少我还没测试过，有人说是100倍左右）
- * System.currentTimeMillis()之所以慢是因为去跟系统打了一次交道 后台定时更新时钟，JVM退出时，线程自动回收 see：
+ * System clock optimization for high-concurrency scenarios. Optimizes the performance issue of
+ * System.currentTimeMillis() in high-concurrency scenarios. Calling System.currentTimeMillis() is more time-consuming
+ * than creating a new ordinary object (some say it's about 100 times slower). System.currentTimeMillis() is slow
+ * because it interacts with the system. This class updates the clock in the background periodically. When the JVM
+ * exits, the thread is automatically reclaimed. See:
  * <a href="http://git.oschina.net/yu120/sequence">http://git.oschina.net/yu120/sequence</a>
  *
  * @author Kimi Liu
@@ -43,18 +46,18 @@ import java.util.concurrent.TimeUnit;
 public class NonClock {
 
     /**
-     * 时钟更新间隔，单位毫秒
+     * Clock update interval, in milliseconds.
      */
     private final long period;
     /**
-     * 现在时刻的毫秒数
+     * The current time in milliseconds.
      */
     private volatile long now;
 
     /**
-     * 构造
+     * Constructs a {@code NonClock} instance.
      *
-     * @param period 时钟更新间隔，单位毫秒
+     * @param period The clock update interval, in milliseconds.
      */
     public NonClock(final long period) {
         this.period = period;
@@ -63,21 +66,25 @@ public class NonClock {
     }
 
     /**
-     * @return 当前时间
+     * Gets the current time in milliseconds.
+     *
+     * @return The current time in milliseconds.
      */
     public static long now() {
         return InstanceHolder.INSTANCE.currentTimeMillis();
     }
 
     /**
-     * @return 当前时间字符串表现形式
+     * Gets the current time as a string.
+     *
+     * @return The current time in string representation.
      */
     public static String nowDate() {
         return new Timestamp(InstanceHolder.INSTANCE.currentTimeMillis()).toString();
     }
 
     /**
-     * 开启计时器线程
+     * Starts the clock update thread.
      */
     private void scheduleClockUpdating() {
         final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(runnable -> {
@@ -89,17 +96,22 @@ public class NonClock {
     }
 
     /**
-     * @return 当前时间毫秒数
+     * Gets the current time in milliseconds.
+     *
+     * @return The current time in milliseconds.
      */
     private long currentTimeMillis() {
         return now;
     }
 
     /**
-     * 单例
+     * Singleton holder for {@code NonClock}.
      */
     private static class InstanceHolder {
 
+        /**
+         * The singleton instance of {@code NonClock} with a 1ms update period.
+         */
         public static final NonClock INSTANCE = new NonClock(1);
     }
 

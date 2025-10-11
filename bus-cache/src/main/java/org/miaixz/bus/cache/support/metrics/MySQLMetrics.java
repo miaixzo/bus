@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.cache.support.metrics;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -35,13 +37,13 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 /**
- * MySQL数据库缓存命中率统计实现
+ * MySQL database implementation for cache hit rate statistics.
  * <p>
- * 基于MySQL数据库实现的缓存命中率统计，使用HikariCP连接池和JdbcTemplate进行数据库操作。 自动创建缓存统计表，支持并发更新和乐观锁机制。
+ * This class provides a metrics solution using a MySQL database. It utilizes the HikariCP connection pool and
+ * {@link JdbcTemplate} for efficient database operations. It automatically creates the necessary table for storing
+ * statistics and supports concurrent updates via an optimistic locking mechanism.
  * </p>
  *
  * @author Kimi Liu
@@ -50,33 +52,36 @@ import com.zaxxer.hikari.HikariDataSource;
 public class MySQLMetrics extends AbstractMetrics {
 
     /**
-     * 构造方法
+     * Constructs a {@code MySQLMetrics} instance using a context map for database configuration.
      *
-     * @param context 上下文参数
+     * @param context A map containing database connection parameters for HikariCP.
      */
     public MySQLMetrics(Map<String, Object> context) {
         super(context);
     }
 
     /**
-     * 构造方法
+     * Constructs a {@code MySQLMetrics} instance with explicit database connection details.
      *
-     * @param url      数据库URL
-     * @param username 用户名
-     * @param password 密码
+     * @param url      The JDBC URL for the MySQL database.
+     * @param username The username for database access.
+     * @param password The password for database access.
      */
     public MySQLMetrics(String url, String username, String password) {
         super(url, username, password);
     }
 
     /**
-     * 创建JdbcOperations并初始化数据库
+     * Provides a {@link Supplier} for {@link JdbcOperations} configured for a MySQL database.
      * <p>
-     * 创建MySQL数据库连接池，初始化JdbcTemplate，并创建缓存统计表
+     * This method sets up a {@link HikariDataSource} and a {@link JdbcTemplate}. It then ensures that the
+     * {@code t_cache_rate} table exists, creating it if necessary. The table is designed for storing hit/request counts
+     * and includes a version column for optimistic locking.
      * </p>
      *
-     * @param context 上下文参数
-     * @return 初始化完成的JdbcOperations对象
+     * @param context A map containing configuration properties for HikariCP.
+     * @return A supplier that provides an initialized {@link JdbcOperations} object.
+     * @throws InternalException if the data source cannot be initialized.
      */
     @Override
     protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
@@ -102,13 +107,10 @@ public class MySQLMetrics extends AbstractMetrics {
     }
 
     /**
-     * 将数据库查询结果转换为DataDO流
-     * <p>
-     * 将查询结果Map转换为DataDO对象流，便于后续处理
-     * </p>
+     * Transforms a list of database query results (maps) into a stream of {@link DataDO} objects.
      *
-     * @param mapResults 数据库查询结果
-     * @return DataDO流
+     * @param mapResults A list of maps, where each map represents a row from the database query.
+     * @return A {@link Stream} of {@link DataDO} objects, populated from the query results.
      */
     @Override
     protected Stream<DataDO> transferResults(List<Map<String, Object>> mapResults) {

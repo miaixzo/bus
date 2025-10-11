@@ -30,22 +30,35 @@ package org.miaixz.bus.core.lang.ansi;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * ANSI文本样式风格
+ * Utility class for encoding ANSI escape sequences for text styling. This class provides methods to construct ANSI
+ * strings by converting {@link AnsiElement} instances into their corresponding escape codes.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AnsiEncoder {
 
+    /**
+     * The starting sequence for an ANSI escape code.
+     */
     private static final String ENCODE_START = "\033[";
+    /**
+     * The ending sequence for an ANSI escape code.
+     */
     private static final String ENCODE_END = "m";
+    /**
+     * The ANSI reset code, which resets all formatting to default.
+     */
     private static final String RESET = "0;" + Ansi4BitColor.DEFAULT;
 
     /**
-     * 创建ANSI字符串，参数中的{@link AnsiElement}会被转换为编码形式。
+     * Encodes a sequence of objects into an ANSI string. {@link AnsiElement} instances within the arguments will be
+     * converted into their ANSI escape code representations. Non-{@link AnsiElement} objects will be appended as their
+     * string representation. The resulting string will automatically include a reset code at the end if any
+     * {@link AnsiElement} was used.
      *
-     * @param args 节点数组
-     * @return ANSI字符串
+     * @param args An array of objects, which may include {@link AnsiElement}s and regular strings.
+     * @return The ANSI encoded string.
      */
     public static String encode(final Object... args) {
         final StringBuilder sb = new StringBuilder();
@@ -54,10 +67,12 @@ public class AnsiEncoder {
     }
 
     /**
-     * 追加需要需转义的节点
+     * Appends the ANSI escape sequences and other elements to the given {@link StringBuilder}. This method iterates
+     * through the provided arguments, appending ANSI escape codes for {@link AnsiElement}s and string representations
+     * for other objects. It manages the opening and closing of ANSI escape sequences.
      *
-     * @param sb   {@link StringBuilder}
-     * @param args 节点列表
+     * @param sb   The {@link StringBuilder} to which the ANSI string will be appended.
+     * @param args An array of objects to be processed.
      */
     private static void buildEnabled(final StringBuilder sb, final Object[] args) {
         boolean writingAnsi = false;
@@ -83,7 +98,7 @@ public class AnsiEncoder {
             sb.append(element);
         }
 
-        // 恢复默认
+        // Reset to default if any ANSI encoding was applied
         if (containsEncoding) {
             sb.append(writingAnsi ? Symbol.SEMICOLON : ENCODE_START);
             sb.append(RESET);

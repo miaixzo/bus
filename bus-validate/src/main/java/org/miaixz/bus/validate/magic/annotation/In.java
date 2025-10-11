@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.InMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 字符串在数组中
+ * Validates that the annotated string is present in the specified array of strings.
  *
  * <p>
- * 默认被校验对象是null时,通过校验
- * </P>
+ * By default, if the object to be validated is null, the validation passes.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,34 +48,39 @@ import org.miaixz.bus.validate.metric.InMatcher;
 @Complex(value = Builder._IN, clazz = InMatcher.class)
 public @interface In {
 
+    /**
+     * The array of strings that the annotated element must be one of.
+     *
+     * @return the array of allowed strings.
+     */
     @Filler("value")
     String[] value() default {};
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}必须在指定字符串中: ${value}";
+    String errmsg() default "${field} must be one of the specified strings: ${value}";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

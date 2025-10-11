@@ -31,9 +31,10 @@ import java.io.Serial;
 import java.security.KeyPair;
 
 /**
- * 抽象的非对称加密对象，包装了加密和解密为Hex和Base64的封装
+ * Abstract base class for asymmetric cryptographic objects. This class extends {@link Asymmetric} and provides common
+ * implementations for encryption and decryption operations, including conversions to Hex and Base64 formats.
  *
- * @param <T> 返回自身类型
+ * @param <T> The type of the concrete subclass extending {@code AbstractCrypto}.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -44,10 +45,13 @@ public abstract class AbstractCrypto<T extends AbstractCrypto<T>> extends Asymme
     private static final long serialVersionUID = 2852335251112L;
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructs an {@code AbstractCrypto} instance with the specified algorithm and key pair. If both private and
+     * public keys within the {@code keyPair} are {@code null}, a new key pair will be generated. If only one key is
+     * provided, the crypto object can only be used for operations corresponding to that key.
      *
-     * @param algorithm 算法
-     * @param keyPair   密钥对，如果为{@code null}则生成随机的私钥和公钥
+     * @param algorithm The asymmetric algorithm name.
+     * @param keyPair   The {@link KeyPair} containing the private and public keys. If {@code null}, a new random key
+     *                  pair is generated.
      */
     public AbstractCrypto(final String algorithm, final KeyPair keyPair) {
         super(algorithm, keyPair);

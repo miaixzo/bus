@@ -35,7 +35,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 微信
+ * Material for WeChat messaging services.
  *
  * @author Kimi Liu
  * @since Java 17+

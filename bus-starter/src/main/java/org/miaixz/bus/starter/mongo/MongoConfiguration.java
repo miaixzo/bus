@@ -27,18 +27,22 @@
 */
 package org.miaixz.bus.starter.mongo;
 
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
+import jakarta.annotation.Resource;
 import org.springframework.boot.autoconfigure.mongo.MongoClientSettingsBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 
-import jakarta.annotation.Resource;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
- * Mongo配置
+ * Auto-configuration for MongoDB, providing fine-grained control over the {@link com.mongodb.MongoClientSettings}.
+ * <p>
+ * This class defines a series of {@link MongoClientSettingsBuilderCustomizer} beans. Each bean is responsible for
+ * applying a specific part of the configuration from {@link MongoProperties} to the
+ * {@code MongoClientSettings.Builder}. The {@code @Order} annotation ensures they are applied in a predictable
+ * sequence.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,43 +50,35 @@ import jakarta.annotation.Resource;
 @EnableConfigurationProperties(value = { MongoProperties.class })
 public class MongoConfiguration {
 
+    /**
+     * Injected MongoDB configuration properties.
+     */
     @Resource
     MongoProperties properties;
 
     /**
-     * The {@link MongoProperties.Socket} builder
+     * Customizer for general socket settings.
      *
-     * @return Build mongo client settings customizer instance
+     * @return A {@link MongoClientSettingsBuilderCustomizer} for socket settings.
      */
     @Bean
     @Order(0)
     public MongoClientSettingsBuilderCustomizer socketSettings() {
-        return builder -> Optional
-                .ofNullable(
-                        properties.getSocket())
-                .ifPresent(
-                        socketSettings -> builder
-                                .applyToSocketSettings(
-                                        (
-                                                socket) -> socket
-                                                        .readTimeout(
-                                                                Long.valueOf(
-                                                                        socketSettings.getReadTimeoutMilliSeconds())
-                                                                        .intValue(),
-                                                                TimeUnit.MILLISECONDS)
-                                                        .connectTimeout(
-                                                                Long.valueOf(
-                                                                        socketSettings.getConnectTimeoutMilliSeconds())
-                                                                        .intValue(),
-                                                                TimeUnit.MILLISECONDS)
-                                                        .receiveBufferSize(socketSettings.getReceiveBufferSize())
-                                                        .sendBufferSize(socketSettings.getSendBufferSize())));
+        return builder -> Optional.ofNullable(properties.getSocket()).ifPresent(
+                socketSettings -> builder.applyToSocketSettings(
+                        socket -> socket
+                                .readTimeout((int) socketSettings.getReadTimeoutMilliSeconds(), TimeUnit.MILLISECONDS)
+                                .connectTimeout(
+                                        (int) socketSettings.getConnectTimeoutMilliSeconds(),
+                                        TimeUnit.MILLISECONDS)
+                                .receiveBufferSize(socketSettings.getReceiveBufferSize())
+                                .sendBufferSize(socketSettings.getSendBufferSize())));
     }
 
     /**
-     * The heartbeat {@link MongoProperties.Socket} builder
+     * Customizer for heartbeat socket settings.
      *
-     * @return Build mongo client settings customizer instance
+     * @return A {@link MongoClientSettingsBuilderCustomizer} for heartbeat socket settings.
      */
     @Bean
     @Order(1)
@@ -91,38 +87,33 @@ public class MongoConfiguration {
                 .ofNullable(
                         properties.getHeartbeatSocket())
                 .ifPresent(
-                        heartbeatSocketSettings -> builder
-                                .applyToSocketSettings(
-                                        (heartBeatSocket) -> heartBeatSocket
-                                                .readTimeout(
-                                                        Long.valueOf(
-                                                                heartbeatSocketSettings.getReadTimeoutMilliSeconds())
-                                                                .intValue(),
-                                                        TimeUnit.MILLISECONDS)
-                                                .connectTimeout(
-                                                        Long.valueOf(
-                                                                heartbeatSocketSettings.getConnectTimeoutMilliSeconds())
-                                                                .intValue(),
-                                                        TimeUnit.MILLISECONDS)
-                                                .receiveBufferSize(heartbeatSocketSettings.getReceiveBufferSize())
-                                                .sendBufferSize(heartbeatSocketSettings.getSendBufferSize())));
+                        heartbeatSocketSettings -> builder.applyToSocketSettings(
+                                heartBeatSocket -> heartBeatSocket
+                                        .readTimeout(
+                                                (int) heartbeatSocketSettings.getReadTimeoutMilliSeconds(),
+                                                TimeUnit.MILLISECONDS)
+                                        .connectTimeout(
+                                                (int) heartbeatSocketSettings.getConnectTimeoutMilliSeconds(),
+                                                TimeUnit.MILLISECONDS)
+                                        .receiveBufferSize(heartbeatSocketSettings.getReceiveBufferSize())
+                                        .sendBufferSize(heartbeatSocketSettings.getSendBufferSize())));
     }
 
     /**
-     * The {@link MongoProperties.Cluster} builder
+     * Customizer for cluster settings.
      *
-     * @return Build mongo client settings customizer instance
+     * @return A {@link MongoClientSettingsBuilderCustomizer} for cluster settings.
      */
     @Bean
     @Order(2)
     public MongoClientSettingsBuilderCustomizer clusterSettings() {
         return builder -> Optional.ofNullable(properties.getCluster())
-                .ifPresent(clusterSettings -> builder.applyToClusterSettings((cluster) -> {
-                    Optional.ofNullable(clusterSettings.getMode()).ifPresent(mode -> cluster.mode(mode));
+                .ifPresent(clusterSettings -> builder.applyToClusterSettings(cluster -> {
+                    Optional.ofNullable(clusterSettings.getMode()).ifPresent(cluster::mode);
                     Optional.ofNullable(clusterSettings.getRequiredClusterType())
-                            .ifPresent(requiredClusterType -> cluster.requiredClusterType(requiredClusterType));
-                    Optional.ofNullable(clusterSettings.getRequiredReplicaSetName()).ifPresent(
-                            requiredReplicaSetName -> cluster.requiredReplicaSetName(requiredReplicaSetName));
+                            .ifPresent(cluster::requiredClusterType);
+                    Optional.ofNullable(clusterSettings.getRequiredReplicaSetName())
+                            .ifPresent(cluster::requiredReplicaSetName);
 
                     cluster.localThreshold(clusterSettings.getLocalThresholdMilliSeconds(), TimeUnit.MILLISECONDS)
                             .serverSelectionTimeout(
@@ -132,9 +123,9 @@ public class MongoConfiguration {
     }
 
     /**
-     * The {@link MongoProperties.Server} builder
+     * Customizer for server settings.
      *
-     * @return Build mongo client settings customizer instance
+     * @return A {@link MongoClientSettingsBuilderCustomizer} for server settings.
      */
     @Bean
     @Order(3)
@@ -144,7 +135,7 @@ public class MongoConfiguration {
                         properties.getServer())
                 .ifPresent(
                         serverSettings -> builder.applyToServerSettings(
-                                (server) -> server.heartbeatFrequency(
+                                server -> server.heartbeatFrequency(
                                         serverSettings.getHeartbeatFrequencyMilliSeconds(),
                                         TimeUnit.MILLISECONDS).minHeartbeatFrequency(
                                                 serverSettings.getMinHeartbeatFrequencyMilliSeconds(),
@@ -152,16 +143,16 @@ public class MongoConfiguration {
     }
 
     /**
-     * The {@link MongoProperties.Connection} builder
+     * Customizer for connection pool settings.
      *
-     * @return Build mongo client settings customizer instance
+     * @return A {@link MongoClientSettingsBuilderCustomizer} for connection pool settings.
      */
     @Bean
     @Order(4)
     public MongoClientSettingsBuilderCustomizer connectionSettings() {
         return builder -> Optional.ofNullable(properties.getConnectionPool()).ifPresent(
                 connectionSettings -> builder.applyToConnectionPoolSettings(
-                        (connection) -> connection.maxSize(connectionSettings.getMaxSize())
+                        connection -> connection.maxSize(connectionSettings.getMaxSize())
                                 .minSize(connectionSettings.getMinSize())
                                 .maxWaitTime(connectionSettings.getMaxWaitTimeMilliSeconds(), TimeUnit.MILLISECONDS)
                                 .maxConnectionLifeTime(
@@ -179,16 +170,16 @@ public class MongoConfiguration {
     }
 
     /**
-     * The {@link MongoProperties.Ssl} builder
+     * Customizer for SSL/TLS settings.
      *
-     * @return Build mongo client settings customizer instance
+     * @return A {@link MongoClientSettingsBuilderCustomizer} for SSL settings.
      */
     @Bean
     @Order(5)
     public MongoClientSettingsBuilderCustomizer sslSettings() {
         return builder -> Optional.ofNullable(properties.getSsl()).ifPresent(
                 sslSettings -> builder.applyToSslSettings(
-                        (ssl) -> ssl.enabled(sslSettings.isEnabled())
+                        ssl -> ssl.enabled(sslSettings.isEnabled())
                                 .invalidHostNameAllowed(sslSettings.isInvalidHostNameAllowed())));
     }
 

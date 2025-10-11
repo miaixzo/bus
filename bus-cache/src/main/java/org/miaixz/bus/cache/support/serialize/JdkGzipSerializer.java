@@ -35,9 +35,11 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * JDK GZIP序列化器
+ * A serializer that uses standard Java serialization followed by GZIP compression.
  * <p>
- * 基于JDK原生序列化和GZIP压缩实现的序列化器。 先使用JDK原生序列化将对象转换为字节数组，然后使用GZIP进行压缩， 可以有效减少序列化后的数据大小，适用于存储大对象或需要节省存储空间的场景。
+ * This implementation first serializes an object to a byte array using Java's native serialization, and then compresses
+ * the resulting byte array using GZIP. This can significantly reduce the size of the serialized data, making it
+ * suitable for caching large objects or in scenarios where storage space is a concern.
  * </p>
  *
  * @author Kimi Liu
@@ -46,14 +48,11 @@ import java.util.zip.GZIPOutputStream;
 public class JdkGzipSerializer extends AbstractSerializer {
 
     /**
-     * 执行序列化操作
-     * <p>
-     * 使用JDK原生序列化将对象转换为字节数组，然后使用GZIP进行压缩
-     * </p>
+     * Performs serialization by first using Java serialization and then GZIP compressing the result.
      *
-     * @param object 要序列化的对象
-     * @return 序列化并压缩后的字节数组
-     * @throws Throwable 可能抛出的异常
+     * @param object The object to be serialized.
+     * @return The serialized and compressed byte array.
+     * @throws Throwable if an I/O or serialization error occurs.
      */
     @Override
     protected byte[] doSerialize(Object object) throws Throwable {
@@ -66,14 +65,11 @@ public class JdkGzipSerializer extends AbstractSerializer {
     }
 
     /**
-     * 执行反序列化操作
-     * <p>
-     * 先使用GZIP解压字节数组，然后使用JDK原生反序列化将字节数组转换为对象
-     * </p>
+     * Performs deserialization by first GZIP decompressing the byte array and then using Java deserialization.
      *
-     * @param bytes 要反序列化的字节数组
-     * @return 反序列化后的对象
-     * @throws Throwable 可能抛出的异常
+     * @param bytes The byte array to be deserialized.
+     * @return The deserialized object.
+     * @throws Throwable if an I/O, class loading, or deserialization error occurs.
      */
     @Override
     protected Object doDeserialize(byte[] bytes) throws Throwable {

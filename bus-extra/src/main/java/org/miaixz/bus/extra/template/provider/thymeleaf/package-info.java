@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Thymeleaf实现，见：https://www.thymeleaf.org/
+ * Provides an implementation for the Thymeleaf template engine. For more information about the Thymeleaf template
+ * engine, please refer to: https://www.thymeleaf.org/
  *
  * @author Kimi Liu
  * @since Java 17+

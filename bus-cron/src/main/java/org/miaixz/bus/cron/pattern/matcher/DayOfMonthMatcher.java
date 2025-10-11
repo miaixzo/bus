@@ -27,12 +27,14 @@
 */
 package org.miaixz.bus.cron.pattern.matcher;
 
-import java.util.List;
-
 import org.miaixz.bus.core.center.date.culture.en.Month;
 
+import java.util.List;
+
 /**
- * 每月第几天匹配 考虑每月的天数不同，且存在闰年情况，日匹配单独使用
+ * A matcher for the day-of-month field in a cron expression. This class handles the complexity of matching days,
+ * considering that the number of days varies per month and the existence of leap years. It has special logic for the
+ * 'L' (last day of the month) token.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,50 +42,47 @@ import org.miaixz.bus.core.center.date.culture.en.Month;
 public class DayOfMonthMatcher extends BoolArrayMatcher {
 
     /**
-     * 构造
+     * Constructs a new DayOfMonthMatcher.
      *
-     * @param intValueList 匹配的日值
+     * @param intValueList A list of integer values for the days to match.
      */
     public DayOfMonthMatcher(final List<Integer> intValueList) {
         super(intValueList);
     }
 
     /**
-     * 获取最后一天
+     * Gets the last day of the given month.
      *
-     * @param month      月，base1
-     * @param isLeapYear 是否闰年
-     * @return 最后一天
+     * @param month      The month (1-based).
+     * @param isLeapYear Whether it is a leap year.
+     * @return The last day of the month.
      */
     private static int getLastDay(final int month, final boolean isLeapYear) {
         return Month.getLastDay(month - 1, isLeapYear);
     }
 
     /**
-     * 给定的日期是否匹配当前匹配器
+     * Checks if the given day of the month matches this matcher for a specific month and year.
      *
-     * @param value      被检查的值，此处为日
-     * @param month      实际的月份，从1开始
-     * @param isLeapYear 是否闰年
-     * @return 是否匹配
+     * @param value      The day of the month to check.
+     * @param month      The actual month (1-based).
+     * @param isLeapYear Whether it is a leap year.
+     * @return {@code true} if it matches, {@code false} otherwise.
      */
     public boolean match(final int value, final int month, final boolean isLeapYear) {
-        return (super.test(value) // 在约定日范围内的某一天
-                // 匹配器中用户定义了最后一天（31表示最后一天）
+        return (super.test(value) // Matches a specific day defined in the list
+                // Or matches the last day of the month if 'L' (represented by 31) was specified.
                 || matchLastDay(value, getLastDay(month, isLeapYear)));
     }
 
     /**
-     * 获取指定值之后的匹配值，也可以是指定值本身 如果表达式中存在最后一天（如使用"L"），则：
-     * <ul>
-     * <li>4月、6月、9月、11月最多匹配到30日</li>
-     * <li>4月闰年匹配到29日，非闰年28日</li>
-     * </ul>
+     * Gets the next matching value at or after the given value for a specific month. If the expression contains 'L'
+     * (last day), this method correctly handles the varying number of days in each month.
      *
-     * @param value      指定的值
-     * @param month      月份，从1开始
-     * @param isLeapYear 是否为闰年
-     * @return 匹配到的值或之后的值
+     * @param value      The value to start searching from.
+     * @param month      The month (1-based).
+     * @param isLeapYear Whether it is a leap year.
+     * @return The next matching value.
      */
     public int nextAfter(int value, final int month, final boolean isLeapYear) {
         final int minValue = getMinValue(month, isLeapYear);
@@ -92,7 +91,7 @@ public class DayOfMonthMatcher extends BoolArrayMatcher {
             while (value < bValues.length) {
                 if (bValues[value]) {
                     if (31 == value) {
-                        // value == lastDay
+                        // If the value is 31 (representing 'L'), return the actual last day of the month.
                         return getLastDay(month, isLeapYear);
                     }
                     return value;
@@ -101,42 +100,40 @@ public class DayOfMonthMatcher extends BoolArrayMatcher {
             }
         }
 
-        // 两种情况返回最小值
-        // 一是给定值小于最小值，那下一个匹配值就是最小值
-        // 二是给定值大于最大值，那下一个匹配值也是下一轮的最小值
+        // Returns the minimum value in two cases:
+        // 1. The given value is less than the minimum value, so the next match is the minimum value.
+        // 2. The given value is greater than the maximum value, so the next match is the minimum value of the next
+        // cycle.
         return minValue;
     }
 
     /**
-     * 获取匹配的最小值
+     * Gets the minimum matching value for the given month. If 'L' is specified, this will return the actual last day of
+     * the given month.
      *
-     * @param month      月，base1
-     * @param isLeapYear 是否闰年
-     * @return 匹配的最小值
+     * @param month      The month (1-based).
+     * @param isLeapYear Whether it is a leap year.
+     * @return The minimum matching value.
      */
     public int getMinValue(final int month, final boolean isLeapYear) {
         final int minValue = super.getMinValue();
         if (31 == minValue) {
-            // 用户指定了 L 等表示最后一天
+            // If the user specified 'L' (represented by 31), the minimum value is the last day of the month.
             return getLastDay(month, isLeapYear);
         }
         return minValue;
     }
 
     /**
-     * 是否匹配本月最后一天，规则如下：
-     * 
-     * <pre>
-     * 1、闰年2月匹配是否为29
-     * 2、其它月份是否匹配最后一天的日期（可能为30或者31）
-     * 3、表达式包含最后一天（使用31表示）
-     * </pre>
+     * Checks if the value matches the last day of the month. This is true if the expression included 'L' (represented
+     * by 31) and the value is the actual last day of the given month.
      *
-     * @param value   被检查的值
-     * @param lastDay 月份的最后一天
-     * @return 是否为本月最后一天
+     * @param value   The day value to check.
+     * @param lastDay The actual last day of the current month.
+     * @return {@code true} if it's a match for the last day, {@code false} otherwise.
      */
     private boolean matchLastDay(final int value, final int lastDay) {
+        // The value > 27 is an optimization.
         return value > 27 && test(31) && value == lastDay;
     }
 

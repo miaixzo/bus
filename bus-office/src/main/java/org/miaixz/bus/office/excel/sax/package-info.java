@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Sax方式操作Excel方式的封装
+ * Provides encapsulated operations for Excel using SAX parsing.
  *
  * @author Kimi Liu
  * @since Java 17+

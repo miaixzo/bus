@@ -37,11 +37,11 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
 
 /**
- * 查找表工厂类，用于创建和管理DICOM图像的查找表(LUT)。
- *
+ * A factory class for creating and managing Lookup Tables (LUTs) for DICOM image rendering.
  * <p>
- * 该类负责处理DICOM图像的模态LUT、VOI LUT(值感兴趣查找表)和表现LUT， 以便正确地将存储的像素值转换为显示值。它支持自动窗口设置、手动窗口设置， 以及各种DICOM图像类型的特殊处理。
- * </p>
+ * This class is responsible for processing Modality LUTs, VOI (Value of Interest) LUTs, and Presentation LUTs to
+ * correctly transform stored pixel values into display values. It supports automatic and manual window/level
+ * adjustments, as well as special handling for various DICOM image types.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,65 +49,65 @@ import org.miaixz.bus.image.galaxy.data.VR;
 public class LookupTableFactory {
 
     /**
-     * X射线血管造影和X射线透视相关的SOP类UID数组
+     * Array of SOP Class UIDs for X-Ray Angiography and Radiofluoroscopy images, which have special LUT handling.
      */
     private static final String[] XA_XRF_CUIDS = { UID.XRayAngiographicImageStorage.uid,
             UID.XRayRadiofluoroscopicImageStorage.uid, UID.XRayAngiographicBiPlaneImageStorage.uid };
     /**
-     * 像素强度关系关键字数组
+     * Keywords for Pixel Intensity Relationship that indicate special LUT processing.
      */
     private static final String[] LOG_DISP = { "LOG", "DISP" };
     /**
-     * 存储值对象
+     * Describes the properties of the stored pixel values (bits stored, signed/unsigned).
      */
     private final StoredValue storedValue;
     /**
-     * 重置斜率
+     * The Rescale Slope value from the DICOM attributes.
      */
     private float rescaleSlope = 1;
     /**
-     * 重置截距
+     * The Rescale Intercept value from the DICOM attributes.
      */
     private float rescaleIntercept = 0;
     /**
-     * 模态LUT
+     * The Modality LUT.
      */
-    private org.miaixz.bus.image.nimble.LookupTable modalityLUT;
+    private LookupTable modalityLUT;
     /**
-     * 窗位
+     * The Window Center value for VOI transformation.
      */
     private float windowCenter;
     /**
-     * 窗宽
+     * The Window Width value for VOI transformation.
      */
     private float windowWidth;
     /**
-     * VOI LUT
+     * The VOI (Value of Interest) LUT.
      */
-    private org.miaixz.bus.image.nimble.LookupTable voiLUT;
+    private LookupTable voiLUT;
     /**
-     * 表现LUT
+     * The Presentation LUT.
      */
-    private org.miaixz.bus.image.nimble.LookupTable presentationLUT;
+    private LookupTable presentationLUT;
     /**
-     * 是否反转
+     * A flag indicating if the final output should be inverted.
      */
     private boolean inverse;
 
     /**
-     * 构造方法
+     * Constructs a LookupTableFactory for a given pixel data storage format.
      *
-     * @param storedValue 存储值对象
+     * @param storedValue An object describing the properties of the stored pixel values.
      */
     public LookupTableFactory(StoredValue storedValue) {
         this.storedValue = storedValue;
     }
 
     /**
-     * 判断是否应用模态LUT
+     * Determines whether a Modality LUT should be applied based on the SOP Class and Pixel Intensity Relationship.
      *
-     * @param attrs DICOM属性对象
-     * @return 如果应用模态LUT返回true，否则返回false
+     * @param attrs The DICOM attributes of the image.
+     * @return {@code true} if the Modality LUT should be applied, {@code false} otherwise.
      */
     public static boolean applyModalityLUT(Attributes attrs) {
         return !(Builder.contains(XA_XRF_CUIDS, attrs.getString(Tag.SOPClassUID))
@@ -115,11 +115,11 @@ public class LookupTableFactory {
     }
 
     /**
-     * 将数据长度减半
+     * Extracts either the high or low bytes from a 16-bit-per-entry LUT data array.
      *
-     * @param data 原始数据
-     * @param hilo 高低位标志
-     * @return 减半后的数据
+     * @param data The source byte array containing interleaved 16-bit data.
+     * @param hilo 0 for the low byte, 1 for the high byte.
+     * @return A new byte array containing only the specified bytes.
      */
     static byte[] halfLength(byte[] data, int hilo) {
         byte[] bs = new byte[data.length >> 1];
@@ -129,22 +129,20 @@ public class LookupTableFactory {
     }
 
     /**
-     * 计算以2为底的对数
+     * Calculates the integer base-2 logarithm of a value, which is equivalent to finding the position of the most
+     * significant bit.
      *
-     * @param value 输入值
-     * @return 以2为底的对数值
+     * @param value The input value.
+     * @return The floor of log2(value).
      */
     private static int log2(int value) {
-        int i = 0;
-        while ((value >>> i) != 0)
-            ++i;
-        return i - 1;
+        return 31 - Integer.numberOfLeadingZeros(value);
     }
 
     /**
-     * 设置模态LUT
+     * Configures the Modality LUT based on the provided DICOM attributes.
      *
-     * @param attrs DICOM属性对象
+     * @param attrs The DICOM attributes.
      */
     public void setModalityLUT(Attributes attrs) {
         rescaleIntercept = attrs.getFloat(Tag.RescaleIntercept, 0);
@@ -153,19 +151,21 @@ public class LookupTableFactory {
     }
 
     /**
-     * 设置表现LUT
+     * Configures the Presentation LUT based on the provided DICOM attributes.
      *
-     * @param attrs DICOM属性对象
+     * @param attrs The DICOM attributes.
      */
     public void setPresentationLUT(Attributes attrs) {
         setPresentationLUT(attrs, false);
     }
 
     /**
-     * 设置表现LUT
+     * Configures the Presentation LUT based on the provided DICOM attributes, with an option to ignore the Presentation
+     * LUT Shape.
      *
-     * @param attrs                      DICOM属性对象
-     * @param ignorePresentationLUTShape 是否忽略表现LUT形状
+     * @param attrs                      The DICOM attributes.
+     * @param ignorePresentationLUTShape If {@code true}, the Presentation LUT Shape is ignored and inversion is
+     *                                   determined by Photometric Interpretation.
      */
     public void setPresentationLUT(Attributes attrs, boolean ignorePresentationLUTShape) {
         Attributes pLUT = attrs.getNestedDataset(Tag.PresentationLUTSequence);
@@ -188,10 +188,10 @@ public class LookupTableFactory {
     }
 
     /**
-     * 重置偏移量
+     * Creates a copy of a LUT descriptor array with the offset reset to zero.
      *
-     * @param desc LUT描述符数组
-     * @return 重置偏移量后的LUT描述符数组
+     * @param desc The original LUT descriptor array.
+     * @return A new LUT descriptor array with the offset at index 1 set to 0.
      */
     private int[] resetOffset(int[] desc) {
         if (desc[1] == 0)
@@ -202,30 +202,31 @@ public class LookupTableFactory {
     }
 
     /**
-     * 设置窗位
+     * Sets the Window Center for VOI transformation.
      *
-     * @param windowCenter 窗位值
+     * @param windowCenter The Window Center value.
      */
     public void setWindowCenter(float windowCenter) {
         this.windowCenter = windowCenter;
     }
 
     /**
-     * 设置窗宽
+     * Sets the Window Width for VOI transformation.
      *
-     * @param windowWidth 窗宽值
+     * @param windowWidth The Window Width value.
      */
     public void setWindowWidth(float windowWidth) {
         this.windowWidth = windowWidth;
     }
 
     /**
-     * 设置VOI(值感兴趣)参数
+     * Configures the VOI (Value of Interest) transformation based on DICOM attributes. It selects either a Window/Level
+     * pair or a VOI LUT sequence item.
      *
-     * @param img          DICOM图像属性
-     * @param windowIndex  窗口索引
-     * @param voiLUTIndex  VOI LUT索引
-     * @param preferWindow 是否优先使用窗口
+     * @param img          The DICOM attributes.
+     * @param windowIndex  The index of the Window Center/Width pair to use if multiple are present.
+     * @param voiLUTIndex  The index of the VOI LUT sequence item to use.
+     * @param preferWindow If {@code true}, Window/Level is preferred even if a VOI LUT is present.
      */
     public void setVOI(Attributes img, int windowIndex, int voiLUTIndex, boolean preferWindow) {
         if (img == null)
@@ -248,30 +249,31 @@ public class LookupTableFactory {
     }
 
     /**
-     * 调整VOI LUT描述符
+     * Adjusts the VOI LUT descriptor if it appears to be 16-bit but only uses the lower 8 bits. This is a workaround
+     * for certain types of data.
      *
-     * @param vLUT VOI LUT属性
+     * @param vLUT The VOI LUT attributes.
      */
     private void adjustVOILUTDescriptor(Attributes vLUT) {
         int[] desc = vLUT.getInts(Tag.LUTDescriptor);
         byte[] data;
         if (desc != null && desc.length == 3 && desc[2] == 16 && (data = vLUT.getSafeBytes(Tag.LUTData)) != null) {
             int hiByte = 0;
-            for (int i = vLUT.bigEndian() ? 0 : 1; i < data.length; i++, i++)
+            for (int i = vLUT.bigEndian() ? 0 : 1; i < data.length; i += 2)
                 hiByte |= data[i];
             if ((hiByte & 0x80) == 0) {
-                desc[2] = 40 - Integer.numberOfLeadingZeros(hiByte & 0xFF);
-                vLUT.setInt(Tag.LUTDescriptor, VR.SS, desc);
+                desc[2] = 8 + (31 - Integer.numberOfLeadingZeros(hiByte & 0xFF));
+                vLUT.setInt(Tag.LUTDescriptor, VR.US, desc);
             }
         }
     }
 
     /**
-     * 创建查找表
+     * Creates a {@link LookupTable} from a DICOM sequence item.
      *
-     * @param inBits 输入位数
-     * @param attrs  DICOM属性对象
-     * @return 创建的查找表
+     * @param inBits The bit depth of the input data for the LUT.
+     * @param attrs  The attributes of the LUT sequence item.
+     * @return A new {@link LookupTable}, or {@code null} if the attributes are invalid.
      */
     private LookupTable createLUT(StoredValue inBits, Attributes attrs) {
         if (attrs == null)
@@ -280,28 +282,28 @@ public class LookupTableFactory {
     }
 
     /**
-     * 创建查找表
+     * Creates a {@link LookupTable} from its core components.
      *
-     * @param inBits    输入位数
-     * @param desc      LUT描述符数组
-     * @param data      LUT数据
-     * @param bigEndian 是否大端序
-     * @return 创建的查找表
+     * @param inBits    The bit depth of the input data.
+     * @param desc      The LUT Descriptor attribute (entry count, first value mapped, bits per entry).
+     * @param data      The LUT Data as a byte array.
+     * @param bigEndian {@code true} if the LUT data is big-endian.
+     * @return A new {@link LookupTable}, or {@code null} if the components are invalid.
      */
     private LookupTable createLUT(StoredValue inBits, int[] desc, byte[] data, boolean bigEndian) {
-        if (desc == null)
+        if (desc == null || desc.length != 3 || data == null) {
             return null;
-        if (desc.length != 3)
-            return null;
+        }
+
         int len = desc[0] == 0 ? 0x10000 : desc[0];
         int offset = (short) desc[1];
         int outBits = desc[2];
-        if (data == null)
-            return null;
-        if (data.length == len << 1) {
+
+        if (data.length == len << 1) { // 16-bit LUT data
+            if (outBits > 16) {
+                return null;
+            }
             if (outBits > 8) {
-                if (outBits > 16)
-                    return null;
                 short[] ss = new short[len];
                 if (bigEndian)
                     for (int i = 0; i < ss.length; i++)
@@ -311,74 +313,52 @@ public class LookupTableFactory {
                         ss[i] = (short) ByteKit.bytesToShortLE(data, i << 1);
                 return new ShortLookupTable(inBits, outBits, offset, ss);
             }
-            // 填充高位 -> 使用低位
+            // If outBits <= 8 but data is 16-bit, assume the useful data is in the low byte.
             data = halfLength(data, bigEndian ? 1 : 0);
         }
-        if (data.length != len)
+
+        if (data.length != len || outBits > 8) {
             return null;
-        if (outBits > 8)
-            return null;
+        }
         return new ByteLookupTable(inBits, outBits, offset, data);
     }
 
     /**
-     * 创建查找表
+     * Creates the final, combined lookup table for rendering. This method combines the Modality LUT, VOI LUT (or
+     * window/level), and Presentation LUT.
      *
-     * @param outBits 输出位数
-     * @return 创建的查找表
+     * @param outBits The desired bit depth for the final output.
+     * @return The final, combined {@link LookupTable}.
      */
     public LookupTable createLUT(int outBits) {
         LookupTable lut = combineModalityVOILUT(presentationLUT != null ? log2(presentationLUT.length()) : outBits);
         if (presentationLUT != null) {
             lut = lut.combine(presentationLUT.adjustOutBits(outBits));
-        } else if (inverse)
+        } else if (inverse) {
             lut.inverse();
+        }
         return lut;
     }
 
     /**
-     * 组合模态LUT和VOI LUT
+     * Combines the Modality and VOI LUTs into a single lookup table. If a VOI LUT is not explicitly defined, a linear
+     * LUT is generated from the window/level parameters.
      *
-     * @param outBits 输出位数
-     * @return 组合后的查找表
+     * @param outBits The desired output bit depth for the combined LUT.
+     * @return The combined Modality and VOI {@link LookupTable}.
      */
     private LookupTable combineModalityVOILUT(int outBits) {
-        float m = rescaleSlope;
-        float b = rescaleIntercept;
-        LookupTable modalityLUT = this.modalityLUT;
         LookupTable lut = this.voiLUT;
         if (lut == null) {
-            float c = windowCenter;
-            float w = windowWidth;
-            if (w == 0 && modalityLUT != null)
+            if (windowWidth == 0 && modalityLUT != null) {
                 return modalityLUT.adjustOutBits(outBits);
-            int size, offset;
-            StoredValue inBits = modalityLUT != null ? new StoredValue.Unsigned(modalityLUT.outBits) : storedValue;
-            int minOut = 0;
-            int maxOut = (1 << outBits) - 1;
-            if (w != 0) {
-                float M = Math.abs(m);
-                size = Math.max(2, Math.round(w / M));
-                offset = Math.round((c - w / 2 - b) / M);
-                int minIndex = inBits.minValue() - offset;
-                int maxIndex = inBits.maxValue() - offset;
-                int size_1 = size - 1;
-                int midIndex = size_1 / 2;
-                if (minIndex > 0) {
-                    offset += minIndex;
-                    size -= minIndex;
-                    minOut = (minIndex * maxOut + midIndex) / size_1;
-                }
-                if (maxIndex < size_1) {
-                    size -= size_1 - maxIndex;
-                    maxOut = (maxIndex * maxOut + midIndex) / size_1;
-                }
-            } else {
-                offset = inBits.minValue();
-                size = inBits.maxValue() - inBits.minValue() + 1;
             }
-            lut = outBits > 8 ? new ShortLookupTable(inBits, outBits, minOut, maxOut, offset, size, m < 0)
-                    : new ByteLookupTable(inBits, outBits, minOut, maxOut, offset, size, m < 0);
+            StoredValue inBits = modalityLUT != null ? new StoredValue.Unsigned(modalityLUT.outBits) : storedValue;
+            int offset = Math.round((windowCenter - windowWidth / 2 - rescaleIntercept) / rescaleSlope);
+            int size = Math.max(2, Math.round(windowWidth / Math.abs(rescaleSlope)));
+            lut = outBits > 8
+                    ? new ShortLookupTable(inBits, outBits, 0, (1 << outBits) - 1, offset, size, rescaleSlope < 0)
+                    : new ByteLookupTable(inBits, outBits, 0, (1 << outBits) - 1, offset, size, rescaleSlope < 0);
         } else {
             lut = lut.adjustOutBits(outBits);
         }
@@ -386,23 +366,24 @@ public class LookupTableFactory {
     }
 
     /**
-     * 自动窗口设置
+     * Automatically calculates and sets the window center and width based on the image's pixel data range.
      *
-     * @param img    DICOM图像属性
-     * @param raster 图像光栅
-     * @return 如果成功设置自动窗口返回true，否则返回false
+     * @param img    The DICOM attributes.
+     * @param raster The image raster data.
+     * @return {@code true} if auto-windowing was successful, {@code false} otherwise.
      */
     public boolean autoWindowing(Attributes img, Raster raster) {
         return autoWindowing(img, raster, false);
     }
 
     /**
-     * 自动窗口设置
+     * Automatically calculates and sets the window center and width, with an option to store the values back into the
+     * DICOM attributes.
      *
-     * @param img           DICOM图像属性
-     * @param raster        图像光栅
-     * @param addAutoWindow 是否添加自动窗口信息到图像属性
-     * @return 如果成功设置自动窗口返回true，否则返回false
+     * @param img           The DICOM attributes.
+     * @param raster        The image raster data.
+     * @param addAutoWindow If {@code true}, the calculated window center and width are added to the attributes.
+     * @return {@code true} if auto-windowing was successful, {@code false} otherwise.
      */
     public boolean autoWindowing(Attributes img, Raster raster, boolean addAutoWindow) {
         if (modalityLUT != null || voiLUT != null || windowWidth != 0)
@@ -410,7 +391,7 @@ public class LookupTableFactory {
         int[] min_max = calcMinMax(raster);
         if (min_max[0] == min_max[1])
             return false;
-        windowCenter = (min_max[0] + min_max[1] + 1) / 2 * rescaleSlope + rescaleIntercept;
+        windowCenter = (min_max[0] + min_max[1] + 1) / 2f * rescaleSlope + rescaleIntercept;
         windowWidth = Math.abs((min_max[1] + 1 - min_max[0]) * rescaleSlope);
         if (addAutoWindow) {
             img.setFloat(Tag.WindowCenter, VR.DS, windowCenter);
@@ -420,36 +401,30 @@ public class LookupTableFactory {
     }
 
     /**
-     * 计算光栅数据的最小值和最大值
+     * Calculates the minimum and maximum pixel values from a raster.
      *
-     * @param raster 图像光栅
-     * @return 包含最小值和最大值的数组
+     * @param raster The image raster.
+     * @return An array containing the minimum and maximum values.
      */
     private int[] calcMinMax(Raster raster) {
         ComponentSampleModel sm = (ComponentSampleModel) raster.getSampleModel();
         DataBuffer dataBuffer = raster.getDataBuffer();
-        switch (dataBuffer.getDataType()) {
-            case DataBuffer.TYPE_BYTE:
-                return calcMinMax(storedValue, sm, ((DataBufferByte) dataBuffer).getData());
-
-            case DataBuffer.TYPE_USHORT:
-                return calcMinMax(storedValue, sm, ((DataBufferUShort) dataBuffer).getData());
-
-            case DataBuffer.TYPE_SHORT:
-                return calcMinMax(storedValue, sm, ((DataBufferShort) dataBuffer).getData());
-
-            default:
-                throw new UnsupportedOperationException("DataBuffer: " + dataBuffer.getClass() + " not supported");
-        }
+        return switch (dataBuffer.getDataType()) {
+            case DataBuffer.TYPE_BYTE -> calcMinMax(storedValue, sm, ((DataBufferByte) dataBuffer).getData());
+            case DataBuffer.TYPE_USHORT -> calcMinMax(storedValue, sm, ((DataBufferUShort) dataBuffer).getData());
+            case DataBuffer.TYPE_SHORT -> calcMinMax(storedValue, sm, ((DataBufferShort) dataBuffer).getData());
+            default -> throw new UnsupportedOperationException(
+                    "DataBuffer: " + dataBuffer.getClass() + " not supported");
+        };
     }
 
     /**
-     * 计算字节数组的最小值和最大值
+     * Calculates the min/max values for a byte array of pixel data.
      *
-     * @param storedValue 存储值对象
-     * @param sm          组件采样模型
-     * @param data        字节数组数据
-     * @return 包含最小值和最大值的数组
+     * @param storedValue The stored value properties.
+     * @param sm          The sample model.
+     * @param data        The pixel data.
+     * @return An array with {min, max}.
      */
     private int[] calcMinMax(StoredValue storedValue, ComponentSampleModel sm, byte[] data) {
         int min = Integer.MAX_VALUE;
@@ -457,7 +432,7 @@ public class LookupTableFactory {
         int w = sm.getWidth();
         int h = sm.getHeight();
         int stride = sm.getScanlineStride();
-        for (int y = 0; y < h; y++)
+        for (int y = 0; y < h; y++) {
             for (int i = y * stride, end = i + w; i < end;) {
                 int val = storedValue.valueOf(data[i++]);
                 if (val < min)
@@ -465,16 +440,17 @@ public class LookupTableFactory {
                 if (val > max)
                     max = val;
             }
+        }
         return new int[] { min, max };
     }
 
     /**
-     * 计算短整型数组的最小值和最大值
+     * Calculates the min/max values for a short array of pixel data.
      *
-     * @param storedValue 存储值对象
-     * @param sm          组件采样模型
-     * @param data        短整型数组数据
-     * @return 包含最小值和最大值的数组
+     * @param storedValue The stored value properties.
+     * @param sm          The sample model.
+     * @param data        The pixel data.
+     * @return An array with {min, max}.
      */
     private int[] calcMinMax(StoredValue storedValue, ComponentSampleModel sm, short[] data) {
         int min = Integer.MAX_VALUE;
@@ -482,7 +458,7 @@ public class LookupTableFactory {
         int w = sm.getWidth();
         int h = sm.getHeight();
         int stride = sm.getScanlineStride();
-        for (int y = 0; y < h; y++)
+        for (int y = 0; y < h; y++) {
             for (int i = y * stride, end = i + w; i < end;) {
                 int val = storedValue.valueOf(data[i++]);
                 if (val < min)
@@ -490,6 +466,7 @@ public class LookupTableFactory {
                 if (val > max)
                     max = val;
             }
+        }
         return new int[] { min, max };
     }
 

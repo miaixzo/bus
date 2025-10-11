@@ -45,24 +45,38 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Teambition 登录
+ * Teambition login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TeambitionProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code TeambitionProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public TeambitionProvider(Context context) {
         super(context, Registry.TEAMBITION);
     }
 
+    /**
+     * Constructs a {@code TeambitionProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public TeambitionProvider(Context context, CacheX cache) {
         super(context, Registry.TEAMBITION, cache);
     }
 
     /**
-     * @param callback 回调返回的参数
-     * @return 所有信息
+     * Retrieves the access token from Teambition's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
     public AuthToken getAccessToken(Callback callback) {
@@ -81,6 +95,13 @@ public class TeambitionProvider extends AbstractProvider {
                 .refreshToken((String) accessTokenObject.get("refresh_token")).build();
     }
 
+    /**
+     * Retrieves user information from Teambition's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String accessToken = authToken.getAccessToken();
@@ -101,6 +122,13 @@ public class TeambitionProvider extends AbstractProvider {
                 .token(authToken).source(complex.toString()).build();
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         String uid = authToken.getUid();
@@ -122,9 +150,10 @@ public class TeambitionProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response indicates an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("message") && object.containsKey("name")) {

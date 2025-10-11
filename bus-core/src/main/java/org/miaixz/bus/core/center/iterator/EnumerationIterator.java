@@ -33,9 +33,10 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 /**
- * {@link Enumeration}对象转{@link Iterator}对象
+ * Adapts an {@link Enumeration} to the {@link Iterator} interface. This class allows treating an {@link Enumeration} as
+ * an {@link Iterator}.
  *
- * @param <E> 元素类型
+ * @param <E> the type of elements returned by this iterator
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -44,27 +45,47 @@ public class EnumerationIterator<E> implements IterableIterator<E>, Serializable
     @Serial
     private static final long serialVersionUID = 2852259861780L;
 
+    /**
+     * The underlying {@link Enumeration} being adapted.
+     */
     private final Enumeration<E> e;
 
     /**
-     * 构造
+     * Constructs an {@code EnumerationIterator} from the given {@link Enumeration}.
      *
-     * @param enumeration {@link Enumeration}对象
+     * @param enumeration the {@link Enumeration} to adapt
      */
     public EnumerationIterator(final Enumeration<E> enumeration) {
         this.e = enumeration;
     }
 
+    /**
+     * Returns {@code true} if this enumeration has more elements. (In other words, returns {@code true} if
+     * {@link #next} would return an element rather than throwing an exception.)
+     *
+     * @return {@code true} if the enumeration has more elements
+     */
     @Override
     public boolean hasNext() {
         return e.hasMoreElements();
     }
 
+    /**
+     * Returns the next element of this enumeration.
+     *
+     * @return the next element of this enumeration
+     * @throws java.util.NoSuchElementException if this enumeration has no more elements
+     */
     @Override
     public E next() {
         return e.nextElement();
     }
 
+    /**
+     * This operation is not supported by this iterator.
+     *
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public void remove() {
         throw new UnsupportedOperationException();

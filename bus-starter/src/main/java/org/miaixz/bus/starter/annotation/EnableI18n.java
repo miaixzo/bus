@@ -27,22 +27,26 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.i18n.I18nConfiguration;
 import org.miaixz.bus.starter.i18n.I18nMessage;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用国际化支持
+ * Enables internationalization (i18n) support.
+ * <p>
+ * This annotation, when placed on a Spring {@code @Configuration} class, imports the {@link I18nConfiguration} and the
+ * {@link I18nMessage} helper bean. This sets up the necessary {@link org.springframework.context.MessageSource} and
+ * provides a convenient way to access localized messages.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Inherited
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
 @Import({ I18nConfiguration.class, I18nMessage.class })
 public @interface EnableI18n {
 

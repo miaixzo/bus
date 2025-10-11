@@ -37,71 +37,91 @@ import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.MapKit;
 
 /**
- * 将行的键作为主键的{@link Table}实现 此结构为: 行=(列=值)
+ * A {@link Table} implementation that uses a row key as the primary key. The internal structure is a map where each row
+ * key maps to another map of column keys to values. Structure: {@code Map<Row, Map<Column, Value>>}.
  *
- * @param <R> 行类型
- * @param <C> 列类型
- * @param <V> 值类型
+ * @param <R> The type of the row keys.
+ * @param <C> The type of the column keys.
+ * @param <V> The type of the values.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 
+    /**
+     * The raw underlying map that stores the table data, keyed by row.
+     */
     final Map<R, Map<C, V>> raw;
     /**
-     * 列的Map创建器，用于定义Table中Value对应Map类型
+     * A builder used to create new column maps when a new row is added.
      */
     final Builder<? extends Map<C, V>> columnBuilder;
 
+    /**
+     * A cached, lazily-initialized view of the table as a map of columns to rows.
+     */
     private Map<C, Map<R, V>> columnMap;
+    /**
+     * A cached, lazily-initialized set of all unique column keys.
+     */
     private Set<C> columnKeySet;
 
     /**
-     * 构造
+     * Constructs a new, empty {@code RowKeyTable} backed by a {@link HashMap}.
      */
     public RowKeyTable() {
         this(new HashMap<>());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code RowKeyTable}.
      *
-     * @param isLinked 是否有序，有序则使用{@link java.util.LinkedHashMap}作为原始Map
+     * @param isLinked If {@code true}, the underlying maps will be {@link LinkedHashMap}s to preserve insertion order.
      */
     public RowKeyTable(final boolean isLinked) {
         this(MapKit.newHashMap(isLinked), () -> MapKit.newHashMap(isLinked));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code RowKeyTable} wrapping the specified raw map.
      *
-     * @param raw 原始Map
+     * @param raw The raw map to wrap.
      */
     public RowKeyTable(final Map<R, Map<C, V>> raw) {
         this(raw, HashMap::new);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code RowKeyTable} with a specified raw map and column map builder.
      *
-     * @param raw              原始Map
-     * @param columnMapBuilder 列的map创建器
+     * @param raw              The raw map to wrap.
+     * @param columnMapBuilder A builder for creating the inner column maps.
      */
     public RowKeyTable(final Map<R, Map<C, V>> raw, final Builder<? extends Map<C, V>> columnMapBuilder) {
         this.raw = raw;
-        this.columnBuilder = null == columnMapBuilder ? HashMap::new : columnMapBuilder;
+        this.columnBuilder = (Builder<? extends Map<C, V>>) Objects
+                .requireNonNullElseGet(columnMapBuilder, HashMap::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<R, Map<C, V>> rowMap() {
         return raw;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public V put(final R rowKey, final C columnKey, final V value) {
         return raw.computeIfAbsent(rowKey, (key) -> columnBuilder.build()).put(columnKey, value);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public V remove(final R rowKey, final C columnKey) {
         final Map<C, V> map = getRow(rowKey);
@@ -115,16 +135,25 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         return value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEmpty() {
         return raw.isEmpty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
         this.raw.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean containsColumn(final C columnKey) {
         if (columnKey == null) {
@@ -138,75 +167,124 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<C, Map<R, V>> columnMap() {
-        final Map<C, Map<R, V>> result = columnMap;
+        Map<C, Map<R, V>> result = columnMap;
         return (result == null) ? columnMap = new ColumnMap() : result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Set<C> columnKeySet() {
-        final Set<C> result = columnKeySet;
+        Set<C> result = columnKeySet;
         return (result == null) ? columnKeySet = new ColumnKeySet() : result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<C> columnKeys() {
         final Collection<Map<C, V>> values = this.raw.values();
         final List<C> result = new ArrayList<>(values.size() * 16);
         for (final Map<C, V> map : values) {
-            map.forEach((key, value) -> result.add(key));
+            result.addAll(map.keySet());
         }
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<R, V> getColumn(final C columnKey) {
         return new Column(columnKey);
     }
 
+    /**
+     * A view of the table as a map from column keys to maps of row keys to values.
+     */
     private class ColumnMap extends AbstractMap<C, Map<R, V>> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Set<Entry<C, Map<R, V>>> entrySet() {
             return new ColumnMapEntrySet();
         }
     }
 
+    /**
+     * The entry set for the {@link ColumnMap} view.
+     */
     private class ColumnMapEntrySet extends AbstractSet<Map.Entry<C, Map<R, V>>> {
 
-        private final Set<C> columnKeySet = columnKeySet();
-
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Iterator<Map.Entry<C, Map<R, V>>> iterator() {
-            return new TransIterator<>(columnKeySet.iterator(), c -> MapKit.entry(c, getColumn(c)));
+            return new TransIterator<>(columnKeySet().iterator(), c -> MapKit.entry(c, getColumn(c)));
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public int size() {
-            return columnKeySet.size();
+            return columnKeySet().size();
         }
     }
 
+    /**
+     * A view of the set of unique column keys.
+     */
     private class ColumnKeySet extends AbstractSet<C> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Iterator<C> iterator() {
             return new ColumnKeyIterator();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public int size() {
             return IteratorKit.size(iterator());
         }
     }
 
+    /**
+     * An iterator that traverses all unique column keys in the table.
+     */
     private class ColumnKeyIterator extends ComputeIterator<C> {
 
+        /**
+         * Tracks seen column keys to ensure uniqueness.
+         */
         final Map<C, V> seen = columnBuilder.build();
+        /**
+         * An iterator over all rows.
+         */
         final Iterator<Map<C, V>> mapIterator = raw.values().iterator();
-        Iterator<Map.Entry<C, V>> entryIterator = IteratorKit.empty();
+        /**
+         * An iterator over the entries in the current row's column map.
+         */
+        Iterator<Map.Entry<C, V>> entryIterator = Collections.emptyIterator();
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         protected C computeNext() {
             while (true) {
@@ -225,26 +303,49 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         }
     }
 
+    /**
+     * A view of a single column as a map from row keys to values.
+     */
     private class Column extends AbstractMap<R, V> {
 
+        /**
+         * The column key for this column view.
+         */
         final C columnKey;
 
+        /**
+         * Constructor.
+         * 
+         * @param columnKey The column key.
+         */
         Column(final C columnKey) {
             this.columnKey = columnKey;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Set<Entry<R, V>> entrySet() {
             return new EntrySet();
         }
 
+        /**
+         * A view of the entry set for a single column.
+         */
         private class EntrySet extends AbstractSet<Map.Entry<R, V>> {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public Iterator<Map.Entry<R, V>> iterator() {
                 return new EntrySetIterator();
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public int size() {
                 int size = 0;
@@ -257,10 +358,19 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
             }
         }
 
+        /**
+         * An iterator that traverses all entries in a single column.
+         */
         private class EntrySetIterator extends ComputeIterator<Entry<R, V>> {
 
+            /**
+             * An iterator over all rows in the table.
+             */
             final Iterator<Entry<R, Map<C, V>>> iterator = raw.entrySet().iterator();
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             protected Entry<R, V> computeNext() {
                 while (iterator.hasNext()) {

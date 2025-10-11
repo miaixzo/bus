@@ -32,7 +32,8 @@ import java.util.Comparator;
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
- * 字符串长度比较器，短在前
+ * Comparator for {@link CharSequence} length, sorting shorter sequences first. If lengths are equal, it performs a
+ * lexicographical comparison.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,10 +41,19 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class LengthCompare implements Comparator<CharSequence> {
 
     /**
-     * 单例的字符串长度比较器，短在前
+     * Singleton instance of {@code LengthCompare}, which sorts shorter sequences first.
      */
     public static final LengthCompare INSTANCE = new LengthCompare();
 
+    /**
+     * Compares two {@link CharSequence} objects based on their length. If the lengths are equal, a lexicographical
+     * comparison is performed on their string representations.
+     *
+     * @param o1 the first {@link CharSequence} to be compared.
+     * @param o2 the second {@link CharSequence} to be compared.
+     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater
+     *         than the second.
+     */
     @Override
     public int compare(final CharSequence o1, final CharSequence o2) {
         int result = Integer.compare(o1.length(), o2.length());

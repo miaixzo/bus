@@ -27,51 +27,93 @@
 */
 package org.miaixz.bus.http.plugin.httpv;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.ExecutorService;
-
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Callback;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+
+/**
+ * A container class for components related to task execution, lifecycle listeners, and data conversion.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
 public class CoverTasks {
 
     /**
-     * 任务监听接口
+     * A generic listener interface for intercepting task lifecycle events.
      *
+     * @param <T> The type of data associated with the event.
      * @author Kimi Liu
      * @since Java 17+
      */
-    public static interface Listener<T> {
+    public interface Listener<T> {
 
         /**
-         * 全局任务监听
+         * A global listener method that is called when a specific task event occurs.
          *
-         * @param task 所属的 CoverHttp
-         * @param data 监听内容
-         * @return 是否继续执行 task 对应的回调函数
+         * @param task The HTTP task that triggered the event.
+         * @param data The data associated with the event (e.g., a response, an exception).
+         * @return {@code true} to allow the task's own callback to be executed, {@code false} to prevent it.
          */
         boolean listen(CoverHttp<?> task, T data);
 
     }
 
     /**
+     * Manages the execution of asynchronous tasks, callbacks, and data conversions. This class orchestrates the use of
+     * I/O and main-thread executors, global listeners, and a chain of data converters.
+     *
      * @author Kimi Liu
      * @since Java 17+
      */
     public static class Executor {
 
-        private java.util.concurrent.Executor ioExecutor;
-        private java.util.concurrent.Executor mainExecutor;
-        private Downloads.Listener downloadListener;
-        private Listener<CoverResult> responseListener;
-        private Listener<IOException> exceptionListener;
-        private Listener<CoverResult.State> completeListener;
-        private Convertor[] convertors;
+        /**
+         * Executor for I/O-bound operations.
+         */
+        private final java.util.concurrent.Executor ioExecutor;
+        /**
+         * Executor for main-thread (e.g., UI) operations. Can be null.
+         */
+        private final java.util.concurrent.Executor mainExecutor;
+        /**
+         * Global listener for download progress events.
+         */
+        private final Downloads.Listener downloadListener;
+        /**
+         * Global listener for successful HTTP response events.
+         */
+        private final Listener<CoverResult> responseListener;
+        /**
+         * Global listener for exceptions that occur during HTTP tasks.
+         */
+        private final Listener<IOException> exceptionListener;
+        /**
+         * Global listener for task completion events (both success and failure).
+         */
+        private final Listener<CoverResult.State> completeListener;
+        /**
+         * An array of converters for serializing and deserializing data.
+         */
+        private final Convertor[] convertors;
 
+        /**
+         * Constructs a new Executor.
+         *
+         * @param ioExecutor        The executor for I/O tasks.
+         * @param mainExecutor      The executor for main-thread tasks.
+         * @param downloadListener  The global download listener.
+         * @param responseListener  The global response listener.
+         * @param exceptionListener The global exception listener.
+         * @param completeListener  The global completion listener.
+         * @param convertors        The array of data converters.
+         */
         public Executor(java.util.concurrent.Executor ioExecutor, java.util.concurrent.Executor mainExecutor,
                 Downloads.Listener downloadListener, Listener<CoverResult> responseListener,
                 Listener<IOException> exceptionListener, Listener<CoverResult.State> completeListener,
@@ -85,6 +127,12 @@ public class CoverTasks {
             this.convertors = convertors;
         }
 
+        /**
+         * Gets the appropriate executor based on the {@code onIo} flag.
+         *
+         * @param onIo If {@code true}, returns the I/O executor; otherwise, returns the main executor.
+         * @return The selected executor.
+         */
         public java.util.concurrent.Executor getExecutor(boolean onIo) {
             if (onIo || null == mainExecutor) {
                 return ioExecutor;
@@ -92,6 +140,15 @@ public class CoverTasks {
             return mainExecutor;
         }
 
+        /**
+         * Creates a new download task handler.
+         *
+         * @param coverHttp The HTTP task associated with the download.
+         * @param file      The destination file.
+         * @param input     The input stream of the data to be downloaded.
+         * @param skipBytes The number of bytes to skip from the beginning.
+         * @return A new {@link Downloads} handler.
+         */
         public Downloads download(CoverHttp<?> coverHttp, File file, InputStream input, long skipBytes) {
             Downloads downloads = new Downloads(file, input, this, skipBytes);
             if (null != coverHttp && null != downloadListener) {
@@ -100,6 +157,13 @@ public class CoverTasks {
             return downloads;
         }
 
+        /**
+         * Executes a command on the appropriate thread pool.
+         *
+         * @param command The command to execute.
+         * @param onIo    If {@code true}, the command is executed on the I/O thread pool; otherwise, on the main thread
+         *                pool.
+         */
         public void execute(Runnable command, boolean onIo) {
             java.util.concurrent.Executor executor = ioExecutor;
             if (null != mainExecutor && !onIo) {
@@ -108,6 +172,14 @@ public class CoverTasks {
             executor.execute(command);
         }
 
+        /**
+         * Executes the response callback for a task, respecting the global response listener.
+         *
+         * @param task       The HTTP task.
+         * @param onResponse The specific callback for this task.
+         * @param result     The successful result.
+         * @param onIo       If {@code true}, the callback is executed on the I/O thread pool.
+         */
         public void executeOnResponse(
                 CoverHttp<?> task,
                 Callback<CoverResult> onResponse,
@@ -122,6 +194,15 @@ public class CoverTasks {
             }
         }
 
+        /**
+         * Executes the exception callback for a task, respecting the global exception listener.
+         *
+         * @param task        The HTTP task.
+         * @param onException The specific callback for this task.
+         * @param error       The exception that occurred.
+         * @param onIo        If {@code true}, the callback is executed on the I/O thread pool.
+         * @return {@code true} if an exception handler (either global or specific) was invoked.
+         */
         public boolean executeOnException(
                 CoverHttp<?> task,
                 Callback<IOException> onException,
@@ -139,6 +220,14 @@ public class CoverTasks {
             return true;
         }
 
+        /**
+         * Executes the completion callback for a task, respecting the global completion listener.
+         *
+         * @param task       The HTTP task.
+         * @param onComplete The specific callback for this task.
+         * @param state      The final state of the task.
+         * @param onIo       If {@code true}, the callback is executed on the I/O thread pool.
+         */
         public void executeOnComplete(
                 CoverHttp<?> task,
                 Callback<CoverResult.State> onComplete,
@@ -153,10 +242,27 @@ public class CoverTasks {
             }
         }
 
+        /**
+         * Performs a data conversion by applying the given function to a suitable converter.
+         *
+         * @param callable The conversion function to apply.
+         * @param <V>      The type of the converted data.
+         * @return The converted data.
+         */
         public <V> V doMsgConvert(ConvertFunc<V> callable) {
             return doMsgConvert(null, callable).data;
         }
 
+        /**
+         * Performs a data conversion by applying the given function to a suitable converter, optionally filtered by
+         * type.
+         *
+         * @param type     The content type to match (e.g., "json"). Can be null.
+         * @param callable The conversion function to apply.
+         * @param <V>      The type of the converted data.
+         * @return A {@link Data} object containing the converted data and its content type.
+         * @throws InternalException if no matching converter is found or if conversion fails.
+         */
         public <V> Data<V> doMsgConvert(String type, ConvertFunc<V> callable) {
             Throwable cause = null;
             for (int i = convertors.length - 1; i >= 0; i--) {
@@ -185,9 +291,15 @@ public class CoverTasks {
                 throw new InternalException("Conversion failed", cause);
             }
 
-            throw new InternalException("No match[" + type + "]Type converter！");
+            throw new InternalException("No match[" + type + "]Type converter found!");
         }
 
+        /**
+         * Converts a simple type string to a standard MIME type.
+         *
+         * @param type The simple type (e.g., "json").
+         * @return The corresponding MIME type string.
+         */
         private String toMediaType(String type) {
             if (type != null) {
                 String lower = type.toLowerCase();
@@ -204,6 +316,12 @@ public class CoverTasks {
             return MediaType.APPLICATION_FORM_URLENCODED;
         }
 
+        /**
+         * Traverses the cause chain of a throwable to set the root cause.
+         *
+         * @param throwable The throwable to modify.
+         * @param cause     The root cause to set.
+         */
         private void initRootCause(Throwable throwable, Throwable cause) {
             Throwable lastCause = throwable.getCause();
             if (null != lastCause) {
@@ -214,7 +332,7 @@ public class CoverTasks {
         }
 
         /**
-         * 关闭线程池
+         * Shuts down the I/O and main thread pools if they are instances of {@link ExecutorService}.
          */
         public void shutdown() {
             if (null != ioExecutor && ioExecutor instanceof ExecutorService) {
@@ -225,45 +343,94 @@ public class CoverTasks {
             }
         }
 
+        /**
+         * @return The I/O executor.
+         */
         public java.util.concurrent.Executor getIoExecutor() {
             return ioExecutor;
         }
 
+        /**
+         * @return The main-thread executor.
+         */
         public java.util.concurrent.Executor getMainExecutor() {
             return mainExecutor;
         }
 
+        /**
+         * @return The global download listener.
+         */
         public Downloads.Listener getDownloadListener() {
             return downloadListener;
         }
 
+        /**
+         * @return The global response listener.
+         */
         public Listener<CoverResult> getResponseListener() {
             return responseListener;
         }
 
+        /**
+         * @return The global exception listener.
+         */
         public Listener<IOException> getExceptionListener() {
             return exceptionListener;
         }
 
+        /**
+         * @return The global completion listener.
+         */
         public Listener<CoverResult.State> getCompleteListener() {
             return completeListener;
         }
 
+        /**
+         * @return The array of configured data converters.
+         */
         public Convertor[] getConvertors() {
             return convertors;
         }
 
+        /**
+         * A functional interface for applying a conversion operation.
+         *
+         * @param <T> The return type of the conversion.
+         */
         public interface ConvertFunc<T> {
 
+            /**
+             * Applies the conversion logic using the given converter.
+             *
+             * @param convertor The converter to use.
+             * @return The result of the conversion.
+             */
             T apply(Convertor convertor);
 
         }
 
+        /**
+         * A container for holding converted data along with its content type.
+         *
+         * @param <T> The type of the data.
+         */
         public static class Data<T> {
 
+            /**
+             * The converted data.
+             */
             public T data;
+            /**
+             * The content type of the data.
+             */
             public String contentType;
 
+            /**
+             * Constructs a new Data object.
+             *
+             * @param data        The data.
+             * @param contentType The content type.
+             */
             public Data(T data, String contentType) {
                 this.data = data;
                 this.contentType = contentType;

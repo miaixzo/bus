@@ -36,16 +36,21 @@ import org.miaixz.bus.core.codec.binary.decoder.Base32Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base32Encoder;
 
 /**
- * Base32 - encodes and decodes RFC4648 Base32 (see <a href=
- * "https://datatracker.ietf.org/doc/html/rfc4648#section-6">https://datatracker.ietf.org/doc/html/rfc4648#section-6</a>
- * ) base32就是用32（2的5次方）个特定ASCII码来表示256个ASCII码。 所以，5个ASCII字符经过base32编码后会变为8个字符（公约数为40），长度增加3/5.不足8n用“=”补足。 根据RFC4648
- * Base32规范，支持两种模式：
+ * Provides Base32 encoding and decoding as defined by RFC 4648.
+ * <p>
+ * Base32 uses a 32-character set to represent binary data. Five ASCII characters are encoded into eight Base32
+ * characters, resulting in a 3/5 increase in length. Padding with '=' is used if the input data is not a multiple of 5
+ * bytes.
+ *
+ * <p>
+ * This class supports two alphabets as per RFC 4648:
  * <ul>
  * <li>Base 32 Alphabet (ABCDEFGHIJKLMNOPQRSTUVWXYZ234567)</li>
  * <li>"Extended Hex" Base 32 Alphabet (0123456789ABCDEFGHIJKLMNOPQRSTUV)</li>
  * </ul>
  *
  * @author Kimi Liu
+ * @see <a href="https://datatracker.ietf.org/doc/html/rfc4648#section-6">RFC 4648 Section 6</a>
  * @since Java 17+
  */
 public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
@@ -54,38 +59,51 @@ public class Base32Provider implements Encoder<byte[], String>, Decoder<CharSequ
     private static final long serialVersionUID = 2852258698190L;
 
     /**
-     * 单例对象
+     * Singleton instance of the Base32Provider.
      */
     public static Base32Provider INSTANCE = new Base32Provider();
 
+    /**
+     * Encodes a byte array into a Base32 string using the default alphabet.
+     *
+     * @param data The byte array to encode.
+     * @return The Base32 encoded string.
+     */
     @Override
     public String encode(final byte[] data) {
         return encode(data, false);
     }
 
     /**
-     * 编码数据
+     * Encodes a byte array into a Base32 string.
      *
-     * @param data   数据
-     * @param useHex 是否使用Hex Alphabet
-     * @return 编码后的Base32字符串
+     * @param data   The byte array to encode.
+     * @param useHex If {@code true}, the "Extended Hex" alphabet is used; otherwise, the default alphabet is used.
+     * @return The Base32 encoded string.
      */
     public String encode(final byte[] data, final boolean useHex) {
         final Base32Encoder encoder = useHex ? Base32Encoder.HEX_ENCODER : Base32Encoder.ENCODER;
         return encoder.encode(data);
     }
 
+    /**
+     * Decodes a Base32 encoded string using the default alphabet.
+     *
+     * @param encoded The Base32 string to decode.
+     * @return The decoded byte array.
+     */
     @Override
     public byte[] decode(final CharSequence encoded) {
         return decode(encoded, false);
     }
 
     /**
-     * 解码数据
+     * Decodes a Base32 encoded string.
      *
-     * @param encoded base32字符串
-     * @param useHex  是否使用Hex Alphabet
-     * @return 解码后的内容
+     * @param encoded The Base32 string to decode.
+     * @param useHex  If {@code true}, the "Extended Hex" alphabet is used for decoding; otherwise, the default alphabet
+     *                is used.
+     * @return The decoded byte array.
      */
     public byte[] decode(final CharSequence encoded, final boolean useHex) {
         final Base32Decoder decoder = useHex ? Base32Decoder.HEX_DECODER : Base32Decoder.DECODER;

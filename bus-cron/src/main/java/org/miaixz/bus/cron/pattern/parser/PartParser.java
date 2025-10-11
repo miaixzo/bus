@@ -41,16 +41,20 @@ import org.miaixz.bus.cron.pattern.Part;
 import org.miaixz.bus.cron.pattern.matcher.*;
 
 /**
- * 定时任务表达式各个部分的解析器，根据{@link Part}指定不同部分，解析为{@link PartMatcher} 每个部分支持：
+ * A parser for a single field of a cron expression. This class parses a string representation of a cron field (e.g.,
+ * for minutes, hours) into a {@link PartMatcher} that can be used to check if a given time value matches the field's
+ * constraints.
+ * <p>
+ * Each field supports the following formats:
  * <ul>
- * <li><strong>*</strong> ：表示匹配这个位置所有的时间</li>
- * <li><strong>?</strong> ：表示匹配这个位置任意的时间（与"*"作用一致）</li>
- * <li><strong>L</strong> ：表示匹配这个位置允许的最大值</li>
- * <li><strong>*&#47;2</strong> ：表示间隔时间，例如在分上，表示每两分钟，同样*可以使用数字列表代替，逗号分隔</li>
- * <li><strong>2-8</strong> ：表示连续区间，例如在分上，表示2,3,4,5,6,7,8分</li>
- * <li><strong>2,3,5,8</strong> ：表示列表</li>
- * <li><strong>wed</strong> ：表示周别名</li>
- * <li><strong>jan</strong> ：表示月别名</li>
+ * <li><strong>*</strong>: Matches all valid values for the field.</li>
+ * <li><strong>?</strong>: Matches any value (same as '*').</li>
+ * <li><strong>L</strong>: Represents the maximum allowed value for the field.</li>
+ * <li><strong>*&#47;2</strong>: An interval (e.g., every 2 minutes).</li>
+ * <li><strong>2-8</strong>: A continuous range (e.g., minutes 2 through 8).</li>
+ * <li><strong>2,3,5,8</strong>: A list of specific values.</li>
+ * <li><strong>wed</strong>: An alias for the day of the week.</li>
+ * <li><strong>jan</strong>: An alias for the month.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -61,49 +65,49 @@ public class PartParser {
     private final Part part;
 
     /**
-     * 构造
+     * Constructs a new parser for a specific part of the cron expression.
      *
-     * @param part 对应解析的部分枚举
+     * @param part The cron expression part to be parsed.
      */
     public PartParser(final Part part) {
         this.part = part;
     }
 
     /**
-     * 创建解析器
+     * Creates a new parser for a specific part of the cron expression.
      *
-     * @param part 对应解析的部分枚举
-     * @return 解析器
+     * @param part The cron expression part to be parsed.
+     * @return A new {@link PartParser} instance.
      */
     public static PartParser of(final Part part) {
         return new PartParser(part);
     }
 
     /**
-     * 是否为全匹配符 全匹配符指 * 或者 ?
+     * Checks if the given value is a wildcard character ('*' or '?').
      *
-     * @param value 被检查的值
-     * @return 是否为全匹配符
+     * @param value The string value to check.
+     * @return {@code true} if the value is a wildcard, {@code false} otherwise.
      */
     private static boolean isMatchAllString(final String value) {
         return (1 == value.length()) && (Symbol.STAR.equals(value) || "?".equals(value));
     }
 
     /**
-     * 将表达式解析为{@link PartMatcher}
+     * Parses the given expression string into a {@link PartMatcher}.
      * <ul>
-     * <li>* 或者 ? 返回{@link AlwaysTrueMatcher}</li>
-     * <li>{@link Part#DAY_OF_MONTH} 返回{@link DayOfMonthMatcher}</li>
-     * <li>{@link Part#YEAR} 返回{@link YearValueMatcher}</li>
-     * <li>其他 返回{@link BoolArrayMatcher}</li>
+     * <li>"*" or "?" returns {@link AlwaysTrueMatcher}.</li>
+     * <li>For {@link Part#DAY_OF_MONTH}, returns {@link DayOfMonthMatcher}.</li>
+     * <li>For {@link Part#YEAR}, returns {@link YearValueMatcher}.</li>
+     * <li>For all other parts, returns {@link BoolArrayMatcher}.</li>
      * </ul>
      *
-     * @param value 表达式
-     * @return {@link PartMatcher}
+     * @param value The expression string for the part.
+     * @return A {@link PartMatcher} that can evaluate the expression.
      */
     public PartMatcher parse(final String value) {
         if (isMatchAllString(value)) {
-            // 兼容Quartz的"?"表达式，不会出现互斥情况，与"*"作用相同
+            // In Quartz, '?' is used to prevent conflicts, but here it has the same effect as '*'.
             return new AlwaysTrueMatcher();
         }
 
@@ -125,18 +129,13 @@ public class PartParser {
     }
 
     /**
-     * 处理数组形式表达式 处理的形式包括：
-     * <ul>
-     * <li><strong>a</strong> 或 <strong>*</strong></li>
-     * <li><strong>a,b,c,d</strong></li>
-     * </ul>
+     * Parses a comma-separated list of values. e.g., "a,b,c,d" or "a"
      *
-     * @param value 子表达式值
-     * @return 值列表
+     * @param value The expression part string.
+     * @return A list of integer values.
      */
     private List<Integer> parseArray(final String value) {
         final List<Integer> values = new ArrayList<>();
-
         final List<String> parts = CharsBacker.split(value, Symbol.COMMA);
         for (final String part : parts) {
             ListKit.addAllIfNotContains(values, parseStep(part));
@@ -145,26 +144,25 @@ public class PartParser {
     }
 
     /**
-     * 处理间隔形式的表达式 处理的形式包括：
+     * Parses an expression that may contain a step value.
      * <ul>
      * <li><strong>a</strong> 或 <strong>*</strong></li>
      * <li><strong>a&#47;b</strong> 或 <strong>*&#47;b</strong></li>
      * <li><strong>a-b/2</strong></li>
      * </ul>
-     *
-     * @param value 表达式值
-     * @return List
+     * 
+     * @param value The expression part string.
+     * @return A list of integer values.
      */
     private List<Integer> parseStep(final String value) {
         final List<String> parts = CharsBacker.split(value, Symbol.SLASH);
         final int size = parts.size();
-
         final List<Integer> results;
-        if (size == 1) {// 普通形式
+
+        if (size == 1) { // No step value
             results = parseRange(value, -1);
-        } else if (size == 2) {// 间隔形式
-            // 步进不检查范围
-            final int step = parseNumber(parts.get(1), false);
+        } else if (size == 2) { // With step value
+            final int step = parseNumber(parts.get(1), false); // Step value is not checked against min/max
             if (step < 1) {
                 throw new CrontabException("Non positive divisor for field: [{}]", value);
             }
@@ -176,30 +174,22 @@ public class PartParser {
     }
 
     /**
-     * 处理表达式中范围表达式 处理的形式包括：
-     * <ul>
-     * <li>*</li>
-     * <li>2</li>
-     * <li>3-8</li>
-     * <li>8-3</li>
-     * <li>3-3</li>
-     * </ul>
+     * Parses a range expression. e.g., "*", "2", "3-8", "8-3", "3-3"
      *
-     * @param value 范围表达式
-     * @param step  步进
-     * @return List
+     * @param value The range expression string.
+     * @param step  The step value, or -1 if no step is specified.
+     * @return A list of integer values.
      */
     private List<Integer> parseRange(final String value, int step) {
         final List<Integer> results = new ArrayList<>();
 
-        // 全部匹配形式
+        // Handle wildcard and single-number cases
         if (value.length() <= 2) {
-            // 根据步进的第一个数字确定起始时间，类似于 12/3则从12（秒、分等）开始
             int minValue = part.getMin();
             if (!isMatchAllString(value)) {
                 minValue = Math.max(minValue, parseNumber(value, true));
             } else {
-                // 在全匹配模式下，如果步进不存在，表示步进为1
+                // If it's a wildcard and no step is defined, default to a step of 1.
                 if (step < 1) {
                     step = 1;
                 }
@@ -209,38 +199,37 @@ public class PartParser {
                 if (minValue > maxValue) {
                     throw new CrontabException("Invalid value {} > {}", minValue, maxValue);
                 }
-                // 有步进
+                // Generate values with step
                 for (int i = minValue; i <= maxValue; i += step) {
                     results.add(i);
                 }
             } else {
-                // 固定时间
+                // A single fixed value
                 results.add(minValue);
             }
             return results;
         }
 
-        // Range模式
+        // Handle range "a-b"
         final List<String> parts = CharsBacker.split(value, Symbol.MINUS);
         final int size = parts.size();
-        if (size == 1) {// 普通值
+        if (size == 1) { // A single value, possibly with a step (e.g., "20/2")
             final int v1 = parseNumber(value, true);
-            if (step > 0) {// 类似 20/2的形式
+            if (step > 0) {
                 MathKit.appendRange(v1, part.getMax(), step, results);
             } else {
                 results.add(v1);
             }
-        } else if (size == 2) {// range值
+        } else if (size == 2) { // A range value
             final int v1 = parseNumber(parts.get(0), true);
             final int v2 = parseNumber(parts.get(1), true);
             if (step < 1) {
-                // 在range模式下，如果步进不存在，表示步进为1
+                // If no step is defined in a range, default to a step of 1.
                 step = 1;
             }
-            if (v1 <= v2) {// 正常范围，例如：2-5
-                // 对于类似3-3这种形式，忽略step，即3-3/2与单值3一致
+            if (v1 <= v2) { // Normal range, e.g., 2-5
                 MathKit.appendRange(v1, v2, step, results);
-            } else {// 逆向范围，反选模式，例如：5-2
+            } else { // Reversed range, e.g., 5-2 (means from 5 to max, and from min to 2)
                 MathKit.appendRange(v1, part.getMax(), step, results);
                 MathKit.appendRange(part.getMin(), v2, step, results);
             }
@@ -251,12 +240,12 @@ public class PartParser {
     }
 
     /**
-     * 解析单个int值，支持别名
+     * Parses a string into an integer, supporting aliases.
      *
-     * @param value      被解析的值
-     * @param checkValue 是否检查值在有效范围内
-     * @return 解析结果
-     * @throws CrontabException 当无效数字或无效别名时抛出
+     * @param value      The string to parse.
+     * @param checkValue Whether to validate that the parsed value is within the part's allowed range.
+     * @return The parsed integer.
+     * @throws CrontabException if the value is not a valid number or alias.
      */
     private int parseNumber(final String value, final boolean checkValue) throws CrontabException {
         int i;
@@ -266,12 +255,12 @@ public class PartParser {
             i = parseAlias(value);
         }
 
-        // 支持负数
+        // Support negative numbers as offsets from the max value
         if (i < 0) {
             i += part.getMax();
         }
 
-        // 周日可以用0或7表示，统一转换为0
+        // Normalize Sunday (7) to 0
         if (Part.DAY_OF_WEEK.equals(this.part) && Week.SUNDAY.getIsoValue() == i) {
             i = Week.SUNDAY.ordinal();
         }
@@ -280,29 +269,29 @@ public class PartParser {
     }
 
     /**
-     * 解析别名支持包括：
+     * Parses special aliases:
      * <ul>
-     * <li><strong>L 表示最大值</strong></li>
-     * <li>{@link Part#MONTH}和{@link Part#DAY_OF_WEEK}别名</li>
+     * <li>'L' for the maximum value of the field.</li>
+     * <li>Month and Day-of-Week name aliases (e.g., "JAN", "SUN").</li>
      * </ul>
      *
-     * @param name 别名
-     * @return 解析int值
-     * @throws CrontabException 无匹配别名时抛出异常
+     * @param name The alias string.
+     * @return The parsed integer value.
+     * @throws CrontabException if the alias is not recognized.
      */
     private int parseAlias(final String name) throws CrontabException {
         if ("L".equalsIgnoreCase(name)) {
-            // L表示最大值
+            // 'L' represents the maximum value for the part.
             return part.getMax();
         }
 
         switch (this.part) {
             case MONTH:
-                // 月份从1开始
+                // Month is 1-based
                 return Month.of(name).getIsoValue();
 
             case DAY_OF_WEEK:
-                // 周从0开始，0表示周日
+                // Day of week is 0-based (0=Sunday)
                 return Week.of(name).ordinal();
         }
 

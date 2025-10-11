@@ -28,7 +28,8 @@
 package org.miaixz.bus.core;
 
 /**
- * 插件
+ * Represents a generic plugin that can be started and stopped. Plugins are also orderable, allowing for controlled
+ * initialization and shutdown sequences.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,14 +37,15 @@ package org.miaixz.bus.core;
 public interface Plugin extends Order {
 
     /**
-     * 程序启动
+     * Called when the application or component starts. Implement this method to perform any necessary initialization.
      */
     default void start() {
 
     }
 
     /**
-     * 程序停止
+     * Called when the application or component stops. Implement this method to perform any necessary cleanup or
+     * resource release.
      */
     default void stop() {
 

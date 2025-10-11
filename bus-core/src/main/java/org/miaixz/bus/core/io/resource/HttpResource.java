@@ -35,24 +35,35 @@ import java.net.URL;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * HTTP资源，用于自定义表单数据，可自定义Content-Type
+ * HTTP resource, used for custom form data, with customizable Content-Type. This class wraps an existing
+ * {@link Resource} and allows specifying a custom Content-Type for scenarios like HTTP requests.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HttpResource implements Resource, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852231136075L;
 
+    /**
+     * The wrapped resource.
+     */
     private final Resource resource;
+    /**
+     * The custom Content-Type for this HTTP resource.
+     */
     private final String contentType;
 
     /**
-     * 构造
+     * Constructs an {@code HttpResource} with the given resource and Content-Type.
      *
-     * @param resource    资源，非空
-     * @param contentType Content-Type类型，{@code null}表示不设置
+     * @param resource    The resource to wrap, must not be {@code null}.
+     * @param contentType The Content-Type string. If {@code null}, no custom Content-Type is set.
+     * @throws IllegalArgumentException if the {@code resource} is {@code null}.
      */
     public HttpResource(final Resource resource, final String contentType) {
         this.resource = Assert.notNull(resource, "Resource must be not null !");
@@ -80,9 +91,9 @@ public class HttpResource implements Resource, Serializable {
     }
 
     /**
-     * 获取自定义Content-Type类型
+     * Retrieves the custom Content-Type of this HTTP resource.
      *
-     * @return Content-Type类型
+     * @return The Content-Type string, or {@code null} if not set.
      */
     public String getContentType() {
         return this.contentType;

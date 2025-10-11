@@ -31,19 +31,33 @@ import java.net.URL;
 import java.util.regex.Pattern;
 
 /**
- * 正则表达式过滤器
+ * A filter that uses regular expressions to match resource names.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RegexFilter implements Filter {
 
+    /**
+     * The compiled regular expression pattern used for filtering.
+     */
     private final Pattern pattern;
 
+    /**
+     * Constructs a {@code RegexFilter} with the given regular expression string.
+     *
+     * @param regex The regular expression string.
+     */
     public RegexFilter(String regex) {
         this(Pattern.compile(regex));
     }
 
+    /**
+     * Constructs a {@code RegexFilter} with the given compiled {@link Pattern}.
+     *
+     * @param pattern The compiled regular expression pattern.
+     * @throws IllegalArgumentException If the provided pattern is {@code null}.
+     */
     public RegexFilter(Pattern pattern) {
         if (null == pattern) {
             throw new IllegalArgumentException("pattern must not be null");
@@ -51,6 +65,14 @@ public class RegexFilter implements Filter {
         this.pattern = pattern;
     }
 
+    /**
+     * Filters a resource based on whether its name matches the regular expression pattern.
+     *
+     * @param name The name of the resource (relative path).
+     * @param url  The URL of the resource (not used in this filter).
+     * @return {@code true} if the resource name matches the pattern, {@code false} otherwise.
+     */
+    @Override
     public boolean filtrate(String name, URL url) {
         return pattern.matcher(name).matches();
     }

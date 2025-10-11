@@ -39,7 +39,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 模板引擎抽象类
+ * Abstract base class for template engines. Provides common functionality such as handling engine configuration and
+ * managing output files.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,54 +50,64 @@ import lombok.Setter;
 public abstract class AbstractEngine implements TemplateEngine {
 
     /**
-     * 模板配置
+     * The configuration for the template engine.
      */
     private EngineConfig engineConfig;
 
+    /**
+     * Private default constructor to prevent direct instantiation without configuration.
+     */
     private AbstractEngine() {
     }
 
+    /**
+     * Constructs an {@code AbstractEngine} with the given engine configuration.
+     *
+     * @param engineConfig The configuration for the template engine. Must not be null.
+     */
     public AbstractEngine(EngineConfig engineConfig) {
         Assert.notNull(engineConfig, "EngineConfig can not be empty!");
         this.engineConfig = engineConfig;
     }
 
     /**
-     * 获取文件，文件名格式为，数据库名_版本号.文件类型
+     * Creates and returns a {@link File} object for the output document. The filename is constructed as a combination
+     * of the document name, version, and file type suffix. If no output directory is specified, it defaults to a "doc"
+     * folder in the current project directory.
      *
-     * @param docName 文档名称
-     * @return {@link String}
+     * @param docName The base name for the document.
+     * @return A {@link File} object representing the output file.
      */
     protected File getFile(String docName) {
         File file;
-        // 如果没有填写输出路径，默认当前项目路径下的doc目录
+        // If the output directory is not specified, default to the 'doc' directory in the current project path.
         if (StringKit.isBlank(getEngineConfig().getFileOutputDir())) {
             String dir = System.getProperty("user.dir");
             file = new File(dir + "/doc");
         } else {
             file = new File(getEngineConfig().getFileOutputDir());
         }
-        // 不存在创建
+        // Create the directory if it does not exist.
         if (!file.exists()) {
-            // 创建文件夹
-            boolean mkdir = file.mkdirs();
+            file.mkdirs();
         }
-        // 文件后缀
+        // Get the file suffix from the configuration.
         String suffix = getEngineConfig().getFileType().getFileSuffix();
         file = new File(file, docName + suffix);
-        // 设置文件产生位置
+        // Update the output directory path in the configuration.
         getEngineConfig().setFileOutputDir(file.getParent());
         return file;
     }
 
     /**
-     * 打开文档生成的输出目录
+     * Opens the output directory in the system's default file explorer if configured to do so. This method supports
+     * both Mac and Windows operating systems.
      */
     protected void openOutputDir() {
-        // 是否打开，如果是就打开输出路径
+        // Open the output directory if the option is enabled.
         if (getEngineConfig().isOpenOutputDir() && StringKit.isNotBlank(getEngineConfig().getFileOutputDir())) {
             try {
-                // 获取系统信息
+                // Get the operating system name.
                 String osName = System.getProperty("os.name");
                 if (null != osName) {
                     if (osName.contains(Builder.MAC)) {

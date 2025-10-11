@@ -27,15 +27,18 @@
 */
 package org.miaixz.bus.starter.limiter;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.limiter.Context;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 限流/降级配置
+ * Configuration properties for rate limiting and circuit breaking (downgrading).
+ * <p>
+ * This class is bound to properties under the prefix specified by {@code GeniusBuilder.LIMITER}. It extends
+ * {@link Context}, allowing all properties of the core limiter context to be configured directly in the application's
+ * configuration files (e.g., {@code application.yml}).
  *
  * @author Kimi Liu
  * @since Java 17+

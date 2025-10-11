@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * CSV数据写出器
+ * CSV data writer.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,89 +51,91 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     private static final long serialVersionUID = 2852283622258L;
 
     /**
-     * 写出器
+     * The underlying writer for CSV data.
      */
     private final Writer writer;
     /**
-     * 写出配置
+     * The configuration for CSV writing.
      */
     private final CsvWriteConfig config;
     /**
-     * 是否处于新行开始，新行开始用于标识是否在写出字段前写出一个分隔符
+     * Flag indicating whether the writer is at the beginning of a new line. This is used to determine whether to write
+     * a field separator before writing a field.
      */
     private boolean newline = true;
     /**
-     * 是否首行，即CSV开始的位置，当初始化时默认为true，一旦写入内容，为false 用于标识是否补充换行符
+     * Flag indicating whether this is the first line being written. Initially {@code true}, becomes {@code false} after
+     * content is written. Used to determine whether to add a newline character.
      */
     private boolean isFirstLine = true;
 
     /**
-     * 构造，覆盖已有文件（如果存在），默认编码UTF-8
+     * Constructs a new {@code CsvWriter} that overwrites an existing file (if any), using UTF-8 encoding.
      *
-     * @param filePath File CSV文件路径
+     * @param filePath The path to the CSV file.
      */
     public CsvWriter(final String filePath) {
         this(FileKit.file(filePath));
     }
 
     /**
-     * 构造，覆盖已有文件（如果存在），默认编码UTF-8
+     * Constructs a new {@code CsvWriter} that overwrites an existing file (if any), using UTF-8 encoding.
      *
-     * @param file File CSV文件
+     * @param file The CSV file.
      */
     public CsvWriter(final File file) {
         this(file, Charset.UTF_8);
     }
 
     /**
-     * 构造，覆盖已有文件（如果存在）
+     * Constructs a new {@code CsvWriter} that overwrites an existing file (if any).
      *
-     * @param filePath File CSV文件路径
-     * @param charset  编码
+     * @param filePath The path to the CSV file.
+     * @param charset  The character set to use for writing.
      */
     public CsvWriter(final String filePath, final java.nio.charset.Charset charset) {
         this(FileKit.file(filePath), charset);
     }
 
     /**
-     * 构造，覆盖已有文件（如果存在）
+     * Constructs a new {@code CsvWriter} that overwrites an existing file (if any).
      *
-     * @param file    File CSV文件
-     * @param charset 编码
+     * @param file    The CSV file.
+     * @param charset The character set to use for writing.
      */
     public CsvWriter(final File file, final java.nio.charset.Charset charset) {
         this(file, charset, false);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvWriter}.
      *
-     * @param filePath File CSV文件路径
-     * @param charset  编码
-     * @param isAppend 是否追加
+     * @param filePath The path to the CSV file.
+     * @param charset  The character set to use for writing.
+     * @param isAppend {@code true} to append to the file if it exists, {@code false} to overwrite.
      */
     public CsvWriter(final String filePath, final java.nio.charset.Charset charset, final boolean isAppend) {
         this(FileKit.file(filePath), charset, isAppend);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvWriter}.
      *
-     * @param file     CSV文件
-     * @param charset  编码
-     * @param isAppend 是否追加
+     * @param file     The CSV file.
+     * @param charset  The character set to use for writing.
+     * @param isAppend {@code true} to append to the file if it exists, {@code false} to overwrite.
      */
     public CsvWriter(final File file, final java.nio.charset.Charset charset, final boolean isAppend) {
         this(file, charset, isAppend, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvWriter}.
      *
-     * @param filePath CSV文件路径
-     * @param charset  编码
-     * @param isAppend 是否追加
-     * @param config   写出配置，null则使用默认配置
+     * @param filePath The path to the CSV file.
+     * @param charset  The character set to use for writing.
+     * @param isAppend {@code true} to append to the file if it exists, {@code false} to overwrite.
+     * @param config   The write configuration. If {@code null}, default configuration will be used.
      */
     public CsvWriter(final String filePath, final java.nio.charset.Charset charset, final boolean isAppend,
             final CsvWriteConfig config) {
@@ -141,12 +143,13 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvWriter}.
      *
-     * @param file     CSV文件
-     * @param charset  编码
-     * @param isAppend 是否追加, append=true模式下，endingLineBreak自动设置为true
-     * @param config   写出配置，null则使用默认配置
+     * @param file     The CSV file.
+     * @param charset  The character set to use for writing.
+     * @param isAppend {@code true} to append to the file if it exists, {@code false} to overwrite. If {@code isAppend}
+     *                 is {@code true}, {@code endingLineBreak} in config is automatically set to {@code true}.
+     * @param config   The write configuration. If {@code null}, default configuration will be used.
      */
     public CsvWriter(final File file, final java.nio.charset.Charset charset, final boolean isAppend,
             final CsvWriteConfig config) {
@@ -156,19 +159,19 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 构造，使用默认配置
+     * Constructs a new {@code CsvWriter} with the given {@link Writer} and default configuration.
      *
-     * @param writer {@link Writer}
+     * @param writer The {@link Writer} to write CSV data to.
      */
     public CsvWriter(final Writer writer) {
         this(writer, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvWriter} with the given {@link Writer} and configuration.
      *
-     * @param writer Writer
-     * @param config 写出配置，null则使用默认配置
+     * @param writer The {@link Writer} to write CSV data to.
+     * @param config The write configuration. If {@code null}, default configuration will be used.
      */
     public CsvWriter(final Writer writer, final CsvWriteConfig config) {
         this.writer = (writer instanceof BufferedWriter) ? writer : new BufferedWriter(writer);
@@ -176,7 +179,7 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 给定字符是否为DDE攻击不安全的字符，包括：
+     * Checks if the given character is unsafe for DDE attacks, including:
      * <ul>
      * <li>{@code @ }</li>
      * <li>{@code + }</li>
@@ -184,18 +187,19 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
      * <li>{@code = }</li>
      * </ul>
      *
-     * @param c 被检查的字符
-     * @return 是否不安全的字符
+     * @param c The character to check.
+     * @return {@code true} if the character is unsafe, {@code false} otherwise.
      */
     private static boolean isDDEUnsafeChar(final char c) {
         return c == Symbol.C_AT || c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_EQUAL;
     }
 
     /**
-     * 设置是否始终使用文本分隔符，文本包装符，默认false，按需添加
+     * Sets whether to always use text delimiters (quotes). Default is {@code false}, delimiters are added as needed.
      *
-     * @param alwaysDelimitText 是否始终使用文本分隔符，文本包装符，默认false，按需添加
-     * @return this
+     * @param alwaysDelimitText {@code true} to always use text delimiters, {@code false} to use them only when
+     *                          necessary.
+     * @return This {@code CsvWriter} instance, for chaining.
      */
     public CsvWriter setAlwaysDelimitText(final boolean alwaysDelimitText) {
         this.config.setAlwaysDelimitText(alwaysDelimitText);
@@ -203,10 +207,10 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 设置换行符
+     * Sets the newline character(s).
      *
-     * @param lineDelimiter 换行符
-     * @return this
+     * @param lineDelimiter The character array representing the newline sequence.
+     * @return This {@code CsvWriter} instance, for chaining.
      */
     public CsvWriter setLineDelimiter(final char[] lineDelimiter) {
         this.config.setLineDelimiter(lineDelimiter);
@@ -214,10 +218,12 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 设置是否启用dde安全模式，默认false，按需修改 防止使用Excel打开csv文件时存在dde攻击风险 注意此方法会在字段第一个字符包含{@code = + - @}时添加{@code '}作为前缀，防止公式执行
+     * Sets whether to enable DDE safe mode. Default is {@code false}. This prevents DDE attack risks when opening CSV
+     * files with Excel. Note that this method adds a {@code '} prefix if the first character of a field is
+     * {@code = + - @} to prevent formula execution.
      *
-     * @param ddeSafe 是否启用 dde 安全模式
-     * @return this
+     * @param ddeSafe {@code true} to enable DDE safe mode, {@code false} otherwise.
+     * @return This {@code CsvWriter} instance, for chaining.
      */
     public CsvWriter setDdeSafe(final boolean ddeSafe) {
         this.config.setDdeSafe(ddeSafe);
@@ -225,22 +231,22 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 将多行写出到Writer
+     * Writes multiple lines of data to the underlying {@link Writer}.
      *
-     * @param lines 多行数据
-     * @return this
-     * @throws InternalException IO异常
+     * @param lines An array of string arrays, where each inner array represents a line of fields.
+     * @return This {@code CsvWriter} instance, for chaining.
+     * @throws InternalException If an I/O error occurs.
      */
     public CsvWriter write(final String[]... lines) throws InternalException {
         return write(new ArrayIterator<>(lines));
     }
 
     /**
-     * 将多行写出到Writer
+     * Writes multiple lines of data to the underlying {@link Writer}.
      *
-     * @param lines 多行数据，每行数据可以是集合或者数组
-     * @return this
-     * @throws InternalException IO异常
+     * @param lines An iterable collection of lines, where each line can be a collection or array of objects.
+     * @return This {@code CsvWriter} instance, for chaining.
+     * @throws InternalException If an I/O error occurs.
      */
     public CsvWriter write(final Iterable<?> lines) throws InternalException {
         if (CollKit.isNotEmpty(lines)) {
@@ -253,19 +259,20 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 将一个 CsvData 集合写出到Writer
+     * Writes a {@link CsvData} object to the underlying {@link Writer}. This includes writing the header (if present)
+     * and all data rows.
      *
-     * @param csvData CsvData
-     * @return this
+     * @param csvData The {@link CsvData} object to write.
+     * @return This {@code CsvWriter} instance, for chaining.
      */
     public CsvWriter write(final CsvData csvData) {
         if (csvData != null) {
-            // 1、写header
+            // 1. Write header
             final List<String> header = csvData.getHeader();
             if (CollKit.isNotEmpty(header)) {
                 this.writeHeaderLine(header.toArray(new String[0]));
             }
-            // 2、写内容
+            // 2. Write content
             this.write(csvData.getRows());
             flush();
         }
@@ -273,25 +280,31 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 将一个Bean集合写出到Writer，并自动生成表头
+     * Writes a collection of Bean objects to the underlying {@link Writer}, automatically generating a header.
      *
-     * @param beans      Bean集合
-     * @param properties 可选属性列表，空表示全部属性
-     * @return this
+     * @param beans      The collection of Bean objects.
+     * @param properties Optional list of property names to include. If empty, all properties are included.
+     * @param <T>        The type of the Bean objects.
+     * @return This {@code CsvWriter} instance, for chaining.
      */
-    public CsvWriter writeBeans(final Iterable<?> beans, final String... properties) {
+    public <T> CsvWriter writeBeans(final Iterable<T> beans, final String... properties) {
         return writeBeans(beans, true, properties);
     }
 
     /**
-     * 将一个Bean集合写出到Writer，并自动生成表头
+     * Writes a collection of Bean objects to the underlying {@link Writer}.
      *
-     * @param beans           Bean集合
-     * @param writeHeaderLine 是否写出表头，即Bean的字段名称列表作为首行
-     * @param properties      可选属性列表，空表示全部属性
-     * @return this
+     * @param beans           The collection of Bean objects.
+     * @param writeHeaderLine {@code true} to write the header line (Bean property names) as the first row,
+     *                        {@code false} otherwise.
+     * @param properties      Optional list of property names to include. If empty, all properties are included.
+     * @param <T>             The type of the Bean objects.
+     * @return This {@code CsvWriter} instance, for chaining.
      */
-    public CsvWriter writeBeans(final Iterable<?> beans, final boolean writeHeaderLine, final String... properties) {
+    public <T> CsvWriter writeBeans(
+            final Iterable<T> beans,
+            final boolean writeHeaderLine,
+            final String... properties) {
         if (CollKit.isNotEmpty(beans)) {
             boolean isFirst = writeHeaderLine;
             Map<String, Object> map;
@@ -309,16 +322,16 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 写出一行头部行，支持标题别名
+     * Writes a header line, supporting header aliases.
      *
-     * @param fields 字段列表 ({@code null} 值会被做为空值追加
-     * @return this
-     * @throws InternalException IO异常
+     * @param fields The list of fields for the header line. {@code null} values will be written as empty strings.
+     * @return This {@code CsvWriter} instance, for chaining.
+     * @throws InternalException If an I/O error occurs.
      */
     public CsvWriter writeHeaderLine(final String... fields) throws InternalException {
         final Map<String, String> headerAlias = this.config.headerAlias;
         if (MapKit.isNotEmpty(headerAlias)) {
-            // 标题别名替换
+            // Header alias replacement
             String alias;
             for (int i = 0; i < fields.length; i++) {
                 alias = headerAlias.get(fields[i]);
@@ -331,11 +344,11 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 写出一行
+     * Writes a single line of fields.
      *
-     * @param fields 字段列表 ({@code null} 值会被做为空值追加)
-     * @return this
-     * @throws InternalException IO异常
+     * @param fields The list of fields for the line. {@code null} values will be written as empty strings.
+     * @return This {@code CsvWriter} instance, for chaining.
+     * @throws InternalException If an I/O error occurs.
      */
     public CsvWriter writeLine(final String... fields) throws InternalException {
         if (ArrayKit.isEmpty(fields)) {
@@ -346,10 +359,10 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 追加新行（换行）
+     * Appends a new line (newline character(s)).
      *
-     * @return this
-     * @throws InternalException IO异常
+     * @return This {@code CsvWriter} instance, for chaining.
+     * @throws InternalException If an I/O error occurs.
      */
     public CsvWriter writeLine() throws InternalException {
         try {
@@ -362,17 +375,19 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 写出一行注释，注释符号可自定义 如果注释符不存在，则抛出异常
+     * Writes a comment line. The comment character can be customized. If the comment character is not defined, an
+     * {@link Assert} exception is thrown.
      *
-     * @param comment 注释内容
-     * @return this
+     * @param comment The content of the comment.
+     * @return This {@code CsvWriter} instance, for chaining.
+     * @throws InternalException If an I/O error occurs.
      * @see CsvConfig#commentCharacter
      */
     public CsvWriter writeComment(final String comment) {
         Assert.notNull(this.config.commentCharacter, "Comment is disable!");
         try {
             if (isFirstLine) {
-                // 首行不补充换行符
+                // No newline for the first line.
                 isFirstLine = false;
             } else {
                 writer.write(config.lineDelimiter);
@@ -404,10 +419,10 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 追加一行，末尾会自动换行，但是追加前不会换行
+     * Appends a line of fields. A newline character will be automatically added at the end, but not before appending.
      *
-     * @param fields 字段列表 ({@code null} 值会被做为空值追加)
-     * @throws InternalException IO异常
+     * @param fields The list of fields. {@code null} values will be treated as empty strings.
+     * @throws InternalException If an I/O error occurs.
      */
     private void appendLine(final String... fields) throws InternalException {
         try {
@@ -418,15 +433,15 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 追加一行，末尾会自动换行，但是追加前不会换行
+     * Appends a line of fields. A newline character will be automatically added at the end, but not before appending.
      *
-     * @param fields 字段列表 ({@code null} 值会被做为空值追加)
-     * @throws IOException IO异常
+     * @param fields The list of fields. {@code null} values will be treated as empty strings.
+     * @throws IOException If an I/O error occurs.
      */
     private void doAppendLine(final String... fields) throws IOException {
         if (null != fields) {
             if (isFirstLine) {
-                // 首行不补换行符
+                // No newline for the first line.
                 isFirstLine = false;
             } else {
                 writer.write(config.lineDelimiter);
@@ -439,10 +454,11 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 在当前行追加字段值，自动添加字段分隔符，如果有必要，自动包装字段
+     * Appends a field value to the current line, automatically adding a field separator and quoting the field if
+     * necessary.
      *
-     * @param value 字段值，{@code null} 会被做为空串写出
-     * @throws IOException IO异常
+     * @param value The field value. {@code null} will be written as an empty string.
+     * @throws IOException If an I/O error occurs.
      */
     private void appendField(final String value) throws IOException {
         final boolean alwaysDelimitText = config.alwaysDelimitText;
@@ -468,29 +484,29 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
 
         for (final char c : valueChars) {
             if (c == textDelimiter) {
-                // 字段值中存在包装符
+                // Field value contains text delimiter.
                 containsTextDelimiter = needsTextDelimiter = true;
                 break;
             } else if (c == fieldSeparator || c == Symbol.C_LF || c == Symbol.C_CR) {
-                // 包含分隔符或换行符需要包装符包装
+                // Contains separator or newline, requires quoting.
                 needsTextDelimiter = true;
             }
         }
 
-        // 包装符开始
+        // Start quoting
         if (needsTextDelimiter) {
             writer.write(textDelimiter);
         }
 
-        // DDE防护，打开不执行公式
+        // DDE protection: if enabled, do not execute formulas.
         if (config.ddeSafe && isDDEUnsafeChar(valueChars[0])) {
             writer.write('\'');
         }
 
-        // 正文
+        // Content
         if (containsTextDelimiter) {
             for (final char c : valueChars) {
-                // 转义文本包装符，如"转义为""
+                // Escape text delimiter, e.g., " becomes ""
                 if (c == textDelimiter) {
                     writer.write(textDelimiter);
                 }
@@ -500,7 +516,7 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
             writer.write(valueChars);
         }
 
-        // 包装符结尾
+        // End quoting
         if (needsTextDelimiter) {
             writer.write(textDelimiter);
         }

@@ -30,7 +30,8 @@ package org.miaixz.bus.extra.json.provider;
 import org.miaixz.bus.extra.json.JsonProvider;
 
 /**
- * 默认解析器
+ * Abstract base class for {@link JsonProvider} implementations. This class serves as a common superclass for concrete
+ * JSON provider implementations, allowing them to share common logic or default behaviors if needed in the future.
  *
  * @author Kimi Liu
  * @since Java 17+

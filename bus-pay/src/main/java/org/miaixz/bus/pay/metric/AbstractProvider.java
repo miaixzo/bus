@@ -69,53 +69,53 @@ import org.miaixz.bus.pay.magic.Message;
 import lombok.SneakyThrows;
 
 /**
- * 相关请求提供者
+ * Abstract provider for handling payment requests.
  *
- * @param <T> 全局对象
- * @param <K> 公用属性
+ * @param <T> The type of the global object, extending {@link Material}.
+ * @param <K> The type of the context object, extending {@link Context}.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractProvider<T extends Material, K extends Context> implements Provider<T> {
 
     /**
-     * 上下文对象
+     * The context object containing configuration and other necessary information.
      */
     protected K context;
     /**
-     * API地址支持
+     * The API address support object.
      */
     protected Complex complex;
     /**
-     * 缓存支持
+     * The cache support object.
      */
     protected CacheX cache;
 
     /**
-     * 构造
+     * Constructs a new AbstractProvider.
      *
-     * @param context 全局信息
+     * @param context The global information.
      */
     public AbstractProvider(K context) {
         this(context, null);
     }
 
     /**
-     * 构造
+     * Constructs a new AbstractProvider.
      *
-     * @param context 全局信息
-     * @param complex API地址
+     * @param context The global information.
+     * @param complex The API address.
      */
     public AbstractProvider(K context, Complex complex) {
         this(context, complex, PayCache.INSTANCE);
     }
 
     /**
-     * 构造
+     * Constructs a new AbstractProvider.
      *
-     * @param context 全局信息
-     * @param complex API地址
-     * @param cache   缓存支持
+     * @param context The global information.
+     * @param complex The API address.
+     * @param cache   The cache support.
      */
     public AbstractProvider(K context, Complex complex, CacheX cache) {
         Assert.notNull(context, "[context] is null");
@@ -125,15 +125,15 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
         if (!Checker.isSupportedPay(this.context, complex)) {
             throw new PaymentException(ErrorCode._PARAMETER_INCOMPLETE);
         }
-        // 校验配置合法性
+        // Verify the legitimacy of the configuration
         Checker.checkConfig(this.context, complex);
     }
 
     /**
-     * 获取 {@link PayScope} 数组中所有的被标记为 {@code default} 的 scope
+     * Gets all scopes marked as default from the {@link PayScope} array.
      *
-     * @param scopes scopes
-     * @return {@link List}
+     * @param scopes The array of scopes.
+     * @return A list of default scopes.
      */
     public static List<String> getDefaultScopes(PayScope[] scopes) {
         if (null == scopes || scopes.length == 0) {
@@ -143,10 +143,10 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * 从 {@link PayScope} 数组中获取实际的 scope 字符串
+     * Gets the actual scope strings from the {@link PayScope} array.
      *
-     * @param scopes 可变参数，支持传任意 {@link PayScope}
-     * @return {@link List}
+     * @param scopes Variable arguments, supporting any {@link PayScope}.
+     * @return A list of scope strings.
      */
     public static List<String> getScopes(PayScope... scopes) {
         if (null == scopes || scopes.length == 0) {
@@ -156,22 +156,22 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * get 请求
+     * Performs a GET request.
      *
-     * @param url     请求url
-     * @param formMap 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param url     The request URL.
+     * @param formMap The request parameters.
+     * @return The result of the request.
      */
     public static String get(String url, Map<String, String> formMap) {
         return Httpx.get(url, formMap);
     }
 
     /**
-     * post 请求
+     * Performs a POST request.
      *
-     * @param url  请求url
-     * @param data 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param url  The request URL.
+     * @param data The request data.
+     * @return The result of the request.
      */
     public static String post(String url, String data) {
         try {
@@ -182,12 +182,12 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * post 请求
+     * Performs a POST request.
      *
-     * @param url       请求url
-     * @param data      请求参数
-     * @param headerMap 请求头
-     * @return {@link Message} 请求返回的结果
+     * @param url       The request URL.
+     * @param data      The request data.
+     * @param headerMap The request headers.
+     * @return The result of the request as a {@link Message}.
      */
     public static Message post(String url, String data, Map<String, String> headerMap) {
         try {
@@ -200,12 +200,12 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * get 请求
+     * Performs a GET request.
      *
-     * @param url       请求url
-     * @param formMap   请求参数
-     * @param headerMap 请求头
-     * @return {@link Message} 请求返回的结果
+     * @param url       The request URL.
+     * @param formMap   The request parameters.
+     * @param headerMap The request headers.
+     * @return The result of the request as a {@link Message}.
      */
     public static Message get(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
@@ -218,12 +218,12 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * post 请求
+     * Performs a POST request.
      *
-     * @param url       请求url
-     * @param formMap   请求参数
-     * @param headerMap 请求头
-     * @return {@link Message} 请求返回的结果
+     * @param url       The request URL.
+     * @param formMap   The request parameters.
+     * @param headerMap The request headers.
+     * @return The result of the request as a {@link Message}.
      */
     public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
@@ -236,13 +236,13 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * post 请求
+     * Performs a POST request with a file.
      *
-     * @param url       请求url
-     * @param formMap   请求参数
-     * @param headerMap 请求头
-     * @param file      文件
-     * @return {@link Message} 请求返回的结果
+     * @param url       The request URL.
+     * @param formMap   The request parameters.
+     * @param headerMap The request headers.
+     * @param file      The file to be uploaded.
+     * @return The result of the request as a {@link Message}.
      */
     public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap, File file) {
         try {
@@ -255,14 +255,14 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * post 请求
+     * Performs a POST request with SSL certificate.
      *
-     * @param url      请求url
-     * @param data     请求参数
-     * @param certPath 证书路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param url      The request URL.
+     * @param data     The request data.
+     * @param certPath The certificate path.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public static String post(String url, String data, String certPath, String certPass, String protocol) {
         try {
@@ -281,14 +281,14 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * post 请求
+     * Performs a POST request with SSL certificate.
      *
-     * @param url      请求url
-     * @param data     请求参数
-     * @param certFile 证书文件输入流
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param url      The request URL.
+     * @param data     The request data.
+     * @param certFile The certificate file input stream.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public static String post(String url, String data, InputStream certFile, String certPass, String protocol) {
         try {
@@ -307,12 +307,12 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * put 请求
+     * Performs a PUT request.
      *
-     * @param url       请求url
-     * @param data      请求参数
-     * @param headerMap 请求头
-     * @return {@link Message} 请求返回的结果
+     * @param url       The request URL.
+     * @param data      The request data.
+     * @param headerMap The request headers.
+     * @return The result of the request as a {@link Message}.
      */
     public static Message put(String url, String data, Map<String, String> headerMap) {
         try {
@@ -325,15 +325,15 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * 上传文件
+     * Uploads a file.
      *
-     * @param url      请求url
-     * @param data     请求参数
-     * @param certPath 证书路径
-     * @param certPass 证书密码
-     * @param filePath 上传文件路径
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param url      The request URL.
+     * @param data     The request data.
+     * @param certPath The certificate path.
+     * @param certPass The certificate password.
+     * @param filePath The path of the file to be uploaded.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public static String upload(
             String url,
@@ -355,26 +355,26 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * 上传文件
+     * Uploads a file.
      *
-     * @param url      请求url
-     * @param data     请求参数
-     * @param certPath 证书路径
-     * @param certPass 证书密码
-     * @param filePath 上传文件路径
-     * @return {@link String} 请求返回的结果
+     * @param url      The request URL.
+     * @param data     The request data.
+     * @param certPath The certificate path.
+     * @param certPass The certificate password.
+     * @param filePath The path of the file to be uploaded.
+     * @return The result of the request.
      */
     public static String upload(String url, String data, String certPath, String certPass, String filePath) {
         return upload(url, data, certPath, certPass, filePath, Protocol.TLSv1.name);
     }
 
     /**
-     * get 请求
+     * Performs a GET request.
      *
-     * @param url       请求url
-     * @param formMap   请求参数
-     * @param headerMap 请求头
-     * @return {@link Response} 请求返回的结果
+     * @param url       The request URL.
+     * @param formMap   The request parameters.
+     * @param headerMap The request headers.
+     * @return The {@link Response} object.
      */
     private static Response getTo(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
@@ -385,12 +385,12 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * post 请求
+     * Performs a POST request.
      *
-     * @param url       请求url
-     * @param headerMap 请求头
-     * @param data      请求参数
-     * @return {@link Response} 请求返回的结果
+     * @param url       The request URL.
+     * @param headerMap The request headers.
+     * @param data      The request data.
+     * @return The {@link Response} object.
      */
     private static Response postTo(String url, Map<String, String> headerMap, String data) {
         try {
@@ -401,12 +401,12 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * post 请求
+     * Performs a POST request.
      *
-     * @param url       请求url
-     * @param headerMap 请求头
-     * @param formMap   请求参数
-     * @return {@link Response} 请求返回的结果
+     * @param url       The request URL.
+     * @param headerMap The request headers.
+     * @param formMap   The request parameters.
+     * @return The {@link Response} object.
      */
     private static Response postTo(String url, Map<String, String> headerMap, Map<String, String> formMap) {
         try {
@@ -417,12 +417,12 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * put 请求
+     * Performs a PUT request.
      *
-     * @param url       请求url
-     * @param headerMap 请求头
-     * @param data      请求参数
-     * @return {@link Response} 请求返回的结果
+     * @param url       The request URL.
+     * @param headerMap The request headers.
+     * @param data      The request data.
+     * @return The {@link Response} object.
      */
     private static Response putTo(String url, Map<String, String> headerMap, String data) {
         try {
@@ -432,6 +432,14 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
         }
     }
 
+    /**
+     * Gets the KeyManager.
+     *
+     * @param certPass The certificate password.
+     * @param certPath The certificate path.
+     * @param certFile The certificate file input stream.
+     * @return An array of KeyManagers.
+     */
     @SneakyThrows
     private static KeyManager[] getKeyManager(String certPass, String certPath, InputStream certFile) {
         KeyStore clientStore = KeyStore.getInstance("PKCS12");
@@ -445,6 +453,15 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
         return kmf.getKeyManagers();
     }
 
+    /**
+     * Gets the SSLSocketFactory.
+     *
+     * @param certPath The certificate path.
+     * @param certFile The certificate file input stream.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The SSLSocketFactory.
+     */
     @SneakyThrows
     private static SSLSocketFactory getSslSocketFactory(
             String certPath,
@@ -459,10 +476,10 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * 处理发生异常的情况，统一响应参数
+     * Handles exceptions and returns a unified response.
      *
-     * @param e 具体的异常
-     * @return Message
+     * @param e The specific exception.
+     * @return A {@link Message} object representing the error.
      */
     protected Message responseError(Exception e) {
         String errorCode = ErrorCode._FAILURE.getKey();
@@ -478,12 +495,12 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * 获取以 {@code separator}分割过后的 scope 信息
+     * Gets the scope information separated by a separator.
      *
-     * @param separator     多个 {@code scope} 间的分隔符
-     * @param encode        是否 encode 编码
-     * @param defaultScopes 默认的 scope， 当客户端没有配置 {@code scopes} 时启用
-     * @return String
+     * @param separator     The separator between multiple scopes.
+     * @param encode        Whether to encode the scope.
+     * @param defaultScopes The default scopes to use when the client has not configured any.
+     * @return The formatted scope string.
      */
     protected String getScopes(String separator, boolean encode, List<String> defaultScopes) {
         List<String> scopes = context.getScopes();
@@ -494,7 +511,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
             scopes = defaultScopes;
         }
         if (null == separator) {
-            // 默认为空格
+            // Default to space
             separator = Symbol.SPACE;
         }
         String scope = String.join(separator, scopes);
@@ -502,33 +519,33 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * get 请求
+     * Performs a GET request.
      *
-     * @param url 请求url
-     * @return {@link String} 请求返回的结果
+     * @param url The request URL.
+     * @return The result of the request.
      */
     public String get(String url) {
         return Httpx.get(url);
     }
 
     /**
-     * post 请求
+     * Performs a POST request.
      *
-     * @param url     请求url
-     * @param formMap 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param url     The request URL.
+     * @param formMap The request parameters.
+     * @return The result of the request.
      */
     public String post(String url, Map<String, String> formMap) {
         return Httpx.post(url, formMap);
     }
 
     /**
-     * put 请求
+     * Performs a PUT request.
      *
-     * @param url       请求url
-     * @param formMap   请求参数
-     * @param headerMap 请求头
-     * @return {@link Message} 请求返回的结果
+     * @param url       The request URL.
+     * @param formMap   The request parameters.
+     * @param headerMap The request headers.
+     * @return The result of the request as a {@link Message}.
      */
     public Message put(String url, Map<String, Object> formMap, Map<String, String> headerMap) {
         try {
@@ -541,12 +558,12 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     /**
-     * put 请求
+     * Performs a PUT request.
      *
-     * @param url       请求url
-     * @param headerMap 请求头
-     * @param formMap   请求参数
-     * @return {@link Response} 请求返回的结果
+     * @param url       The request URL.
+     * @param headerMap The request headers.
+     * @param formMap   The request parameters.
+     * @return The {@link Response} object.
      */
     private Response putTo(String url, Map<String, String> headerMap, Map<String, Object> formMap) {
         try {

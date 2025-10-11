@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * 富文本脱敏规则，用于配置如何对富文本内容进行脱敏处理
+ * Rich text masking rule, used to configure how to mask rich text content.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,69 +42,69 @@ import org.miaixz.bus.core.lang.Symbol;
 public class TextMaskingRule {
 
     /**
-     * 规则名称
+     * The name of the rule.
      */
     private String name;
 
     /**
-     * 匹配模式（正则表达式）
+     * The matching pattern (regular expression).
      */
     private String pattern;
 
     /**
-     * 脱敏类型
+     * The masking type.
      */
     private EnumValue.Masking masking;
 
     /**
-     * 替换内容
+     * The replacement content.
      */
     private String replacement;
 
     /**
-     * 保留左侧字符数（用于PARTIAL类型）
+     * The number of characters to preserve on the left (for PARTIAL type).
      */
     private int preserveLeft;
 
     /**
-     * 保留右侧字符数（用于PARTIAL类型）
+     * The number of characters to preserve on the right (for PARTIAL type).
      */
     private int preserveRight;
 
     /**
-     * 脱敏字符
+     * The masking character.
      */
     private char maskChar = Symbol.C_STAR;
 
     /**
-     * 是否处理HTML标签内容
+     * Whether to process the content of HTML tags.
      */
     private boolean processHtmlTags = false;
 
     /**
-     * 需要排除的HTML标签
+     * The HTML tags to be excluded.
      */
     private Set<String> excludeTags = new HashSet<>();
 
     /**
-     * 仅处理指定的HTML标签
+     * Only process the specified HTML tags.
      */
     private Set<String> includeTags = new HashSet<>();
 
     /**
-     * 构造函数
+     * Constructor.
      */
     public TextMaskingRule() {
 
     }
 
     /**
-     * 构造函数
+     * Constructor.
      *
-     * @param name        规则名称
-     * @param pattern     匹配模式（正则表达式）
-     * @param masking     脱敏类型
-     * @param replacement 替换内容
+     * @param name        The name of the rule.
+     * @param pattern     The matching pattern (regular expression).
+     * @param masking     The masking type.
+     * @param replacement The replacement content.
      */
     public TextMaskingRule(final String name, final String pattern, final EnumValue.Masking masking,
             final String replacement) {
@@ -115,13 +115,13 @@ public class TextMaskingRule {
     }
 
     /**
-     * 构造函数，用于部分脱敏
+     * Constructor for partial masking.
      *
-     * @param name          规则名称
-     * @param pattern       匹配模式（正则表达式）
-     * @param preserveLeft  保留左侧字符数
-     * @param preserveRight 保留右侧字符数
-     * @param maskChar      脱敏字符
+     * @param name          The name of the rule.
+     * @param pattern       The matching pattern (regular expression).
+     * @param preserveLeft  The number of characters to preserve on the left.
+     * @param preserveRight The number of characters to preserve on the right.
+     * @param maskChar      The masking character.
      */
     public TextMaskingRule(final String name, final String pattern, final int preserveLeft, final int preserveRight,
             final char maskChar) {
@@ -136,18 +136,18 @@ public class TextMaskingRule {
     // Getter and Setter methods
 
     /**
-     * 获取规则名称
+     * Gets the name of the rule.
      *
-     * @return 规则名称
+     * @return The name of the rule.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 设置规则名称
+     * Sets the name of the rule.
      *
-     * @param name 名称
+     * @param name The name of the rule.
      * @return this
      */
     public TextMaskingRule setName(final String name) {
@@ -156,18 +156,18 @@ public class TextMaskingRule {
     }
 
     /**
-     * 获取匹配模式（正则表达式）
+     * Gets the matching pattern (regular expression).
      *
-     * @return 匹配模式（正则表达式）
+     * @return The matching pattern (regular expression).
      */
     public String getPattern() {
         return pattern;
     }
 
     /**
-     * 设置匹配模式（正则表达式）
+     * Sets the matching pattern (regular expression).
      *
-     * @param pattern 匹配模式（正则表达式）
+     * @param pattern The matching pattern (regular expression).
      * @return this
      */
     public TextMaskingRule setPattern(final String pattern) {
@@ -176,18 +176,18 @@ public class TextMaskingRule {
     }
 
     /**
-     * 获取脱敏类型
+     * Gets the masking type.
      *
-     * @return 脱敏类型
+     * @return The masking type.
      */
     public EnumValue.Masking getMasking() {
         return masking;
     }
 
     /**
-     * 设置脱敏类型
+     * Sets the masking type.
      *
-     * @param masking 脱敏类型
+     * @param masking The masking type.
      * @return this
      */
     public TextMaskingRule setMasking(final EnumValue.Masking masking) {
@@ -196,18 +196,18 @@ public class TextMaskingRule {
     }
 
     /**
-     * 获取替换内容
+     * Gets the replacement content.
      *
-     * @return 替换内容
+     * @return The replacement content.
      */
     public String getReplacement() {
         return replacement;
     }
 
     /**
-     * 设置替换内容
+     * Sets the replacement content.
      *
-     * @param replacement 替换内容
+     * @param replacement The replacement content.
      * @return this
      */
     public TextMaskingRule setReplacement(final String replacement) {
@@ -216,18 +216,18 @@ public class TextMaskingRule {
     }
 
     /**
-     * 获取保留左侧字符数
+     * Gets the number of characters to preserve on the left.
      *
-     * @return 保留左侧字符数
+     * @return The number of characters to preserve on the left.
      */
     public int getPreserveLeft() {
         return preserveLeft;
     }
 
     /**
-     * 设置保留左侧字符数
+     * Sets the number of characters to preserve on the left.
      *
-     * @param preserveLeft 保留左侧字符数
+     * @param preserveLeft The number of characters to preserve on the left.
      * @return this
      */
     public TextMaskingRule setPreserveLeft(final int preserveLeft) {
@@ -236,18 +236,18 @@ public class TextMaskingRule {
     }
 
     /**
-     * 获取保留右侧字符数
+     * Gets the number of characters to preserve on the right.
      *
-     * @return 保留右侧字符数
+     * @return The number of characters to preserve on the right.
      */
     public int getPreserveRight() {
         return preserveRight;
     }
 
     /**
-     * 设置保留右侧字符数
+     * Sets the number of characters to preserve on the right.
      *
-     * @param preserveRight 保留右侧字符数
+     * @param preserveRight The number of characters to preserve on the right.
      * @return this
      */
     public TextMaskingRule setPreserveRight(final int preserveRight) {
@@ -256,18 +256,18 @@ public class TextMaskingRule {
     }
 
     /**
-     * 获取脱敏字符
+     * Gets the masking character.
      *
-     * @return 脱敏字符
+     * @return The masking character.
      */
     public char getMaskChar() {
         return maskChar;
     }
 
     /**
-     * 设置脱敏字符
+     * Sets the masking character.
      *
-     * @param maskChar 脱敏字符
+     * @param maskChar The masking character.
      * @return this
      */
     public TextMaskingRule setMaskChar(final char maskChar) {
@@ -276,18 +276,18 @@ public class TextMaskingRule {
     }
 
     /**
-     * 获取是否处理HTML标签内容
+     * Gets whether to process the content of HTML tags.
      *
-     * @return 是否处理HTML标签内容
+     * @return Whether to process the content of HTML tags.
      */
     public boolean isProcessHtmlTags() {
         return processHtmlTags;
     }
 
     /**
-     * 设置是否处理HTML标签内容
+     * Sets whether to process the content of HTML tags.
      *
-     * @param processHtmlTags 是否处理HTML标签内容
+     * @param processHtmlTags Whether to process the content of HTML tags.
      * @return this
      */
     public TextMaskingRule setProcessHtmlTags(final boolean processHtmlTags) {
@@ -296,18 +296,18 @@ public class TextMaskingRule {
     }
 
     /**
-     * 获取需要排除的HTML标签
+     * Gets the HTML tags to be excluded.
      *
-     * @return 需要排除的HTML标签
+     * @return The HTML tags to be excluded.
      */
     public Set<String> getExcludeTags() {
         return excludeTags;
     }
 
     /**
-     * 设置需要排除的HTML标签
+     * Sets the HTML tags to be excluded.
      *
-     * @param excludeTags 需要排除的HTML标签
+     * @param excludeTags The HTML tags to be excluded.
      * @return this
      */
     public TextMaskingRule setExcludeTags(final Set<String> excludeTags) {
@@ -316,9 +316,9 @@ public class TextMaskingRule {
     }
 
     /**
-     * 添加需要排除的HTML标签
+     * Adds an HTML tag to be excluded.
      *
-     * @param tag 需要排除的HTML标签
+     * @param tag The HTML tag to be excluded.
      * @return this
      */
     public TextMaskingRule addExcludeTag(final String tag) {
@@ -327,18 +327,18 @@ public class TextMaskingRule {
     }
 
     /**
-     * 获取仅处理指定的HTML标签
+     * Gets the HTML tags to be processed exclusively.
      *
-     * @return 仅处理指定的HTML标签
+     * @return The HTML tags to be processed exclusively.
      */
     public Set<String> getIncludeTags() {
         return includeTags;
     }
 
     /**
-     * 设置仅处理指定的HTML标签
+     * Sets the HTML tags to be processed exclusively.
      *
-     * @param includeTags 仅处理指定的HTML标签
+     * @param includeTags The HTML tags to be processed exclusively.
      * @return this
      */
     public TextMaskingRule setIncludeTags(final Set<String> includeTags) {
@@ -347,9 +347,9 @@ public class TextMaskingRule {
     }
 
     /**
-     * 添加仅处理指定的HTML标签
+     * Adds an HTML tag to be processed exclusively.
      *
-     * @param tag 仅处理指定的HTML标签
+     * @param tag The HTML tag to be processed exclusively.
      * @return this
      */
     public TextMaskingRule addIncludeTag(final String tag) {

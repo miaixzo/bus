@@ -35,7 +35,8 @@ import org.miaixz.bus.mapper.builder.ClassMetaResolver;
 import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 
 /**
- * 抽象实体类查找器，根据泛型从返回值、参数、接口泛型参数判断对应的实体类类型
+ * An abstract entity class finder that determines the corresponding entity class type based on generics from return
+ * values, parameters, and interface generic arguments.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,27 +44,28 @@ import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 public abstract class SchemaTypeParser implements ClassMetaResolver {
 
     /**
-     * 查找当前方法对应的实体类，依次检查方法返回值、参数和接口泛型
+     * Finds the entity class corresponding to the current method by checking the method's return value, parameters, and
+     * interface generics in order.
      *
-     * @param mapperType   Mapper 接口，不能为空
-     * @param mapperMethod Mapper 接口方法，可以为空
-     * @return 实体类类型的 Optional 包装对象
+     * @param mapperType   The Mapper interface, which cannot be null.
+     * @param mapperMethod The Mapper interface method, which can be null.
+     * @return An {@link Optional} containing the entity class type.
      */
     @Override
     public Optional<Class<?>> findClass(Class<?> mapperType, Method mapperMethod) {
-        // 先判断返回值
+        // First, check the return value.
         Optional<Class<?>> optionalClass;
         if (mapperMethod != null) {
             optionalClass = getClassByMapperMethodReturnType(mapperType, mapperMethod);
             if (optionalClass.isPresent()) {
                 return optionalClass;
             }
-            // 再判断参数
+            // Then, check the parameters.
             optionalClass = getClassByMapperMethodParamTypes(mapperType, mapperMethod);
             if (optionalClass.isPresent()) {
                 return optionalClass;
             }
-            // 最后从接口泛型中获取
+            // Finally, get it from the interface generics.
             optionalClass = getClassByMapperMethodAndMapperType(mapperType, mapperMethod);
             if (optionalClass.isPresent()) {
                 return optionalClass;
@@ -73,11 +75,11 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
     }
 
     /**
-     * 根据方法返回值类型获取实体类
+     * Gets the entity class based on the method's return type.
      *
-     * @param mapperType   Mapper 接口
-     * @param mapperMethod 方法
-     * @return 实体类类型的 Optional 包装对象
+     * @param mapperType   The Mapper interface.
+     * @param mapperMethod The method.
+     * @return An {@link Optional} containing the entity class type.
      */
     protected Optional<Class<?>> getClassByMapperMethodReturnType(Class<?> mapperType, Method mapperMethod) {
         Class<?> returnType = GenericTypeResolver.getReturnType(mapperMethod, mapperType);
@@ -85,42 +87,44 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
     }
 
     /**
-     * 根据方法参数类型获取实体类
+     * Gets the entity class based on the method's parameter types.
      *
-     * @param mapperType   Mapper 接口
-     * @param mapperMethod 方法
-     * @return 实体类类型的 Optional 包装对象
+     * @param mapperType   The Mapper interface.
+     * @param mapperMethod The method.
+     * @return An {@link Optional} containing the entity class type.
      */
     protected Optional<Class<?>> getClassByMapperMethodParamTypes(Class<?> mapperType, Method mapperMethod) {
         return getClassByTypes(GenericTypeResolver.resolveParamTypes(mapperMethod, mapperType));
     }
 
     /**
-     * 根据方法所在接口的泛型获取实体类，仅适用于定义在泛型接口中的方法
+     * Gets the entity class from the generics of the interface where the method is defined. This is only applicable to
+     * methods defined in a generic interface.
      *
-     * @param mapperType   Mapper 接口
-     * @param mapperMethod 方法
-     * @return 实体类类型的 Optional 包装对象
+     * @param mapperType   The Mapper interface.
+     * @param mapperMethod The method.
+     * @return An {@link Optional} containing the entity class type.
      */
     protected Optional<Class<?>> getClassByMapperMethodAndMapperType(Class<?> mapperType, Method mapperMethod) {
         return getClassByTypes(GenericTypeResolver.resolveMapperTypes(mapperMethod, mapperType));
     }
 
     /**
-     * 根据接口泛型获取实体类，优先级最低，与当前执行方法无关
+     * Gets the entity class from the interface generics. This has the lowest priority and is independent of the
+     * currently executing method.
      *
-     * @param mapperType Mapper 接口
-     * @return 实体类类型的 Optional 包装对象
+     * @param mapperType The Mapper interface.
+     * @return An {@link Optional} containing the entity class type.
      */
     protected Optional<Class<?>> getClassByMapperType(Class<?> mapperType) {
         return getClassByTypes(GenericTypeResolver.resolveMapperTypes(mapperType));
     }
 
     /**
-     * 根据单个类型获取可能的实体类类型
+     * Gets a potential entity class type from a single {@link Type}.
      *
-     * @param type 类型
-     * @return 实体类类型的 Optional 包装对象
+     * @param type The type.
+     * @return An {@link Optional} containing the entity class type.
      */
     protected Optional<Class<?>> getClassByType(Type type) {
         if (type instanceof Class) {
@@ -141,10 +145,10 @@ public abstract class SchemaTypeParser implements ClassMetaResolver {
     }
 
     /**
-     * 遍历类型数组获取可能的实体类类型
+     * Iterates through an array of types to find a potential entity class type.
      *
-     * @param types 类型数组
-     * @return 实体类类型的 Optional 包装对象
+     * @param types The array of types.
+     * @return An {@link Optional} containing the entity class type.
      */
     protected Optional<Class<?>> getClassByTypes(Type[] types) {
         for (Type type : types) {

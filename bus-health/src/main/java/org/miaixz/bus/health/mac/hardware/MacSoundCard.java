@@ -38,7 +38,10 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
 
 /**
- * Sound card data obtained via AppleHDA kext
+ * <p>
+ * MacSoundCard class.
+ * </p>
+ * Sound card data obtained via AppleHDA kext.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,23 +49,26 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
 @Immutable
 final class MacSoundCard extends AbstractSoundCard {
 
+    /**
+     * The manufacturer name for Apple sound cards.
+     */
     private static final String APPLE = "Apple Inc.";
 
     /**
      * Constructor for MacSoundCard.
      *
-     * @param kernelVersion The version
-     * @param name          The name
-     * @param codec         The codec
+     * @param kernelVersion The kernel version of the sound card driver.
+     * @param name          The name of the sound card.
+     * @param codec         The codec used by the sound card.
      */
     MacSoundCard(String kernelVersion, String name, String codec) {
         super(kernelVersion, name, codec);
     }
 
     /**
-     * public method used by {@link AbstractHardwareAbstractionLayer} to access the sound cards.
+     * Public method used by {@link AbstractHardwareAbstractionLayer} to access the sound cards.
      *
-     * @return List of {@link MacSoundCard} objects.
+     * @return A list of {@link MacSoundCard} objects representing the sound cards.
      */
     public static List<SoundCard> getSoundCards() {
         List<SoundCard> soundCards = new ArrayList<>();

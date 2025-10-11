@@ -43,7 +43,8 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 文件读取器
+ * File reader. This class provides utility methods for reading content from files, supporting various data types and
+ * character encodings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,10 +55,12 @@ public class FileReader extends FileWrapper {
     private static final long serialVersionUID = 2852285708261L;
 
     /**
-     * 构造
+     * Constructs a new {@code FileReader} instance. The file is checked for existence and if it is a regular file upon
+     * construction.
      *
-     * @param file    文件
-     * @param charset 编码，使用 {@link Charset}
+     * @param file    The file to read. Must not be {@code null}.
+     * @param charset The character set for reading the file, using {@link java.nio.charset.Charset}.
+     * @throws InternalException if the file does not exist or is not a regular file.
      */
     public FileReader(final File file, final java.nio.charset.Charset charset) {
         super(file, charset);
@@ -65,31 +68,33 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 创建 FileReader
+     * Creates a {@code FileReader} instance with the specified file and character set.
      *
-     * @param file    文件
-     * @param charset 编码，使用 {@link Charset}
-     * @return FileReader
+     * @param file    The file to read. Must not be {@code null}.
+     * @param charset The character set for reading the file, using {@link java.nio.charset.Charset}.
+     * @return A new {@code FileReader} instance.
+     * @throws InternalException if the file does not exist or is not a regular file.
      */
     public static FileReader of(final File file, final java.nio.charset.Charset charset) {
         return new FileReader(file, charset);
     }
 
     /**
-     * 创建 FileReader, 编码：{@link Charset#UTF_8}
+     * Creates a {@code FileReader} instance with the specified file and {@link Charset#UTF_8} encoding.
      *
-     * @param file 文件
-     * @return FileReader
+     * @param file The file to read. Must not be {@code null}.
+     * @return A new {@code FileReader} instance.
+     * @throws InternalException if the file does not exist or is not a regular file.
      */
     public static FileReader of(final File file) {
         return new FileReader(file, Charset.UTF_8);
     }
 
     /**
-     * 读取文件所有数据 文件的长度不能超过 {@link Integer#MAX_VALUE}
+     * Reads all bytes from the file. The file length cannot exceed {@link Integer#MAX_VALUE}.
      *
-     * @return 字节码
-     * @throws InternalException IO异常
+     * @return The byte array containing all file data.
+     * @throws InternalException if an I/O error occurs during reading.
      */
     public byte[] readBytes() throws InternalException {
         try {
@@ -100,36 +105,37 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 读取文件内容
+     * Reads the entire content of the file as a string using the specified character set.
      *
-     * @return 内容
-     * @throws InternalException IO异常
+     * @return The content of the file as a string.
+     * @throws InternalException if an I/O error occurs during reading.
      */
     public String readString() throws InternalException {
-        // JDK11+不再推荐使用这种方式，推荐使用Files.readString
+        // JDK11+ no longer recommends this method; Files.readString is recommended.
         return new String(readBytes(), this.charset);
     }
 
     /**
-     * 从文件中读取每一行数据
+     * Reads each line from the file and adds it to the given collection.
      *
-     * @param <T>        集合类型
-     * @param collection 集合
-     * @return 文件中的每行内容的集合
-     * @throws InternalException IO异常
+     * @param <T>        The type of the collection, which must extend {@code Collection<String>}.
+     * @param collection The collection to add the lines to. Must not be {@code null}.
+     * @return The collection containing each line of the file.
+     * @throws InternalException if an I/O error occurs during reading.
      */
     public <T extends Collection<String>> T readLines(final T collection) throws InternalException {
         return readLines(collection, null);
     }
 
     /**
-     * 从文件中读取每一行数据
+     * Reads each line from the file and adds it to the given collection if it satisfies the provided predicate.
      *
-     * @param <T>        集合类型
-     * @param collection 集合
-     * @param predicate  断言，断言为真的加入到提供的集合中
-     * @return 文件中的每行内容的集合
-     * @throws InternalException IO异常
+     * @param <T>        The type of the collection, which must extend {@code Collection<String>}.
+     * @param collection The collection to add the lines to. Must not be {@code null}.
+     * @param predicate  The predicate to test each line. Only lines that return {@code true} will be added. If
+     *                   {@code null}, all lines are added.
+     * @return The collection containing each line of the file that satisfied the predicate.
+     * @throws InternalException if an I/O error occurs during reading.
      */
     public <T extends Collection<String>> T readLines(final T collection, final Predicate<String> predicate)
             throws InternalException {
@@ -142,10 +148,11 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 按照行处理文件内容
+     * Processes each line of the file content with the given line handler. The file is read line by line, and each line
+     * is passed to the {@code lineHandler}.
      *
-     * @param lineHandler 行处理器
-     * @throws InternalException IO异常
+     * @param lineHandler The handler to process each line. Must not be {@code null}.
+     * @throws InternalException if an I/O error occurs during reading.
      */
     public void readLines(final ConsumerX<String> lineHandler) throws InternalException {
         BufferedReader reader = null;
@@ -158,22 +165,24 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 从文件中读取每一行数据
+     * Reads all lines from the file into a new {@link List}.
      *
-     * @return 文件中的每行内容的集合
-     * @throws InternalException IO异常
+     * @return A new {@link List} containing each line of the file.
+     * @throws InternalException if an I/O error occurs during reading.
      */
     public List<String> readLines() throws InternalException {
         return readLines(new ArrayList<>());
     }
 
     /**
-     * 按照给定的readerHandler读取文件中的数据
+     * Reads data from the file using the given {@code readerHandler}. This method provides a {@link BufferedReader} to
+     * the handler for custom reading logic.
      *
-     * @param <T>           读取的结果对象类型
-     * @param readerHandler Reader处理类
-     * @return 从文件中read出的数据
-     * @throws InternalException IO异常
+     * @param <T>           The type of the result object returned by the {@code readerHandler}.
+     * @param readerHandler The handler to process the {@link BufferedReader}. Must not be {@code null}.
+     * @return The data read from the file, as returned by the {@code readerHandler}.
+     * @throws InternalException if an I/O error occurs during reading or if the {@code readerHandler} throws an
+     *                           exception.
      */
     public <T> T read(final FunctionX<BufferedReader, T> readerHandler) throws InternalException {
         BufferedReader reader = null;
@@ -190,20 +199,20 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 获得一个文件读取器
+     * Gets a {@link BufferedReader} for this file, using the configured character set.
      *
-     * @return BufferedReader对象
-     * @throws InternalException IO异常
+     * @return A {@link BufferedReader} object for reading the file.
+     * @throws InternalException if an I/O error occurs while creating the reader.
      */
     public BufferedReader getReader() throws InternalException {
         return IoKit.toReader(getInputStream(), this.charset);
     }
 
     /**
-     * 获得输入流
+     * Gets an {@link BufferedInputStream} for this file.
      *
-     * @return 输入流
-     * @throws InternalException IO异常
+     * @return An {@link BufferedInputStream} object for reading the file.
+     * @throws InternalException if an I/O error occurs while creating the input stream.
      */
     public BufferedInputStream getInputStream() throws InternalException {
         try {
@@ -214,23 +223,23 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 将文件写入流中，此方法不会关闭比输出流
+     * Writes the entire content of the file to the given output stream. The output stream is not closed by this method.
      *
-     * @param out 流
-     * @return 写出的流byte数
-     * @throws InternalException IO异常
+     * @param out The output stream to write to. Must not be {@code null}.
+     * @return The number of bytes written to the stream.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public long writeToStream(final OutputStream out) throws InternalException {
         return writeToStream(out, false);
     }
 
     /**
-     * 将文件写入流中
+     * Writes the entire content of the file to the given output stream.
      *
-     * @param out        流
-     * @param isCloseOut 是否关闭输出流
-     * @return 写出的流byte数
-     * @throws InternalException IO异常
+     * @param out        The output stream to write to. Must not be {@code null}.
+     * @param isCloseOut Whether to close the output stream after writing. If {@code true}, the stream will be closed.
+     * @return The number of bytes written to the stream.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public long writeToStream(final OutputStream out, final boolean isCloseOut) throws InternalException {
         try (final FileInputStream in = new FileInputStream(this.file)) {
@@ -245,9 +254,9 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 检查文件
+     * Checks the validity of the file associated with this reader. Ensures that the file exists and is a regular file.
      *
-     * @throws InternalException IO异常
+     * @throws InternalException if the file does not exist or is not a regular file.
      */
     private void checkFile() throws InternalException {
         if (!file.exists()) {

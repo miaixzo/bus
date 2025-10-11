@@ -33,20 +33,26 @@ import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 实体对象构建器，存储和提供 TableMeta 和 ColumnMeta 信息
+ * A builder for entity objects, which stores and provides {@link TableMeta} and {@link ColumnMeta} information.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class EntityClassBuilder {
 
+    /**
+     * A thread-safe store for table metadata, keyed by entity class.
+     */
     private static final Map<Class<?>, TableMeta> TABLE_META_STORE = new HashMap<>();
+    /**
+     * A thread-safe store for column metadata, keyed by entity class.
+     */
     private static final Map<Class<?>, List<ColumnMeta>> COLUMN_META_STORE = new HashMap<>();
 
     /**
-     * 存储 TableMeta
+     * Stores a {@link TableMeta} instance.
      *
-     * @param tableMeta 表元数据
+     * @param tableMeta The table metadata to store.
      */
     public static void setTableMeta(TableMeta tableMeta) {
         synchronized (TABLE_META_STORE) {
@@ -56,11 +62,11 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 添加 ColumnMeta
+     * Adds a {@link ColumnMeta} instance for a given entity class.
      *
-     * @param entityClass 实体类
-     * @param columnMeta  列元数据
-     * @throws RuntimeException 如果 TableMeta 未初始化
+     * @param entityClass The entity class.
+     * @param columnMeta  The column metadata to add.
+     * @throws RuntimeException if the {@link TableMeta} for the entity class has not been initialized.
      */
     public static void setColumnMeta(Class<?> entityClass, ColumnMeta columnMeta) {
         synchronized (COLUMN_META_STORE) {
@@ -75,10 +81,10 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 获取默认 TableMeta
+     * Gets the default {@link TableMeta}.
      *
-     * @return TableMeta
-     * @throws RuntimeException 如果无 TableMeta 初始化
+     * @return The default {@link TableMeta}.
+     * @throws RuntimeException if no {@link TableMeta} has been initialized.
      */
     public static TableMeta getTableMeta() {
         synchronized (TABLE_META_STORE) {
@@ -90,11 +96,11 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 获取指定实体类的 TableMeta
+     * Gets the {@link TableMeta} for a specific entity class.
      *
-     * @param entityClass 实体类
-     * @return TableMeta
-     * @throws RuntimeException 如果 TableMeta 未初始化
+     * @param entityClass The entity class.
+     * @return The {@link TableMeta} for the specified class.
+     * @throws RuntimeException if the {@link TableMeta} for the entity class has not been initialized.
      */
     public static TableMeta getTableMeta(Class<?> entityClass) {
         synchronized (TABLE_META_STORE) {
@@ -107,10 +113,10 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 获取默认 ColumnMeta 列表
+     * Gets the list of default {@link ColumnMeta}.
      *
-     * @return 列元数据列表
-     * @throws RuntimeException 如果无 ColumnMeta 初始化
+     * @return A list of default column metadata.
+     * @throws RuntimeException if no {@link ColumnMeta} has been initialized.
      */
     public static List<ColumnMeta> getColumnMeta() {
         synchronized (COLUMN_META_STORE) {
@@ -122,11 +128,11 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 获取指定实体类的 ColumnMeta 列表
+     * Gets the list of {@link ColumnMeta} for a specific entity class.
      *
-     * @param entityClass 实体类
-     * @return 列元数据列表
-     * @throws RuntimeException 如果 ColumnMeta 未初始化
+     * @param entityClass The entity class.
+     * @return A list of column metadata for the specified class.
+     * @throws RuntimeException if the {@link ColumnMeta} for the entity class has not been initialized.
      */
     public static List<ColumnMeta> getColumnMeta(Class<?> entityClass) {
         synchronized (COLUMN_META_STORE) {
@@ -139,12 +145,12 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 获取默认 TableMeta 上的指定注解
+     * Gets specified annotations from the default {@link TableMeta}.
      *
-     * @param annotationClass 注解类
-     * @param <T>             注解类型
-     * @return 注解列表
-     * @throws RuntimeException 如果无 TableMeta 初始化
+     * @param annotationClass The annotation class to retrieve.
+     * @param <T>             The type of the annotation.
+     * @return A list of found annotations.
+     * @throws RuntimeException if no {@link TableMeta} has been initialized.
      */
     public static <T extends Annotation> List<T> getTableAnnotations(Class<T> annotationClass) {
         synchronized (TABLE_META_STORE) {
@@ -156,13 +162,13 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 获取指定实体类的 TableMeta 上的指定注解
+     * Gets specified annotations from the {@link TableMeta} of a specific entity class.
      *
-     * @param entityClass     实体类
-     * @param annotationClass 注解类
-     * @param <T>             注解类型
-     * @return 注解列表
-     * @throws RuntimeException 如果 TableMeta 未初始化
+     * @param entityClass     The entity class.
+     * @param annotationClass The annotation class to retrieve.
+     * @param <T>             The type of the annotation.
+     * @return A list of found annotations.
+     * @throws RuntimeException if the {@link TableMeta} for the entity class has not been initialized.
      */
     public static <T extends Annotation> List<T> getTableAnnotations(Class<?> entityClass, Class<T> annotationClass) {
         synchronized (TABLE_META_STORE) {
@@ -175,12 +181,12 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 获取默认 ColumnMeta 上的指定注解
+     * Gets specified annotations from the default {@link ColumnMeta} list.
      *
-     * @param annotationClass 注解类
-     * @param <T>             注解类型
-     * @return 注解列表
-     * @throws RuntimeException 如果无 ColumnMeta 初始化
+     * @param annotationClass The annotation class to retrieve.
+     * @param <T>             The type of the annotation.
+     * @return A list of found annotations.
+     * @throws RuntimeException if no {@link ColumnMeta} has been initialized.
      */
     public static <T extends Annotation> List<T> getColumnAnnotations(Class<T> annotationClass) {
         synchronized (COLUMN_META_STORE) {
@@ -192,13 +198,13 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 获取指定实体类的 ColumnMeta 上的指定注解
+     * Gets specified annotations from the {@link ColumnMeta} list of a specific entity class.
      *
-     * @param entityClass     实体类
-     * @param annotationClass 注解类
-     * @param <T>             注解类型
-     * @return 注解列表
-     * @throws RuntimeException 如果 ColumnMeta 未初始化
+     * @param entityClass     The entity class.
+     * @param annotationClass The annotation class to retrieve.
+     * @param <T>             The type of the annotation.
+     * @return A list of found annotations.
+     * @throws RuntimeException if the {@link ColumnMeta} for the entity class has not been initialized.
      */
     public static <T extends Annotation> List<T> getColumnAnnotations(Class<?> entityClass, Class<T> annotationClass) {
         synchronized (COLUMN_META_STORE) {
@@ -211,9 +217,9 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 获取默认实体类中 Logical 注解的列名称
+     * Gets the column name associated with the {@link Logical} annotation in the default entity class.
      *
-     * @return 列名称
+     * @return The logical delete column name, or an empty string if not found.
      */
     public static String getTableLogicColumn() {
         synchronized (COLUMN_META_STORE) {
@@ -231,12 +237,12 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 从 TableMeta 提取指定注解
+     * Extracts specified annotations from a {@link TableMeta} object.
      *
-     * @param tableMeta       TableMeta 对象
-     * @param annotationClass 注解类
-     * @param <T>             注解类型
-     * @return 注解列表
+     * @param tableMeta       The {@link TableMeta} object.
+     * @param annotationClass The annotation class to extract.
+     * @param <T>             The type of the annotation.
+     * @return A list of found annotations.
      */
     private static <T extends Annotation> List<T> getAnnotationsFromTableMeta(
             TableMeta tableMeta,
@@ -252,12 +258,12 @@ public class EntityClassBuilder {
     }
 
     /**
-     * 从 ColumnMeta 列表提取指定注解
+     * Extracts specified annotations from a list of {@link ColumnMeta} objects.
      *
-     * @param columnMetas     ColumnMeta 列表
-     * @param annotationClass 注解类
-     * @param <T>             注解类型
-     * @return 注解列表
+     * @param columnMetas     The list of {@link ColumnMeta} objects.
+     * @param annotationClass The annotation class to extract.
+     * @param <T>             The type of the annotation.
+     * @return A list of found annotations.
      */
     private static <T extends Annotation> List<T> getAnnotationsFromColumnMetas(
             List<ColumnMeta> columnMetas,

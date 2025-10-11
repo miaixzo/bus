@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 中国传统文化/日历相关 部分内容来自 https://github.com/6tail/lunar-java
+ * Provides classes related to Chinese traditional culture and calendar, such as the Chinese Zodiac, Five Elements, and
+ * other cultural concepts. Some content is adapted from
+ * <a href="https://github.com/6tail/lunar-java">https://github.com/6tail/lunar-java</a>.
  *
  * @author Kimi Liu
  * @since Java 17+

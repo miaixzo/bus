@@ -28,15 +28,25 @@
 package org.miaixz.bus.core.lang.loader;
 
 /**
- * 委派的资源加载器
+ * An abstract base class for resource loaders that delegate their loading operations to another {@link Loader}
+ * instance.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class DelegateLoader extends ResourceLoader implements Loader {
 
+    /**
+     * The delegate loader to which resource loading operations are forwarded.
+     */
     protected final Loader delegate;
 
+    /**
+     * Constructs a new {@code DelegateLoader} with the specified delegate.
+     *
+     * @param delegate The {@link Loader} instance to delegate to. Must not be {@code null}.
+     * @throws IllegalArgumentException If the provided delegate is {@code null}.
+     */
     protected DelegateLoader(Loader delegate) {
         if (null == delegate) {
             throw new IllegalArgumentException("delegate must not be null");

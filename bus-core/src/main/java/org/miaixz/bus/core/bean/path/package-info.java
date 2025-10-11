@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Bean路径，通过路径表达式查找或设置对象或子对象中的值
+ * Bean path, which finds or sets the value in an object or sub-object through a path expression.
  *
  * @author Kimi Liu
  * @since Java 17+

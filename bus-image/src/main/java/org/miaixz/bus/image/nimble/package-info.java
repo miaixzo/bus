@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 图像/图像处理
+ * Provides core classes for DICOM image processing and manipulation, including rendering pipelines, lookup tables, and
+ * pixel data handling.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 支持缓存实体类信息的表工厂
+ * A table factory that supports caching entity class information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,16 +41,17 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class CachingTableSchemaBuilder implements TableSchemaBuilder {
 
     /**
-     * 缓存实体类信息，键为实体类，值为对应的 MapperTable
+     * Caches entity class information, with the entity class as the key and the corresponding {@link TableMeta} as the
+     * value.
      */
     private final Map<Class<?>, TableMeta> ENTITY_CLASS_MAP = new ConcurrentHashMap<>();
 
     /**
-     * 创建实体表信息，支持缓存以避免重复创建
+     * Creates entity table information, with caching support to avoid redundant creation.
      *
-     * @param entityClass 实体类
-     * @param chain       表工厂链
-     * @return 实体表信息，失败时返回 null
+     * @param entityClass The entity class.
+     * @param chain       The table factory chain.
+     * @return The entity table information, or null on failure.
      */
     @Override
     public TableMeta createTable(Class<?> entityClass, Chain chain) {
@@ -70,9 +71,9 @@ public class CachingTableSchemaBuilder implements TableSchemaBuilder {
     }
 
     /**
-     * 获取工厂的优先级顺序
+     * Gets the priority order of the factory.
      *
-     * @return 优先级值，Integer.MAX_VALUE 表示最高优先级
+     * @return The priority value. {@link Integer#MAX_VALUE} indicates the highest priority.
      */
     @Override
     public int order() {

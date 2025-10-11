@@ -34,9 +34,9 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的Supplier接口，支持异常抛出和多Supplier组合。
+ * A serializable {@link Supplier} interface that supports throwing exceptions and combining multiple suppliers.
  *
- * @param <R> 返回值类型
+ * @param <R> The type of results supplied by this supplier.
  * @author Kimi Liu
  * @see Supplier
  * @since Java 17+
@@ -45,11 +45,13 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface SupplierX<R> extends Supplier<R>, Serializable {
 
     /**
-     * 从多个SupplierX中返回最后一个。
+     * Returns the last {@code SupplierX} from a given array of suppliers. If the array is empty, it returns a supplier
+     * that supplies {@code null}.
      *
-     * @param serSups 要组合的SupplierX实例
-     * @param <T>     返回值类型
-     * @return 最后一个SupplierX实例，若无则返回null Supplier
+     * @param serSups An array of {@code SupplierX} instances to choose from.
+     * @param <T>     The type of results supplied by the suppliers.
+     * @return The last {@code SupplierX} instance in the array, or a supplier that returns {@code null} if the array is
+     *         empty.
      */
     @SafeVarargs
     static <T> SupplierX<T> last(final SupplierX<T>... serSups) {
@@ -57,18 +59,18 @@ public interface SupplierX<R> extends Supplier<R>, Serializable {
     }
 
     /**
-     * 获取结果，可能抛出异常。
+     * Gets a result, potentially throwing an exception.
      *
-     * @return 结果
-     * @throws Throwable 可能抛出的异常
+     * @return A result.
+     * @throws Throwable Any throwable exception that might occur during the operation.
      */
     R getting() throws Throwable;
 
     /**
-     * 获取结果，自动处理异常。
+     * Gets a result, automatically handling checked exceptions by wrapping them in a {@link RuntimeException}.
      *
-     * @return 结果
-     * @throws RuntimeException 包装后的运行时异常
+     * @return A result.
+     * @throws RuntimeException A wrapped runtime exception if a checked exception occurs.
      */
     @Override
     default R get() {

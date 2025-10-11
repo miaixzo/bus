@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.core.center.date.builder;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +40,9 @@ import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.xyz.ZoneKit;
 
 /**
- * DateBuilder类用于构建和操作日期 该类提供了多个方法来设置年、月、日等日期字段，以及获取构建的日期对象 它是不可变的，因此每个设置方法都会返回一个新的DateBuilder实例
+ * The {@code DateBuilder} class is used to construct and manipulate dates. This class provides multiple methods to set
+ * date fields such as year, month, and day, and to retrieve the constructed date object. It is immutable, so each
+ * setter method returns a new {@code DateBuilder} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,96 +52,96 @@ public final class DateBuilder {
     private static final ZoneOffset DEFAULT_OFFSET = OffsetDateTime.now().getOffset();
 
     /**
-     * 年份
+     * Year.
      */
     private int year;
     /**
-     * 月份 从1开始
+     * Month, starting from 1.
      */
     private int month;
     /**
-     * 周数 SO8601规范，1代表Monday，2代表Tuesday，以此类推。
+     * Week number. ISO8601 standard, 1 for Monday, 2 for Tuesday, and so on.
      */
     private int week;
     /**
-     * 日
+     * Day of month.
      */
     private int day;
     /**
-     * 小时
+     * Hour.
      */
     private int hour;
     /**
-     * 分钟
+     * Minute.
      */
     private int minute;
     /**
-     * 秒
+     * Second.
      */
     private int second;
     /**
-     * 纳秒
+     * Nanosecond.
      */
     private int nanosecond;
     /**
-     * Unix时间戳（秒）
+     * Unix timestamp (seconds).
      */
     private long unixsecond;
     /**
-     * 毫秒
+     * Millisecond.
      */
     private long millisecond;
     /**
-     * 时区偏移量是否已设置
+     * Flag indicating if time zone offset has been set.
      */
     private boolean flag;
     /**
-     * 时区偏移量 分钟
+     * Time zone offset in minutes.
      */
     private int zoneOffset;
     /**
-     * 时区
+     * Time zone.
      */
     private TimeZone zone;
     /**
-     * 上午标志
+     * AM flag.
      */
     private boolean am;
     /**
-     * 下午标志
+     * PM flag.
      */
     private boolean pm;
 
     /**
-     * 构造
+     * Constructs a {@code DateBuilder} instance, resetting all values to default.
      */
     public DateBuilder() {
         reset();
     }
 
     /**
-     * 创建并返回一个DateBuilder实例。
+     * Creates and returns a new {@code DateBuilder} instance.
      *
-     * @return this
+     * @return A new {@code DateBuilder} instance.
      */
     public static DateBuilder of() {
         return new DateBuilder();
     }
 
     /**
-     * 获取年份。
+     * Gets the year.
      *
-     * @return 返回设置的年份。
+     * @return The set year.
      */
     public int getYear() {
         return year;
     }
 
     /**
-     * 设置年份。
+     * Sets the year.
      *
-     * @param year 要设置的年份
-     * @return 返回DateBuilder实例，支持链式调用。
+     * @param year The year to set.
+     * @return This {@code DateBuilder} instance, supporting chained calls.
      */
     public DateBuilder setYear(final int year) {
         this.year = year;
@@ -144,19 +149,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取月份，从1开始。
+     * Gets the month, starting from 1.
      *
-     * @return 返回设置的月份，从1开始。
+     * @return The set month, starting from 1.
      */
     public int getMonth() {
         return month;
     }
 
     /**
-     * 设置月份，从1开始。
+     * Sets the month, starting from 1.
      *
-     * @param month 要设置的月份，从1开始。
-     * @return this
+     * @param month The month to set, starting from 1.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setMonth(final int month) {
         this.month = month;
@@ -164,19 +169,21 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取当前周数的方法
+     * Gets the current week number.
      *
-     * @return int 返回当前的周数
+     * @return The current week number.
      */
     public int getWeek() {
         return week;
     }
 
     /**
-     * 设置日期构建器的周数，ISO8601规范，1代表Monday，2代表Tuesday，以此类推。
+     * Sets the week number for the date builder. According to ISO8601 standard, 1 represents Monday, 2 represents
+     * Tuesday, and so on.
      *
-     * @param week 指定的周数，通常用于构建具体的日期对象，ISO8601规范，1代表Monday，2代表Tuesday，以此类推。
-     * @return this。
+     * @param week The specified week number, typically used to construct a specific date object. ISO8601 standard, 1
+     *             for Monday, 2 for Tuesday, and so on.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setWeek(final int week) {
         this.week = week;
@@ -184,19 +191,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取当前日期对象中的日部分
+     * Gets the day of the month from the current date object.
      *
-     * @return 返回一个整数，表示当前日期中的日。
+     * @return An integer representing the day of the month.
      */
     public int getDay() {
         return day;
     }
 
     /**
-     * 设置日期对象中的日部分
+     * Sets the day of the month in the date object.
      *
-     * @param day 指定要设置的日，必须为整数。
-     * @return this
+     * @param day The day to set, must be an integer.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setDay(final int day) {
         this.day = day;
@@ -204,19 +211,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取当前日期对象中的小时数
+     * Gets the hour from the current date object.
      *
-     * @return 小时数，返回值类型为int。
+     * @return The hour, as an integer.
      */
     public int getHour() {
         return hour;
     }
 
     /**
-     * 设置日期对象中的小时数
+     * Sets the hour in the date object.
      *
-     * @param hour 要设置的小时数，必须为整数。
-     * @return this
+     * @param hour The hour to set, must be an integer.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setHour(final int hour) {
         this.hour = hour;
@@ -224,19 +231,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取当前日期构建器中的分钟数
+     * Gets the minute from the current date builder.
      *
-     * @return 返回设置的分钟数，类型为int。
+     * @return The set minute, as an integer.
      */
     public int getMinute() {
         return minute;
     }
 
     /**
-     * 设置日期构建器中的分钟数
+     * Sets the minute in the date builder.
      *
-     * @param minute 要设置的分钟数，必须为整数。
-     * @return this。
+     * @param minute The minute to set, must be an integer.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setMinute(final int minute) {
         this.minute = minute;
@@ -244,19 +251,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取当前日期时间对象中的秒数
+     * Gets the second from the current date-time object.
      *
-     * @return 返回当前日期时间对象中的秒数
+     * @return The second from the current date-time object.
      */
     public int getSecond() {
         return second;
     }
 
     /**
-     * 设置日期时间对象中的秒数
+     * Sets the second in the date-time object.
      *
-     * @param second 指定要设置的秒数
-     * @return this
+     * @param second The second to set.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setSecond(final int second) {
         this.second = second;
@@ -264,19 +271,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取纳秒数。
+     * Gets the nanosecond.
      *
-     * @return 当前对象的纳秒数。
+     * @return The nanosecond of the current object.
      */
     public int getNanosecond() {
         return nanosecond;
     }
 
     /**
-     * 设置纳秒数。
+     * Sets the nanosecond.
      *
-     * @param nanosecond 要设置的纳秒数。
-     * @return this
+     * @param nanosecond The nanosecond to set.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setNanosecond(final int nanosecond) {
         this.nanosecond = nanosecond;
@@ -284,19 +291,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取Unix时间戳（秒）。
+     * Gets the Unix timestamp (seconds).
      *
-     * @return 当前对象的Unix时间戳（以秒为单位）。
+     * @return The Unix timestamp of the current object (in seconds).
      */
     public long getUnixsecond() {
         return unixsecond;
     }
 
     /**
-     * 设置Unix时间戳（秒）。
+     * Sets the Unix timestamp (seconds).
      *
-     * @param unixsecond 要设置的Unix时间戳（以秒为单位）。
-     * @return this
+     * @param unixsecond The Unix timestamp to set (in seconds).
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setUnixsecond(final long unixsecond) {
         this.unixsecond = unixsecond;
@@ -304,19 +311,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取时间戳（毫秒）。
+     * Gets the timestamp (milliseconds).
      *
-     * @return 当前对象的时间戳（以毫秒为单位）。
+     * @return The timestamp of the current object (in milliseconds).
      */
     public long getMillisecond() {
         return millisecond;
     }
 
     /**
-     * 设置时间戳（毫秒）。
+     * Sets the timestamp (milliseconds).
      *
-     * @param millisecond 要设置的时间戳（以毫秒为单位）。
-     * @return this
+     * @param millisecond The timestamp to set (in milliseconds).
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setMillisecond(final long millisecond) {
         this.millisecond = millisecond;
@@ -324,19 +331,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 检查时区偏移量是否已设置。
+     * Checks if the time zone offset has been set.
      *
-     * @return 如果时区偏移量已设置则返回true，否则返回false。
+     * @return {@code true} if the time zone offset has been set, {@code false} otherwise.
      */
     public boolean isFlag() {
         return flag;
     }
 
     /**
-     * 设置时区偏移量是否已设置的状态。
+     * Sets the status of whether the time zone offset has been set.
      *
-     * @param flag 指定时区偏移量是否已设置的状态。
-     * @return this
+     * @param flag The status indicating whether the time zone offset has been set.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setFlag(final boolean flag) {
         this.flag = flag;
@@ -344,19 +351,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取时区偏移量。
+     * Gets the time zone offset.
      *
-     * @return 返回设置的时区偏移量。
+     * @return The set time zone offset.
      */
     public int getZoneOffset() {
         return zoneOffset;
     }
 
     /**
-     * 设置时区偏移量。
+     * Sets the time zone offset.
      *
-     * @param zoneOffset 要设置的时区偏移量。
-     * @return this
+     * @param zoneOffset The time zone offset to set.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setZoneOffset(final int zoneOffset) {
         this.zoneOffset = zoneOffset;
@@ -364,19 +371,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 获取时区。
+     * Gets the time zone.
      *
-     * @return 返回设置的时区。
+     * @return The set time zone.
      */
     public TimeZone getZone() {
         return zone;
     }
 
     /**
-     * 设置时区。
+     * Sets the time zone.
      *
-     * @param zone 要设置的时区。
-     * @return this
+     * @param zone The time zone to set.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setZone(final TimeZone zone) {
         this.zone = zone;
@@ -384,19 +391,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 检查当前是否为上午。
+     * Checks if the current time is AM.
      *
-     * @return 如果当前设置为上午则返回true，否则返回false。
+     * @return {@code true} if currently set to AM, {@code false} otherwise.
      */
     public boolean isAm() {
         return am;
     }
 
     /**
-     * 设置是否为上午的状态。
+     * Sets the AM status.
      *
-     * @param am 指定是否为上午的状态。
-     * @return this
+     * @param am The status indicating whether it is AM.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setAm(final boolean am) {
         this.am = am;
@@ -404,19 +411,19 @@ public final class DateBuilder {
     }
 
     /**
-     * 检查当前是否为下午。
+     * Checks if the current time is PM.
      *
-     * @return 如果当前设置为下午则返回true，否则返回false。
+     * @return {@code true} if currently set to PM, {@code false} otherwise.
      */
     public boolean isPm() {
         return pm;
     }
 
     /**
-     * 设置是否为下午的状态。
+     * Sets the PM status.
      *
-     * @param pm 指定是否为下午的状态。
-     * @return this
+     * @param pm The status indicating whether it is PM.
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder setPm(final boolean pm) {
         this.pm = pm;
@@ -425,9 +432,9 @@ public final class DateBuilder {
     // endregion
 
     /**
-     * 重置所有值为默认值
+     * Resets all values to their default.
      *
-     * @return this
+     * @return This {@code DateBuilder} instance.
      */
     public DateBuilder reset() {
         this.week = 1;
@@ -449,28 +456,31 @@ public final class DateBuilder {
     }
 
     /**
-     * 将当前时间对象转换为{@link DateTime}类型。此方法根据是否设置了时区偏移量使用不同的转换策略。
+     * Converts the current time object to a {@link DateTime} type. This method uses different conversion strategies
+     * based on whether the time zone offset is set.
      * <ul>
-     * <li>如果时区偏移量未设置，则通过{@link Calendar}创建{@link DateTime}，无需转换时区。</li>
-     * <li>如果时区偏移量已设置，则经过OffsetDateTime转换为本地时区的{@link DateTime}。</li>
+     * <li>If the time zone offset is not set, it creates a {@link DateTime} via {@link Calendar} without time zone
+     * conversion.</li>
+     * <li>If the time zone offset is set, it converts to {@link OffsetDateTime} and then to a {@link DateTime} in the
+     * local time zone.</li>
      * </ul>
-     * 。
      *
-     * @return DateTime 表示当前时间的 DateTime 对象。
+     * @return A {@link DateTime} object representing the current time.
      */
     public DateTime toDate() {
         if (!flag) {
-            // 时区偏移量未设置，使用 Calendar 进行转换，无需读取时区
+            // Time zone offset not set, convert using Calendar without reading time zone
             return new DateTime(toCalendar().getTimeInMillis());
         }
-        // 时区偏移量已设置，直接转换为 Date 对象返回
+        // Time zone offset set, convert directly to Date object
         return new DateTime(toOffsetDateTime().toInstant().toEpochMilli());
     }
 
     /**
-     * 转换为带时区信息的{@link DateTime} 此方法用于保留原始时间戳，并且不丢失时区信息
+     * Converts to a {@link DateTime} with time zone information. This method preserves the original timestamp and time
+     * zone information.
      *
-     * @return {@link DateTime}
+     * @return A {@link DateTime} object.
      */
     public DateTime toZonedDateTime() {
         final Calendar calendar = toCalendar();
@@ -478,55 +488,61 @@ public final class DateBuilder {
     }
 
     /**
-     * 将当前对象的日期时间信息转换为{@link Calendar}实例。 如果`unixsecond`不为0，将根据unix时间戳（秒）和纳秒偏移量构造Calendar。
-     * 否则，根据提供的时区信息`zone`或`zoneOffset`来设置Calendar的时区。 最后，设置年、月、日、时、分、秒和毫秒信息。
+     * Converts the current object's date and time information to a {@link Calendar} instance. If `unixsecond` is not 0,
+     * the Calendar will be constructed based on the Unix timestamp (seconds) and nanosecond offset. Otherwise, the
+     * Calendar's time zone will be set based on the provided `zone` or `zoneOffset` information. Finally, year, month,
+     * day, hour, minute, second, and millisecond information will be set.
      *
-     * @return Calendar 根据当前日期时间信息构建的Calendar实例。
-     * @throws DateTimeException 如果时区偏移量无法转换为有效的时区ID，则抛出异常。
+     * @return A {@link Calendar} instance constructed from the current date and time information.
+     * @throws DateException If the time zone offset cannot be converted to a valid time zone ID.
      */
     public Calendar toCalendar() {
         this.prepare();
-        final Calendar calendar = Calendar.getInstance(); // 获取一个Calendar实例
+        final Calendar calendar = Calendar.getInstance(); // Get a Calendar instance
 
-        // 设置时区
+        // Set time zone
         if (zone != null) {
-            calendar.setTimeZone(zone); // 使用指定的时区
-        } else if (flag) { // 如果设置了时区偏移量
+            calendar.setTimeZone(zone); // Use the specified time zone
+        } else if (flag) { // If time zone offset is set
             final TimeZone timeZone = ZoneKit.getTimeZoneByOffset(zoneOffset, TimeUnit.SECONDS);
-            if (null == timeZone) { // 如果没有找到有效的时区ID
+            if (null == timeZone) { // If no valid time zone ID is found
                 throw new DateException("Invalid zoneOffset: {}", this.zoneOffset);
             }
             calendar.setTimeZone(timeZone);
         }
 
-        // 如果毫秒数不为0，则直接使用毫秒数设置时间
+        // If milliseconds are not 0, use milliseconds to set the time directly
         if (millisecond != 0) {
             calendar.setTimeInMillis(millisecond);
             return calendar;
         }
 
-        // 如果有unix时间戳，则据此设置时间
+        // If there is a Unix timestamp, set the time accordingly
         if (unixsecond != 0) {
-            calendar.setTimeInMillis(unixsecond * 1000 + nanosecond / 1_000_000); // 设置时间戳对应的毫秒数
+            calendar.setTimeInMillis(unixsecond * 1000 + nanosecond / 1_000_000); // Set milliseconds corresponding to
+                                                                                  // the timestamp
             return calendar;
         }
 
-        // 设置日期和时间字段
+        // Set date and time fields
         calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month - 1); // Calendar的月份从0开始
+        calendar.set(Calendar.MONTH, month - 1); // Calendar months are 0-indexed
         calendar.set(Calendar.DAY_OF_MONTH, day);
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, second);
-        calendar.set(Calendar.MILLISECOND, nanosecond / 1_000_000); // 纳秒转换为毫秒
+        calendar.set(Calendar.MILLISECOND, nanosecond / 1_000_000); // Convert nanoseconds to milliseconds
         return calendar;
     }
 
     /**
-     * 将当前对象的日期时间信息转换为{@link LocalDateTime}。 此方法根据对象中的时间信息（年、月、日、时、分、秒、纳秒）和时区信息（如果存在），
-     * 创建并返回一个LocalDateTime实例。时区信息可以是Unix时间戳中的秒数（unixsecond）， 也可以是显式设置的时区偏移量（zoneOffsetSetted），或者使用默认时区（zone != null）。
+     * Converts the current object's date and time information to a {@link LocalDateTime}. This method creates and
+     * returns a {@code LocalDateTime} instance based on the object's time information (year, month, day, hour, minute,
+     * second, nanosecond) and time zone information (if present). Time zone information can be seconds from Unix
+     * timestamp (`unixsecond`), an explicitly set time zone offset (`zoneOffsetSetted`), or a default time zone (`zone
+     * != null`).
      *
-     * @return LocalDateTime 表示当前对象日期时间的LocalDateTime实例。
+     * @return A {@link LocalDateTime} instance representing the current object's date and time.
      */
     public LocalDateTime toLocalDateTime() {
         this.prepare();
@@ -536,76 +552,81 @@ public final class DateBuilder {
             return LocalDateTime.ofEpochSecond(instant.getEpochSecond(), instant.getNano(), DEFAULT_OFFSET);
         }
 
-        // 如果unixsecond大于0，使用unix时间戳创建LocalDateTime
+        // If unixsecond is greater than 0, create LocalDateTime using Unix timestamp
         if (unixsecond > 0) {
             return LocalDateTime.ofEpochSecond(unixsecond, nanosecond, DEFAULT_OFFSET);
         }
 
-        // 创建LocalDateTime实例，使用年月日时分秒纳秒信息
+        // Create LocalDateTime instance using year, month, day, hour, minute, second, nanosecond information
         final LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute, second, nanosecond);
 
-        int zoneSecond = 0; // 用于存储时区偏移秒数
+        int zoneSecond = 0; // Used to store time zone offset in seconds
 
-        // 如果设置了时区，计算时区偏移量
+        // If time zone is set, calculate time zone offset
         if (zone != null) {
             zoneSecond = (TimeZone.getDefault().getRawOffset() - zone.getRawOffset()) / 1000;
         }
 
-        // 如果设置了显式的时区偏移量，计算时区偏移量
+        // If explicit time zone offset is set, calculate time zone offset
         if (flag) {
             zoneSecond = TimeZone.getDefault().getRawOffset() / 1000 - zoneOffset * 60;
         }
 
-        // 如果存在时区偏移，对LocalDateTime进行调整后返回，否则直接返回原始的LocalDateTime实例
+        // If there is a time zone offset, adjust LocalDateTime and return; otherwise, return the original LocalDateTime
+        // instance directly
         return zoneSecond == 0 ? dateTime : dateTime.plusSeconds(zoneSecond);
     }
 
     /**
-     * 将当前对象转换为 {@link OffsetDateTime}。 此方法根据 unixsecond、时区偏移量或时区来构建 OffsetDateTime。 如果 unixsecond 大于 0，将使用 unixsecond
-     * 和纳秒来创建 UTC 时间。 如果设置了时区偏移量，将使用该偏移量构造 {@link OffsetDateTime}。 如果设置了时区，将使用该时区构造 {@link OffsetDateTime}。
-     * 如果以上信息均未设置，则默认使用 UTC 时间戳 0 创建 OffsetDateTime。
+     * Converts the current object to an {@link OffsetDateTime}. This method constructs an {@code OffsetDateTime} based
+     * on `unixsecond`, time zone offset, or time zone. If `unixsecond` is greater than 0, it will be used with
+     * nanoseconds to create a UTC time. If a time zone offset is set, that offset will be used to construct the
+     * {@link OffsetDateTime}. If a time zone is set, that time zone will be used to construct the
+     * {@link OffsetDateTime}. If none of the above information is set, it defaults to creating an
+     * {@code OffsetDateTime} from UTC timestamp 0.
      *
-     * @return OffsetDateTime 表示当前时间的 OffsetDateTime 对象。
+     * @return An {@link OffsetDateTime} object representing the current time.
      */
     public OffsetDateTime toOffsetDateTime() {
-        this.prepare(); // 准备工作，可能涉及一些初始化或数据处理
+        this.prepare(); // Preparation work, may involve some initialization or data processing
 
         if (millisecond > 0) {
             return OffsetDateTime.ofInstant(Instant.ofEpochMilli(millisecond), ZoneKit.ZONE_ID_UTC);
         }
 
         if (unixsecond > 0) {
-            // 如果设置了 unix 时间戳，则使用它和纳秒创建 UTC 时间
+            // If Unix timestamp is set, use it and nanoseconds to create UTC time
             return OffsetDateTime.ofInstant(Instant.ofEpochSecond(unixsecond, nanosecond), ZoneKit.ZONE_ID_UTC);
         }
-        final LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute, second, nanosecond); // 创建
+        final LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute, second, nanosecond); // Create
                                                                                                              // LocalDateTime
-                                                                                                             // 对象
+                                                                                                             // object
 
-        // 检查是否设置了时区偏移量
+        // Check if time zone offset is set
         if (flag) {
-            final ZoneOffset offset = ZoneOffset.ofHoursMinutes(zoneOffset / 60, zoneOffset % 60); // 根据偏移量创建 ZoneOffset
-            return dateTime.atOffset(offset); // 使用时区偏移量构造 OffsetDateTime
+            final ZoneOffset offset = ZoneOffset.ofHoursMinutes(zoneOffset / 60, zoneOffset % 60); // Create ZoneOffset
+                                                                                                   // based on offset
+            return dateTime.atOffset(offset); // Construct OffsetDateTime using time zone offset
         }
 
-        // 检查是否设置了时区
+        // Check if time zone is set
         if (zone != null) {
-            return dateTime.atZone(zone.toZoneId()).toOffsetDateTime(); // 使用时区构造 OffsetDateTime
+            return dateTime.atZone(zone.toZoneId()).toOffsetDateTime(); // Construct OffsetDateTime using time zone
         }
 
-        // 默认情况下，使用 UTC 时间戳 0 创建 OffsetDateTime
+        // By default, create OffsetDateTime from UTC timestamp 0
         return dateTime.atZone(ZoneOffset.ofHoursMinutes(0, 0)).toOffsetDateTime();
     }
 
     /**
-     * 根据上午（am）或下午（pm）的设置，转换12小时制为24小时制。
+     * Converts 12-hour format to 24-hour format based on AM/PM settings.
      */
     private void prepare() {
-        // 如果设置为上午且小时为12，将小时调整为0
+        // If set to AM and hour is 12, adjust hour to 0
         if (am && hour == 12) {
             this.hour = 0;
         }
-        // 如果设置为下午且小时不是12，将小时增加12
+        // If set to PM and hour is not 12, add 12 to hour
         if (pm && hour != 12) {
             this.hour += 12;
         }

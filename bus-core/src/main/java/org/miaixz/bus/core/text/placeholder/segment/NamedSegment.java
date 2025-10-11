@@ -28,10 +28,9 @@
 package org.miaixz.bus.core.text.placeholder.segment;
 
 /**
- * 字符串模板-有前后缀的变量占位符 SectionBuffer
+ * Represents a named placeholder segment in a string template.
  * <p>
- * 例如，"{1}", "{name}", "#{data}"
- * </p>
+ * For example, "{name}", "#{data}".
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,21 +38,26 @@ package org.miaixz.bus.core.text.placeholder.segment;
 public class NamedSegment extends AbstractSegment {
 
     /**
-     * 占位符完整文本 例如：{@literal "{name}"->"{name}"}
+     * The complete text of the placeholder, e.g., {@literal "{name}" -> "{name}"}
      */
     private final String wholePlaceholder;
 
     /**
-     * 构造
+     * Constructs a {@code NamedSegment} with the given name and whole placeholder text.
      * 
-     * @param name             占位符变量
-     * @param wholePlaceholder 占位符完整文本
+     * @param name             The name of the placeholder variable.
+     * @param wholePlaceholder The complete text of the placeholder, including delimiters.
      */
     public NamedSegment(final String name, final String wholePlaceholder) {
         super(name);
         this.wholePlaceholder = wholePlaceholder;
     }
 
+    /**
+     * Retrieves the complete text of the placeholder.
+     * 
+     * @return The complete text of the placeholder.
+     */
     @Override
     public String getText() {
         return wholePlaceholder;

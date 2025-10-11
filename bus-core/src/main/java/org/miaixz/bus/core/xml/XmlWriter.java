@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.w3c.dom.Node;
 
 /**
- * XML生成器
+ * XML writer for generating XML content.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,39 +56,39 @@ public class XmlWriter {
     private boolean omitXmlDeclaration;
 
     /**
-     * 构造
+     * Constructs a new XmlWriter with the specified XML source.
      *
-     * @param source XML数据源
+     * @param source The XML data source.
      */
     public XmlWriter(final Source source) {
         this.source = source;
     }
 
     /**
-     * 构建XmlWriter
+     * Creates a new XmlWriter instance from the given XML node.
      *
-     * @param node {@link Node} XML文档节点或文档本身
-     * @return XmlWriter
+     * @param node The XML {@link Node} (document or element).
+     * @return A new {@link XmlWriter} instance.
      */
     public static XmlWriter of(final Node node) {
         return of(new DOMSource(node));
     }
 
     /**
-     * 构建XmlWriter
+     * Creates a new XmlWriter instance from the given XML source.
      *
-     * @param source XML数据源
-     * @return XmlWriter
+     * @param source The XML data source.
+     * @return A new {@link XmlWriter} instance.
      */
     public static XmlWriter of(final Source source) {
         return new XmlWriter(source);
     }
 
     /**
-     * 设置编码
+     * Sets the character encoding for the output.
      *
-     * @param charset 编码，null跳过
-     * @return this
+     * @param charset The character encoding. If {@code null}, it will be ignored.
+     * @return This {@link XmlWriter} instance.
      */
     public XmlWriter setCharset(final java.nio.charset.Charset charset) {
         if (null != charset) {
@@ -98,10 +98,10 @@ public class XmlWriter {
     }
 
     /**
-     * 设置缩进
+     * Sets the number of spaces to use for indentation.
      *
-     * @param indent 缩进
-     * @return this
+     * @param indent The number of spaces for indentation.
+     * @return This {@link XmlWriter} instance.
      */
     public XmlWriter setIndent(final int indent) {
         this.indent = indent;
@@ -109,10 +109,10 @@ public class XmlWriter {
     }
 
     /**
-     * 设置是否输出 xml Declaration
+     * Sets whether to omit the XML declaration.
      *
-     * @param omitXmlDeclaration 是否输出 xml Declaration
-     * @return this
+     * @param omitXmlDeclaration {@code true} to omit the XML declaration, {@code false} otherwise.
+     * @return This {@link XmlWriter} instance.
      */
     public XmlWriter setOmitXmlDeclaration(final boolean omitXmlDeclaration) {
         this.omitXmlDeclaration = omitXmlDeclaration;
@@ -120,9 +120,9 @@ public class XmlWriter {
     }
 
     /**
-     * 获得XML字符串
+     * Gets the XML content as a string.
      *
-     * @return XML字符串
+     * @return The XML string.
      */
     public String getString() {
         final StringWriter writer = StringKit.getWriter();
@@ -131,36 +131,38 @@ public class XmlWriter {
     }
 
     /**
-     * 将XML文档写出
+     * Writes the XML document to a file.
      *
-     * @param file 目标
+     * @param file The target file.
      */
     public void write(final File file) {
         write(new StreamResult(file));
     }
 
     /**
-     * 将XML文档写出
+     * Writes the XML document to a writer.
      *
-     * @param writer 目标
+     * @param writer The target writer.
      */
     public void write(final Writer writer) {
         write(new StreamResult(writer));
     }
 
     /**
-     * 将XML文档写出
+     * Writes the XML document to an output stream.
      *
-     * @param out 目标
+     * @param out The target output stream.
      */
     public void write(final OutputStream out) {
         write(new StreamResult(out));
     }
 
     /**
-     * 将XML文档写出 格式化输出逻辑参考：https://stackoverflow.com/questions/139076/how-to-pretty-print-xml-from-java
+     * Writes the XML document to the specified result, with formatting. For pretty-printing logic, see:
+     * <a href="https://stackoverflow.com/questions/139076/how-to-pretty-print-xml-from-java">Stack Overflow</a>
      *
-     * @param result 目标
+     * @param result The target result.
+     * @throws InternalException if an error occurs during transformation.
      */
     public void write(final Result result) {
         final TransformerFactory factory = XXE.disableXXE(TransformerFactory.newInstance());

@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 数据输出处理
+ * Provides various data providers for handling data output and serialization within the Vortex module. This package
+ * contains interfaces and implementations for converting objects to different formats, such as JSON and XML, and for
+ * managing authorization and licensing logic.
  *
  * @author Kimi Liu
  * @since Java 17+

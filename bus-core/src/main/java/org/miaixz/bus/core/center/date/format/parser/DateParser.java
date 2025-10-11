@@ -32,7 +32,7 @@ import java.util.Date;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 /**
- * 日期解析接口，用于解析日期字符串为 {@link Date} 对象 Thanks to Apache Commons Lang 3.5
+ * Date parsing interface, used to parse date strings into {@link Date} objects. Thanks to Apache Commons Lang 3.5.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,11 +40,11 @@ import org.miaixz.bus.core.lang.exception.DateException;
 public interface DateParser {
 
     /**
-     * 将日期字符串解析并转换为 {@link Date} 对象
+     * Parses a date string and converts it into a {@link Date} object.
      *
-     * @param source 被解析的日期字符串
-     * @return {@link Date}对象
-     * @throws DateException 转换异常，被转换的字符串格式错误。
+     * @param source The date string to be parsed.
+     * @return The {@link Date} object.
+     * @throws DateException If a parsing error occurs, indicating an incorrect format of the input string.
      */
     Date parse(CharSequence source) throws DateException;
 

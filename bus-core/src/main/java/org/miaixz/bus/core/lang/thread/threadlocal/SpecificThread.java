@@ -28,7 +28,9 @@
 package org.miaixz.bus.core.lang.thread.threadlocal;
 
 /**
- * 特殊的 {@link Thread}，提供对 {@link FastThreadLocal} 变量的快速访问。
+ * A specialized {@link Thread} class that provides fast access to {@link FastThreadLocal} variables. This class is
+ * designed to optimize the performance of {@link FastThreadLocal} operations by directly managing a
+ * {@link ThreadLocalMap} for its thread-local variables.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,98 +38,111 @@ package org.miaixz.bus.core.lang.thread.threadlocal;
 public class SpecificThread extends Thread {
 
     /**
-     * 变量数据结构
+     * The internal data structure that binds thread-local variables to this thread.
      */
     private ThreadLocalMap threadLocalMap;
 
     /**
-     * 构造
+     * Constructs a new {@code SpecificThread} instance. This constructor is equivalent to {@code new Thread()}.
      */
     public SpecificThread() {
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SpecificThread} instance with the given name. This constructor is equivalent to
+     * {@code new Thread(String)}.
      *
-     * @param name 线程名称
+     * @param name The name of the new thread.
      */
     public SpecificThread(String name) {
         super(name);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SpecificThread} instance with the given {@link Runnable} as its run object. This
+     * constructor is equivalent to {@code new Thread(Runnable)}.
      *
-     * @param r 由新线程实例执行的可运行对象
+     * @param r The object whose {@code run} method is invoked when this thread is started.
      */
     public SpecificThread(Runnable r) {
         super(r);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SpecificThread} instance with the given {@link Runnable} as its run object and a name.
+     * This constructor is equivalent to {@code new Thread(Runnable, String)}.
      *
-     * @param r    由新线程实例执行的可运行对象
-     * @param name 线程名称
+     * @param r    The object whose {@code run} method is invoked when this thread is started.
+     * @param name The name of the new thread.
      */
     public SpecificThread(Runnable r, String name) {
         super(r, name);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SpecificThread} instance with the given thread group and name. This constructor is
+     * equivalent to {@code new Thread(ThreadGroup, String)}.
      *
-     * @param group 线程组
-     * @param name  线程名称
+     * @param group The thread group.
+     * @param name  The name of the new thread.
      */
     public SpecificThread(ThreadGroup group, String name) {
         super(group, name);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SpecificThread} instance with the given thread group and {@link Runnable} as its run
+     * object. This constructor is equivalent to {@code new Thread(ThreadGroup, Runnable)}.
      *
-     * @param group 线程组
-     * @param r     由新线程实例执行的可运行对象
+     * @param group The thread group.
+     * @param r     The object whose {@code run} method is invoked when this thread is started.
      */
     public SpecificThread(ThreadGroup group, Runnable r) {
         super(group, r);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SpecificThread} instance with the given thread group, {@link Runnable} as its run object,
+     * and a name. This constructor is equivalent to {@code new Thread(ThreadGroup, Runnable, String)}.
      *
-     * @param group 线程组
-     * @param r     由新线程实例执行的可运行对象
-     * @param name  线程名称
+     * @param group The thread group.
+     * @param r     The object whose {@code run} method is invoked when this thread is started.
+     * @param name  The name of the new thread.
      */
     public SpecificThread(ThreadGroup group, Runnable r, String name) {
         super(group, r, name);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SpecificThread} instance with the given thread group, {@link Runnable} as its run object,
+     * a name, and a specified stack size. This constructor is equivalent to
+     * {@code new Thread(ThreadGroup, Runnable, String, long)}.
      *
-     * @param group     线程组
-     * @param r         由新线程实例执行的可运行对象
-     * @param name      线程名称
-     * @param stackSize 线程所需的堆栈大小
+     * @param group     The thread group.
+     * @param r         The object whose {@code run} method is invoked when this thread is started.
+     * @param name      The name of the new thread.
+     * @param stackSize The desired stack size for the new thread, or zero to indicate that this parameter is to be
+     *                  ignored.
      */
     public SpecificThread(ThreadGroup group, Runnable r, String name, long stackSize) {
         super(group, r, name, stackSize);
     }
 
     /**
-     * 返回将线程局部变量绑定到此线程的内部数据结构。 请注意，此方法仅供内部使用，因此随时可能发生变化。
+     * Returns the internal {@link ThreadLocalMap} data structure that binds thread-local variables to this thread. This
+     * method is intended for internal use only and may change at any time.
+     *
+     * @return The {@link ThreadLocalMap} associated with this thread.
      */
     public final ThreadLocalMap getThreadLocalMap() {
         return threadLocalMap;
     }
 
     /**
-     * 设置将线程局部变量绑定到此线程的内部数据结构。 请注意，此方法仅供内部使用，因此随时可能发生变化。
+     * Sets the internal {@link ThreadLocalMap} data structure that binds thread-local variables to this thread. This
+     * method is intended for internal use only and may change at any time.
      *
-     * @param threadLocalMap 变量数据结构
+     * @param threadLocalMap The {@link ThreadLocalMap} to associate with this thread.
      */
     public final void setThreadLocalMap(ThreadLocalMap threadLocalMap) {
         this.threadLocalMap = threadLocalMap;

@@ -46,42 +46,45 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 
 /**
- * 农历日
+ * Represents a day in the Lunar calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LunarDay extends Loops {
 
+    /**
+     * Names of the days in a lunar month.
+     */
     public static final String[] NAMES = { "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三",
             "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十" };
 
     /**
-     * 农历月
+     * The lunar month this day belongs to.
      */
     protected LunarMonth month;
 
     /**
-     * 日
+     * The day of the month (1-30).
      */
     protected int day;
 
     /**
-     * 公历日（第一次使用时才会初始化）
+     * The corresponding Gregorian (Solar) day, lazily initialized.
      */
     protected SolarDay solarDay;
 
     /**
-     * 干支日（第一次使用时才会初始化）
+     * The corresponding Sixty Cycle (Ganzhi) day, lazily initialized.
      */
     protected SixtyCycleDay sixtyCycleDay;
 
     /**
-     * 初始化
+     * Constructs a {@code LunarDay} from a year, month, and day.
      *
-     * @param year  农历年
-     * @param month 农历月，闰月为负
-     * @param day   农历日
+     * @param year  The lunar year.
+     * @param month The lunar month (a negative value indicates a leap month).
+     * @param day   The lunar day.
      */
     public LunarDay(int year, int month, int day) {
         LunarMonth m = LunarMonth.fromYm(year, month);
@@ -93,52 +96,58 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 从农历年月日初始化
+     * Creates a {@code LunarDay} from a year, month, and day.
      *
-     * @param year  农历年
-     * @param month 农历月，闰月为负
-     * @param day   农历日
+     * @param year  The lunar year.
+     * @param month The lunar month (a negative value indicates a leap month).
+     * @param day   The lunar day.
+     * @return a new {@code LunarDay} instance.
      */
     public static LunarDay fromYmd(int year, int month, int day) {
         return new LunarDay(year, month, day);
     }
 
     /**
-     * 农历月
+     * Gets the lunar month object.
      *
-     * @return 农历月
+     * @return The {@link LunarMonth}.
      */
     public LunarMonth getLunarMonth() {
         return month;
     }
 
     /**
-     * 年
+     * Gets the year.
      *
-     * @return 年
+     * @return The lunar year.
      */
     public int getYear() {
         return month.getYear();
     }
 
     /**
-     * 月
+     * Gets the month.
      *
-     * @return 月
+     * @return The lunar month (a negative value indicates a leap month).
      */
     public int getMonth() {
         return month.getMonthWithLeap();
     }
 
     /**
-     * 日
+     * Gets the day.
      *
-     * @return 日
+     * @return The day of the month (1-30).
      */
     public int getDay() {
         return day;
     }
 
+    /**
+     * Gets the name of the day (e.g., "初一").
+     *
+     * @return The name of the day.
+     */
     public String getName() {
         return NAMES[day - 1];
     }
@@ -148,15 +157,16 @@ public class LunarDay extends Loops {
         return month + getName();
     }
 
+    @Override
     public LunarDay next(int n) {
         return getSolarDay().next(n).getLunarDay();
     }
 
     /**
-     * 是否在指定农历日之前
+     * Checks if this lunar day is before another.
      *
-     * @param target 农历日
-     * @return true/false
+     * @param target The other lunar day.
+     * @return {@code true} if this day is before the target day.
      */
     public boolean isBefore(LunarDay target) {
         int aYear = getYear();
@@ -173,10 +183,10 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 是否在指定农历日之后
+     * Checks if this lunar day is after another.
      *
-     * @param target 农历日
-     * @return true/false
+     * @param target The other lunar day.
+     * @return {@code true} if this day is after the target day.
      */
     public boolean isAfter(LunarDay target) {
         int aYear = getYear();
@@ -193,18 +203,18 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 星期
+     * Gets the day of the week.
      *
-     * @return 星期
+     * @return The {@link Week}.
      */
     public Week getWeek() {
         return getSolarDay().getWeek();
     }
 
     /**
-     * 干支
+     * Gets the Sixty Cycle (Ganzhi) of this day.
      *
-     * @return 干支
+     * @return The {@link SixtyCycle}.
      */
     public SixtyCycle getSixtyCycle() {
         int offset = (int) month.getFirstJulianDay().next(day - 12).getDay();
@@ -212,29 +222,27 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 建除十二值神
+     * Gets the Duty (Jian Chu) of this day.
      *
-     * @return 建除十二值神
-     * @see SixtyCycleDay
+     * @return The {@link Duty}.
      */
     public Duty getDuty() {
         return getSixtyCycleDay().getDuty();
     }
 
     /**
-     * 黄道黑道十二神
+     * Gets the Twelve Star (Huang Dao Hei Dao) of this day.
      *
-     * @return 黄道黑道十二神
-     * @see SixtyCycleDay
+     * @return The {@link TwelveStar}.
      */
     public TwelveStar getTwelveStar() {
         return getSixtyCycleDay().getTwelveStar();
     }
 
     /**
-     * 九星
+     * Gets the Nine Star (Jiu Xing) of this day.
      *
-     * @return 九星
+     * @return The {@link NineStar}.
      */
     public NineStar getNineStar() {
         SolarDay d = getSolarDay();
@@ -262,9 +270,9 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 太岁方位
+     * Gets the direction of Jupiter (Tai Sui) for this day.
      *
-     * @return 方位
+     * @return The {@link Direction}.
      */
     public Direction getJupiterDirection() {
         int index = getSixtyCycle().getIndex();
@@ -273,36 +281,36 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 逐日胎神
+     * Gets the Daily Fetus Spirit (Tai Shen).
      *
-     * @return 逐日胎神
+     * @return The {@link FetusDay}.
      */
     public FetusDay getFetusDay() {
         return FetusDay.fromLunarDay(this);
     }
 
     /**
-     * 月相
+     * Gets the phase of the moon for this day.
      *
-     * @return 月相
+     * @return The {@link Phase}.
      */
     public Phase getPhase() {
         return Phase.fromIndex(day - 1);
     }
 
     /**
-     * 六曜
+     * Gets the Six Star (Liu Yao).
      *
-     * @return 六曜
+     * @return The {@link SixStar}.
      */
     public SixStar getSixStar() {
         return SixStar.fromIndex((month.getMonth() + day - 2) % 6);
     }
 
     /**
-     * 公历日
+     * Gets the corresponding Gregorian (Solar) day.
      *
-     * @return 公历日
+     * @return The {@link SolarDay}.
      */
     public SolarDay getSolarDay() {
         if (null == solarDay) {
@@ -312,9 +320,9 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 干支日
+     * Gets the corresponding Sixty Cycle (Ganzhi) day object.
      *
-     * @return 干支日
+     * @return The {@link SixtyCycleDay}.
      */
     public SixtyCycleDay getSixtyCycleDay() {
         if (null == sixtyCycleDay) {
@@ -324,9 +332,9 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 二十八宿
+     * Gets the Twenty-Eight Mansions (Xiu) for this day.
      *
-     * @return 二十八宿
+     * @return The {@link TwentyEightStar}.
      */
     public TwentyEightStar getTwentyEightStar() {
         return TwentyEightStar.fromIndex(new int[] { 10, 18, 26, 6, 14, 22, 2 }[getSolarDay().getWeek().getIndex()])
@@ -334,18 +342,18 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 农历传统节日，如果当天不是农历传统节日，返回null
+     * Gets the traditional lunar festival for this day, if any.
      *
-     * @return 农历传统节日
+     * @return The {@link LunarFestival}, or null if this day is not a festival.
      */
     public LunarFestival getFestival() {
         return LunarFestival.fromYmd(getYear(), getMonth(), day);
     }
 
     /**
-     * 当天的农历时辰列表
+     * Gets the list of {@code LunarHour} objects for this day.
      *
-     * @return 农历时辰列表
+     * @return A list of {@link LunarHour} objects.
      */
     public List<LunarHour> getHours() {
         List<LunarHour> l = new ArrayList<>();
@@ -359,36 +367,36 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 神煞列表(吉神宜趋，凶神宜忌)
+     * Gets the list of Gods (Shen Sha) for this day.
      *
-     * @return 神煞列表
+     * @return A list of {@link God}s.
      */
     public List<God> getGods() {
         return getSixtyCycleDay().getGods();
     }
 
     /**
-     * 宜
+     * Gets the list of recommended activities for this day.
      *
-     * @return 宜忌列表
+     * @return A list of recommended {@link Taboo}s.
      */
     public List<Taboo> getRecommends() {
         return getSixtyCycleDay().getRecommends();
     }
 
     /**
-     * 忌
+     * Gets the list of avoided activities for this day.
      *
-     * @return 宜忌列表
+     * @return A list of avoided {@link Taboo}s.
      */
     public List<Taboo> getAvoids() {
         return getSixtyCycleDay().getAvoids();
     }
 
     /**
-     * 小六壬
+     * Gets the Minor Liu Ren for this day.
      *
-     * @return 小六壬
+     * @return The {@link MinorRen}.
      */
     public MinorRen getMinorRen() {
         return getLunarMonth().getMinorRen().next(day - 1);

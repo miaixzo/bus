@@ -27,19 +27,24 @@
 */
 package org.miaixz.bus.core;
 
+import java.io.Serializable;
+
 /**
- * 策略模式
+ * A generic interface representing the Strategy Pattern, where each implementation provides a specific strategy or
+ * capability. This is often used to select an appropriate implementation at runtime based on a given type or context.
  *
- * @param <T> 引用类型
+ * @param <T> The type of object this provider produces or handles.
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Provider<T> {
+public interface Provider<T> extends Serializable {
 
     /**
-     * 支持类型
+     * Returns an identifier for the type or strategy that this provider supports. This identifier is used to look up
+     * and select the correct provider from a collection of available providers.
      *
-     * @return the bean
+     * @return An object that uniquely identifies the supported type or strategy (e.g., a {@code String}, {@code Enum},
+     *         or {@code Class}).
      */
     Object type();
 

@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 七牛云短信
+ * Material for Qiniu Cloud SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,7 +48,9 @@ import lombok.experimental.SuperBuilder;
 public class QiniuMaterial extends Material {
 
     /**
-     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
+     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The default API request address for Qiniu Cloud SMS.
      */
     @Override
     public String getUrl() {

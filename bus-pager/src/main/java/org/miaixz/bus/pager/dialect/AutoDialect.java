@@ -34,32 +34,36 @@ import javax.sql.DataSource;
 import org.apache.ibatis.mapping.MappedStatement;
 
 /**
- * 自动获取方言
+ * Interface for automatically obtaining a database dialect. Implementations of this interface are responsible for
+ * determining the appropriate dialect based on the provided MappedStatement, DataSource, and properties.
  *
- * @param <K> 缓存key类型
+ * @param <K> the type of the cache key used for storing dialect instances
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface AutoDialect<K> {
 
     /**
-     * 获取用于缓存 {@link #extractDialect } 方法返回值的 key，当返回 null 时不缓存，返回值时先判断是否已存在，不存在时调用 {@link #extractDialect } 再缓存
+     * Retrieves the key used for caching the return value of the {@link #extractDialect} method. If this method returns
+     * null, the dialect will not be cached. If a key is returned, the system first checks if it already exists. If not,
+     * {@link #extractDialect} is called, and the result is then cached.
      *
-     * @param ms         执行映射的语句
-     * @param dataSource 数据源
-     * @param properties 配置属性
-     * @return the object
+     * @param ms         the MappedStatement being executed
+     * @param dataSource the DataSource associated with the MappedStatement
+     * @param properties the configuration properties
+     * @return the cache key for the dialect, or null if caching is not desired
      */
     K extractDialectKey(MappedStatement ms, DataSource dataSource, Properties properties);
 
     /**
-     * 提取 dialect
+     * Extracts and returns the appropriate {@link AbstractPaging} dialect. This method is responsible for creating or
+     * retrieving the dialect instance based on the provided information.
      *
-     * @param dialectKey 数据方言对象
-     * @param ms         执行映射的语句
-     * @param dataSource 数据源
-     * @param properties 配置属性
-     * @return the object
+     * @param dialectKey the cache key for the dialect, as returned by {@link #extractDialectKey}
+     * @param ms         the MappedStatement being executed
+     * @param dataSource the DataSource associated with the MappedStatement
+     * @param properties the configuration properties
+     * @return an instance of {@link AbstractPaging} representing the determined dialect
      */
     AbstractPaging extractDialect(K dialectKey, MappedStatement ms, DataSource dataSource, Properties properties);
 

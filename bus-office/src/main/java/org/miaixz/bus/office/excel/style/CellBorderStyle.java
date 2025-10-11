@@ -36,7 +36,8 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 单元格边框样式和颜色封装，边框按照“上右下左”的顺序定义，与CSS一致
+ * Encapsulates cell border style and color. Borders are defined in the order of "top, right, bottom, left", consistent
+ * with CSS.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,10 +57,10 @@ public class CellBorderStyle implements Serializable {
     private Short leftColor;
 
     /**
-     * 根据CellStyle创建单元格边框样式对象。
+     * Creates a {@code CellBorderStyle} object based on an existing {@link CellStyle}.
      *
-     * @param cellStyle 单元格样式
-     * @return CellBorderStyle
+     * @param cellStyle The {@link CellStyle} to extract border information from.
+     * @return A new {@code CellBorderStyle} instance.
      */
     public static CellBorderStyle of(final CellStyle cellStyle) {
         return new CellBorderStyle().setTopStyle(cellStyle.getBorderTop()).setTopColor(cellStyle.getTopBorderColor())
@@ -69,11 +70,11 @@ public class CellBorderStyle implements Serializable {
     }
 
     /**
-     * 创建单元格边框样式对象，四边框样式保持一致。
+     * Creates a {@code CellBorderStyle} object where all four borders have the same style and color.
      *
-     * @param borderStyle 边框样式
-     * @param colorIndex  颜色
-     * @return 单元格边框样式对象
+     * @param borderStyle The {@link BorderStyle} for all four borders.
+     * @param colorIndex  The {@link IndexedColors} for all four borders.
+     * @return A new {@code CellBorderStyle} instance.
      */
     public static CellBorderStyle of(final BorderStyle borderStyle, final IndexedColors colorIndex) {
         return new CellBorderStyle().setTopStyle(borderStyle).setTopColor(colorIndex.getIndex())
@@ -82,19 +83,19 @@ public class CellBorderStyle implements Serializable {
     }
 
     /**
-     * 获取上边框的样式
+     * Gets the style of the top border.
      *
-     * @return 上边框的样式
+     * @return The {@link BorderStyle} of the top border.
      */
     public BorderStyle getTopStyle() {
         return topStyle;
     }
 
     /**
-     * 设置上边框的样式
+     * Sets the style of the top border.
      *
-     * @param topStyle 上边框的样式
-     * @return 当前的单元格边框样式对象，支持链式调用。
+     * @param topStyle The {@link BorderStyle} for the top border.
+     * @return This {@code CellBorderStyle} instance, for chaining.
      */
     public CellBorderStyle setTopStyle(final BorderStyle topStyle) {
         this.topStyle = topStyle;
@@ -102,19 +103,19 @@ public class CellBorderStyle implements Serializable {
     }
 
     /**
-     * 获取上边框的颜色
+     * Gets the color of the top border.
      *
-     * @return 上边框的颜色
+     * @return The color index of the top border.
      */
     public Short getTopColor() {
         return topColor;
     }
 
     /**
-     * 设置上边框的颜色
+     * Sets the color of the top border.
      *
-     * @param topColor 上边框的颜色
-     * @return 当前的单元格边框样式对象，支持链式调用。
+     * @param topColor The color index for the top border.
+     * @return This {@code CellBorderStyle} instance, for chaining.
      */
     public CellBorderStyle setTopColor(final Short topColor) {
         this.topColor = topColor;
@@ -122,19 +123,19 @@ public class CellBorderStyle implements Serializable {
     }
 
     /**
-     * 获取右边框的样式。
+     * Gets the style of the right border.
      *
-     * @return 右边框的样式。
+     * @return The {@link BorderStyle} of the right border.
      */
     public BorderStyle getRightStyle() {
         return rightStyle;
     }
 
     /**
-     * 设置右边框的样式
+     * Sets the style of the right border.
      *
-     * @param rightStyle 右边框的样式
-     * @return 当前的单元格边框样式对象，支持链式调用。
+     * @param rightStyle The {@link BorderStyle} for the right border.
+     * @return This {@code CellBorderStyle} instance, for chaining.
      */
     public CellBorderStyle setRightStyle(final BorderStyle rightStyle) {
         this.rightStyle = rightStyle;
@@ -142,19 +143,19 @@ public class CellBorderStyle implements Serializable {
     }
 
     /**
-     * 获取右边框的颜色
+     * Gets the color of the right border.
      *
-     * @return 右边框的颜色
+     * @return The color index of the right border.
      */
     public Short getRightColor() {
         return rightColor;
     }
 
     /**
-     * 设置右边框的颜色
+     * Sets the color of the right border.
      *
-     * @param rightColor 右边框的颜色
-     * @return 当前的单元格边框样式对象，支持链式调用。
+     * @param rightColor The color index for the right border.
+     * @return This {@code CellBorderStyle} instance, for chaining.
      */
     public CellBorderStyle setRightColor(final Short rightColor) {
         this.rightColor = rightColor;
@@ -162,19 +163,19 @@ public class CellBorderStyle implements Serializable {
     }
 
     /**
-     * 获取底边框的样式
+     * Gets the style of the bottom border.
      *
-     * @return 底边框的样式
+     * @return The {@link BorderStyle} of the bottom border.
      */
     public BorderStyle getBottomStyle() {
         return bottomStyle;
     }
 
     /**
-     * 设置底边框的样式
+     * Sets the style of the bottom border.
      *
-     * @param bottomStyle 底边框的样式
-     * @return 当前的单元格边框样式对象，支持链式调用。
+     * @param bottomStyle The {@link BorderStyle} for the bottom border.
+     * @return This {@code CellBorderStyle} instance, for chaining.
      */
     public CellBorderStyle setBottomStyle(final BorderStyle bottomStyle) {
         this.bottomStyle = bottomStyle;
@@ -182,19 +183,19 @@ public class CellBorderStyle implements Serializable {
     }
 
     /**
-     * 获取底边框的颜色
+     * Gets the color of the bottom border.
      *
-     * @return 底边框的颜色
+     * @return The color index of the bottom border.
      */
     public Short getBottomColor() {
         return bottomColor;
     }
 
     /**
-     * 设置底边框的颜色
+     * Sets the color of the bottom border.
      *
-     * @param bottomColor 底边框的颜色
-     * @return 当前的单元格边框样式对象，支持链式调用
+     * @param bottomColor The color index for the bottom border.
+     * @return This {@code CellBorderStyle} instance, for chaining.
      */
     public CellBorderStyle setBottomColor(final Short bottomColor) {
         this.bottomColor = bottomColor;
@@ -202,19 +203,19 @@ public class CellBorderStyle implements Serializable {
     }
 
     /**
-     * 获取左边框的样式
+     * Gets the style of the left border.
      *
-     * @return 左边框的样式
+     * @return The {@link BorderStyle} of the left border.
      */
     public BorderStyle getLeftStyle() {
         return leftStyle;
     }
 
     /**
-     * 设置左边框的样式
+     * Sets the style of the left border.
      *
-     * @param leftStyle 左边框的样式
-     * @return 当前的单元格边框样式对象，支持链式调用
+     * @param leftStyle The {@link BorderStyle} for the left border.
+     * @return This {@code CellBorderStyle} instance, for chaining.
      */
     public CellBorderStyle setLeftStyle(final BorderStyle leftStyle) {
         this.leftStyle = leftStyle;
@@ -222,19 +223,19 @@ public class CellBorderStyle implements Serializable {
     }
 
     /**
-     * 获取左边框的颜色
+     * Gets the color of the left border.
      *
-     * @return 左边框的颜色
+     * @return The color index of the left border.
      */
     public Short getLeftColor() {
         return leftColor;
     }
 
     /**
-     * 设置左边框的颜色
+     * Sets the color of the left border.
      *
-     * @param leftColor 左边框的颜色
-     * @return 当前的单元格边框样式对象，支持链式调用
+     * @param leftColor The color index for the left border.
+     * @return This {@code CellBorderStyle} instance, for chaining.
      */
     public CellBorderStyle setLeftColor(final Short leftColor) {
         this.leftColor = leftColor;
@@ -242,10 +243,10 @@ public class CellBorderStyle implements Serializable {
     }
 
     /**
-     * 将边框样式和颜色设置到CellStyle中
+     * Applies the border style and color settings to the given {@link CellStyle}.
      *
-     * @param cellStyle {@link CellStyle}
-     * @return {@link CellStyle}
+     * @param cellStyle The {@link CellStyle} to apply the border settings to.
+     * @return The modified {@link CellStyle}.
      */
     public CellStyle setTo(final CellStyle cellStyle) {
         ObjectKit.accept(this.topStyle, cellStyle::setBorderTop);

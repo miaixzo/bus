@@ -27,30 +27,12 @@
 */
 package org.miaixz.bus.http;
 
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.net.Socket;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
-
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.AnyHostnameVerifier;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
-import org.miaixz.bus.http.accord.ConnectionPool;
-import org.miaixz.bus.http.accord.ConnectionSuite;
-import org.miaixz.bus.http.accord.Exchange;
-import org.miaixz.bus.http.accord.RealConnectionPool;
+import org.miaixz.bus.http.accord.*;
 import org.miaixz.bus.http.accord.platform.Platform;
 import org.miaixz.bus.http.cache.Cache;
 import org.miaixz.bus.http.cache.InternalCache;
@@ -63,8 +45,30 @@ import org.miaixz.bus.http.socket.RealWebSocket;
 import org.miaixz.bus.http.socket.WebSocket;
 import org.miaixz.bus.http.socket.WebSocketListener;
 
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.Socket;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 /**
- * HTTP 请求核心客户端，负责发送 HTTP 请求并读取响应。 通过连接池和线程池优化性能，支持 HTTP/2 和 WebSocket 连接。 建议复用单一 {@code Httpd} 实例以减少资源开销。
+ * The core client for making HTTP requests and reading their responses. This class is designed to be efficient by
+ * reusing connections with a connection pool. It is recommended to create a single, shared instance of {@code Httpd}
+ * and reuse it for all HTTP calls.
+ *
+ * <p>
+ * This class supports both synchronous and asynchronous calls. Asynchronous calls are executed on a background thread
+ * pool, which is managed by a {@link Dispatcher}.
+ * <p>
+ * This class also supports advanced features like HTTP/2 and WebSockets.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -72,19 +76,19 @@ import org.miaixz.bus.http.socket.WebSocketListener;
 public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
 
     /**
-     * 默认支持的协议（HTTP/2 和 HTTP/1.1）
+     * The default supported protocols, including HTTP/2 and HTTP/1.1.
      */
     static final List<Protocol> DEFAULT_PROTOCOLS = org.miaixz.bus.http.Builder
             .immutableList(Protocol.HTTP_2, Protocol.HTTP_1_1);
 
     /**
-     * 默认连接套件（现代 TLS 和明文）
+     * The default connection specifications, including modern TLS and cleartext.
      */
     static final List<ConnectionSuite> DEFAULT_CONNECTION_SPECS = org.miaixz.bus.http.Builder
             .immutableList(ConnectionSuite.MODERN_TLS, ConnectionSuite.CLEARTEXT);
 
     /**
-     * 初始化 Internal 实例，提供内部方法实现
+     * Initializes the internal API instance for package-private access.
      */
     static {
         Internal.instance = new Internal() {
@@ -137,129 +141,129 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     }
 
     /**
-     * 请求调度器，管理异步请求的执行
+     * The dispatcher that manages the execution of asynchronous requests.
      */
     final Dispatcher dispatcher;
     /**
-     * 代理配置（优先于代理选择器）
+     * The proxy to use for network connections. If null, a proxy will be selected by the proxySelector.
      */
     final Proxy proxy;
     /**
-     * 支持的协议列表（HTTP/2, HTTP/1.1 等）
+     * The list of protocols to negotiate when connecting to a remote server.
      */
     final List<Protocol> protocols;
     /**
-     * 支持的连接套件（TLS 版本和明文）
+     * The list of connection specs to use when establishing a connection.
      */
     final List<ConnectionSuite> connectionSuites;
     /**
-     * 返回一个不可变的拦截器列表，该列表观察每个调用的完整跨度: 从建立连接之前(如果有的话)到选择响应源之后(源服务器、缓存或两者都有)
+     * An immutable list of interceptors that observe the full span of each call.
      */
     final List<Interceptor> interceptors;
     /**
-     * 返回观察单个网络请求和响应的不可变拦截器列表。这些拦截器必须 调用{@link NewChain#proceed} 只执行一次:网络拦截器短路或重复网络请求是错误的
+     * An immutable list of interceptors that observe a single network request and response.
      */
     final List<Interceptor> networkInterceptors;
     /**
-     * 事件监听器工厂，用于监控请求生命周期
+     * The factory for creating event listeners for monitoring request lifecycle events.
      */
     final EventListener.Factory eventListenerFactory;
     /**
-     * 代理选择器，用于动态选择代理
+     * The selector for choosing a proxy for a given URI.
      */
     final ProxySelector proxySelector;
     /**
-     * Cookie 管理器，处理请求和响应的 Cookie
+     * The cookie jar for managing HTTP cookies.
      */
     final CookieJar cookieJar;
     /**
-     * 缓存实例，用于存储响应
+     * The cache for storing and retrieving responses.
      */
     final Cache cache;
     /**
-     * 内部缓存接口，提供自定义缓存实现
+     * The internal cache interface for custom caching implementations.
      */
     final InternalCache internalCache;
     /**
-     * 套接字工厂，用于创建普通 TCP 连接
+     * The socket factory for creating plain TCP connections.
      */
     final SocketFactory socketFactory;
     /**
-     * SSL 套接字工厂，用于 HTTPS 连接
+     * The SSL socket factory for creating HTTPS connections.
      */
     final SSLSocketFactory sslSocketFactory;
     /**
-     * 证书链清理器，用于规范化证书链
+     * The cleaner for normalizing certificate chains.
      */
     final CertificateChainCleaner certificateChainCleaner;
     /**
-     * 主机名验证器，用于 HTTPS 主机名验证
+     * The verifier for checking hostnames in HTTPS connections.
      */
     final javax.net.ssl.HostnameVerifier hostnameVerifier;
     /**
-     * 证书固定器，限制受信任的证书
+     * The pinner for restricting which certificates are trusted.
      */
     final CertificatePinner certificatePinner;
     /**
-     * 代理身份验证器，处理代理服务器认证
+     * The authenticator for handling challenges from proxy servers.
      */
     final Authenticator proxyAuthenticator;
     /**
-     * 服务器身份验证器，处理源服务器认证
+     * The authenticator for handling challenges from origin servers.
      */
     final Authenticator authenticator;
     /**
-     * 连接池，管理 HTTP 和 HTTPS 连接
+     * The connection pool for managing and reusing HTTP and HTTPS connections.
      */
     final ConnectionPool connectionPool;
     /**
-     * DNS 服务，解析主机名到 IP 地址
+     * The DNS service for resolving hostnames to IP addresses.
      */
     final DnsX dns;
     /**
-     * 是否跟随 SSL 重定向（HTTPS 到 HTTP 或反之）
+     * Whether to follow redirects from HTTPS to HTTP and vice versa.
      */
     final boolean followSslRedirects;
     /**
-     * 是否跟随 HTTP 重定向
+     * Whether to follow HTTP redirects.
      */
     final boolean followRedirects;
     /**
-     * 是否在连接失败时重试
+     * Whether to retry the request when a connection failure occurs.
      */
     final boolean retryOnConnectionFailure;
     /**
-     * 默认调用超时(毫秒).
+     * The default timeout for the entire call, in milliseconds.
      */
     final int callTimeout;
     /**
-     * 默认连接超时(毫秒).
+     * The default timeout for establishing a new connection, in milliseconds.
      */
     final int connectTimeout;
     /**
-     * 默认读超时(毫秒).
+     * The default timeout for reading data from a connection, in milliseconds.
      */
     final int readTimeout;
     /**
-     * 默认写超时(毫秒).
+     * The default timeout for writing data to a connection, in milliseconds.
      */
     final int writeTimeout;
     /**
-     * Web socket ping间隔(毫秒)
+     * The interval for sending WebSocket pings, in milliseconds.
      */
     final int pingInterval;
 
     /**
-     * 默认构造函数，使用默认配置创建 Httpd 实例。
+     * Constructs a new {@code Httpd} instance with default settings.
      */
     public Httpd() {
         this(new Builder());
     }
 
     /**
-     * 构造函数，根据提供的 Builder 配置创建 Httpd 实例。
+     * Constructs a new {@code Httpd} instance configured by the given {@link Builder}.
      *
-     * @param builder Builder 实例，包含所有配置参数
+     * @param builder The builder instance containing all configuration parameters.
      */
     public Httpd(Builder builder) {
         this.dispatcher = builder.dispatcher;
@@ -275,13 +279,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         this.internalCache = builder.internalCache;
         this.socketFactory = builder.socketFactory;
 
-        // 检查是否需要 TLS 配置
         boolean isTLS = false;
         for (ConnectionSuite spec : connectionSuites) {
             isTLS = isTLS || spec.isTls();
         }
 
-        // 配置 SSL 套接字工厂和证书链清理器
         if (null != builder.sslSocketFactory || !isTLS) {
             this.sslSocketFactory = builder.sslSocketFactory;
             this.certificateChainCleaner = builder.certificateChainCleaner;
@@ -291,7 +293,6 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             this.certificateChainCleaner = CertificateChainCleaner.get(trustManager);
         }
 
-        // 配置 SSL 套接字工厂的平台优化
         if (null != sslSocketFactory) {
             Platform.get().configureSslSocketFactory(sslSocketFactory);
         }
@@ -311,7 +312,6 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         this.writeTimeout = builder.writeTimeout;
         this.pingInterval = builder.pingInterval;
 
-        // 验证拦截器列表不包含 null
         if (interceptors.contains(null)) {
             throw new IllegalStateException("Null interceptor: " + interceptors);
         }
@@ -321,402 +321,402 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
     }
 
     /**
-     * 创建新的 HTTP 调用，用于执行指定的请求。
+     * Prepares the {@code request} to be executed at some point in the future.
      *
-     * @param request HTTP 请求对象
-     * @return NewCall 实例，用于执行请求
+     * @param request The HTTP request to execute.
+     * @return a new {@link NewCall} instance that can be used to execute the request.
      */
     @Override
     public NewCall newCall(Request request) {
-        return RealCall.newRealCall(this, request, false); // 创建普通 HTTP 调用
+        return RealCall.newRealCall(this, request, false /* for web socket */);
     }
 
     /**
-     * 创建新的 WebSocket 连接。
+     * Uses {@code request} to connect a new web socket.
      *
-     * @param request  WebSocket 请求对象
-     * @param listener WebSocket 事件监听器
-     * @return WebSocket 实例
+     * @param request  The WebSocket request object.
+     * @param listener The WebSocket event listener.
+     * @return a new {@link WebSocket} instance.
      */
     @Override
     public WebSocket newWebSocket(Request request, WebSocketListener listener) {
         RealWebSocket webSocket = new RealWebSocket(request, listener, new Random(), pingInterval);
-        webSocket.connect(this); // 发起 WebSocket 连接
+        webSocket.connect(this);
         return webSocket;
     }
 
     /**
-     * 获取调用超时时间（毫秒）。
+     * Returns the default timeout for complete calls in milliseconds.
      *
-     * @return 调用超时时间
+     * @return the call timeout in milliseconds.
      */
     public int callTimeoutMillis() {
         return callTimeout;
     }
 
     /**
-     * 获取连接超时时间（毫秒）。
+     * Returns the default timeout for establishing a new connection in milliseconds.
      *
-     * @return 连接超时时间
+     * @return the connect timeout in milliseconds.
      */
     public int connectTimeoutMillis() {
         return connectTimeout;
     }
 
     /**
-     * 获取读取超时时间（毫秒）。
+     * Returns the default timeout for reading data from a connection in milliseconds.
      *
-     * @return 读取超时时间
+     * @return the read timeout in milliseconds.
      */
     public int readTimeoutMillis() {
         return readTimeout;
     }
 
     /**
-     * 获取写入超时时间（毫秒）。
+     * Returns the default timeout for writing data to a connection in milliseconds.
      *
-     * @return 写入超时时间
+     * @return the write timeout in milliseconds.
      */
     public int writeTimeoutMillis() {
         return writeTimeout;
     }
 
     /**
-     * 获取 WebSocket ping 间隔（毫秒）。
+     * Returns the WebSocket ping interval in milliseconds.
      *
-     * @return ping 间隔
+     * @return the ping interval in milliseconds.
      */
     public int pingIntervalMillis() {
         return pingInterval;
     }
 
     /**
-     * 获取配置的代理。
+     * Returns the configured HTTP proxy, or null if no proxy is configured.
      *
-     * @return 代理实例，可能为 null
+     * @return the proxy instance, which may be null.
      */
     public Proxy proxy() {
         return proxy;
     }
 
     /**
-     * 获取代理选择器。
+     * Returns the proxy selector used to choose a proxy for a given URI.
      *
-     * @return 代理选择器
+     * @return the proxy selector.
      */
     public ProxySelector proxySelector() {
         return proxySelector;
     }
 
     /**
-     * 获取 Cookie 管理器。
+     * Returns the cookie jar used to manage HTTP cookies.
      *
-     * @return CookieJar 实例
+     * @return the {@link CookieJar} instance.
      */
     public CookieJar cookieJar() {
         return cookieJar;
     }
 
     /**
-     * 获取缓存实例。
+     * Returns the cache used to store responses.
      *
-     * @return Cache 实例，可能为 null
+     * @return the {@link Cache} instance, which may be null.
      */
     public Cache cache() {
         return cache;
     }
 
     /**
-     * 获取内部缓存接口。
+     * Returns the internal cache interface.
      *
-     * @return InternalCache 实例，可能为 null
+     * @return the {@link InternalCache} instance, which may be null.
      */
     InternalCache internalCache() {
         return null != cache ? cache.internalCache : internalCache;
     }
 
     /**
-     * 获取 DNS 服务。
+     * Returns the DNS service used to resolve hostnames.
      *
-     * @return DnsX 实例
+     * @return the {@link DnsX} instance.
      */
     public DnsX dns() {
         return dns;
     }
 
     /**
-     * 获取套接字工厂。
+     * Returns the socket factory used for creating plain TCP connections.
      *
-     * @return SocketFactory 实例
+     * @return the {@link SocketFactory} instance.
      */
     public SocketFactory socketFactory() {
         return socketFactory;
     }
 
     /**
-     * 获取 SSL 套接字工厂。
+     * Returns the SSL socket factory used for creating HTTPS connections.
      *
-     * @return SSLSocketFactory 实例
+     * @return the {@link SSLSocketFactory} instance.
      */
     public SSLSocketFactory sslSocketFactory() {
         return sslSocketFactory;
     }
 
     /**
-     * 获取主机名验证器。
+     * Returns the hostname verifier used for HTTPS connections.
      *
-     * @return HostnameVerifier 实例
+     * @return the {@link javax.net.ssl.HostnameVerifier} instance.
      */
     public javax.net.ssl.HostnameVerifier hostnameVerifier() {
         return hostnameVerifier;
     }
 
     /**
-     * 获取证书固定器。
+     * Returns the certificate pinner used to constrain trusted certificates.
      *
-     * @return CertificatePinner 实例
+     * @return the {@link CertificatePinner} instance.
      */
     public CertificatePinner certificatePinner() {
         return certificatePinner;
     }
 
     /**
-     * 获取服务器身份验证器。
+     * Returns the authenticator for handling challenges from origin servers.
      *
-     * @return Authenticator 实例
+     * @return the {@link Authenticator} instance.
      */
     public Authenticator authenticator() {
         return authenticator;
     }
 
     /**
-     * 获取代理身份验证器。
+     * Returns the authenticator for handling challenges from proxy servers.
      *
-     * @return Authenticator 实例
+     * @return the {@link Authenticator} instance.
      */
     public Authenticator proxyAuthenticator() {
         return proxyAuthenticator;
     }
 
     /**
-     * 获取连接池。
+     * Returns the connection pool for managing and reusing connections.
      *
-     * @return ConnectionPool 实例
+     * @return the {@link ConnectionPool} instance.
      */
     public ConnectionPool connectionPool() {
         return connectionPool;
     }
 
     /**
-     * 检查是否跟随 SSL 重定向。
+     * Returns true if this client follows redirects from HTTPS to HTTP and vice versa.
      *
-     * @return true 如果跟随 SSL 重定向
+     * @return true if SSL redirects are followed.
      */
     public boolean followSslRedirects() {
         return followSslRedirects;
     }
 
     /**
-     * 检查是否跟随 HTTP 重定向。
+     * Returns true if this client follows HTTP redirects.
      *
-     * @return true 如果跟随 HTTP 重定向
+     * @return true if redirects are followed.
      */
     public boolean followRedirects() {
         return followRedirects;
     }
 
     /**
-     * 检查是否在连接失败时重试。
+     * Returns true if this client retries requests on connection failures.
      *
-     * @return true 如果启用重试
+     * @return true if retry on connection failure is enabled.
      */
     public boolean retryOnConnectionFailure() {
         return retryOnConnectionFailure;
     }
 
     /**
-     * 获取请求调度器。
+     * Returns the dispatcher that manages asynchronous requests.
      *
-     * @return Dispatcher 实例
+     * @return the {@link Dispatcher} instance.
      */
     public Dispatcher dispatcher() {
         return dispatcher;
     }
 
     /**
-     * 获取支持的协议列表。
+     * Returns the list of protocols supported by this client.
      *
-     * @return 不可修改的协议列表
+     * @return an immutable list of protocols.
      */
     public List<Protocol> protocols() {
         return protocols;
     }
 
     /**
-     * 获取支持的连接套件列表。
+     * Returns the list of connection specs supported by this client.
      *
-     * @return 不可修改的连接套件列表
+     * @return an immutable list of connection specs.
      */
     public List<ConnectionSuite> connectionSpecs() {
         return connectionSuites;
     }
 
     /**
-     * 获取拦截器列表。
+     * Returns the list of application interceptors.
      *
-     * @return 不可修改的拦截器列表
+     * @return an immutable list of interceptors.
      */
     public List<Interceptor> interceptors() {
         return interceptors;
     }
 
     /**
-     * 获取网络拦截器列表。
+     * Returns the list of network interceptors.
      *
-     * @return 不可修改的网络拦截器列表
+     * @return an immutable list of network interceptors.
      */
     public List<Interceptor> networkInterceptors() {
         return networkInterceptors;
     }
 
     /**
-     * 获取事件监听器工厂。
+     * Returns the factory for creating event listeners.
      *
-     * @return EventListener.Factory 实例
+     * @return the {@link EventListener.Factory} instance.
      */
     public EventListener.Factory eventListenerFactory() {
         return eventListenerFactory;
     }
 
     /**
-     * 创建新的 Builder 实例，基于当前 Httpd 配置。
+     * Returns a new builder that is a copy of this client's configuration.
      *
-     * @return Builder 实例
+     * @return a new {@link Builder} instance.
      */
     public Builder newBuilder() {
         return new Builder(this);
     }
 
     /**
-     * Httpd 配置构建器，用于创建和配置 Httpd 实例。
+     * A builder for configuring and creating {@link Httpd} instances.
      */
     public static class Builder {
 
         /**
-         * 拦截器列表
+         * The list of application interceptors.
          */
         final List<Interceptor> interceptors = new ArrayList<>();
         /**
-         * 网络拦截器列表
+         * The list of network interceptors.
          */
         final List<Interceptor> networkInterceptors = new ArrayList<>();
         /**
-         * 请求调度器
+         * The dispatcher for managing asynchronous requests.
          */
         Dispatcher dispatcher;
         /**
-         * 代理配置
+         * The HTTP proxy configuration.
          */
         Proxy proxy;
         /**
-         * 支持的协议
+         * The list of supported protocols.
          */
         List<Protocol> protocols;
         /**
-         * 支持的连接套件
+         * The list of supported connection specifications.
          */
         List<ConnectionSuite> connectionSuites;
         /**
-         * 事件监听器工厂
+         * The factory for creating event listeners.
          */
         EventListener.Factory eventListenerFactory;
         /**
-         * 代理选择器
+         * The selector for choosing a proxy.
          */
         ProxySelector proxySelector;
         /**
-         * Cookie 管理器
+         * The manager for handling cookies.
          */
         CookieJar cookieJar;
         /**
-         * 缓存实例
+         * The cache instance for storing responses.
          */
         Cache cache;
         /**
-         * 内部缓存接口
+         * The internal cache interface.
          */
         InternalCache internalCache;
         /**
-         * 套接字工厂
+         * The factory for creating sockets.
          */
         SocketFactory socketFactory;
         /**
-         * SSL 套接字工厂
+         * The factory for creating SSL sockets.
          */
         SSLSocketFactory sslSocketFactory;
         /**
-         * 证书链清理器
+         * The cleaner for certificate chains.
          */
         CertificateChainCleaner certificateChainCleaner;
         /**
-         * 主机名验证器
+         * The verifier for hostnames.
          */
         javax.net.ssl.HostnameVerifier hostnameVerifier;
         /**
-         * 证书固定器
+         * The pinner for certificates.
          */
         CertificatePinner certificatePinner;
         /**
-         * 代理身份验证器
+         * The authenticator for proxy servers.
          */
         Authenticator proxyAuthenticator;
         /**
-         * 服务器身份验证器
+         * The authenticator for origin servers.
          */
         Authenticator authenticator;
         /**
-         * 连接池
+         * The connection pool for reusing connections.
          */
         ConnectionPool connectionPool;
         /**
-         * DNS 服务
+         * The DNS service.
          */
         DnsX dns;
         /**
-         * 是否跟随 SSL 重定向
+         * Whether to follow SSL redirects.
          */
         boolean followSslRedirects;
         /**
-         * 是否跟随 HTTP 重定向
+         * Whether to follow HTTP redirects.
          */
         boolean followRedirects;
         /**
-         * 是否在连接失败时重试
+         * Whether to retry on connection failure.
          */
         boolean retryOnConnectionFailure;
         /**
-         * 调用超时（毫秒）
+         * The call timeout in milliseconds.
          */
         int callTimeout;
         /**
-         * 连接超时（毫秒）
+         * The connection timeout in milliseconds.
          */
         int connectTimeout;
         /**
-         * 读取超时（毫秒）
+         * The read timeout in milliseconds.
          */
         int readTimeout;
         /**
-         * 写入超时（毫秒）
+         * The write timeout in milliseconds.
          */
         int writeTimeout;
         /**
-         * WebSocket ping 间隔（毫秒）
+         * The WebSocket ping interval in milliseconds.
          */
         int pingInterval;
 
         /**
-         * 默认构造函数，初始化默认配置。
+         * Default constructor which initializes with default settings.
          */
         public Builder() {
             dispatcher = new Dispatcher();
@@ -725,7 +725,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             eventListenerFactory = EventListener.factory(EventListener.NONE);
             proxySelector = ProxySelector.getDefault();
             if (null == proxySelector) {
-                proxySelector = new NullProxySelector(); // 使用空代理选择器
+                proxySelector = new NullProxySelector();
             }
             cookieJar = CookieJar.NO_COOKIES;
             socketFactory = SocketFactory.getDefault();
@@ -739,16 +739,16 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             followRedirects = true;
             retryOnConnectionFailure = true;
             callTimeout = 0;
-            connectTimeout = 10_000; // 默认 10 秒
-            readTimeout = 10_000; // 默认 10 秒
-            writeTimeout = 10_000; // 默认 10 秒
+            connectTimeout = 10_000;
+            readTimeout = 10_000;
+            writeTimeout = 10_000;
             pingInterval = 0;
         }
 
         /**
-         * 构造函数，基于现有 Httpd 实例初始化配置。
+         * Constructor that initializes the builder with the settings of an existing {@link Httpd} instance.
          *
-         * @param httpd Httpd 实例
+         * @param httpd The {@link Httpd} instance to copy settings from.
          */
         Builder(Httpd httpd) {
             this.dispatcher = httpd.dispatcher;
@@ -782,12 +782,12 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置完成调用的默认超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
+         * Sets the default timeout for complete calls. A value of 0 means no timeout.
          *
-         * @param timeout 超时时间（0 表示无超时）
-         * @param unit    时间单位
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果超时值无效
+         * @param timeout the timeout value.
+         * @param unit    the time unit.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if the timeout value is invalid.
          */
         public Builder callTimeout(long timeout, TimeUnit unit) {
             callTimeout = org.miaixz.bus.http.Builder.checkDuration("timeout", timeout, unit);
@@ -795,11 +795,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置完成调用的默认超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
+         * Sets the default timeout for complete calls. A value of 0 means no timeout.
          *
-         * @param duration 超时时间（0 表示无超时）
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果超时值无效
+         * @param duration the timeout duration.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if the timeout value is invalid.
          */
         public Builder callTimeout(Duration duration) {
             callTimeout = org.miaixz.bus.http.Builder
@@ -808,12 +808,12 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置新连接的默认连接超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
+         * Sets the default connect timeout for new connections. A value of 0 means no timeout.
          *
-         * @param timeout 超时时间（0 表示无超时）
-         * @param unit    时间单位
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果超时值无效
+         * @param timeout the timeout value.
+         * @param unit    the time unit.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if the timeout value is invalid.
          */
         public Builder connectTimeout(long timeout, TimeUnit unit) {
             connectTimeout = org.miaixz.bus.http.Builder.checkDuration("timeout", timeout, unit);
@@ -821,11 +821,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置新连接的默认连接超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
+         * Sets the default connect timeout for new connections. A value of 0 means no timeout.
          *
-         * @param duration 超时时间（0 表示无超时）
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果超时值无效
+         * @param duration the timeout duration.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if the timeout value is invalid.
          */
         public Builder connectTimeout(Duration duration) {
             connectTimeout = org.miaixz.bus.http.Builder
@@ -834,14 +834,14 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置新连接的默认读取超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
+         * Sets the default read timeout for new connections. A value of 0 means no timeout.
          *
-         * @param timeout 超时时间（0 表示无超时）
-         * @param unit    时间单位
-         * @return 当前 Builder 实例
+         * @param timeout the timeout value.
+         * @param unit    the time unit.
+         * @return this builder instance.
          * @see Socket#setSoTimeout(int)
          * @see Source#timeout()
-         * @throws IllegalArgumentException 如果超时值无效
+         * @throws IllegalArgumentException if the timeout value is invalid.
          */
         public Builder readTimeout(long timeout, TimeUnit unit) {
             readTimeout = org.miaixz.bus.http.Builder.checkDuration("timeout", timeout, unit);
@@ -849,13 +849,13 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置新连接的默认读取超时。值0表示没有超时，否则在转换为毫秒时，值必须在1和{@link Integer#MAX_VALUE}之间
+         * Sets the default read timeout for new connections. A value of 0 means no timeout.
          *
-         * @param duration 超时时间（0 表示无超时）
-         * @return 当前 Builder 实例
+         * @param duration the timeout duration.
+         * @return this builder instance.
          * @see Socket#setSoTimeout(int)
          * @see Source#timeout()
-         * @throws IllegalArgumentException 如果超时值无效
+         * @throws IllegalArgumentException if the timeout value is invalid.
          */
         public Builder readTimeout(Duration duration) {
             readTimeout = org.miaixz.bus.http.Builder
@@ -864,13 +864,13 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置写入超时时间。
+         * Sets the default write timeout for new connections. A value of 0 means no timeout.
          *
-         * @param timeout 超时时间（0 表示无超时）
-         * @param unit    时间单位
-         * @return 当前 Builder 实例
+         * @param timeout the timeout value.
+         * @param unit    the time unit.
+         * @return this builder instance.
          * @see Sink#timeout()
-         * @throws IllegalArgumentException 如果超时值无效
+         * @throws IllegalArgumentException if the timeout value is invalid.
          */
         public Builder writeTimeout(long timeout, TimeUnit unit) {
             writeTimeout = org.miaixz.bus.http.Builder.checkDuration("timeout", timeout, unit);
@@ -878,12 +878,12 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置写入超时时间。
+         * Sets the default write timeout for new connections. A value of 0 means no timeout.
          *
-         * @param duration 超时时间（0 表示无超时）
-         * @return 当前 Builder 实例
+         * @param duration the timeout duration.
+         * @return this builder instance.
          * @see Sink#timeout()
-         * @throws IllegalArgumentException 如果超时值无效
+         * @throws IllegalArgumentException if the timeout value is invalid.
          */
         public Builder writeTimeout(Duration duration) {
             writeTimeout = org.miaixz.bus.http.Builder
@@ -892,12 +892,12 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置 WebSocket ping 间隔。
+         * Sets the WebSocket ping interval. A value of 0 disables pings.
          *
-         * @param interval 间隔时间（0 表示无 ping）
-         * @param unit     时间单位
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果间隔值无效
+         * @param interval the interval value.
+         * @param unit     the time unit.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if the interval value is invalid.
          */
         public Builder pingInterval(long interval, TimeUnit unit) {
             pingInterval = org.miaixz.bus.http.Builder.checkDuration("interval", interval, unit);
@@ -905,11 +905,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置 WebSocket ping 间隔。
+         * Sets the WebSocket ping interval. A value of 0 disables pings.
          *
-         * @param duration 间隔时间（0 表示无 ping）
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果间隔值无效
+         * @param duration the interval duration.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if the interval value is invalid.
          */
         public Builder pingInterval(Duration duration) {
             pingInterval = org.miaixz.bus.http.Builder
@@ -918,10 +918,10 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置 HTTP 代理。
+         * Sets the HTTP proxy that will be used by connections created by this client.
          *
-         * @param proxy 代理实例
-         * @return 当前 Builder 实例
+         * @param proxy the HTTP proxy.
+         * @return this builder instance.
          */
         public Builder proxy(Proxy proxy) {
             this.proxy = proxy;
@@ -929,11 +929,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置代理选择器。
+         * Sets the proxy selector that will be used to select the HTTP proxy for each request.
          *
-         * @param proxySelector 代理选择器
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 proxySelector 为 null
+         * @param proxySelector the proxy selector.
+         * @return this builder instance.
+         * @throws NullPointerException if proxySelector is null.
          */
         public Builder proxySelector(ProxySelector proxySelector) {
             if (null == proxySelector)
@@ -943,11 +943,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置 Cookie 管理器。
+         * Sets the cookie jar that will be used to manage cookies for all HTTP requests.
          *
-         * @param cookieJar Cookie 管理器
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 cookieJar 为 null
+         * @param cookieJar the cookie jar.
+         * @return this builder instance.
+         * @throws NullPointerException if cookieJar is null.
          */
         public Builder cookieJar(CookieJar cookieJar) {
             if (null == cookieJar)
@@ -957,10 +957,10 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置缓存实例。
+         * Sets the cache to be used to read and write cached responses.
          *
-         * @param cache 缓存实例
-         * @return 当前 Builder 实例
+         * @param cache the cache instance.
+         * @return this builder instance.
          */
         public Builder cache(Cache cache) {
             this.cache = cache;
@@ -969,11 +969,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置 DNS 服务。
+         * Sets the DNS service used to lookup IP addresses for hostnames.
          *
-         * @param dns DNS 服务
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 dns 为 null
+         * @param dns the DNS service.
+         * @return this builder instance.
+         * @throws NullPointerException if dns is null.
          */
         public Builder dns(DnsX dns) {
             if (null == dns)
@@ -983,12 +983,12 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置套接字工厂。
+         * Sets the socket factory used to create connections.
          *
-         * @param socketFactory 套接字工厂
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 socketFactory 为 null
-         * @throws IllegalArgumentException 如果 socketFactory 是 SSLSocketFactory
+         * @param socketFactory the socket factory.
+         * @return this builder instance.
+         * @throws NullPointerException     if socketFactory is null.
+         * @throws IllegalArgumentException if socketFactory is an instance of {@link SSLSocketFactory}.
          */
         public Builder socketFactory(SocketFactory socketFactory) {
             if (socketFactory == null)
@@ -1001,11 +1001,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置 SSL 套接字工厂。
+         * Sets the SSL socket factory used to create HTTPS connections.
          *
-         * @param sslSocketFactory SSL 套接字工厂
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 sslSocketFactory 为 null
+         * @param sslSocketFactory the SSL socket factory.
+         * @return this builder instance.
+         * @throws NullPointerException if sslSocketFactory is null.
          */
         public Builder sslSocketFactory(SSLSocketFactory sslSocketFactory) {
             if (null == sslSocketFactory)
@@ -1016,33 +1016,15 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置用于保护HTTPS连接的套接字工厂和信任管理器。如果未设置，则使用系统默认值 大多数应用程序不应该调用这个方法，而应该使用系统默认值。这些类包含特殊的优化，如果实现被修饰，这些优化可能会丢失
+         * Sets the SSL socket factory and trust manager used for HTTPS connections.
          *
-         * <pre>
-         * {@code
+         * <p>
+         * Most applications should not call this method, and instead use the system defaults.
          *
-         * TrustManagerFactory trustManagerFactory = TrustManagerFactory
-         *         .getInstance(TrustManagerFactory.getDefaultAlgorithm());
-         * trustManagerFactory.init((KeyStore) null);
-         * TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
-         * if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-         *     throw new IllegalStateException("Unexpected default trust managers:" + Arrays.toString(trustManagers));
-         * }
-         * X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
-         *
-         * SSLContext sslContext = SSLContext.getInstance("TLS");
-         * sslContext.init(null, new TrustManager[] { trustManager }, null);
-         * SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-         *
-         * Httpd client = new Httpd.Builder().sslSocketFactory(sslSocketFactory, trustManager).build();
-         * }
-         * </pre>
-         *
-         * @param sslSocketFactory SSL 套接字工厂
-         * 
-         * @param trustManager     X509 信任管理器
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 sslSocketFactory 或 trustManager 为 null
+         * @param sslSocketFactory the SSL socket factory.
+         * @param trustManager     the X.509 trust manager.
+         * @return this builder instance.
+         * @throws NullPointerException if sslSocketFactory or trustManager is null.
          */
         public Builder sslSocketFactory(SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
             if (sslSocketFactory == null)
@@ -1055,11 +1037,12 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置用于确认响应证书适用于HTTPS连接请求的主机名的验证程序. 如果未设置，将使用默认的主机名验证器
+         * Sets the verifier used to confirm that response certificates apply to the requested hostnames for HTTPS
+         * connections.
          *
-         * @param hostnameVerifier 主机名验证器
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 hostnameVerifier 为 null
+         * @param hostnameVerifier the hostname verifier.
+         * @return this builder instance.
+         * @throws NullPointerException if hostnameVerifier is null.
          */
         public Builder hostnameVerifier(javax.net.ssl.HostnameVerifier hostnameVerifier) {
             if (null == hostnameVerifier)
@@ -1069,11 +1052,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置限制哪些证书受信任的证书pinner。默认情况下，HTTPS连接仅 依赖于{@link #sslSocketFactory SSL套接字工厂}来建立信任。 固定证书避免了信任证书颁发机构的需要。
+         * Sets the certificate pinner that constrains which certificates are trusted.
          *
-         * @param certificatePinner 证书固定器
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 certificatePinner 为 null
+         * @param certificatePinner the certificate pinner.
+         * @return this builder instance.
+         * @throws NullPointerException if certificatePinner is null.
          */
         public Builder certificatePinner(CertificatePinner certificatePinner) {
             if (null == certificatePinner)
@@ -1083,11 +1066,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置用于响应来自源服务器的挑战的验证器。使用{@link #proxyAuthenticator}设置代理服务器的身份验证器.
+         * Sets the authenticator used to respond to challenges from origin servers.
          *
-         * @param authenticator 身份验证器
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 authenticator 为 null
+         * @param authenticator the authenticator.
+         * @return this builder instance.
+         * @throws NullPointerException if authenticator is null.
          */
         public Builder authenticator(Authenticator authenticator) {
             if (null == authenticator)
@@ -1097,12 +1080,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置用于响应来自代理服务器的挑战的验证器。使用{@link #authenticator}设置源服务器的身份验证器 果未设置，将尝试{@linkplain Authenticator#NONE no
-         * authentication will be attempted}
+         * Sets the authenticator used to respond to challenges from proxy servers.
          *
-         * @param proxyAuthenticator 代理身份验证器
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 proxyAuthenticator 为 null
+         * @param proxyAuthenticator the proxy authenticator.
+         * @return this builder instance.
+         * @throws NullPointerException if proxyAuthenticator is null.
          */
         public Builder proxyAuthenticator(Authenticator proxyAuthenticator) {
             if (null == proxyAuthenticator)
@@ -1112,11 +1094,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置用于回收HTTP和HTTPS连接的连接池. 如果未设置，将使用新的连接池
+         * Sets the connection pool used to recycle HTTP and HTTPS connections.
          *
-         * @param connectionPool 连接池
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 connectionPool 为 null
+         * @param connectionPool the connection pool.
+         * @return this builder instance.
+         * @throws NullPointerException if connectionPool is null.
          */
         public Builder connectionPool(ConnectionPool connectionPool) {
             if (null == connectionPool)
@@ -1126,10 +1108,10 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 让这个客户从HTTPS到HTTPS跟踪和从HTTPS到HTTPS. 如果未设置，将遵循协议重定向。这与内置的{@code HttpURLConnection}的默认设置不同
+         * Configures this client to follow redirects from HTTPS to HTTP and from HTTP to HTTPS.
          *
-         * @param followProtocolRedirects 是否跟随 SSL 重定向
-         * @return 当前 Builder 实例
+         * @param followProtocolRedirects whether to follow SSL redirects.
+         * @return this builder instance.
          */
         public Builder followSslRedirects(boolean followProtocolRedirects) {
             this.followSslRedirects = followProtocolRedirects;
@@ -1137,10 +1119,10 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 此客户端配置为遵循重定向。如果未设置，将遵循重定向.
+         * Configures this client to follow redirects.
          *
-         * @param followRedirects 是否跟随 HTTP 重定向
-         * @return 当前 Builder 实例
+         * @param followRedirects whether to follow HTTP redirects.
+         * @return this builder instance.
          */
         public Builder followRedirects(boolean followRedirects) {
             this.followRedirects = followRedirects;
@@ -1148,10 +1130,10 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 在遇到连接问题时，将此客户端配置为重试或不重试 将此设置为false，以避免在这样做会造成破坏时重试请求 在这种情况下，调用应用程序应该自己恢复连接故障.
+         * Configures this client to retry or not to retry when a connectivity problem is encountered.
          *
-         * @param retryOnConnectionFailure 是否重试
-         * @return 当前 Builder 实例
+         * @param retryOnConnectionFailure whether to retry on connection failure.
+         * @return this builder instance.
          */
         public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
             this.retryOnConnectionFailure = retryOnConnectionFailure;
@@ -1159,11 +1141,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置请求调度器。
+         * Sets the dispatcher used to execute asynchronous requests.
          *
-         * @param dispatcher 请求调度器
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果 dispatcher 为 null
+         * @param dispatcher the dispatcher.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if dispatcher is null.
          */
         public Builder dispatcher(Dispatcher dispatcher) {
             if (null == dispatcher)
@@ -1173,17 +1155,15 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置支持的协议。
+         * Sets the protocols used for requests.
          *
-         * @param protocols 协议列表
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果协议列表无效
+         * @param protocols the list of protocols.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if the protocols list is invalid.
          */
         public Builder protocols(List<Protocol> protocols) {
-            // 创建协议列表副本
             protocols = new ArrayList<>(protocols);
 
-            // 验证协议列表
             if (!protocols.contains(Protocol.H2_PRIOR_KNOWLEDGE) && !protocols.contains(Protocol.HTTP_1_1)) {
                 throw new IllegalArgumentException(
                         "protocols must contain h2_prior_knowledge or http/1.1: " + protocols);
@@ -1199,19 +1179,17 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
                 throw new IllegalArgumentException("protocols must not contain null");
             }
 
-            // 移除不再支持的 SPDY/3
             protocols.remove(Protocol.SPDY_3);
 
-            // 设置不可修改的协议列表
             this.protocols = Collections.unmodifiableList(protocols);
             return this;
         }
 
         /**
-         * 设置支持的连接套件。
+         * Sets the connection specs for this client.
          *
-         * @param connectionSuites 连接套件列表
-         * @return 当前 Builder 实例
+         * @param connectionSuites the list of connection specs.
+         * @return this builder instance.
          */
         public Builder connectionSpecs(List<ConnectionSuite> connectionSuites) {
             this.connectionSuites = org.miaixz.bus.http.Builder.immutableList(connectionSuites);
@@ -1219,20 +1197,20 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 获取拦截器列表。
+         * Returns a mutable list of the application interceptors that observe the full span of each call.
          *
-         * @return 可修改的拦截器列表
+         * @return the list of application interceptors.
          */
         public List<Interceptor> interceptors() {
             return interceptors;
         }
 
         /**
-         * 添加拦截器。
+         * Adds an application interceptor.
          *
-         * @param interceptor 拦截器
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果 interceptor 为 null
+         * @param interceptor the application interceptor.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if interceptor is null.
          */
         public Builder addInterceptor(Interceptor interceptor) {
             if (null == interceptor)
@@ -1242,20 +1220,20 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 获取网络拦截器列表。
+         * Returns a mutable list of the network interceptors that observe a single network request and response.
          *
-         * @return 可修改的网络拦截器列表
+         * @return the list of network interceptors.
          */
         public List<Interceptor> networkInterceptors() {
             return networkInterceptors;
         }
 
         /**
-         * 添加网络拦截器。
+         * Adds a network interceptor.
          *
-         * @param interceptor 网络拦截器
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果 interceptor 为 null
+         * @param interceptor the network interceptor.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if interceptor is null.
          */
         public Builder addNetworkInterceptor(Interceptor interceptor) {
             if (null == interceptor)
@@ -1265,11 +1243,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置事件监听器。
+         * Sets the event listener for monitoring request lifecycle events.
          *
-         * @param eventListener 事件监听器
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 eventListener 为 null
+         * @param eventListener the event listener.
+         * @return this builder instance.
+         * @throws NullPointerException if eventListener is null.
          */
         public Builder eventListener(EventListener eventListener) {
             if (null == eventListener)
@@ -1279,11 +1257,11 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 设置事件监听器工厂。
+         * Sets the factory for creating event listeners.
          *
-         * @param eventListenerFactory 事件监听器工厂
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 eventListenerFactory 为 null
+         * @param eventListenerFactory the event listener factory.
+         * @return this builder instance.
+         * @throws NullPointerException if eventListenerFactory is null.
          */
         public Builder eventListenerFactory(EventListener.Factory eventListenerFactory) {
             if (null == eventListenerFactory) {
@@ -1294,9 +1272,9 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
         }
 
         /**
-         * 构建 Httpd 实例。
+         * Builds a new {@link Httpd} instance with the configured settings.
          *
-         * @return Httpd 实例
+         * @return a new {@link Httpd} instance.
          */
         public Httpd build() {
             return new Httpd(this);

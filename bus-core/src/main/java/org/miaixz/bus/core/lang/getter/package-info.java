@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * getXXX方法的接口和抽象实现
+ * Provides interfaces and abstract implementations for various getter methods.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -26,7 +26,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Map相关封装，提供特殊Map实现
+ * This package contains a variety of specialized {@link java.util.Map} implementations and utilities. It offers
+ * extensions to the standard Java Collections Framework, providing solutions for common use cases such as
+ * case-insensitive keys, bidirectional mappings, and maps with custom key conversion logic. These tools are designed to
+ * enhance flexibility and convenience when working with key-value data structures.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 组合，即C(n, m) 排列组合相关类 参考：<a href="http://cgs1999.iteye.com/blog/2327664">http://cgs1999.iteye.com/blog/2327664</a>
+ * A class for handling combinations, noted as C(n, m).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,23 +47,26 @@ public class Combination implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852227281795L;
 
+    /**
+     * The array of data elements to be combined.
+     */
     private final String[] datas;
 
     /**
-     * 组合，即C(n, m) 排列组合相关类 参考：<a href="http://cgs1999.iteye.com/blog/2327664">http://cgs1999.iteye.com/blog/2327664</a>
+     * Constructor.
      *
-     * @param datas 用于组合的数据
+     * @param datas The data to be combined.
      */
     public Combination(final String[] datas) {
         this.datas = datas;
     }
 
     /**
-     * 计算组合数，即C(n, m) = n!/((n-m)!* m!)
+     * Calculates the number of combinations, i.e., C(n, m) = n!/((n-m)! * m!).
      *
-     * @param n 总数
-     * @param m 选择的个数
-     * @return 组合数
+     * @param n The total number of elements.
+     * @param m The number of elements to select.
+     * @return The number of combinations.
      */
     public static long count(final int n, final int m) {
         if (0 == m || n == m) {
@@ -73,10 +76,11 @@ public class Combination implements Serializable {
     }
 
     /**
-     * 计算组合总数，即C(n, 1) + C(n, 2) + C(n, 3)...
+     * Calculates the total number of combinations for all possible selection sizes, i.e., C(n, 1) + C(n, 2) + C(n, 3) +
+     * ... + C(n, n).
      *
-     * @param n 总数
-     * @return 组合数
+     * @param n The total number of elements.
+     * @return The total number of combinations.
      */
     public static long countAll(final int n) {
         if (n < 0 || n > 63) {
@@ -87,10 +91,10 @@ public class Combination implements Serializable {
     }
 
     /**
-     * 组合选择（从列表中选择m个组合）
+     * Selects combinations (selects m elements from the list for combination).
      *
-     * @param m 选择个数
-     * @return 组合结果
+     * @param m The number of elements to select.
+     * @return A list of all combination results.
      */
     public List<String[]> select(final int m) {
         final List<String[]> result = new ArrayList<>((int) count(this.datas.length, m));
@@ -99,9 +103,9 @@ public class Combination implements Serializable {
     }
 
     /**
-     * 全组合
+     * Selects all combinations for all possible selection sizes.
      *
-     * @return 全排列结果
+     * @return A list of all combination results.
      */
     public List<String[]> selectAll() {
         final List<String[]> result = new ArrayList<>((int) countAll(this.datas.length));
@@ -112,12 +116,12 @@ public class Combination implements Serializable {
     }
 
     /**
-     * 组合选择
+     * Recursively selects elements for combination.
      *
-     * @param dataIndex   待选开始索引
-     * @param resultList  前面（resultIndex-1）个的组合结果
-     * @param resultIndex 选择索引，从0开始
-     * @param result      结果集
+     * @param dataIndex   The starting index for selection from the source data.
+     * @param resultList  The temporary array to hold the current combination.
+     * @param resultIndex The current position to fill in the {@code resultList}.
+     * @param result      The final list to store all generated combinations.
      */
     private void select(
             final int dataIndex,
@@ -126,12 +130,12 @@ public class Combination implements Serializable {
             final List<String[]> result) {
         final int resultLen = resultList.length;
         final int resultCount = resultIndex + 1;
-        if (resultCount > resultLen) { // 全部选择完时，输出组合结果
+        if (resultCount > resultLen) { // When all elements for the combination are selected, add it to the result.
             result.add(Arrays.copyOf(resultList, resultList.length));
             return;
         }
 
-        // 递归选择下一个
+        // Recursively select the next element.
         for (int i = dataIndex; i < datas.length + resultCount - resultLen; i++) {
             resultList[resultIndex] = datas[i];
             select(i + 1, resultList, resultIndex + 1, result);

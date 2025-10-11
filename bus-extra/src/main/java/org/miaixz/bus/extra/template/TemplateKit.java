@@ -31,7 +31,7 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * 提供模板工具类，用于快捷模板融合
+ * Provides template utility methods for quick template merging and rendering.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,31 +39,32 @@ import java.util.Map;
 public class TemplateKit {
 
     /**
-     * 获取单例的模板引擎
+     * Retrieves a singleton instance of the template engine.
      *
-     * @return {@link TemplateProvider}
+     * @return The singleton {@link TemplateProvider} instance.
      */
     public static TemplateProvider getEngine() {
         return TemplateFactory.get();
     }
 
     /**
-     * 融合模板和参数，返回融合后的内容
+     * Renders the given template content with the provided binding parameters and returns the result as a string.
      *
-     * @param templateContent 模板内容
-     * @param bindingMap      参数
-     * @return 内容
+     * @param templateContent The template content to be rendered.
+     * @param bindingMap      A map of parameters to bind to the template variables.
+     * @return The rendered content as a {@link String}.
      */
     public static String render(final String templateContent, final Map<?, ?> bindingMap) {
         return getEngine().getTemplate(templateContent).render(bindingMap);
     }
 
     /**
-     * 融合模板和参数，返回融合后的内容
+     * Renders the given template content with the provided binding parameters and writes the result to a
+     * {@link Writer}.
      *
-     * @param templateContent 模板内容
-     * @param bindingMap      参数
-     * @param writer          融合内容输出的位置
+     * @param templateContent The template content to be rendered.
+     * @param bindingMap      A map of parameters to bind to the template variables.
+     * @param writer          The {@link Writer} to which the rendered content will be written.
      */
     public static void render(final String templateContent, final Map<?, ?> bindingMap, final Writer writer) {
         getEngine().getTemplate(templateContent).render(bindingMap, writer);

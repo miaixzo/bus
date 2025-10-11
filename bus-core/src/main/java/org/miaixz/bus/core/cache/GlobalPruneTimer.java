@@ -38,7 +38,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
- * 全局缓存清理定时器池，用于在需要过期支持的缓存对象中超时任务池
+ * A global timer pool for scheduling cache pruning tasks. This is used by cache implementations that require expiration
+ * support.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,40 +47,41 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 public enum GlobalPruneTimer {
 
     /**
-     * 单例对象
+     * The singleton instance.
      */
     INSTANCE;
 
     /**
-     * 缓存任务计数
+     * A counter for naming the cache task threads.
      */
     private final AtomicInteger cacheTaskNumber = new AtomicInteger(1);
 
     /**
-     * 定时器
+     * The scheduler for pruning tasks.
      */
     private ScheduledExecutorService pruneTimer;
 
     /**
-     * 构造
+     * Private constructor to initialize the timer.
      */
     GlobalPruneTimer() {
         init();
     }
 
     /**
-     * 启动定时任务
+     * Schedules a task to run periodically at a fixed rate.
      *
-     * @param task  任务
-     * @param delay 周期
-     * @return {@link ScheduledFuture}对象，可手动取消此任务
+     * @param task  The task to be executed.
+     * @param delay The period between successive executions, in milliseconds.
+     * @return A {@link ScheduledFuture} representing the pending completion of the task, which can be used to cancel
+     *         it.
      */
     public ScheduledFuture<?> schedule(final Runnable task, final long delay) {
         return this.pruneTimer.scheduleAtFixedRate(task, delay, delay, TimeUnit.MILLISECONDS);
     }
 
     /**
-     * 初始化定时器
+     * Initializes the timer. If a timer already exists, it is shut down before creating a new one.
      */
     public void init() {
         if (null != pruneTimer) {
@@ -90,7 +92,7 @@ public enum GlobalPruneTimer {
     }
 
     /**
-     * 销毁全局定时器
+     * Shuts down the global timer gracefully, allowing existing tasks to complete.
      */
     public void shutdown() {
         if (null != pruneTimer) {
@@ -99,9 +101,9 @@ public enum GlobalPruneTimer {
     }
 
     /**
-     * 销毁全局定时器
+     * Shuts down the global timer immediately, attempting to stop all actively executing tasks.
      *
-     * @return 销毁时未被执行的任务列表
+     * @return A list of tasks that were awaiting execution, or {@code null} if the timer was not running.
      */
     public List<Runnable> shutdownNow() {
         if (null != pruneTimer) {

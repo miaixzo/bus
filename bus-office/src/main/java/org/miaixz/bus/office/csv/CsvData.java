@@ -35,7 +35,7 @@ import java.util.List;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * CSV数据，包括头部信息和行数据，参考：FastCSV
+ * Represents CSV data, including header information and row data. Inspired by FastCSV.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,19 +46,19 @@ public class CsvData implements Iterable<CsvRow>, Serializable {
     private static final long serialVersionUID = 2852282752523L;
 
     /**
-     * 头信息
+     * The header information of the CSV data.
      */
     private final List<String> header;
     /**
-     * 行数据
+     * The list of rows in the CSV data.
      */
     private final List<CsvRow> rows;
 
     /**
-     * 构造
+     * Constructs a new {@code CsvData} instance.
      *
-     * @param header 头信息, 可以为null
-     * @param rows   行
+     * @param header The header information, may be {@code null}.
+     * @param rows   The list of rows.
      */
     public CsvData(final List<String> header, final List<CsvRow> rows) {
         this.header = header;
@@ -66,38 +66,38 @@ public class CsvData implements Iterable<CsvRow>, Serializable {
     }
 
     /**
-     * 总行数
+     * Gets the total number of rows in the CSV data.
      *
-     * @return 总行数
+     * @return The total number of rows.
      */
     public int getRowCount() {
         return this.rows.size();
     }
 
     /**
-     * 获取头信息列表，如果无头信息为{@code Null}，返回列表为只读列表
+     * Gets the header row list. If no header exists, {@code null} is returned. The returned list is unmodifiable.
      *
-     * @return the header row - might be {@code null} if no header exists
+     * @return The header row, or {@code null} if no header exists.
      */
     public List<String> getHeader() {
         return ListKit.unmodifiable(this.header);
     }
 
     /**
-     * 获取指定行，从0开始
+     * Gets the row at the specified index.
      *
-     * @param index 行号
-     * @return 行数据
-     * @throws IndexOutOfBoundsException if index is out of range
+     * @param index The index of the row, starting from 0.
+     * @return The {@link CsvRow} at the specified index.
+     * @throws IndexOutOfBoundsException if the index is out of range ({@code index < 0 || index >= getRowCount()}).
      */
     public CsvRow getRow(final int index) {
         return this.rows.get(index);
     }
 
     /**
-     * 获取所有行
+     * Gets all rows in the CSV data.
      *
-     * @return 所有行
+     * @return A list of all {@link CsvRow} objects.
      */
     public List<CsvRow> getRows() {
         return this.rows;

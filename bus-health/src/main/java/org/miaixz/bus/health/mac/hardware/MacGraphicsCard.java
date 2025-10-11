@@ -41,7 +41,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 
 /**
- * Graphics card info obtained by system_profiler SPDisplaysDataType.
+ * Graphics card information obtained by system_profiler SPDisplaysDataType.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,22 +50,22 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstraction
 final class MacGraphicsCard extends AbstractGraphicsCard {
 
     /**
-     * Constructor for MacGraphicsCard
+     * Constructor for MacGraphicsCard.
      *
-     * @param name        The name
-     * @param deviceId    The device ID
-     * @param vendor      The vendor
-     * @param versionInfo The version info
-     * @param vram        The VRAM
+     * @param name        The name of the graphics card.
+     * @param deviceId    The device ID of the graphics card.
+     * @param vendor      The vendor of the graphics card.
+     * @param versionInfo The version information of the graphics card.
+     * @param vram        The VRAM (Video Random Access Memory) of the graphics card in bytes.
      */
     MacGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram) {
         super(name, deviceId, vendor, versionInfo, vram);
     }
 
     /**
-     * public method used by {@link AbstractHardwareAbstractionLayer} to access the graphics cards.
+     * Public method used by {@link AbstractHardwareAbstractionLayer} to access the graphics cards.
      *
-     * @return List of {@link MacGraphicsCard} objects.
+     * @return A list of {@link GraphicsCard} objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
         List<GraphicsCard> cardList = new ArrayList<>();

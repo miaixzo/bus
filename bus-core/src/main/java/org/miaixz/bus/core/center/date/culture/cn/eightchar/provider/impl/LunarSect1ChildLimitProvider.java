@@ -32,13 +32,21 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * Lunar的流派1童限计算（按天数和时辰数计算，3天1年，1天4个月，1时辰10天）
+ * Implementation of Child Limit calculation for Lunar Sect 1. This method calculates based on days and hours, where 3
+ * days equal 1 year, 1 day equals 4 months, and 1 hour equals 10 days.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LunarSect1ChildLimitProvider extends AbstractChildLimitProvider {
 
+    /**
+     * Calculates and returns the Child Limit information based on Lunar Sect 1 rules.
+     *
+     * @param birthTime The Gregorian birth time.
+     * @param term      The solar term (节令) relevant to the calculation.
+     * @return The {@link ChildLimitInfo} containing details about the Child Limit.
+     */
     @Override
     public ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term) {
         SolarTime termTime = term.getJulianDay().getSolarTime();
@@ -50,9 +58,9 @@ public class LunarSect1ChildLimitProvider extends AbstractChildLimitProvider {
         }
         int endTimeZhiIndex = (end.getHour() == 23) ? 11 : end.getLunarHour().getIndexInDay();
         int startTimeZhiIndex = (start.getHour() == 23) ? 11 : start.getLunarHour().getIndexInDay();
-        // 时辰差
+        // Hour difference
         int hourDiff = endTimeZhiIndex - startTimeZhiIndex;
-        // 天数差
+        // Day difference
         int dayDiff = end.getSolarDay().subtract(start.getSolarDay());
         if (hourDiff < 0) {
             hourDiff += 12;

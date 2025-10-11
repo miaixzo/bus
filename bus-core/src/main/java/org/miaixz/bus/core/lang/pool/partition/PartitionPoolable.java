@@ -30,36 +30,41 @@ package org.miaixz.bus.core.lang.pool.partition;
 import org.miaixz.bus.core.lang.pool.SimplePoolable;
 
 /**
- * 分区可池化对象，此对象会同时持有原始对象和所在的分区
+ * Represents a poolable object that belongs to a specific {@link PartitionPool}. This object wraps a raw object and
+ * maintains a reference to its owning partition, allowing for direct return or freeing operations within that
+ * partition.
  *
- * @param <T> 对象类型
+ * @param <T> the type of the raw object being pooled
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PartitionPoolable<T> extends SimplePoolable<T> {
 
-    private final PoolPartition<T> partition;
+    /**
+     * The {@link PartitionPool} to which this poolable object belongs.
+     */
+    private final PartitionPool<T> partition;
 
     /**
-     * 构造
+     * Constructs a new {@code PartitionPoolable} instance.
      *
-     * @param raw       原始对象
-     * @param partition 对象所在分区
+     * @param raw       the raw object to be wrapped
+     * @param partition the {@link PartitionPool} that owns this object
      */
-    public PartitionPoolable(final T raw, final PoolPartition<T> partition) {
+    public PartitionPoolable(final T raw, final PartitionPool<T> partition) {
         super(raw);
         this.partition = partition;
     }
 
     /**
-     * 归还对象
+     * Returns the raw object wrapped by this instance to its owning {@link PartitionPool}.
      */
     public void returnObject() {
         this.partition.returnObject(this.getRaw());
     }
 
     /**
-     * 释放对象
+     * Frees (destroys) the raw object wrapped by this instance from its owning {@link PartitionPool}.
      */
     public void free() {
         this.partition.free(this.getRaw());

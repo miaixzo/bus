@@ -43,22 +43,31 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.compress.CompressBuilder;
 
 /**
- * 7zip格式的归档封装
+ * 7zip format archiver wrapper.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SevenZArchiver implements Archiver {
 
+    /**
+     * The underlying SevenZOutputFile from Apache Commons Compress.
+     */
     private final SevenZOutputFile sevenZOutputFile;
 
+    /**
+     * The SeekableByteChannel used for writing, especially for in-memory operations.
+     */
     private SeekableByteChannel channel;
+    /**
+     * The target OutputStream, used when archiving to a stream.
+     */
     private OutputStream out;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param file 归档输出的文件
+     * @param file The archive output file.
      */
     public SevenZArchiver(final File file) {
         try {
@@ -69,9 +78,9 @@ public class SevenZArchiver implements Archiver {
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param out 归档输出的流
+     * @param out The archive output stream.
      */
     public SevenZArchiver(final OutputStream out) {
         this.out = out;
@@ -84,9 +93,9 @@ public class SevenZArchiver implements Archiver {
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param channel 归档输出的文件
+     * @param channel The archive output channel.
      */
     public SevenZArchiver(final SeekableByteChannel channel) {
         try {
@@ -97,9 +106,9 @@ public class SevenZArchiver implements Archiver {
     }
 
     /**
-     * 获取{@link SevenZOutputFile}以便自定义相关设置
+     * Gets the {@link SevenZOutputFile} to allow for custom settings.
      *
-     * @return {@link SevenZOutputFile}
+     * @return The {@link SevenZOutputFile}.
      */
     public SevenZOutputFile getSevenZOutputFile() {
         return this.sevenZOutputFile;
@@ -147,12 +156,14 @@ public class SevenZArchiver implements Archiver {
     }
 
     /**
-     * 将文件或目录加入归档包，目录采取递归读取方式按照层级加入
+     * Adds a file or directory to the archive package. Directories are added recursively level by level.
      *
-     * @param file           文件或目录
-     * @param path           文件或目录的初始路径，null表示位于根路径
-     * @param fileNameEditor 文件名编辑器
-     * @param filter         文件过滤器，指定哪些文件或目录可以加入，当{@link Predicate#test(Object)}为{@code true}保留，null表示保留全部
+     * @param file           The file or directory.
+     * @param path           The initial path of the file or directory. If null, it is placed at the root level.
+     * @param fileNameEditor A function to edit the file name.
+     * @param filter         A file filter that specifies which files or directories can be added. If
+     *                       {@link Predicate#test(Object)} is {@code true}, the file is kept. If null, all are kept.
+     * @throws IOException if an I/O error occurs.
      */
     private void addInternal(
             final File file,
@@ -168,7 +179,7 @@ public class SevenZArchiver implements Archiver {
         out.putArchiveEntry(out.createArchiveEntry(file, entryName));
 
         if (file.isDirectory()) {
-            // 目录遍历写入
+            // Traverse and write directory contents
             final File[] files = file.listFiles();
             if (ArrayKit.isNotEmpty(files)) {
                 for (final File childFile : files) {
@@ -177,7 +188,7 @@ public class SevenZArchiver implements Archiver {
             }
         } else {
             if (file.isFile()) {
-                // 文件直接写入
+                // Write file directly
                 out.write(FileKit.readBytes(file));
             }
             out.closeArchiveEntry();

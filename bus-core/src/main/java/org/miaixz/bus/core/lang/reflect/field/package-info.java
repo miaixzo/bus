@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供 {@link java.lang.reflect.Field} 相关封装
+ * Provides encapsulation related to {@link java.lang.reflect.Field}. This package contains utilities for working with
+ * fields, including field invocation and reflection.
  *
  * @author Kimi Liu
  * @since Java 17+

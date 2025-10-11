@@ -38,7 +38,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 又拍云短信
+ * Material for Upyun SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,12 +51,14 @@ import lombok.experimental.SuperBuilder;
 public class UpyunMaterial extends Material {
 
     /**
-     * token
+     * The authentication token for Upyun API.
      */
     private String token;
 
     /**
-     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
+     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The default API request address for Upyun SMS.
      */
     @Override
     public String getUrl() {
@@ -64,36 +66,37 @@ public class UpyunMaterial extends Material {
     }
 
     /**
-     * 手机号发送短信的结果
+     * Represents the result of sending an SMS to a mobile number.
      */
     @Getter
     @Setter
     public static class MessageId {
 
         /**
-         * 错误情况
+         * The error code, if any, indicating a failure.
          */
         private String error_code;
 
         /**
-         * 旧版本国内短信的 message 编号.
+         * The message ID for old versions of domestic SMS.
          */
         private Integer message_id;
 
         /**
-         * message 编号
+         * The message ID.
          */
         private String msg_id;
 
         /**
-         * 手机号
+         * The mobile number to which the SMS was sent.
          */
         private String mobile;
 
         /**
-         * 判断是否成功
+         * Checks if the SMS sending operation was successful.
          *
-         * @return 是否成功
+         * @return {@code true} if the operation was successful (no error code and mobile number is present),
+         *         {@code false} otherwise.
          */
         public boolean succeed() {
             return StringKit.isBlank(error_code) && StringKit.isNotBlank(mobile);

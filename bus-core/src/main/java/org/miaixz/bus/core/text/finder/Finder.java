@@ -28,7 +28,8 @@
 package org.miaixz.bus.core.text.finder;
 
 /**
- * 字符串查找接口，通过调用{@link #start(int)}查找开始位置，再调用{@link #end(int)}找结束位置
+ * Interface for string searching. It finds the start position by calling {@link #start(int)} and then the end position
+ * by calling {@link #end(int)}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,25 +37,25 @@ package org.miaixz.bus.core.text.finder;
 public interface Finder {
 
     /**
-     * 返回开始位置，即起始字符位置（包含），未找到返回-1
+     * Returns the starting position (inclusive). Returns -1 if not found.
      *
-     * @param from 查找的开始位置（包含）
-     * @return 起始字符位置，未找到返回-1
+     * @param from The starting position for the search (inclusive).
+     * @return The starting character position, or -1 if not found.
      */
     int start(int from);
 
     /**
-     * 返回结束位置，即最后一个字符后的位置（不包含）
+     * Returns the ending position (exclusive), which is the position after the last character.
      *
-     * @param start 找到的起始位置
-     * @return 结束位置，未找到返回-1
+     * @param start The found starting position.
+     * @return The ending position, or -1 if not found.
      */
     int end(int start);
 
     /**
-     * 复位查找器，用于重用对象
+     * Resets the finder for object reuse.
      *
-     * @return this
+     * @return This Finder instance.
      */
     default Finder reset() {
         return this;

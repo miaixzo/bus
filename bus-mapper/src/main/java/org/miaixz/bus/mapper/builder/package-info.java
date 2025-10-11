@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 内部逻辑处理
+ * Provides internal logic for building and processing mapper components, such as schema and SQL construction.
  *
  * @author Kimi Liu
  * @since Java 17+

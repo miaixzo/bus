@@ -30,33 +30,52 @@ package org.miaixz.bus.core.codec.hash.metro;
 import java.nio.ByteBuffer;
 
 /**
- * Apache 发布的MetroHash算法抽象实现，是一组用于非加密用例的最先进的哈希函数。 除了卓越的性能外，他们还以算法生成而著称。
+ * Abstract implementation of the MetroHash algorithm. MetroHash is a set of state-of-the-art hash functions for
+ * non-cryptographic use cases.
  *
  * <p>
- * 官方实现：https://github.com/jandrewrogers/MetroHash 官方文档：http://www.jandrewrogers.com/2015/05/27/metrohash/
- * 来自：https://github.com/postamar/java-metrohash/
- * </p>
+ * Official implementation:
+ * <a href="https://github.com/jandrewrogers/MetroHash">https://github.com/jandrewrogers/MetroHash</a><br>
+ * Official documentation: <a href=
+ * "http://www.jandrewrogers.com/2015/05/27/metrohash/">http://www.jandrewrogers.com/2015/05/27/metrohash/</a><br>
+ * Ported from: <a href="https://github.com/postamar/java-metrohash/">https://github.com/postamar/java-metrohash/</a>
  *
- * @param <R> 返回值类型，为this类型
+ * @param <R> The return type of the fluent API, which is the concrete implementation class.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractMetroHash<R extends AbstractMetroHash<R>> implements MetroHash<R> {
 
+    /**
+     * The seed for the hash function.
+     */
     final long seed;
+    /**
+     * Internal state variables for the hash calculation.
+     */
     long v0, v1, v2, v3;
+    /**
+     * The number of 32-byte chunks processed.
+     */
     long nChunks;
 
     /**
-     * 使用指定种子构造
+     * Constructs a new MetroHash instance with a specified seed.
      *
-     * @param seed 种子
+     * @param seed The seed value.
      */
     public AbstractMetroHash(final long seed) {
         this.seed = seed;
         reset();
     }
 
+    /**
+     * Grabs a long value of a specified length from the ByteBuffer in little-endian order.
+     *
+     * @param bb     The ByteBuffer to read from.
+     * @param length The number of bytes to read (up to 8).
+     * @return The resulting long value.
+     */
     static long grab(final ByteBuffer bb, final int length) {
         long result = bb.get() & 0xFFL;
         for (int i = 1; i < length; i++) {
@@ -65,6 +84,12 @@ public abstract class AbstractMetroHash<R extends AbstractMetroHash<R>> implemen
         return result;
     }
 
+    /**
+     * Writes a long value to the ByteBuffer in little-endian order.
+     *
+     * @param hash   The long value to write.
+     * @param output The ByteBuffer to write to.
+     */
     static void writeLittleEndian(final long hash, final ByteBuffer output) {
         for (int i = 0; i < 8; i++) {
             output.put((byte) (hash >>> (i * 8)));
@@ -81,18 +106,18 @@ public abstract class AbstractMetroHash<R extends AbstractMetroHash<R>> implemen
     }
 
     /**
-     * 从byteBuffer中计算32-byte块并更新hash状态
+     * Processes a 32-byte chunk from the input and updates the hash state.
      *
-     * @param partialInput byte buffer，至少有32byte的数据
-     * @return this
+     * @param partialInput The byte buffer, which must have at least 32 bytes remaining.
+     * @return this instance for chaining.
      */
     abstract R partialApply32ByteChunk(ByteBuffer partialInput);
 
     /**
-     * 从byteBuffer中计算剩余bytes并更新hash状态
+     * Processes the remaining bytes (less than 32) from the input and finalizes the hash state.
      *
-     * @param partialInput byte buffer，少于32byte的数据
-     * @return this
+     * @param partialInput The byte buffer, which has fewer than 32 bytes remaining.
+     * @return this instance for chaining.
      */
     abstract R partialApplyRemaining(ByteBuffer partialInput);
 

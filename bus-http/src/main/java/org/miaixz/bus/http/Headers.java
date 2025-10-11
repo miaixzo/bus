@@ -39,10 +39,11 @@ import org.miaixz.bus.http.metric.CookieJar;
 import org.miaixz.bus.http.secure.Challenge;
 
 /**
- * HTTP 消息的头部字段
+ * Header fields of an HTTP message.
  * <p>
- * 维护头部字段的顺序，值存储为未解释的字符串，移除首尾空白。 实例是不可变的，建议通过 {@link Request} 和 {@link Response} 解释头部信息。
- * </p>
+ * Maintains the order of header fields. Values are stored as uninterpreted strings, with leading and trailing
+ * whitespace removed. Instances are immutable. It is recommended to interpret header fields through {@link Request} and
+ * {@link Response}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,34 +51,34 @@ import org.miaixz.bus.http.secure.Challenge;
 public class Headers {
 
     /**
-     * 头部名称和值数组
+     * Array of header names and values.
      */
     private final String[] namesAndValues;
 
     /**
-     * 构造函数，基于 Builder 初始化 Headers 实例
+     * Constructor that initializes a Headers instance from a Builder.
      *
-     * @param builder Builder 实例，包含头部名称和值
+     * @param builder The Builder instance containing header names and values.
      */
     Headers(Builder builder) {
         this.namesAndValues = builder.namesAndValues.toArray(new String[builder.namesAndValues.size()]);
     }
 
     /**
-     * 构造函数，直接使用名称和值数组
+     * Constructor that directly uses an array of names and values.
      *
-     * @param namesAndValues 名称和值数组
+     * @param namesAndValues The array of names and values.
      */
     private Headers(String[] namesAndValues) {
         this.namesAndValues = namesAndValues;
     }
 
     /**
-     * 获取指定名称的最后一个头部值
+     * Gets the last header value for the given name.
      *
-     * @param namesAndValues 名称和值数组
-     * @param name           头部名称
-     * @return 头部值（不存在时为 null）
+     * @param namesAndValues The array of names and values.
+     * @param name           The header name.
+     * @return The header value, or null if it does not exist.
      */
     private static String get(String[] namesAndValues, String name) {
         for (int i = namesAndValues.length - 2; i >= 0; i -= 2) {
@@ -89,15 +90,15 @@ public class Headers {
     }
 
     /**
-     * 从名称和值数组创建 Headers 实例
+     * Creates a Headers instance from an array of names and values.
      * <p>
-     * 要求参数数量为偶数，交替为名称和值。
+     * Requires an even number of arguments, alternating between names and values.
      * </p>
      *
-     * @param namesAndValues 名称和值数组
-     * @return Headers 实例
-     * @throws NullPointerException     如果 namesAndValues 为 null
-     * @throws IllegalArgumentException 如果参数数量奇数或包含 null
+     * @param namesAndValues The array of names and values.
+     * @return A Headers instance.
+     * @throws NullPointerException     if namesAndValues is null.
+     * @throws IllegalArgumentException if the number of arguments is odd or contains nulls.
      */
     public static Headers of(String... namesAndValues) {
         if (namesAndValues == null)
@@ -124,12 +125,12 @@ public class Headers {
     }
 
     /**
-     * 从映射创建 Headers 实例
+     * Creates a Headers instance from a map.
      *
-     * @param headers 头部名称和值映射
-     * @return Headers 实例
-     * @throws NullPointerException     如果 headers 为 null
-     * @throws IllegalArgumentException 如果名称或值包含 null
+     * @param headers The map of header names and values.
+     * @return A Headers instance.
+     * @throws NullPointerException     if headers is null.
+     * @throws IllegalArgumentException if a name or value is null.
      */
     public static Headers of(Map<String, String> headers) {
         if (headers == null)
@@ -154,11 +155,11 @@ public class Headers {
     }
 
     /**
-     * 验证头部名称
+     * Validates a header name.
      *
-     * @param name 头部名称
-     * @throws NullPointerException     如果 name 为 null
-     * @throws IllegalArgumentException 如果名称为空或包含非法字符
+     * @param name The header name.
+     * @throws NullPointerException     if name is null.
+     * @throws IllegalArgumentException if the name is empty or contains illegal characters.
      */
     static void checkName(String name) {
         if (null == name)
@@ -175,12 +176,12 @@ public class Headers {
     }
 
     /**
-     * 验证头部值
+     * Validates a header value.
      *
-     * @param value 头部值
-     * @param name  头部名称
-     * @throws NullPointerException     如果 value 为 null
-     * @throws IllegalArgumentException 如果值包含非法字符
+     * @param value The header value.
+     * @param name  The header name.
+     * @throws NullPointerException     if value is null.
+     * @throws IllegalArgumentException if the value contains illegal characters.
      */
     static void checkValue(String value, String name) {
         if (null == value)
@@ -195,30 +196,30 @@ public class Headers {
     }
 
     /**
-     * 获取响应的 Content-Length
+     * Gets the Content-Length of a response.
      *
-     * @param response 响应
-     * @return Content-Length 值（无效时为 -1）
+     * @param response The response.
+     * @return The Content-Length value, or -1 if invalid.
      */
     public static long contentLength(Response response) {
         return contentLength(response.headers());
     }
 
     /**
-     * 获取头部的 Content-Length
+     * Gets the Content-Length from headers.
      *
-     * @param headers 头部
-     * @return Content-Length 值（无效时为 -1）
+     * @param headers The headers.
+     * @return The Content-Length value, or -1 if invalid.
      */
     public static long contentLength(Headers headers) {
         return stringToLong(headers.get("Content-Length"));
     }
 
     /**
-     * 将字符串转换为长整型
+     * Converts a string to a long.
      *
-     * @param s 字符串
-     * @return 长整型值（无效时为 -1）
+     * @param s The string.
+     * @return The long value, or -1 if invalid.
      */
     private static long stringToLong(String s) {
         if (s == null)
@@ -231,12 +232,12 @@ public class Headers {
     }
 
     /**
-     * 检查 Vary 头部是否匹配
+     * Checks if the Vary header matches.
      *
-     * @param cachedResponse 缓存响应
-     * @param cachedRequest  缓存请求
-     * @param newRequest     新请求
-     * @return true 如果 Vary 头部匹配
+     * @param cachedResponse The cached response.
+     * @param cachedRequest  The cached request.
+     * @param newRequest     The new request.
+     * @return true if the Vary header matches.
      */
     public static boolean varyMatches(Response cachedResponse, Headers cachedRequest, Request newRequest) {
         for (String field : varyFields(cachedResponse)) {
@@ -247,40 +248,40 @@ public class Headers {
     }
 
     /**
-     * 检查是否存在 Vary: * 头部
+     * Checks for the presence of a Vary: * header.
      *
-     * @param response 响应
-     * @return true 如果存在 Vary: *
+     * @param response The response.
+     * @return true if Vary: * is present.
      */
     public static boolean hasVaryAll(Response response) {
         return hasVaryAll(response.headers());
     }
 
     /**
-     * 检查是否存在 Vary: * 头部
+     * Checks for the presence of a Vary: * header.
      *
-     * @param responseHeaders 响应头部
-     * @return true 如果存在 Vary: *
+     * @param responseHeaders The response headers.
+     * @return true if Vary: * is present.
      */
     public static boolean hasVaryAll(Headers responseHeaders) {
         return varyFields(responseHeaders).contains(Symbol.STAR);
     }
 
     /**
-     * 获取 Vary 字段
+     * Gets the Vary fields.
      *
-     * @param response 响应
-     * @return Vary 字段集合
+     * @param response The response.
+     * @return A set of Vary fields.
      */
     private static Set<String> varyFields(Response response) {
         return varyFields(response.headers());
     }
 
     /**
-     * 获取 Vary 字段集合
+     * Gets the set of Vary fields.
      *
-     * @param responseHeaders 响应头部
-     * @return Vary 字段集合
+     * @param responseHeaders The response headers.
+     * @return A set of Vary fields.
      */
     public static Set<String> varyFields(Headers responseHeaders) {
         Set<String> result = Collections.emptySet();
@@ -300,10 +301,10 @@ public class Headers {
     }
 
     /**
-     * 获取影响响应体的请求头部
+     * Gets the request headers that affect the response body.
      *
-     * @param response 响应
-     * @return 影响响应体的头部
+     * @param response The response.
+     * @return The headers that affect the response body.
      */
     public static Headers varyHeaders(Response response) {
         Headers requestHeaders = response.networkResponse().request().headers();
@@ -312,11 +313,11 @@ public class Headers {
     }
 
     /**
-     * 获取影响响应体的请求头部
+     * Gets the request headers that affect the response body.
      *
-     * @param requestHeaders  请求头部
-     * @param responseHeaders 响应头部
-     * @return 影响响应体的头部
+     * @param requestHeaders  The request headers.
+     * @param responseHeaders The response headers.
+     * @return The headers that affect the response body.
      */
     public static Headers varyHeaders(Headers requestHeaders, Headers responseHeaders) {
         Set<String> varyFields = varyFields(responseHeaders);
@@ -334,11 +335,11 @@ public class Headers {
     }
 
     /**
-     * 解析 RFC 7235 认证
+     * Parses RFC 7235 challenges.
      *
-     * @param responseHeaders 响应头部
-     * @param headerName      头部名称
-     * @return 认证挑战列表
+     * @param responseHeaders The response headers.
+     * @param headerName      The header name.
+     * @return A list of authentication challenges.
      */
     public static List<Challenge> parseChallenges(Headers responseHeaders, String headerName) {
         List<Challenge> result = new ArrayList<>();
@@ -352,10 +353,10 @@ public class Headers {
     }
 
     /**
-     * 解析认证头部
+     * Parses a challenge header.
      *
-     * @param result 列表
-     * @param header 头部缓冲区
+     * @param result The list to add challenges to.
+     * @param header The header buffer.
      */
     private static void parseChallengeHeader(List<Challenge> result, Buffer header) {
         String peek = null;
@@ -422,10 +423,10 @@ public class Headers {
     }
 
     /**
-     * 跳过空白和逗号
+     * Skips whitespace and commas.
      *
-     * @param buffer 缓冲区
-     * @return true 如果跳过了逗号
+     * @param buffer The buffer.
+     * @return true if a comma was skipped.
      */
     private static boolean skipWhitespaceAndCommas(Buffer buffer) {
         boolean commaFound = false;
@@ -444,11 +445,11 @@ public class Headers {
     }
 
     /**
-     * 跳过指定字节
+     * Skips all occurrences of a specific byte.
      *
-     * @param buffer 缓冲区
-     * @param b      字节
-     * @return 跳过的字节数
+     * @param buffer The buffer.
+     * @param b      The byte to skip.
+     * @return The number of bytes skipped.
      */
     private static int skipAll(Buffer buffer, byte b) {
         int count = 0;
@@ -460,11 +461,11 @@ public class Headers {
     }
 
     /**
-     * 读取双引号字符串
+     * Reads a quoted string.
      *
-     * @param buffer 缓冲区
-     * @return 解码后的字符串（无效时为 null）
-     * @throws IllegalArgumentException 如果字符串格式无效
+     * @param buffer The buffer.
+     * @return The decoded string, or null if invalid.
+     * @throws IllegalArgumentException if the string format is invalid.
      */
     private static String readQuotedString(Buffer buffer) {
         if (buffer.readByte() != '\"')
@@ -490,10 +491,10 @@ public class Headers {
     }
 
     /**
-     * 读取令牌
+     * Reads a token.
      *
-     * @param buffer 缓冲区
-     * @return 令牌字符串（无效时为 null）
+     * @param buffer The buffer.
+     * @return The token string, or null if invalid.
      */
     private static String readToken(Buffer buffer) {
         try {
@@ -508,11 +509,11 @@ public class Headers {
     }
 
     /**
-     * 重复字符
+     * Repeats a character.
      *
-     * @param c     字符
-     * @param count 重复次数
-     * @return 重复后的字符串
+     * @param c     The character to repeat.
+     * @param count The number of times to repeat.
+     * @return The repeated string.
      */
     private static String repeat(char c, int count) {
         char[] array = new char[count];
@@ -521,11 +522,11 @@ public class Headers {
     }
 
     /**
-     * 处理接收到的 Cookie 头部
+     * Handles received Cookie headers.
      *
-     * @param cookieJar Cookie 管理器
-     * @param url       URL
-     * @param headers   头部
+     * @param cookieJar The cookie manager.
+     * @param url       The URL.
+     * @param headers   The headers.
      */
     public static void receiveHeaders(CookieJar cookieJar, UnoUrl url, Headers headers) {
         if (cookieJar == CookieJar.NO_COOKIES)
@@ -539,10 +540,10 @@ public class Headers {
     }
 
     /**
-     * 检查响应是否包含消息体
+     * Checks if the response includes a body.
      *
-     * @param response 响应
-     * @return true 如果响应包含消息体
+     * @param response The response.
+     * @return true if the response includes a body.
      */
     public static boolean hasBody(Response response) {
         if (response.request().method().equals("HEAD")) {
@@ -563,12 +564,12 @@ public class Headers {
     }
 
     /**
-     * 跳到指定字符
+     * Skips until a character from the given set is found.
      *
-     * @param input      输入字符串
-     * @param pos        起始位置
-     * @param characters 目标字符集
-     * @return 目标字符位置
+     * @param input      The input string.
+     * @param pos        The starting position.
+     * @param characters The set of target characters.
+     * @return The position of the target character.
      */
     public static int skipUntil(String input, int pos, String characters) {
         for (; pos < input.length(); pos++) {
@@ -580,11 +581,11 @@ public class Headers {
     }
 
     /**
-     * 跳过空白字符
+     * Skips whitespace characters.
      *
-     * @param input 输入字符串
-     * @param pos   起始位置
-     * @return 非空白字符位置
+     * @param input The input string.
+     * @param pos   The starting position.
+     * @return The position of the first non-whitespace character.
      */
     public static int skipWhitespace(String input, int pos) {
         for (; pos < input.length(); pos++) {
@@ -597,11 +598,11 @@ public class Headers {
     }
 
     /**
-     * 解析秒数
+     * Parses seconds from a string.
      *
-     * @param value        字符串值
-     * @param defaultValue 默认值
-     * @return 秒数
+     * @param value        The string value.
+     * @param defaultValue The default value.
+     * @return The number of seconds.
      */
     public static int parseSeconds(String value, int defaultValue) {
         try {
@@ -619,9 +620,9 @@ public class Headers {
     }
 
     /**
-     * 创建新的 Builder 实例
+     * Creates a new Builder instance.
      *
-     * @return Builder 实例
+     * @return A Builder instance.
      */
     public Builder newBuilder() {
         Builder result = new Builder();
@@ -630,9 +631,9 @@ public class Headers {
     }
 
     /**
-     * 计算哈希码
+     * Calculates the hash code.
      *
-     * @return 哈希码值
+     * @return The hash code value.
      */
     @Override
     public int hashCode() {
@@ -640,20 +641,20 @@ public class Headers {
     }
 
     /**
-     * 获取指定名称的最后一个头部值
+     * Gets the last value for the given header name.
      *
-     * @param name 头部名称
-     * @return 头部值（不存在时为 null）
+     * @param name The header name.
+     * @return The header value, or null if it does not exist.
      */
     public String get(String name) {
         return get(namesAndValues, name);
     }
 
     /**
-     * 获取指定名称的日期头部值
+     * Gets the date value for the given header name.
      *
-     * @param name 头部名称
-     * @return 日期值（无效时为 null）
+     * @param name The header name.
+     * @return The date value, or null if invalid.
      */
     public Date getDate(String name) {
         String value = get(name);
@@ -661,10 +662,10 @@ public class Headers {
     }
 
     /**
-     * 获取指定名称的 Instant 头部值
+     * Gets the Instant value for the given header name.
      *
-     * @param name 头部名称
-     * @return Instant 值（无效时为 null）
+     * @param name The header name.
+     * @return The Instant value, or null if invalid.
      */
     public Instant getInstant(String name) {
         Date value = getDate(name);
@@ -672,38 +673,38 @@ public class Headers {
     }
 
     /**
-     * 获取头部数量
+     * Gets the number of headers.
      *
-     * @return 头部数量
+     * @return The number of headers.
      */
     public int size() {
         return namesAndValues.length / 2;
     }
 
     /**
-     * 获取指定索引的头部名称
+     * Gets the header name at the specified index.
      *
-     * @param index 索引
-     * @return 头部名称
+     * @param index The index.
+     * @return The header name.
      */
     public String name(int index) {
         return namesAndValues[index * 2];
     }
 
     /**
-     * 获取指定索引的头部值
+     * Gets the header value at the specified index.
      *
-     * @param index 索引
-     * @return 头部值
+     * @param index The index.
+     * @return The header value.
      */
     public String value(int index) {
         return namesAndValues[index * 2 + 1];
     }
 
     /**
-     * 获取头部名称集合
+     * Gets the set of header names.
      *
-     * @return 不可修改的头部名称集合
+     * @return An unmodifiable set of header names.
      */
     public Set<String> names() {
         TreeSet<String> result = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
@@ -714,10 +715,10 @@ public class Headers {
     }
 
     /**
-     * 获取指定名称的头部值列表
+     * Gets the list of values for the given header name.
      *
-     * @param name 头部名称
-     * @return 不可修改的头部值列表
+     * @param name The header name.
+     * @return An unmodifiable list of header values.
      */
     public List<String> values(String name) {
         List<String> result = null;
@@ -732,9 +733,9 @@ public class Headers {
     }
 
     /**
-     * 获取头部编码字节数
+     * Gets the encoded byte count of the headers.
      *
-     * @return 编码字节数
+     * @return The encoded byte count.
      */
     public long byteCount() {
         long result = namesAndValues.length * 2;
@@ -747,10 +748,10 @@ public class Headers {
     }
 
     /**
-     * 比较两个 Headers 对象是否相等
+     * Compares two Headers objects for equality.
      *
-     * @param other 另一个对象
-     * @return true 如果头部完全相等
+     * @param other The other object.
+     * @return true if the headers are exactly equal.
      */
     @Override
     public boolean equals(Object other) {
@@ -758,9 +759,9 @@ public class Headers {
     }
 
     /**
-     * 返回头部的字符串表示
+     * Returns the string representation of the headers.
      *
-     * @return 头部字符串
+     * @return The header string.
      */
     @Override
     public String toString() {
@@ -772,9 +773,9 @@ public class Headers {
     }
 
     /**
-     * 转换为多值映射
+     * Converts to a multi-valued map.
      *
-     * @return 头部名称到值列表的映射
+     * @return A map of header names to lists of values.
      */
     public Map<String, List<String>> toMultimap() {
         Map<String, List<String>> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -791,18 +792,20 @@ public class Headers {
     }
 
     /**
-     * Headers 构建器
+     * Headers Builder.
      */
     public static class Builder {
 
-        /** 头部名称和值列表 */
+        /**
+         * List of header names and values.
+         */
         final List<String> namesAndValues = new ArrayList<>(20);
 
         /**
-         * 添加未验证的头部行
+         * Adds an unvalidated header line.
          *
-         * @param line 头部行
-         * @return 当前 Builder 实例
+         * @param line The header line.
+         * @return The current Builder instance.
          */
         public Builder addLenient(String line) {
             int index = line.indexOf(Symbol.COLON, 1);
@@ -816,11 +819,11 @@ public class Headers {
         }
 
         /**
-         * 添加头部行
+         * Adds a header line.
          *
-         * @param line 头部行（格式：name: value）
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果格式无效
+         * @param line The header line (format: name: value).
+         * @return The current Builder instance.
+         * @throws IllegalArgumentException if the format is invalid.
          */
         public Builder add(String line) {
             int index = line.indexOf(Symbol.COLON);
@@ -831,13 +834,13 @@ public class Headers {
         }
 
         /**
-         * 添加验证后的头部
+         * Adds a validated header.
          *
-         * @param name  头部名称
-         * @param value 头部值
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 name 或 value 为 null
-         * @throws IllegalArgumentException 如果名称或值无效
+         * @param name  The header name.
+         * @param value The header value.
+         * @return The current Builder instance.
+         * @throws NullPointerException     if name or value is null.
+         * @throws IllegalArgumentException if the name or value is invalid.
          */
         public Builder add(String name, String value) {
             checkName(name);
@@ -846,13 +849,13 @@ public class Headers {
         }
 
         /**
-         * 添加非 ASCII 头部
+         * Adds a non-ASCII header.
          *
-         * @param name  头部名称
-         * @param value 头部值
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 name 为 null
-         * @throws IllegalArgumentException 如果名称无效
+         * @param name  The header name.
+         * @param value The header value.
+         * @return The current Builder instance.
+         * @throws NullPointerException     if name is null.
+         * @throws IllegalArgumentException if the name is invalid.
          */
         public Builder addUnsafeNonAscii(String name, String value) {
             checkName(name);
@@ -860,10 +863,10 @@ public class Headers {
         }
 
         /**
-         * 添加所有头部
+         * Adds all headers from a Headers instance.
          *
-         * @param headers Headers 实例
-         * @return 当前 Builder 实例
+         * @param headers The Headers instance.
+         * @return The current Builder instance.
          */
         public Builder addAll(Headers headers) {
             for (int i = 0, size = headers.size(); i < size; i++) {
@@ -873,12 +876,12 @@ public class Headers {
         }
 
         /**
-         * 添加日期头部
+         * Adds a date header.
          *
-         * @param name  头部名称
-         * @param value 日期值
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 name 或 value 为 null
+         * @param name  The header name.
+         * @param value The date value.
+         * @return The current Builder instance.
+         * @throws NullPointerException if name or value is null.
          */
         public Builder add(String name, Date value) {
             if (value == null)
@@ -888,12 +891,12 @@ public class Headers {
         }
 
         /**
-         * 添加 Instant 头部
+         * Adds an Instant header.
          *
-         * @param name  头部名称
-         * @param value Instant 值
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 name 或 value 为 null
+         * @param name  The header name.
+         * @param value The Instant value.
+         * @return The current Builder instance.
+         * @throws NullPointerException if name or value is null.
          */
         public Builder add(String name, Instant value) {
             if (value == null)
@@ -902,12 +905,12 @@ public class Headers {
         }
 
         /**
-         * 设置日期头部
+         * Sets a date header.
          *
-         * @param name  头部名称
-         * @param value 日期值
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 name 或 value 为 null
+         * @param name  The header name.
+         * @param value The date value.
+         * @return The current Builder instance.
+         * @throws NullPointerException if name or value is null.
          */
         public Builder set(String name, Date value) {
             if (value == null)
@@ -917,12 +920,12 @@ public class Headers {
         }
 
         /**
-         * 设置 Instant 头部
+         * Sets an Instant header.
          *
-         * @param name  头部名称
-         * @param value Instant 值
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 name 或 value 为 null
+         * @param name  The header name.
+         * @param value The Instant value.
+         * @return The current Builder instance.
+         * @throws NullPointerException if name or value is null.
          */
         public Builder set(String name, Instant value) {
             if (value == null)
@@ -931,11 +934,11 @@ public class Headers {
         }
 
         /**
-         * 添加未验证的头部
+         * Adds an unvalidated header.
          *
-         * @param name  头部名称
-         * @param value 头部值
-         * @return 当前 Builder 实例
+         * @param name  The header name.
+         * @param value The header value.
+         * @return The current Builder instance.
          */
         Builder addLenient(String name, String value) {
             namesAndValues.add(name);
@@ -944,10 +947,10 @@ public class Headers {
         }
 
         /**
-         * 移除指定名称的所有头部
+         * Removes all headers with the given name.
          *
-         * @param name 头部名称
-         * @return 当前 Builder 实例
+         * @param name The header name.
+         * @return The current Builder instance.
          */
         public Builder removeAll(String name) {
             for (int i = 0; i < namesAndValues.size(); i += 2) {
@@ -961,13 +964,13 @@ public class Headers {
         }
 
         /**
-         * 设置头部
+         * Sets a header.
          *
-         * @param name  头部名称
-         * @param value 头部值
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 name 或 value 为 null
-         * @throws IllegalArgumentException 如果名称或值无效
+         * @param name  The header name.
+         * @param value The header value.
+         * @return The current Builder instance.
+         * @throws NullPointerException     if name or value is null.
+         * @throws IllegalArgumentException if the name or value is invalid.
          */
         public Builder set(String name, String value) {
             checkName(name);
@@ -978,10 +981,10 @@ public class Headers {
         }
 
         /**
-         * 获取指定名称的最后一个头部值
+         * Gets the last value for the given header name.
          *
-         * @param name 头部名称
-         * @return 头部值（不存在时为 null）
+         * @param name The header name.
+         * @return The header value, or null if it does not exist.
          */
         public String get(String name) {
             for (int i = namesAndValues.size() - 2; i >= 0; i -= 2) {
@@ -993,9 +996,9 @@ public class Headers {
         }
 
         /**
-         * 构建 Headers 实例
+         * Builds a Headers instance.
          *
-         * @return Headers 实例
+         * @return A Headers instance.
          */
         public Headers build() {
             return new Headers(this);

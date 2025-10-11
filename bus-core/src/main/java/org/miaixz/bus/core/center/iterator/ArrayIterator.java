@@ -34,9 +34,9 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 /**
- * 数组Iterator对象
+ * Array Iterator object. This iterator allows iterating over an array of elements.
  *
- * @param <E> 元素类型
+ * @param <E> the type of elements in the array
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,64 +46,67 @@ public class ArrayIterator<E> implements IterableIterator<E>, ResettableIterator
     private static final long serialVersionUID = 2852259500387L;
 
     /**
-     * 数组
+     * The array to iterate over.
      */
     private final Object array;
     /**
-     * 起始位置
+     * The starting index for iteration.
      */
     private int startIndex;
     /**
-     * 结束位置
+     * The ending index for iteration (exclusive).
      */
     private int endIndex;
     /**
-     * 当前位置
+     * The current index of the iterator.
      */
     private int index;
 
     /**
-     * 构造
+     * Constructs an {@code ArrayIterator} for the given array.
      *
-     * @param array 数组
-     * @throws IllegalArgumentException array对象不为数组抛出此异常
-     * @throws NullPointerException     array对象为null
+     * @param array the array to iterate over
+     * @throws IllegalArgumentException if the provided object is not an array
+     * @throws NullPointerException     if the provided array is null
      */
     public ArrayIterator(final E[] array) {
         this((Object) array);
     }
 
     /**
-     * 构造
+     * Constructs an {@code ArrayIterator} for the given array object.
      *
-     * @param array 数组
-     * @throws IllegalArgumentException array对象不为数组抛出此异常
-     * @throws NullPointerException     array对象为null
+     * @param array the array object to iterate over
+     * @throws IllegalArgumentException if the provided object is not an array
+     * @throws NullPointerException     if the provided array is null
      */
     public ArrayIterator(final Object array) {
         this(array, 0);
     }
 
     /**
-     * 构造
+     * Constructs an {@code ArrayIterator} for the given array object, starting from a specified index.
      *
-     * @param array      数组
-     * @param startIndex 起始位置，当起始位置小于0或者大于结束位置，置为0。
-     * @throws IllegalArgumentException array对象不为数组抛出此异常
-     * @throws NullPointerException     array对象为null
+     * @param array      the array object to iterate over
+     * @param startIndex the starting index for iteration. If less than 0 or greater than the array length, it defaults
+     *                   to 0.
+     * @throws IllegalArgumentException if the provided object is not an array
+     * @throws NullPointerException     if the provided array is null
      */
     public ArrayIterator(final Object array, final int startIndex) {
         this(array, startIndex, -1);
     }
 
     /**
-     * 构造
+     * Constructs an {@code ArrayIterator} for the given array object, with specified start and end indices.
      *
-     * @param array      数组
-     * @param startIndex 起始位置，当起始位置小于0或者大于结束位置，置为0。
-     * @param endIndex   结束位置，当结束位置小于0或者大于数组长度，置为数组长度。
-     * @throws IllegalArgumentException array对象不为数组抛出此异常
-     * @throws NullPointerException     array对象为null
+     * @param array      the array object to iterate over
+     * @param startIndex the starting index for iteration. If less than 0 or greater than the array length, it defaults
+     *                   to 0.
+     * @param endIndex   the ending index for iteration (exclusive). If less than 0 or greater than the array length, it
+     *                   defaults to the array length.
+     * @throws IllegalArgumentException if the provided object is not an array
+     * @throws NullPointerException     if the provided array is null
      */
     public ArrayIterator(final Object array, final int startIndex, final int endIndex) {
         this.endIndex = Array.getLength(Objects.requireNonNull(array));
@@ -118,11 +121,22 @@ public class ArrayIterator<E> implements IterableIterator<E>, ResettableIterator
         this.index = this.startIndex;
     }
 
+    /**
+     * Checks if there are more elements in the array.
+     *
+     * @return {@code true} if there are more elements, {@code false} otherwise.
+     */
     @Override
     public boolean hasNext() {
         return (index < endIndex);
     }
 
+    /**
+     * Returns the next element in the array.
+     *
+     * @return the next element in the array.
+     * @throws NoSuchElementException if there are no more elements to iterate.
+     */
     @Override
     public E next() {
         if (hasNext() == false) {
@@ -132,7 +146,7 @@ public class ArrayIterator<E> implements IterableIterator<E>, ResettableIterator
     }
 
     /**
-     * 不允许操作数组元素
+     * Removes the current element from the array (unsupported operation).
      *
      * @throws UnsupportedOperationException always
      */
@@ -142,16 +156,16 @@ public class ArrayIterator<E> implements IterableIterator<E>, ResettableIterator
     }
 
     /**
-     * 获得原始数组对象
+     * Returns the original array object.
      *
-     * @return 原始数组对象
+     * @return the original array object.
      */
     public Object getArray() {
         return array;
     }
 
     /**
-     * 重置数组位置
+     * Resets the iterator to its initial starting position.
      */
     @Override
     public void reset() {

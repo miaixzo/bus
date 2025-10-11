@@ -36,7 +36,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.miaixz.bus.core.xyz.CollKit;
 
 /**
- * 分组行 用于标识和写出复杂表头。 分组概念灵感来自于EasyPOI的设计理念，见：https://blog.csdn.net/qq_45752401/article/details/121250993
+ * Grouped row, used to identify and write complex headers. The concept of grouping is inspired by the design philosophy
+ * of EasyPOI, see: https://blog.csdn.net/qq_45752401/article/details/121250993
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,23 +47,32 @@ public class RowGroup implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852283968653L;
 
+    /**
+     * Group name.
+     */
     private String name;
+    /**
+     * Cell style for this group.
+     */
     private CellStyle style;
+    /**
+     * Child groups.
+     */
     private List<RowGroup> children;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param name 分组名称
+     * @param name The group name.
      */
     public RowGroup(final String name) {
         this.name = name;
     }
 
     /**
-     * 创建分组
+     * Creates a group.
      *
-     * @param name 分组名称
+     * @param name The group name.
      * @return RowGroup
      */
     public static RowGroup of(final String name) {
@@ -70,18 +80,18 @@ public class RowGroup implements Serializable {
     }
 
     /**
-     * 获取分组名称
+     * Gets the group name.
      *
-     * @return 分组名称
+     * @return The group name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 设置分组名称
+     * Sets the group name.
      *
-     * @param name 分组名称
+     * @param name The group name.
      * @return this
      */
     public RowGroup setName(final String name) {
@@ -90,18 +100,18 @@ public class RowGroup implements Serializable {
     }
 
     /**
-     * 获取样式
+     * Gets the style.
      *
-     * @return 样式
+     * @return The style.
      */
     public CellStyle getStyle() {
         return style;
     }
 
     /**
-     * 设置样式
+     * Sets the style.
      *
-     * @param style 样式
+     * @param style The style.
      * @return this
      */
     public RowGroup setStyle(final CellStyle style) {
@@ -110,18 +120,18 @@ public class RowGroup implements Serializable {
     }
 
     /**
-     * 获取子分组
+     * Gets the child groups.
      *
-     * @return 子分组
+     * @return The child groups.
      */
     public List<RowGroup> getChildren() {
         return children;
     }
 
     /**
-     * 设置子分组
+     * Sets the child groups.
      *
-     * @param children 子分组
+     * @param children The child groups.
      * @return this
      */
     public RowGroup setChildren(final List<RowGroup> children) {
@@ -130,9 +140,9 @@ public class RowGroup implements Serializable {
     }
 
     /**
-     * 添加指定名臣的子分组，最终分组
+     * Adds a child group with the specified name, which is a leaf group.
      *
-     * @param name 子分组的名称
+     * @param name The name of the child group.
      * @return this
      */
     public RowGroup addChild(final String name) {
@@ -140,14 +150,14 @@ public class RowGroup implements Serializable {
     }
 
     /**
-     * 添加子分组
+     * Adds a child group.
      *
-     * @param child 子分组
+     * @param child The child group.
      * @return this
      */
     public RowGroup addChild(final RowGroup child) {
         if (null == this.children) {
-            // 无随机获取节点，节省空间
+            // Using LinkedList to save space as random access is not needed.
             this.children = new LinkedList<>();
         }
         this.children.add(child);
@@ -155,22 +165,23 @@ public class RowGroup implements Serializable {
     }
 
     /**
-     * 分组占用的最大列数，取决于子分组占用列数
+     * The maximum number of columns occupied by the group, which depends on the columns occupied by its children.
      *
-     * @return 列数
+     * @return The number of columns.
      */
     public int maxColumnCount() {
         if (CollKit.isEmpty(this.children)) {
-            // 无子分组，1列
+            // No child groups, 1 column.
             return 1;
         }
         return children.stream().mapToInt(RowGroup::maxColumnCount).sum();
     }
 
     /**
-     * 获取最大行数，取决于子分组行数 结果为：标题行占用行数 + 子分组占用行数
+     * Gets the maximum number of rows, which depends on the rows occupied by its children. The result is: number of
+     * header rows + number of rows occupied by child groups.
      *
-     * @return 最大行数
+     * @return The maximum number of rows.
      */
     public int maxRowCount() {
         int maxRowCount = childrenMaxRowCount();
@@ -186,9 +197,9 @@ public class RowGroup implements Serializable {
     }
 
     /**
-     * 获取子分组最大占用行数
-     * 
-     * @return 子分组最大占用行数
+     * Gets the maximum number of rows occupied by child groups.
+     *
+     * @return The maximum number of rows occupied by child groups.
      */
     public int childrenMaxRowCount() {
         int maxRowCount = 0;

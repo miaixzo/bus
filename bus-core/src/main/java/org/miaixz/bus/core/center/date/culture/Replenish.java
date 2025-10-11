@@ -30,7 +30,8 @@ package org.miaixz.bus.core.center.date.culture;
 import org.miaixz.bus.core.center.date.Almanac;
 
 /**
- * 附加索引的传统文化
+ * An abstract class representing a traditional cultural element (like a festival) with an associated index, often used
+ * for multi-day events.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,29 +39,40 @@ import org.miaixz.bus.core.center.date.Almanac;
 public abstract class Replenish extends Tradition {
 
     /**
-     * 传统文化
+     * The underlying traditional element (e.g., the festival itself).
      */
     protected Tradition tradition;
 
     /**
-     * 天索引
+     * The index of the day within the event (0-based).
      */
     protected int dayIndex;
 
+    /**
+     * Constructs a new {@code Replenish} instance.
+     *
+     * @param tradition The underlying traditional element.
+     * @param dayIndex  The 0-based index of the day within the event.
+     */
     public Replenish(Tradition tradition, int dayIndex) {
         this.tradition = tradition;
         this.dayIndex = dayIndex;
     }
 
     /**
-     * 天索引
+     * Gets the day index within the event.
      *
-     * @return 索引
+     * @return The 0-based day index.
      */
     public int getDayIndex() {
         return dayIndex;
     }
 
+    /**
+     * Gets the underlying traditional element.
+     *
+     * @return The {@link Almanac} instance.
+     */
     protected Almanac getTradition() {
         return tradition;
     }
@@ -70,6 +82,12 @@ public abstract class Replenish extends Tradition {
         return String.format("%s第%d天", tradition, dayIndex + 1);
     }
 
+    /**
+     * Gets the name of the underlying traditional element.
+     *
+     * @return The name of the tradition.
+     */
+    @Override
     public String getName() {
         return tradition.getName();
     }

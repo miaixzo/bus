@@ -35,9 +35,10 @@ import java.util.function.BinaryOperator;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的BinaryOperator接口，支持异常抛出和基于比较器的最大最小值操作。
+ * A serializable {@link BinaryOperator} interface that supports throwing exceptions and operations based on comparators
+ * for finding minimum and maximum elements.
  *
- * @param <T> 参数和返回值类型
+ * @param <T> The type of the operands and result of the operator.
  * @author Kimi Liu
  * @see BinaryOperator
  * @since Java 17+
@@ -46,12 +47,12 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {
 
     /**
-     * 返回一个BinaryOperatorX，根据指定的比较器返回两个元素中较小的那个。
+     * Returns a {@code BinaryOperatorX} that returns the lesser of two elements according to the specified comparator.
      *
-     * @param <T>        输入参数类型
-     * @param comparator 用于比较两个值的比较器
-     * @return BinaryOperatorX，返回较小的元素
-     * @throws NullPointerException 如果比较器为null
+     * @param <T>        The type of the input parameters.
+     * @param comparator A {@link Comparator} to compare the two values.
+     * @return A {@code BinaryOperatorX} that returns the lesser element.
+     * @throws NullPointerException If the comparator is {@code null}.
      */
     static <T> BinaryOperatorX<T> minBy(final Comparator<? super T> comparator) {
         Objects.requireNonNull(comparator);
@@ -59,12 +60,12 @@ public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {
     }
 
     /**
-     * 返回一个BinaryOperatorX，根据指定的比较器返回两个元素中较大的那个。
+     * Returns a {@code BinaryOperatorX} that returns the greater of two elements according to the specified comparator.
      *
-     * @param <T>        输入参数类型
-     * @param comparator 用于比较两个值的比较器
-     * @return BinaryOperatorX，返回较大的元素
-     * @throws NullPointerException 如果比较器为null
+     * @param <T>        The type of the input parameters.
+     * @param comparator A {@link Comparator} to compare the two values.
+     * @return A {@code BinaryOperatorX} that returns the greater element.
+     * @throws NullPointerException If the comparator is {@code null}.
      */
     static <T> BinaryOperatorX<T> maxBy(final Comparator<? super T> comparator) {
         Objects.requireNonNull(comparator);
@@ -72,42 +73,43 @@ public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {
     }
 
     /**
-     * 返回一个BinaryOperatorX，始终返回第一个参数。
+     * Returns a {@code BinaryOperatorX} that always returns the first argument.
      *
-     * @param <T> 参数类型
-     * @return BinaryOperatorX，返回第一个参数
+     * @param <T> The type of the parameters.
+     * @return A {@code BinaryOperatorX} that returns the first argument.
      */
     static <T> BinaryOperatorX<T> justBefore() {
         return (l, r) -> l;
     }
 
     /**
-     * 返回一个BinaryOperatorX，始终返回第二个参数。
+     * Returns a {@code BinaryOperatorX} that always returns the second argument.
      *
-     * @param <T> 参数类型
-     * @return BinaryOperatorX，返回第二个参数
+     * @param <T> The type of the parameters.
+     * @return A {@code BinaryOperatorX} that returns the second argument.
      */
     static <T> BinaryOperatorX<T> justAfter() {
         return (l, r) -> r;
     }
 
     /**
-     * 对给定的两个参数应用此操作，可能抛出异常。
+     * Applies this operation to the given arguments, potentially throwing an exception.
      *
-     * @param t 第一个函数参数
-     * @param u 第二个函数参数
-     * @return 操作结果
-     * @throws Throwable 可能抛出的异常
+     * @param t The first function argument.
+     * @param u The second function argument.
+     * @return The result of the operation.
+     * @throws Throwable Any throwable exception that might occur during the operation.
      */
     T applying(T t, T u) throws Throwable;
 
     /**
-     * 对给定的两个参数应用此操作，自动处理异常。
+     * Applies this operation to the given arguments, automatically handling checked exceptions by wrapping them in a
+     * {@link RuntimeException}.
      *
-     * @param t 第一个函数参数
-     * @param u 第二个函数参数
-     * @return 操作结果
-     * @throws RuntimeException 包装后的运行时异常
+     * @param t The first function argument.
+     * @param u The second function argument.
+     * @return The result of the operation.
+     * @throws RuntimeException A wrapped runtime exception if a checked exception occurs.
      */
     @Override
     default T apply(final T t, final T u) {

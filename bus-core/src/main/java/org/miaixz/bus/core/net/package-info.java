@@ -23,10 +23,10 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ de~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 网络相关工具
+ * Provides utility classes for network-related operations.
  *
  * @author Kimi Liu
  * @since Java 17+

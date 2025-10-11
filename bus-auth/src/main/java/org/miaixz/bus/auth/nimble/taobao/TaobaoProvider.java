@@ -47,26 +47,51 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import java.util.Map;
 
 /**
- * 淘宝 登录
+ * Taobao login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TaobaoProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code TaobaoProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public TaobaoProvider(Context context) {
         super(context, Registry.TAOBAO);
     }
 
+    /**
+     * Constructs a {@code TaobaoProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public TaobaoProvider(Context context, CacheX cache) {
         super(context, Registry.TAOBAO, cache);
     }
 
+    /**
+     * Retrieves the access token from Taobao's authorization server. For Taobao, the access token is typically derived
+     * from the authorization code.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         return AuthToken.builder().accessCode(callback.getCode()).build();
     }
 
+    /**
+     * Parses the access token response map into an {@link AuthToken} object.
+     *
+     * @param object the response map from the access token endpoint
+     * @return the parsed {@link AuthToken}
+     * @throws AuthorizedException if the response indicates an error or is missing required token information
+     */
     private AuthToken getAuthToken(Map<String, Object> object) {
         this.checkResponse(object);
 
@@ -76,12 +101,25 @@ public class TaobaoProvider extends AbstractProvider {
                 .uid((String) object.get("taobao_user_id")).openId((String) object.get("taobao_open_uid")).build();
     }
 
+    /**
+     * Checks the response content for errors.
+     *
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
+     */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
             throw new AuthorizedException((String) object.get("error_description"));
         }
     }
 
+    /**
+     * Retrieves user information from Taobao's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String response = doPostAuthorizationCode(authToken.getAccessCode());
@@ -97,6 +135,12 @@ public class TaobaoProvider extends AbstractProvider {
                 .nickname(nick).gender(Gender.UNKNOWN).token(authToken).source(complex.toString()).build();
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         String tokenUrl = refreshTokenUrl(authToken.getRefreshToken());
@@ -107,10 +151,11 @@ public class TaobaoProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {

@@ -42,7 +42,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 异常工具类
+ * Exception utility class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,10 +50,10 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ExceptionKit {
 
     /**
-     * 获得完整消息，包括异常名，消息格式为：{SimpleClassName}: {ThrowableMessage}
+     * Gets the full message, including the exception name, in the format: {SimpleClassName}: {ThrowableMessage}.
      *
-     * @param e 异常
-     * @return 完整消息
+     * @param e The exception.
+     * @return The full message.
      */
     public static String getMessage(final Throwable e) {
         if (null == e) {
@@ -63,20 +63,21 @@ public class ExceptionKit {
     }
 
     /**
-     * 获得消息，调用异常类的getMessage方法
+     * Gets the message from an exception by calling `e.getMessage()`.
      *
-     * @param e 异常
-     * @return 消息
+     * @param e The exception.
+     * @return The message.
      */
     public static String getSimpleMessage(final Throwable e) {
         return (null == e) ? Normal.NULL : e.getMessage();
     }
 
     /**
-     * 使用运行时异常包装编译异常 如果传入参数已经是运行时异常，则直接返回，不再额外包装
+     * Wraps a checked exception with a runtime exception. If the provided throwable is already a `RuntimeException`, it
+     * is returned directly.
      *
-     * @param throwable 异常
-     * @return 运行时异常
+     * @param throwable The throwable.
+     * @return A `RuntimeException`.
      */
     public static RuntimeException wrapRuntime(final Throwable throwable) {
         if (throwable instanceof IOException) {
@@ -89,34 +90,34 @@ public class ExceptionKit {
     }
 
     /**
-     * 将指定的消息包装为运行时异常
+     * Wraps a message in a `RuntimeException`.
      *
-     * @param message 异常消息
-     * @return 运行时异常
+     * @param message The exception message.
+     * @return A `RuntimeException`.
      */
     public static RuntimeException wrapRuntime(final String message) {
         return new RuntimeException(message);
     }
 
     /**
-     * 将指定的异常与消息包装为运行时异常
+     * Wraps a throwable and a formatted message in a `RuntimeException`.
      *
-     * @param throwable 异常
-     * @param message   异常消息
-     * @param args      参数值
-     * @return 运行时异常
+     * @param throwable The throwable.
+     * @param message   The formatted message.
+     * @param args      The message arguments.
+     * @return A `RuntimeException`.
      */
     public static RuntimeException wrapRuntime(final Throwable throwable, final String message, final Object... args) {
         return new RuntimeException(StringKit.format(message, args), throwable);
     }
 
     /**
-     * 包装一个异常
+     * Wraps a throwable in another exception type.
      *
-     * @param <T>           被包装的异常类型
-     * @param throwable     异常
-     * @param wrapThrowable 包装后的异常类
-     * @return 包装后的异常
+     * @param <T>           The type of the wrapper exception.
+     * @param throwable     The throwable to wrap.
+     * @param wrapThrowable The class of the wrapper exception.
+     * @return The wrapped exception.
      */
     public static <T extends Throwable> T wrap(final Throwable throwable, final Class<T> wrapThrowable) {
         if (wrapThrowable.isInstance(throwable)) {
@@ -126,9 +127,10 @@ public class ExceptionKit {
     }
 
     /**
-     * 包装异常并重新抛出此异常 {@link RuntimeException} 和{@link Error} 直接抛出，其它检查异常包装为{@link UndeclaredThrowableException} 后抛出
+     * Wraps and re-throws a throwable. `RuntimeException` and `Error` are re-thrown directly; other checked exceptions
+     * are wrapped in `UndeclaredThrowableException`.
      *
-     * @param throwable 异常
+     * @param throwable The throwable.
      */
     public static void wrapAndThrow(final Throwable throwable) {
         if (throwable instanceof RuntimeException) {
@@ -141,19 +143,20 @@ public class ExceptionKit {
     }
 
     /**
-     * 将消息包装为运行时异常并抛出
+     * Wraps a message in a `RuntimeException` and throws it.
      *
-     * @param message 异常消息
+     * @param message The exception message.
      */
     public static void wrapRuntimeAndThrow(final String message) {
         throw new RuntimeException(message);
     }
 
     /**
-     * 剥离反射引发的InvocationTargetException、UndeclaredThrowableException中间异常，返回业务本身的异常
+     * Unwraps nested exceptions like `InvocationTargetException` and `UndeclaredThrowableException` to get the
+     * underlying business exception.
      *
-     * @param wrapped 包装的异常
-     * @return 剥离后的异常
+     * @param wrapped The wrapped exception.
+     * @return The unwrapped (original) exception.
      */
     public static Throwable unwrap(final Throwable wrapped) {
         Throwable unwrapped = wrapped;
@@ -169,30 +172,30 @@ public class ExceptionKit {
     }
 
     /**
-     * 获取当前栈信息
+     * Gets the current thread's stack trace.
      *
-     * @return 当前栈信息
+     * @return An array of `StackTraceElement`.
      */
     public static StackTraceElement[] getStackElements() {
         return Thread.currentThread().getStackTrace();
     }
 
     /**
-     * 获取指定层的堆栈信息
+     * Gets a specific `StackTraceElement` by its depth.
      *
-     * @param i 层数
-     * @return 指定层的堆栈信息
+     * @param i The depth.
+     * @return The `StackTraceElement`.
      */
     public static StackTraceElement getStackElement(final int i) {
         return Thread.currentThread().getStackTrace()[i];
     }
 
     /**
-     * 获取指定层的堆栈信息
+     * Gets a `StackTraceElement` relative to a specific fully qualified class name.
      *
-     * @param fqcn 指定类名为基础
-     * @param i    指定类名的类堆栈相对层数
-     * @return 指定层的堆栈信息
+     * @param fqcn The fully qualified class name.
+     * @param i    The relative depth from the specified class.
+     * @return The `StackTraceElement`.
      */
     public static StackTraceElement getStackElement(final String fqcn, final int i) {
         final StackTraceElement[] stackTraceArray = Thread.currentThread().getStackTrace();
@@ -200,14 +203,13 @@ public class ExceptionKit {
         if (index > 0) {
             return stackTraceArray[index + i];
         }
-
         return null;
     }
 
     /**
-     * 获取入口堆栈信息
+     * Gets the root `StackTraceElement` (the entry point of the thread).
      *
-     * @return 入口堆栈信息
+     * @return The root `StackTraceElement`.
      */
     public static StackTraceElement getRootStackElement() {
         final StackTraceElement[] stackElements = Thread.currentThread().getStackTrace();
@@ -215,21 +217,21 @@ public class ExceptionKit {
     }
 
     /**
-     * 堆栈转为单行完整字符串
+     * Converts a stack trace to a single-line string.
      *
-     * @param throwable 异常对象
-     * @return 堆栈转为的字符串
+     * @param throwable The throwable.
+     * @return The stack trace as a string.
      */
     public static String stacktraceToOneLineString(final Throwable throwable) {
         return stacktraceToOneLineString(throwable, 3000);
     }
 
     /**
-     * 堆栈转为单行完整字符串
+     * Converts a stack trace to a single-line string with a character limit.
      *
-     * @param throwable 异常对象
-     * @param limit     限制最大长度
-     * @return 堆栈转为的字符串
+     * @param throwable The throwable.
+     * @param limit     The maximum length.
+     * @return The stack trace as a string.
      */
     public static String stacktraceToOneLineString(final Throwable throwable, final int limit) {
         final Map<Character, String> replaceCharToStrMap = new HashMap<>();
@@ -241,33 +243,33 @@ public class ExceptionKit {
     }
 
     /**
-     * 堆栈转为完整字符串
+     * Converts a stack trace to a full string.
      *
-     * @param throwable 异常对象
-     * @return 堆栈转为的字符串
+     * @param throwable The throwable.
+     * @return The stack trace as a string.
      */
     public static String stacktraceToString(final Throwable throwable) {
         return stacktraceToString(throwable, 3000);
     }
 
     /**
-     * 堆栈转为完整字符串
+     * Converts a stack trace to a full string with a character limit.
      *
-     * @param throwable 异常对象
-     * @param limit     限制最大长度
-     * @return 堆栈转为的字符串
+     * @param throwable The throwable.
+     * @param limit     The maximum length.
+     * @return The stack trace as a string.
      */
     public static String stacktraceToString(final Throwable throwable, final int limit) {
         return stacktraceToString(throwable, limit, null);
     }
 
     /**
-     * 堆栈转为完整字符串
+     * Converts a stack trace to a full string with a character limit and custom character replacements.
      *
-     * @param throwable           异常对象
-     * @param limit               限制最大长度，&gt;0表示不限制长度
-     * @param replaceCharToStrMap 替换字符为指定字符串
-     * @return 堆栈转为的字符串
+     * @param throwable           The throwable.
+     * @param limit               The maximum length.
+     * @param replaceCharToStrMap A map for character replacements.
+     * @return The stack trace as a string.
      */
     public static String stacktraceToString(
             final Throwable throwable,
@@ -305,22 +307,22 @@ public class ExceptionKit {
     }
 
     /**
-     * 判断是否由指定异常类引起
+     * Checks if an exception was caused by any of the specified exception types.
      *
-     * @param throwable    异常
-     * @param causeClasses 定义的引起异常的类
-     * @return 是否由指定异常类引起
+     * @param throwable    The exception.
+     * @param causeClasses The exception types to check for in the cause chain.
+     * @return `true` if a cause matches.
      */
     public static boolean isCausedBy(final Throwable throwable, final Class<? extends Exception>... causeClasses) {
         return null != getCausedBy(throwable, causeClasses);
     }
 
     /**
-     * 获取由指定异常类引起的异常
+     * Gets the first exception in the cause chain that matches one of the specified types.
      *
-     * @param throwable    异常
-     * @param causeClasses 定义的引起异常的类
-     * @return 是否由指定异常类引起
+     * @param throwable    The exception.
+     * @param causeClasses The exception types to check for.
+     * @return The matching exception, or `null`.
      */
     public static Throwable getCausedBy(final Throwable throwable, final Class<? extends Exception>... causeClasses) {
         Throwable cause = throwable;
@@ -336,11 +338,11 @@ public class ExceptionKit {
     }
 
     /**
-     * 判断指定异常是否来自或者包含指定异常
+     * Checks if a throwable is an instance of, is caused by, or has a suppressed exception of a specific type.
      *
-     * @param throwable      异常
-     * @param exceptionClass 定义的引起异常的类
-     * @return true 来自或者包含
+     * @param throwable      The throwable.
+     * @param exceptionClass The exception class to check for.
+     * @return `true` if found.
      */
     public static boolean isFromOrSuppressedThrowable(
             final Throwable throwable,
@@ -349,12 +351,12 @@ public class ExceptionKit {
     }
 
     /**
-     * 判断指定异常是否来自或者包含指定异常
+     * Checks if a throwable is an instance of, is caused by, or has a suppressed exception of a specific type.
      *
-     * @param throwable      异常
-     * @param exceptionClass 定义的引起异常的类
-     * @param checkCause     判断cause
-     * @return true 来自或者包含
+     * @param throwable      The throwable.
+     * @param exceptionClass The exception class to check for.
+     * @param checkCause     Whether to check the cause chain.
+     * @return `true` if found.
      */
     public static boolean isFromOrSuppressedThrowable(
             final Throwable throwable,
@@ -364,12 +366,12 @@ public class ExceptionKit {
     }
 
     /**
-     * 转化指定异常为来自或者包含指定异常
+     * Finds and returns the first throwable in the hierarchy (self, cause, suppressed) that matches a specific type.
      *
-     * @param <T>            异常类型
-     * @param throwable      异常
-     * @param exceptionClass 定义的引起异常的类
-     * @return 结果为null 不是来自或者包含
+     * @param <T>            The exception type.
+     * @param throwable      The throwable.
+     * @param exceptionClass The exception class to find.
+     * @return The matching throwable, or `null`.
      */
     public static <T extends Throwable> T convertFromOrSuppressedThrowable(
             final Throwable throwable,
@@ -378,13 +380,13 @@ public class ExceptionKit {
     }
 
     /**
-     * 转化指定异常为来自或者包含指定异常
+     * Finds and returns the first throwable in the hierarchy (self, cause, suppressed) that matches a specific type.
      *
-     * @param <T>            异常类型
-     * @param throwable      异常
-     * @param exceptionClass 定义的引起异常的类
-     * @param checkCause     判断cause
-     * @return 结果为null 不是来自或者包含
+     * @param <T>            The exception type.
+     * @param throwable      The throwable.
+     * @param exceptionClass The exception class to find.
+     * @param checkCause     Whether to check the cause chain.
+     * @return The matching throwable, or `null`.
      */
     public static <T extends Throwable> T convertFromOrSuppressedThrowable(
             final Throwable throwable,
@@ -414,14 +416,10 @@ public class ExceptionKit {
     }
 
     /**
-     * 获取异常链上所有异常的集合，如果{@link Throwable} 对象没有cause，返回只有一个节点的List 如果传入null，返回空集合
+     * Gets a list of all exceptions in the cause chain.
      *
-     * <p>
-     * 此方法来自Apache-Commons-Lang3
-     * </p>
-     *
-     * @param throwable 异常对象，可以为null
-     * @return 异常链中所有异常集合
+     * @param throwable The throwable.
+     * @return A list of all throwables in the chain.
      */
     public static List<Throwable> getThrowableList(Throwable throwable) {
         final List<Throwable> list = new ArrayList<>();
@@ -433,10 +431,10 @@ public class ExceptionKit {
     }
 
     /**
-     * 获取异常链中最尾端的异常，即异常最早发生的异常对象。 此方法通过调用{@link Throwable#getCause()} 直到没有cause为止，如果异常本身没有cause，返回异常本身 传入null返回也为null
+     * Gets the root cause of an exception.
      *
-     * @param throwable 异常对象，可能为null
-     * @return 最尾端异常，传入null参数返回也为null
+     * @param throwable The throwable.
+     * @return The root cause.
      */
     public static Throwable getRootCause(final Throwable throwable) {
         final Throwable cause = throwable.getCause();
@@ -447,10 +445,10 @@ public class ExceptionKit {
     }
 
     /**
-     * 获取异常链中最尾端的异常的消息，消息格式为：{SimpleClassName}: {ThrowableMessage}
+     * Gets the message of the root cause of an exception.
      *
-     * @param th 异常
-     * @return 消息
+     * @param th The throwable.
+     * @return The root cause message.
      */
     public static String getRootCauseMessage(final Throwable th) {
         return getMessage(getRootCause(th));

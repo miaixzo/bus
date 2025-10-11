@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 查询条件单元类，表示单个 SQL 查询条件
+ * Represents a single SQL query condition unit.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,59 +47,59 @@ import lombok.experimental.SuperBuilder;
 public class Criterion {
 
     /**
-     * 条件表达式，如 "column ="
+     * The condition expression, e.g., "column = ".
      */
     private final String condition;
 
     /**
-     * 条件值
+     * The value for the condition.
      */
     private Object value;
 
     /**
-     * 范围条件的第二个值
+     * The second value for a 'between' condition.
      */
     private Object secondValue;
 
     /**
-     * Java 类型名称
+     * The name of the Java type.
      */
     private String javaType;
 
     /**
-     * 类型处理器名称
+     * The name of the type handler.
      */
     private String typeHandler;
 
     /**
-     * 是否为无值条件
+     * Indicates if this is a no-value condition.
      */
     private boolean noValue;
 
     /**
-     * 是否为单值条件
+     * Indicates if this is a single-value condition.
      */
     private boolean singleValue;
 
     /**
-     * 是否为范围条件
+     * Indicates if this is a between-value (range) condition.
      */
     private boolean betweenValue;
 
     /**
-     * 是否为列表条件
+     * Indicates if this is a list-value condition.
      */
     private boolean listValue;
 
     /**
-     * 是否为 OR 条件
+     * Indicates if this is an OR condition.
      */
     private boolean orValue;
 
     /**
-     * 构造函数，创建无值条件
+     * Constructor for a no-value condition.
      *
-     * @param condition 条件表达式
+     * @param condition The condition expression.
      */
     public Criterion(String condition) {
         super();
@@ -108,21 +108,21 @@ public class Criterion {
     }
 
     /**
-     * 构造函数，创建单值条件
+     * Constructor for a single-value condition.
      *
-     * @param condition 条件表达式
-     * @param value     条件值
+     * @param condition The condition expression.
+     * @param value     The value for the condition.
      */
     protected Criterion(String condition, Object value) {
         this(condition, value, null);
     }
 
     /**
-     * 构造函数，创建单值或列表条件，并关联列信息
+     * Constructor for a single-value or list-value condition, associated with column metadata.
      *
-     * @param condition 条件表达式
-     * @param value     条件值
-     * @param column    列信息
+     * @param condition The condition expression.
+     * @param value     The value for the condition.
+     * @param column    The column metadata.
      */
     public Criterion(String condition, Object value, ColumnMeta column) {
         super();
@@ -149,23 +149,23 @@ public class Criterion {
     }
 
     /**
-     * 构造函数，创建范围条件
+     * Constructor for a between-value (range) condition.
      *
-     * @param condition   条件表达式
-     * @param value       起始值
-     * @param secondValue 结束值
+     * @param condition   The condition expression.
+     * @param value       The starting value.
+     * @param secondValue The ending value.
      */
     protected Criterion(String condition, Object value, Object secondValue) {
         this(condition, value, secondValue, null);
     }
 
     /**
-     * 构造函数，创建范围条件，并关联列信息
+     * Constructor for a between-value (range) condition, associated with column metadata.
      *
-     * @param condition   条件表达式
-     * @param value       起始值
-     * @param secondValue 结束值
-     * @param column      列信息
+     * @param condition   The condition expression.
+     * @param value       The starting value.
+     * @param secondValue The ending value.
+     * @param column      The column metadata.
      */
     protected Criterion(String condition, Object value, Object secondValue, ColumnMeta column) {
         super();
@@ -185,10 +185,10 @@ public class Criterion {
     }
 
     /**
-     * 生成 MyBatis 参数占位符字符串
+     * Generates a MyBatis parameter placeholder string.
      *
-     * @param field 参数字段名
-     * @return 占位符字符串
+     * @param field The parameter field name.
+     * @return The placeholder string.
      */
     public String variables(String field) {
         StringBuilder variables = new StringBuilder();
@@ -203,72 +203,72 @@ public class Criterion {
     }
 
     /**
-     * 获取条件表达式
+     * Gets the condition expression.
      *
-     * @return 条件表达式
+     * @return The condition expression.
      */
     public String getCondition() {
         return condition;
     }
 
     /**
-     * 获取第二个条件值
+     * Gets the second condition value.
      *
-     * @return 第二个条件值
+     * @return The second condition value.
      */
     public Object getSecondValue() {
         return secondValue;
     }
 
     /**
-     * 获取条件值
+     * Gets the condition value.
      *
-     * @return 条件值
+     * @return The condition value.
      */
     public Object getValue() {
         return value;
     }
 
     /**
-     * 判断是否为范围条件
+     * Checks if this is a between-value condition.
      *
-     * @return true 表示是范围条件，false 表示不是
+     * @return {@code true} if it is a between-value condition, {@code false} otherwise.
      */
     public boolean isBetweenValue() {
         return betweenValue;
     }
 
     /**
-     * 判断是否为列表条件
+     * Checks if this is a list-value condition.
      *
-     * @return true 表示是列表条件，false 表示不是
+     * @return {@code true} if it is a list-value condition, {@code false} otherwise.
      */
     public boolean isListValue() {
         return listValue;
     }
 
     /**
-     * 判断是否为无值条件
+     * Checks if this is a no-value condition.
      *
-     * @return true 表示是无值条件，false 表示不是
+     * @return {@code true} if it is a no-value condition, {@code false} otherwise.
      */
     public boolean isNoValue() {
         return noValue;
     }
 
     /**
-     * 判断是否为单值条件
+     * Checks if this is a single-value condition.
      *
-     * @return true 表示是单值条件，false 表示不是
+     * @return {@code true} if it is a single-value condition, {@code false} otherwise.
      */
     public boolean isSingleValue() {
         return singleValue;
     }
 
     /**
-     * 判断是否为 OR 条件
+     * Checks if this is an OR condition.
      *
-     * @return true 表示是 OR 条件，false 表示不是
+     * @return {@code true} if it is an OR condition, {@code false} otherwise.
      */
     public boolean isOrValue() {
         if (orValue && this.value instanceof Collection) {

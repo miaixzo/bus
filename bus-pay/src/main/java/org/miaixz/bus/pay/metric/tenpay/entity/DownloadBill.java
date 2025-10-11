@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 对账单下载
+ * Download Bill model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,11 +48,29 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class DownloadBill extends Material {
 
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Bill date.
+     */
     private String bill_date;
+    /**
+     * Bill type.
+     */
     private String bill_type;
+    /**
+     * Tar type.
+     */
     private String tar_type;
 
 }

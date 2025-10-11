@@ -42,7 +42,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
 
 /**
- * Utility to query X11 windows
+ * Utility to query X11 windows.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -127,6 +127,12 @@ public final class Xwininfo {
         return windowList;
     }
 
+    /**
+     * Queries the process ID (PID) for a given window ID.
+     *
+     * @param id The window ID.
+     * @return The PID of the process that owns the window, or 0 if not found.
+     */
     private static long queryPidFromId(String id) {
         // X commands don't work with LC_ALL
         String[] cmd = new String[XPROP_NET_WM_PID_ID.length + 1];

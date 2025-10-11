@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
-import org.miaixz.bus.pay.magic.Material;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.pay.magic.Material;
 
 /**
- * V3 添加分账接收方
+ * Model for the V3 Add Profit Sharing Receivers API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,35 +48,43 @@ import lombok.experimental.SuperBuilder;
 public class AddReceivers extends Material {
 
     /**
-     * 微信支付分配的子商户号，即分账的出资商户号 （直连商户不需要，服务商需要）
+     * Sub-merchant ID assigned by WeChat Pay, which is the contributing merchant for profit sharing. (Not required for
+     * direct merchants, but required for service providers).
      */
     private String sub_mchid;
     /**
-     * 子商户的公众账号ID，分账接收方类型包含PERSONAL_SUB_OPENID时必填 （直连商户不需要，服务商需要）
+     * The Official Account AppID of the sub-merchant. Required when the receiver type includes PERSONAL_SUB_OPENID.
+     * (Not required for direct merchants, but required for service providers).
      */
     private String sub_appid;
     /**
-     * 分账接收方类型 MERCHANT_ID：商户ID PERSONAL_OPENID：个人openid（由父商户APPID转换得到） PERSONAL_SUB_OPENID：个人sub_openid（由子商户APPID转换得到）
+     * The type of the profit sharing receiver. MERCHANT_ID: Merchant ID PERSONAL_OPENID: Personal openid (converted
+     * from the parent merchant's APPID) PERSONAL_SUB_OPENID: Personal sub_openid (converted from the sub-merchant's
+     * APPID)
      */
     private String type;
     /**
-     * 分账接收方帐号 类型是MERCHANT_ID时，是商户号（mch_id或者sub_mch_id） 类型是PERSONAL_OPENID时，是个人openid
-     * 类型是PERSONAL_SUB_OPENID时，是个人sub_openid
+     * The account of the profit sharing receiver. If type is MERCHANT_ID, this is the merchant ID (mch_id or
+     * sub_mch_id). If type is PERSONAL_OPENID, this is the personal openid. If type is PERSONAL_SUB_OPENID, this is the
+     * personal sub_openid.
      */
     private String account;
     /**
-     * 分账接收方全称 分账接收方类型是MERCHANT_ID时，是商户全称（必传），当商户是小微商户或个体户时，是开户人姓名 分账接收方类型是PERSONAL_OPENID时，是个人姓名（选传，传则校验）
-     * 分账接收方类型是PERSONAL_SUB_OPENID时，是个人姓名（选传，传则校验） 1、此字段需要加密，的加密方法详见：敏感信息加密说明 2、使用微信支付平台证书中的公钥 3、使用RSAES-OAEP算法进行加密
-     * 4、将请求中HTTP头部的Wechatpay-Serial设置为证书序列号
+     * The full name of the profit sharing receiver. If type is MERCHANT_ID, this is the full name of the merchant
+     * (required). For micro-merchants or individual businesses, it is the name of the account holder. If type is
+     * PERSONAL_OPENID or PERSONAL_SUB_OPENID, this is the person's name (optional, but will be validated if provided).
+     * This field must be encrypted using the public key from the WeChat Pay platform certificate with the RSAES-OAEP
+     * algorithm. The Wechatpay-Serial header must be set to the certificate's serial number.
      */
     private String name;
     /**
-     * 与分账方的关系类型，子商户与接收方的关系。 本字段值为枚举： SERVICE_PROVIDER：服务商 STORE：门店 STAFF：员工 STORE_OWNER：店主 PARTNER：合作伙伴 HEADQUARTER：总部
-     * BRAND：品牌方 DISTRIBUTOR：分销商 USER：用户 SUPPLIER：供应商 CUSTOM：自定义
+     * The relationship type between the sub-merchant and the receiver. Enum values: SERVICE_PROVIDER, STORE, STAFF,
+     * STORE_OWNER, PARTNER, HEADQUARTER, BRAND, DISTRIBUTOR, USER, SUPPLIER, CUSTOM.
      */
     private String relation_type;
     /**
-     * 自定义的分账关系 子商户与接收方具体的关系，本字段最多10个字。 当字段relation_type的值为CUSTOM时，本字段必填 当字段relation_type的值不为CUSTOM时，本字段无需填写
+     * A custom-defined relationship between the sub-merchant and the receiver. This field is required when
+     * relation_type is CUSTOM and should be at most 10 characters.
      */
     private String custom_relation;
 

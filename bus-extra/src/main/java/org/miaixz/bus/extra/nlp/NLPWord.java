@@ -30,7 +30,8 @@ package org.miaixz.bus.extra.nlp;
 import java.io.Serializable;
 
 /**
- * 表示分词中的一个词
+ * Represents a single word or token extracted during Natural Language Processing (NLP) word segmentation. This
+ * interface defines methods to access the textual content and positional information of the segmented word.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,23 +39,23 @@ import java.io.Serializable;
 public interface NLPWord extends Serializable {
 
     /**
-     * 获取单词文本
+     * Retrieves the textual content of this word.
      *
-     * @return 单词文本
+     * @return The text of the word as a {@link String}.
      */
     String getText();
 
     /**
-     * 获取本词的起始位置
+     * Retrieves the starting character offset of this word within the original text. The offset is 0-based.
      *
-     * @return 起始位置
+     * @return The starting position (inclusive) of the word.
      */
     int getStartOffset();
 
     /**
-     * 获取本词的结束位置
+     * Retrieves the ending character offset of this word within the original text. The offset is 0-based and exclusive.
      *
-     * @return 结束位置
+     * @return The ending position (exclusive) of the word.
      */
     int getEndOffset();
 

@@ -28,7 +28,8 @@
 package org.miaixz.bus.pager;
 
 /**
- * 分页查询接口
+ * Interface for executing a paginated query. Implementations of this interface should encapsulate the actual query
+ * logic.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,7 +37,7 @@ package org.miaixz.bus.pager;
 public interface Querying {
 
     /**
-     * 在接口中调用自己的查询方法,不要在该方法内写过多代码,只要一行查询方法最好
+     * Executes the query. This method should ideally contain only a single call to the actual query method.
      */
     void doSelect();
 

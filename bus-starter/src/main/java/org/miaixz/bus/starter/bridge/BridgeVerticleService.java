@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.starter.bridge;
 
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Vertx;
+import io.vertx.ext.web.Router;
+import jakarta.annotation.Resource;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.net.HTTP;
@@ -34,13 +38,12 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Vertx;
-import io.vertx.ext.web.Router;
-import jakarta.annotation.Resource;
-
 /**
- * 服务端-配置中心
+ * The server-side component of the configuration center, implemented as a Vert.x {@link AbstractVerticle}.
+ * <p>
+ * This verticle starts an HTTP server that listens for requests from clients seeking configuration information. It
+ * provides an endpoint to resolve and return configurations.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,44 +53,60 @@ public class BridgeVerticleService extends AbstractVerticle {
     private final BridgeProperties properties;
 
     @Resource
-    Vertx vertx;
+    private Vertx vertx;
     @Resource
-    Resolvable resolvable;
+    private Resolvable resolvable;
 
+    /**
+     * Constructs a new service instance with the given bridge properties.
+     *
+     * @param properties The configuration properties for the bridge.
+     */
     public BridgeVerticleService(BridgeProperties properties) {
         this.properties = properties;
     }
 
+    /**
+     * Starts the Vert.x verticle, initializing and starting the HTTP server.
+     * <p>
+     * If a valid port is configured, this method creates an HTTP server and a router. It sets up a route at
+     * {@code /profile/get} to handle configuration requests.
+     * </p>
+     */
     @Override
     public void start() {
         if (this.properties.getPort() <= 0 || this.properties.getPort() > 0xFFFF) {
-            return;
+            return; // Do not start the server if the port is invalid.
         }
         Router router = Router.router(vertx);
-        router.route("/profile/get").handler(context -> {
+        router.post("/profile/get").handler(context -> {
             String result;
             try {
-                BridgeProperties properties = JsonKit.toPojo(context.body().asString(), BridgeProperties.class);
-                Message message = Message.builder().data(this.resolvable.find(properties)).build();
-                Logger.info("request:{},response:{}", properties, message);
+                BridgeProperties requestProps = JsonKit.toPojo(context.body().asString(), BridgeProperties.class);
+                Object data = this.resolvable.find(requestProps);
+                Message message = Message.builder().data(data).build();
+                Logger.info("Request: {}, Response: {}", requestProps, message);
                 result = JsonKit.toJsonString(message);
             } catch (Exception e) {
-                Logger.error("get error", e);
-                result = JsonKit.toJsonString(Message.builder().errcode("-1").build());
+                Logger.error("Error getting profile", e);
+                result = JsonKit.toJsonString(Message.builder().errcode("-1").errmsg(e.getMessage()).build());
             }
             context.response().putHeader(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON).end(result);
         });
 
         vertx.createHttpServer().requestHandler(router).listen(this.properties.getPort());
-        Logger.info("Vert.x is listening {}", this.properties.getPort());
+        Logger.info("Vert.x configuration server is listening on port {}", this.properties.getPort());
     }
 
+    /**
+     * Stops the Vert.x verticle, closing the Vert.x instance and shutting down the server.
+     */
     @Override
     public void stop() {
         if (ObjectKit.isNotEmpty(this.vertx)) {
             this.vertx.close();
+            Logger.info("Vert.x configuration server stopped.");
         }
-
     }
 
 }

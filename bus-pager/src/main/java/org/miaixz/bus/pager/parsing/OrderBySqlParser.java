@@ -28,13 +28,20 @@
 package org.miaixz.bus.pager.parsing;
 
 /**
- * 处理 Order by
+ * Interface for handling Order by clauses in SQL statements.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface OrderBySqlParser {
 
+    /**
+     * Converts a SQL statement to include an ORDER BY clause.
+     *
+     * @param sql     the original SQL statement
+     * @param orderBy the ORDER BY clause to be added
+     * @return the modified SQL statement with the ORDER BY clause
+     */
     String converToOrderBySql(String sql, String orderBy);
 
 }

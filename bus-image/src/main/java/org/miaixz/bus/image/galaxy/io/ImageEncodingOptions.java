@@ -28,19 +28,52 @@
 package org.miaixz.bus.image.galaxy.io;
 
 /**
+ * Represents options for image encoding, controlling aspects like group length and undefined length encoding.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ImageEncodingOptions {
 
+    /**
+     * Default image encoding options: no group length, undefined sequence length, no undefined empty sequence length,
+     * undefined item length, no undefined empty item length.
+     */
     public static final ImageEncodingOptions DEFAULT = new ImageEncodingOptions(false, true, false, true, false);
 
+    /**
+     * Indicates whether group length should be encoded.
+     */
     public final boolean groupLength;
+    /**
+     * Indicates whether sequence lengths should be encoded as undefined.
+     */
     public final boolean undefSequenceLength;
+    /**
+     * Indicates whether empty sequence lengths should be encoded as undefined.
+     */
     public final boolean undefEmptySequenceLength;
+    /**
+     * Indicates whether item lengths should be encoded as undefined.
+     */
     public final boolean undefItemLength;
+    /**
+     * Indicates whether empty item lengths should be encoded as undefined.
+     */
     public final boolean undefEmptyItemLength;
 
+    /**
+     * Constructs an {@code ImageEncodingOptions} instance with the specified encoding preferences.
+     *
+     * @param groupLength          {@code true} to include group length, {@code false} otherwise.
+     * @param undefSeqLength       {@code true} to encode sequence lengths as undefined, {@code false} otherwise.
+     * @param undefEmptySeqLength  {@code true} to encode empty sequence lengths as undefined, {@code false} otherwise.
+     * @param undefItemLength      {@code true} to encode item lengths as undefined, {@code false} otherwise.
+     * @param undefEmptyItemLength {@code true} to encode empty item lengths as undefined, {@code false} otherwise.
+     * @throws IllegalArgumentException if {@code undefEmptySeqLength} is {@code true} but {@code undefSeqLength} is
+     *                                  {@code false}, or if {@code undefEmptyItemLength} is {@code true} but
+     *                                  {@code undefItemLength} is {@code false}.
+     */
     public ImageEncodingOptions(boolean groupLength, boolean undefSeqLength, boolean undefEmptySeqLength,
             boolean undefItemLength, boolean undefEmptyItemLength) {
         if (undefEmptySeqLength && !undefSeqLength)

@@ -34,7 +34,9 @@ import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * SSH Session抽象
+ * Abstract interface for an SSH (Secure Shell) session. This interface defines common operations for managing an SSH
+ * connection, including checking the connection status and handling port forwarding (tunnelling). It extends
+ * {@link Wrapper} to provide access to the underlying session object and {@link Closeable} for resource management.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,63 +44,67 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public interface Session extends Wrapper<Object>, Closeable {
 
     /**
-     * 是否连接状态
+     * Checks if the SSH session is currently connected and active.
      *
-     * @return 是否连接状态
+     * @return {@code true} if the session is connected, {@code false} otherwise.
      */
     boolean isConnected();
 
     /**
-     * 绑定端口到本地。 一个会话可绑定多个端口 当请求localHost:localPort时，通过SSH到服务器，转发请求到remoteHost:remotePort
-     * 此方法用于访问本地无法访问但是服务器可以访问的地址，如只有服务器能访问的内网数据库等
+     * Binds a local port to a remote address, creating a local port forwarding tunnel. This is useful for accessing a
+     * service on a remote network that is only accessible from the SSH server. For example, a request to
+     * {@code localhost:localPort} on the client machine will be forwarded through the SSH tunnel to
+     * {@code remoteHost:remotePort} on the server's network.
      *
-     * @param localPort     本地端口
-     * @param remoteAddress 远程主机和端口
+     * @param localPort     The local port on the client machine to listen on.
+     * @param remoteAddress The {@link InetSocketAddress} of the remote host and port to forward traffic to.
      */
     default void bindLocalPort(final int localPort, final InetSocketAddress remoteAddress) {
         bindLocalPort(new InetSocketAddress(localPort), remoteAddress);
     }
 
     /**
-     * 绑定端口到本地。 一个会话可绑定多个端口 当请求localHost:localPort时，通过SSH到服务器，转发请求到remoteHost:remotePort
-     * 此方法用于访问本地无法访问但是服务器可以访问的地址，如只有服务器能访问的内网数据库等
+     * Binds a local address (host and port) to a remote address, creating a local port forwarding tunnel. This is an
+     * extended version of {@link #bindLocalPort(int, InetSocketAddress)} that allows specifying the local bind address.
      *
-     * @param localAddress  本地主机和端口
-     * @param remoteAddress 远程主机和端口
+     * @param localAddress  The local {@link InetSocketAddress} on the client machine to bind to.
+     * @param remoteAddress The remote {@link InetSocketAddress} to forward traffic to.
      */
     void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress);
 
     /**
-     * 解除本地端口映射
+     * Removes a local port forwarding binding.
      *
-     * @param localPort 需要解除的本地端口
-     * @throws InternalException 端口解绑失败异常
+     * @param localPort The local port that was previously bound.
+     * @throws InternalException if an error occurs while unbinding the port.
      */
     default void unBindLocalPort(final int localPort) {
         unBindLocalPort(new InetSocketAddress(localPort));
     }
 
     /**
-     * 解除本地端口映射
+     * Removes a local port forwarding binding for a specific local address.
      *
-     * @param localAddress 需要解除的本地地址
+     * @param localAddress The local {@link InetSocketAddress} that was previously bound.
      */
     void unBindLocalPort(final InetSocketAddress localAddress);
 
     /**
-     * 绑定ssh服务端的serverPort端口, 到本地主机的port端口上. 即数据从ssh服务端的serverPort端口, 流经ssh客户端, 达到host:port上.
-     * 此方法用于在服务端访问本地资源，如服务器访问本机所在的数据库等。
+     * Binds a port on the remote SSH server to a local address, creating a remote port forwarding tunnel. This is
+     * useful for allowing the remote server to access a service running on the local client machine. For example, a
+     * connection to {@code remoteAddress} on the SSH server will be forwarded through the tunnel to
+     * {@code localAddress} on the client machine.
      *
-     * @param remoteAddress ssh服务端上要被绑定的地址
-     * @param localAddress  转发到的本地地址
-     * @throws InternalException 端口绑定失败异常
+     * @param remoteAddress The {@link InetSocketAddress} on the SSH server to bind.
+     * @param localAddress  The local {@link InetSocketAddress} to forward traffic to.
+     * @throws InternalException if an error occurs while binding the remote port.
      */
     void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress);
 
     /**
-     * 解除远程端口映射
+     * Removes a remote port forwarding binding.
      *
-     * @param remoteAddress 需要解除的远程地址和端口
+     * @param remoteAddress The remote {@link InetSocketAddress} that was previously bound.
      */
     void unBindRemotePort(final InetSocketAddress remoteAddress);
 

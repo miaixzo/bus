@@ -32,76 +32,83 @@ import java.io.Serializable;
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
- * 节点接口，提供节点相关的的方法定义
+ * Represents a node in a tree structure, providing definitions for node-related methods.
  *
- * @param <T> ID类型
+ * @param <T> The type of the node's identifier.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Node<T> extends Comparable<Node<T>>, Serializable {
 
     /**
-     * 获取ID
+     * Retrieves the unique identifier of the node.
      *
-     * @return ID
+     * @return The ID of the node.
      */
     T getId();
 
     /**
-     * 设置ID
+     * Sets the unique identifier of the node.
      *
-     * @param id ID
-     * @return this
+     * @param id The ID to be set for the node.
+     * @return The current node instance for chaining.
      */
     Node<T> setId(T id);
 
     /**
-     * 获取父节点ID
+     * Retrieves the identifier of the parent node.
      *
-     * @return 父节点ID
+     * @return The parent node's ID.
      */
     T getParentId();
 
     /**
-     * 设置父节点ID
+     * Sets the identifier of the parent node.
      *
-     * @param parentId 父节点ID
-     * @return this
+     * @param parentId The ID of the parent node.
+     * @return The current node instance for chaining.
      */
     Node<T> setParentId(T parentId);
 
     /**
-     * 获取节点标签名称
+     * Retrieves the name or label of the node.
      *
-     * @return 节点标签名称
+     * @return The name of the node.
      */
     CharSequence getName();
 
     /**
-     * 设置节点标签名称
+     * Sets the name or label of the node.
      *
-     * @param name 节点标签名称
-     * @return this
+     * @param name The name to be set for the node.
+     * @return The current node instance for chaining.
      */
     Node<T> setName(CharSequence name);
 
     /**
-     * 获取权重
+     * Retrieves the weight of the node, used for ordering.
      *
-     * @return 权重
+     * @return The weight of the node.
      */
     Comparable<?> getWeight();
 
     /**
-     * 设置权重
+     * Sets the weight of the node, used for ordering.
      *
-     * @param weight 权重
-     * @return this
+     * @param weight The weight to be set for the node.
+     * @return The current node instance for chaining.
      */
     Node<T> setWeight(Comparable<?> weight);
 
+    /**
+     * Compares this node with another node for ordering. The comparison is based on the nodes' weights.
+     *
+     * @param node The node to be compared.
+     * @return A negative integer, zero, or a positive integer as this node is less than, equal to, or greater than the
+     *         specified node.
+     */
     @Override
-    default int compareTo(final Node node) {
+    default int compareTo(final Node<T> node) {
         if (null == node) {
             return 1;
         }

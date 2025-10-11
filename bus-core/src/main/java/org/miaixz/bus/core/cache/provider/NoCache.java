@@ -29,15 +29,17 @@ package org.miaixz.bus.core.cache.provider;
 
 import java.io.Serial;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.miaixz.bus.core.cache.Cache;
 import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
- * 无缓存实现，用于快速关闭缓存
+ * A no-op cache implementation that does not store any data. This is useful for quickly disabling caching without
+ * changing application code.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,46 +48,75 @@ public class NoCache<K, V> implements Cache<K, V> {
     @Serial
     private static final long serialVersionUID = 2852232053893L;
 
+    /**
+     * @return Always returns {@code 0}.
+     */
     @Override
     public int capacity() {
         return 0;
     }
 
+    /**
+     * @return Always returns {@code 0}.
+     */
     @Override
     public long timeout() {
         return 0;
     }
 
+    /**
+     * This is a no-op; the object is not cached.
+     */
     @Override
     public void put(final K key, final V object) {
-        // 跳过
+        // Skip
     }
 
+    /**
+     * This is a no-op; the object is not cached.
+     */
     @Override
     public void put(final K key, final V object, final long timeout) {
-        // 跳过
+        // Skip
     }
 
+    /**
+     * @return Always returns {@code false}.
+     */
     @Override
     public boolean containsKey(final K key) {
         return false;
     }
 
+    /**
+     * @return Always returns {@code null}.
+     */
     @Override
     public V get(final K key) {
         return null;
     }
 
+    /**
+     * @return Always returns {@code null}.
+     */
     @Override
     public V get(final K key, final boolean isUpdateLastAccess) {
         return null;
     }
 
+    /**
+     * Invokes the supplier to generate a value but does not cache it.
+     *
+     * @return The value from the supplier, or {@code null} if the supplier is null.
+     */
     @Override
     public V get(final K key, final boolean isUpdateLastAccess, final long timeout, final SupplierX<V> supplier) {
         return (null == supplier) ? null : supplier.get();
     }
 
+    /**
+     * @return An empty iterator.
+     */
     @Override
     public Iterator<V> iterator() {
         return new Iterator<>() {
@@ -97,44 +128,65 @@ public class NoCache<K, V> implements Cache<K, V> {
 
             @Override
             public V next() {
-                return null;
+                throw new NoSuchElementException();
             }
         };
     }
 
+    /**
+     * @return Always returns {@code null}.
+     */
     @Override
     public Iterator<CacheObject<K, V>> cacheObjIterator() {
         return null;
     }
 
+    /**
+     * @return Always returns {@code 0}.
+     */
     @Override
     public int prune() {
         return 0;
     }
 
+    /**
+     * @return Always returns {@code false}.
+     */
     @Override
     public boolean isFull() {
         return false;
     }
 
+    /**
+     * This is a no-op.
+     */
     @Override
     public void remove(final K key) {
-        // 跳过
+        // Skip
     }
 
+    /**
+     * This is a no-op.
+     */
     @Override
     public void clear() {
-        // 跳过
+        // Skip
     }
 
+    /**
+     * @return Always returns {@code 0}.
+     */
     @Override
     public int size() {
         return 0;
     }
 
+    /**
+     * @return Always returns {@code true}.
+     */
     @Override
     public boolean isEmpty() {
-        return false;
+        return true;
     }
 
 }

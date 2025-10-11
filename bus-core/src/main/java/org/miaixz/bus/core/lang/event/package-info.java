@@ -26,7 +26,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 发布订阅模式封装，发布/订阅是一种消息范式 消息的发送者（EventPublisher）将事件或消息（Event）广播出去，订阅者（Subscriber）接收到消息后处理。
+ * Provides an encapsulation for the Publish-Subscribe pattern. In this messaging paradigm, a sender
+ * ({@link org.miaixz.bus.core.lang.event.EventPublisher}) broadcasts events or messages
+ * ({@link org.miaixz.bus.core.lang.event.Event}), and subscribers ({@link org.miaixz.bus.core.lang.event.Subscriber})
+ * receive and process these messages.
  *
  * @author Kimi Liu
  * @since Java 17+

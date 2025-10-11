@@ -27,13 +27,19 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.sensitive.Builder;
 
+import java.lang.annotation.*;
+
 /**
- * 数据脱敏,具体如下: 1.数据库级别脱敏加密 SensitiveResultSetHandler 解密脱敏 SensitiveStatementHandler 脱敏加密 2.访问请求级别加解密 RequestBodyAdvice
- * 解密脱敏 ResponseBodyAdvice 脱敏加密
+ * A comprehensive annotation for enabling data desensitization and/or encryption at the class or method level. This can
+ * be applied at various layers:
+ * <ol>
+ * <li><b>Database Level:</b> Using handlers like {@code SensitiveResultSetHandler} for decryption/desensitization on
+ * read, and {@code SensitiveStatementHandler} for encryption/desensitization on write.</li>
+ * <li><b>Request Level:</b> Using AOP advice like {@code RequestBodyAdvice} for decryption/desensitization on incoming
+ * requests, and {@code ResponseBodyAdvice} for encryption/desensitization on outgoing responses.</li>
+ * </ol>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,37 +50,41 @@ import org.miaixz.bus.sensitive.Builder;
 public @interface Sensitive {
 
     /**
-     * 数据处理模式 可选值 1.Builder.ALL 全部开启 2.Builder.SENS 开启脱敏 3.Builder.SAFE 开启加解密
+     * The data processing mode. Options are: 1. {@link Builder#ALL}: Enable both desensitization and
+     * encryption/decryption. 2. {@link Builder#SENS}: Enable only desensitization. 3. {@link Builder#SAFE}: Enable only
+     * encryption/decryption.
      *
-     * @return the string
+     * @return The processing mode string.
      */
     String value() default Builder.ALL;
 
     /**
-     * 数据出入方向 可选值 1.Builder.ALL 全部开启 2.Builder.IN 请求/写入 3.Builder.OUT 查询/输出 4.Builder.OVERALL 全局加密
+     * The data flow direction. Options are: 1. {@link Builder#ALL}: Apply rules in both directions (in and out). 2.
+     * {@link Builder#IN}: Apply rules only on write/request. 3. {@link Builder#OUT}: Apply rules only on read/response.
+     * 4. {@link Builder#OVERALL}: Apply rules for global encryption.
      *
-     * @return the string
+     * @return The data flow stage string.
      */
     String stage() default Builder.ALL;
 
     /**
-     * 脱敏属性 {"id","name"}
+     * An array of specific field names to which the rules should be applied. Example: {@code {"id", "name"}}
      *
-     * @return the array
+     * @return The array of field names to include.
      */
     String[] field() default {};
 
     /**
-     * 忽略属性 {"created","creator"}
+     * An array of specific field names to skip or ignore. Example: {@code {"created", "creator"}}
      *
-     * @return the array
+     * @return The array of field names to skip.
      */
     String[] skip() default {};
 
     /**
-     * 内部脱敏:true/false
+     * Whether to process nested objects recursively.
      *
-     * @return the boolean
+     * @return {@code true} to enable processing of nested objects, {@code false} otherwise. Defaults to {@code true}.
      */
     boolean inside() default true;
 

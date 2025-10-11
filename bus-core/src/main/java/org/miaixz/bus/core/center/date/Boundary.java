@@ -35,48 +35,53 @@ import org.miaixz.bus.core.lang.range.Range;
 import org.miaixz.bus.core.xyz.DateKit;
 
 /**
- * 日期范围
+ * Represents a date range, providing an iterable sequence of dates between a start and end point. This class extends
+ * {@link Range} to specifically handle date and time intervals.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Boundary extends Range<DateTime> {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852233385529L;
 
     /**
-     * 构造，包含开始和结束日期时间
+     * Constructs a {@code Boundary} with inclusive start and end dates, and a specified step unit. The iteration step
+     * defaults to 1 unit.
      *
-     * @param start 起始日期时间（包括）
-     * @param end   结束日期时间（包括）
-     * @param unit  步进单位
+     * @param start The inclusive starting date and time.
+     * @param end   The inclusive ending date and time.
+     * @param unit  The step unit for iterating through the date range.
      */
     public Boundary(final Date start, final Date end, final Various unit) {
         this(start, end, unit, 1);
     }
 
     /**
-     * 构造，包含开始和结束日期时间
+     * Constructs a {@code Boundary} with inclusive start and end dates, a specified step unit, and a step count.
      *
-     * @param start 起始日期时间（包括）
-     * @param end   结束日期时间（包括）
-     * @param unit  步进单位
-     * @param step  步进数
+     * @param start The inclusive starting date and time.
+     * @param end   The inclusive ending date and time.
+     * @param unit  The step unit for iterating through the date range.
+     * @param step  The number of units to step by for each iteration. Must be a positive integer.
      */
     public Boundary(final Date start, final Date end, final Various unit, final int step) {
         this(start, end, unit, step, true, true);
     }
 
     /**
-     * 构造
+     * Constructs a {@code Boundary} with specified start and end dates, step unit, step count, and inclusivity flags.
      *
-     * @param start          起始日期时间
-     * @param end            结束日期时间
-     * @param unit           步进单位
-     * @param step           步进数
-     * @param isIncludeStart 是否包含开始的时间
-     * @param isIncludeEnd   是否包含结束的时间
+     * @param start          The starting date and time.
+     * @param end            The ending date and time.
+     * @param unit           The step unit for iterating through the date range.
+     * @param step           The number of units to step by for each iteration. Must be a positive integer.
+     * @param isIncludeStart {@code true} if the start date should be included in the range, {@code false} otherwise.
+     * @param isIncludeEnd   {@code true} if the end date should be included in the range, {@code false} otherwise.
      */
     public Boundary(final Date start, final Date end, final Various unit, final int step, final boolean isIncludeStart,
             final boolean isIncludeEnd) {

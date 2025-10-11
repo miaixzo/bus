@@ -33,11 +33,11 @@ import java.awt.color.ColorSpace;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 表示以 LAB 形式存储的颜色
+ * Represents a color stored in LAB format.
  * <ul>
- * <li>L: 亮度</li>
- * <li>a: 正数代表红色，负端代表绿色</li>
- * <li>b: 正数代表黄色，负端代表蓝色</li>
+ * <li>L: Luminance (lightness)</li>
+ * <li>a: Positive values indicate red, negative values indicate green</li>
+ * <li>b: Positive values indicate yellow, negative values indicate blue</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -45,37 +45,41 @@ import org.miaixz.bus.core.lang.Assert;
  */
 public class LabColor {
 
+    /**
+     * The CIE XYZ color space instance.
+     */
     private static final ColorSpace XYZ_COLOR_SPACE = ColorSpace.getInstance(ColorSpace.CS_CIEXYZ);
 
     /**
-     * L: 亮度
+     * L: Luminance (lightness) component of the LAB color.
      */
     private final double l;
     /**
-     * A: 正数代表红色，负端代表绿色
+     * A: Green-red component of the LAB color. Positive values indicate red, negative values indicate green.
      */
     private final double a;
     /**
-     * B: 正数代表黄色，负端代表蓝色
+     * B: Blue-yellow component of the LAB color. Positive values indicate yellow, negative values indicate blue.
      */
     private final double b;
 
     /**
-     * 构造
+     * Constructs a {@code LabColor} from an RGB integer value.
      *
-     * @param rgb RGB颜色
+     * @param rgb The RGB color as an integer.
      */
     public LabColor(final Integer rgb) {
         this((rgb != null) ? new Color(rgb) : null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code LabColor} from a {@link Color} object..
      *
-     * @param color {@link Color}
+     * @param color The {@link Color} object. Must not be null.
+     * @throws IllegalArgumentException if the provided color is null.
      */
     public LabColor(final Color color) {
-        Assert.notNull(color, "Ansi4BitColor must not be null");
+        Assert.notNull(color, "Color must not be null");
         final float[] lab = fromXyz(color.getColorComponents(XYZ_COLOR_SPACE, null));
         this.l = lab[0];
         this.a = lab[1];
@@ -83,32 +87,47 @@ public class LabColor {
     }
 
     /**
-     * 从xyz换算 L=116f(y)-16 a=500[f(x/0.982)-f(y)] b=200[f(y)-f(z/1.183 )] 其中： f(x)=7.787x+0.138, x<0.008856;
-     * f(x)=(x)1/3,x>0.008856
+     * Converts XYZ color components to LAB color components. The conversion formula is based on the following: L = 116
+     * * f(y) - 16 a = 500 * [f(x/Xn) - f(y/Yn)] b = 200 * [f(y/Yn) - f(z/Zn)] Where Xn, Yn, Zn are the CIE XYZ
+     * tristimulus values of the reference white point (D65 illuminant is often used). In this implementation, Xn, Yn,
+     * Zn are implicitly handled by the constants used in the f() function.
      *
-     * @param x X
-     * @param y Y
-     * @param z Z
-     * @return Lab
+     * @param x The X component of the XYZ color.
+     * @param y The Y component of the XYZ color.
+     * @param z The Z component of the XYZ color.
+     * @return A float array containing the L, a, and b components of the LAB color.
      */
     private static float[] fromXyz(final float x, final float y, final float z) {
+        // Assuming reference white point values are normalized, e.g., Xn=0.95047, Yn=1.0, Zn=1.08883 for D65
+        // The constants 0.982 and 1.183 in the original comment suggest a specific white point,
+        // but the code uses a simplified f(t) without explicit division by Xn, Yn, Zn.
         final double l = (f(y) - 16.0) * 116.0;
         final double a = (f(x) - f(y)) * 500.0;
         final double b = (f(y) - f(z)) * 200.0;
         return new float[] { (float) l, (float) a, (float) b };
     }
 
+    /**
+     * Helper function for XYZ to LAB conversion. Applies a cubic root transformation for values above a certain
+     * threshold, and a linear transformation for values below it.
+     *
+     * @param t The input value (X, Y, or Z component).
+     * @return The transformed value.
+     */
     private static double f(final double t) {
+        // The threshold 216.0 / 24389.0 is (6/29)^3
+        // The linear part (1.0 / 3.0) * Math.pow(29.0 / 6.0, 2) * t + (4.0 / 29.0) is for values below the threshold.
         return (t > (216.0 / 24389.0)) ? Math.cbrt(t) : (1.0 / 3.0) * Math.pow(29.0 / 6.0, 2) * t + (4.0 / 29.0);
     }
 
     /**
-     * 获取颜色差
+     * Calculates the color difference (distance) between this LAB color and another LAB color using the CIE94 color
+     * difference formula.
      *
-     * @param other 其他Lab颜色
-     * @return 颜色差
+     * @param other The other {@code LabColor} to compare with.
+     * @return The color difference (distance) between the two colors.
+     * @see <a href="https://en.wikipedia.org/wiki/Color_difference#CIE94">CIE94 Color Difference</a>
      */
-    // See https://en.wikipedia.org/wiki/Color_difference#CIE94
     public double getDistance(final LabColor other) {
         final double c1 = Math.sqrt(this.a * this.a + this.b * this.b);
         final double deltaC = c1 - Math.sqrt(other.a * other.a + other.b * other.b);
@@ -122,6 +141,12 @@ public class LabColor {
                                 + Math.pow(deltaH / (1 + 0.015 * c1), 2.0)));
     }
 
+    /**
+     * Converts an array of XYZ color components to LAB color components.
+     *
+     * @param xyz A float array containing the X, Y, and Z components of the XYZ color.
+     * @return A float array containing the L, a, and b components of the LAB color.
+     */
     private float[] fromXyz(final float[] xyz) {
         return fromXyz(xyz[0], xyz[1], xyz[2]);
     }

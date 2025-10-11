@@ -28,7 +28,7 @@
 package org.miaixz.bus.logger;
 
 /**
- * 日志等级
+ * Defines the logging levels.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,35 +36,36 @@ package org.miaixz.bus.logger;
 public enum Level {
 
     /**
-     * 'ALL' log level.
+     * The 'ALL' level designates that all messages should be logged.
      */
     ALL,
     /**
-     * 'TRACE' log level.
+     * The 'TRACE' level designates finer-grained informational events than the 'DEBUG' level.
      */
     TRACE,
     /**
-     * 'DEBUG' log level.
+     * The 'DEBUG' level designates fine-grained informational events that are most useful to debug an application.
      */
     DEBUG,
     /**
-     * 'INFO' log level.
+     * The 'INFO' level designates informational messages that highlight the progress of the application at a
+     * coarse-grained level.
      */
     INFO,
     /**
-     * 'WARN' log level.
+     * The 'WARN' level designates potentially harmful situations.
      */
     WARN,
     /**
-     * 'ERROR' log level.
+     * The 'ERROR' level designates error events that might still allow the application to continue running.
      */
     ERROR,
     /**
-     * 'FATAL' log level.
+     * The 'FATAL' level designates very severe error events that will presumably lead the application to abort.
      */
     FATAL,
     /**
-     * 'OFF' log.
+     * The 'OFF' level has the highest possible rank and is intended to turn off logging.
      */
     OFF
 

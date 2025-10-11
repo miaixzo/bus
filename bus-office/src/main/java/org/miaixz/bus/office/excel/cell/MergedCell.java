@@ -33,21 +33,27 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.miaixz.bus.office.excel.xyz.CellKit;
 
 /**
- * 合并单元格封装
+ * Merged cell wrapper.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MergedCell {
 
+    /**
+     * The first cell in the merged region, i.e., the top-left cell.
+     */
     private final Cell first;
+    /**
+     * The range of the merged cells.
+     */
     private final CellRangeAddress range;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param first 第一个单元格，即左上角的单元格
-     * @param range 合并单元格范围
+     * @param first The first cell, i.e., the top-left cell of the merged region.
+     * @param range The merged cell range.
      */
     public MergedCell(final Cell first, final CellRangeAddress range) {
         this.first = first;
@@ -55,11 +61,11 @@ public class MergedCell {
     }
 
     /**
-     * 创建MergedCell
+     * Creates a MergedCell.
      *
-     * @param cell        第一个单元格，即左上角的单元格
-     * @param rowCount    占用行数
-     * @param columnCount 占用列数
+     * @param cell        The first cell, i.e., the top-left cell of the merged region.
+     * @param rowCount    The number of rows to span.
+     * @param columnCount The number of columns to span.
      * @return MergedCell
      */
     public static MergedCell of(final Cell cell, final int rowCount, final int columnCount) {
@@ -71,10 +77,10 @@ public class MergedCell {
     }
 
     /**
-     * 创建MergedCell
+     * Creates a MergedCell.
      *
-     * @param cell  第一个单元格，即左上角的单元格
-     * @param range 合并单元格范围
+     * @param cell  The first cell, i.e., the top-left cell of the merged region.
+     * @param range The merged cell range.
      * @return MergedCell
      */
     public static MergedCell of(final Cell cell, final CellRangeAddress range) {
@@ -82,27 +88,27 @@ public class MergedCell {
     }
 
     /**
-     * 获取第一个单元格，即左上角的单元格
+     * Gets the first cell, i.e., the top-left cell of the merged region.
      *
-     * @return Cell
+     * @return The first cell.
      */
     public Cell getFirst() {
         return this.first;
     }
 
     /**
-     * 获取合并单元格范围
+     * Gets the merged cell range.
      *
-     * @return CellRangeAddress
+     * @return The CellRangeAddress.
      */
     public CellRangeAddress getRange() {
         return this.range;
     }
 
     /**
-     * 设置单元格样式
+     * Sets the cell style for the merged region.
      *
-     * @param cellStyle 单元格样式
+     * @param cellStyle The cell style to apply.
      * @return this
      */
     public MergedCell setCellStyle(final CellStyle cellStyle) {
@@ -111,9 +117,9 @@ public class MergedCell {
     }
 
     /**
-     * 设置单元格值
+     * Sets the value for the merged region.
      *
-     * @param value 值
+     * @param value The value to set.
      * @return this
      */
     public MergedCell setValue(final Object value) {

@@ -41,7 +41,10 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * {@link TrustManager } 信任管理器，默认信任所有客户端和服务端证书 注意此类慎用，信任全部可能会有中间人攻击风险
+ * A {@link TrustManager} that trusts all client and server certificates.
+ * <p>
+ * <strong>Warning:</strong> This class should be used with caution, as it effectively disables certificate validation,
+ * which can expose your application to man-in-the-middle attacks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,42 +52,48 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AnyTrustManager extends X509ExtendedTrustManager {
 
     /**
-     * 全局单例信任管理器，默认信任所有客户端和服务端证书
+     * A global singleton trust manager that trusts all client and server certificates.
      */
     public static final AnyTrustManager INSTANCE = new AnyTrustManager();
     /**
-     * 信任所有
+     * An array containing the singleton {@link #INSTANCE}, which trusts all certificates.
      */
     public static final X509TrustManager[] TRUST_ANYS = { INSTANCE };
+    /**
+     * An empty array of {@link X509Certificate}s.
+     */
     private static final X509Certificate[] EMPTY_X509_CERTIFICATE_ARRAY = {};
 
     /**
-     * 获取默认的{@link TrustManager}，为SunX509 此方法主要用于获取自签证书的{@link X509TrustManager}
+     * Gets the default {@link X509TrustManager} (SunX509). This method is mainly used to get the
+     * {@link X509TrustManager} for self-signed certificates.
      *
-     * @return {@link X509TrustManager} or {@code null}
+     * @return The default {@link X509TrustManager}, or {@code null} if not found.
      */
     public static X509TrustManager getDefaultTrustManager() {
         return getTrustManager(null, null);
     }
 
     /**
-     * 获取指定的{@link X509TrustManager} 此方法主要用于获取自签证书的{@link X509TrustManager}
+     * Gets the specified {@link X509TrustManager}. This method is mainly used to get the {@link X509TrustManager} for
+     * self-signed certificates.
      *
-     * @param keyStore {@link KeyStore}
-     * @param provider 算法提供者，如bc，{@code null}表示默认
-     * @return {@link X509TrustManager} or {@code null}
+     * @param keyStore The {@link KeyStore}.
+     * @param provider The algorithm provider (e.g., Bouncy Castle), or {@code null} for the default.
+     * @return The specified {@link X509TrustManager}, or {@code null} if not found.
      */
     public static X509TrustManager getTrustManager(final KeyStore keyStore, final Provider provider) {
         return getTrustManager(keyStore, null, provider);
     }
 
     /**
-     * 获取指定的{@link X509TrustManager} 此方法主要用于获取自签证书的{@link X509TrustManager}
+     * Gets the specified {@link X509TrustManager}. This method is mainly used to get the {@link X509TrustManager} for
+     * self-signed certificates.
      *
-     * @param keyStore  {@link KeyStore}
-     * @param algorithm 算法名称，如"SunX509"，{@code null}表示默认SunX509
-     * @param provider  算法提供者，如bc，{@code null}表示默认SunJSSE
-     * @return {@link X509TrustManager} or {@code null}
+     * @param keyStore  The {@link KeyStore}.
+     * @param algorithm The algorithm name (e.g., "SunX509"), or {@code null} for the default.
+     * @param provider  The algorithm provider (e.g., Bouncy Castle), or {@code null} for the default (SunJSSE).
+     * @return The specified {@link X509TrustManager}, or {@code null} if not found.
      */
     public static X509TrustManager getTrustManager(
             final KeyStore keyStore,
@@ -101,31 +110,34 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
     }
 
     /**
-     * 获取默认的{@link TrustManager}，为SunX509 此方法主要用于获取自签证书的{@link TrustManager}
+     * Gets the default {@link TrustManager}s (SunX509). This method is mainly used to get the {@link TrustManager}s for
+     * self-signed certificates.
      *
-     * @return {@link X509TrustManager} or {@code null}
+     * @return An array of default {@link TrustManager}s.
      */
     public static TrustManager[] getDefaultTrustManagers() {
         return getTrustManagers(null);
     }
 
     /**
-     * 获取指定的{@link TrustManager} 此方法主要用于获取自签证书的{@link TrustManager}
+     * Gets the specified {@link TrustManager}s. This method is mainly used to get the {@link TrustManager}s for
+     * self-signed certificates.
      *
-     * @param keyStore {@link KeyStore}
-     * @return {@link TrustManager} or {@code null}
+     * @param keyStore The {@link KeyStore}.
+     * @return An array of {@link TrustManager}s.
      */
     public static TrustManager[] getTrustManagers(final KeyStore keyStore) {
         return getTrustManagers(keyStore, null, null);
     }
 
     /**
-     * 获取指定的{@link TrustManager} 此方法主要用于获取自签证书的{@link TrustManager}
+     * Gets the specified {@link TrustManager}s. This method is mainly used to get the {@link TrustManager}s for
+     * self-signed certificates.
      *
-     * @param keyStore  {@link KeyStore}
-     * @param algorithm 算法名称，如"SunX509"，{@code null}表示默认SunX509
-     * @param provider  算法提供者，如bc，{@code null}表示默认SunJSSE
-     * @return {@link TrustManager} or {@code null}
+     * @param keyStore  The {@link KeyStore}.
+     * @param algorithm The algorithm name (e.g., "SunX509"), or {@code null} for the default.
+     * @param provider  The algorithm provider (e.g., Bouncy Castle), or {@code null} for the default (SunJSSE).
+     * @return An array of {@link TrustManager}s.
      */
     public static TrustManager[] getTrustManagers(
             final KeyStore keyStore,
@@ -135,12 +147,13 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
     }
 
     /**
-     * 获取指定的{@link TrustManagerFactory}
+     * Gets the specified {@link TrustManagerFactory}.
      *
-     * @param keyStore  {@link KeyStore}
-     * @param algorithm 算法名称，如"SunX509"，{@code null}表示默认SunX509
-     * @param provider  算法提供者，如bc，{@code null}表示默认SunJSSE
-     * @return {@link TrustManager} or {@code null}
+     * @param keyStore  The {@link KeyStore}.
+     * @param algorithm The algorithm name (e.g., "SunX509"), or {@code null} for the default.
+     * @param provider  The algorithm provider (e.g., Bouncy Castle), or {@code null} for the default (SunJSSE).
+     * @return The specified {@link TrustManagerFactory}.
+     * @throws CryptoException if the algorithm is not found or the factory cannot be initialized.
      */
     public static TrustManagerFactory getTrustManagerFactory(
             final KeyStore keyStore,
@@ -169,6 +182,13 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
         return tmf;
     }
 
+    /**
+     * Creates a {@link KeyStore} from the given certificates.
+     *
+     * @param certs The certificates.
+     * @return The created {@link KeyStore}.
+     * @throws KeyStoreException if the KeyStore cannot be created.
+     */
     public static KeyStore createKeyStore(X509Certificate... certs) throws KeyStoreException {
         KeyStore ks = KeyStore.getInstance("PKCS12");
         try {
@@ -181,40 +201,107 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
         return ks;
     }
 
+    /**
+     * Loads a {@link KeyStore} from a URL.
+     *
+     * @param type     The type of the KeyStore.
+     * @param url      The URL of the KeyStore.
+     * @param password The password for the KeyStore.
+     * @return The loaded {@link KeyStore}.
+     * @throws IOException              if an I/O error occurs.
+     * @throws KeyStoreException        if the KeyStore cannot be loaded.
+     * @throws NoSuchAlgorithmException if the algorithm used to check the integrity of the keystore cannot be found.
+     * @throws CertificateException     if any of the certificates in the keystore could not be loaded.
+     */
     public static KeyStore loadKeyStore(String type, String url, String password)
             throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
         return loadKeyStore(type, url, password.toCharArray());
     }
 
+    /**
+     * Loads a {@link KeyStore} from a URL.
+     *
+     * @param type     The type of the KeyStore.
+     * @param url      The URL of the KeyStore.
+     * @param password The password for the KeyStore.
+     * @return The loaded {@link KeyStore}.
+     * @throws IOException              if an I/O error occurs.
+     * @throws KeyStoreException        if the KeyStore cannot be loaded.
+     * @throws NoSuchAlgorithmException if the algorithm used to check the integrity of the keystore cannot be found.
+     * @throws CertificateException     if any of the certificates in the keystore could not be loaded.
+     */
     public static KeyStore loadKeyStore(String type, String url, char[] password)
             throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
         KeyStore ks = KeyStore.getInstance(type);
-        InputStream in = IoKit.openFileOrURL(url);
-        try {
+        try (InputStream in = IoKit.openFileOrURL(url)) {
             ks.load(in, password);
-        } finally {
-            IoKit.close(in);
         }
         return ks;
     }
 
+    /**
+     * Creates a {@link KeyManager}.
+     *
+     * @param type          The type of the KeyStore.
+     * @param url           The URL of the KeyStore.
+     * @param storePassword The password for the KeyStore.
+     * @param keyPassword   The password for the key.
+     * @return The created {@link KeyManager}.
+     * @throws UnrecoverableKeyException if the key cannot be recovered.
+     * @throws KeyStoreException         if the KeyStore cannot be loaded.
+     * @throws NoSuchAlgorithmException  if the algorithm used to check the integrity of the keystore cannot be found.
+     * @throws CertificateException      if any of the certificates in the keystore could not be loaded.
+     * @throws IOException               if an I/O error occurs.
+     */
     public static KeyManager createKeyManager(String type, String url, char[] storePassword, char[] keyPassword)
             throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CertificateException,
             IOException {
         return createKeyManager(loadKeyStore(type, url, storePassword), keyPassword);
     }
 
+    /**
+     * Creates a {@link KeyManager}.
+     *
+     * @param type          The type of the KeyStore.
+     * @param url           The URL of the KeyStore.
+     * @param storePassword The password for the KeyStore.
+     * @param keyPassword   The password for the key.
+     * @return The created {@link KeyManager}.
+     * @throws UnrecoverableKeyException if the key cannot be recovered.
+     * @throws KeyStoreException         if the KeyStore cannot be loaded.
+     * @throws NoSuchAlgorithmException  if the algorithm used to check the integrity of the keystore cannot be found.
+     * @throws CertificateException      if any of the certificates in the keystore could not be loaded.
+     * @throws IOException               if an I/O error occurs.
+     */
     public static KeyManager createKeyManager(String type, String url, String storePassword, String keyPassword)
             throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CertificateException,
             IOException {
         return createKeyManager(loadKeyStore(type, url, storePassword), keyPassword);
     }
 
+    /**
+     * Creates a {@link KeyManager}.
+     *
+     * @param ks       The {@link KeyStore}.
+     * @param password The password for the key.
+     * @return The created {@link KeyManager}.
+     * @throws UnrecoverableKeyException if the key cannot be recovered.
+     * @throws KeyStoreException         if the KeyStore cannot be loaded.
+     */
     public static KeyManager createKeyManager(KeyStore ks, String password)
             throws UnrecoverableKeyException, KeyStoreException {
         return createKeyManager(ks, password.toCharArray());
     }
 
+    /**
+     * Creates a {@link KeyManager}.
+     *
+     * @param ks       The {@link KeyStore}.
+     * @param password The password for the key.
+     * @return The created {@link KeyManager}.
+     * @throws UnrecoverableKeyException if the key cannot be recovered.
+     * @throws KeyStoreException         if the KeyStore cannot be loaded.
+     */
     public static KeyManager createKeyManager(KeyStore ks, char[] password)
             throws UnrecoverableKeyException, KeyStoreException {
         try {
@@ -227,6 +314,13 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
         }
     }
 
+    /**
+     * Creates a {@link TrustManager}.
+     *
+     * @param ks The {@link KeyStore}.
+     * @return The created {@link TrustManager}.
+     * @throws KeyStoreException if the KeyStore cannot be loaded.
+     */
     public static TrustManager createTrustManager(KeyStore ks) throws KeyStoreException {
         try {
             TrustManagerFactory kmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -238,15 +332,46 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
         }
     }
 
+    /**
+     * Creates a {@link TrustManager} from the given certificates.
+     *
+     * @param certs The certificates.
+     * @return The created {@link TrustManager}.
+     * @throws KeyStoreException if the KeyStore cannot be created.
+     */
     public static TrustManager createTrustManager(X509Certificate... certs) throws KeyStoreException {
         return createTrustManager(createKeyStore(certs));
     }
 
+    /**
+     * Creates a {@link TrustManager} from a {@link KeyStore} loaded from a URL.
+     *
+     * @param type     The type of the KeyStore.
+     * @param url      The URL of the KeyStore.
+     * @param password The password for the KeyStore.
+     * @return The created {@link TrustManager}.
+     * @throws KeyStoreException        if the KeyStore cannot be loaded.
+     * @throws NoSuchAlgorithmException if the algorithm used to check the integrity of the keystore cannot be found.
+     * @throws CertificateException     if any of the certificates in the keystore could not be loaded.
+     * @throws IOException              if an I/O error occurs.
+     */
     public static TrustManager createTrustManager(String type, String url, char[] password)
             throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         return createTrustManager(loadKeyStore(type, url, password));
     }
 
+    /**
+     * Creates a {@link TrustManager} from a {@link KeyStore} loaded from a URL.
+     *
+     * @param type     The type of the KeyStore.
+     * @param url      The URL of the KeyStore.
+     * @param password The password for the KeyStore.
+     * @return The created {@link TrustManager}.
+     * @throws KeyStoreException        if the KeyStore cannot be loaded.
+     * @throws NoSuchAlgorithmException if the algorithm used to check the integrity of the keystore cannot be found.
+     * @throws CertificateException     if any of the certificates in the keystore could not be loaded.
+     * @throws IOException              if an I/O error occurs.
+     */
     public static TrustManager createTrustManager(String type, String url, String password)
             throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         return createTrustManager(loadKeyStore(type, url, password));
@@ -259,18 +384,22 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
 
     @Override
     public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
+        // Trust all clients
     }
 
     @Override
     public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
+        // Trust all servers
     }
 
     @Override
     public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s, final Socket socket) {
+        // Trust all clients
     }
 
     @Override
     public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s, final Socket socket) {
+        // Trust all servers
     }
 
     @Override
@@ -278,6 +407,7 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
             final X509Certificate[] x509Certificates,
             final String s,
             final SSLEngine sslEngine) {
+        // Trust all clients
     }
 
     @Override
@@ -285,6 +415,7 @@ public class AnyTrustManager extends X509ExtendedTrustManager {
             final X509Certificate[] x509Certificates,
             final String s,
             final SSLEngine sslEngine) {
+        // Trust all servers
     }
 
 }

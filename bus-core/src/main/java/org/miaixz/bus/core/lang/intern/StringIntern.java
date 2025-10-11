@@ -28,13 +28,22 @@
 package org.miaixz.bus.core.lang.intern;
 
 /**
- * JDK中默认的字符串规范化实现
+ * An implementation of the {@link Intern} interface specifically for {@link String} objects. This class leverages the
+ * default string interning mechanism provided by the Java Development Kit (JDK) through the {@link String#intern()}
+ * method.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StringIntern implements Intern<String> {
 
+    /**
+     * Returns the canonical representation for the given string. This method delegates to {@link String#intern()} to
+     * return a canonical string. If the {@code sample} string is {@code null}, this method returns {@code null}.
+     *
+     * @param sample The string for which to retrieve the canonical representation.
+     * @return The canonical string instance, or {@code null} if the sample is {@code null}.
+     */
     @Override
     public String intern(final String sample) {
         if (null == sample) {

@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 服务请求流量管控
+ * Provides core classes for service request flow control and limiting functionalities. This package includes components
+ * for building, managing, and applying various limiting strategies such as fallback, hotspot protection, and request
+ * rate limiting.
  *
  * @author Kimi Liu
  * @since Java 17+

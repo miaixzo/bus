@@ -52,31 +52,43 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * 饿了么 登录
+ * Ele.me login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ElemeProvider extends AbstractProvider {
 
+    /**
+     * Constructs an {@code ElemeProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public ElemeProvider(Context context) {
         super(context, Registry.ELEME);
     }
 
+    /**
+     * Constructs an {@code ElemeProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public ElemeProvider(Context context, CacheX cache) {
         super(context, Registry.ELEME, cache);
     }
 
     /**
-     * 生成饿了么请求的签名
+     * Generates the signature for an Ele.me request.
      *
-     * @param appKey     平台应用的授权key
-     * @param secret     平台应用的授权密钥
-     * @param timestamp  时间戳，单位秒。API服务端允许客户端请求最大时间误差为正负5分钟。
-     * @param action     饿了么请求的api方法
-     * @param token      用户授权的token
-     * @param parameters 加密参数
-     * @return Signature
+     * @param appKey     the application key of the platform
+     * @param secret     the application secret of the platform
+     * @param timestamp  the timestamp in seconds. The API server allows a maximum time difference of plus or minus 5
+     *                   minutes.
+     * @param action     the API method of the Ele.me request
+     * @param token      the user's authorization token
+     * @param parameters the parameters to be included in the signature
+     * @return the generated signature
      */
     public static String sign(
             String appKey,
@@ -97,6 +109,13 @@ public class ElemeProvider extends AbstractProvider {
         return calculatedSignature.toUpperCase();
     }
 
+    /**
+     * Retrieves the access token from Ele.me's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
@@ -132,6 +151,13 @@ public class ElemeProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(4);
@@ -168,14 +194,21 @@ public class ElemeProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Ele.me's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Map<String, Object> parameters = new HashMap<>(4);
-        // 获取商户账号信息的API接口名称
+        // API method name for getting merchant account information
         String action = "eleme.user.getUser";
-        // 时间戳，单位秒。API服务端允许客户端请求最大时间误差为正负5分钟。
+        // Timestamp in seconds. The API server allows a maximum time error of plus or minus 5 minutes.
         final long timestamp = System.currentTimeMillis();
-        // 公共参数
+        // Common parameters
         Map<String, Object> metasHashMap = new HashMap<>(4);
         metasHashMap.put("app_key", context.getAppKey());
         metasHashMap.put("timestamp", timestamp);
@@ -208,7 +241,7 @@ public class ElemeProvider extends AbstractProvider {
                 throw new AuthorizedException("Failed to parse user info response: empty response");
             }
 
-            // 校验请求
+            // Validate request
             if (object.containsKey("name")) {
                 String message = (String) object.get("message");
                 throw new AuthorizedException(message != null ? message : "Unknown error");
@@ -237,6 +270,13 @@ public class ElemeProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Generates the Basic Authorization header value.
+     *
+     * @param appKey    the application key
+     * @param appSecret the application secret
+     * @return the Basic Authorization header string
+     */
     private String getBasic(String appKey, String appSecret) {
         StringBuilder sb = new StringBuilder();
         String encodeToString = Base64.encode((appKey + Symbol.COLON + appSecret).getBytes());
@@ -244,6 +284,14 @@ public class ElemeProvider extends AbstractProvider {
         return sb.toString();
     }
 
+    /**
+     * Builds the HTTP headers for a request.
+     *
+     * @param contentType the Content-Type header value
+     * @param requestId   the X-Eleme-Requestid header value
+     * @param auth        whether to include the Authorization header
+     * @return a map of HTTP headers
+     */
     private Map<String, String> buildHeader(String contentType, String requestId, boolean auth) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.ACCEPT, "text/xml,text/javascript,text/html");
@@ -258,10 +306,21 @@ public class ElemeProvider extends AbstractProvider {
         return header;
     }
 
+    /**
+     * Generates a unique request ID.
+     *
+     * @return a unique request ID string
+     */
     private String getRequestId() {
         return (ID.objectId() + "|" + System.currentTimeMillis()).toUpperCase();
     }
 
+    /**
+     * Checks the response content for errors.
+     *
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
+     */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
             String errorDescription = (String) object.get("error_description");
@@ -269,6 +328,13 @@ public class ElemeProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state)).queryParam("scope", "all").build();

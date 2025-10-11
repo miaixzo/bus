@@ -37,26 +37,26 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * {@link ValueProvider}属性拷贝到Bean中的拷贝器
+ * A copier that copies properties from a {@link ValueProvider} to a Bean.
  *
- * @param <T> 目标Bean类型
+ * @param <T> The type of the target Bean.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, T> {
 
     /**
-     * 目标的类型（用于泛型类注入）
+     * The generic type of the target (used for injecting generic parameters into the Bean).
      */
     private final Type targetType;
 
     /**
-     * 构造
+     * Constructs a new {@code ValueToBeanCopier} instance.
      *
-     * @param source      来源Map
-     * @param target      目标Bean对象
-     * @param targetType  目标泛型类型
-     * @param copyOptions 拷贝选项
+     * @param source      The source {@link ValueProvider}. Must not be {@code null}.
+     * @param target      The target Bean object. Must not be {@code null}.
+     * @param targetType  The generic type of the target Bean.
+     * @param copyOptions The options to configure the copying process.
      */
     public ValueToBeanCopier(final ValueProvider<String> source, final T target, final Type targetType,
             final CopyOptions copyOptions) {
@@ -64,11 +64,16 @@ public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, 
         this.targetType = targetType;
     }
 
+    /**
+     * Performs the property copying operation from the {@link ValueProvider} to the target Bean.
+     *
+     * @return The target object with copied properties.
+     */
     @Override
     public T copy() {
         Class<?> actualEditable = target.getClass();
         if (null != copyOptions.editable) {
-            // 检查限制类是否为target的父类或接口
+            // Check if the restricted class is a superclass or interface of the target.
             Assert.isTrue(
                     copyOptions.editable.isInstance(target),
                     "Target class [{}] not assignable to Editable class [{}]",
@@ -83,37 +88,37 @@ public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, 
                 return;
             }
 
-            // 检查目标字段可写性
+            // Check target field writability.
             if (null == propDesc || !propDesc.isWritable(this.copyOptions.transientSupport)) {
-                // 字段不可写，跳过之
+                // Field is not writable, skip.
                 return;
             }
 
-            // 编辑键值对
+            // Edit key-value pair.
             final MutableEntry<Object, Object> entry = copyOptions.editField(tFieldName, null);
             if (null == entry) {
                 return;
             }
             tFieldName = StringKit.toStringOrNull(entry.getKey());
-            // 对key做转换，转换后为null的跳过
+            // If the key is null after conversion, skip.
             if (null == tFieldName) {
                 return;
             }
-            // 无字段内容跳过
+            // If the source does not contain the field, skip.
             if (!source.containsKey(tFieldName)) {
                 return;
             }
 
-            // 获取目标字段真实类型
+            // Get the actual type of the target field and retrieve the source value.
             final Type fieldType = TypeKit.getActualType(this.targetType, propDesc.getFieldType());
             final Object sValue = source.value(tFieldName, fieldType);
 
-            // 检查目标对象属性是否过滤属性
+            // Check if the target property is filtered.
             if (!copyOptions.testPropertyFilter(propDesc.getField(), sValue)) {
                 return;
             }
 
-            // 目标赋值
+            // Assign to target.
             propDesc.setValue(
                     this.target,
                     sValue,

@@ -33,71 +33,108 @@ import org.miaixz.bus.core.center.date.culture.cn.Element;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 九星
+ * Represents the Nine Stars (九星) in Chinese metaphysics, often associated with Feng Shui and other divinatory
+ * practices. This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NineStar extends Samsara {
 
+    /**
+     * Array of names for the Nine Stars.
+     */
     public static final String[] NAMES = { "一", "二", "三", "四", "五", "六", "七", "八", "九" };
 
+    /**
+     * Constructs a {@code NineStar} instance with the specified index.
+     *
+     * @param index The index of the star in the {@link #NAMES} array.
+     */
     public NineStar(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * Constructs a {@code NineStar} instance with the specified name.
+     *
+     * @param name The name of the star.
+     */
     public NineStar(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Creates a {@code NineStar} instance from its index.
+     *
+     * @param index The index of the star.
+     * @return A new {@code NineStar} instance.
+     */
     public static NineStar fromIndex(int index) {
         return new NineStar(index);
     }
 
+    /**
+     * Creates a {@code NineStar} instance from its name.
+     *
+     * @param name The name of the star.
+     * @return A new {@code NineStar} instance.
+     */
     public static NineStar fromName(String name) {
         return new NineStar(name);
     }
 
+    /**
+     * Gets the next {@code NineStar} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code NineStar} instance.
+     */
     public NineStar next(int n) {
         return fromIndex(nextIndex(n));
     }
 
     /**
-     * 颜色
+     * Gets the color associated with this Nine Star.
      *
-     * @return 颜色
+     * @return The color as a string.
      */
     public String getColor() {
         return Normal.COLOR[index];
     }
 
     /**
-     * 五行
+     * Gets the corresponding {@link Element} (五行) for this Nine Star.
      *
-     * @return 五行
+     * @return The {@link Element} associated with this Nine Star.
      */
     public Element getElement() {
         return Element.fromIndex(new int[] { 4, 2, 0, 0, 2, 3, 3, 2, 1 }[index]);
     }
 
     /**
-     * 北斗九星
+     * Gets the corresponding {@link Dipper} (北斗九星) for this Nine Star.
      *
-     * @return 北斗九星
+     * @return The {@link Dipper} associated with this Nine Star.
      */
     public Dipper getDipper() {
         return Dipper.fromIndex(index);
     }
 
     /**
-     * 方位
+     * Gets the corresponding {@link Direction} (方位) for this Nine Star.
      *
-     * @return 方位
+     * @return The {@link Direction} associated with this Nine Star.
      */
     public Direction getDirection() {
         return Direction.fromIndex(index);
     }
 
+    /**
+     * Returns a string representation of this Nine Star, including its name, color, and element.
+     *
+     * @return A string representation of the Nine Star.
+     */
     @Override
     public String toString() {
         return getName() + getColor() + getElement();

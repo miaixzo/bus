@@ -28,54 +28,188 @@
 package org.miaixz.bus.shade.beans;
 
 /**
- * 表字段类型
+ * Represents various column types for MySQL, including primitive types, wrapper types, SQL-specific types, Java 8
+ * date/time types, and other common types.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum MySQLColumnType implements ColumnType {
 
-    // 基本类型
-    BASE_BYTE("byte", null), BASE_SHORT("short", null), BASE_CHAR("char", null), BASE_INT("int", null),
-    BASE_LONG("long", null), BASE_FLOAT("float", null), BASE_DOUBLE("double", null), BASE_BOOLEAN("boolean", null),
+    // Primitive types
+    /**
+     * Represents the primitive byte type.
+     */
+    BASE_BYTE("byte", null),
+    /**
+     * Represents the primitive short type.
+     */
+    BASE_SHORT("short", null),
+    /**
+     * Represents the primitive char type.
+     */
+    BASE_CHAR("char", null),
+    /**
+     * Represents the primitive int type.
+     */
+    BASE_INT("int", null),
+    /**
+     * Represents the primitive long type.
+     */
+    BASE_LONG("long", null),
+    /**
+     * Represents the primitive float type.
+     */
+    BASE_FLOAT("float", null),
+    /**
+     * Represents the primitive double type.
+     */
+    BASE_DOUBLE("double", null),
+    /**
+     * Represents the primitive boolean type.
+     */
+    BASE_BOOLEAN("boolean", null),
 
-    // 包装类型
-    BYTE("Byte", null), SHORT("Short", null), CHARACTER("Character", null), INTEGER("Integer", null),
-    LONG("Long", null), FLOAT("Float", null), DOUBLE("Double", null), BOOLEAN("Boolean", null), STRING("String", null),
+    // Wrapper types
+    /**
+     * Represents the Byte wrapper type.
+     */
+    BYTE("Byte", null),
+    /**
+     * Represents the Short wrapper type.
+     */
+    SHORT("Short", null),
+    /**
+     * Represents the Character wrapper type.
+     */
+    CHARACTER("Character", null),
+    /**
+     * Represents the Integer wrapper type.
+     */
+    INTEGER("Integer", null),
+    /**
+     * Represents the Long wrapper type.
+     */
+    LONG("Long", null),
+    /**
+     * Represents the Float wrapper type.
+     */
+    FLOAT("Float", null),
+    /**
+     * Represents the Double wrapper type.
+     */
+    DOUBLE("Double", null),
+    /**
+     * Represents the Boolean wrapper type.
+     */
+    BOOLEAN("Boolean", null),
+    /**
+     * Represents the String type.
+     */
+    STRING("String", null),
 
-    // sql 包下数据类型
-    DATE_SQL("Date", "java.sql.Date"), TIME("Time", "java.sql.Time"), TIMESTAMP("Timestamp", "java.sql.Timestamp"),
-    BLOB("Blob", "java.sql.Blob"), CLOB("Clob", "java.sql.Clob"),
+    // SQL package data types
+    /**
+     * Represents {@code java.sql.Date}.
+     */
+    DATE_SQL("Date", "java.sql.Date"),
+    /**
+     * Represents {@code java.sql.Time}.
+     */
+    TIME("Time", "java.sql.Time"),
+    /**
+     * Represents {@code java.sql.Timestamp}.
+     */
+    TIMESTAMP("Timestamp", "java.sql.Timestamp"),
+    /**
+     * Represents {@code java.sql.Blob}.
+     */
+    BLOB("Blob", "java.sql.Blob"),
+    /**
+     * Represents {@code java.sql.Clob}.
+     */
+    CLOB("Clob", "java.sql.Clob"),
 
-    // java8 新时间类型
-    LOCAL_DATE("LocalDate", "java.time.LocalDate"), LOCAL_TIME("LocalTime", "java.time.LocalTime"),
-    YEAR("Year", "java.time.Year"), YEAR_MONTH("YearMonth", "java.time.YearMonth"),
+    // Java 8 new time types
+    /**
+     * Represents {@code java.time.LocalDate}.
+     */
+    LOCAL_DATE("LocalDate", "java.time.LocalDate"),
+    /**
+     * Represents {@code java.time.LocalTime}.
+     */
+    LOCAL_TIME("LocalTime", "java.time.LocalTime"),
+    /**
+     * Represents {@code java.time.Year}.
+     */
+    YEAR("Year", "java.time.Year"),
+    /**
+     * Represents {@code java.time.YearMonth}.
+     */
+    YEAR_MONTH("YearMonth", "java.time.YearMonth"),
+    /**
+     * Represents {@code java.time.LocalDateTime}.
+     */
     LOCAL_DATE_TIME("LocalDateTime", "java.time.LocalDateTime"),
 
-    // 其他杂类
-    BYTE_ARRAY("byte[]", null), OBJECT("Object", null), DATE("Date", "java.util.Date"),
-    BIG_INTEGER("BigInteger", "java.math.BigInteger"), BIG_DECIMAL("BigDecimal", "java.math.BigDecimal");
+    // Other miscellaneous types
+    /**
+     * Represents a byte array.
+     */
+    BYTE_ARRAY("byte[]", null),
+    /**
+     * Represents the Object type.
+     */
+    OBJECT("Object", null),
+    /**
+     * Represents {@code java.util.Date}.
+     */
+    DATE("Date", "java.util.Date"),
+    /**
+     * Represents {@code java.math.BigInteger}.
+     */
+    BIG_INTEGER("BigInteger", "java.math.BigInteger"),
+    /**
+     * Represents {@code java.math.BigDecimal}.
+     */
+    BIG_DECIMAL("BigDecimal", "java.math.BigDecimal");
 
     /**
-     * 类型
+     * The simple name of the type.
      */
     private final String type;
 
     /**
-     * 包路径
+     * The fully qualified package path of the type, or {@code null} if it's a primitive or common type.
      */
     private final String pkg;
 
+    /**
+     * Constructs a {@code MySQLColumnType} enum constant.
+     *
+     * @param type The simple name of the type.
+     * @param pkg  The fully qualified package path of the type, or {@code null}.
+     */
     MySQLColumnType(final String type, final String pkg) {
         this.type = type;
         this.pkg = pkg;
     }
 
+    /**
+     * Retrieves the simple name of the column type.
+     *
+     * @return The simple name of the type.
+     */
     @Override
     public String getType() {
         return type;
     }
 
+    /**
+     * Retrieves the fully qualified package path of the column type.
+     *
+     * @return The fully qualified package path, or {@code null} if not applicable.
+     */
     @Override
     public String getPkg() {
         return pkg;

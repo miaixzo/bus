@@ -34,24 +34,39 @@ import java.nio.file.attribute.BasicFileAttributes;
 import org.miaixz.bus.core.io.file.PathResolve;
 
 /**
- * 文件移动操作的FileVisitor实现，用于递归遍历移动目录和文件，此类非线程安全 此类在遍历源目录并移动过程中会自动创建目标目录中不存在的上级目录。
+ * FileVisitor implementation for file move operations, used to recursively traverse and move directories and files.
+ * This class is not thread-safe. This class automatically creates non-existent parent directories in the target
+ * directory during the traversal and moving process.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MoveVisitor extends SimpleFileVisitor<Path> {
 
+    /**
+     * The source path for the move operation.
+     */
     private final Path source;
+    /**
+     * The target path for the move operation.
+     */
     private final Path target;
+    /**
+     * Copy options for the move operation.
+     */
     private final CopyOption[] copyOptions;
+    /**
+     * Flag indicating whether the target directory has been created.
+     */
     private boolean isTargetCreated;
 
     /**
-     * 构造
+     * Constructs a {@code MoveVisitor} with the specified source, target, and copy options.
      *
-     * @param source      源Path
-     * @param target      目标Path
-     * @param copyOptions 拷贝（移动）选项
+     * @param source      The source Path.
+     * @param target      The target Path.
+     * @param copyOptions Copy (move) options.
+     * @throws IllegalArgumentException if the target exists and is not a directory.
      */
     public MoveVisitor(final Path source, final Path target, final CopyOption... copyOptions) {
         if (PathResolve.exists(target, false) && !PathResolve.isDirectory(target)) {
@@ -62,10 +77,19 @@ public class MoveVisitor extends SimpleFileVisitor<Path> {
         this.copyOptions = copyOptions;
     }
 
+    /**
+     * Invoked before visiting a directory. Initializes the target directory and creates corresponding directories in
+     * the target path.
+     *
+     * @param dir   The directory to visit.
+     * @param attrs The basic file attributes of the directory.
+     * @return {@link FileVisitResult#CONTINUE} to continue the file tree traversal.
+     * @throws IOException if an I/O error occurs or if a file already exists at the target directory path.
+     */
     @Override
     public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
         initTarget();
-        // 将当前目录相对于源路径转换为相对于目标路径
+        // Convert the current directory relative to the source path to a path relative to the target path.
         final Path targetDir = target.resolve(source.relativize(dir));
         if (!Files.exists(targetDir)) {
             Files.createDirectories(targetDir);
@@ -75,6 +99,14 @@ public class MoveVisitor extends SimpleFileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
+    /**
+     * Invoked when a file is visited. Moves the file to the target path.
+     *
+     * @param file  The file to visit.
+     * @param attrs The basic file attributes of the file.
+     * @return {@link FileVisitResult#CONTINUE} to continue the file tree traversal.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
         initTarget();
@@ -83,7 +115,8 @@ public class MoveVisitor extends SimpleFileVisitor<Path> {
     }
 
     /**
-     * 初始化目标文件或目录
+     * Initializes the target file or directory. This method ensures that the target directory exists before any move
+     * operations.
      */
     private void initTarget() {
         if (!this.isTargetCreated) {

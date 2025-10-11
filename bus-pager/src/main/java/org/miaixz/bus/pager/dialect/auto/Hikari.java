@@ -4,7 +4,7 @@
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
  ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
- ~                                                                               ~
+ ~                                                                                                ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
  ~ in the Software without restriction, including without limitation the rights  ~
@@ -32,13 +32,20 @@ import org.miaixz.bus.pager.dialect.AbstractAutoDialect;
 import com.zaxxer.hikari.HikariDataSource;
 
 /**
- * Hikari
+ * Auto-dialect implementation for HikariCP data sources. This class extends {@link AbstractAutoDialect} to provide
+ * specific handling for {@link HikariDataSource}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Hikari extends AbstractAutoDialect<HikariDataSource> {
 
+    /**
+     * Retrieves the JDBC URL from the given {@link HikariDataSource}.
+     *
+     * @param hikariDataSource the HikariDataSource instance
+     * @return the JDBC URL string
+     */
     @Override
     public String getJdbcUrl(HikariDataSource hikariDataSource) {
         return hikariDataSource.getJdbcUrl();

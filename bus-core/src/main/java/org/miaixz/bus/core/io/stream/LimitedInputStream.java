@@ -35,36 +35,46 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 限制读取最大长度的{@link FilterInputStream}实现
- *
+ * An implementation of {@link FilterInputStream} that limits the maximum number of bytes that can be read from the
+ * underlying stream.
  * <p>
- * 来自：https://github.com/skylot/jadx/blob/master/jadx-plugins/jadx-plugins-api/src/main/java/jadx/api/plugins/utils/LimitedInputStream.java
- * </p>
+ * Source:
+ * https://github.com/skylot/jadx/blob/master/jadx-plugins/jadx-plugins-api/src/main/java/jadx/api/plugins/utils/LimitedInputStream.java
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LimitedInputStream extends FilterInputStream {
 
+    /**
+     * Flag indicating whether an {@link IOException} should be thrown when the read limit is reached. If {@code false},
+     * {@code -1} will be returned after the limit is reached.
+     */
     private final boolean throwWhenReachLimit;
+    /**
+     * The remaining number of bytes that can be read from the stream.
+     */
     protected long limit;
 
     /**
-     * 构造
+     * Constructs a new {@code LimitedInputStream} with the specified underlying input stream and a read limit. By
+     * default, an {@link IOException} will be thrown when the limit is reached.
      *
-     * @param in    {@link InputStream}
-     * @param limit 限制最大读取量，单位byte
+     * @param in    The underlying {@link InputStream}.
+     * @param limit The maximum number of bytes that can be read, in bytes.
      */
     public LimitedInputStream(final InputStream in, final long limit) {
         this(in, limit, true);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code LimitedInputStream} with the specified underlying input stream, read limit, and error
+     * handling behavior.
      *
-     * @param in                  {@link InputStream}
-     * @param limit               限制最大读取量，单位byte
-     * @param throwWhenReachLimit 是否在达到限制时抛出异常，{@code false}则读取到限制后返回-1
+     * @param in                  The underlying {@link InputStream}.
+     * @param limit               The maximum number of bytes that can be read, in bytes.
+     * @param throwWhenReachLimit {@code true} to throw an {@link IOException} when the limit is reached, {@code false}
+     *                            to return -1 instead.
      */
     public LimitedInputStream(final InputStream in, final long limit, final boolean throwWhenReachLimit) {
         super(Assert.notNull(in, "InputStream must not be null!"));
@@ -72,6 +82,17 @@ public class LimitedInputStream extends FilterInputStream {
         this.throwWhenReachLimit = throwWhenReachLimit;
     }
 
+    /**
+     * Reads the next byte of data from this input stream. The value byte is returned as an {@code int} in the range
+     * {@code 0} to {@code 255}. If no byte is available because the end of the stream has been reached, the value
+     * {@code -1} is returned. If the read limit is reached and {@code throwWhenReachLimit} is {@code true}, an
+     * {@link IOException} is thrown.
+     *
+     * @return The next byte of data, or {@code -1} if the end of the stream is reached or the limit is reached and
+     *         {@code throwWhenReachLimit} is {@code false}.
+     * @throws IOException If an I/O error occurs, or if the read limit is reached and {@code throwWhenReachLimit} is
+     *                     {@code true}.
+     */
     @Override
     public int read() throws IOException {
         final int data = (limit == 0) ? Normal.__1 : super.read();
@@ -80,6 +101,19 @@ public class LimitedInputStream extends FilterInputStream {
         return data;
     }
 
+    /**
+     * Reads up to {@code len} bytes of data from this input stream into an array of bytes. An attempt is made to read
+     * as many as {@code len} bytes, but a smaller number may be read. If the read limit is reached and
+     * {@code throwWhenReachLimit} is {@code true}, an {@link IOException} is thrown.
+     *
+     * @param b   The buffer into which the data is read.
+     * @param off The start offset in the destination array {@code b} at which the data is written.
+     * @param len The maximum number of bytes to read.
+     * @return The total number of bytes read into the buffer, or -1 if there is no more data because the end of the
+     *         stream has been reached or the limit is reached and {@code throwWhenReachLimit} is {@code false}.
+     * @throws IOException If an I/O error occurs, or if the read limit is reached and {@code throwWhenReachLimit} is
+     *                     {@code true}.
+     */
     @Override
     public int read(final byte[] b, final int off, final int len) throws IOException {
         final int length = (limit == 0) ? Normal.__1 : super.read(b, off, len > limit ? (int) limit : len);
@@ -88,6 +122,16 @@ public class LimitedInputStream extends FilterInputStream {
         return length;
     }
 
+    /**
+     * Skips over and discards {@code len} bytes of data from the input stream. The {@code skip} method may skip over
+     * some smaller number of bytes, possibly zero. If the read limit is reached and {@code throwWhenReachLimit} is
+     * {@code true}, an {@link IOException} is thrown.
+     *
+     * @param len The number of bytes to be skipped.
+     * @return The actual number of bytes skipped.
+     * @throws IOException If an I/O error occurs, or if the read limit is reached and {@code throwWhenReachLimit} is
+     *                     {@code true}.
+     */
     @Override
     public long skip(final long len) throws IOException {
         final long length = super.skip(Math.min(len, limit));
@@ -96,6 +140,13 @@ public class LimitedInputStream extends FilterInputStream {
         return length;
     }
 
+    /**
+     * Returns an estimate of the number of bytes that can be read (or skipped over) from this input stream without
+     * blocking by the next invocation of a method for this input stream. This method respects the remaining read limit.
+     *
+     * @return An estimate of the number of bytes that can be read.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public int available() throws IOException {
         final int length = super.available();
@@ -103,10 +154,12 @@ public class LimitedInputStream extends FilterInputStream {
     }
 
     /**
-     * 检查读取数据是否达到限制
+     * Checks if the read operation has exceeded the defined limit. If the end of the stream is reached (data < 0) and
+     * there was still a limit remaining (limit > 0), and {@code throwWhenReachLimit} is {@code true}, an
+     * {@link IOException} is thrown.
      *
-     * @param data 读取的数据
-     * @throws IOException 定义了限制并设置达到限制后抛出异常
+     * @param data The result of the last read operation (number of bytes read, or -1 for end of stream).
+     * @throws IOException If the read limit is exceeded and configured to throw an exception.
      */
     private void checkLimit(final long data) throws IOException {
         if (data < 0 && limit > 0 && throwWhenReachLimit) {

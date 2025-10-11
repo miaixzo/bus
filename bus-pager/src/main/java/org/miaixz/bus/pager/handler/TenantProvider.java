@@ -20,7 +20,7 @@
  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ OUT of OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -34,42 +34,44 @@ import net.sf.jsqlparser.schema.Column;
 import org.miaixz.bus.mapper.Args;
 
 /**
- * 租户：行级多租户
+ * Interface for providing row-level multi-tenancy support. Implementations of this interface define how tenant
+ * information is retrieved and applied to SQL queries.
  */
 public interface TenantProvider {
 
     /**
-     * 获取租户 ID 值表达式，仅支持单个 ID 值
+     * Retrieves the tenant ID value as an {@link Expression}. This method should only support a single tenant ID value.
      *
-     * @return 租户 ID 表达式
+     * @return the tenant ID expression
      */
     Expression getTenantId();
 
     /**
-     * 获取租户字段名
+     * Retrieves the name of the tenant field.
      *
-     * @return 租户字段名，默认为 "tenant_id"
+     * @return the tenant field name, defaulting to "tenant_id"
      */
     default String getColumn() {
         return Args.TENANT_TABLE_COLUMN;
     }
 
     /**
-     * 判断是否忽略表的多租户条件拼接
+     * Determines whether to ignore multi-tenancy conditions for a specific table.
      *
-     * @param name 表名
-     * @return true 表示忽略，false 表示需要拼接
+     * @param name the name of the table
+     * @return true to ignore, false to apply tenant conditions
      */
     default boolean ignore(String name) {
         return false;
     }
 
     /**
-     * 判断是否忽略插入租户字段
+     * Determines whether to ignore inserting the tenant field during an INSERT operation. This is typically used to
+     * check if the tenant column is already present in the list of columns.
      *
-     * @param columns 插入的字段列表
-     * @param column  租户 ID 字段名
-     * @return true 表示忽略，false 表示需要插入
+     * @param columns the list of columns in the INSERT statement
+     * @param column  the name of the tenant ID field
+     * @return true to ignore, false to insert the tenant field
      */
     default boolean ignore(List<Column> columns, String column) {
         return columns.stream().map(Column::getColumnName).anyMatch(name -> name.equalsIgnoreCase(column));

@@ -30,8 +30,10 @@ package org.miaixz.bus.vortex.support;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -47,13 +49,18 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.annotation.NonNull;
 
 /**
- * HTTP策略路由器，负责将请求路由到HTTP服务
+ * HTTP strategy router, responsible for routing requests to HTTP services.
+ * <p>
+ * This class implements the {@link Router} interface to handle HTTP requests. It uses {@link WebClient} to forward
+ * incoming requests to target HTTP services, managing request headers, body, and response processing.
+ *
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,57 +68,78 @@ import reactor.util.annotation.NonNull;
 public class HttpRequestRouter implements Router {
 
     /**
-     * 预定义的ExchangeStrategies实例，用于WebClient配置。
+     * Pre-defined {@link ExchangeStrategies} instance for WebClient configuration.
      * <p>
-     * 该实例在类加载时初始化并缓存，避免重复创建，提高性能。 配置了最大内存大小限制，防止大请求导致内存溢出。
-     * </p>
+     * This instance is initialized and cached when the class is loaded to avoid redundant creation and improve
+     * performance. It is configured with a maximum in-memory size limit to prevent out-of-memory errors for large
+     * requests.
      */
     private static final ExchangeStrategies CACHED_EXCHANGE_STRATEGIES = ExchangeStrategies.builder()
             .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128))).build();
 
     /**
-     * 线程安全的 WebClient 缓存，按 baseUrl 存储已初始化的 WebClient 实例
+     * A thread-safe cache of {@link WebClient} instances, stored by their base URL.
+     * <p>
+     * This map ensures that a {@link WebClient} instance is reused for a given base URL, optimizing resource usage and
+     * performance.
      */
     private final Map<String, WebClient> clients = new ConcurrentHashMap<>();
 
     /**
-     * 处理客户端请求，构建并转发到目标服务，返回响应
+     * Processes client requests, constructs and forwards them to the target service, and returns the response.
+     * <p>
+     * This method orchestrates the forwarding of an incoming {@link ServerRequest} to an external HTTP service. It
+     * involves building the target URL, configuring the {@link WebClient} with appropriate headers and body, sending
+     * the request, and processing the received response.
      *
-     * @param request 客户端的 ServerRequest 对象
-     * @param context 请求上下文，包含请求参数和配置信息
-     * @param assets  配置资产，包含目标服务的配置信息
-     * @return {@link Mono<ServerResponse>} 包含目标服务的响应
+     * @param request The client's {@link ServerRequest} object.
+     * @param context The request context, containing request parameters and configuration information.
+     * @param assets  The configuration assets, containing configuration information for the target service.
+     * @return {@link Mono<ServerResponse>} containing the response from the target service.
      */
     @NonNull
     @Override
     public Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets) {
-        // 1. 构建基础URL
-        String baseUrl = buildBaseUrl(assets);
+        // Get request method and path for logging
+        String method = request.methodName();
+        String path = request.path();
 
-        // 2. 获取或创建WebClient
+        // 1. Build the base URL for the target service
+        String baseUrl = buildBaseUrl(assets);
+        Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_BASEURL] - Base URL: {}", method, path, baseUrl);
+
+        // 2. Get or create a WebClient instance for the base URL
         WebClient webClient = clients.computeIfAbsent(
                 baseUrl,
                 client -> WebClient.builder().exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build());
+        Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_CLIENT] - WebClient created/retrieved", method, path);
 
-        // 3. 构建目标URI
+        // 3. Build the target URI for the request
         String targetUri = buildTargetUri(assets, context);
+        Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_URI] - Target URI: {}", method, path, targetUri);
 
-        // 4. 配置请求
+        // 4. Configure the request with the appropriate HTTP method
         WebClient.RequestBodySpec bodySpec = webClient.method(context.getHttpMethod()).uri(targetUri);
+        Logger.info(
+                "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_METHOD] - HTTP method: {}",
+                method,
+                path,
+                context.getHttpMethod());
 
-        // 5. 配置请求头
+        // 5. Configure request headers, copying from the incoming request and removing/clearing specific ones
         bodySpec.headers(headers -> {
             headers.addAll(request.headers().asHttpHeaders());
             headers.remove(HttpHeaders.HOST);
             headers.clearContentHeaders();
         });
+        Logger.info("==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_HEADERS] - Headers configured", method, path);
 
-        // 6. 处理请求体（仅对非GET请求）
+        // 6. Handle the request body (only for non-GET requests)
         if (!HttpMethod.GET.equals(context.getHttpMethod())) {
             MediaType mediaType = request.headers().contentType().orElse(null);
             if (mediaType != null) {
                 if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
-                    // 处理多部分请求体
+                    // Handle multipart request body
                     Map<String, Part> fileParts = context.getFilePartMap();
                     Map<String, String> params = context.getRequestMap();
                     if (!fileParts.isEmpty() || !params.isEmpty()) {
@@ -122,14 +150,21 @@ public class HttpRequestRouter implements Router {
                             params.forEach(multipartInserter::with);
                         }
                         bodySpec.body(multipartInserter);
+                        Logger.info(
+                                "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_MULTIPART] - Multipart body configured with {} files and {} params",
+                                method,
+                                path,
+                                fileParts.size(),
+                                params.size());
                     }
                 } else if (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
-                    // 处理JSON请求体
+                    // Handle JSON request body
                     return request.bodyToMono(String.class).defaultIfEmpty(Normal.EMPTY).flatMap(jsonBody -> {
-                        Format.debug(
-                                request.exchange(),
-                                "JSON_REQUEST_BODY",
-                                "JSON request body size: " + jsonBody.length());
+                        Logger.info(
+                                "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_JSON] - JSON request body size: {}",
+                                method,
+                                path,
+                                jsonBody.length());
                         return bodySpec.contentType(MediaType.APPLICATION_JSON).bodyValue(jsonBody)
                                 .httpRequest(clientHttpRequest -> {
                                     HttpClientRequest reactorRequest = clientHttpRequest.getNativeRequest();
@@ -137,19 +172,37 @@ public class HttpRequestRouter implements Router {
                                 }).retrieve().toEntity(DataBuffer.class).flatMap(this::processResponse);
                     });
                 } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
-                    // 处理表单请求体
-                    handleFormRequestBody(bodySpec, context);
+                    // Handle form-urlencoded request body
+                    handleFormRequestBody(bodySpec, context, method, path);
                 } else {
-                    Format.warn(request.exchange(), "UNSUPPORTED_MEDIA_TYPE", "Unsupported media type: " + mediaType);
-                    handleFormRequestBody(bodySpec, context);
+                    Logger.info(
+                            "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_UNSUPPORTED] - Unsupported media type: {}",
+                            method,
+                            path,
+                            mediaType);
+                    handleFormRequestBody(bodySpec, context, method, path);
                 }
             } else {
-                // 没有Content-Type头，默认按表单数据处理
-                handleFormRequestBody(bodySpec, context);
+                // No Content-Type header, default to form data processing
+                Logger.info(
+                        "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_DEFAULT] - No Content-Type header, defaulting to form data",
+                        method,
+                        path);
+                handleFormRequestBody(bodySpec, context, method, path);
             }
+        } else {
+            Logger.info(
+                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_GET] - GET request, no body processing",
+                    method,
+                    path);
         }
 
-        // 7. 发送请求
+        // 7. Send the request and process the response
+        Logger.info(
+                "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_SEND] - Sending request with timeout: {}ms",
+                method,
+                path,
+                assets.getTimeout());
         return bodySpec.httpRequest(clientHttpRequest -> {
             HttpClientRequest reactorRequest = clientHttpRequest.getNativeRequest();
             reactorRequest.responseTimeout(Duration.ofMillis(assets.getTimeout()));
@@ -157,31 +210,47 @@ public class HttpRequestRouter implements Router {
     }
 
     /**
-     * 处理表单请求体。
+     * Handles the form request body.
      * <p>
-     * 该方法将请求上下文中的参数转换为MultiValueMap，并设置为请求体。 如果参数为空，则不设置请求体。
-     * </p>
+     * This method converts the parameters from the request context into a {@link MultiValueMap} and sets it as the
+     * request body. If the parameters map is empty, no request body is set.
      *
-     * @param bodySpec 请求体规范，用于配置请求体
-     * @param context  请求上下文，包含请求参数
+     * @param bodySpec The request body specification, used to configure the request body.
+     * @param context  The request context, containing request parameters.
+     * @param method   The HTTP method for logging.
+     * @param path     The request path for logging.
      */
-    private void handleFormRequestBody(WebClient.RequestBodySpec bodySpec, Context context) {
+    private void handleFormRequestBody(
+            WebClient.RequestBodySpec bodySpec,
+            Context context,
+            String method,
+            String path) {
         Map<String, String> params = context.getRequestMap();
         if (!params.isEmpty()) {
             MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>(params.size());
             params.forEach(multiValueMap::add);
             bodySpec.contentType(MediaType.APPLICATION_FORM_URLENCODED).bodyValue(multiValueMap);
+            Logger.info(
+                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_FORM] - Form body configured with {} parameters",
+                    method,
+                    path,
+                    params.size());
+        } else {
+            Logger.info(
+                    "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_FORM] - No form parameters to configure",
+                    method,
+                    path);
         }
     }
 
     /**
-     * 构建目标服务的基础URL。
+     * Builds the base URL for the target service.
      * <p>
-     * 该方法根据配置资产中的主机、端口和路径信息构建基础URL。 端口和路径是可选的，如果不存在则不包含在URL中。
-     * </p>
+     * This method constructs the base URL using the host, port, and path information from the configured assets. The
+     * port and path are optional and are included only if present.
      *
-     * @param assets 配置资产，包含目标服务的主机、端口和路径信息
-     * @return 构建的基础URL字符串
+     * @param assets The configured assets, containing the host, port, and path information for the target service.
+     * @return The constructed base URL string.
      */
     private String buildBaseUrl(Assets assets) {
         StringBuilder baseUrlBuilder = new StringBuilder(assets.getHost());
@@ -198,14 +267,14 @@ public class HttpRequestRouter implements Router {
     }
 
     /**
-     * 构建目标URI。
+     * Builds the target URI for the request.
      * <p>
-     * 该方法根据配置资产中的URL和请求上下文中的参数构建目标URI。 对于GET请求，会将参数添加到URI的查询字符串中。
-     * </p>
+     * This method constructs the target URI using the URL from the configured assets and parameters from the request
+     * context. For GET requests, parameters are appended to the URI as query strings.
      *
-     * @param assets  配置资产，包含目标服务的URL信息
-     * @param context 请求上下文，包含请求参数
-     * @return 构建的目标URI字符串
+     * @param assets  The configured assets, containing the URL information for the target service.
+     * @param context The request context, containing request parameters.
+     * @return The constructed target URI string.
      */
     private String buildTargetUri(Assets assets, Context context) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(assets.getUrl());
@@ -221,13 +290,14 @@ public class HttpRequestRouter implements Router {
     }
 
     /**
-     * 处理响应数据。
+     * Processes the response data.
      * <p>
-     * 该方法将目标服务返回的响应实体转换为ServerResponse对象。 会复制响应头，但移除CONTENT_LENGTH头以避免冲突。 如果响应体为空，则返回空响应体。
-     * </p>
+     * This method converts the {@link ResponseEntity} received from the target service into a {@link ServerResponse}
+     * object. It copies the response headers but removes the {@code CONTENT_LENGTH} header to avoid conflicts. If the
+     * response body is empty, an empty response body is returned.
      *
-     * @param responseEntity 响应实体，包含响应头和响应体
-     * @return Mono<ServerResponse> 处理后的响应
+     * @param responseEntity The {@link ResponseEntity} containing the response headers and body.
+     * @return {@link Mono<ServerResponse>} representing the processed response.
      */
     private Mono<ServerResponse> processResponse(ResponseEntity<DataBuffer> responseEntity) {
         return ServerResponse.ok().headers(headers -> {

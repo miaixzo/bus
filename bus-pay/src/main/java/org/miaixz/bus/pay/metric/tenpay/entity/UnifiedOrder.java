@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 统一下单
+ * Unified Order model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,25 +48,85 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class UnifiedOrder extends Material {
 
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID.
+     */
     private String sub_mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Body of the request.
+     */
     private String body;
+    /**
+     * Attached data.
+     */
     private String attach;
+    /**
+     * Merchant order number.
+     */
     private String out_trade_no;
+    /**
+     * Currency type.
+     */
     private String fee_type;
+    /**
+     * Total fee.
+     */
     private String total_fee;
+    /**
+     * Terminal IP address.
+     */
     private String spbill_create_ip;
+    /**
+     * Transaction start time.
+     */
     private String time_start;
+    /**
+     * Transaction expiration time.
+     */
     private String time_expire;
+    /**
+     * Limit pay.
+     */
     private String limit_pay;
+    /**
+     * Contract code.
+     */
     private String contract_code;
+    /**
+     * Promotion tag.
+     */
     private String promotion_tag;
+    /**
+     * Trade type.
+     */
     private String trade_type;
+    /**
+     * Asynchronous notification URL.
+     */
     private String notify_url;
+    /**
+     * Device information.
+     */
     private String device_info;
+    /**
+     * Mini program parameters.
+     */
     private String mini_app_param;
 
 }

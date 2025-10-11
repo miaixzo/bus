@@ -27,16 +27,6 @@
 */
 package org.miaixz.bus.http.accord;
 
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.net.Socket;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-
 import org.miaixz.bus.core.io.timout.AsyncTimeout;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -48,8 +38,18 @@ import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
 import org.miaixz.bus.http.secure.CertificatePinner;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.net.Socket;
+import java.util.concurrent.TimeUnit;
+
 /**
- * 在Http的应用程序层和网络层之间建立桥梁 该类公开:连接、请求、响应和流
+ * Bridges the application layer with the network layer, managing the lifecycle of a single call. This class exposes
+ * connections, requests, responses, and streams.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,13 +61,15 @@ public class Transmitter {
     private final NewCall call;
     private final EventListener eventListener;
     /**
-     * 有connectionPool守卫
+     * The connection that carries the request and response. Guarded by connectionPool.
      */
     public RealConnection connection;
     private Object callStackTrace;
-
     private Request request;
     private ExchangeFinder exchangeFinder;
+    /**
+     * The exchange that is currently in progress. Guarded by connectionPool.
+     */
     private Exchange exchange;
     private boolean exchangeRequestDone;
     private boolean exchangeResponseDone;
@@ -99,7 +101,8 @@ public class Transmitter {
     }
 
     /**
-     * 在调用完全完成之前停止应用超时 这用于WebSockets和双工调用，其中超时只适用于初始设置
+     * Stops applying the timeout before the call is complete. This is used for WebSockets and duplex calls where the
+     * timeout only applies to the initial setup.
      */
     public void timeoutEarlyExit() {
         if (timeoutEarlyExit)
@@ -121,13 +124,19 @@ public class Transmitter {
         return e;
     }
 
+    /**
+     * Records the stack trace at the point the call is started. This is used to identify the source of connection
+     * leaks.
+     */
     public void callStart() {
         this.callStackTrace = Platform.get().getStackTraceForCloseable("response.body().close()");
         eventListener.callStart(call);
     }
 
     /**
-     * Prepare to create a stream to carry {@code request}. This prefers to use the existing connection if it exists.
+     * Prepare to create a stream to carry {@code request}. This prefers to use an existing connection if one exists.
+     *
+     * @param request The request to prepare for.
      */
     public void prepareToConnect(Request request) {
         if (this.request != null) {
@@ -165,6 +174,10 @@ public class Transmitter {
 
     /**
      * Returns a new exchange to carry a new request and response.
+     *
+     * @param chain                   The interceptor chain.
+     * @param doExtensiveHealthChecks Whether to perform extensive health checks on the connection.
+     * @return A new exchange.
      */
     Exchange newExchange(NewChain chain, boolean doExtensiveHealthChecks) {
         synchronized (connectionPool) {
@@ -188,6 +201,11 @@ public class Transmitter {
         }
     }
 
+    /**
+     * Acquires a connection without firing any events.
+     *
+     * @param connection The connection to acquire.
+     */
     void acquireConnectionNoEvents(RealConnection connection) {
         assert (Thread.holdsLock(connectionPool));
 
@@ -199,6 +217,8 @@ public class Transmitter {
 
     /**
      * Remove the transmitter from the connection's list of allocations. Returns a socket that the caller should close.
+     *
+     * @return The socket to close, or null if no socket should be closed.
      */
     Socket releaseConnectionNoEvents() {
         assert (Thread.holdsLock(connectionPool));
@@ -229,6 +249,9 @@ public class Transmitter {
         return null;
     }
 
+    /**
+     * Notifies this transmitter that the exchange has completed due to an exception.
+     */
     public void exchangeDoneDueToException() {
         synchronized (connectionPool) {
             if (noMoreExchanges)
@@ -239,9 +262,15 @@ public class Transmitter {
 
     /**
      * Releases resources held with the request or response of {@code exchange}. This should be called when the request
-     * completes normally or when it fails due to an exception, in which case {@code
-     * e} should be non-null. If the exchange was canceled or timed out, this will wrap {@code e} in an exception that
-     * provides that additional context. Otherwise {@code e} is returned as-is.
+     * completes normally or when it fails due to an exception, in which case {@code e} should be non-null. If the
+     * exchange was canceled or timed out, this will wrap {@code e} in an exception that provides that additional
+     * context. Otherwise {@code e} is returned as-is.
+     *
+     * @param exchange     The exchange that has completed.
+     * @param requestDone  Whether the request is done.
+     * @param responseDone Whether the response is done.
+     * @param e            The exception that occurred, or null if none.
+     * @return The exception, or null if none.
      */
     IOException exchangeMessageDone(Exchange exchange, boolean requestDone, boolean responseDone, IOException e) {
         boolean exchangeDone = false;
@@ -272,6 +301,12 @@ public class Transmitter {
         return e;
     }
 
+    /**
+     * Notifies this transmitter that no more exchanges are expected.
+     *
+     * @param e The exception that occurred, or null if none.
+     * @return The exception, or null if none.
+     */
     public IOException noMoreExchanges(IOException e) {
         synchronized (connectionPool) {
             noMoreExchanges = true;
@@ -284,7 +319,9 @@ public class Transmitter {
      * signals that no more exchanges are expected. If the transmitter was canceled or timed out, this will wrap
      * {@code e} in an exception that provides that additional context. Otherwise {@code e} is returned as-is.
      *
+     * @param e     The exception that occurred, or null if none.
      * @param force true to release the connection even if more exchanges are expected for the call.
+     * @return The exception, or null if none.
      */
     private IOException maybeReleaseConnection(IOException e, boolean force) {
         Socket socket;
@@ -320,10 +357,20 @@ public class Transmitter {
         return e;
     }
 
+    /**
+     * Returns true if this transmitter can retry a failed request.
+     *
+     * @return {@code true} if a retry is possible.
+     */
     public boolean canRetry() {
         return exchangeFinder.hasStreamFailure() && exchangeFinder.hasRouteToTry();
     }
 
+    /**
+     * Returns true if this transmitter has an active exchange.
+     *
+     * @return {@code true} if there is an active exchange.
+     */
     public boolean hasExchange() {
         synchronized (connectionPool) {
             return exchange != null;
@@ -354,16 +401,25 @@ public class Transmitter {
         }
     }
 
+    /**
+     * Returns true if this transmitter has been canceled.
+     *
+     * @return {@code true} if this transmitter has been canceled.
+     */
     public boolean isCanceled() {
         synchronized (connectionPool) {
             return canceled;
         }
     }
 
-    static class TransmitterReference extends WeakReference<Transmitter> {
+    /**
+     * A weak reference to a transmitter, used to detect connection leaks.
+     */
+    static final class TransmitterReference extends WeakReference<Transmitter> {
 
         /**
-         * 捕获调用执行或加入队列时的堆栈跟踪。这有助于识别连接泄漏的来源
+         * The stack trace at the time the call was executed or enqueued. This is used to identify the source of
+         * connection leaks.
          */
         final Object callStackTrace;
 

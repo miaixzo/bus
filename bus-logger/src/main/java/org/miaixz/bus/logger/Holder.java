@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.logger;
 
-import java.net.URL;
-
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.xyz.ReflectKit;
@@ -39,8 +37,11 @@ import org.miaixz.bus.logger.metric.console.NormalLoggingFactory;
 import org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory;
 import org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory;
 
+import java.net.URL;
+
 /**
- * 日志引擎简单工厂（静态工厂）类
+ * A simple factory for retrieving {@link Factory} instances. This class provides a static factory method to obtain a
+ * logger factory instance. It automatically detects the appropriate logging framework from the classpath.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,25 +49,26 @@ import org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory;
 public class Holder {
 
     /**
-     * 默认构造
+     * Default constructor.
      */
     public Holder() {
 
     }
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 获得的是单例的 {@link Factory}
+     * Gets the singleton {@link Factory} instance. It automatically creates the appropriate template engine object
+     * based on the template engine JAR introduced by the user.
      *
-     * @return {@link Factory}
+     * @return The singleton {@link Factory} instance.
      */
     public static Factory getFactory() {
         return InstanceHolder.INSTANCE;
     }
 
     /**
-     * 自定义默认日志实现
+     * Sets the default logger factory by providing the factory class.
      *
-     * @param clazz 日志工厂类
+     * @param clazz The class of the logger factory to set as the default.
      * @see Slf4jLoggingFactory
      * @see Log4jLoggingFactory
      * @see CommonsLoggingFactory
@@ -82,9 +84,9 @@ public class Holder {
     }
 
     /**
-     * 自定义日志实现
+     * Sets the default logger factory by providing a factory instance.
      *
-     * @param factory 日志引擎对象
+     * @param factory The logger factory instance to set as the default.
      * @see Slf4jLoggingFactory
      * @see Log4jLoggingFactory
      * @see CommonsLoggingFactory
@@ -97,19 +99,21 @@ public class Holder {
     }
 
     /**
-     * 创建指定日志实现引擎
+     * Creates a new logger factory instance of the specified class.
      *
-     * @param clazz 引擎类
-     * @return {@link Factory}
+     * @param clazz The class of the logger factory to create.
+     * @return A new instance of the specified logger factory.
      */
     public static Factory create(final Class<? extends Factory> clazz) {
         return ReflectKit.newInstance(clazz);
     }
 
     /**
-     * 决定日志实现 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties， 存在则使用JdkLogFactory，否则使用ConsoleLogFactory
+     * Determines the logging implementation to use. It checks for the presence of logging library JARs in a specific
+     * order. If no logging library is found, it checks for a `logging.properties` file in the classpath. If the file
+     * exists, {@link JdkLoggingFactory} is used; otherwise, {@link NormalLoggingFactory} is used.
      *
-     * @return 日志实现类
+     * @return The determined logger factory instance.
      */
     public static Factory create() {
         final Factory factory = doFactory();
@@ -118,9 +122,11 @@ public class Holder {
     }
 
     /**
-     * 决定日志实现 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，存在则使用JdkLogFactory，否则使用ConsoleLogFactory
+     * Determines the logging implementation to use. It checks for the presence of logging library JARs in a specific
+     * order. If no logging library is found, it checks for a `logging.properties` file in the classpath. If the file
+     * exists, {@link JdkLoggingFactory} is used; otherwise, {@link NormalLoggingFactory} is used.
      *
-     * @return 日志实现类
+     * @return The determined logger factory instance.
      */
     private static Factory doFactory() {
         final Factory factory = NormalSpiLoader.loadFirstAvailable(Factory.class);
@@ -128,16 +134,21 @@ public class Holder {
             return factory;
         }
 
-        // 未找到任何可支持的日志库时判断依据：当JDK Logging的配置文件位于classpath中，使用JDK Logging，否则使用Console
+        // When no supportable log library is found, the basis for judgment is:
+        // when the configuration file of JDK Logging is in the classpath, use JDK Logging, otherwise use Console.
         final URL url = ResourceKit.getResourceUrl("logging.properties");
         return (null != url) ? new JdkLoggingFactory() : new NormalLoggingFactory();
     }
 
     /**
-     * 嵌套使用Instances.get时在JDK9+会引起Recursive update问题，此处日志单独使用单例
+     * This inner class holds the singleton instance of the {@link Factory}. This approach ensures that the instance is
+     * created only when it is first needed.
      */
     private static class InstanceHolder {
 
+        /**
+         * The singleton instance of the {@link Factory}.
+         */
         public static final Factory INSTANCE = create();
 
     }

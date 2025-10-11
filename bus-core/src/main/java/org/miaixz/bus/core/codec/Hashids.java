@@ -38,23 +38,25 @@ import java.util.stream.LongStream;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * <a href="http://hashids.org/">Hashids</a> 协议实现，以实现：
+ * <a href="http://hashids.org/">Hashids</a> protocol implementation, designed to:
  * <ul>
- * <li>生成简短、唯一、大小写敏感并无序的hash值</li>
- * <li>自然数字的Hash值</li>
- * <li>可以设置不同的盐，具有保密性</li>
- * <li>可配置的hash长度</li>
- * <li>递增的输入产生的输出无法预测</li>
+ * <li>Generate short, unique, case-sensitive, and non-sequential hash values.</li>
+ * <li>Hash natural numbers.</li>
+ * <li>Allow different salts for confidentiality.</li>
+ * <li>Support configurable hash length.</li>
+ * <li>Produce unpredictable outputs for incrementally increasing inputs.</li>
  * </ul>
  *
  * <p>
- * 来自：<a href="https://github.com/davidafsilva/java-hashids">https://github.com/davidafsilva/java-hashids</a>
- * </p>
+ * This implementation is adapted from:
+ * <a href="https://github.com/davidafsilva/java-hashids">https://github.com/davidafsilva/java-hashids</a>
  *
  * <p>
- * {@code Hashids}可以将数字或者16进制字符串转为短且唯一不连续的字符串，采用双向编码实现，比如，它可以将347之类的数字转换为yr8之类的字符串，也可以将yr8之类的字符串重新解码为347之类的数字。
- * 此编码算法主要是解决爬虫类应用对连续ID爬取问题，将有序的ID转换为无序的Hashids，而且一一对应。
- * </p>
+ * {@code Hashids} can convert numbers or hexadecimal strings into short, unique, and non-consecutive strings. It uses a
+ * bidirectional encoding scheme, for example, it can convert numbers like 347 into strings like "yr8", and also decode
+ * strings like "yr8" back into numbers like 347. This encoding algorithm primarily addresses the problem of web
+ * crawlers scraping sequential IDs by converting ordered IDs into unordered Hashids, while maintaining a one-to-one
+ * correspondence.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -62,49 +64,75 @@ import org.miaixz.bus.core.lang.Symbol;
 public class Hashids implements Encoder<long[], String>, Decoder<String, long[]> {
 
     /**
-     * 默认编解码字符串
+     * The default alphabet used for encoding and decoding. This array contains a mix of lowercase letters, uppercase
+     * letters, and digits.
      */
     public static final char[] DEFAULT_ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
             'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
             'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3',
             '4', '5', '6', '7', '8', '9', '0' };
+    /**
+     * A modulus used in the lottery number calculation to determine the initial character.
+     */
     private static final int LOTTERY_MOD = 100;
+    /**
+     * The threshold for determining the number of guard characters. If the alphabet length divided by this threshold is
+     * greater than the number of guards, more guards are used.
+     */
     private static final double GUARD_THRESHOLD = 12;
+    /**
+     * The threshold for determining the number of separator characters. If the alphabet length divided by the separator
+     * length is greater than this threshold, more separators are used.
+     */
     private static final double SEPARATOR_THRESHOLD = 3.5;
     /**
-     * 最小编解码字符串
+     * The minimum required length for the alphabet used in encoding and decoding.
      */
     private static final int MIN_ALPHABET_LENGTH = 16;
+    /**
+     * Regular expression pattern to match hexadecimal values for decoding from hex strings.
+     */
     private static final Pattern HEX_VALUES_PATTERN = Pattern.compile("[\\w\\W]{1,12}");
     /**
-     * 默认分隔符
+     * The default set of separator characters used to delimit encoded numbers within a hash.
      */
     private static final char[] DEFAULT_SEPARATORS = { 'c', 'f', 'h', 'i', 's', 't', 'u', 'C', 'F', 'H', 'I', 'S', 'T',
             'U' };
 
     // algorithm properties
+    /**
+     * The effective alphabet used for encoding and decoding after initialization and filtering.
+     */
     private final char[] alphabet;
     /**
-     * 多个数字编解码的分界符
+     * The characters used as separators between encoded numbers within a hash.
      */
     private final char[] separators;
+    /**
+     * A set for efficient lookup of separator characters.
+     */
     private final Set<Character> separatorsSet;
+    /**
+     * The salt used to randomize the encoding process, enhancing security and uniqueness.
+     */
     private final char[] salt;
     /**
-     * 补齐至 minLength 长度添加的字符列表
+     * Characters used as "guards" to further obfuscate the hash and meet minimum length requirements.
      */
     private final char[] guards;
     /**
-     * 编码后最小的字符长度
+     * The minimum desired length of the generated hash. If the encoded hash is shorter, it will be padded.
      */
     private final int minLength;
 
     /**
-     * 构造
+     * Constructs a new {@code Hashids} instance with the specified salt, alphabet, and minimum length. This constructor
+     * performs internal setup, including filtering and shuffling the alphabet and separators based on the provided
+     * parameters to ensure the algorithm's properties are met.
      *
-     * @param salt      加盐值
-     * @param alphabet  hash字母表
-     * @param minLength 限制最小长度，-1表示不限制
+     * @param salt      The salt to use for encoding and decoding. This adds an extra layer of security.
+     * @param alphabet  The set of characters to use for generating the hash. Must meet minimum length requirements.
+     * @param minLength The minimum length of the generated hash. If the hash is shorter, it will be padded.
      */
     public Hashids(final char[] salt, final char[] alphabet, final int minLength) {
         this.minLength = minLength;
@@ -161,44 +189,47 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     }
 
     /**
-     * 根据参数值，创建{@code Hashids}，使用默认{@link #DEFAULT_ALPHABET}作为字母表，不限制最小长度
+     * Creates a {@code Hashids} instance using the given salt, the {@link #DEFAULT_ALPHABET}, and no minimum hash
+     * length restriction.
      *
-     * @param salt 加盐值
-     * @return {@code Hashids}
+     * @param salt The salt value to use.
+     * @return A new {@code Hashids} instance.
      */
     public static Hashids of(final char[] salt) {
         return of(salt, DEFAULT_ALPHABET, -1);
     }
 
     /**
-     * 根据参数值，创建{@code Hashids}，使用默认{@link #DEFAULT_ALPHABET}作为字母表
+     * Creates a {@code Hashids} instance using the given salt, the {@link #DEFAULT_ALPHABET}, and a specified minimum
+     * hash length.
      *
-     * @param salt      加盐值
-     * @param minLength 限制最小长度，-1表示不限制
-     * @return {@code Hashids}
+     * @param salt      The salt value to use.
+     * @param minLength The minimum length of the generated hash. Use -1 for no restriction.
+     * @return A new {@code Hashids} instance.
      */
     public static Hashids of(final char[] salt, final int minLength) {
         return of(salt, DEFAULT_ALPHABET, minLength);
     }
 
     /**
-     * 根据参数值，创建{@code Hashids}
+     * Creates a {@code Hashids} instance using the given salt, custom alphabet, and a specified minimum hash length.
      *
-     * @param salt      加盐值
-     * @param alphabet  hash字母表
-     * @param minLength 限制最小长度，-1表示不限制
-     * @return {@code Hashids}
+     * @param salt      The salt value to use.
+     * @param alphabet  The custom alphabet to use for hashing.
+     * @param minLength The minimum length of the generated hash. Use -1 for no restriction.
+     * @return A new {@code Hashids} instance.
      */
     public static Hashids of(final char[] salt, final char[] alphabet, final int minLength) {
         return new Hashids(salt, alphabet, minLength);
     }
 
     /**
-     * 编码给定的16进制数字
+     * Encodes a hexadecimal string into a Hashids string. The input hexadecimal string can optionally start with "0x"
+     * or "0X". Each 12-character chunk of the hexadecimal string is converted to a long and then encoded.
      *
-     * @param hexNumbers 16进制数字
-     * @return 编码后的值, {@code null} if {@code numbers} 是 {@code null}.
-     * @throws IllegalArgumentException 数字不支持抛出此异常
+     * @param hexNumbers The hexadecimal string to encode.
+     * @return The encoded Hashids string, or {@code null} if {@code hexNumbers} is {@code null}.
+     * @throws IllegalArgumentException if any part of the hexadecimal string cannot be converted to a valid number.
      */
     public String encodeFromHex(final String hexNumbers) {
         if (hexNumbers == null) {
@@ -221,11 +252,12 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     }
 
     /**
-     * 编码给定的数字数组
+     * Encodes an array of long numbers into a Hashids string. This method applies the Hashids algorithm, including
+     * salting, shuffling, and padding to meet the minimum length requirement.
      *
-     * @param numbers 数字数组
-     * @return 编码后的值, {@code null} if {@code numbers} 是 {@code null}.
-     * @throws IllegalArgumentException 数字不支持抛出此异常
+     * @param numbers An array of long numbers to be encoded.
+     * @return The encoded Hashids string, or {@code null} if {@code numbers} is {@code null}.
+     * @throws IllegalArgumentException if any number in the array is negative.
      */
     @Override
     public String encode(final long... numbers) {
@@ -311,11 +343,11 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     }
 
     /**
-     * 解码Hash值为16进制数字
+     * Decodes a Hashids string back into its original hexadecimal representation.
      *
-     * @param hash hash值
-     * @return 解码后的16进制值, {@code null} if {@code numbers} 是 {@code null}.
-     * @throws IllegalArgumentException if the hash is invalid.
+     * @param hash The Hashids string to decode.
+     * @return The decoded hexadecimal string, or {@code null} if {@code hash} is {@code null}.
+     * @throws IllegalArgumentException if the hash is invalid or cannot be decoded.
      */
     public String decodeToHex(final String hash) {
         if (hash == null) {
@@ -328,11 +360,12 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     }
 
     /**
-     * 解码Hash值为数字数组
+     * Decodes a Hashids string back into an array of long numbers. This method reverses the encoding process, including
+     * handling guards and separators.
      *
-     * @param hash hash值
-     * @return 解码后的16进制值, {@code null} if {@code numbers} 是 {@code null}.
-     * @throws IllegalArgumentException if the hash is invalid.
+     * @param hash The Hashids string to decode.
+     * @return An array of decoded long numbers, or {@code null} if {@code hash} is {@code null}.
+     * @throws IllegalArgumentException if the hash is invalid or cannot be decoded.
      */
     @Override
     public long[] decode(final String hash) {
@@ -412,6 +445,16 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         return decodedValue;
     }
 
+    /**
+     * Translates a long number into a sequence of characters from the given alphabet, appending them to a
+     * {@link StringBuilder} in reverse order (least significant character first).
+     *
+     * @param n        The number to translate.
+     * @param alphabet The alphabet to use for translation.
+     * @param sb       The {@link StringBuilder} to append the translated characters to.
+     * @param start    The starting index in the {@link StringBuilder} where characters should be inserted.
+     * @return The {@link StringBuilder} with the translated characters inserted.
+     */
     private StringBuilder translate(final long n, final char[] alphabet, final StringBuilder sb, final int start) {
         long input = n;
         do {
@@ -425,6 +468,15 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         return sb;
     }
 
+    /**
+     * Translates a character array (representing a hash segment) back into a long number using the provided alphabet.
+     * This is the reverse operation of {@link #translate(long, char[], StringBuilder, int)}.
+     *
+     * @param hash     The character array representing a hash segment.
+     * @param alphabet The alphabet used for translation.
+     * @return The decoded long number.
+     * @throws IllegalArgumentException if a character in the hash is not found in the alphabet.
+     */
     private long translate(final char[] hash, final char[] alphabet) {
         long number = 0;
 
@@ -445,6 +497,15 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         return number;
     }
 
+    /**
+     * Derives a new alphabet by shuffling the original alphabet based on a combination of the lottery character and the
+     * salt. This is a crucial step in the Hashids algorithm to ensure non-sequential and randomized output.
+     *
+     * @param alphabet The base alphabet to be shuffled.
+     * @param salt     The salt used in the shuffling process.
+     * @param lottery  The lottery character, which influences the initial shuffle.
+     * @return The newly shuffled alphabet.
+     */
     private char[] deriveNewAlphabet(final char[] alphabet, final char[] salt, final char lottery) {
         // create the new salt
         final char[] newSalt = new char[alphabet.length];
@@ -469,6 +530,15 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         return shuffle(alphabet, newSalt);
     }
 
+    /**
+     * Validates the provided alphabet and filters out any characters that are also present in the separators list or
+     * are space characters. Ensures the alphabet meets minimum length requirements.
+     *
+     * @param alphabet   The raw alphabet characters provided by the user.
+     * @param separators The separator characters that should not be present in the alphabet.
+     * @return A new character array containing only the valid and unique alphabet characters.
+     * @throws IllegalArgumentException if the alphabet is too short or contains space characters.
+     */
     private char[] validateAndFilterAlphabet(final char[] alphabet, final char[] separators) {
         // validate size
         if (alphabet.length < MIN_ALPHABET_LENGTH) {
@@ -502,6 +572,14 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         return uniqueAlphabet;
     }
 
+    /**
+     * Filters the given separator characters, keeping only those that are also present in the provided alphabet. This
+     * ensures that separators are valid characters within the encoding scheme.
+     *
+     * @param separators The array of separator characters to filter.
+     * @param alphabet   The alphabet used to determine valid characters.
+     * @return A new character array containing only the valid separator characters.
+     */
     private char[] filterSeparators(final char[] separators, final char[] alphabet) {
         final Set<Character> valid = IntStream.range(0, alphabet.length).mapToObj(idx -> alphabet[idx])
                 .collect(Collectors.toSet());
@@ -511,6 +589,14 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
                 .map(c -> Character.toString(c)).collect(Collectors.joining()).toCharArray();
     }
 
+    /**
+     * Shuffles the given alphabet using a pseudo-random process based on the provided salt. This shuffling is a core
+     * part of the Hashids algorithm to ensure that the output is non-sequential and appears random.
+     *
+     * @param alphabet The character array representing the alphabet to be shuffled.
+     * @param salt     The character array representing the salt used for shuffling.
+     * @return The shuffled alphabet (the input array is modified in place).
+     */
     private char[] shuffle(final char[] alphabet, final char[] salt) {
         for (int i = alphabet.length - 1, v = 0, p = 0, j, z; salt.length > 0 && i > 0; i--, v++) {
             v %= salt.length;

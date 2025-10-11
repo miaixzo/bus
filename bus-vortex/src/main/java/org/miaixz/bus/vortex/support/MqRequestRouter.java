@@ -33,24 +33,27 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.vortex.Router;
-import org.miaixz.bus.vortex.Assets;
-import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Format;
+import org.miaixz.bus.extra.mq.MQConfig;
+import org.miaixz.bus.extra.mq.MQFactory;
+import org.miaixz.bus.extra.mq.Message;
+import org.miaixz.bus.extra.mq.Producer;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import org.miaixz.bus.extra.mq.MQConfig;
-import org.miaixz.bus.extra.mq.MQFactory;
-import org.miaixz.bus.extra.mq.Producer;
-import org.miaixz.bus.extra.mq.Message;
 
 /**
- * MQ策略路由器，负责将请求转发到消息队列
+ * MQ strategy router, responsible for forwarding requests to a message queue.
+ * <p>
+ * This class implements the {@link Router} interface to handle requests by sending them to a configured message queue.
+ * It initializes MQ resources, manages message producers, and uses a dedicated thread pool for asynchronous message
+ * sending. The router supports various message queue implementations through the MQFactory abstraction.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,18 +61,34 @@ import org.miaixz.bus.extra.mq.Message;
 public class MqRequestRouter implements Router {
 
     /**
-     * MQ配置属性
+     * MQ configuration properties, injected via Spring's {@code @Resource}.
+     * <p>
+     * These properties are used to configure the message queue broker and other MQ-related settings. The properties
+     * typically include the broker URL, connection parameters, authentication credentials, and other vendor-specific
+     * configuration options. The Properties object provides a flexible way to configure different MQ implementations
+     * without changing the code.
      */
     @Resource
     private Properties mqProperties;
 
     /**
-     * 消息队列生产者，用于发送消息到指定的主题
+     * The message queue producer, used for sending messages to a specified topic.
+     * <p>
+     * This producer is initialized based on the {@code mqProperties} and is responsible for creating and sending
+     * messages to the message queue. The producer implementation is abstracted by the MQFactory, allowing for different
+     * MQ providers (such as RabbitMQ, Kafka, ActiveMQ, etc.) to be used interchangeably. The producer is lazily
+     * initialized during the first use or explicitly via the init() method.
      */
     private Producer producer;
 
     /**
-     * 专用线程池，用于异步处理MQ消息发送
+     * A dedicated thread pool for asynchronously handling MQ message sending operations.
+     * <p>
+     * The pool size is set to twice the number of available processors to optimize concurrent message dispatch. This
+     * sizing strategy provides a good balance between throughput and resource usage, allowing multiple messages to be
+     * sent concurrently without overwhelming the system. All threads in this pool are daemon threads, meaning they
+     * won't prevent JVM shutdown. The pool is used to offload message sending operations from the main request
+     * processing thread, improving responsiveness and throughput.
      */
     private final ExecutorService mqExecutor = Executors
             .newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2, r -> {
@@ -79,14 +98,19 @@ public class MqRequestRouter implements Router {
             });
 
     /**
-     * 初始化MQ资源
+     * Initializes MQ resources.
+     * <p>
+     * This method extracts the broker URL from {@code mqProperties}, creates an {@link MQConfig}, adds any additional
+     * properties, and then initializes the {@link Producer} using {@link MQFactory}. The initialization process
+     * validates the configuration and establishes connections to the message queue broker. This method should be called
+     * before any routing operations are performed.
      */
     public void init() {
-        // 从配置属性中创建MQ配置
+        // Create MQ configuration from properties
         String brokerUrl = mqProperties.getProperty("mq.broker.url");
         MQConfig config = MQConfig.of(brokerUrl);
 
-        // 添加额外配置属性
+        // Add additional configuration properties
         mqProperties.forEach((key, value) -> {
             if (key instanceof String && value instanceof String) {
                 String k = (String) key;
@@ -96,57 +120,95 @@ public class MqRequestRouter implements Router {
             }
         });
 
-        // 创建MQ提供者和生产者
+        // Create MQ provider and producer
         this.producer = MQFactory.createEngine(config).getProducer();
+        Logger.info("==>       MQ: [N/A] [N/A] [N/A] [MQ_INIT] - MQ producer initialized with broker: {}", brokerUrl);
     }
 
     /**
-     * 销毁MQ资源
+     * Destroys MQ resources.
+     * <p>
+     * This method is annotated with {@code @PreDestroy} to ensure that MQ producer and the thread pool are properly
+     * shut down when the application context is closed. It performs graceful shutdown of resources to prevent resource
+     * leaks and ensure that all pending messages are properly handled before termination.
      */
     @PreDestroy
     public void destroy() {
-        // 关闭生产者
+        // Close the producer
         if (producer != null) {
             try {
                 producer.close();
+                Logger.info("==>       MQ: [N/A] [N/A] [N/A] [MQ_DESTROY] - MQ producer closed successfully");
             } catch (Exception e) {
-                Format.error(null, "MQ_PRODUCER_CLOSE_ERROR", "Failed to close MQ producer");
+                Logger.info(
+                        "==>       MQ: [N/A] [N/A] [N/A] [MQ_DESTROY_ERROR] - Failed to close MQ producer: {}",
+                        e.getMessage());
             }
         }
 
-        // 关闭线程池
+        // Shut down the thread pool
         mqExecutor.shutdown();
+        Logger.info("==>       MQ: [N/A] [N/A] [N/A] [MQ_DESTROY] - MQ thread pool shutdown completed");
     }
 
     /**
-     * 路由客户端请求到消息队列
+     * Routes a client request to the message queue.
+     * <p>
+     * This method reads the request body, constructs an MQ {@link Message} with the asset's method as the topic, and
+     * asynchronously sends it using the configured {@link Producer}. It handles timeouts and error conditions,
+     * returning a JSON response indicating the status of the message forwarding. The method uses reactive programming
+     * patterns to handle the request asynchronously and efficiently.
      *
-     * @param request 客户端的 {@link ServerRequest} 对象，包含请求信息
-     * @param context 请求上下文，包含请求参数和配置信息
-     * @param assets  配置资产，包含目标服务的配置信息
-     * @return {@link Mono}<{@link ServerResponse}> 包含 JSON 格式的响应，表明消息已发送到 MQ
+     * @param request The client's {@link ServerRequest} object, containing request information.
+     * @param context The request context, containing request parameters and configuration information.
+     * @param assets  The configuration assets, containing configuration information for the target service.
+     * @return {@link Mono} {@link ServerResponse} containing a JSON-formatted response, indicating that the message has
+     *         been forwarded to the MQ.
      */
     @Override
     public Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets) {
-        // 记录路由开始
-        Format.info(
-                request.exchange(),
-                "MQ_ROUTE_START",
-                "Method: " + assets.getMethod() + ", Topic: " + assets.getMethod());
+        // Get request method and path for logging
+        String method = request.methodName();
+        String path = request.path();
 
-        // 读取请求体并转发到 MQ
+        // Log the start of routing
+        Logger.info(
+                "==>       MQ: [N/A] [{}] [{}] [MQ_ROUTE_START] - Method: {}, Topic: {}",
+                method,
+                path,
+                assets.getMethod(),
+                assets.getMethod());
+
+        // Read the request body and forward to MQ
         long startTime = System.currentTimeMillis();
         return request.bodyToMono(String.class).flatMap(payload -> {
-            // 记录消息发送
-            Format.debug(
-                    request.exchange(),
-                    "MQ_MESSAGE_SEND",
-                    "Method: " + assets.getMethod() + ", Payload size: " + payload.length());
+            // Log message sending
+            Logger.info(
+                    "==>       MQ: [N/A] [{}] [{}] [MQ_MESSAGE_SEND] - Method: {}, Payload size: {}",
+                    method,
+                    path,
+                    assets.getMethod(),
+                    payload.length());
 
-            // 创建消息对象（使用匿名实现类）
+            // Create message object (using anonymous implementation class)
             Message message = new Message() {
 
+                /**
+                 * The topic to which this message will be sent.
+                 * <p>
+                 * The topic is derived from the asset's method name, which serves as a routing key in the message
+                 * queue. This allows messages to be routed to different consumers based on the method that generated
+                 * them. The topic is final and immutable, as it should not change after message creation.
+                 */
                 private final String topic = assets.getMethod();
+
+                /**
+                 * The content of the message as a byte array.
+                 * <p>
+                 * The message content is derived from the request body, converted to bytes using UTF-8 encoding. This
+                 * allows arbitrary data to be sent through the message queue, as long as it can be represented as a
+                 * string. The byte array is final and immutable to ensure thread safety.
+                 */
                 private final byte[] content = payload.getBytes(Charset.UTF_8);
 
                 @Override
@@ -160,33 +222,40 @@ public class MqRequestRouter implements Router {
                 }
             };
 
-            // 异步发送消息
+            // Asynchronously send the message
             return Mono.<Void>fromRunnable(() -> producer.send(message))
                     .subscribeOn(Schedulers.fromExecutor(mqExecutor)).timeout(Duration.ofMillis(assets.getTimeout()))
                     .thenReturn(payload);
         }).flatMap(payload -> {
-            // 记录成功响应
+            // Log successful response
             long duration = System.currentTimeMillis() - startTime;
-            Format.info(
-                    request.exchange(),
-                    "MQ_ROUTE_SUCCESS",
-                    "Method: " + assets.getMethod() + ", Duration: " + duration + "ms");
+            Logger.info(
+                    "==>       MQ: [N/A] [{}] [{}] [MQ_ROUTE_SUCCESS] - Method: {}, Duration: {}ms",
+                    method,
+                    path,
+                    assets.getMethod(),
+                    duration);
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue("Request forwarded to MQ");
         }).doOnTerminate(() -> {
             long duration = System.currentTimeMillis() - startTime;
-            Format.info(
-                    request.exchange(),
-                    "MQ_ROUTE_COMPLETE",
-                    "Method: " + assets.getMethod() + ", Duration: " + duration + "ms");
+            Logger.info(
+                    "==>       MQ: [N/A] [{}] [{}] [MQ_ROUTE_COMPLETE] - Method: {}, Duration: {}ms",
+                    method,
+                    path,
+                    assets.getMethod(),
+                    duration);
         }).onErrorResume(e -> {
-            // 记录错误
+            // Log error
             long duration = System.currentTimeMillis() - startTime;
-            Format.error(
-                    request.exchange(),
-                    "MQ_ROUTE_ERROR",
-                    "Method: " + assets.getMethod() + ", Duration: " + duration + "ms, Error: " + e.getMessage());
+            Logger.info(
+                    "==>       MQ: [N/A] [{}] [{}] [MQ_ROUTE_ERROR] - Method: {}, Duration: {}ms, Error: {}",
+                    method,
+                    path,
+                    assets.getMethod(),
+                    duration,
+                    e.getMessage());
 
-            // 返回错误响应
+            // Return error response
             return ServerResponse.status(500).contentType(MediaType.APPLICATION_JSON)
                     .bodyValue("{\"error\":\"Failed to forward request to MQ: " + e.getMessage() + "\"}");
         });

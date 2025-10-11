@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.spring.banner;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.logger.Logger;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
@@ -36,14 +41,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.imageio.ImageIO;
-
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.logger.Logger;
-
 /**
- * ASCII艺术产生的图像文件
+ * Generates an ASCII art banner from an image file.
+ * <p>
+ * This class converts a given image into an ASCII art representation, optionally applying color and inversion. It uses
+ * luminance and color distance calculations to map image pixels to ASCII characters and ANSI colors.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,9 +56,15 @@ public class ImageBanner {
     private static final double GREEN_WEIGHT = 0.7152d;
     private static final double BLUE_WEIGHT = 0.0722d;
 
-    private File image;
-    private Map<String, Color> colors = new HashMap<>();
+    private final File image;
+    private final Map<String, Color> colors = new HashMap<>();
 
+    /**
+     * Constructs an {@code ImageBanner} with the specified image file.
+     *
+     * @param image The image file to convert to ASCII art.
+     * @throws RuntimeException if the image file is not found or is null.
+     */
     public ImageBanner(File image) {
         if (null == image || !image.exists()) {
             throw new RuntimeException("Image not found !");
@@ -65,6 +73,13 @@ public class ImageBanner {
         colorsInit();
     }
 
+    /**
+     * Calculates the luminance of a color.
+     *
+     * @param color   The color to calculate luminance for.
+     * @param inverse If {@code true}, calculates inverse luminance.
+     * @return The luminance value (0-100).
+     */
     private static int getLuminance(Color color, boolean inverse) {
         double red = color.getRed();
         double green = color.getGreen();
@@ -82,6 +97,13 @@ public class ImageBanner {
         return (int) Math.ceil((luminance / 255.0d) * 100);
     }
 
+    /**
+     * Gets an ASCII character representation based on the color's luminance.
+     *
+     * @param color The color to convert.
+     * @param dark  If {@code true}, uses a dark background character set.
+     * @return An ASCII character representing the color.
+     */
     private static char getAsciiCharacter(Color color, boolean dark) {
         double luminance = getLuminance(color, dark);
 
@@ -106,6 +128,13 @@ public class ImageBanner {
         }
     }
 
+    /**
+     * Calculates the Euclidean color distance between two colors.
+     *
+     * @param color1 The first color.
+     * @param color2 The second color.
+     * @return The Euclidean distance.
+     */
     private static double getColorDistance(Color color1, Color color2) {
         double redDelta = (color1.getRed() - color2.getRed()) * RED_WEIGHT;
         double greenDelta = (color1.getGreen() - color2.getGreen()) * GREEN_WEIGHT;
@@ -114,6 +143,14 @@ public class ImageBanner {
         return Math.pow(redDelta, 2.0d) + Math.pow(greenDelta, 2.0d) + Math.pow(blueDelta, 2.0d);
     }
 
+    /**
+     * Resizes a {@link BufferedImage} to fit within a maximum width while maintaining aspect ratio.
+     *
+     * @param sourceImage The image to resize.
+     * @param maxWidth    The maximum width for the resized image.
+     * @param aspectRatio The aspect ratio to apply during resizing.
+     * @return The resized {@link BufferedImage}.
+     */
     private static BufferedImage resizeImage(BufferedImage sourceImage, int maxWidth, double aspectRatio) {
         int width;
         double resizeRatio;
@@ -136,11 +173,11 @@ public class ImageBanner {
     }
 
     /**
-     * 计算两种颜色之间的CIE94距离.
+     * Calculates the CIE94 color distance between two colors.
      *
-     * @param color1 第一个颜色
-     * @param color2 第二个颜色
-     * @return 颜色之间的距离
+     * @param color1 The first color.
+     * @param color2 The second color.
+     * @return The CIE94 color distance.
      */
     private static double getColorDistanceCIE94(final Color color1, final Color color2) {
         // Convert to L*a*b* color space
@@ -178,10 +215,10 @@ public class ImageBanner {
     }
 
     /**
-     * 返回此颜色的CIE L*a*b*值.
+     * Converts a {@link Color} to its CIE L*a*b* values.
      *
-     * @param color 颜色转换
-     * @return the float
+     * @param color The color to convert.
+     * @return An array of float representing L*a*b* values.
      */
     static float[] toLab(Color color) {
         float[] xyz = color.getColorComponents(ColorSpace.getInstance(ColorSpace.CS_CIEXYZ), null);
@@ -189,6 +226,12 @@ public class ImageBanner {
         return xyzToLab(xyz);
     }
 
+    /**
+     * Converts CIE XYZ values to CIE L*a*b* values.
+     *
+     * @param colorvalue An array of float representing XYZ values.
+     * @return An array of float representing L*a*b* values.
+     */
     static float[] xyzToLab(float[] colorvalue) {
         double l = f(colorvalue[1]);
         double L = 116.0 * l - 16.0;
@@ -197,6 +240,12 @@ public class ImageBanner {
         return new float[] { (float) L, (float) a, (float) b };
     }
 
+    /**
+     * Helper function for CIE L*a*b* conversion.
+     *
+     * @param t The input value.
+     * @return The calculated value.
+     */
     private static double f(double t) {
         if (t > 216.0 / 24389.0) {
             return Math.cbrt(t);
@@ -205,6 +254,9 @@ public class ImageBanner {
         }
     }
 
+    /**
+     * Initializes the map of ANSI color names to their RGB color values.
+     */
     private void colorsInit() {
         this.colors.put("BLACK", new Color(0, 0, 0));
         this.colors.put("RED", new Color(170, 0, 0));
@@ -225,6 +277,16 @@ public class ImageBanner {
         this.colors.put("BRIGHT_WHITE", new Color(255, 255, 255));
     }
 
+    /**
+     * Generates an ASCII art banner from the image.
+     *
+     * @param maxWidth    The maximum width of the generated banner.
+     * @param aspectRatio The aspect ratio to use for resizing the image.
+     * @param invert      If {@code true}, inverts the colors for the ASCII conversion.
+     * @param cie94       If {@code true}, uses CIE94 color distance for color matching; otherwise, uses Euclidean
+     *                    distance.
+     * @return The ASCII art representation of the image, or an empty string if an error occurs.
+     */
     public String printBanner(Integer maxWidth, Double aspectRatio, boolean invert, boolean cie94) {
         String headlessProperty = System.getProperty("java.awt.headless");
         String banner = Normal.EMPTY;
@@ -237,7 +299,6 @@ public class ImageBanner {
             Logger.warn(
                     "WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass() + ": '"
                             + ex.getMessage() + "')");
-            ex.printStackTrace();
         } finally {
             if (null != headlessProperty) {
                 System.setProperty("java.awt.headless", headlessProperty);
@@ -246,6 +307,14 @@ public class ImageBanner {
         return banner;
     }
 
+    /**
+     * Converts a {@link BufferedImage} to its ASCII art representation.
+     *
+     * @param image The image to convert.
+     * @param dark  If {@code true}, uses a dark background for the banner.
+     * @param cie94 If {@code true}, uses CIE94 color distance for color matching.
+     * @return The ASCII art string.
+     */
     private String imageToBanner(BufferedImage image, boolean dark, boolean cie94) {
         StringBuilder banner = new StringBuilder();
 
@@ -268,13 +337,21 @@ public class ImageBanner {
         return banner.toString();
     }
 
+    /**
+     * Gets the formatted ANSI string for a given color.
+     *
+     * @param color The color to format.
+     * @param dark  If {@code true}, uses a dark background.
+     * @param cie94 If {@code true}, uses CIE94 color distance for matching.
+     * @return The ANSI formatted string with the closest color and ASCII character.
+     */
     protected String getFormatString(Color color, boolean dark, boolean cie94) {
         String matchedColorName = null;
         Double minColorDistance = null;
 
         for (Entry<String, Color> colorOption : this.colors.entrySet()) {
             double distance;
-            if (cie94 == true) {
+            if (cie94) {
                 distance = getColorDistanceCIE94(color, colorOption.getValue());
             } else {
                 distance = getColorDistance(color, colorOption.getValue());

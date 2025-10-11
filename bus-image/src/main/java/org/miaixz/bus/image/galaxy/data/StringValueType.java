@@ -35,8 +35,9 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 
 /**
- * 字符串值类型枚举，实现了ValueType接口，用于处理DICOM中的各种字符串类型值。 该枚举定义了多种字符串类型，如ASCII、STRING、TEXT、UR、DA、DT、TM、PN、DS和IS等，
- * 每种类型都有其特定的处理方式和分隔符。
+ * An enumeration of DICOM string-based value types, implementing the {@link ValueType} interface. This enum defines
+ * various string types such as ASCII, STRING, TEXT, UR, DA, DT, TM, PN, DS, and IS, each with its own specific handling
+ * and delimiters.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,12 +45,14 @@ import org.miaixz.bus.image.Builder;
 public enum StringValueType implements ValueType {
 
     /**
-     * ASCII字符串类型，使用反斜杠作为分隔符
+     * Represents ASCII text, where multiple values are separated by the backslash character. This applies to VRs like
+     * AE, CS, SH, LO, UC, UI, etc., when not affected by Specific Character Set.
      */
     ASCII(Symbol.BACKSLASH, null),
 
     /**
-     * 字符串类型，使用反斜杠作为分隔符，使用特定字符集
+     * Represents string types that are sensitive to the Specific Character Set (0008,0005). Multiple values are
+     * separated by the backslash character.
      */
     STRING(Symbol.BACKSLASH, null) {
 
@@ -65,7 +68,8 @@ public enum StringValueType implements ValueType {
     },
 
     /**
-     * 文本类型，使用制表符、换行符、换页符和回车符作为分隔符，使用特定字符集
+     * Represents long text blocks that are sensitive to the Specific Character Set. Unlike other string types, it does
+     * not use the backslash as a value separator. Corresponds to the LT (Long Text) VR.
      */
     TEXT("\t\n\f\r", null) {
 
@@ -91,7 +95,8 @@ public enum StringValueType implements ValueType {
     },
 
     /**
-     * URI类型，不使用分隔符
+     * Represents Uniform Resource Identifier (URI) values. It is a single value with trailing spaces being
+     * insignificant. Corresponds to the UR VR.
      */
     UR(null, null) {
 
@@ -107,22 +112,23 @@ public enum StringValueType implements ValueType {
     },
 
     /**
-     * 日期类型，使用反斜杠作为分隔符
+     * Represents Date (DA) values. Multiple values are separated by the backslash character.
      */
     DA(Symbol.BACKSLASH, TemporalType.DA),
 
     /**
-     * 日期时间类型，使用反斜杠作为分隔符
+     * Represents Date Time (DT) values. Multiple values are separated by the backslash character.
      */
     DT(Symbol.BACKSLASH, TemporalType.DT),
 
     /**
-     * 时间类型，使用反斜杠作为分隔符
+     * Represents Time (TM) values. Multiple values are separated by the backslash character.
      */
     TM(Symbol.BACKSLASH, TemporalType.TM),
 
     /**
-     * 个人名称类型，使用^、=和\作为分隔符，使用特定字符集
+     * Represents Person Name (PN) values, which have a complex component structure. Sensitive to the Specific Character
+     * Set. Delimiters are '^', '=', and '\'.
      */
     PN("^=\\", null) {
 
@@ -138,7 +144,8 @@ public enum StringValueType implements ValueType {
     },
 
     /**
-     * 十进制字符串类型，使用反斜杠作为分隔符
+     * Represents Decimal String (DS) values, stored internally as doubles. Multiple values are separated by the
+     * backslash character.
      */
     DS(Symbol.BACKSLASH, null) {
 
@@ -163,6 +170,12 @@ public enum StringValueType implements ValueType {
             return (val instanceof double[]) ? toStrings((double[]) val) : super.toStrings(val, bigEndian, cs);
         }
 
+        /**
+         * Converts an array of doubles to a string or an array of strings.
+         * 
+         * @param ds The array of doubles.
+         * @return A single String if the array has one element, or a String array otherwise.
+         */
         private Object toStrings(double[] ds) {
             if (ds.length == 1)
                 return Builder.formatDS(ds[0]);
@@ -226,7 +239,8 @@ public enum StringValueType implements ValueType {
     },
 
     /**
-     * 整数字符串类型，使用反斜杠作为分隔符
+     * Represents Integer String (IS) values, stored internally as longs. Multiple values are separated by the backslash
+     * character.
      */
     IS("\\", null) {
 
@@ -256,6 +270,12 @@ public enum StringValueType implements ValueType {
             return (val instanceof long[]) ? toStrings((long[]) val) : super.toStrings(val, bigEndian, cs);
         }
 
+        /**
+         * Converts an array of longs to a string or an array of strings.
+         * 
+         * @param ls The array of longs.
+         * @return A single String if the array has one element, or a String array otherwise.
+         */
         private Object toStrings(long[] ls) {
             if (ls.length == 1)
                 return Long.toString(ls[0]);
@@ -309,33 +329,33 @@ public enum StringValueType implements ValueType {
     };
 
     /**
-     * 分隔符
+     * The delimiter characters for splitting multi-valued strings.
      */
     final String delimiters;
 
     /**
-     * 时间类型
+     * The associated temporal type for date/time VRs.
      */
     final TemporalType temporalType;
 
     /**
-     * 构造一个字符串值类型
+     * Constructs a string value type.
      *
-     * @param delimiters   分隔符
-     * @param temperalType 时间类型
+     * @param delimiters   The delimiter string.
+     * @param temporalType The associated temporal type, or null.
      */
-    StringValueType(String delimiters, TemporalType temperalType) {
+    StringValueType(String delimiters, TemporalType temporalType) {
         this.delimiters = delimiters;
-        this.temporalType = temperalType;
+        this.temporalType = temporalType;
     }
 
     /**
-     * 将字符串追加到字符串构建器，限制最大字符数
+     * Appends a trimmed string to a StringBuilder, respecting a maximum character limit.
      *
-     * @param s        字符串
-     * @param maxChars 最大字符数
-     * @param sb       字符串构建器
-     * @return 如果未超过最大字符数则返回true，否则返回false
+     * @param s        The string to append.
+     * @param maxChars The maximum number of characters to add.
+     * @param sb       The StringBuilder to append to.
+     * @return {@code true} if the limit was not exceeded, {@code false} otherwise.
      */
     static boolean prompt(String s, int maxChars, StringBuilder sb) {
         int maxLength = sb.length() + maxChars;
@@ -348,12 +368,12 @@ public enum StringValueType implements ValueType {
     }
 
     /**
-     * 将字符串数组追加到字符串构建器，限制最大字符数
+     * Appends an array of strings to a StringBuilder, separated by backslashes, respecting a maximum character limit.
      *
-     * @param ss       字符串数组
-     * @param maxChars 最大字符数
-     * @param sb       字符串构建器
-     * @return 如果未超过最大字符数则返回true，否则返回false
+     * @param ss       The array of strings to append.
+     * @param maxChars The maximum number of characters to add.
+     * @param sb       The StringBuilder to append to.
+     * @return {@code true} if the limit was not exceeded, {@code false} otherwise.
      */
     static boolean prompt(String[] ss, int maxChars, StringBuilder sb) {
         int maxLength = sb.length() + maxChars;
@@ -371,10 +391,10 @@ public enum StringValueType implements ValueType {
     }
 
     /**
-     * 将long数组转换为int数组 比LongStream.of(in).mapToInt(l -> (int) l).toArray()快约170%
+     * Converts a long array to an int array. This is faster than using streams.
      *
-     * @param in long数组
-     * @return int数组
+     * @param in The input long array.
+     * @return The converted int array.
      */
     public static int[] longsToInts(long[] in) {
         int[] out = new int[in.length];
@@ -384,10 +404,10 @@ public enum StringValueType implements ValueType {
     }
 
     /**
-     * 将int数组转换为long数组 比IntStream.of(in).asLongStream().toArray()快约60%
+     * Converts an int array to a long array. This is faster than using streams.
      *
-     * @param in int数组
-     * @return long数组
+     * @param in The input int array.
+     * @return The converted long array.
      */
     public static long[] intsToLong(int[] in) {
         long[] out = new long[in.length];
@@ -427,10 +447,10 @@ public enum StringValueType implements ValueType {
     }
 
     /**
-     * 获取特定字符集
+     * Returns the appropriate character set for encoding/decoding.
      *
-     * @param cs 特定字符集
-     * @return 特定字符集
+     * @param cs The currently configured Specific Character Set.
+     * @return The character set to use (either ASCII or the provided one).
      */
     protected SpecificCharacterSet cs(SpecificCharacterSet cs) {
         return SpecificCharacterSet.ASCII;
@@ -469,11 +489,11 @@ public enum StringValueType implements ValueType {
     }
 
     /**
-     * 分割并修剪字符串
+     * Splits and trims a string according to the type's delimiter rules.
      *
-     * @param s  字符串
-     * @param cs 特定字符集
-     * @return 分割并修剪后的字符串或字符串数组
+     * @param s  The string to process.
+     * @param cs The specific character set.
+     * @return A trimmed String or a String array.
      */
     protected Object splitAndTrim(String s, SpecificCharacterSet cs) {
         return Builder.splitAndTrim(s, '\\');
@@ -585,10 +605,10 @@ public enum StringValueType implements ValueType {
     }
 
     /**
-     * 将字符串转换为多值对象
+     * Converts a string into a multi-valued object (String array) based on delimiters.
      *
-     * @param s 字符串
-     * @return 多值对象
+     * @param s The input string.
+     * @return A String or String array object.
      */
     protected Object toMultiValue(String s) {
         return Builder.splitAndTrim(s, Symbol.C_BACKSLASH);

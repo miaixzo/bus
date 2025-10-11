@@ -27,19 +27,22 @@
 */
 package org.miaixz.bus.core;
 
+import java.io.Serializable;
+
 /**
- * 建造者模式接口定义
+ * A generic interface for the Builder pattern. This interface defines a single method, {@link #build()}, which is
+ * responsible for creating an instance of a specific type.
  *
- * @param <T> 建造对象类型
+ * @param <T> The type of object to be built.
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Builder<T> {
+public interface Builder<T> extends Serializable {
 
     /**
-     * 构建
+     * Builds and returns an instance of the specified type.
      *
-     * @return 被构建的对象
+     * @return The newly constructed object.
      */
     T build();
 

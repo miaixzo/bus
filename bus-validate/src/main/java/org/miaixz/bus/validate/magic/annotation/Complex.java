@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.validate.magic.Matcher;
 
+import java.lang.annotation.*;
+
 /**
- * 自定义校验注解元注解,在任意的注解定义上,增加该注解标明这是一个校验注解
- *
+ * A meta-annotation for creating custom validation annotations. By placing this on an annotation definition, you mark
+ * it as a validation annotation that can be processed by the validation framework.
  * <p>
- * 在校验环境
- * </P>
+ * It links the custom annotation to a specific {@link Matcher} implementation that contains the validation logic.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,16 +48,19 @@ import org.miaixz.bus.validate.magic.Matcher;
 public @interface Complex {
 
     /**
-     * 校验器名称, 优先使用类型匹配
+     * Specifies the name of the validator to be used. This is used to look up the validator in the
+     * {@link org.miaixz.bus.validate.Registry}. If both {@code value} and {@code clazz} are specified, {@code clazz}
+     * takes precedence.
      *
-     * @return the string
+     * @return the name of the validator.
      */
     String value() default Normal.EMPTY;
 
     /**
-     * 校验器类, 优先使用类型匹配
+     * Specifies the {@link Matcher} class that implements the validation logic. This provides a direct, type-safe way
+     * to link the annotation to its validator, and it is prioritized over the {@code value} attribute.
      *
-     * @return the object
+     * @return the validator class.
      */
     Class<? extends Matcher> clazz() default Matcher.class;
 

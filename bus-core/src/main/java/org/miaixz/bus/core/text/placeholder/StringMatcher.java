@@ -37,12 +37,13 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符串模式匹配，使用${XXXXX}作为变量，例如：
+ * String pattern matching utility that uses {@code ${XXXXX}} as variables. This class provides functionality to match a
+ * given text against a predefined pattern containing placeholders and extract the corresponding values. For example:
  *
  * <pre>
  *     pattern: ${name}-${age}-${gender}-${country}-${province}-${city}-${status}
- *     text:    "小明-19-男-中国-河南-郑州-已婚"
- *     result:  {name=小明, age=19, gender=男, country=中国, province=河南, city=郑州, status=已婚}
+ *     text:    "John-19-Male-USA-California-LosAngeles-Married"
+ *     result:  {name=John, age=19, gender=Male, country=USA, province=California, city=LosAngeles, status=Married}
  * </pre>
  *
  * @author Kimi Liu
@@ -50,22 +51,29 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class StringMatcher {
 
+    /**
+     * The list of parsed patterns, where each element is either a literal string or a variable placeholder. Variable
+     * placeholders are represented as `${variableName}`.
+     */
     private final List<String> patterns;
 
     /**
-     * 构造
+     * Constructs a {@code StringMatcher} with the given pattern. Variables are denoted by {@code ${XXX}} placeholders.
      *
-     * @param pattern 模式，变量用${XXX}占位
+     * @param pattern The pattern string with {@code ${XXX}} placeholders.
      */
     public StringMatcher(final String pattern) {
         this.patterns = parse(pattern);
     }
 
     /**
-     * 解析表达式
+     * Parses the given pattern string into a list of literal strings and variable placeholders. Variables are denoted
+     * by {@code ${XXXX}} placeholders. For example, a pattern like "Hello ${name}! Your age is ${age}." would be parsed
+     * into a list like ["Hello ", "${name}", "! Your age is ", "${age}", "."].
      *
-     * @param pattern 表达式，使用${XXXX}作为变量占位符
-     * @return 表达式
+     * @param pattern The pattern string to parse.
+     * @return A list of strings representing the parsed pattern segments, including literal parts and variable
+     *         placeholders.
      */
     private static List<String> parse(final String pattern) {
         final List<String> patterns = new ArrayList<>();
@@ -80,13 +88,13 @@ public class StringMatcher {
             if (inVar) {
                 part.append(c);
                 if ('}' == c) {
-                    // 变量结束
+                    // Variable end
                     inVar = false;
                     patterns.add(part.toString());
                     part.setLength(0);
                 }
             } else if ('{' == c && Symbol.C_DOLLAR == pre) {
-                // 变量开始
+                // Variable start
                 inVar = true;
                 final String preText = part.substring(0, part.length() - 1);
                 if (StringKit.isNotEmpty(preText)) {
@@ -95,7 +103,7 @@ public class StringMatcher {
                 part.setLength(0);
                 part.append(pre).append(c);
             } else {
-                // 普通字符
+                // Normal character
                 part.append(c);
             }
         }
@@ -107,10 +115,13 @@ public class StringMatcher {
     }
 
     /**
-     * 匹配并提取匹配到的内容
+     * Matches the given text against the pattern and extracts the matched content for each variable. The method
+     * iterates through the parsed pattern segments and attempts to find corresponding literal strings and variable
+     * values within the input text.
      *
-     * @param text 被匹配的文本
-     * @return 匹配的map，key为变量名，value为匹配到的值
+     * @param text The text to be matched against the pattern.
+     * @return A map where keys are variable names (e.g., "name", "age") and values are the matched content from the
+     *         text. Returns an empty map if the pattern does not match the text or if no variables are found.
      */
     public Map<String, String> match(final String text) {
         final HashMap<String, String> result = MapKit.newHashMap(true);
@@ -119,26 +130,26 @@ public class StringMatcher {
         int to;
         for (final String part : patterns) {
             if (StringKit.isWrap(part, "${", "}")) {
-                // 变量
+                // Variable
                 key = StringKit.sub(part, 2, part.length() - 1);
             } else {
                 to = text.indexOf(part, from);
                 if (to < 0) {
-                    // 普通字符串未匹配到，说明整个模式不能匹配，返回空
+                    // If a literal string is not found, the entire pattern does not match.
                     return MapKit.empty();
                 }
                 if (null != key && to > from) {
-                    // 变量对应部分有内容
+                    // Content for the variable part exists.
                     result.put(key, text.substring(from, to));
                 }
-                // 下一个起始点是普通字符串的末尾
+                // The next starting point is the end of the literal string.
                 from = to + part.length();
                 key = null;
             }
         }
 
         if (null != key && from < text.length()) {
-            // 变量对应部分有内容
+            // Content for the variable part exists until the end of the text.
             result.put(key, text.substring(from));
         }
 

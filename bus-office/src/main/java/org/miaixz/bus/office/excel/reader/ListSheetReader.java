@@ -36,7 +36,7 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
 import org.miaixz.bus.office.excel.xyz.RowKit;
 
 /**
- * 读取{@link Sheet}为List列表形式
+ * Reads an {@link Sheet} into a list of lists.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,16 +44,17 @@ import org.miaixz.bus.office.excel.xyz.RowKit;
 public class ListSheetReader extends AbstractSheetReader<List<List<Object>>> {
 
     /**
-     * 是否首行作为标题行转换别名
+     * Whether the first row should be treated as a header row and aliases applied.
      */
     private final boolean aliasFirstLine;
 
     /**
-     * 构造
+     * Constructs a new {@code ListSheetReader}.
      *
-     * @param startRowIndex  起始行（包含，从0开始计数）
-     * @param endRowIndex    结束行（包含，从0开始计数）
-     * @param aliasFirstLine 是否首行作为标题行转换别名
+     * @param startRowIndex  The starting row index (inclusive, 0-based).
+     * @param endRowIndex    The ending row index (inclusive, 0-based).
+     * @param aliasFirstLine {@code true} if the first row should be treated as a header and aliases applied,
+     *                       {@code false} otherwise.
      */
     public ListSheetReader(final int startRowIndex, final int endRowIndex, final boolean aliasFirstLine) {
         super(startRowIndex, endRowIndex);
@@ -64,8 +65,11 @@ public class ListSheetReader extends AbstractSheetReader<List<List<Object>>> {
     public List<List<Object>> read(final Sheet sheet) {
         final List<List<Object>> resultList = new ArrayList<>();
 
-        final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// 读取起始行（包含）
-        final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// 读取结束行（包含）
+        final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// Read starting
+                                                                                                        // row
+                                                                                                        // (inclusive).
+        final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// Read ending row
+                                                                                                    // (inclusive).
 
         List<Object> rowList;
         final CellEditor cellEditor = this.config.getCellEditor();
@@ -74,7 +78,7 @@ public class ListSheetReader extends AbstractSheetReader<List<List<Object>>> {
             rowList = RowKit.readRow(sheet.getRow(i), cellEditor);
             if (CollKit.isNotEmpty(rowList) || !ignoreEmptyRow) {
                 if (aliasFirstLine && i == startRowIndex) {
-                    // 第一行作为标题行，替换别名
+                    // The first row is treated as a header row, apply aliases.
                     rowList = this.config.aliasHeader(rowList);
                 }
                 resultList.add(rowList);

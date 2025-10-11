@@ -54,13 +54,14 @@ import org.miaixz.bus.image.metric.net.KeycloakClient;
 import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 
 /**
- * 设备信息类
+ * Represents a DICOM Device entity in a network.
  * <p>
- * 该类表示DICOM网络中的一个设备实体，包含设备的基本信息、连接配置、应用实体、 证书配置等。设备可以包含多个应用实体(AE)、连接、Web应用和Keycloak客户端。
- * </p>
+ * This class encapsulates the configuration of a device, including its basic information (name, manufacturer), network
+ * connections, Application Entities (AEs), security settings (TLS/SSL), and other operational parameters. A device can
+ * contain multiple AEs, connections, web applications, and Keycloak clients.
  * <p>
- * 设备支持TLS/SSL安全连接，可以配置信任存储和密钥存储，以及证书管理。
- * </p>
+ * The device supports TLS/SSL for secure communication and can be configured with trust stores, key stores, and
+ * certificate management.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -71,305 +72,305 @@ public class Device implements Serializable {
     private static final long serialVersionUID = 2852253317829L;
 
     /**
-     * AE可以发起的最大开放关联数映射
+     * Maps calling AE titles to the maximum number of associations they can initiate.
      */
     private final LinkedHashMap<String, Integer> limitAssociationsInitiatedBy = new LinkedHashMap<>();
 
     /**
-     * 授权节点证书映射
+     * Maps references to authorized node certificates for TLS peer authentication.
      */
     private final LinkedHashMap<String, X509Certificate[]> authorizedNodeCertificates = new LinkedHashMap<>();
 
     /**
-     * 本节点证书映射
+     * Maps references to certificates for this node, used for TLS key management.
      */
     private final LinkedHashMap<String, X509Certificate[]> thisNodeCertificates = new LinkedHashMap<>();
 
     /**
-     * 连接列表
+     * The list of network connections configured for this device.
      */
     private final List<Connection> conns = new ArrayList<>();
 
     /**
-     * 应用实体映射
+     * Maps AE titles to their ApplicationEntity configurations.
      */
     private final LinkedHashMap<String, ApplicationEntity> aes = new LinkedHashMap<>();
 
     /**
-     * Web应用映射
+     * Maps application names to their WebApplication configurations.
      */
     private final LinkedHashMap<String, WebApplication> webapps = new LinkedHashMap<>();
 
     /**
-     * Keycloak客户端映射
+     * Maps client IDs to their KeycloakClient configurations.
      */
     private final LinkedHashMap<String, KeycloakClient> keycloakClients = new LinkedHashMap<>();
 
     /**
-     * 设备扩展映射
+     * Maps extension classes to their respective DeviceExtension instances.
      */
     private final Map<Class<? extends DeviceExtension>, DeviceExtension> extensions = new HashMap<>();
 
     /**
-     * 关联列表
+     * A transient list of currently active associations with this device.
      */
     private transient final List<Association> associations = new ArrayList<>();
 
     /**
-     * 设备名称
+     * The unique name of the device.
      */
     private String deviceName;
 
     /**
-     * 设备标识
+     * The unique identifier of the device (Device UID).
      */
     private String deviceUID;
 
     /**
-     * 设备描述
+     * A textual description of the device.
      */
     private String description;
 
     /**
-     * 设备制造商
+     * The manufacturer of the device.
      */
     private String manufacturer;
 
     /**
-     * 设备商型号名称
+     * The manufacturer's model name for the device.
      */
     private String manufacturerModelName;
 
     /**
-     * 工作站名称
+     * The name of the station where the device is located.
      */
     private String stationName;
 
     /**
-     * 设备序列号
+     * The serial number of the device.
      */
     private String deviceSerialNumber;
 
     /**
-     * 信任证书URL
+     * The URL of the trust store for TLS connections.
      */
     private String trustStoreURL;
 
     /**
-     * 信任证书类型
+     * The type of the trust store (e.g., "JKS", "PKCS12").
      */
     private String trustStoreType;
 
     /**
-     * 信任证书PIN
+     * The PIN (password) for the trust store.
      */
     private String trustStorePin;
 
     /**
-     * 信任证书PIN属性
+     * A system property from which to read the trust store PIN.
      */
     private String trustStorePinProperty;
 
     /**
-     * 密钥库URL
+     * The URL of the key store for TLS connections.
      */
     private String keyStoreURL;
 
     /**
-     * 密钥库类型
+     * The type of the key store (e.g., "JKS", "PKCS12").
      */
     private String keyStoreType;
 
     /**
-     * 密钥库PIN
+     * The PIN (password) for the key store.
      */
     private String keyStorePin;
 
     /**
-     * 密钥库Pin属性
+     * A system property from which to read the key store PIN.
      */
     private String keyStorePinProperty;
 
     /**
-     * 密钥库密钥PIN
+     * The PIN (password) for the private key within the key store.
      */
     private String keyStoreKeyPin;
 
     /**
-     * 密钥库密钥Pin属性
+     * A system property from which to read the key store's key PIN.
      */
     private String keyStoreKeyPinProperty;
 
     /**
-     * 患者ID签发者
+     * The issuer responsible for generating Patient IDs.
      */
     private Issuer issuerOfPatientID;
 
     /**
-     * 检查号签发者
+     * The issuer responsible for generating Accession Numbers.
      */
     private Issuer issuerOfAccessionNumber;
 
     /**
-     * 检查申请者标识
+     * The identifier for the entity that places orders.
      */
     private Issuer orderPlacerIdentifier;
 
     /**
-     * 检查完成者标识
+     * The identifier for the entity that fills orders.
      */
     private Issuer orderFillerIdentifier;
 
     /**
-     * 入院ID签发者
+     * The issuer responsible for generating Admission IDs.
      */
     private Issuer issuerOfAdmissionID;
 
     /**
-     * 服务事件ID签发者
+     * The issuer responsible for generating Service Episode IDs.
      */
     private Issuer issuerOfServiceEpisodeID;
 
     /**
-     * 容器标识签发者
+     * The issuer responsible for generating Container Identifiers.
      */
     private Issuer issuerOfContainerIdentifier;
 
     /**
-     * 样本标识签发者
+     * The issuer responsible for generating Specimen Identifiers.
      */
     private Issuer issuerOfSpecimenIdentifier;
 
     /**
-     * 软件版本
+     * The software versions running on or implemented by the device.
      */
     private String[] softwareVersions = {};
 
     /**
-     * 主要设备类型
+     * The primary types of the device (e.g., "CT", "MR").
      */
     private String[] primaryDeviceTypes = {};
 
     /**
-     * 设备关联的机构名称
+     * The names of the institutions associated with this device.
      */
     private String[] institutionNames = {};
 
     /**
-     * 设备关联的机构代码
+     * The codes of the institutions associated with this device.
      */
     private Code[] institutionCodes = {};
 
     /**
-     * 设备的机构的地址
+     * The addresses of the institutions associated with this device.
      */
     private String[] institutionAddresses = {};
 
     /**
-     * 设备关联的部门名称
+     * The department names within the institutions associated with this device.
      */
     private String[] institutionalDepartmentNames = {};
 
     /**
-     * 相关设备参考
+     * References to other related devices.
      */
     private String[] relatedDeviceRefs = {};
 
     /**
-     * 设备数据对象
+     * Vendor-specific configuration data.
      */
     private byte[][] vendorData = {};
 
     /**
-     * 限制开放
+     * The maximum number of simultaneous open associations this device will accept. 0 for unlimited.
      */
     private int limitOpenAssociations;
 
     /**
-     * 当前是否安装在网络
+     * A flag indicating if the device is currently installed and active on the network.
      */
     private boolean installed = true;
 
     /**
-     * 角色选择协商是否宽松
+     * A flag to allow lenient handling of role selection negotiation in associations.
      */
     private boolean roleSelectionNegotiationLenient;
 
     /**
-     * 设备的时区
+     * The timezone of the device.
      */
     private TimeZone timeZoneOfDevice;
 
     /**
-     * ARC设备扩展
+     * A flag for enabling an archive-specific device extension.
      */
     private Boolean arcDevExt;
 
     /**
-     * 关联处理器
+     * A transient handler for managing association lifecycle events.
      */
     private transient AssociationHandler associationHandler = new AssociationHandler();
 
     /**
-     * DIMSE请求处理器
+     * A transient handler for processing incoming DIMSE-RQ messages.
      */
     private transient DimseRQHandler dimseRQHandler;
 
     /**
-     * 连接监视器
+     * A transient monitor for tracking connection status.
      */
     private transient ConnectionMonitor connectionMonitor;
 
     /**
-     * 关联监视器
+     * A transient monitor for tracking association status.
      */
     private transient AssociationMonitor associationMonitor;
 
     /**
-     * 执行器
+     * A transient executor for running asynchronous tasks.
      */
     private transient Executor executor;
 
     /**
-     * 定时执行器
+     * A transient scheduled executor for running delayed or periodic tasks.
      */
     private transient ScheduledExecutorService scheduledExecutor;
 
     /**
-     * SSL上下文
+     * A transient, volatile SSLContext for TLS connections.
      */
     private transient volatile SSLContext sslContext;
 
     /**
-     * 密钥管理器
+     * A transient, volatile KeyManager for TLS.
      */
     private transient volatile KeyManager km;
 
     /**
-     * 信任管理器
+     * A transient, volatile TrustManager for TLS.
      */
     private transient volatile TrustManager tm;
 
     /**
-     * 默认构造方法
+     * Default constructor for creating a Device.
      */
     public Device() {
     }
 
     /**
-     * 构造方法
+     * Constructs a Device with a specified name.
      *
-     * @param name 设备名称
+     * @param name The name of the device.
      */
     public Device(String name) {
         setDeviceName(name);
     }
 
     /**
-     * 将证书集合转换为数组
+     * Converts a collection of certificate arrays into a single flat array of certificates.
      *
-     * @param c 证书集合
-     * @return 证书数组
+     * @param c The collection of certificate arrays.
+     * @return A single array containing all certificates.
      */
     private static X509Certificate[] toArray(Collection<X509Certificate[]> c) {
         int size = 0;
@@ -385,10 +386,11 @@ public class Device implements Serializable {
     }
 
     /**
-     * 检查字符串是否为空
+     * Checks if a given string value is not null and not empty.
      *
-     * @param name 参数名称
-     * @param val  参数值
+     * @param name The name of the parameter being checked.
+     * @param val  The string value.
+     * @throws IllegalArgumentException if the value is an empty string.
      */
     private void checkNotEmpty(String name, String val) {
         if (val != null && val.isEmpty())
@@ -396,18 +398,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取该设备的名称
+     * Gets the name of this device.
      *
-     * @return 包含设备名的字符串
+     * @return A string containing the device name.
      */
     public final String getDeviceName() {
         return deviceName;
     }
 
     /**
-     * 设置此设备的名称
+     * Sets the name of this device.
      *
-     * @param name 包含设备名的字符串
+     * @param name A string containing the device name.
      */
     public final void setDeviceName(String name) {
         checkNotEmpty("Device Name", name);
@@ -415,380 +417,390 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取该设备的描述
+     * Gets the description of this device.
      *
-     * @return 包含设备描述的字符串
+     * @return A string containing the device description.
      */
     public final String getDescription() {
         return description;
     }
 
     /**
-     * 设置该设备的描述
+     * Sets the description of this device.
      *
-     * @param description 包含设备描述的字符串
+     * @param description A string containing the device description.
      */
     public final void setDescription(String description) {
         this.description = description;
     }
 
     /**
-     * 获取设备UID
+     * Gets the Device UID.
      *
-     * @return 设备UID
+     * @return The Device UID.
      */
     public String getDeviceUID() {
         return deviceUID;
     }
 
     /**
-     * 设置设备UID
+     * Sets the Device UID.
      *
-     * @param deviceUID 设备UID
+     * @param deviceUID The Device UID.
      */
     public void setDeviceUID(String deviceUID) {
         this.deviceUID = deviceUID;
     }
 
     /**
-     * 获取这个设备的制造商
+     * Gets the manufacturer of this device.
      *
-     * @return 包含设备制造商的字符串
+     * @return A string containing the device manufacturer.
      */
     public final String getManufacturer() {
         return manufacturer;
     }
 
     /**
-     * 设置该设备的制造商 这应该与该设备创建的SOP实例中的制造商(0008,0070)的值相同
+     * Sets the manufacturer of this device. This should be the same as the value of Manufacturer (0008,0070) in SOP
+     * Instances created by this device.
      *
-     * @param manufacturer 包含设备制造商的字符串
+     * @param manufacturer A string containing the device manufacturer.
      */
     public final void setManufacturer(String manufacturer) {
         this.manufacturer = manufacturer;
     }
 
     /**
-     * 获取该设备的制造商型号名称
+     * Gets the manufacturer's model name of this device.
      *
-     * @return 包含设备制造商模型名称的字符串
+     * @return A string containing the manufacturer's model name.
      */
     public final String getManufacturerModelName() {
         return manufacturerModelName;
     }
 
     /**
-     * 设置此设备的制造商型号名称 这应该与该设备创建的SOP实例中的制造商型号名称(0008,1090)的值相同
+     * Sets the manufacturer's model name of this device. This should be the same as the value of Manufacturer's Model
+     * Name (0008,1090) in SOP Instances created by this device.
      *
-     * @param manufacturerModelName 包含设备制造商模型名称的字符串
+     * @param manufacturerModelName A string containing the manufacturer's model name.
      */
     public final void setManufacturerModelName(String manufacturerModelName) {
         this.manufacturerModelName = manufacturerModelName;
     }
 
     /**
-     * 获取在该设备上运行(或由该设备实现)的软件版本
+     * Gets the software versions running on (or implemented by) this device.
      *
-     * @return 包含软件版本的字符串数组
+     * @return An array of strings containing the software versions.
      */
     public final String[] getSoftwareVersions() {
         return softwareVersions;
     }
 
     /**
-     * 设置在该设备上运行(或由该设备实现)的软件版本 这应该与该设备创建的SOP实例中的软件版本(0018、1020)的值相同
+     * Sets the software versions running on (or implemented by) this device. This should be the same as the value of
+     * Software Versions (0018,1020) in SOP Instances created by this device.
      *
-     * @param softwareVersions 包含软件版本的字符串数组
+     * @param softwareVersions An array of strings containing the software versions.
      */
     public final void setSoftwareVersions(String... softwareVersions) {
         this.softwareVersions = softwareVersions;
     }
 
     /**
-     * 获取属于此设备的工作站名称
+     * Gets the station name associated with this device.
      *
-     * @return 包含电台名称的字符串
+     * @return A string containing the station name.
      */
     public final String getStationName() {
         return stationName;
     }
 
     /**
-     * 设置属于此设备的工作站名称 这应该与此设备创建的SOP实例中的站名(0008,1010)的值相同
+     * Sets the station name associated with this device. This should be the same as the value of Station Name
+     * (0008,1010) in SOP Instances created by this device.
      *
-     * @param stationName 包含电台名称的字符串
+     * @param stationName A string containing the station name.
      */
     public final void setStationName(String stationName) {
         this.stationName = stationName;
     }
 
     /**
-     * 获取属于该设备的序列号
+     * Gets the serial number of this device.
      *
-     * @return 包含序列号的字符串
+     * @return A string containing the serial number.
      */
     public final String getDeviceSerialNumber() {
         return deviceSerialNumber;
     }
 
     /**
-     * 设置此设备的序列号 这应该与该设备创建的SOP实例中的设备序列号(0018,1000)的值相同
+     * Sets the serial number of this device. This should be the same as the value of Device Serial Number (0018,1000)
+     * in SOP Instances created by this device.
      *
-     * @param deviceSerialNumber 包含此设备的类型编解码器的字符串数组
+     * @param deviceSerialNumber A string containing the serial number.
      */
     public final void setDeviceSerialNumber(String deviceSerialNumber) {
         this.deviceSerialNumber = deviceSerialNumber;
     }
 
     /**
-     * 获取与此设备关联的类型编解码器
+     * Gets the primary device types associated with this device.
      *
-     * @return 包含此设备的类型编解码器的字符串数组
+     * @return An array of strings containing the primary device types.
      */
     public final String[] getPrimaryDeviceTypes() {
         return primaryDeviceTypes;
     }
 
     /**
-     * 设置与此设备关联的类型编解码器 表示一种设备，最适用于采集方式。如果适用，类型应该从PS3.16中上下文ID 30的内部值(0008,0100)列表中选择
+     * Sets the primary device types for this device. These signify a kind of device, most applicable for an acquisition
+     * modality. If applicable, types should be chosen from the list of UIDs for SOP Classes (0008,0100) in Context ID
+     * 30 of PS3.16.
      *
-     * @param primaryDeviceTypes 主要设备类型
+     * @param primaryDeviceTypes The primary device types.
      */
     public void setPrimaryDeviceTypes(String... primaryDeviceTypes) {
         this.primaryDeviceTypes = primaryDeviceTypes;
     }
 
     /**
-     * 获取与此设备关联的机构名称;可能是它所驻留或代表的站点吗
+     * Gets the institution names associated with this device.
      *
-     * @return 包含机构名称值的字符串数组
+     * @return An array of strings containing institution names.
      */
     public final String[] getInstitutionNames() {
         return institutionNames;
     }
 
     /**
-     * 设置与此设备关联的机构名称;可能是它所驻留或代表的站点吗 是否应该与该设备创建的SOP实例中的机构名称(0008,0080)相同
+     * Sets the institution names associated with this device. This should be the same as Institution Name (0008,0080)
+     * in SOP Instances created by this device.
      *
-     * @param names 包含机构名称值的字符串数组
+     * @param names An array of strings containing institution names.
      */
     public void setInstitutionNames(String... names) {
         institutionNames = names;
     }
 
     /**
-     * 获取机构代码
+     * Gets the institution codes.
      *
-     * @return 机构代码数组
+     * @return An array of institution codes.
      */
     public final Code[] getInstitutionCodes() {
         return institutionCodes;
     }
 
     /**
-     * 设置机构代码
+     * Sets the institution codes.
      *
-     * @param codes 机构代码数组
+     * @param codes An array of institution codes.
      */
     public void setInstitutionCodes(Code... codes) {
         institutionCodes = codes;
     }
 
     /**
-     * 设置操作该设备的机构的地址
+     * Gets the addresses of the institution operating this device.
      *
-     * @return 包含机构地址值的字符串数组
+     * @return An array of strings containing institution addresses.
      */
     public final String[] getInstitutionAddresses() {
         return institutionAddresses;
     }
 
     /**
-     * 获取操作该设备的机构的地址 是否与该设备创建的SOP实例中的机构地址(0008,0081)属性值相同
+     * Sets the addresses of the institution operating this device. This should be the same as the value of Institution
+     * Address (0008,0081) in SOP Instances created by this device.
      *
-     * @param addresses 包含机构地址值的字符串数组
+     * @param addresses An array of strings containing institution addresses.
      */
     public void setInstitutionAddresses(String... addresses) {
         institutionAddresses = addresses;
     }
 
     /**
-     * 获取与此设备关联的部门名称
+     * Gets the department names associated with this device.
      *
-     * @return 包含部门名称值的字符串数组
+     * @return An array of strings containing department names.
      */
     public final String[] getInstitutionalDepartmentNames() {
         return institutionalDepartmentNames;
     }
 
     /**
-     * 设置与此设备关联的部门名称 是否应该与该设备创建的SOP实例中的机构部门名称(0008,1040)的值相同
+     * Sets the department names associated with this device. This should be the same as Institutional Department Name
+     * (0008,1040) in SOP Instances created by this device.
      *
-     * @param names 包含部门名称值的字符串数组
+     * @param names An array of strings containing department names.
      */
     public void setInstitutionalDepartmentNames(String... names) {
         institutionalDepartmentNames = names;
     }
 
     /**
-     * 获取患者ID签发者
+     * Gets the issuer of Patient IDs.
      *
-     * @return 患者ID签发者
+     * @return The issuer of Patient IDs.
      */
     public final Issuer getIssuerOfPatientID() {
         return issuerOfPatientID;
     }
 
     /**
-     * 设置患者ID签发者
+     * Sets the issuer of Patient IDs.
      *
-     * @param issuerOfPatientID 患者ID签发者
+     * @param issuerOfPatientID The issuer of Patient IDs.
      */
     public final void setIssuerOfPatientID(Issuer issuerOfPatientID) {
         this.issuerOfPatientID = issuerOfPatientID;
     }
 
     /**
-     * 获取检查号签发者
+     * Gets the issuer of Accession Numbers.
      *
-     * @return 检查号签发者
+     * @return The issuer of Accession Numbers.
      */
     public final Issuer getIssuerOfAccessionNumber() {
         return issuerOfAccessionNumber;
     }
 
     /**
-     * 设置检查号签发者
+     * Sets the issuer of Accession Numbers.
      *
-     * @param issuerOfAccessionNumber 检查号签发者
+     * @param issuerOfAccessionNumber The issuer of Accession Numbers.
      */
     public final void setIssuerOfAccessionNumber(Issuer issuerOfAccessionNumber) {
         this.issuerOfAccessionNumber = issuerOfAccessionNumber;
     }
 
     /**
-     * 获取检查申请者标识
+     * Gets the Order Placer Identifier.
      *
-     * @return 检查申请者标识
+     * @return The Order Placer Identifier.
      */
     public final Issuer getOrderPlacerIdentifier() {
         return orderPlacerIdentifier;
     }
 
     /**
-     * 设置检查申请者标识
+     * Sets the Order Placer Identifier.
      *
-     * @param orderPlacerIdentifier 检查申请者标识
+     * @param orderPlacerIdentifier The Order Placer Identifier.
      */
     public final void setOrderPlacerIdentifier(Issuer orderPlacerIdentifier) {
         this.orderPlacerIdentifier = orderPlacerIdentifier;
     }
 
     /**
-     * 获取检查完成者标识
+     * Gets the Order Filler Identifier.
      *
-     * @return 检查完成者标识
+     * @return The Order Filler Identifier.
      */
     public final Issuer getOrderFillerIdentifier() {
         return orderFillerIdentifier;
     }
 
     /**
-     * 设置检查完成者标识
+     * Sets the Order Filler Identifier.
      *
-     * @param orderFillerIdentifier 检查完成者标识
+     * @param orderFillerIdentifier The Order Filler Identifier.
      */
     public final void setOrderFillerIdentifier(Issuer orderFillerIdentifier) {
         this.orderFillerIdentifier = orderFillerIdentifier;
     }
 
     /**
-     * 获取入院ID签发者
+     * Gets the issuer of Admission IDs.
      *
-     * @return 入院ID签发者
+     * @return The issuer of Admission IDs.
      */
     public final Issuer getIssuerOfAdmissionID() {
         return issuerOfAdmissionID;
     }
 
     /**
-     * 设置入院ID签发者
+     * Sets the issuer of Admission IDs.
      *
-     * @param issuerOfAdmissionID 入院ID签发者
+     * @param issuerOfAdmissionID The issuer of Admission IDs.
      */
     public final void setIssuerOfAdmissionID(Issuer issuerOfAdmissionID) {
         this.issuerOfAdmissionID = issuerOfAdmissionID;
     }
 
     /**
-     * 获取服务事件ID签发者
+     * Gets the issuer of Service Episode IDs.
      *
-     * @return 服务事件ID签发者
+     * @return The issuer of Service Episode IDs.
      */
     public final Issuer getIssuerOfServiceEpisodeID() {
         return issuerOfServiceEpisodeID;
     }
 
     /**
-     * 设置服务事件ID签发者
+     * Sets the issuer of Service Episode IDs.
      *
-     * @param issuerOfServiceEpisodeID 服务事件ID签发者
+     * @param issuerOfServiceEpisodeID The issuer of Service Episode IDs.
      */
     public final void setIssuerOfServiceEpisodeID(Issuer issuerOfServiceEpisodeID) {
         this.issuerOfServiceEpisodeID = issuerOfServiceEpisodeID;
     }
 
     /**
-     * 获取容器标识签发者
+     * Gets the issuer of Container Identifiers.
      *
-     * @return 容器标识签发者
+     * @return The issuer of Container Identifiers.
      */
     public final Issuer getIssuerOfContainerIdentifier() {
         return issuerOfContainerIdentifier;
     }
 
     /**
-     * 设置容器标识签发者
+     * Sets the issuer of Container Identifiers.
      *
-     * @param issuerOfContainerIdentifier 容器标识签发者
+     * @param issuerOfContainerIdentifier The issuer of Container Identifiers.
      */
     public final void setIssuerOfContainerIdentifier(Issuer issuerOfContainerIdentifier) {
         this.issuerOfContainerIdentifier = issuerOfContainerIdentifier;
     }
 
     /**
-     * 获取样本标识签发者
+     * Gets the issuer of Specimen Identifiers.
      *
-     * @return 样本标识签发者
+     * @return The issuer of Specimen Identifiers.
      */
     public final Issuer getIssuerOfSpecimenIdentifier() {
         return issuerOfSpecimenIdentifier;
     }
 
     /**
-     * 设置样本标识签发者
+     * Sets the issuer of Specimen Identifiers.
      *
-     * @param issuerOfSpecimenIdentifier 样本标识签发者
+     * @param issuerOfSpecimenIdentifier The issuer of Specimen Identifiers.
      */
     public final void setIssuerOfSpecimenIdentifier(Issuer issuerOfSpecimenIdentifier) {
         this.issuerOfSpecimenIdentifier = issuerOfSpecimenIdentifier;
     }
 
     /**
-     * 获取授权节点证书
+     * Gets the authorized node certificates for a given reference.
      *
-     * @param ref 引用
-     * @return 授权节点证书
+     * @param ref The reference key.
+     * @return An array of authorized certificates.
      */
     public X509Certificate[] getAuthorizedNodeCertificates(String ref) {
         return authorizedNodeCertificates.get(ref);
     }
 
     /**
-     * 设置授权节点证书
+     * Sets the authorized node certificates for a given reference.
      *
-     * @param ref   引用
-     * @param certs 证书
+     * @param ref   The reference key.
+     * @param certs The certificates to set.
      */
     public void setAuthorizedNodeCertificates(String ref, X509Certificate... certs) {
         authorizedNodeCertificates.put(ref, certs);
@@ -796,10 +808,10 @@ public class Device implements Serializable {
     }
 
     /**
-     * 移除授权节点证书
+     * Removes the authorized node certificates for a given reference.
      *
-     * @param ref 引用
-     * @return 证书
+     * @param ref The reference key.
+     * @return The removed certificates.
      */
     public X509Certificate[] removeAuthorizedNodeCertificates(String ref) {
         X509Certificate[] certs = authorizedNodeCertificates.remove(ref);
@@ -808,7 +820,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 移除所有授权节点证书
+     * Removes all authorized node certificates.
      */
     public void removeAllAuthorizedNodeCertificates() {
         authorizedNodeCertificates.clear();
@@ -816,36 +828,36 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取所有授权节点证书
+     * Gets all authorized node certificates from all references.
      *
-     * @return 证书数组
+     * @return A flat array of all authorized certificates.
      */
     public X509Certificate[] getAllAuthorizedNodeCertificates() {
         return toArray(authorizedNodeCertificates.values());
     }
 
     /**
-     * 获取授权节点证书引用
+     * Gets all reference keys for authorized node certificates.
      *
-     * @return 引用数组
+     * @return An array of reference strings.
      */
     public String[] getAuthorizedNodeCertificateRefs() {
         return authorizedNodeCertificates.keySet().toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
-     * 获取信任存储URL
+     * Gets the Trust Store URL.
      *
-     * @return 信任存储URL
+     * @return The Trust Store URL.
      */
     public final String getTrustStoreURL() {
         return trustStoreURL;
     }
 
     /**
-     * 设置信任存储URL
+     * Sets the Trust Store URL.
      *
-     * @param trustStoreURL 信任存储URL
+     * @param trustStoreURL The Trust Store URL.
      */
     public final void setTrustStoreURL(String trustStoreURL) {
         checkNotEmpty("trustStoreURL", trustStoreURL);
@@ -856,18 +868,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取信任存储类型
+     * Gets the Trust Store type.
      *
-     * @return 信任存储类型
+     * @return The Trust Store type.
      */
     public final String getTrustStoreType() {
         return trustStoreType;
     }
 
     /**
-     * 设置信任存储类型
+     * Sets the Trust Store type.
      *
-     * @param trustStoreType 信任存储类型
+     * @param trustStoreType The Trust Store type.
      */
     public final void setTrustStoreType(String trustStoreType) {
         checkNotEmpty("trustStoreType", trustStoreType);
@@ -875,18 +887,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取信任存储PIN
+     * Gets the Trust Store PIN.
      *
-     * @return 信任存储PIN
+     * @return The Trust Store PIN.
      */
     public final String getTrustStorePin() {
         return trustStorePin;
     }
 
     /**
-     * 设置信任存储PIN
+     * Sets the Trust Store PIN.
      *
-     * @param trustStorePin 信任存储PIN
+     * @param trustStorePin The Trust Store PIN.
      */
     public final void setTrustStorePin(String trustStorePin) {
         checkNotEmpty("trustStorePin", trustStorePin);
@@ -894,18 +906,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取信任存储PIN属性
+     * Gets the system property name for the Trust Store PIN.
      *
-     * @return 信任存储PIN属性
+     * @return The property name.
      */
     public final String getTrustStorePinProperty() {
         return trustStorePinProperty;
     }
 
     /**
-     * 设置信任存储PIN属性
+     * Sets the system property name for the Trust Store PIN.
      *
-     * @param trustStorePinProperty 信任存储PIN属性
+     * @param trustStorePinProperty The property name.
      */
     public final void setTrustStorePinProperty(String trustStorePinProperty) {
         checkNotEmpty("trustStorePinProperty", trustStorePinProperty);
@@ -913,48 +925,48 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取本节点证书
+     * Gets this node's certificates for a given reference.
      *
-     * @param ref 引用
-     * @return 证书
+     * @param ref The reference key.
+     * @return An array of certificates.
      */
     public X509Certificate[] getThisNodeCertificates(String ref) {
         return thisNodeCertificates.get(ref);
     }
 
     /**
-     * 设置本节点证书
+     * Sets this node's certificates for a given reference.
      *
-     * @param ref   引用
-     * @param certs 证书
+     * @param ref   The reference key.
+     * @param certs The certificates to set.
      */
     public void setThisNodeCertificates(String ref, X509Certificate... certs) {
         thisNodeCertificates.put(ref, certs);
     }
 
     /**
-     * 移除本节点证书
+     * Removes this node's certificates for a given reference.
      *
-     * @param ref 引用
-     * @return 证书
+     * @param ref The reference key.
+     * @return The removed certificates.
      */
     public X509Certificate[] removeThisNodeCertificates(String ref) {
         return thisNodeCertificates.remove(ref);
     }
 
     /**
-     * 获取密钥存储URL
+     * Gets the Key Store URL.
      *
-     * @return 密钥存储URL
+     * @return The Key Store URL.
      */
     public final String getKeyStoreURL() {
         return keyStoreURL;
     }
 
     /**
-     * 设置密钥存储URL
+     * Sets the Key Store URL.
      *
-     * @param keyStoreURL 密钥存储URL
+     * @param keyStoreURL The Key Store URL.
      */
     public final void setKeyStoreURL(String keyStoreURL) {
         checkNotEmpty("keyStoreURL", keyStoreURL);
@@ -965,18 +977,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取密钥存储类型
+     * Gets the Key Store type.
      *
-     * @return 密钥存储类型
+     * @return The Key Store type.
      */
     public final String getKeyStoreType() {
         return keyStoreType;
     }
 
     /**
-     * 设置密钥存储类型
+     * Sets the Key Store type.
      *
-     * @param keyStoreType 密钥存储类型
+     * @param keyStoreType The Key Store type.
      */
     public final void setKeyStoreType(String keyStoreType) {
         checkNotEmpty("keyStoreType", keyStoreType);
@@ -984,18 +996,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取密钥存储PIN
+     * Gets the Key Store PIN.
      *
-     * @return 密钥存储PIN
+     * @return The Key Store PIN.
      */
     public final String getKeyStorePin() {
         return keyStorePin;
     }
 
     /**
-     * 设置密钥存储PIN
+     * Sets the Key Store PIN.
      *
-     * @param keyStorePin 密钥存储PIN
+     * @param keyStorePin The Key Store PIN.
      */
     public final void setKeyStorePin(String keyStorePin) {
         checkNotEmpty("keyStorePin", keyStorePin);
@@ -1003,18 +1015,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取密钥存储PIN属性
+     * Gets the system property name for the Key Store PIN.
      *
-     * @return 密钥存储PIN属性
+     * @return The property name.
      */
     public final String getKeyStorePinProperty() {
         return keyStorePinProperty;
     }
 
     /**
-     * 设置密钥存储PIN属性
+     * Sets the system property name for the Key Store PIN.
      *
-     * @param keyStorePinProperty 密钥存储PIN属性
+     * @param keyStorePinProperty The property name.
      */
     public final void setKeyStorePinProperty(String keyStorePinProperty) {
         checkNotEmpty("keyStorePinProperty", keyStorePinProperty);
@@ -1022,18 +1034,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取密钥存储密钥PIN
+     * Gets the PIN for the private key within the Key Store.
      *
-     * @return 密钥存储密钥PIN
+     * @return The key PIN.
      */
     public final String getKeyStoreKeyPin() {
         return keyStoreKeyPin;
     }
 
     /**
-     * 设置密钥存储密钥PIN
+     * Sets the PIN for the private key within the Key Store.
      *
-     * @param keyStoreKeyPin 密钥存储密钥PIN
+     * @param keyStoreKeyPin The key PIN.
      */
     public final void setKeyStoreKeyPin(String keyStoreKeyPin) {
         checkNotEmpty("keyStoreKeyPin", keyStoreKeyPin);
@@ -1041,18 +1053,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取密钥存储密钥PIN属性
+     * Gets the system property name for the Key Store's key PIN.
      *
-     * @return 密钥存储密钥PIN属性
+     * @return The property name.
      */
     public final String getKeyStoreKeyPinProperty() {
         return keyStoreKeyPinProperty;
     }
 
     /**
-     * 设置密钥存储密钥PIN属性
+     * Sets the system property name for the Key Store's key PIN.
      *
-     * @param keyStoreKeyPinProperty 密钥存储密钥PIN属性
+     * @param keyStoreKeyPinProperty The property name.
      */
     public final void setKeyStoreKeyPinProperty(String keyStoreKeyPinProperty) {
         checkNotEmpty("keyStoreKeyPinProperty", keyStoreKeyPinProperty);
@@ -1060,79 +1072,80 @@ public class Device implements Serializable {
     }
 
     /**
-     * 移除所有本节点证书
+     * Removes all of this node's certificates.
      */
     public void removeAllThisNodeCertificates() {
         thisNodeCertificates.clear();
     }
 
     /**
-     * 获取所有本节点证书
+     * Gets all of this node's certificates from all references.
      *
-     * @return 证书数组
+     * @return A flat array of all certificates for this node.
      */
     public X509Certificate[] getAllThisNodeCertificates() {
         return toArray(thisNodeCertificates.values());
     }
 
     /**
-     * 获取本节点证书引用
+     * Gets all reference keys for this node's certificates.
      *
-     * @return 引用数组
+     * @return An array of reference strings.
      */
     public String[] getThisNodeCertificateRefs() {
         return thisNodeCertificates.keySet().toArray(Normal.EMPTY_STRING_ARRAY);
     }
 
     /**
-     * 获取相关设备引用
+     * Gets the references to related devices.
      *
-     * @return 相关设备引用数组
+     * @return An array of related device references.
      */
     public final String[] getRelatedDeviceRefs() {
         return relatedDeviceRefs;
     }
 
     /**
-     * 设置相关设备引用
+     * Sets the references to related devices.
      *
-     * @param refs 相关设备引用数组
+     * @param refs An array of related device references.
      */
     public void setRelatedDeviceRefs(String... refs) {
         relatedDeviceRefs = refs;
     }
 
     /**
-     * 获取设备特定的供应商配置信息
+     * Gets the device-specific vendor configuration data.
      *
-     * @return 设备数据的一个对象
+     * @return An array of byte arrays containing vendor data.
      */
     public final byte[][] getVendorData() {
         return vendorData;
     }
 
     /**
-     * 设置设备特定的供应商配置信息
+     * Sets the device-specific vendor configuration data.
      *
-     * @param vendorData 设备数据的一个对象
+     * @param vendorData An array of byte arrays containing vendor data.
      */
     public void setVendorData(byte[]... vendorData) {
         this.vendorData = vendorData;
     }
 
     /**
-     * 获取一个布尔值，指示此设备当前是否安装在网络上 (这对于预配置、移动货车和类似情况非常有用)
+     * Gets a boolean indicating if this device is currently installed on the network. This is useful for
+     * pre-configurations, mobile vans, and similar scenarios.
      *
-     * @return 一个布尔值，如果安装了这个设备，它将为真
+     * @return {@code true} if this device is installed.
      */
     public final boolean isInstalled() {
         return installed;
     }
 
     /**
-     * 设置一个布尔值，指示此设备当前是否安装在网络上 (这对于预配置、移动货车和类似情况非常有用)
+     * Sets a boolean indicating if this device is currently installed on the network.
      *
-     * @param installed 一个布尔值，如果安装了这个设备，它将为真
+     * @param installed {@code true} if this device is installed.
      */
     public final void setInstalled(boolean installed) {
         if (this.installed == installed)
@@ -1142,90 +1155,91 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取角色选择协商是否宽松
+     * Checks if role selection negotiation is lenient.
      *
-     * @return 角色选择协商是否宽松
+     * @return {@code true} if role selection negotiation is lenient.
      */
     public boolean isRoleSelectionNegotiationLenient() {
         return roleSelectionNegotiationLenient;
     }
 
     /**
-     * 设置角色选择协商是否宽松
+     * Sets whether role selection negotiation should be lenient.
      *
-     * @param roleSelectionNegotiationLenient 角色选择协商是否宽松
+     * @param roleSelectionNegotiationLenient {@code true} for lenient negotiation.
      */
     public void setRoleSelectionNegotiationLenient(boolean roleSelectionNegotiationLenient) {
         this.roleSelectionNegotiationLenient = roleSelectionNegotiationLenient;
     }
 
     /**
-     * 获取设备的时区
+     * Gets the timezone of the device.
      *
-     * @return 设备的时区
+     * @return The device's timezone.
      */
     public TimeZone getTimeZoneOfDevice() {
         return timeZoneOfDevice;
     }
 
     /**
-     * 设置设备的时区
+     * Sets the timezone of the device.
      *
-     * @param timeZoneOfDevice 设备的时区
+     * @param timeZoneOfDevice The device's timezone.
      */
     public void setTimeZoneOfDevice(TimeZone timeZoneOfDevice) {
         this.timeZoneOfDevice = timeZoneOfDevice;
     }
 
     /**
-     * 获取DIMSE请求处理器
+     * Gets the DIMSE-RQ handler for this device.
      *
-     * @return DIMSE请求处理器
+     * @return The DIMSE-RQ handler.
      */
     public final DimseRQHandler getDimseRQHandler() {
         return dimseRQHandler;
     }
 
     /**
-     * 设置DIMSE请求处理器
+     * Sets the DIMSE-RQ handler for this device.
      *
-     * @param dimseRQHandler DIMSE请求处理器
+     * @param dimseRQHandler The DIMSE-RQ handler.
      */
     public final void setDimseRQHandler(DimseRQHandler dimseRQHandler) {
         this.dimseRQHandler = dimseRQHandler;
     }
 
     /**
-     * 获取ARC设备扩展
+     * Gets the archive device extension flag.
      *
-     * @return ARC设备扩展
+     * @return The archive device extension flag.
      */
     public Boolean getArcDevExt() {
         return arcDevExt;
     }
 
     /**
-     * 设置ARC设备扩展
+     * Sets the archive device extension flag.
      *
-     * @param arcDevExt ARC设备扩展
+     * @param arcDevExt The archive device extension flag.
      */
     public void setArcDevExt(Boolean arcDevExt) {
         this.arcDevExt = arcDevExt;
     }
 
     /**
-     * 获取关联处理器
+     * Gets the association handler for this device.
      *
-     * @return 关联处理器
+     * @return The association handler.
      */
     public final AssociationHandler getAssociationHandler() {
         return associationHandler;
     }
 
     /**
-     * 设置关联处理器
+     * Sets the association handler for this device.
      *
-     * @param associationHandler 关联处理器
+     * @param associationHandler The association handler.
+     * @throws NullPointerException if the handler is null.
      */
     public void setAssociationHandler(AssociationHandler associationHandler) {
         if (associationHandler == null)
@@ -1234,46 +1248,46 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取连接监视器
+     * Gets the connection monitor.
      *
-     * @return 连接监视器
+     * @return The connection monitor.
      */
     public ConnectionMonitor getConnectionMonitor() {
         return connectionMonitor;
     }
 
     /**
-     * 设置连接监视器
+     * Sets the connection monitor.
      *
-     * @param connectionMonitor 连接监视器
+     * @param connectionMonitor The connection monitor.
      */
     public void setConnectionMonitor(ConnectionMonitor connectionMonitor) {
         this.connectionMonitor = connectionMonitor;
     }
 
     /**
-     * 获取关联监视器
+     * Gets the association monitor.
      *
-     * @return 关联监视器
+     * @return The association monitor.
      */
     public AssociationMonitor getAssociationMonitor() {
         return associationMonitor;
     }
 
     /**
-     * 设置关联监视器
+     * Sets the association monitor.
      *
-     * @param associationMonitor 关联监视器
+     * @param associationMonitor The association monitor.
      */
     public void setAssociationMonitor(AssociationMonitor associationMonitor) {
         this.associationMonitor = associationMonitor;
     }
 
     /**
-     * 绑定连接
+     * Binds all configured connections, making them active and ready to listen for incoming associations.
      *
-     * @throws IOException              IO异常
-     * @throws GeneralSecurityException 安全异常
+     * @throws IOException              if an I/O error occurs.
+     * @throws GeneralSecurityException if a security error occurs (e.g., with TLS configuration).
      */
     public void bindConnections() throws IOException, GeneralSecurityException {
         for (Connection con : conns)
@@ -1281,10 +1295,10 @@ public class Device implements Serializable {
     }
 
     /**
-     * 重新绑定连接
+     * Rebinds all connections that have been marked as needing a rebind.
      *
-     * @throws IOException              IO异常
-     * @throws GeneralSecurityException 安全异常
+     * @throws IOException              if an I/O error occurs.
+     * @throws GeneralSecurityException if a security error occurs.
      */
     public void rebindConnections() throws IOException, GeneralSecurityException {
         for (Connection con : conns)
@@ -1293,7 +1307,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 需要重新绑定连接
+     * Marks all connections as needing to be rebound.
      */
     private void needRebindConnections() {
         for (Connection con : conns)
@@ -1301,7 +1315,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 需要重新配置TLS
+     * Triggers a TLS reconfiguration by marking TLS connections for rebinding and clearing the cached SSL context.
      */
     private void needReconfigureTLS() {
         for (Connection con : conns)
@@ -1311,7 +1325,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 解绑连接
+     * Unbinds all configured connections, closing any open server sockets.
      */
     public void unbindConnections() {
         for (Connection con : conns)
@@ -1319,45 +1333,45 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取执行器
+     * Gets the executor for asynchronous tasks.
      *
-     * @return 执行器
+     * @return The executor.
      */
     public final Executor getExecutor() {
         return executor;
     }
 
     /**
-     * 设置执行器
+     * Sets the executor for asynchronous tasks.
      *
-     * @param executor 执行器
+     * @param executor The executor.
      */
     public final void setExecutor(Executor executor) {
         this.executor = executor;
     }
 
     /**
-     * 获取定时执行器
+     * Gets the scheduled executor for delayed or periodic tasks.
      *
-     * @return 定时执行器
+     * @return The scheduled executor service.
      */
     public final ScheduledExecutorService getScheduledExecutor() {
         return scheduledExecutor;
     }
 
     /**
-     * 设置定时执行器
+     * Sets the scheduled executor for delayed or periodic tasks.
      *
-     * @param executor 定时执行器
+     * @param executor The scheduled executor service.
      */
     public final void setScheduledExecutor(ScheduledExecutorService executor) {
         this.scheduledExecutor = executor;
     }
 
     /**
-     * 添加连接
+     * Adds a network connection to this device.
      *
-     * @param conn 连接
+     * @param conn The connection to add.
      */
     public void addConnection(Connection conn) {
         conn.setDevice(this);
@@ -1366,10 +1380,11 @@ public class Device implements Serializable {
     }
 
     /**
-     * 移除连接
+     * Removes a network connection from this device.
      *
-     * @param conn 连接
-     * @return 是否移除成功
+     * @param conn The connection to remove.
+     * @return {@code true} if the connection was successfully removed.
+     * @throws IllegalStateException if the connection is still in use by an Application Entity.
      */
     public boolean removeConnection(Connection conn) {
         for (ApplicationEntity ae : aes.values())
@@ -1385,19 +1400,19 @@ public class Device implements Serializable {
     }
 
     /**
-     * 列出连接
+     * Returns an unmodifiable list of the connections configured for this device.
      *
-     * @return 连接列表
+     * @return A list of connections.
      */
     public List<Connection> listConnections() {
         return Collections.unmodifiableList(conns);
     }
 
     /**
-     * 查找具有相等RDN的连接
+     * Finds a configured connection that has an equal distinguished name (RDN) to the given connection.
      *
-     * @param other 其他连接
-     * @return 连接
+     * @param other The connection to compare against.
+     * @return The matching connection, or null if not found.
      */
     public Connection connectionWithEqualsRDN(Connection other) {
         for (Connection conn : conns)
@@ -1407,9 +1422,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 添加应用实体
+     * Adds an Application Entity to this device.
      *
-     * @param ae 应用实体
+     * @param ae The Application Entity to add.
      */
     public void addApplicationEntity(ApplicationEntity ae) {
         ae.setDevice(this);
@@ -1417,20 +1432,20 @@ public class Device implements Serializable {
     }
 
     /**
-     * 移除应用实体
+     * Removes an Application Entity from this device.
      *
-     * @param ae 应用实体
-     * @return 移除的应用实体
+     * @param ae The Application Entity to remove.
+     * @return The removed Application Entity, or null if it was not found.
      */
     public ApplicationEntity removeApplicationEntity(ApplicationEntity ae) {
         return removeApplicationEntity(ae.getAETitle());
     }
 
     /**
-     * 移除应用实体
+     * Removes an Application Entity from this device by its AE title.
      *
-     * @param aet 应用实体标题
-     * @return 移除的应用实体
+     * @param aet The AE title of the Application Entity to remove.
+     * @return The removed Application Entity, or null if it was not found.
      */
     public ApplicationEntity removeApplicationEntity(String aet) {
         ApplicationEntity ae = aes.remove(aet);
@@ -1440,28 +1455,28 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取Web应用名称集合
+     * Gets the names of all configured web applications.
      *
-     * @return Web应用名称集合
+     * @return A collection of web application names.
      */
     public Collection<String> getWebApplicationNames() {
         return webapps.keySet();
     }
 
     /**
-     * 获取Web应用集合
+     * Gets all configured web applications.
      *
-     * @return Web应用集合
+     * @return A collection of web applications.
      */
     public Collection<WebApplication> getWebApplications() {
         return webapps.values();
     }
 
     /**
-     * 获取具有指定服务类的Web应用
+     * Gets all web applications that provide a specific service class.
      *
-     * @param serviceClass 服务类
-     * @return Web应用集合
+     * @param serviceClass The service class to look for.
+     * @return A collection of matching web applications.
      */
     public Collection<WebApplication> getWebApplicationsWithServiceClass(WebApplication.ServiceClass serviceClass) {
         Collection<WebApplication> result = new ArrayList<>(webapps.size());
@@ -1473,19 +1488,19 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取Web应用
+     * Gets a web application by its name.
      *
-     * @param name Web应用名称
-     * @return Web应用
+     * @param name The name of the web application.
+     * @return The web application, or null if not found.
      */
     public WebApplication getWebApplication(String name) {
         return webapps.get(name);
     }
 
     /**
-     * 添加Web应用
+     * Adds a web application to this device.
      *
-     * @param webapp Web应用
+     * @param webapp The web application to add.
      */
     public void addWebApplication(WebApplication webapp) {
         webapp.setDevice(this);
@@ -1493,20 +1508,20 @@ public class Device implements Serializable {
     }
 
     /**
-     * 移除Web应用
+     * Removes a web application from this device.
      *
-     * @param webapp Web应用
-     * @return 移除的Web应用
+     * @param webapp The web application to remove.
+     * @return The removed web application, or null if not found.
      */
     public WebApplication removeWebApplication(WebApplication webapp) {
         return removeWebApplication(webapp.getApplicationName());
     }
 
     /**
-     * 移除Web应用
+     * Removes a web application by its name.
      *
-     * @param name Web应用名称
-     * @return 移除的Web应用
+     * @param name The name of the web application to remove.
+     * @return The removed web application, or null if not found.
      */
     public WebApplication removeWebApplication(String name) {
         WebApplication webapp = webapps.remove(name);
@@ -1516,37 +1531,37 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取Keycloak客户端ID集合
+     * Gets the client IDs of all configured Keycloak clients.
      *
-     * @return Keycloak客户端ID集合
+     * @return A collection of client IDs.
      */
     public Collection<String> getKeycloakClientIDs() {
         return keycloakClients.keySet();
     }
 
     /**
-     * 获取Keycloak客户端集合
+     * Gets all configured Keycloak clients.
      *
-     * @return Keycloak客户端集合
+     * @return A collection of Keycloak clients.
      */
     public Collection<KeycloakClient> getKeycloakClients() {
         return keycloakClients.values();
     }
 
     /**
-     * 获取Keycloak客户端
+     * Gets a Keycloak client by its client ID.
      *
-     * @param clientID 客户端ID
-     * @return Keycloak客户端
+     * @param clientID The client ID.
+     * @return The Keycloak client, or null if not found.
      */
     public KeycloakClient getKeycloakClient(String clientID) {
         return keycloakClients.get(clientID);
     }
 
     /**
-     * 添加Keycloak客户端
+     * Adds a Keycloak client to this device.
      *
-     * @param client Keycloak客户端
+     * @param client The Keycloak client to add.
      */
     public void addKeycloakClient(KeycloakClient client) {
         client.setDevice(this);
@@ -1554,20 +1569,20 @@ public class Device implements Serializable {
     }
 
     /**
-     * 移除Keycloak客户端
+     * Removes a Keycloak client from this device.
      *
-     * @param client Keycloak客户端
-     * @return 移除的Keycloak客户端
+     * @param client The Keycloak client to remove.
+     * @return The removed client, or null if not found.
      */
     public KeycloakClient removeKeycloakClient(KeycloakClient client) {
         return removeKeycloakClient(client.getKeycloakClientID());
     }
 
     /**
-     * 移除Keycloak客户端
+     * Removes a Keycloak client by its client ID.
      *
-     * @param name 客户端ID
-     * @return 移除的Keycloak客户端
+     * @param name The client ID.
+     * @return The removed client, or null if not found.
      */
     public KeycloakClient removeKeycloakClient(String name) {
         KeycloakClient client = keycloakClients.remove(name);
@@ -1577,9 +1592,10 @@ public class Device implements Serializable {
     }
 
     /**
-     * 添加设备扩展
+     * Adds a device extension to this device.
      *
-     * @param ext 设备扩展
+     * @param ext The device extension to add.
+     * @throws IllegalStateException if an extension of the same class already exists.
      */
     public void addDeviceExtension(DeviceExtension ext) {
         Class<? extends DeviceExtension> clazz = ext.getClass();
@@ -1590,10 +1606,10 @@ public class Device implements Serializable {
     }
 
     /**
-     * 移除设备扩展
+     * Removes a device extension from this device.
      *
-     * @param ext 设备扩展
-     * @return 是否移除成功
+     * @param ext The device extension to remove.
+     * @return {@code true} if the extension was successfully removed.
      */
     public boolean removeDeviceExtension(DeviceExtension ext) {
         if (extensions.remove(ext.getClass()) == null)
@@ -1603,18 +1619,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取开放关联限制
+     * Gets the limit on the total number of open associations this device will accept.
      *
-     * @return 开放关联限制
+     * @return The maximum number of open associations, or 0 for unlimited.
      */
     public final int getLimitOpenAssociations() {
         return limitOpenAssociations;
     }
 
     /**
-     * 设置开放关联限制
+     * Sets the limit on the total number of open associations this device will accept.
      *
-     * @param limit 开放关联限制
+     * @param limit The maximum number of open associations, or 0 for unlimited.
      */
     public final void setLimitOpenAssociations(int limit) {
         if (limit < 0)
@@ -1623,28 +1639,22 @@ public class Device implements Serializable {
     }
 
     /**
-     * 返回指定的远程AE可以发起的最大开放关联数。 如果超过了这个限制，那么来自AE的进一步关联请求将被拒绝 Result = 2 - rejected-transient，Source = 1 - DICOM UL
-     * service-user，Reason = 2 - local-limit-exceeded
+     * Returns the maximum number of open associations that can be initiated by the specified remote AE. If this limit
+     * is exceeded, further association requests from that AE will be rejected.
      *
-     * @param callingAET 远程AE的AE名称
-     * @return 开放关联的最大数目或无限制为0
-     * @throws NullPointerException 如果callingAET为空
-     * @see #setLimitAssociationsInitiatedBy(String, int)
+     * @param callingAET The AE title of the remote AE.
+     * @return The maximum number of open associations, or 0 for unlimited.
      */
     public int getLimitAssociationsInitiatedBy(String callingAET) {
         Integer value = limitAssociationsInitiatedBy.get(Objects.requireNonNull(callingAET));
-        return value != null ? value.intValue() : 0;
+        return value != null ? value : 0;
     }
 
     /**
-     * 返回指定的远程AE可以发起的最大开放关联数。如果超过了这个限制，那么来自AE的进一步关联请求将被拒绝 Result = 2 - rejected-transient， Source = 1 - DICOM UL
-     * service-user， Reason = 2 - local-limit-exceeded
+     * Sets the maximum number of open associations that can be initiated by the specified remote AE.
      *
-     * @param callingAET 远程AE的AE名称
-     * @param limit      开放关联的最大数目或无限制为0
-     * @throws NullPointerException     如果callingAET为空
-     * @throws IllegalArgumentException 如果限制小于零
-     * @see #getLimitAssociationsInitiatedBy(String)
+     * @param callingAET The AE title of the remote AE.
+     * @param limit      The maximum number of open associations, or 0 for unlimited.
      */
     public void setLimitAssociationsInitiatedBy(String callingAET, int limit) {
         Objects.requireNonNull(callingAET);
@@ -1657,9 +1667,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取所有远程AE及其关联限制的数组。 每个数组元素格式为"AE名称=限制值"。
+     * Gets an array of all remote AEs and their association limits. Each array element is formatted as "AETitle=limit".
      *
-     * @return 包含AE名称和限制值的字符串数组
+     * @return An array of strings with AE titles and their limits.
      */
     public String[] getLimitAssociationsInitiatedBy() {
         String[] ss = new String[limitAssociationsInitiatedBy.size()];
@@ -1671,10 +1681,11 @@ public class Device implements Serializable {
     }
 
     /**
-     * 通过字符串数组设置远程AE的关联限制。 每个数组元素格式应为"AE名称=限制值"。
+     * Sets the association limits for remote AEs from an array of strings. Each array element must be formatted as
+     * "AETitle=limit".
      *
-     * @param values 包含AE名称和限制值的字符串数组
-     * @throws IllegalArgumentException 如果数组中的任何元素格式无效
+     * @param values An array of strings with AE titles and their limits.
+     * @throws IllegalArgumentException if any string in the array is incorrectly formatted.
      */
     public void setLimitAssociationsInitiatedBy(String[] values) {
         Map<String, Integer> tmp = new HashMap<>();
@@ -1690,9 +1701,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 批量设置远程AE的关联限制。 此方法会先清除所有现有限制，然后设置新的限制。
+     * Sets the association limits from a map, clearing any previous limits.
      *
-     * @param tmp 包含AE名称和限制值的映射
+     * @param tmp A map containing AE titles and their association limits.
      */
     private void setLimitAssociationsInitiatedBy(Map<String, Integer> tmp) {
         limitAssociationsInitiatedBy.clear();
@@ -1700,9 +1711,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 添加一个新的关联到关联列表中。
+     * Adds a newly established association to the list of active associations.
      *
-     * @param as 要添加的关联对象
+     * @param as The association to add.
      */
     public void addAssociation(Association as) {
         synchronized (associations) {
@@ -1711,9 +1722,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 从关联列表中移除指定的关联，并通知所有等待的线程。
+     * Removes an association from the list of active associations.
      *
-     * @param as 要移除的关联对象
+     * @param as The association to remove.
      */
     public void removeAssociation(Association as) {
         synchronized (associations) {
@@ -1723,30 +1734,30 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取所有开放关联的数组。
+     * Returns an array of all currently open associations.
      *
-     * @return 包含所有开放关联的数组
+     * @return An array of active associations.
      */
     public Association[] listOpenAssociations() {
         synchronized (associations) {
-            return associations.toArray(new Association[associations.size()]);
+            return associations.toArray(new Association[0]);
         }
     }
 
     /**
-     * 获取当前开放关联的数量。
+     * Gets the current number of open associations.
      *
-     * @return 开放关联的数量
+     * @return The number of open associations.
      */
     public int getNumberOfOpenAssociations() {
         return associations.size();
     }
 
     /**
-     * 获取由指定AE发起的关联数量。
+     * Gets the number of associations initiated by a specific remote AE.
      *
-     * @param callingAET 远程AE的名称
-     * @return 由指定AE发起的关联数量
+     * @param callingAET The AE title of the remote AE.
+     * @return The number of associations initiated by that AE.
      */
     public int getNumberOfAssociationsInitiatedBy(String callingAET) {
         synchronized (associations) {
@@ -1760,10 +1771,10 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取发往指定AE的关联数量。
+     * Gets the number of associations initiated to a specific local AE.
      *
-     * @param calledAET 目标AE的名称
-     * @return 发往指定AE的关联数量
+     * @param calledAET The AE title of the local AE.
+     * @return The number of associations initiated to that AE.
      */
     public int getNumberOfAssociationsInitiatedTo(String calledAET) {
         synchronized (associations) {
@@ -1777,9 +1788,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 等待直到没有开放的连接。 如果当前有开放的连接，此方法将阻塞，直到所有连接都关闭。
+     * Waits until there are no open associations. This method blocks until all active connections are closed.
      *
-     * @throws InterruptedException 如果线程在等待时被中断
+     * @throws InterruptedException if the thread is interrupted while waiting.
      */
     public void waitForNoOpenConnections() throws InterruptedException {
         synchronized (associations) {
@@ -1789,34 +1800,34 @@ public class Device implements Serializable {
     }
 
     /**
-     * 检查关联请求是否超过了限制。 如果全局开放关联数限制大于0且当前开放关联数超过了该限制，或者 如果特定AE的关联限制存在且该AE当前关联数超过了该限制，则返回true。
+     * Checks if an incoming association request would exceed configured limits.
      *
-     * @param rq 关联请求
-     * @return 如果超过了限制返回true，否则返回false
+     * @param rq The A-ASSOCIATE-RQ PDU.
+     * @return {@code true} if the association limit is exceeded, {@code false} otherwise.
      */
     public boolean isLimitOfAssociationsExceeded(AAssociateRQ rq) {
         Integer limit;
-        return limitOpenAssociations > 0 && associations.size() > limitOpenAssociations
+        return limitOpenAssociations > 0 && associations.size() >= limitOpenAssociations
                 || (limit = limitAssociationsInitiatedBy.get(rq.getCallingAET())) != null
-                        && getNumberOfAssociationsInitiatedBy(rq.getCallingAET()) > limit;
+                        && getNumberOfAssociationsInitiatedBy(rq.getCallingAET()) >= limit;
     }
 
     /**
-     * 根据AE标题获取应用程序实体。
+     * Gets an Application Entity by its AE title.
      *
-     * @param aet AE标题
-     * @return 具有指定AE标题的应用程序实体，如果不存在则返回null
+     * @param aet The AE title.
+     * @return The Application Entity, or null if not found.
      */
     public ApplicationEntity getApplicationEntity(String aet) {
         return aes.get(aet);
     }
 
     /**
-     * 根据AE标题获取应用程序实体，支持通配符和其他AE标题匹配。 首先尝试精确匹配，如果没有找到则尝试通配符(*)匹配， 如果仍然没有找到且允许匹配其他AE标题，则尝试匹配其他AE标题。
+     * Gets an Application Entity by its AE title, with support for wildcards and alternative AE titles.
      *
-     * @param aet            AE标题
-     * @param matchOtherAETs 是否允许匹配其他AE标题
-     * @return 匹配的应用程序实体，如果找不到则返回null
+     * @param aet            The AE title to match.
+     * @param matchOtherAETs If true, also checks alternative AE titles defined in the AE configurations.
+     * @return The matching Application Entity, or null if not found.
      */
     public ApplicationEntity getApplicationEntity(String aet, boolean matchOtherAETs) {
         ApplicationEntity ae = aes.get(aet);
@@ -1830,36 +1841,36 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取所有应用程序AE标题的集合。
+     * Gets the AE titles of all configured Application Entities.
      *
-     * @return 包含所有应用程序AE标题的集合
+     * @return A collection of AE titles.
      */
     public Collection<String> getApplicationAETitles() {
         return aes.keySet();
     }
 
     /**
-     * 获取所有应用程序实体的集合。
+     * Gets all configured Application Entities.
      *
-     * @return 包含所有应用程序实体的集合
+     * @return A collection of Application Entities.
      */
     public Collection<ApplicationEntity> getApplicationEntities() {
         return aes.values();
     }
 
     /**
-     * 获取密钥管理器。
+     * Gets the configured KeyManager for TLS.
      *
-     * @return 密钥管理器
+     * @return The KeyManager.
      */
     public final KeyManager getKeyManager() {
         return km;
     }
 
     /**
-     * 设置密钥管理器。
+     * Sets a custom KeyManager for TLS.
      *
-     * @param km 要设置的密钥管理器
+     * @param km The KeyManager to set.
      */
     public final void setKeyManager(KeyManager km) {
         this.km = km;
@@ -1867,11 +1878,11 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取或创建密钥管理器。 如果密钥管理器已存在或密钥存储URL为null，则返回现有的密钥管理器。 否则，使用密钥存储信息创建新的密钥管理器。
+     * Lazily initializes and returns the KeyManager based on the device's key store configuration.
      *
-     * @return 密钥管理器
-     * @throws GeneralSecurityException 如果创建密钥管理器时发生安全异常
-     * @throws IOException              如果读取密钥存储时发生I/O异常
+     * @return The initialized KeyManager.
+     * @throws GeneralSecurityException if there is a security-related error.
+     * @throws IOException              if the key store cannot be read.
      */
     private KeyManager km() throws GeneralSecurityException, IOException {
         KeyManager ret = km;
@@ -1887,10 +1898,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取密钥存储类型。 如果密钥存储类型为null，则抛出异常。
+     * Gets the Key Store type, throwing an exception if not configured.
      *
-     * @return 密钥存储类型
-     * @throws IllegalStateException 如果密钥存储类型为null
+     * @return The Key Store type.
      */
     private String keyStoreType() {
         if (keyStoreType == null)
@@ -1899,10 +1909,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取密钥存储PIN。 如果直接设置了密钥存储PIN，则返回该PIN。 否则，尝试从系统属性中获取PIN。
+     * Gets the Key Store PIN, resolving from system properties if necessary.
      *
-     * @return 密钥存储PIN
-     * @throws IllegalStateException 如果既没有直接设置PIN，也没有设置PIN属性，或者属性不存在
+     * @return The Key Store PIN.
      */
     private String keyStorePin() {
         if (keyStorePin != null)
@@ -1916,11 +1925,10 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取密钥PIN。 如果直接设置了密钥PIN，则返回该PIN。 否则，如果设置了密钥PIN属性，则从系统属性中获取PIN。 如果都没有，则返回密钥存储PIN。
+     * Gets the key PIN, falling back to the key store PIN if not specified.
      *
-     * @param keyStorePin 密钥存储PIN
-     * @return 密钥PIN
-     * @throws IllegalStateException 如果设置了密钥PIN属性但属性不存在
+     * @param keyStorePin The key store PIN to use as a fallback.
+     * @return The key PIN.
      */
     private String keyPin(String keyStorePin) {
         if (keyStoreKeyPin != null)
@@ -1934,18 +1942,18 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取信任管理器。
+     * Gets the configured TrustManager for TLS.
      *
-     * @return 信任管理器
+     * @return The TrustManager.
      */
     public final TrustManager getTrustManager() {
         return tm;
     }
 
     /**
-     * 设置信任管理器。
+     * Sets a custom TrustManager for TLS.
      *
-     * @param tm 要设置的信任管理器
+     * @param tm The TrustManager to set.
      */
     public final void setTrustManager(TrustManager tm) {
         this.tm = tm;
@@ -1953,11 +1961,11 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取或创建信任管理器。 如果信任管理器已存在或没有设置信任存储URL且没有授权节点证书，则返回现有的信任管理器。 否则，使用信任存储信息或授权节点证书创建新的信任管理器。
+     * Lazily initializes and returns the TrustManager based on the device's trust store configuration.
      *
-     * @return 信任管理器
-     * @throws GeneralSecurityException 如果创建信任管理器时发生安全异常
-     * @throws IOException              如果读取信任存储时发生I/O异常
+     * @return The initialized TrustManager.
+     * @throws GeneralSecurityException if there is a security-related error.
+     * @throws IOException              if the trust store cannot be read.
      */
     private TrustManager tm() throws GeneralSecurityException, IOException {
         TrustManager ret = tm;
@@ -1973,10 +1981,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取信任存储类型。 如果信任存储类型为null，则抛出异常。
+     * Gets the Trust Store type, throwing an exception if not configured.
      *
-     * @return 信任存储类型
-     * @throws IllegalStateException 如果信任存储类型为null
+     * @return The Trust Store type.
      */
     private String trustStoreType() {
         if (trustStoreType == null)
@@ -1985,10 +1992,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取信任存储PIN。 如果直接设置了信任存储PIN，则返回该PIN。 否则，尝试从系统属性中获取PIN。
+     * Gets the Trust Store PIN, resolving from system properties if necessary.
      *
-     * @return 信任存储PIN
-     * @throws IllegalStateException 如果既没有直接设置PIN，也没有设置PIN属性，或者属性不存在
+     * @return The Trust Store PIN.
      */
     private String trustStorePin() {
         if (trustStorePin != null)
@@ -2002,11 +2008,11 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取或创建SSL上下文。 如果SSL上下文已存在，则返回现有的SSL上下文。 否则，创建新的SSL上下文并初始化。
+     * Lazily initializes and returns the SSLContext for TLS connections.
      *
-     * @return SSL上下文
-     * @throws GeneralSecurityException 如果创建SSL上下文时发生安全异常
-     * @throws IOException              如果初始化SSL上下文时发生I/O异常
+     * @return The initialized SSLContext.
+     * @throws GeneralSecurityException if there is a security-related error.
+     * @throws IOException              if the key/trust stores cannot be read.
      */
     public SSLContext sslContext() throws GeneralSecurityException, IOException {
         SSLContext ctx = sslContext;
@@ -2019,11 +2025,11 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取密钥管理器数组。
+     * Returns the configured KeyManagers as an array.
      *
-     * @return 包含密钥管理器的数组，如果没有密钥管理器则返回null
-     * @throws GeneralSecurityException 如果获取密钥管理器时发生安全异常
-     * @throws IOException              如果获取密钥管理器时发生I/O异常
+     * @return An array containing the KeyManager, or null.
+     * @throws GeneralSecurityException if there is a security-related error.
+     * @throws IOException              if the key store cannot be read.
      */
     public KeyManager[] keyManagers() throws GeneralSecurityException, IOException {
         KeyManager tmp = km();
@@ -2031,11 +2037,11 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取信任管理器数组。
+     * Returns the configured TrustManagers as an array.
      *
-     * @return 包含信任管理器的数组，如果没有信任管理器则返回null
-     * @throws GeneralSecurityException 如果获取信任管理器时发生安全异常
-     * @throws IOException              如果获取信任管理器时发生I/O异常
+     * @return An array containing the TrustManager, or null.
+     * @throws GeneralSecurityException if there is a security-related error.
+     * @throws IOException              if the trust store cannot be read.
      */
     public TrustManager[] trustManagers() throws GeneralSecurityException, IOException {
         TrustManager tmp = tm();
@@ -2043,10 +2049,10 @@ public class Device implements Serializable {
     }
 
     /**
-     * 执行一个任务。
+     * Executes a command using the device's configured executor.
      *
-     * @param command 要执行的任务
-     * @throws IllegalStateException 如果执行器未初始化
+     * @param command The command to execute.
+     * @throws IllegalStateException if the executor has not been initialized.
      */
     public void execute(Runnable command) {
         if (executor == null)
@@ -2055,13 +2061,13 @@ public class Device implements Serializable {
     }
 
     /**
-     * 调度一个延迟执行的任务。
+     * Schedules a command for one-shot execution after a given delay.
      *
-     * @param command 要执行的任务
-     * @param delay   延迟时间
-     * @param unit    延迟时间的单位
-     * @return 表示任务未完成结果的ScheduledFuture
-     * @throws IllegalStateException 如果调度执行器服务未初始化
+     * @param command The command to schedule.
+     * @param delay   The delay before execution.
+     * @param unit    The time unit of the delay.
+     * @return A ScheduledFuture representing the pending task.
+     * @throws IllegalStateException if the scheduled executor has not been initialized.
      */
     public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
         if (scheduledExecutor == null)
@@ -2070,14 +2076,14 @@ public class Device implements Serializable {
     }
 
     /**
-     * 调度一个固定速率执行的任务。 任务将在初始延迟后首次执行，然后在固定的时间间隔内重复执行。
+     * Schedules a command for periodic execution at a fixed rate.
      *
-     * @param command      要执行的任务
-     * @param initialDelay 初始延迟时间
-     * @param period       连续执行之间的时间间隔
-     * @param unit         时间单位
-     * @return 表示任务未完成结果的ScheduledFuture
-     * @throws IllegalStateException 如果调度执行器服务未初始化
+     * @param command      The command to schedule.
+     * @param initialDelay The initial delay.
+     * @param period       The period between executions.
+     * @param unit         The time unit.
+     * @return A ScheduledFuture representing the pending task.
+     * @throws IllegalStateException if the scheduled executor has not been initialized.
      */
     public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
         if (scheduledExecutor == null)
@@ -2086,14 +2092,15 @@ public class Device implements Serializable {
     }
 
     /**
-     * 调度一个固定延迟执行的任务。 任务将在初始延迟后首次执行，然后在每次执行完成后等待指定的延迟时间再次执行。
+     * Schedules a command for periodic execution with a fixed delay between the end of one execution and the start of
+     * the next.
      *
-     * @param command      要执行的任务
-     * @param initialDelay 初始延迟时间
-     * @param delay        一次执行终止和下一次执行开始之间的延迟
-     * @param unit         时间单位
-     * @return 表示任务未完成结果的ScheduledFuture
-     * @throws IllegalStateException 如果调度执行器服务未初始化
+     * @param command      The command to schedule.
+     * @param initialDelay The initial delay.
+     * @param delay        The delay between executions.
+     * @param unit         The time unit.
+     * @return A ScheduledFuture representing the pending task.
+     * @throws IllegalStateException if the scheduled executor has not been initialized.
      */
     public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         if (scheduledExecutor == null)
@@ -2102,9 +2109,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 返回对象的字符串表示。
+     * Returns a string representation of the device and its main components.
      *
-     * @return 对象的字符串表示
+     * @return A string representation of the object.
      */
     @Override
     public String toString() {
@@ -2112,11 +2119,11 @@ public class Device implements Serializable {
     }
 
     /**
-     * 将设备信息追加到字符串构建器中。
+     * Appends a formatted string representation of the device to a StringBuilder.
      *
-     * @param sb     要追加信息的字符串构建器
-     * @param indent 缩进字符串
-     * @return 追加信息后的字符串构建器
+     * @param sb     The StringBuilder to append to.
+     * @param indent The indentation string to use for formatting.
+     * @return The StringBuilder with the appended information.
      */
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
@@ -2131,11 +2138,11 @@ public class Device implements Serializable {
     }
 
     /**
-     * 重新配置设备。 从另一个设备复制配置信息，包括设备属性、连接、应用程序实体、Web应用程序、Keycloak客户端和设备扩展。
+     * Reconfigures this device with the settings from another device instance.
      *
-     * @param from 源设备，从中复制配置信息
-     * @throws IOException              如果重新配置过程中发生I/O异常
-     * @throws GeneralSecurityException 如果重新配置过程中发生安全异常
+     * @param from The source device from which to copy the configuration.
+     * @throws IOException              if a connection rebinding error occurs.
+     * @throws GeneralSecurityException if a TLS configuration error occurs.
      */
     public void reconfigure(Device from) throws IOException, GeneralSecurityException {
         setDeviceAttributes(from);
@@ -2147,9 +2154,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 从另一个设备复制设备属性。 包括描述、设备UID、制造商、软件版本、安全设置等所有基本属性。
+     * Copies all basic attributes from another device to this one.
      *
-     * @param from 源设备，从中复制属性
+     * @param from The source device.
      */
     protected void setDeviceAttributes(Device from) {
         setDescription(from.description);
@@ -2191,9 +2198,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 设置授权节点证书。 如果证书有更新，则重置信任管理器。
+     * Sets the authorized node certificates from a source map.
      *
-     * @param from 包含授权节点证书的映射
+     * @param from The source map of certificates.
      */
     private void setAuthorizedNodeCertificates(Map<String, X509Certificate[]> from) {
         if (update(authorizedNodeCertificates, from))
@@ -2201,20 +2208,20 @@ public class Device implements Serializable {
     }
 
     /**
-     * 设置此节点证书。
+     * Sets this node's certificates from a source map.
      *
-     * @param from 包含此节点证书的映射
+     * @param from The source map of certificates.
      */
     private void setThisNodeCertificates(Map<String, X509Certificate[]> from) {
         update(thisNodeCertificates, from);
     }
 
     /**
-     * 更新目标证书映射。 首先保留目标映射中与源映射相同的键，然后更新或添加源映射中的所有证书。
+     * Updates a target map of certificates from a source map.
      *
-     * @param target 要更新的目标证书映射
-     * @param from   源证书映射
-     * @return 如果有任何更新则返回true，否则返回false
+     * @param target The target map to update.
+     * @param from   The source map.
+     * @return {@code true} if the target map was modified.
      */
     private boolean update(Map<String, X509Certificate[]> target, Map<String, X509Certificate[]> from) {
         boolean updated = target.keySet().retainAll(from.keySet());
@@ -2231,9 +2238,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 重新配置连接。 移除源设备中不存在的连接，添加源设备中存在的新连接，并重新配置所有连接。
+     * Reconfigures the connections of this device based on a source device's configuration.
      *
-     * @param from 源设备，从中复制连接配置
+     * @param from The source device.
      */
     private void reconfigureConnections(Device from) {
         Iterator<Connection> connIter = conns.iterator();
@@ -2254,9 +2261,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 重新配置应用程序实体。 移除源设备中不存在的应用程序实体，添加源设备中存在的新应用程序实体，并重新配置所有应用程序实体。
+     * Reconfigures the Application Entities of this device based on a source device's configuration.
      *
-     * @param from 源设备，从中复制应用程序实体配置
+     * @param from The source device.
      */
     private void reconfigureApplicationEntities(Device from) {
         aes.keySet().retainAll(from.aes.keySet());
@@ -2269,9 +2276,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 重新配置Web应用程序。 移除源设备中不存在的Web应用程序，添加源设备中存在的新Web应用程序，并重新配置所有Web应用程序。
+     * Reconfigures the Web Applications of this device based on a source device's configuration.
      *
-     * @param from 源设备，从中复制Web应用程序配置
+     * @param from The source device.
      */
     private void reconfigureWebApplications(Device from) {
         webapps.keySet().retainAll(from.webapps.keySet());
@@ -2284,9 +2291,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 重新配置Keycloak客户端。 移除源设备中不存在的Keycloak客户端，添加源设备中存在的新Keycloak客户端，并重新配置所有Keycloak客户端。
+     * Reconfigures the Keycloak clients of this device based on a source device's configuration.
      *
-     * @param from 源设备，从中复制Keycloak客户端配置
+     * @param from The source device.
      */
     private void reconfigureKeycloakClients(Device from) {
         keycloakClients.keySet().retainAll(from.keycloakClients.keySet());
@@ -2299,10 +2306,10 @@ public class Device implements Serializable {
     }
 
     /**
-     * 重新配置连接列表。 清空目标连接列表，然后添加源连接列表中具有相同RDN的连接。
+     * Reconfigures a list of connections to match a source list, based on RDN equality.
      *
-     * @param conns 要重新配置的目标连接列表
-     * @param src   源连接列表
+     * @param conns The target list of connections to reconfigure.
+     * @param src   The source list of connections.
      */
     public void reconfigureConnections(List<Connection> conns, List<Connection> src) {
         conns.clear();
@@ -2311,9 +2318,9 @@ public class Device implements Serializable {
     }
 
     /**
-     * 重新配置设备扩展。 移除源设备中不存在的设备扩展，添加源设备中存在的新设备扩展，并重新配置所有设备扩展。
+     * Reconfigures the device extensions of this device based on a source device's configuration.
      *
-     * @param from 源设备，从中复制设备扩展配置
+     * @param from The source device.
      */
     private void reconfigureDeviceExtensions(Device from) {
         extensions.keySet().removeIf(aClass -> !from.extensions.containsKey(aClass));
@@ -2322,7 +2329,7 @@ public class Device implements Serializable {
             DeviceExtension ext = extensions.get(clazz);
             if (ext == null)
                 try {
-                    addDeviceExtension(ext = clazz.newInstance());
+                    addDeviceExtension(ext = clazz.getConstructor().newInstance());
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to instantiate " + clazz.getName(), e);
                 }
@@ -2331,32 +2338,32 @@ public class Device implements Serializable {
     }
 
     /**
-     * 列出所有设备扩展。
+     * Lists all device extensions installed on this device.
      *
-     * @return 包含所有设备扩展的集合
+     * @return A collection of device extensions.
      */
     public Collection<DeviceExtension> listDeviceExtensions() {
         return extensions.values();
     }
 
     /**
-     * 获取指定类型的设备扩展。
+     * Gets the device extension of a specific class.
      *
-     * @param <T>   设备扩展的类型
-     * @param clazz 设备扩展的类
-     * @return 指定类型的设备扩展，如果不存在则返回null
+     * @param <T>   The type of the device extension.
+     * @param clazz The class of the device extension.
+     * @return The device extension instance, or null if not found.
      */
     public <T extends DeviceExtension> T getDeviceExtension(Class<T> clazz) {
-        return (T) extensions.get(clazz);
+        return clazz.cast(extensions.get(clazz));
     }
 
     /**
-     * 获取指定类型的设备扩展，如果不存在则抛出异常。
+     * Gets the device extension of a specific class, throwing an exception if it is not found.
      *
-     * @param <T>   设备扩展的类型
-     * @param clazz 设备扩展的类
-     * @return 指定类型的设备扩展
-     * @throws IllegalStateException 如果指定类型的设备扩展不存在
+     * @param <T>   The type of the device extension.
+     * @param clazz The class of the device extension.
+     * @return The device extension instance.
+     * @throws IllegalStateException if the specified extension is not configured for this device.
      */
     public <T extends DeviceExtension> T getDeviceExtensionNotNull(Class<T> clazz) {
         T devExt = getDeviceExtension(clazz);

@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.http;
 
-import java.util.*;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.plugin.httpv.CoverCall;
 import org.miaixz.bus.logger.Logger;
 
+import java.util.*;
+
 /**
- * WebSocket 的 STOMP 协议客户端
+ * A STOMP protocol client over WebSocket.
  * <p>
- * 提供与 STOMP 服务器的连接、消息发送、订阅和消息确认功能。 支持主题（topic）和队列（queue）订阅，自动或手动消息确认。
- * </p>
+ * This class provides functionality for connecting to a STOMP server, sending messages, subscribing to topics and
+ * queues, and acknowledging messages. It supports both automatic and client-side message acknowledgment.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,67 +46,67 @@ import org.miaixz.bus.logger.Logger;
 public class Stomp {
 
     /**
-     * 支持的 STOMP 协议版本
+     * The supported STOMP protocol versions.
      */
     public static final String SUPPORTED_VERSIONS = "1.1,1.2";
     /**
-     * 自动确认模式
+     * The automatic acknowledgment mode.
      */
     public static final String AUTO_ACK = "auto";
     /**
-     * 客户端确认模式
+     * The client-side acknowledgment mode.
      */
     public static final String CLIENT_ACK = "client";
     /**
-     * 主题订阅前缀
+     * The prefix for topic subscriptions.
      */
     private static final String TOPIC = "/topic";
     /**
-     * 队列订阅前缀
+     * The prefix for queue subscriptions.
      */
     private static final String QUEUE = "/queue";
     /**
-     * 是否自动确认消息
+     * Whether to automatically acknowledge messages.
      */
     private final boolean autoAck;
     /**
-     * 底层 WebSocket 客户端
+     * The underlying WebSocket client.
      */
     private final CoverCall.Client cover;
     /**
-     * 订阅者映射（目标地址到订阅者）
+     * A map of subscribers, keyed by destination.
      */
     private final Map<String, Subscriber> subscribers;
     /**
-     * 是否已连接到服务器
+     * Whether the client is connected to the server.
      */
     private boolean connected;
     /**
-     * WebSocket 连接实例
+     * The WebSocket connection instance.
      */
     private CoverCall websocket;
     /**
-     * 是否使用传统空白字符格式
+     * Whether to use legacy whitespace formatting.
      */
     private boolean legacyWhitespace = false;
     /**
-     * 连接成功回调
+     * The callback for when the connection is successfully established.
      */
     private Callback<Stomp> onConnected;
     /**
-     * 连接断开回调
+     * The callback for when the connection is disconnected.
      */
     private Callback<CoverCall.Close> onDisconnected;
     /**
-     * 错误消息回调
+     * The callback for error messages.
      */
     private Callback<Message> onError;
 
     /**
-     * 构造函数，初始化 STOMP 客户端
+     * Constructs a new STOMP client.
      *
-     * @param cover   底层 WebSocket 客户端
-     * @param autoAck 是否自动确认消息
+     * @param cover   The underlying WebSocket client.
+     * @param autoAck Whether to automatically acknowledge messages.
      */
     private Stomp(CoverCall.Client cover, boolean autoAck) {
         this.cover = cover;
@@ -115,40 +115,40 @@ public class Stomp {
     }
 
     /**
-     * 构建 STOMP 客户端（默认自动确认消息）
+     * Creates a STOMP client with automatic message acknowledgment.
      *
-     * @param task 底层 WebSocket 客户端
-     * @return STOMP 客户端实例
+     * @param task The underlying WebSocket client.
+     * @return a new {@link Stomp} instance.
      */
     public static Stomp over(CoverCall.Client task) {
         return over(task, true);
     }
 
     /**
-     * 构建 STOMP 客户端
+     * Creates a STOMP client with a specified acknowledgment mode.
      *
-     * @param task    底层 WebSocket 客户端
-     * @param autoAck 是否自动确认消息
-     * @return STOMP 客户端实例
+     * @param task    The underlying WebSocket client.
+     * @param autoAck Whether to automatically acknowledge messages.
+     * @return a new {@link Stomp} instance.
      */
     public static Stomp over(CoverCall.Client task, boolean autoAck) {
         return new Stomp(task, autoAck);
     }
 
     /**
-     * 连接到 STOMP 服务器
+     * Connects to the STOMP server.
      *
-     * @return 当前 STOMP 客户端实例
+     * @return this {@link Stomp} instance.
      */
     public Stomp connect() {
         return connect(null);
     }
 
     /**
-     * 使用指定头部连接到 STOMP 服务器
+     * Connects to the STOMP server with the specified headers.
      *
-     * @param headers STOMP 头部信息
-     * @return 当前 STOMP 客户端实例
+     * @param headers The STOMP headers for the connection.
+     * @return this {@link Stomp} instance.
      */
     public Stomp connect(List<Header> headers) {
         if (connected) {
@@ -181,7 +181,7 @@ public class Stomp {
     }
 
     /**
-     * 断开与 STOMP 服务器的连接
+     * Disconnects from the STOMP server.
      */
     public void disconnect() {
         if (null != websocket) {
@@ -190,10 +190,10 @@ public class Stomp {
     }
 
     /**
-     * 设置连接成功回调
+     * Sets the callback for when the connection is successfully established.
      *
-     * @param onConnected 连接成功回调
-     * @return 当前 STOMP 客户端实例
+     * @param onConnected The connection callback.
+     * @return this {@link Stomp} instance.
      */
     public Stomp setOnConnected(Callback<Stomp> onConnected) {
         this.onConnected = onConnected;
@@ -201,10 +201,10 @@ public class Stomp {
     }
 
     /**
-     * 设置连接断开回调
+     * Sets the callback for when the connection is disconnected.
      *
-     * @param onDisconnected 连接断开回调
-     * @return 当前 STOMP 客户端实例
+     * @param onDisconnected The disconnection callback.
+     * @return this {@link Stomp} instance.
      */
     public Stomp setOnDisconnected(Callback<CoverCall.Close> onDisconnected) {
         this.onDisconnected = onDisconnected;
@@ -212,10 +212,10 @@ public class Stomp {
     }
 
     /**
-     * 设置错误消息回调
+     * Sets the callback for error messages.
      *
-     * @param onError 错误消息回调
-     * @return 当前 STOMP 客户端实例
+     * @param onError The error callback.
+     * @return this {@link Stomp} instance.
      */
     public Stomp setOnError(Callback<Message> onError) {
         this.onError = onError;
@@ -223,20 +223,20 @@ public class Stomp {
     }
 
     /**
-     * 发送消息到指定目标地址
+     * Sends a message to the specified destination.
      *
-     * @param destination 目标地址
-     * @param data        消息内容
+     * @param destination The destination to send the message to.
+     * @param data        The message payload.
      */
     public void sendTo(String destination, String data) {
         send(new Message(Builder.SEND, Collections.singletonList(new Header(Header.DESTINATION, destination)), data));
     }
 
     /**
-     * 发送 STOMP 消息到服务器
+     * Sends a STOMP message to the server.
      *
-     * @param message STOMP 消息
-     * @throws IllegalArgumentException 如果未调用 connect 方法
+     * @param message The STOMP message to send.
+     * @throws IllegalArgumentException if the {@code connect} method has not been called.
      */
     public void send(Message message) {
         if (null == websocket) {
@@ -246,58 +246,58 @@ public class Stomp {
     }
 
     /**
-     * 订阅主题消息
+     * Subscribes to a topic.
      *
-     * @param destination 主题地址
-     * @param callback    消息回调
-     * @return 当前 STOMP 客户端实例
+     * @param destination The topic destination.
+     * @param callback    The callback for received messages.
+     * @return this {@link Stomp} instance.
      */
     public Stomp topic(String destination, Callback<Message> callback) {
         return topic(destination, null, callback);
     }
 
     /**
-     * 订阅主题消息（带附加头部）
+     * Subscribes to a topic with additional headers.
      *
-     * @param destination 主题地址
-     * @param headers     附加头部信息
-     * @param callback    消息回调
-     * @return 当前 STOMP 客户端实例
+     * @param destination The topic destination.
+     * @param headers     Additional headers for the subscription.
+     * @param callback    The callback for received messages.
+     * @return this {@link Stomp} instance.
      */
     public Stomp topic(String destination, List<Header> headers, Callback<Message> callback) {
         return subscribe(TOPIC + destination, headers, callback);
     }
 
     /**
-     * 订阅队列消息
+     * Subscribes to a queue.
      *
-     * @param destination 队列地址
-     * @param callback    消息回调
-     * @return 当前 STOMP 客户端实例
+     * @param destination The queue destination.
+     * @param callback    The callback for received messages.
+     * @return this {@link Stomp} instance.
      */
     public Stomp queue(String destination, Callback<Message> callback) {
         return queue(destination, null, callback);
     }
 
     /**
-     * 订阅队列消息（带附加头部）
+     * Subscribes to a queue with additional headers.
      *
-     * @param destination 队列地址
-     * @param headers     附加头部信息
-     * @param callback    消息回调
-     * @return 当前 STOMP 客户端实例
+     * @param destination The queue destination.
+     * @param headers     Additional headers for the subscription.
+     * @param callback    The callback for received messages.
+     * @return this {@link Stomp} instance.
      */
     public Stomp queue(String destination, List<Header> headers, Callback<Message> callback) {
         return subscribe(QUEUE + destination, headers, callback);
     }
 
     /**
-     * 订阅指定地址的消息
+     * Subscribes to a destination.
      *
-     * @param destination 订阅地址
-     * @param headers     附加头部信息
-     * @param callback    消息回调
-     * @return 当前 STOMP 客户端实例
+     * @param destination The destination to subscribe to.
+     * @param headers     Additional headers for the subscription.
+     * @param callback    The callback for received messages.
+     * @return this {@link Stomp} instance.
      */
     public synchronized Stomp subscribe(String destination, List<Header> headers, Callback<Message> callback) {
         if (subscribers.containsKey(destination)) {
@@ -311,9 +311,9 @@ public class Stomp {
     }
 
     /**
-     * 确认收到消息
+     * Acknowledges the receipt of a message.
      *
-     * @param message 服务器发送的消息
+     * @param message The message received from the server.
      */
     public void ack(Message message) {
         Header subscription = message.header(Header.SUBSCRIPTION);
@@ -329,27 +329,27 @@ public class Stomp {
     }
 
     /**
-     * 取消主题订阅
+     * Unsubscribes from a topic.
      *
-     * @param destination 主题地址
+     * @param destination The topic destination.
      */
     public void untopic(String destination) {
         unsubscribe(TOPIC + destination);
     }
 
     /**
-     * 取消队列订阅
+     * Unsubscribes from a queue.
      *
-     * @param destination 队列地址
+     * @param destination The queue destination.
      */
     public void unqueue(String destination) {
         unsubscribe(QUEUE + destination);
     }
 
     /**
-     * 取消指定地址的订阅
+     * Unsubscribes from a destination.
      *
-     * @param destination 订阅地址
+     * @param destination The destination to unsubscribe from.
      */
     public synchronized void unsubscribe(String destination) {
         Subscriber subscriber = subscribers.remove(destination);
@@ -359,9 +359,9 @@ public class Stomp {
     }
 
     /**
-     * 处理接收到的 STOMP 消息
+     * Handles received STOMP messages.
      *
-     * @param msg STOMP 消息
+     * @param msg The received STOMP message.
      */
     private void receive(Message msg) {
         String command = msg.getCommand();
@@ -400,62 +400,62 @@ public class Stomp {
     }
 
     /**
-     * 设置是否使用传统空白字符格式
+     * Sets whether to use legacy whitespace formatting.
      *
-     * @param legacyWhitespace 是否启用传统格式
+     * @param legacyWhitespace {@code true} to enable legacy formatting.
      */
     public void setLegacyWhitespace(boolean legacyWhitespace) {
         this.legacyWhitespace = legacyWhitespace;
     }
 
     /**
-     * STOMP 头部类
+     * Represents a STOMP header.
      */
     public static class Header {
 
         /**
-         * STOMP 协议版本头部
+         * The STOMP protocol version header.
          */
         public static final String VERSION = "accept-version";
         /**
-         * 心跳间隔头部
+         * The heart-beat interval header.
          */
         public static final String HEART_BEAT = "heart-beat";
         /**
-         * 目标地址头部
+         * The destination header.
          */
         public static final String DESTINATION = "destination";
         /**
-         * 消息 ID 头部
+         * The message ID header.
          */
         public static final String MESSAGE_ID = "message-id";
         /**
-         * 订阅 ID 头部
+         * The subscription ID header.
          */
         public static final String ID = "id";
         /**
-         * 订阅标识头部
+         * The subscription identifier header.
          */
         public static final String SUBSCRIPTION = "subscription";
         /**
-         * 确认模式头部
+         * The acknowledgment mode header.
          */
         public static final String ACK = "ack";
 
         /**
-         * 头部键
+         * The header key.
          */
         private final String key;
         /**
-         * 头部值
+         * The header value.
          */
         private final String value;
 
         /**
-         * 构造函数，初始化头部
+         * Constructs a new header.
          *
-         * @param key   头部键
-         * @param value 头部值
+         * @param key   The header key.
+         * @param value The header value.
          */
         public Header(String key, String value) {
             this.key = key;
@@ -463,27 +463,27 @@ public class Stomp {
         }
 
         /**
-         * 获取头部键
+         * Gets the header key.
          *
-         * @return 头部键
+         * @return The header key.
          */
         public String getKey() {
             return key;
         }
 
         /**
-         * 获取头部值
+         * Gets the header value.
          *
-         * @return 头部值
+         * @return The header value.
          */
         public String getValue() {
             return value;
         }
 
         /**
-         * 返回头部的字符串表示
+         * Returns the string representation of the header.
          *
-         * @return 键值对字符串（格式：key:value）
+         * @return a key-value string in the format "key:value".
          */
         @Override
         public String toString() {
@@ -492,29 +492,29 @@ public class Stomp {
     }
 
     /**
-     * STOMP 消息类
+     * Represents a STOMP message.
      */
     public static class Message {
 
         /**
-         * 消息命令
+         * The message command.
          */
         private final String command;
         /**
-         * 消息头部列表
+         * The list of message headers.
          */
         private final List<Header> headers;
         /**
-         * 消息内容
+         * The message payload.
          */
         private final String payload;
 
         /**
-         * 构造函数，初始化 STOMP 消息
+         * Constructs a new STOMP message.
          *
-         * @param command 消息命令
-         * @param headers 头部列表
-         * @param payload 消息内容
+         * @param command The message command.
+         * @param headers The list of headers.
+         * @param payload The message payload.
          */
         public Message(String command, List<Header> headers, String payload) {
             this.command = command;
@@ -523,10 +523,10 @@ public class Stomp {
         }
 
         /**
-         * 从字符串解析 STOMP 消息
+         * Parses a STOMP message from a string.
          *
-         * @param data 消息字符串
-         * @return 解析后的 Message 对象（无效时为 null）
+         * @param data The message string.
+         * @return The parsed {@link Message} object, or null if invalid.
          */
         public static Message from(String data) {
             if (null == data || data.trim().isEmpty()) {
@@ -537,7 +537,7 @@ public class Stomp {
             int mhIndex = data.indexOf("\n\n");
 
             if (cmdIndex >= mhIndex) {
-                Logger.error("非法的 STOMP 消息：" + data);
+                Logger.error("Invalid STOMP message: " + data);
                 return null;
             }
             String command = data.substring(0, cmdIndex);
@@ -562,37 +562,37 @@ public class Stomp {
         }
 
         /**
-         * 获取消息头部列表
+         * Gets the list of message headers.
          *
-         * @return 头部列表
+         * @return The list of headers.
          */
         public List<Header> getHeaders() {
             return headers;
         }
 
         /**
-         * 获取消息内容
+         * Gets the message payload.
          *
-         * @return 消息内容
+         * @return The message payload.
          */
         public String getPayload() {
             return payload;
         }
 
         /**
-         * 获取消息命令
+         * Gets the message command.
          *
-         * @return 命令
+         * @return The command.
          */
         public String getCommand() {
             return command;
         }
 
         /**
-         * 获取指定键的头部值
+         * Gets the value of a header by its key.
          *
-         * @param key 头部键
-         * @return 头部值（不存在时为 null）
+         * @param key The header key.
+         * @return The header value, or null if not found.
          */
         public String headerValue(String key) {
             Header header = header(key);
@@ -603,10 +603,10 @@ public class Stomp {
         }
 
         /**
-         * 获取指定键的头部
+         * Gets a header by its key.
          *
-         * @param key 头部键
-         * @return 头部对象（不存在时为 null）
+         * @param key The header key.
+         * @return The {@link Header} object, or null if not found.
          */
         public Header header(String key) {
             if (null != headers) {
@@ -619,10 +619,10 @@ public class Stomp {
         }
 
         /**
-         * 编译消息为字符串
+         * Compiles the message into a string.
          *
-         * @param legacyWhitespace 是否使用传统空白字符格式
-         * @return 编译后的消息字符串
+         * @param legacyWhitespace Whether to use legacy whitespace formatting.
+         * @return The compiled message string.
          */
         public String compile(boolean legacyWhitespace) {
             StringBuilder builder = new StringBuilder();
@@ -641,9 +641,9 @@ public class Stomp {
         }
 
         /**
-         * 返回消息的字符串表示
+         * Returns the string representation of the message.
          *
-         * @return 包含命令、头部和内容的字符串
+         * @return a string containing the command, headers, and payload.
          */
         @Override
         public String toString() {
@@ -652,38 +652,38 @@ public class Stomp {
     }
 
     /**
-     * 订阅者类，管理消息订阅
+     * Represents a subscriber that manages a message subscription.
      */
     class Subscriber {
 
         /**
-         * 订阅者唯一标识
+         * The unique ID of the subscriber.
          */
         private final String id;
         /**
-         * 订阅目标地址
+         * The destination to subscribe to.
          */
         private final String destination;
         /**
-         * 消息回调
+         * The callback for received messages.
          */
         private final Callback<Message> callback;
         /**
-         * 附加头部信息
+         * Additional headers for the subscription.
          */
         private final List<Header> headers;
         /**
-         * 是否已订阅
+         * Whether the subscriber is currently subscribed.
          */
         private boolean subscribed;
 
         /**
-         * 构造函数，初始化订阅者
+         * Constructs a new subscriber.
          *
-         * @param id          订阅者标识
-         * @param destination 订阅地址
-         * @param callback    消息回调
-         * @param headers     附加头部
+         * @param id          The subscriber ID.
+         * @param destination The destination to subscribe to.
+         * @param callback    The message callback.
+         * @param headers     Additional headers.
          */
         Subscriber(String id, String destination, Callback<Message> callback, List<Header> headers) {
             this.id = id;
@@ -693,7 +693,7 @@ public class Stomp {
         }
 
         /**
-         * 执行订阅操作
+         * Subscribes to the destination.
          */
         void subscribe() {
             if (connected && !subscribed) {
@@ -721,7 +721,7 @@ public class Stomp {
         }
 
         /**
-         * 取消订阅
+         * Unsubscribes from the destination.
          */
         void unsubscribe() {
             List<Header> headers = Collections.singletonList(new Header(Header.ID, id));

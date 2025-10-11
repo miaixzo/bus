@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * JSON封装
+ * Provides a unified facade for JSON (JavaScript Object Notation) processing. This package abstracts various
+ * third-party JSON libraries (like Jackson, Gson, Fastjson) behind a common interface, allowing for flexible
+ * integration and interchangeability.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -37,21 +37,49 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
- * VFS资源封装 支持VFS 3.x on JBoss AS 6+，JBoss AS 7 and WildFly 8+ 参考：org.springframework.core.io.VfsUtils
+ * VFS resource encapsulation. Supports VFS 3.x on JBoss AS 6+, JBoss AS 7 and WildFly 8+. This class provides an
+ * abstraction for accessing resources within a Virtual File System (VFS), typically found in application servers like
+ * JBoss/WildFly.
+ * <p>
+ * Inspired by {@code org.springframework.core.io.VfsUtils}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class VfsResource implements Resource {
 
+    /**
+     * The package prefix for JBoss VFS 3.x classes.
+     */
     private static final String VFS3_PKG = "org.jboss.vfs.";
 
+    /**
+     * Method reference for {@code VirtualFile.exists()}.
+     */
     private static final Method VIRTUAL_FILE_METHOD_EXISTS;
+    /**
+     * Method reference for {@code VirtualFile.openStream()}.
+     */
     private static final Method VIRTUAL_FILE_METHOD_GET_INPUT_STREAM;
+    /**
+     * Method reference for {@code VirtualFile.getSize()}.
+     */
     private static final Method VIRTUAL_FILE_METHOD_GET_SIZE;
+    /**
+     * Method reference for {@code VirtualFile.getLastModified()}.
+     */
     private static final Method VIRTUAL_FILE_METHOD_GET_LAST_MODIFIED;
+    /**
+     * Method reference for {@code VirtualFile.toURL()}.
+     */
     private static final Method VIRTUAL_FILE_METHOD_TO_URL;
+    /**
+     * Method reference for {@code VirtualFile.getName()}.
+     */
     private static final Method VIRTUAL_FILE_METHOD_GET_NAME;
+    /**
+     * Method reference for {@code VirtualFile.getPhysicalFile()}.
+     */
     private static final Method VIRTUAL_FILE_METHOD_GET_PHYSICAL_FILE;
 
     static {
@@ -70,15 +98,19 @@ public class VfsResource implements Resource {
     }
 
     /**
-     * org.jboss.vfs.VirtualFile实例对象
+     * The underlying {@code org.jboss.vfs.VirtualFile} instance.
      */
     private final Object virtualFile;
+    /**
+     * The last modified timestamp of the resource at the time of creation.
+     */
     private final long lastModified;
 
     /**
-     * 构造
+     * Constructs a {@code VfsResource} with the given JBoss VFS {@code VirtualFile} object.
      *
-     * @param resource org.jboss.vfs.VirtualFile实例对象
+     * @param resource The {@code org.jboss.vfs.VirtualFile} instance.
+     * @throws IllegalArgumentException if the {@code resource} is {@code null}.
      */
     public VfsResource(final Object resource) {
         Assert.notNull(resource, "VirtualFile must not be null");
@@ -87,9 +119,9 @@ public class VfsResource implements Resource {
     }
 
     /**
-     * VFS文件是否存在
+     * Checks if the VFS file represented by this resource exists.
      *
-     * @return 文件是否存在
+     * @return {@code true} if the file exists, {@code false} otherwise.
      */
     public boolean exists() {
         return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_EXISTS);
@@ -116,18 +148,18 @@ public class VfsResource implements Resource {
     }
 
     /**
-     * 获得VFS文件最后修改时间
+     * Retrieves the last modified timestamp of the VFS file.
      *
-     * @return 最后修改时间
+     * @return The last modified timestamp in milliseconds since the epoch.
      */
     public long getLastModified() {
         return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_LAST_MODIFIED);
     }
 
     /**
-     * 获取VFS文件大小
+     * Retrieves the size of the VFS file.
      *
-     * @return VFS文件大小
+     * @return The size of the VFS file in bytes.
      */
     @Override
     public long size() {
@@ -135,9 +167,10 @@ public class VfsResource implements Resource {
     }
 
     /**
-     * 获取物理文件对象
+     * Retrieves the physical {@link File} object corresponding to the VFS resource. This may return {@code null} if the
+     * VFS resource does not have a direct physical file representation.
      *
-     * @return 物理文件对象
+     * @return The physical {@link File} object, or {@code null}.
      */
     public File getFile() {
         return MethodKit.invoke(virtualFile, VIRTUAL_FILE_METHOD_GET_PHYSICAL_FILE);

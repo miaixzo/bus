@@ -28,8 +28,6 @@
 package org.miaixz.bus.core.io.copier;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
@@ -39,7 +37,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * {@link ReadableByteChannel} 向 {@link WritableByteChannel} 拷贝
+ * Copies data from a {@link ReadableByteChannel} to a {@link WritableByteChannel}. This class extends {@link IoCopier}
+ * to provide channel-specific copying functionality.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,42 +46,51 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteChannel> {
 
     /**
-     * 构造
+     * Constructs a {@code ChannelCopier} with a default buffer size of 8192 bytes.
      */
     public ChannelCopier() {
         this(Normal._8192);
     }
 
     /**
-     * 构造
+     * Constructs a {@code ChannelCopier} with the specified buffer size.
      *
-     * @param bufferSize 缓存大小
+     * @param bufferSize The size of the buffer to use for copying.
      */
     public ChannelCopier(final int bufferSize) {
         this(bufferSize, -1);
     }
 
     /**
-     * 构造
+     * Constructs a {@code ChannelCopier} with the specified buffer size and total count of bytes to copy.
      *
-     * @param bufferSize 缓存大小
-     * @param count      拷贝总数
+     * @param bufferSize The size of the buffer to use for copying.
+     * @param count      The total number of bytes to copy. If -1, copy until the end of the source.
      */
     public ChannelCopier(final int bufferSize, final long count) {
         this(bufferSize, count, null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code ChannelCopier} with the specified buffer size, total count of bytes to copy, and a progress
+     * listener.
      *
-     * @param bufferSize 缓存大小
-     * @param count      拷贝总数
-     * @param progress   进度条
+     * @param bufferSize The size of the buffer to use for copying.
+     * @param count      The total number of bytes to copy. If -1, copy until the end of the source.
+     * @param progress   The progress listener to report copy progress.
      */
     public ChannelCopier(final int bufferSize, final long count, final StreamProgress progress) {
         super(bufferSize, count, progress);
     }
 
+    /**
+     * Copies data from the source {@link ReadableByteChannel} to the target {@link WritableByteChannel}.
+     *
+     * @param source The source {@link ReadableByteChannel}.
+     * @param target The target {@link WritableByteChannel}.
+     * @return The total number of bytes copied.
+     * @throws InternalException if an {@link IOException} occurs during the copy operation.
+     */
     @Override
     public long copy(final ReadableByteChannel source, final WritableByteChannel target) {
         final StreamProgress progress = this.progress;
@@ -103,14 +111,15 @@ public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteCha
     }
 
     /**
-     * 执行拷贝，如果限制最大长度，则按照最大长度读取，否则一直读取直到遇到-1
+     * Performs the actual copy operation. If a maximum length is specified, it reads up to that length; otherwise, it
+     * reads until the end of the source (when -1 is encountered).
      *
-     * @param source   {@link InputStream}
-     * @param target   {@link OutputStream}
-     * @param buffer   缓存
-     * @param progress 进度条
-     * @return 拷贝总长度
-     * @throws IOException IO异常
+     * @param source   The {@link ReadableByteChannel} to read from.
+     * @param target   The {@link WritableByteChannel} to write to.
+     * @param buffer   The {@link ByteBuffer} used for copying.
+     * @param progress The progress listener to report copy progress, can be {@code null}.
+     * @return The total number of bytes copied.
+     * @throws IOException If an I/O error occurs during the copy.
      */
     private long doCopy(
             final ReadableByteChannel source,
@@ -124,17 +133,17 @@ public class ChannelCopier extends IoCopier<ReadableByteChannel, WritableByteCha
         while (numToRead > 0) {
             read = source.read(buffer);
             if (read < 0) {
-                // 提前读取到末尾
+                // Reached end of stream prematurely
                 break;
             }
-            buffer.flip();// 写转读
+            buffer.flip();// Switch from writing to reading mode
             target.write(buffer);
             buffer.clear();
 
             numToRead -= read;
             total += read;
             if (null != progress) {
-                // 总长度未知的情况下，-1表示未知
+                // If total length is unknown, -1 indicates unknown
                 progress.progress(this.count < Long.MAX_VALUE ? this.count : -1, total);
             }
         }

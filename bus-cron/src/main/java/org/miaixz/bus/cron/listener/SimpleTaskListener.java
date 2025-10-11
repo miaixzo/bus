@@ -30,23 +30,35 @@ package org.miaixz.bus.cron.listener;
 import org.miaixz.bus.cron.Executor;
 
 /**
- * 简单监听实现，不做任何操作 继承此监听后实现需要的方法即可
+ * A simple no-op implementation of {@link TaskListener}. Extend this class and override only the methods you need.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SimpleTaskListener implements TaskListener {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onStart(final Executor executor) {
+        // Do nothing
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSucceeded(final Executor executor) {
+        // Do nothing
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onFailed(final Executor executor, final Throwable exception) {
+        // Do nothing
     }
 
 }

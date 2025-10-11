@@ -27,18 +27,19 @@
 */
 package org.miaixz.bus.cron;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.cron.crontab.Crontab;
 import org.miaixz.bus.cron.pattern.CronPattern;
 import org.miaixz.bus.cron.pattern.parser.PatternParser;
 import org.miaixz.bus.setting.Setting;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
- * 定时任务工具类 此工具持有一个全局{@link Scheduler}，所有定时任务在同一个调度器中执行 {@link #setMatchSecond(boolean)}
- * 方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
+ * A tool class for scheduled tasks. This tool holds a global {@link Scheduler}, and all scheduled tasks are executed in
+ * the same scheduler. The {@link #setMatchSecond(boolean)} method is used to define whether to use the second matching
+ * mode. If true, the first digit in the scheduled task expression is the second, otherwise it is the minute (default).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,11 +47,11 @@ import org.miaixz.bus.setting.Setting;
 public class Builder {
 
     /**
-     * Crontab配置文件
+     * The path to the Crontab configuration file.
      */
     public static final String CRONTAB_CONFIG_PATH = "config/cron.setting";
     /**
-     * Crontab配置文件2
+     * An alternative path to the Crontab configuration file.
      */
     public static final String CRONTAB_CONFIG_PATH2 = "cron.setting";
 
@@ -59,18 +60,18 @@ public class Builder {
     private static Setting crontabSetting;
 
     /**
-     * 自定义定时任务配置文件
+     * Sets a custom scheduled task configuration file.
      *
-     * @param cronSetting 定时任务配置文件
+     * @param cronSetting The scheduled task configuration file.
      */
     public static void setCronSetting(final Setting cronSetting) {
         crontabSetting = cronSetting;
     }
 
     /**
-     * 自定义定时任务配置文件路径
+     * Sets a custom scheduled task configuration file path.
      *
-     * @param cronSettingPath 定时任务配置文件路径（相对绝对都可）
+     * @param cronSettingPath The path to the scheduled task configuration file (can be relative or absolute).
      */
     public static void setCronSetting(final String cronSettingPath) {
         try {
@@ -81,32 +82,33 @@ public class Builder {
     }
 
     /**
-     * 设置是否支持秒匹配 此方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
+     * Sets whether to support second matching. This method is used to define whether to use the second matching mode.
+     * If true, the first digit in the scheduled task expression is the second, otherwise it is the minute (default).
      *
-     * @param isMatchSecond {@code true}支持，{@code false}不支持
+     * @param isMatchSecond {@code true} to support, {@code false} to not support.
      */
     public static void setMatchSecond(final boolean isMatchSecond) {
         scheduler.setMatchSecond(isMatchSecond);
     }
 
     /**
-     * 加入定时任务
+     * Adds a scheduled task.
      *
-     * @param schedulingPattern 定时任务执行时间的crontab表达式
-     * @param crontab           任务
-     * @return 定时任务ID
+     * @param schedulingPattern The crontab expression for the execution time of the scheduled task.
+     * @param crontab           The task to be executed.
+     * @return The ID of the scheduled task.
      */
     public static String schedule(final String schedulingPattern, final Crontab crontab) {
         return scheduler.schedule(schedulingPattern, crontab);
     }
 
     /**
-     * 加入定时任务
+     * Adds a scheduled task with a specified ID.
      *
-     * @param id                定时任务ID
-     * @param schedulingPattern 定时任务执行时间的crontab表达式
-     * @param crontab           任务
-     * @return 定时任务ID
+     * @param id                The ID of the scheduled task.
+     * @param schedulingPattern The crontab expression for the execution time of the scheduled task.
+     * @param crontab           The task to be executed.
+     * @return The ID of the scheduled task.
      */
     public static String schedule(final String id, final String schedulingPattern, final Crontab crontab) {
         scheduler.schedule(id, schedulingPattern, crontab);
@@ -114,43 +116,46 @@ public class Builder {
     }
 
     /**
-     * 批量加入配置文件中的定时任务
+     * Batch adds scheduled tasks from a configuration file.
      *
-     * @param cronSetting 定时任务设置文件
+     * @param cronSetting The scheduled task settings file.
      */
     public static void schedule(final Setting cronSetting) {
         scheduler.schedule(cronSetting);
     }
 
     /**
-     * 移除任务
+     * Removes a task.
      *
-     * @param schedulerId 任务ID
-     * @return 是否移除成功，{@code false}表示未找到对应ID的任务
+     * @param schedulerId The ID of the task.
+     * @return {@code true} if the task was successfully removed, {@code false} if the task with the corresponding ID
+     *         was not found.
      */
     public static boolean remove(final String schedulerId) {
         return scheduler.descheduleWithStatus(schedulerId);
     }
 
     /**
-     * 更新Task的执行时间规则
+     * Updates the execution time rule of a task.
      *
-     * @param id      Task的ID
-     * @param pattern {@link CronPattern}
+     * @param id      The ID of the task.
+     * @param pattern The new {@link CronPattern}.
      */
     public static void updatePattern(final String id, final CronPattern pattern) {
         scheduler.updatePattern(id, pattern);
     }
 
     /**
-     * @return 获得Scheduler对象
+     * Gets the Scheduler object.
+     *
+     * @return The Scheduler object.
      */
     public static Scheduler getScheduler() {
         return scheduler;
     }
 
     /**
-     * 开始，非守护线程模式
+     * Starts the scheduler in non-daemon mode.
      *
      * @see #start(boolean)
      */
@@ -159,9 +164,10 @@ public class Builder {
     }
 
     /**
-     * 开始
+     * Starts the scheduler.
      *
-     * @param isDaemon 是否以守护线程方式启动，如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。
+     * @param isDaemon Whether to start as a daemon thread. If true, the scheduled tasks being executed will terminate
+     *                 immediately after calling the {@link #stop()} method, otherwise they will wait for completion.
      */
     synchronized public static void start(final boolean isDaemon) {
         if (scheduler.isStarted()) {
@@ -171,10 +177,10 @@ public class Builder {
         lock.lock();
         try {
             if (null == crontabSetting) {
-                // 尝试查找config/cron.setting
+                // Try to find config/cron.setting
                 setCronSetting(CRONTAB_CONFIG_PATH);
             }
-            // 尝试查找cron.setting
+            // Try to find cron.setting
             if (null == crontabSetting) {
                 setCronSetting(CRONTAB_CONFIG_PATH2);
             }
@@ -187,41 +193,42 @@ public class Builder {
     }
 
     /**
-     * 重新启动定时任务 此方法会清除动态加载的任务，重新启动后，守护线程与否与之前保持一致
+     * Restarts the scheduled tasks. This method will clear dynamically loaded tasks. After restarting, whether it is a
+     * daemon thread or not will remain the same as before.
      */
     public static void restart() {
         lock.lock();
         try {
             if (null != crontabSetting) {
-                // 重新读取配置文件
+                // Reload the configuration file
                 crontabSetting.load();
             }
             if (scheduler.isStarted()) {
-                // 关闭并清除已有任务
+                // Stop and clear existing tasks
                 stop();
             }
         } finally {
             lock.unlock();
         }
 
-        // 重新加载任务
+        // Reload tasks
         schedule(crontabSetting);
-        // 重新启动
+        // Restart
         scheduler.start();
     }
 
     /**
-     * 停止
+     * Stops the scheduler.
      */
     public static void stop() {
         scheduler.stop(true);
     }
 
     /**
-     * 验证是否为合法的Cron表达式
-     * 
-     * @param expression 表达式
-     * @return the true/false
+     * Validates if the given expression is a valid Cron expression.
+     *
+     * @param expression The expression to validate.
+     * @return {@code true} if the expression is valid, {@code false} otherwise.
      */
     public static boolean isValidExpression(String expression) {
         if (expression == null) {

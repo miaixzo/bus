@@ -37,7 +37,9 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.CharsValidator;
 
 /**
- * 一个简单的占位符解析器。给定占位符的左右边界符号以及转义符， 将允许把一段字符串中的占位符解析并替换为指定内容，支持指定转义符对边界符号进行转义。
+ * A simple placeholder parser. Given the left and right boundary symbols of a placeholder and an escape character, it
+ * allows parsing and replacing placeholders in a string with specified content. It supports using the specified escape
+ * character to escape boundary symbols.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,53 +47,58 @@ import org.miaixz.bus.core.text.CharsValidator;
 public class PlaceholderParser implements UnaryOperator<String> {
 
     /**
-     * processor
+     * The processor function that handles the extracted placeholder expression. This function takes the content within
+     * the placeholder (e.g., "name" from "${name}") and returns the replacement string.
      */
     private final UnaryOperator<String> processor;
 
     /**
-     * 占位符开始符号
+     * The opening symbol of the placeholder (e.g., "${").
      */
     private final String open;
 
     /**
-     * 结束符号长度
+     * The length of the opening symbol.
      */
     private final int openLength;
 
     /**
-     * 占位符结束符号
+     * The closing symbol of the placeholder (e.g., "}").
      */
     private final String close;
 
     /**
-     * 结束符号长度
+     * The length of the closing symbol.
      */
     private final int closeLength;
 
     /**
-     * 转义符
+     * The escape character used to escape placeholder boundary symbols (e.g., '\\').
      */
     private final char escape;
 
     /**
-     * 创建一个占位符解析器，默认转义符为{@code "\"}
+     * Creates a placeholder parser with a default escape character of {@code '\\'}.
      *
-     * @param processor 占位符处理器
-     * @param prefix    占位符开始符号，不允许为空
-     * @param suffix    占位符结束符号，不允许为空
+     * @param processor The placeholder processor function.
+     * @param prefix    The opening symbol of the placeholder, must not be empty.
+     * @param suffix    The closing symbol of the placeholder, must not be empty.
+     * @throws IllegalArgumentException if prefix or suffix is empty.
+     * @throws NullPointerException     if processor is null.
      */
     public PlaceholderParser(final UnaryOperator<String> processor, final String prefix, final String suffix) {
         this(processor, prefix, suffix, Symbol.C_BACKSLASH);
     }
 
     /**
-     * 创建一个占位符解析器
+     * Creates a placeholder parser with specified opening, closing, and escape characters.
      *
-     * @param processor 占位符处理器
-     * @param prefix    占位符开始符号，不允许为空
-     * @param suffix    占位符结束符号，不允许为空
-     * @param escape    转义符
+     * @param processor The placeholder processor function.
+     * @param prefix    The opening symbol of the placeholder, must not be empty.
+     * @param suffix    The closing symbol of the placeholder, must not be empty.
+     * @param escape    The escape character.
+     * @throws IllegalArgumentException if prefix or suffix is empty.
+     * @throws NullPointerException     if processor is null.
      */
     public PlaceholderParser(final UnaryOperator<String> processor, final String prefix, final String suffix,
             final char escape) {
@@ -106,10 +113,13 @@ public class PlaceholderParser implements UnaryOperator<String> {
     }
 
     /**
-     * 解析并替换字符串中的占位符
+     * Parses and replaces placeholders in the given string. This method iterates through the input text, identifies
+     * placeholders defined by the opening and closing symbols, handles escape characters, and replaces the placeholder
+     * content using the provided processor function.
      *
-     * @param text 待解析的字符串
-     * @return 处理后的字符串
+     * @param text The string to be parsed.
+     * @return The processed string with placeholders replaced.
+     * @throws InternalException if an opening placeholder symbol is found without a corresponding closing symbol.
      */
     @Override
     public String apply(final String text) {
@@ -117,20 +127,20 @@ public class PlaceholderParser implements UnaryOperator<String> {
             return Normal.EMPTY;
         }
 
-        // 寻找第一个开始符号
+        // Find the first opening symbol
         int closeCursor = 0;
         int openCursor = text.indexOf(open, closeCursor);
         if (openCursor == -1) {
             return text;
         }
 
-        // 开始匹配
+        // Start matching
         final char[] src = text.toCharArray();
         final StringBuilder result = new StringBuilder(src.length);
         final StringBuilder expression = new StringBuilder();
         while (openCursor > -1) {
 
-            // 开始符号是否被转义，若是则跳过并寻找下一个开始符号
+            // Check if the opening symbol is escaped; if so, skip and find the next opening symbol.
             if (openCursor > 0 && src[openCursor - 1] == escape) {
                 result.append(src, closeCursor, openCursor - closeCursor - 1).append(open);
                 closeCursor = openCursor + openLength;
@@ -138,45 +148,47 @@ public class PlaceholderParser implements UnaryOperator<String> {
                 continue;
             }
 
-            // 记录当前占位符的开始符号与上一占位符的结束符号间的字符串
+            // Append the string between the current opening symbol and the previous closing symbol (or start of text).
             result.append(src, closeCursor, openCursor - closeCursor);
 
-            // 重置结束游标至当前占位符的开始处
+            // Reset the closing cursor to the start of the current placeholder.
             closeCursor = openCursor + openLength;
 
-            // 寻找结束符号下标
+            // Find the index of the closing symbol.
             int end = text.indexOf(close, closeCursor);
             while (end > -1) {
-                // 结束符号被转义，寻找下一个结束符号
+                // If the closing symbol is escaped, append it to the expression and find the next closing symbol.
                 if (end > closeCursor && src[end - 1] == escape) {
                     expression.append(src, closeCursor, end - closeCursor - 1).append(close);
                     closeCursor = end + closeLength;
                     end = text.indexOf(close, closeCursor);
                 }
-                // 找到结束符号
+                // Closing symbol found.
                 else {
                     expression.append(src, closeCursor, end - closeCursor);
                     break;
                 }
             }
 
-            // 未能找到结束符号，说明匹配异常
+            // If no closing symbol is found, it indicates a matching error.
             if (end == -1) {
-                throw new InternalException("\"{}\" 中字符下标 {} 处的开始符没有找到对应的结束符", text, openCursor);
+                throw new InternalException("Opening symbol at index {} in \"{}\" has no corresponding closing symbol",
+                        openCursor, text);
             }
-            // 找到结束符号，将开始到结束符号之间的字符串替换为指定表达式
+            // If a closing symbol is found, replace the string between the opening and closing symbols with the
+            // processed expression.
             else {
                 result.append(processor.apply(expression.toString()));
                 expression.setLength(0);
-                // 完成当前占位符的处理匹配，寻找下一个
+                // Finish processing the current placeholder and look for the next one.
                 closeCursor = end + closeLength;
             }
 
-            // 寻找下一个开始符号
+            // Find the next opening symbol.
             openCursor = text.indexOf(open, closeCursor);
         }
 
-        // 若匹配结束后仍有未处理的字符串，则直接将其拼接到表达式上
+        // If there is any unprocessed string remaining after matching, append it directly to the result.
         if (closeCursor < src.length) {
             result.append(src, closeCursor, src.length - closeCursor);
         }

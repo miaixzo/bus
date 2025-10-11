@@ -41,18 +41,21 @@ import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 百分号编码(Percent-encoding), 也称作URL编码(URL encoding)。 百分号编码可用于URI的编码，也可以用于"application/x-www-form-urlencoded"的MIME准备数据。
+ * Percent-encoding, also known as URL encoding. Percent-encoding can be used for URI encoding and also for preparing
+ * data for "application/x-www-form-urlencoded" MIME type.
  *
  * <p>
- * 百分号编码会对 URI 中不允许出现的字符或者其他特殊情况的允许的字符进行编码，对于被编码的字符，最终会转为以百分号"%“开头，后面跟着两位16进制数值的形式。 举个例，空格符（SP）是不允许的字符，在 ASCII
- * 码对应的二进制值是"00100000”，最终转为"%20"。
- * </p>
- * <p>
- * 对于不同场景应遵循不同规范：
+ * Percent-encoding encodes characters that are not allowed in URIs or other special allowed characters. For encoded
+ * characters, they are eventually converted to a form starting with a percent sign "%" followed by two hexadecimal
+ * digits. For example, the space character (SP) is a disallowed character, its ASCII binary value is "00100000", and it
+ * is finally converted to "%20".
  *
+ * <p>
+ * Different scenarios should follow different specifications:
  * <ul>
- * <li>URI：遵循RFC 3986保留字规范</li>
- * <li>application/x-www-form-urlencoded，遵循W3C HTML Form content types规范，如空格须转+</li>
+ * <li>URI: Follows RFC 3986 reserved character specification.</li>
+ * <li>application/x-www-form-urlencoded: Follows W3C HTML Form content types specification, e.g., spaces must be
+ * converted to '+'.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -60,49 +63,61 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852281130770L;
 
     /**
-     * 存放安全编码
+     * Stores the set of safe characters that should not be encoded.
      */
     private final BitSet safeCharacters;
 
     /**
-     * 是否编码空格为+ 如果为{@code true}，则将空格编码为"+"，此项只在"application/x-www-form-urlencoded"中使用
-     * 如果为{@code false}，则空格编码为"%20",此项一般用于URL的Query部分（RFC3986规范）
+     * A flag indicating whether spaces should be encoded as '+'. If {@code true}, spaces are encoded as "+". This is
+     * typically used in "application/x-www-form-urlencoded". If {@code false}, spaces are encoded as "%20". This is
+     * generally used in the Query part of URLs (RFC3986 specification).
      */
     private boolean encodeSpaceAsPlus = false;
 
     /**
-     * 构造 [a-zA-Z0-9]默认不被编码
+     * Constructs a new {@code PercentCodec} instance. By default, alphanumeric characters (a-z, A-Z, 0-9) are
+     * considered safe and will not be encoded.
      */
     public PercentCodec() {
         this(new BitSet(Normal._256));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code PercentCodec} instance with a custom set of safe characters.
      *
-     * @param safeCharacters 安全字符，安全字符不被编码
+     * @param safeCharacters A {@link BitSet} where each set bit indicates a safe character that should not be encoded.
      */
     public PercentCodec(final BitSet safeCharacters) {
         this.safeCharacters = safeCharacters;
     }
 
     /**
-     * 检查给定字符是否为安全字符
+     * Checks if the given character is considered a safe character by this codec. Safe characters are not encoded.
      *
-     * @param c 字符
-     * @return {@code true}表示安全，否则非安全字符
+     * @param c The character to check.
+     * @return {@code true} if the character is safe, {@code false} otherwise.
      */
     public boolean isSafe(final char c) {
         return this.safeCharacters.get(c);
     }
 
+    /**
+     * Encodes a byte array using percent-encoding. Each byte is processed, and if it's not a safe character (or a space
+     * to be encoded as '+'), it's converted to its percent-encoded form (%HH).
+     *
+     * @param bytes The byte array to be encoded.
+     * @return The percent-encoded byte array.
+     */
     @Override
     public byte[] encode(final byte[] bytes) {
-        // 初始容量计算，简单粗暴假设所有byte都需要转义，容量是三倍
+        // Initial capacity calculation, roughly assuming all bytes need to be escaped, capacity is three times.
         final ByteBuffer buffer = ByteBuffer.allocate(bytes.length * 3);
         // noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < bytes.length; i++) {
@@ -113,12 +128,14 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
     }
 
     /**
-     * 将URL中的字符串编码为%形式
+     * Encodes a character sequence into a percent-encoded string using the specified charset. Custom safe characters
+     * can be provided to prevent them from being encoded.
      *
-     * @param path           需要编码的字符串
-     * @param charset        编码, {@code null}返回原字符串，表示不编码
-     * @param customSafeChar 自定义安全字符
-     * @return 编码后的字符串
+     * @param path           The character sequence to encode.
+     * @param charset        The charset to use for converting characters to bytes before encoding. If {@code null}, the
+     *                       original string is returned without encoding.
+     * @param customSafeChar Optional custom safe characters that should not be encoded.
+     * @return The percent-encoded string.
      */
     public String encode(final CharSequence path, final Charset charset, final char... customSafeChar) {
         if (null == charset || StringKit.isEmpty(path)) {
@@ -135,7 +152,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
             if (safeCharacters.get(c) || ArrayKit.contains(customSafeChar, c)) {
                 rewrittenPath.append(c);
             } else if (encodeSpaceAsPlus && c == Symbol.C_SPACE) {
-                // 对于空格单独处理
+                // Special handling for space
                 rewrittenPath.append(Symbol.C_PLUS);
             } else {
                 // convert to external encoding before hex conversion
@@ -147,7 +164,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
                     continue;
                 }
 
-                // 兼容双字节的Unicode符处理（如部分emoji）
+                // Handle double-byte Unicode characters (e.g., some emojis)
                 final byte[] ba = buf.toByteArray();
                 for (final byte toEncode : ba) {
                     // Converting each byte in the buffer
@@ -161,17 +178,18 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
     }
 
     /**
-     * 将单一byte转义到{@link ByteBuffer}中
+     * Encodes a single byte into the provided {@link ByteBuffer}. If the byte represents a safe character or a space to
+     * be encoded as '+', it's written directly. Otherwise, it's written as its percent-encoded form (%HH).
      *
-     * @param buffer {@link ByteBuffer}
-     * @param b      字符byte
+     * @param buffer The {@link ByteBuffer} to write the encoded byte to.
+     * @param b      The byte to encode.
      */
     private void encodeTo(final ByteBuffer buffer, final byte b) {
         if (safeCharacters.get(b)) {
-            // 跳过安全字符
+            // Skip safe characters
             buffer.put(b);
         } else if (encodeSpaceAsPlus && b == Symbol.C_SPACE) {
-            // 对于空格单独处理
+            // Special handling for space
             buffer.put((byte) Symbol.C_PLUS);
         } else {
             buffer.put((byte) Symbol.C_PERCENT);
@@ -181,39 +199,42 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
     }
 
     /**
-     * {@link PercentCodec}构建器 由于{@link PercentCodec}本身应该是只读对象，因此将此对象的构建放在Builder中
+     * Builder for {@link PercentCodec}. Since {@link PercentCodec} itself should be an immutable object, its
+     * construction is handled by this Builder.
      */
     public static class Builder implements org.miaixz.bus.core.Builder<PercentCodec> {
 
         /**
-         * 编码器
+         * The internal {@link PercentCodec} instance being built.
          */
         private final PercentCodec codec;
 
         /**
-         * 构造
-         * 
-         * @param codec 编码器
+         * Private constructor to create a Builder for a given {@link PercentCodec}.
+         *
+         * @param codec The {@link PercentCodec} instance to build upon.
          */
         private Builder(final PercentCodec codec) {
             this.codec = codec;
         }
 
         /**
-         * 从已知PercentCodec创建PercentCodec，会复制给定PercentCodec的安全字符
+         * Creates a new {@code Builder} instance by copying the safe characters from an existing {@link PercentCodec}.
          *
-         * @param codec PercentCodec
-         * @return PercentCodec
+         * @param codec The existing {@link PercentCodec} to copy safe characters from.
+         * @return A new {@code Builder} instance.
          */
         public static Builder of(final PercentCodec codec) {
             return new Builder(new PercentCodec((BitSet) codec.safeCharacters.clone()));
         }
 
         /**
-         * 创建PercentCodec，使用指定字符串中的字符作为安全字符
+         * Creates a new {@code Builder} instance, initializing its safe characters with those present in the given
+         * character sequence.
          *
-         * @param chars 安全字符合集
-         * @return PercentCodec
+         * @param chars The character sequence whose characters will be marked as safe. Must not be null.
+         * @return A new {@code Builder} instance.
+         * @throws NullPointerException if {@code chars} is null.
          */
         public static Builder of(final CharSequence chars) {
             Assert.notNull(chars, "chars must not be null");
@@ -226,10 +247,10 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         }
 
         /**
-         * 增加安全字符 安全字符不被编码
+         * Adds a single character to the set of safe characters. Safe characters will not be percent-encoded.
          *
-         * @param c 字符
-         * @return this
+         * @param c The character to add as a safe character.
+         * @return This {@code Builder} instance for method chaining.
          */
         public Builder addSafe(final char c) {
             codec.safeCharacters.set(c);
@@ -237,10 +258,11 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         }
 
         /**
-         * 增加安全字符 安全字符不被编码
+         * Adds all characters from the given string to the set of safe characters. Safe characters will not be
+         * percent-encoded.
          *
-         * @param chars 安全字符
-         * @return this
+         * @param chars The string containing characters to add as safe characters.
+         * @return This {@code Builder} instance for method chaining.
          */
         public Builder addSafes(final String chars) {
             final int length = chars.length();
@@ -251,10 +273,11 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         }
 
         /**
-         * 移除安全字符 安全字符不被编码
+         * Removes a single character from the set of safe characters. Characters removed from the safe set will be
+         * subject to percent-encoding.
          *
-         * @param c 字符
-         * @return this
+         * @param c The character to remove from safe characters.
+         * @return This {@code Builder} instance for method chaining.
          */
         public Builder removeSafe(final char c) {
             codec.safeCharacters.clear(c);
@@ -262,10 +285,12 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         }
 
         /**
-         * 增加安全字符到当前的PercentCodec
+         * Performs a logical OR operation on the current set of safe characters with the safe characters from another
+         * {@link PercentCodec}. This effectively adds all safe characters from the {@code otherCodec} to this builder's
+         * safe characters.
          *
-         * @param otherCodec {@link PercentCodec}
-         * @return this
+         * @param otherCodec The {@link PercentCodec} whose safe characters will be combined with this builder's.
+         * @return This {@code Builder} instance for method chaining.
          */
         public Builder or(final PercentCodec otherCodec) {
             codec.safeCharacters.or(otherCodec.safeCharacters);
@@ -273,17 +298,23 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         }
 
         /**
-         * 是否将空格编码为+ 如果为{@code true}，则将空格编码为"+"，此项只在"application/x-www-form-urlencoded"中使用
-         * 如果为{@code false}，则空格编码为"%20",此项一般用于URL的Query部分（RFC3986规范）
+         * Sets whether spaces should be encoded as '+' or '%20'. If {@code true}, spaces are encoded as "+". This is
+         * typically used in "application/x-www-form-urlencoded". If {@code false}, spaces are encoded as "%20". This is
+         * generally used in the Query part of URLs (RFC3986 specification).
          *
-         * @param encodeSpaceAsPlus 是否将空格编码为+
-         * @return this
+         * @param encodeSpaceAsPlus A boolean indicating whether to encode spaces as '+'.
+         * @return This {@code Builder} instance for method chaining.
          */
         public Builder setEncodeSpaceAsPlus(final boolean encodeSpaceAsPlus) {
             codec.encodeSpaceAsPlus = encodeSpaceAsPlus;
             return this;
         }
 
+        /**
+         * Builds and returns the configured {@link PercentCodec} instance.
+         *
+         * @return A new {@link PercentCodec} instance with the configured settings.
+         */
         @Override
         public PercentCodec build() {
             return codec;

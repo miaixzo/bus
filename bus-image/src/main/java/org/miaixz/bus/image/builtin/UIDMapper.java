@@ -28,11 +28,22 @@
 package org.miaixz.bus.image.builtin;
 
 /**
+ * The {@code UIDMapper} interface defines a contract for classes that provide functionality to map or remap Unique
+ * Identifiers (UIDs). This is typically used in scenarios where UIDs need to be transformed, for example, during
+ * de-identification or anonymization processes.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface UIDMapper {
 
+    /**
+     * Retrieves a mapped or remapped UID for a given original UID. The implementation of this method will define the
+     * logic for the UID transformation.
+     *
+     * @param uid The original UID string to be mapped.
+     * @return The mapped or remapped UID string.
+     */
     String get(String uid);
 
 }

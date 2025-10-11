@@ -34,6 +34,7 @@ import java.lang.reflect.Type;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.lang.annotation.Alias;
 import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.core.lang.exception.BeanException;
 import org.miaixz.bus.core.lang.reflect.Invoker;
@@ -44,7 +45,8 @@ import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.ModifierKit;
 
 /**
- * 属性描述，包括了字段、getter、setter和相应的方法执行
+ * Describes a property of a Java Bean, including its associated field, getter method, setter method, and their
+ * invocation details.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,44 +54,47 @@ import org.miaixz.bus.core.xyz.ModifierKit;
 public class PropDesc {
 
     /**
-     * Getter方法
+     * The invoker for the getter method of the property.
      */
     protected Invoker getter;
     /**
-     * Setter方法
+     * The invoker for the setter method of the property.
      */
     protected Invoker setter;
     /**
-     * 字段名
+     * The name of the field, potentially an alias if an {@link Alias} annotation is present.
      */
     private String fieldName;
     /**
-     * 字段
+     * The invoker for the field itself, if accessible.
      */
     private Invoker field;
     /**
-     * 是否在getter上具有transient关键字或注解
+     * A cached boolean indicating whether the getter (or field if no getter) has a {@code transient} modifier or
+     * annotation.
      */
     private Boolean hasTransientForGetter;
     /**
-     * 是否在setter上具有transient关键字或注解
+     * A cached boolean indicating whether the setter (or field if no setter) has a {@code transient} modifier or
+     * annotation.
      */
     private Boolean hasTransientForSetter;
     /**
-     * 属性是否可读
+     * A cached boolean indicating whether the property is readable.
      */
     private Boolean isReadable;
     /**
-     * 属性是否可写
+     * A cached boolean indicating whether the property is writable.
      */
     private Boolean isWritable;
 
     /**
-     * 构造 Getter和Setter方法设置为默认可访问
+     * Constructs a {@code PropDesc} with a field, getter method, and setter method. Getter and Setter methods are set
+     * to be accessible by default.
      *
-     * @param field  字段
-     * @param getter get方法
-     * @param setter set方法
+     * @param field  The {@link Field} object for the property.
+     * @param getter The getter {@link Method} for the property.
+     * @param setter The setter {@link Method} for the property.
      */
     public PropDesc(final Field field, final Method getter, final Method setter) {
         this(FieldKit.getFieldName(field), getter, setter);
@@ -97,22 +102,23 @@ public class PropDesc {
     }
 
     /**
-     * 构造 Getter和Setter方法设置为默认可访问
+     * Constructs a {@code PropDesc} with a field name, getter method, and setter method. Getter and Setter methods are
+     * set to be accessible by default.
      *
-     * @param fieldName 字段名
-     * @param getter    get方法
-     * @param setter    set方法
+     * @param fieldName The name of the field.
+     * @param getter    The getter {@link Method} for the property.
+     * @param setter    The setter {@link Method} for the property.
      */
     public PropDesc(final String fieldName, final Method getter, final Method setter) {
         this(fieldName, MethodInvoker.of(getter), MethodInvoker.of(setter));
     }
 
     /**
-     * 构造 Getter和Setter方法设置为默认可访问
+     * Constructs a {@code PropDesc} with a field name, getter invoker, and setter invoker.
      *
-     * @param fieldName 字段名
-     * @param getter    get方法执行器
-     * @param setter    set方法执行器
+     * @param fieldName The name of the field.
+     * @param getter    The {@link Invoker} for the getter method.
+     * @param setter    The {@link Invoker} for the setter method.
      */
     public PropDesc(final String fieldName, final Invoker getter, final Invoker setter) {
         this.fieldName = fieldName;
@@ -121,52 +127,50 @@ public class PropDesc {
     }
 
     /**
-     * 检查字段是否被忽略读，通过{@link Ignore} 注解完成，规则为：
+     * Checks if a field should be ignored for reading, based on the {@link Ignore} annotation. The rules are:
+     * <ol>
+     * <li>The field itself has an {@link Ignore} annotation.</li>
+     * <li>The getter method has an {@link Ignore} annotation.</li>
+     * </ol>
      *
-     * <pre>
-     *     1. 在字段上有{@link Ignore} 注解
-     *     2. 在getXXX方法上有{@link Ignore} 注解
-     * </pre>
-     *
-     * @param field  字段，可为{@code null}
-     * @param getter 读取方法，可为{@code null}
-     * @return 是否忽略读
+     * @param field  The field, may be {@code null}.
+     * @param getter The getter method, may be {@code null}.
+     * @return {@code true} if reading the field should be ignored, {@code false} otherwise.
      */
     private static boolean isIgnoreGet(final Field field, final Method getter) {
         return AnnoKit.hasAnnotation(field, Ignore.class) || AnnoKit.hasAnnotation(getter, Ignore.class);
     }
 
     /**
-     * 检查字段是否被忽略写，通过{@link Ignore} 注解完成，规则为：
+     * Checks if a field should be ignored for writing, based on the {@link Ignore} annotation. The rules are:
+     * <ol>
+     * <li>The field itself has an {@link Ignore} annotation.</li>
+     * <li>The setter method has an {@link Ignore} annotation.</li>
+     * </ol>
      *
-     * <pre>
-     *     1. 在字段上有{@link Ignore} 注解
-     *     2. 在setXXX方法上有{@link Ignore} 注解
-     * </pre>
-     *
-     * @param field  字段，可为{@code null}
-     * @param setter 写方法，可为{@code null}
-     * @return 是否忽略写
+     * @param field  The field, may be {@code null}.
+     * @param setter The setter method, may be {@code null}.
+     * @return {@code true} if writing to the field should be ignored, {@code false} otherwise.
      */
     private static boolean isIgnoreSet(final Field field, final Method setter) {
         return AnnoKit.hasAnnotation(field, Ignore.class) || AnnoKit.hasAnnotation(setter, Ignore.class);
     }
 
     /**
-     * 字段和Getter方法是否为Transient关键字修饰的
+     * Checks if the field or its getter method is marked as {@code transient} (either by keyword or annotation).
      *
-     * @param field  字段，可为{@code null}
-     * @param getter 读取方法，可为{@code null}
-     * @return 是否为Transient关键字修饰的
+     * @param field  The field, may be {@code null}.
+     * @param getter The getter method, may be {@code null}.
+     * @return {@code true} if the field or getter is transient, {@code false} otherwise.
      */
     private static boolean isTransientForGet(final Field field, final Method getter) {
         boolean isTransient = ModifierKit.hasAny(field, EnumValue.Modifier.TRANSIENT);
 
-        // 检查Getter方法
+        // Check Getter method
         if (!isTransient && null != getter) {
             isTransient = ModifierKit.hasAny(getter, EnumValue.Modifier.TRANSIENT);
 
-            // 检查注解
+            // Check annotation
             if (!isTransient) {
                 isTransient = AnnoKit.hasAnnotation(getter, Keys.JAVA_BEANS_TRANSIENT);
             }
@@ -176,20 +180,20 @@ public class PropDesc {
     }
 
     /**
-     * 字段和Getter方法是否为Transient关键字修饰的
+     * Checks if the field or its setter method is marked as {@code transient} (either by keyword or annotation).
      *
-     * @param field  字段，可为{@code null}
-     * @param setter 写方法，可为{@code null}
-     * @return 是否为Transient关键字修饰的
+     * @param field  The field, may be {@code null}.
+     * @param setter The setter method, may be {@code null}.
+     * @return {@code true} if the field or setter is transient, {@code false} otherwise.
      */
     private static boolean isTransientForSet(final Field field, final Method setter) {
         boolean isTransient = ModifierKit.hasAny(field, EnumValue.Modifier.TRANSIENT);
 
-        // 检查Getter方法
+        // Check Setter method
         if (!isTransient && null != setter) {
             isTransient = ModifierKit.hasAny(setter, EnumValue.Modifier.TRANSIENT);
 
-            // 检查注解
+            // Check annotation
             if (!isTransient) {
                 isTransient = AnnoKit.hasAnnotation(setter, Keys.JAVA_BEANS_TRANSIENT);
             }
@@ -199,18 +203,18 @@ public class PropDesc {
     }
 
     /**
-     * 获取字段名，如果存在Alias注解，读取注解的值作为名称
+     * Retrieves the name of the field. If an {@link Alias} annotation is present, its value is used as the name.
      *
-     * @return 字段名
+     * @return The name of the field.
      */
     public String getFieldName() {
         return this.fieldName;
     }
 
     /**
-     * 获取字段名称
+     * Retrieves the raw name of the field, ignoring any {@link Alias} annotation.
      *
-     * @return 字段名
+     * @return The raw name of the field.
      */
     public String getRawFieldName() {
         if (null == this.field) {
@@ -221,9 +225,10 @@ public class PropDesc {
     }
 
     /**
-     * 获取字段
+     * Retrieves the {@link Field} object associated with this property.
      *
-     * @return 字段
+     * @return The {@link Field} object, or {@code null} if the property is not backed by a direct field (e.g., it's a
+     *         synthetic property).
      */
     public Field getField() {
         if (null != this.field && this.field instanceof FieldInvoker) {
@@ -233,9 +238,11 @@ public class PropDesc {
     }
 
     /**
-     * 获得字段类型 先获取字段的类型，如果字段不存在，则获取Getter方法的返回类型，否则获取Setter的第一个参数类型
+     * Retrieves the generic type of the field. It first attempts to get the type from the field itself. If the field is
+     * not available, it tries to get the return type of the getter method. If neither is available, it gets the type of
+     * the first parameter of the setter method.
      *
-     * @return 字段类型
+     * @return The generic type of the field.
      */
     public Type getFieldType() {
         if (null != this.field) {
@@ -245,9 +252,11 @@ public class PropDesc {
     }
 
     /**
-     * 获得字段类型 先获取字段的类型，如果字段不存在，则获取Getter方法的返回类型，否则获取Setter的第一个参数类型
+     * Retrieves the class type of the field. It first attempts to get the class from the field itself. If the field is
+     * not available, it tries to get the return class of the getter method. If neither is available, it gets the class
+     * of the first parameter of the setter method.
      *
-     * @return 字段类型
+     * @return The class type of the field.
      */
     public Class<?> getFieldClass() {
         if (null != this.field) {
@@ -257,28 +266,29 @@ public class PropDesc {
     }
 
     /**
-     * 获取Getter方法，可能为{@code null}
+     * Retrieves the {@link Invoker} for the getter method of this property.
      *
-     * @return Getter方法
+     * @return The {@link Invoker} for the getter method, or {@code null} if no getter exists.
      */
     public Invoker getGetter() {
         return this.getter;
     }
 
     /**
-     * 获取Setter方法，可能为{@code null}
+     * Retrieves the {@link Invoker} for the setter method of this property.
      *
-     * @return {@link Method}Setter 方法Invoker
+     * @return The {@link Invoker} for the setter method, or {@code null} if no setter exists.
      */
     public Invoker getSetter() {
         return this.setter;
     }
 
     /**
-     * 检查属性是否可读（即是否可以通过{@link #getValue(Object,boolean)}获取到值）
+     * Checks if the property is readable (i.e., if a value can be obtained via {@link #getValue(Object, boolean)}).
      *
-     * @param checkTransient 是否检查Transient关键字或注解
-     * @return 是否可读
+     * @param checkTransient Whether to consider {@code transient} modifiers or annotations. If {@code true}, a
+     *                       transient property will be considered not readable.
+     * @return {@code true} if the property is readable, {@code false} otherwise.
      */
     public boolean isReadable(final boolean checkTransient) {
         cacheReadable();
@@ -290,13 +300,13 @@ public class PropDesc {
     }
 
     /**
-     * 设置属性值，可以自动转换字段类型为目标类型
+     * Sets the value of the property on the given bean, with automatic type conversion.
      *
-     * @param bean        Bean对象
-     * @param value       属性值，可以为任意类型
-     * @param ignoreNull  是否忽略{@code null}值，true表示忽略
-     * @param ignoreError 是否忽略错误，包括转换错误和注入错误
-     * @return this
+     * @param bean        The bean object on which to set the property.
+     * @param value       The value to set. Can be of any type.
+     * @param ignoreNull  If {@code true}, {@code null} values will be ignored and not set.
+     * @param ignoreError If {@code true}, conversion errors and injection errors will be ignored.
+     * @return This {@code PropDesc} instance for chaining.
      */
     public PropDesc setValue(
             final Object bean,
@@ -307,11 +317,14 @@ public class PropDesc {
     }
 
     /**
-     * 获取属性值 首先调用字段对应的Getter方法获取值，如果Getter方法不存在，则判断字段如果为public，则直接获取字段值 此方法不检查任何注解，使用前需调用 {@link #isReadable(boolean)}
-     * 检查是否可读
+     * Retrieves the value of the property from the given bean. It first attempts to use the getter method. If no getter
+     * exists, it tries to access the public field directly. This method does not check any annotations;
+     * {@link #isReadable(boolean)} should be called beforehand.
      *
-     * @param bean Bean对象
-     * @return 字段值
+     * @param bean        The bean object from which to get the property value.
+     * @param ignoreError If {@code true}, exceptions during value retrieval will be ignored and {@code null} returned.
+     * @return The value of the property, or {@code null} if an error occurs and {@code ignoreError} is {@code true}.
+     * @throws BeanException If an error occurs during reflection and {@code ignoreError} is {@code false}.
      */
     public Object getValue(final Object bean, final boolean ignoreError) {
         try {
@@ -329,6 +342,11 @@ public class PropDesc {
         return null;
     }
 
+    /**
+     * Returns a string representation of this property descriptor.
+     *
+     * @return A string representation of the object.
+     */
     @Override
     public String toString() {
         return "PropDesc{" + "field=" + field + ", fieldName=" + fieldName + ", getter=" + getter + ", setter=" + setter
@@ -336,30 +354,35 @@ public class PropDesc {
     }
 
     /**
-     * 获取属性值，自动转换属性值类型 首先调用字段对应的Getter方法获取值，如果Getter方法不存在，则判断字段如果为public，则直接获取字段值
+     * Retrieves the value of the property from the given bean, with optional type conversion. It first attempts to use
+     * the getter method. If no getter exists, it tries to access the public field directly.
      *
-     * @param bean        Bean对象
-     * @param targetType  返回属性值需要转换的类型，null表示不转换
-     * @param ignoreError 是否忽略错误，包括转换错误和注入错误
-     * @return this
+     * @param bean        The bean object from which to get the property value.
+     * @param targetType  The target type to convert the property value to. If {@code null}, no conversion is performed.
+     * @param ignoreError If {@code true}, conversion errors and injection errors will be ignored.
+     * @return The converted property value, or {@code null} if an error occurs or conversion fails and
+     *         {@code ignoreError} is {@code true}.
      */
     public Object getValue(final Object bean, final Type targetType, final boolean ignoreError) {
         final Object result = getValue(bean, ignoreError);
 
         if (null != result && null != targetType) {
-            // 尝试将结果转换为目标类型，如果转换失败，返回null，即跳过此属性值。
-            // 当忽略错误情况下，目标类型转换失败应返回null
-            // 如果返回原值，在集合注入时会成功，但是集合取值时会报类型转换错误
+            // Attempt to convert the result to the target type. If conversion fails, return null (i.e., skip this
+            // property value).
+            // When errors are ignored, a failed conversion to the target type should return null.
+            // If the original value is returned, it might succeed in collection injection but cause a type conversion
+            // error when retrieving from the collection.
             return Convert.convertWithCheck(targetType, result, null, ignoreError);
         }
         return result;
     }
 
     /**
-     * 检查属性是否可读（即是否可以通过{@link #getValue(Object, boolean)}获取到值）
+     * Checks if the property is writable (i.e., if a value can be set via {@link #setValue(Object, Object)}).
      *
-     * @param checkTransient 是否检查Transient关键字或注解
-     * @return 是否可读
+     * @param checkTransient Whether to consider {@code transient} modifiers or annotations. If {@code true}, a
+     *                       transient property will be considered not writable.
+     * @return {@code true} if the property is writable, {@code false} otherwise.
      */
     public boolean isWritable(final boolean checkTransient) {
         cacheWritable();
@@ -371,12 +394,13 @@ public class PropDesc {
     }
 
     /**
-     * 设置Bean的字段值 首先调用字段对应的Setter方法，如果Setter方法不存在，则判断字段如果为public，则直接赋值字段值 此方法不检查任何注解，使用前需调用 {@link #isWritable(boolean)}
-     * 检查是否可写
+     * Sets the value of the property on the given bean. It first attempts to use the setter method. If no setter
+     * exists, it tries to set the public field directly. This method does not check any annotations;
+     * {@link #isWritable(boolean)} should be called beforehand.
      *
-     * @param bean  Bean对象
-     * @param value 值，必须与字段值类型匹配
-     * @return this
+     * @param bean  The bean object on which to set the property.
+     * @param value The value to set. Must be compatible with the field's type.
+     * @return This {@code PropDesc} instance for chaining.
      */
     public PropDesc setValue(final Object bean, final Object value) {
         if (null != this.setter) {
@@ -388,14 +412,16 @@ public class PropDesc {
     }
 
     /**
-     * 设置属性值，可以自动转换字段类型为目标类型
+     * Sets the value of the property on the given bean, with automatic type conversion and optional behaviors.
      *
-     * @param bean        Bean对象
-     * @param value       属性值，可以为任意类型
-     * @param ignoreNull  是否忽略{@code null}值，true表示忽略
-     * @param ignoreError 是否忽略错误，包括转换错误和注入错误
-     * @param override    是否覆盖目标值，如果不覆盖，会先读取bean的值，{@code null}则写，否则忽略。如果覆盖，则不判断直接写
-     * @return this
+     * @param bean        The bean object on which to set the property.
+     * @param value       The value to set. Can be of any type.
+     * @param ignoreNull  If {@code true}, {@code null} values will be ignored and not set.
+     * @param ignoreError If {@code true}, conversion errors and injection errors will be ignored.
+     * @param override    If {@code true}, the target value will always be overwritten. If {@code false}, the existing
+     *                    value in the bean will be read first, and if it's not {@code null}, the new value will be
+     *                    ignored.
+     * @return This {@code PropDesc} instance for chaining.
      */
     public PropDesc setValue(
             final Object bean,
@@ -407,12 +433,12 @@ public class PropDesc {
             return this;
         }
 
-        // 非覆盖模式下，如果目标值存在，则跳过
+        // In non-override mode, if the target value already exists, skip it.
         if (!override && null != getValue(bean, ignoreError)) {
             return this;
         }
 
-        // 当类型不匹配的时候，执行默认转换
+        // Perform default conversion if types do not match.
         if (null != value) {
             final Class<?> propClass = getFieldClass();
             if (!propClass.isInstance(value)) {
@@ -420,7 +446,7 @@ public class PropDesc {
             }
         }
 
-        // 属性赋值
+        // Assign the property value.
         if (null != value || !ignoreNull) {
             try {
                 this.setValue(bean, value);
@@ -428,7 +454,7 @@ public class PropDesc {
                 if (!ignoreError) {
                     throw new BeanException(e, "Set value of [{}] error!", getFieldName());
                 }
-                // 忽略注入失败
+                // Ignore injection failure.
             }
         }
 
@@ -436,7 +462,7 @@ public class PropDesc {
     }
 
     /**
-     * 缓存读取属性的可读性，如果已经检查过，直接返回true
+     * Caches the readability status of the property. If already checked, it returns immediately.
      */
     private void cacheReadable() {
         if (null != this.isReadable) {
@@ -452,21 +478,21 @@ public class PropDesc {
             getterMethod = ((MethodInvoker) this.getter).getMethod();
         }
 
-        // 检查transient关键字和@Transient注解
+        // Check for transient keyword and @Transient annotation.
         this.hasTransientForGetter = isTransientForGet(field, getterMethod);
 
-        // 检查@PropIgnore注解
+        // Check for @Ignore annotation.
         if (isIgnoreGet(field, getterMethod)) {
             this.isReadable = false;
             return;
         }
 
-        // 检查是否有getter方法或是否为public修饰
+        // Check for getter method existence or public modifier.
         this.isReadable = null != getterMethod || ModifierKit.isPublic(field);
     }
 
     /**
-     * 缓存写入属性的可写性，如果已经检查过，直接返回true
+     * Caches the writability status of the property. If already checked, it returns immediately.
      */
     private void cacheWritable() {
         if (null != this.isWritable) {
@@ -482,25 +508,25 @@ public class PropDesc {
             setterMethod = ((MethodInvoker) this.setter).getMethod();
         }
 
-        // 检查transient关键字和@Transient注解
+        // Check for transient keyword and @Transient annotation.
         this.hasTransientForSetter = isTransientForSet(field, setterMethod);
 
-        // 检查@PropIgnore注解
+        // Check for @Ignore annotation.
         if (isIgnoreSet(field, setterMethod)) {
             this.isWritable = false;
             return;
         }
 
-        // 检查是否有setter方法或是否为public修饰
+        // Check for setter method existence or public modifier.
         this.isWritable = null != setterMethod || ModifierKit.isPublic(field);
     }
 
     /**
-     * 通过Getter和Setter方法中找到属性类型
+     * Determines the generic type of the property by checking the getter and setter methods.
      *
-     * @param getter Getter方法
-     * @param setter Setter方法
-     * @return {@link Type}
+     * @param getter The {@link Invoker} for the getter method.
+     * @param setter The {@link Invoker} for the setter method.
+     * @return The generic type of the property.
      */
     private Type findPropType(final Invoker getter, final Invoker setter) {
         Type type = null;
@@ -514,11 +540,11 @@ public class PropDesc {
     }
 
     /**
-     * 通过Getter和Setter方法中找到属性类型
+     * Determines the class type of the property by checking the getter and setter methods.
      *
-     * @param getter Getter方法
-     * @param setter Setter方法
-     * @return {@link Type}
+     * @param getter The {@link Invoker} for the getter method.
+     * @param setter The {@link Invoker} for the setter method.
+     * @return The class type of the property.
      */
     private Class<?> findPropClass(final Invoker getter, final Invoker setter) {
         Class<?> type = null;

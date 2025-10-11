@@ -37,42 +37,43 @@ import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.provider.ListProvider;
 
 /**
- * 批量操作接口，提供实体列表的批量插入和更新方法
+ * An interface for batch operations, providing methods for batch insertion and updates of entity lists.
  *
- * @param <T> 实体类类型
+ * @param <T> The type of the entity class.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ListMapper<T> {
 
     /**
-     * 批量插入实体列表
+     * Performs a batch insert of a list of entities.
      *
-     * @param entityList 实体对象列表
-     * @param <S>        实体类型
-     * @return 插入成功的记录数，等于 entityList.size() 表示成功，否则失败
+     * @param entityList The list of entity objects to insert.
+     * @param <S>        A subtype of the entity class.
+     * @return The number of successfully inserted records. A return value equal to {@code entityList.size()} indicates
+     *         success; otherwise, it indicates failure.
      */
     @Lang(Caching.class)
     @InsertProvider(type = ListProvider.class, method = "insertList")
     <S extends T> int insertList(@Param("entityList") List<S> entityList);
 
     /**
-     * 批量更新实体列表
+     * Performs a batch update of a list of entities based on their primary keys.
      *
-     * @param entityList 实体对象列表
-     * @param <S>        实体类型
-     * @return 更新成功的记录数
+     * @param entityList The list of entity objects to update.
+     * @param <S>        A subtype of the entity class.
+     * @return The number of successfully updated records.
      */
     @Lang(Caching.class)
     @UpdateProvider(type = ListProvider.class, method = "updateList")
     <S extends T> int updateList(@Param("entityList") List<S> entityList);
 
     /**
-     * 批量更新实体列表中非空字段
+     * Performs a batch update of the non-null fields of a list of entities based on their primary keys.
      *
-     * @param entityList 实体对象列表
-     * @param <S>        实体类型
-     * @return 更新成功的记录数
+     * @param entityList The list of entity objects to update.
+     * @param <S>        A subtype of the entity class.
+     * @return The number of successfully updated records.
      */
     @Lang(Caching.class)
     @UpdateProvider(type = ListProvider.class, method = "updateListSelective")

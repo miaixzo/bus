@@ -21,7 +21,7 @@
 - ⬆️:arrow_up:升级依赖项
 - ⏪️:rewind:还原更改
 - 📌:pushpin:将依赖项固定到特定版本
-- 👷:construction_worker:添加或更新 CI 构建系统
+- 👷:construction_worker:添加或更新CI/CD构建系统
 - 📈:chart_with_upwards_trend:添加或更新分析或跟踪代码
 - ♻️:recycle:重构代码
 - ➕:heavy_plus_sign:添加依赖项

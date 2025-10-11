@@ -32,7 +32,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * {@link javax.xml.parsers.DocumentBuilder} 工具类
+ * Utility class for {@link javax.xml.parsers.DocumentBuilder}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,10 +40,11 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class DocumentBuilder {
 
     /**
-     * 创建 DocumentBuilder
+     * Creates a new {@link javax.xml.parsers.DocumentBuilder} instance.
      *
-     * @param namespaceAware 是否打开命名空间支持
-     * @return DocumentBuilder
+     * @param namespaceAware {@code true} to enable namespace awareness, {@code false} otherwise.
+     * @return A new {@link javax.xml.parsers.DocumentBuilder} instance.
+     * @throws InternalException if an error occurs during DocumentBuilder creation.
      */
     public static javax.xml.parsers.DocumentBuilder createDocumentBuilder(final boolean namespaceAware) {
         final javax.xml.parsers.DocumentBuilder builder;
@@ -56,18 +57,17 @@ public class DocumentBuilder {
     }
 
     /**
-     * 创建{@link DocumentBuilderFactory}
+     * Creates a new {@link DocumentBuilderFactory} instance.
      * <p>
-     * 默认使用"com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl"
-     * </p>
+     * By default, it uses "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl".
      *
-     * @param namespaceAware 是否打开命名空间支持
-     * @return {@link DocumentBuilderFactory}
+     * @param namespaceAware {@code true} to enable namespace awareness, {@code false} otherwise.
+     * @return A new {@link DocumentBuilderFactory} instance.
      */
     public static DocumentBuilderFactory createDocumentBuilderFactory(final boolean namespaceAware) {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-        // 默认打开NamespaceAware，getElementsByTagNameNS可以使用命名空间
+        // Enable NamespaceAware by default, so getElementsByTagNameNS can use namespaces
         factory.setNamespaceAware(namespaceAware);
         return XXE.disableXXE(factory);
     }

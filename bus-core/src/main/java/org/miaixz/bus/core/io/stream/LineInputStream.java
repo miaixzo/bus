@@ -41,11 +41,12 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 行读取器，类似于BufferedInputStream，支持多行转义，规则如下：
+ * Line reader, similar to {@link java.io.BufferedInputStream}, supporting multi-line escaping. The rules are as
+ * follows:
  * <ul>
- * <li>支持'\n'和'\r\n'两种换行符，不支持'\r'换行符</li>
- * <li>如果想读取转义符，必须定义为'\\'</li>
- * <li>多行转义后的换行符和空格都会被忽略</li>
+ * <li>Supports '\n' and '\r\n' as line endings, but not '\r'.</li>
+ * <li>If an escape character is to be read, it must be defined as '\\'.</li>
+ * <li>Newline characters and spaces after an escape character in a multi-line escaped sequence will be ignored.</li>
  * </ul>
  * 
  * @author Kimi Liu
@@ -54,28 +55,29 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class LineInputStream extends FilterInputStream implements Iterable<byte[]> {
 
     /**
-     * 构造
+     * Constructs a new {@code LineInputStream} with the specified underlying input stream.
      *
-     * @param in 输入流
+     * @param in The input stream to be wrapped.
      */
     public LineInputStream(final InputStream in) {
         super(in);
     }
 
     /**
-     * 读取一行
+     * Reads a line from the input stream and converts it to a {@link String} using the specified charset.
      *
-     * @param charset 编码
-     * @return 行
+     * @param charset The character set to use for decoding the bytes.
+     * @return The line as a {@link String}, or {@code null} if the end of the stream has been reached.
      */
     public String readLine(final Charset charset) {
         return StringKit.toString(readLine(), charset);
     }
 
     /**
-     * 读取一行
+     * Reads a line from the input stream.
      *
-     * @return 内容
+     * @return The line as a byte array, or {@code null} if the end of the stream has been reached.
+     * @throws RuntimeException If an {@link IOException} occurs during reading.
      */
     public byte[] readLine() {
         try {
@@ -85,6 +87,12 @@ public class LineInputStream extends FilterInputStream implements Iterable<byte[
         }
     }
 
+    /**
+     * Returns an iterator over the lines in this input stream. Each element returned by the iterator is a byte array
+     * representing a line.
+     *
+     * @return An {@link Iterator} of byte arrays, where each array is a line from the stream.
+     */
     @Override
     public Iterator<byte[]> iterator() {
         return new ComputeIterator<>() {
@@ -97,14 +105,16 @@ public class LineInputStream extends FilterInputStream implements Iterable<byte[
     }
 
     /**
-     * 读取一行
+     * Reads a line from the input stream, handling escape characters and line endings. This method supports '\n' and
+     * '\r\n' as line terminators. If a '\' character is encountered, it acts as an escape character. If the preceding
+     * character was a '\' and the current character is a whitespace, the whitespace is ignored.
      *
-     * @return 内容
-     * @throws IOException IO异常
+     * @return The line as a byte array, or {@code null} if the end of the stream has been reached.
+     * @throws IOException If an I/O error occurs during reading.
      */
     private byte[] _readLine() throws IOException {
         FastByteBuffer out = null;
-        // 换行符前是否为转义符
+        // Flag to indicate if the preceding character was an escape character (backslash).
         boolean precedingBackslash = false;
         int c;
         while ((c = read()) > 0) {
@@ -112,25 +122,27 @@ public class LineInputStream extends FilterInputStream implements Iterable<byte[
                 out = new FastByteBuffer();
             }
             if (Symbol.C_BACKSLASH == c) {
-                // 转义符转义，行尾需要使用'\'时，使用转义符转义，即`\\`
+                // Handle escape character.
+                // If a backslash is needed at the end of a line, it must be escaped as `\\`.
                 if (!precedingBackslash) {
-                    // 转义符，添加标识，但是不加入字符
+                    // First backslash, set flag but don't add to buffer yet.
                     precedingBackslash = true;
                     continue;
                 } else {
+                    // Second backslash, meaning `\\`, so add one backslash to buffer.
                     precedingBackslash = false;
                 }
             } else {
                 if (precedingBackslash) {
-                    // 转义模式下，跳过转义符后的所有空白符
+                    // In escape mode, skip all whitespace characters after the escape character.
                     if (CharKit.isBlankChar(c)) {
                         continue;
                     }
-                    // 遇到普通字符，关闭转义
+                    // Encountered a non-whitespace character, exit escape mode.
                     precedingBackslash = false;
                 } else if (Symbol.C_LF == c) {
-                    // 非转义状态下，表示行的结束
-                    // 如果换行符是`\r\n`，删除末尾的`\r`
+                    // Not in escape mode, and encountered a newline character, indicating end of line.
+                    // If the newline is `\r\n`, remove the trailing `\r`.
                     final int lastIndex = out.length() - 1;
                     if (lastIndex >= 0 && Symbol.C_CR == out.get(lastIndex)) {
                         return out.toArray(0, lastIndex);

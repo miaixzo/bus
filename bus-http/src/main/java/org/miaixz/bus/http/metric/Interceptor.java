@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.http.metric;
 
-import java.io.IOException;
-
 import org.miaixz.bus.http.Response;
 
+import java.io.IOException;
+
 /**
- * 观察、修改和潜在的短路请求，并返回相应的响应 通常，拦截器在请求或响应上添加、删除或转换标头
+ * Intercepts, observes, modifies, and potentially short-circuits requests and their corresponding responses. Typically,
+ * interceptors add, remove, or transform headers on requests or responses.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,16 +41,17 @@ import org.miaixz.bus.http.Response;
 public interface Interceptor {
 
     /**
-     * 网络请求拦截
+     * Intercepts the given {@code chain} to process a network request.
      *
-     * @param chain 网络调用链
-     * @return {@link Response}
-     * @throws IOException 异常
+     * @param chain The network call chain.
+     * @return The {@link Response} from the network request.
+     * @throws IOException if an I/O error occurs during interception.
      */
     Response intercept(NewChain chain) throws IOException;
 
     /**
-     * 说明该拦截器实现的作用 方便其他业务场景或者服务使用，例如链路追踪等
+     * Provides a description of what this interceptor implementation does. This can be useful for other business
+     * scenarios or services, such as distributed tracing.
      */
     default void instructions() {
 

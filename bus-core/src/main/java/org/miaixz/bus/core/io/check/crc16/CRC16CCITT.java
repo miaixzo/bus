@@ -30,18 +30,31 @@ package org.miaixz.bus.core.io.check.crc16;
 import java.io.Serial;
 
 /**
- * CRC16_CCITT：多项式x16+x12+x5+1（0x1021），初始值0x0000，低位在前，高位在后，结果与0x0000异或 0x8408是0x1021按位颠倒后的结果。
+ * Implements the CRC16-CCITT (Cyclic Redundancy Check) algorithm. This CRC uses the polynomial x16+x12+x5+1 (0x1021),
+ * an initial value of 0x0000, processes data with the low byte first, high byte last, and the final result is XORed
+ * with 0x0000. Note: 0x8408 is the bit-reversed representation of 0x1021.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CRC16CCITT extends CRC16Checksum {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852278296375L;
 
+    /**
+     * The polynomial used in the CRC16-CCITT calculation. It is the bit-reversed form of 0x1021.
+     */
     private static final int WC_POLY = 0x8408;
 
+    /**
+     * Updates the CRC16-CCITT checksum with the specified byte.
+     *
+     * @param b The byte to update the checksum with.
+     */
     @Override
     public void update(final int b) {
         wCRCin ^= (b & 0x00ff);

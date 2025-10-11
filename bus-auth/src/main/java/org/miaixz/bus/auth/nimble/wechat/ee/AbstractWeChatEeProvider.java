@@ -29,6 +29,7 @@ package org.miaixz.bus.auth.nimble.wechat.ee;
 
 import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -46,21 +47,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 企业微信 登录
+ * Abstract class for WeChat Enterprise login providers.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
 
+    /**
+     * Constructs an {@code AbstractWeChatEeProvider} with the specified context and complex configuration.
+     *
+     * @param context the authentication context
+     * @param complex the complex configuration for WeChat Enterprise
+     */
     public AbstractWeChatEeProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
+    /**
+     * Constructs an {@code AbstractWeChatEeProvider} with the specified context, complex configuration, and cache.
+     *
+     * @param context the authentication context
+     * @param complex the complex configuration for WeChat Enterprise
+     * @param cache   the cache implementation
+     */
     public AbstractWeChatEeProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
+    /**
+     * Retrieves the access token from WeChat Enterprise's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(accessTokenUrl(null));
@@ -76,12 +97,19 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         return AuthToken.builder().accessToken(accessToken).expireIn(expiresIn).code(callback.getCode()).build();
     }
 
+    /**
+     * Retrieves user information from WeChat Enterprise's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String response = doGetUserInfo(authToken);
         Map<String, Object> object = this.checkResponse(response);
 
-        // 返回 OpenId 或其他，均代表非当前企业用户，不支持
+        // Returns OpenId or other, both indicate non-current enterprise users, not supported
         if (!object.containsKey("userid")) {
             throw new AuthorizedException(ErrorCode.UNIDENTIFIED_PLATFORM.getKey(), complex);
         }
@@ -102,10 +130,11 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     }
 
     /**
-     * 校验请求结果
+     * Checks the response content for errors.
      *
-     * @param response 请求结果
-     * @return 如果请求结果正常，则返回Map
+     * @param response the response string to check
+     * @return the parsed response map if the request result is normal
+     * @throws AuthorizedException if the response indicates an error or is malformed
      */
     private Map<String, Object> checkResponse(String response) {
         try {
@@ -113,9 +142,9 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
             if (object == null) {
                 throw new AuthorizedException("Failed to parse response: empty response");
             }
-            Object errcodeObj = object.get("errcode");
+            Object errcodeObj = object.get(Consts.ERRCODE);
             if (errcodeObj != null && !errcodeObj.equals(0)) {
-                String errmsg = (String) object.get("errmsg");
+                String errmsg = (String) object.get(Consts.ERRMSG);
                 throw new AuthorizedException(errmsg != null ? errmsg : "Unknown error", complex.getName());
             }
             return object;
@@ -125,10 +154,10 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     }
 
     /**
-     * 返回获取accessToken的url
+     * Returns the URL to obtain the access token.
      *
-     * @param code 授权码
-     * @return 返回获取accessToken的url
+     * @param code the authorization code
+     * @return the URL to obtain the access token
      */
     @Override
     public String accessTokenUrl(String code) {
@@ -137,10 +166,10 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权后的token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     public String userInfoUrl(AuthToken authToken) {
@@ -149,21 +178,21 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     }
 
     /**
-     * 用户详情
+     * Retrieves user details.
      *
-     * @param accessToken accessToken
-     * @param userId      企业内用户id
-     * @param userTicket  成员票据，用于获取用户信息或敏感信息
-     * @return 用户详情
+     * @param accessToken the access token
+     * @param userId      the user ID within the enterprise
+     * @param userTicket  the user ticket, used to obtain user information or sensitive information
+     * @return a map containing user details
      */
     private Map<String, Object> getUserDetail(String accessToken, String userId, String userTicket) {
-        // 用户基础信息
+        // User basic information
         String userInfoUrl = Builder.fromUrl("https://qyapi.weixin.qq.com/cgi-bin/user/get")
                 .queryParam("access_token", accessToken).queryParam("userid", userId).build();
         String userInfoResponse = Httpx.get(userInfoUrl);
         Map<String, Object> userInfo = checkResponse(userInfoResponse);
 
-        // 用户敏感信息
+        // User sensitive information
         if (StringKit.isNotEmpty(userTicket)) {
             String userDetailUrl = Builder.fromUrl("https://qyapi.weixin.qq.com/cgi-bin/auth/getuserdetail")
                     .queryParam("access_token", accessToken).build();

@@ -30,39 +30,71 @@ package org.miaixz.bus.core.center.date.culture.cn;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 运（20年=1运，3运=1元）
+ * Represents a "Yun" (运), a 20-year cycle in Chinese traditional calendar. Three "Yun" cycles constitute one "Yuan"
+ * (元). This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Twenty extends Samsara {
 
+    /**
+     * Array of names for the Twenty-year Cycles (Yun).
+     */
     public static final String[] NAMES = { "一运", "二运", "三运", "四运", "五运", "六运", "七运", "八运", "九运" };
 
+    /**
+     * Constructs a {@code Twenty} instance with the specified index.
+     *
+     * @param index The index of the Twenty-year Cycle in the {@link #NAMES} array.
+     */
     public Twenty(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * Constructs a {@code Twenty} instance with the specified name.
+     *
+     * @param name The name of the Twenty-year Cycle.
+     */
     public Twenty(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Creates a {@code Twenty} instance from its index.
+     *
+     * @param index The index of the Twenty-year Cycle.
+     * @return A new {@code Twenty} instance.
+     */
     public static Twenty fromIndex(int index) {
         return new Twenty(index);
     }
 
+    /**
+     * Creates a {@code Twenty} instance from its name.
+     *
+     * @param name The name of the Twenty-year Cycle.
+     * @return A new {@code Twenty} instance.
+     */
     public static Twenty fromName(String name) {
         return new Twenty(name);
     }
 
+    /**
+     * Gets the next {@code Twenty} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code Twenty} instance.
+     */
     public Twenty next(int n) {
         return fromIndex(nextIndex(n));
     }
 
     /**
-     * 元
+     * Gets the corresponding {@link Sixty} (元) for this Twenty-year Cycle.
      *
-     * @return 元
+     * @return The {@link Sixty} associated with this Twenty-year Cycle.
      */
     public Sixty getSixty() {
         return Sixty.fromIndex(index / 3);

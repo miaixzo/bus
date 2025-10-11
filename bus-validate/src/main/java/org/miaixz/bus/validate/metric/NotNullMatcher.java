@@ -33,13 +33,21 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.NotNull;
 
 /**
- * NOT NUll 校验
+ * Validator for the {@link NotNull} annotation. Checks if an object is not null.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NotNullMatcher implements Matcher<Object, NotNull> {
 
+    /**
+     * Checks if the given object is not null.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link NotNull} annotation instance (ignored).
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is not null, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, NotNull annotation, Context context) {
         return ObjectKit.isNotEmpty(object);

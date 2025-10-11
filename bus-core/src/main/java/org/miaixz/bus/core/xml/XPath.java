@@ -40,67 +40,64 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
- * {@link javax.xml.xpath.XPath}相关工具类
+ * Utility class for {@link javax.xml.xpath.XPath}.
  *
  * @author Kimi Liu
+ * @see <a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">Introduction to the JAXP XPath API</a>
  * @since Java 17+
  */
 public class XPath {
 
     /**
-     * 创建XPath Xpath相关文章：<a href=
-     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * Creates a new {@link javax.xml.xpath.XPath} instance.
      *
-     * @return {@link javax.xml.xpath.XPath}
+     * @return A new {@link javax.xml.xpath.XPath} instance.
      */
     public static javax.xml.xpath.XPath createXPath() {
         return XPathFactory.newInstance().newXPath();
     }
 
     /**
-     * 通过XPath方式读取XML节点等信息 Xpath相关文章：<a href=
-     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * Selects a single XML {@link Element} using an XPath expression.
      *
-     * @param expression XPath表达式
-     * @param source     资源，可以是Docunent、Node节点等
-     * @return 匹配返回类型的值
+     * @param expression The XPath expression.
+     * @param source     The source object, which can be a {@link org.w3c.dom.Document}, {@link Node}, etc.
+     * @return The first matching {@link Element}, or {@code null} if no match is found.
      */
     public static Element getElementByXPath(final String expression, final Object source) {
         return (Element) getNodeByXPath(expression, source);
     }
 
     /**
-     * 通过XPath方式读取XML的NodeList Xpath相关文章：<a href=
-     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * Selects a {@link NodeList} of XML nodes using an XPath expression.
      *
-     * @param expression XPath表达式
-     * @param source     资源，可以是Docunent、Node节点等
-     * @return NodeList
+     * @param expression The XPath expression.
+     * @param source     The source object, which can be a {@link org.w3c.dom.Document}, {@link Node}, etc.
+     * @return The matching {@link NodeList}.
      */
     public static NodeList getNodeListByXPath(final String expression, final Object source) {
         return (NodeList) getByXPath(expression, source, XPathConstants.NODESET);
     }
 
     /**
-     * 通过XPath方式读取XML节点等信息 Xpath相关文章：<a href=
-     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * Selects a single XML {@link Node} using an XPath expression.
      *
-     * @param expression XPath表达式
-     * @param source     资源，可以是Docunent、Node节点等
-     * @return 匹配返回类型的值
+     * @param expression The XPath expression.
+     * @param source     The source object, which can be a {@link org.w3c.dom.Document}, {@link Node}, etc.
+     * @return The first matching {@link Node}, or {@code null} if no match is found.
      */
     public static Node getNodeByXPath(final String expression, final Object source) {
         return (Node) getByXPath(expression, source, XPathConstants.NODE);
     }
 
     /**
-     * 通过XPath方式读取XML节点等信息 Xpath相关文章：<a href=
-     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * Selects an object from an XML source using an XPath expression and a specified return type. This method
+     * automatically handles namespaces if the source is a {@link Node}.
      *
-     * @param expression XPath表达式
-     * @param source     资源，可以是Docunent、Node节点等
-     * @param returnType 返回类型，{@link javax.xml.xpath.XPathConstants}
-     * @return 匹配返回类型的值
+     * @param expression The XPath expression.
+     * @param source     The source object, which can be a {@link org.w3c.dom.Document}, {@link Node}, etc.
+     * @param returnType The desired return type, as defined in {@link XPathConstants}.
+     * @return The result of the XPath evaluation, cast to the specified return type.
      */
     public static Object getByXPath(final String expression, final Object source, final QName returnType) {
         NamespaceContext nsContext = null;
@@ -111,16 +108,17 @@ public class XPath {
     }
 
     /**
-     * 通过XPath方式读取XML节点等信息 Xpath相关文章： <a href=
-     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
-     * <a href=
-     * "https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/">https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/</a>
+     * Selects an object from an XML source using an XPath expression, a specified return type, and a namespace context.
      *
-     * @param expression XPath表达式
-     * @param source     资源，可以是Docunent、Node节点等
-     * @param returnType 返回类型，{@link javax.xml.xpath.XPathConstants}
-     * @param nsContext  {@link NamespaceContext}
-     * @return 匹配返回类型的值
+     * @param expression The XPath expression.
+     * @param source     The source object, which can be a {@link org.w3c.dom.Document}, {@link Node},
+     *                   {@link InputSource}, etc.
+     * @param returnType The desired return type, as defined in {@link XPathConstants}.
+     * @param nsContext  The {@link NamespaceContext} to use for namespace resolution.
+     * @return The result of the XPath evaluation, cast to the specified return type.
+     * @throws InternalException if an {@link XPathExpressionException} occurs.
+     * @see <a href="https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/">Using the JAXP NamespaceContext
+     *      Interface</a>
      */
     public static Object getByXPath(
             final String expression,

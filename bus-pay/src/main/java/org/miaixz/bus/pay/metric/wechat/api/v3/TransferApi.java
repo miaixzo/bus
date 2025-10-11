@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-商家转账到零钱接口
+ * WeChat Pay V3 API interfaces for merchant transfers to balance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,97 +38,110 @@ import org.miaixz.bus.pay.Matcher;
 public enum TransferApi implements Matcher {
 
     /**
-     * 发起商家转账
+     * Initiate merchant transfer.
      */
-    TRANSFER_BATCHES("/v3/transfer/batches", "发起商家转账"),
+    TRANSFER_BATCHES("/v3/transfer/batches", "Initiate merchant transfer"),
 
     /**
-     * 微信支付批次单号查询批次单
+     * Query batch order by WeChat Pay batch order number.
      */
-    TRANSFER_QUERY_BY_BATCH_ID("/v3/transfer/batches/batch-id/%s", "微信支付批次单号查询批次单"),
+    TRANSFER_QUERY_BY_BATCH_ID("/v3/transfer/batches/batch-id/%s",
+            "Query batch order by WeChat Pay batch order number"),
 
     /**
-     * 微信支付批次单号查询批次单
+     * Service provider mode - query batch order by WeChat Pay batch order number.
      */
-    PARTNER_TRANSFER_QUERY_BY_BATCH_ID("/v3/partner-transfer/batches/batch-id/%s", "微信支付批次单号查询批次单"),
+    PARTNER_TRANSFER_QUERY_BY_BATCH_ID("/v3/partner-transfer/batches/batch-id/%s",
+            "Service provider mode - query batch order by WeChat Pay batch order number"),
 
     /**
-     * 微信支付明细单号查询明细单
+     * Query detail order by WeChat Pay detail order number.
      */
-    TRANSFER_QUERY_BY_DETAIL_ID("/v3/transfer/batches/batch-id/%s/details/detail-id/%s", "微信支付明细单号查询明细单"),
+    TRANSFER_QUERY_BY_DETAIL_ID("/v3/transfer/batches/batch-id/%s/details/detail-id/%s",
+            "Query detail order by WeChat Pay detail order number"),
 
     /**
-     * 微信支付明细单号查询明细单
+     * Service provider mode - query detail order by WeChat Pay detail order number.
      */
     PARTNER_TRANSFER_QUERY_BY_DETAIL_ID("/v3/partner-transfer/batches/batch-id/%s/details/detail-id/%s",
-            "微信支付明细单号查询明细单"),
+            "Service provider mode - query detail order by WeChat Pay detail order number"),
 
     /**
-     * 商家批次单号查询批次单
+     * Query batch order by merchant batch order number.
      */
-    TRANSFER_QUERY_BY_OUT_BATCH_NO("/v3/transfer/batches/out-batch-no/%s", "商家批次单号查询批次单"),
+    TRANSFER_QUERY_BY_OUT_BATCH_NO("/v3/transfer/batches/out-batch-no/%s",
+            "Query batch order by merchant batch order number"),
 
     /**
-     * 商家批次单号查询批次单
+     * Service provider mode - query batch order by merchant batch order number.
      */
-    PARTNER_TRANSFER_QUERY_BY_OUT_BATCH_NO("/v3/partner-transfer/batches/out-batch-no/%s", "商家批次单号查询批次单"),
+    PARTNER_TRANSFER_QUERY_BY_OUT_BATCH_NO("/v3/partner-transfer/batches/out-batch-no/%s",
+            "Service provider mode - query batch order by merchant batch order number"),
 
     /**
-     * 商家明细单号查询明细单
+     * Query detail order by merchant detail order number.
      */
     TRANSFER_QUERY_DETAIL_BY_OUT_BATCH_NO("/v3/transfer/batches/out-batch-no/%s/details/out-detail-no/%s",
-            "商家明细单号查询明细单"),
+            "Query detail order by merchant detail order number"),
 
     /**
-     * 商家明细单号查询明细单
+     * Service provider mode - query detail order by merchant detail order number.
      */
     PARTNER_TRANSFER_QUERY_DETAIL_BY_OUT_BATCH_NO(
-            "/v3/partner-transfer/batches/out-batch-no/%s/details/out-detail-no/%s", "商家明细单号查询明细单"),
+            "/v3/partner-transfer/batches/out-batch-no/%s/details/out-detail-no/%s",
+            "Service provider mode - query detail order by merchant detail order number"),
 
     /**
-     * 转账电子回单申请受理
+     * Transfer electronic receipt application acceptance.
      */
-    TRANSFER_BILL_RECEIPT("/v3/transfer/bill-receipt", "转账电子回单申请受理"),
+    TRANSFER_BILL_RECEIPT("/v3/transfer/bill-receipt", "Transfer electronic receipt application acceptance"),
 
     /**
-     * 查询转账电子回单
+     * Query transfer electronic receipt.
      */
-    TRANSFER_BILL_RECEIPT_QUERY("/v3/transfer/bill-receipt/%s", "查询转账电子回单"),
+    TRANSFER_BILL_RECEIPT_QUERY("/v3/transfer/bill-receipt/%s", "Query transfer electronic receipt"),
 
     /**
-     * 转账明细电子回单受理/查询转账明细电子回单受理结果
+     * Transfer detail electronic receipt acceptance/query transfer detail electronic receipt acceptance result.
      */
-    TRANSFER_ELECTRONIC_RECEIPTS("/v3/transfer-detail/electronic-receipts", "转账明细电子回单受理"),
+    TRANSFER_ELECTRONIC_RECEIPTS("/v3/transfer-detail/electronic-receipts",
+            "Transfer detail electronic receipt acceptance/query transfer detail electronic receipt acceptance result"),
 
     /**
-     * 特约商户银行来账查询
+     * Query special merchant bank incoming funds.
      */
-    PARTNER_INCOME_RECORDS("/v3/merchantfund/partner/income-records", "特约商户银行来账查询"),
+    PARTNER_INCOME_RECORDS("/v3/merchantfund/partner/income-records", "Query special merchant bank incoming funds"),
 
     /**
-     * 服务商银行来账查询
+     * Query service provider bank incoming funds.
      */
-    MERCHANT_INCOME_RECORDS("/v3/merchantfund/merchant/income-records", "服务商银行来账查询");
+    MERCHANT_INCOME_RECORDS("/v3/merchantfund/merchant/income-records", "Query service provider bank incoming funds");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new TransferApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     TransferApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -136,9 +149,9 @@ public enum TransferApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -146,9 +159,9 @@ public enum TransferApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

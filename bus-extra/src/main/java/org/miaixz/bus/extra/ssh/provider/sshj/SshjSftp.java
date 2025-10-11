@@ -53,10 +53,13 @@ import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.xfer.FileSystemFile;
 
 /**
- * 在使用jsch 进行sftp协议下载文件时，总是中文乱码，而该框架源码又不允许设置编码。故：站在巨人的肩膀上，此类便孕育而出。
+ * An SFTP client implementation based on the SSHJ library. This class was created to address issues with character
+ * encoding (e.g., garbled Chinese characters) when using other libraries like JSch for SFTP file downloads, as SSHJ
+ * provides better control over character sets.
  *
  * <p>
- * 基于sshj 框架适配。 参考：<a href="https://github.com/hierynomus/sshj">https://github.com/hierynomus/sshj</a>
+ * Adapted from the SSHJ library. For more details, see the project homepage:
+ * <a href="https://github.com/hierynomus/sshj">https://github.com/hierynomus/sshj</a>
  * </p>
  *
  * @author Kimi Liu
@@ -64,15 +67,27 @@ import net.schmizz.sshj.xfer.FileSystemFile;
  */
 public class SshjSftp extends AbstractFtp {
 
+    /**
+     * The underlying SSHJ SSH client.
+     */
     private SSHClient ssh;
+    /**
+     * The underlying SSHJ SFTP client.
+     */
     private SFTPClient sftp;
+    /**
+     * The SSHJ session, used for executing commands.
+     */
     private Session session;
+    /**
+     * The current working directory on the remote server.
+     */
     private String workingDir;
 
     /**
-     * 构造
+     * Constructs an {@code SshjSftp} instance with the given FTP configuration and initializes it.
      *
-     * @param config FTP配置
+     * @param config The {@link FtpConfig} containing connection details.
      */
     public SshjSftp(final FtpConfig config) {
         super(config);
@@ -80,10 +95,10 @@ public class SshjSftp extends AbstractFtp {
     }
 
     /**
-     * 构造
+     * Constructs an {@code SshjSftp} instance with an existing {@link SSHClient} and character set, and initializes it.
      *
-     * @param sshClient {@link SSHClient}
-     * @param charset   编码
+     * @param sshClient The pre-configured {@link SSHClient} instance.
+     * @param charset   The character set for file names.
      */
     public SshjSftp(final SSHClient sshClient, final Charset charset) {
         super(FtpConfig.of().setCharset(charset));
@@ -92,39 +107,40 @@ public class SshjSftp extends AbstractFtp {
     }
 
     /**
-     * 构造
+     * Creates an {@code SshjSftp} instance with the specified SSH host, username, and password, using the default port
+     * (22).
      *
-     * @param sshHost 主机
-     * @param sshUser 用户名
-     * @param sshPass 密码
-     * @return SshjSftp
+     * @param sshHost The SSH host address.
+     * @param sshUser The SSH username.
+     * @param sshPass The SSH password.
+     * @return A new {@code SshjSftp} instance.
      */
     public static SshjSftp of(final String sshHost, final String sshUser, final String sshPass) {
         return of(sshHost, 22, sshUser, sshPass);
     }
 
     /**
-     * 构造
+     * Creates an {@code SshjSftp} instance with the specified SSH host, port, username, and password.
      *
-     * @param sshHost 主机
-     * @param sshPort 端口
-     * @param sshUser 用户名
-     * @param sshPass 密码
-     * @return SshjSftp
+     * @param sshHost The SSH host address.
+     * @param sshPort The SSH port.
+     * @param sshUser The SSH username.
+     * @param sshPass The SSH password.
+     * @return A new {@code SshjSftp} instance.
      */
     public static SshjSftp of(final String sshHost, final int sshPort, final String sshUser, final String sshPass) {
         return of(sshHost, sshPort, sshUser, sshPass, DEFAULT_CHARSET);
     }
 
     /**
-     * 构造
+     * Creates an {@code SshjSftp} instance with the specified SSH host, port, username, password, and character set.
      *
-     * @param sshHost 主机
-     * @param sshPort 端口
-     * @param sshUser 用户名
-     * @param sshPass 密码
-     * @param charset 编码
-     * @return SshjSftp
+     * @param sshHost The SSH host address.
+     * @param sshPort The SSH port.
+     * @param sshUser The SSH username.
+     * @param sshPass The SSH password.
+     * @param charset The character set for file names.
+     * @return A new {@code SshjSftp} instance.
      */
     public static SshjSftp of(
             final String sshHost,
@@ -136,7 +152,10 @@ public class SshjSftp extends AbstractFtp {
     }
 
     /**
-     * SSH 初始化并创建一个sftp客户端
+     * Initializes the SSH connection and creates an SFTP client. If the SSH client is not already initialized, it will
+     * be created and connected.
+     *
+     * @throws InternalException if SFTP initialization fails due to an I/O error.
      */
     public void init() {
         if (null == this.ssh) {
@@ -147,7 +166,7 @@ public class SshjSftp extends AbstractFtp {
             ssh.setRemoteCharset(ftpConfig.getCharset());
             this.sftp = ssh.newSFTPClient();
         } catch (final IOException e) {
-            throw new InternalException("sftp 初始化失败.", e);
+            throw new InternalException("sftp initialization failed.", e);
         }
     }
 
@@ -238,6 +257,9 @@ public class SshjSftp extends AbstractFtp {
 
     @Override
     public boolean uploadFile(String destPath, final File file) {
+        if (null == destPath) {
+            destPath = pwd();
+        }
         try {
             if (StringKit.endWith(destPath, Symbol.SLASH)) {
                 destPath += file.getName();
@@ -262,22 +284,16 @@ public class SshjSftp extends AbstractFtp {
     public void recursiveDownloadFolder(final String sourceDir, final File targetDir) {
         if (!targetDir.exists() || !targetDir.isDirectory()) {
             if (!targetDir.mkdirs()) {
-                throw new InternalException("创建目录" + targetDir.getAbsolutePath() + "失败");
+                throw new InternalException("Failed to create directory " + targetDir.getAbsolutePath());
             }
         }
 
         List<String> files = ls(getPath(sourceDir));
         if (files != null && !files.isEmpty()) {
-            files.forEach(file -> download(sourceDir + "/" + file, FileKit.file(targetDir, file)));
+            files.forEach(file -> download(sourceDir + Symbol.SLASH + file, FileKit.file(targetDir, file)));
         }
     }
 
-    /**
-     * 读取远程文件输入流
-     *
-     * @param path 远程文件路径
-     * @return {@link InputStream}
-     */
     @Override
     public InputStream getFileStream(final String path) {
         final RemoteFile remoteFile;
@@ -298,10 +314,10 @@ public class SshjSftp extends AbstractFtp {
     }
 
     /**
-     * 是否包含该文件
+     * Checks if the specified file exists on the remote server.
      *
-     * @param fileDir 文件绝对路径
-     * @return true:包含 false:不包含
+     * @param fileDir The absolute path of the file.
+     * @return {@code true} if the file exists, {@code false} otherwise.
      */
     public boolean containsFile(final String fileDir) {
         try {
@@ -313,10 +329,11 @@ public class SshjSftp extends AbstractFtp {
     }
 
     /**
-     * 执行Linux 命令
+     * Executes a command on the remote server.
      *
-     * @param exec 命令
-     * @return 返回响应结果
+     * @param exec The command to execute.
+     * @return The command's output as a string.
+     * @throws InternalException if an error occurs during command execution.
      */
     public String command(final String exec) {
         final Session session = this.initSession();
@@ -334,9 +351,10 @@ public class SshjSftp extends AbstractFtp {
     }
 
     /**
-     * 初始化Session并返回
+     * Initializes and returns an SSHJ Session for command execution.
      *
-     * @return session
+     * @return An active SSHJ {@link Session} instance.
+     * @throws InternalException if an error occurs during session creation.
      */
     private Session initSession() {
         Session session = this.session;
@@ -352,6 +370,13 @@ public class SshjSftp extends AbstractFtp {
         return session;
     }
 
+    /**
+     * Resolves a given path to an absolute path on the remote server.
+     *
+     * @param path The path to resolve. Can be relative or absolute.
+     * @return The resolved absolute path.
+     * @throws InternalException if an I/O error occurs when canonicalizing the path.
+     */
     private String getPath(String path) {
         if (StringKit.isBlank(this.workingDir)) {
             try {
@@ -365,7 +390,6 @@ public class SshjSftp extends AbstractFtp {
             return this.workingDir;
         }
 
-        // 如果是绝对路径，则返回
         if (StringKit.startWith(path, Symbol.SLASH)) {
             return path;
         } else {

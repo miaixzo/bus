@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.validate.metric;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
@@ -40,29 +35,43 @@ import org.miaixz.bus.validate.Registry;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Each;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 /**
- * 容器元素内部校验
+ * Validator for performing validation on each element of a container (Array, Collection, or Map).
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class EachMatcher implements Matcher<Object, Each> {
 
+    /**
+     * Validates each element of the given container (array, collection, or map values) against a set of validators.
+     *
+     * @param object     The container object to validate.
+     * @param annotation The {@link Each} annotation instance, which specifies the validators to apply.
+     * @param context    The validation context.
+     * @return {@code true} if all elements in the container pass all specified validations, {@code false} otherwise.
+     * @throws NoSuchException if a specified validator cannot be found in the registry.
+     */
     @Override
     public boolean on(Object object, Each annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
-            return false;
+            return true; // Empty or null containers are considered valid.
         }
         List<Matcher> list = new ArrayList<>();
         for (String name : annotation.value()) {
             if (!Registry.getInstance().contains(name)) {
-                throw new NoSuchException("尝试使用一个不存在的校验器：" + name);
+                throw new NoSuchException("Attempting to use a non-existent validator: " + name);
             }
             list.add((Matcher) Registry.getInstance().require(name));
         }
         for (Class<? extends Matcher> clazz : annotation.classes()) {
             if (!Registry.getInstance().contains(clazz.getSimpleName())) {
-                throw new NoSuchException("尝试使用一个不存在的校验器：" + clazz.getName());
+                throw new NoSuchException("Attempting to use a non-existent validator: " + clazz.getName());
             }
             list.add((Matcher) Registry.getInstance().require(clazz.getSimpleName()));
         }
@@ -91,12 +100,12 @@ public class EachMatcher implements Matcher<Object, Each> {
     }
 
     /**
-     * 快速执行多个校验器,一旦有一个校验不通过,则返回false
+     * Executes multiple validators on an object in a fail-fast manner.
      *
-     * @param validators 校验器集合
-     * @param object     校验对象
-     * @param context    校验上下文
-     * @return 校验结果
+     * @param validators The list of validators to apply.
+     * @param object     The object to validate.
+     * @param context    The validation context.
+     * @return {@code true} if the object passes all validations, {@code false} as soon as one validation fails.
      */
     private boolean fastValidate(List<Matcher> validators, Object object, Context context) {
         for (Matcher validator : validators) {

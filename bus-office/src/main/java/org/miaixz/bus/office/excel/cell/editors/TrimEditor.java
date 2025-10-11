@@ -31,7 +31,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 去除String类型的单元格值两边的空格
+ * A {@link CellEditor} that trims leading and trailing whitespace from String cell values.
  *
  * @author Kimi Liu
  * @since Java 17+

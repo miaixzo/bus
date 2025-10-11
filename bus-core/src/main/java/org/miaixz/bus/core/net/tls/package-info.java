@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * TLS相关
+ * Provides classes for working with Transport Layer Security (TLS) and Secure Sockets Layer (SSL).
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -58,5 +58,6 @@ module bus.vortex {
     exports org.miaixz.bus.vortex.magic;
     exports org.miaixz.bus.vortex.provider;
     exports org.miaixz.bus.vortex.registry;
+    exports org.miaixz.bus.vortex.support;
 
 }

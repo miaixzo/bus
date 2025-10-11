@@ -38,7 +38,8 @@ import org.miaixz.bus.office.excel.cell.values.FormulaCellValue;
 import org.miaixz.bus.office.excel.xyz.CellKit;
 
 /**
- * 虚拟单元格，表示一个单元格的位置、值和样式，但是并非实际创建的单元格 注意：虚拟单元格设置值和样式均不会在实际工作簿中生效
+ * A virtual cell representing a cell's position, value, and style, but not an actually created cell. Note: Setting
+ * values and styles on a virtual cell will not take effect in the actual workbook.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,11 +56,11 @@ public class VirtualCell extends CellBase {
     private Comment comment;
 
     /**
-     * 构造
+     * Constructs a {@code VirtualCell} based on an existing cell and new coordinates.
      *
-     * @param cell 参照单元格
-     * @param x    新的列号，从0开始
-     * @param y    新的行号，从0开始
+     * @param cell The reference cell.
+     * @param x    The new 0-based column index.
+     * @param y    The new 0-based row index.
      */
     public VirtualCell(final Cell cell, final int x, final int y) {
         this(cell.getRow(), x, y);
@@ -70,12 +71,12 @@ public class VirtualCell extends CellBase {
     }
 
     /**
-     * 构造
+     * Constructs a {@code VirtualCell} based on an existing cell, new coordinates, and a new value.
      *
-     * @param cell  参照单元格
-     * @param x     新的列号，从0开始
-     * @param y     新的行号，从0开始
-     * @param value 新值
+     * @param cell  The reference cell.
+     * @param x     The new 0-based column index.
+     * @param y     The new 0-based row index.
+     * @param value The new value for the cell.
      */
     public VirtualCell(final Cell cell, final int x, final int y, final Object value) {
         this(cell.getRow(), x, y);
@@ -85,11 +86,11 @@ public class VirtualCell extends CellBase {
     }
 
     /**
-     * 构造
+     * Constructs a {@code VirtualCell} with specified row, column, and row index.
      *
-     * @param row 行
-     * @param y   行号，从0开始
-     * @param x   列号，从0开始
+     * @param row The row this virtual cell belongs to.
+     * @param x   The 0-based column index.
+     * @param y   The 0-based row index.
      */
     public VirtualCell(final Row row, final int x, final int y) {
         this.row = row;

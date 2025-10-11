@@ -35,16 +35,25 @@ import org.miaixz.bus.validate.magic.annotation.Equals;
 import java.util.Objects;
 
 /**
- * EQUALS 校验
+ * Validator for checking if an object is equal to a specified value.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class EqualsMatcher implements Matcher<Object, Equals> {
 
+    /**
+     * Checks if the given object is equal to the value specified in the {@link Equals} annotation.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link Equals} annotation instance, providing the value to compare against.
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is empty (null) or if it is equal to the annotation's value, {@code false}
+     *         otherwise.
+     */
     @Override
     public boolean on(Object object, Equals annotation, Context context) {
-        return ObjectKit.isEmpty(object) || Objects.equals(object, annotation.value());
+        return ObjectKit.isEmpty(object) || Objects.equals(object.toString(), annotation.value());
     }
 
 }

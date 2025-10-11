@@ -31,7 +31,9 @@ import org.miaixz.bus.vortex.magic.Delegate;
 import org.miaixz.bus.vortex.magic.Principal;
 
 /**
- * 访问授权认证接口，定义授权认证相关的功能
+ * Access authorization provider interface, defining functionalities related to authorization and authentication.
+ * Implementations of this interface are responsible for validating principals (e.g., tokens, API keys) and returning
+ * the result of the authorization process.
  *
  * @author Justubborn
  * @since Java 17+
@@ -39,10 +41,13 @@ import org.miaixz.bus.vortex.magic.Principal;
 public interface AuthorizeProvider {
 
     /**
-     * 执行认证操作，验证授权主体并返回认证结果
+     * Performs an authorization operation, validating the provided principal and returning the authorization result.
+     * This method should contain the core logic for checking the validity and permissions associated with a principal.
      *
-     * @param principal 授权主体，包含认证所需的信息
-     * @return Delegate 认证结果对象，默认为空 Delegate 实例
+     * @param principal The {@link Principal} object containing the necessary information for authentication, such as a
+     *                  token or API key.
+     * @return A {@link Delegate} object representing the authorization result. The default implementation returns an
+     *         empty {@link Delegate} instance, implying no specific authorization logic is applied unless overridden.
      */
     default Delegate authorize(Principal principal) {
         return new Delegate();

@@ -32,9 +32,9 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 /**
- * {@link AbstractCache} 的值迭代器.
+ * An iterator for the values in an {@link AbstractCache}.
  *
- * @param <V> 迭代对象类型
+ * @param <V> The type of the iterated object.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -44,21 +44,23 @@ public class CacheValuesIterator<V> implements Iterator<V>, Serializable {
     private static final long serialVersionUID = 2852231336892L;
 
     /**
-     * 缓存对象迭代器
+     * The underlying cache object iterator.
      */
     private final CacheObjectIterator<?, V> cacheObjIter;
 
     /**
-     * 构造
+     * Constructs a new values iterator.
      *
-     * @param iterator 原{@link CacheObjectIterator}
+     * @param iterator The original {@link CacheObjectIterator}.
      */
     CacheValuesIterator(final CacheObjectIterator<?, V> iterator) {
         this.cacheObjIter = iterator;
     }
 
     /**
-     * @return 是否有下一个值
+     * Checks if there is another value in the cache.
+     *
+     * @return {@code true} if there is a next value, otherwise {@code false}.
      */
     @Override
     public boolean hasNext() {
@@ -66,7 +68,9 @@ public class CacheValuesIterator<V> implements Iterator<V>, Serializable {
     }
 
     /**
-     * @return 下一个值
+     * Returns the next value in the cache.
+     *
+     * @return The next value.
      */
     @Override
     public V next() {
@@ -74,7 +78,7 @@ public class CacheValuesIterator<V> implements Iterator<V>, Serializable {
     }
 
     /**
-     * 从缓存中移除没有过期的当前值，不支持此方法
+     * This operation is not supported and will throw an {@link UnsupportedOperationException}.
      */
     @Override
     public void remove() {

@@ -28,10 +28,10 @@
 package org.miaixz.bus.image.nimble;
 
 /**
- * 短整型查找表类，用于图像处理中的像素值转换
+ * A lookup table implementation for image processing that uses a {@code short} array for pixel value transformations.
  * <p>
- * 该类实现了一个基于短整型数组的查找表，用于将输入像素值映射到输出像素值。 查找表可以用于各种图像处理操作，如亮度调整、对比度调整、颜色映射等。
- * </p>
+ * This class maps input pixel values to output pixel values and is suitable for operations like brightness/contrast
+ * adjustment, color mapping, and other pixel-wise transformations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,17 +39,17 @@ package org.miaixz.bus.image.nimble;
 public class ShortLookupTable extends LookupTable {
 
     /**
-     * 查找表数组，存储映射后的像素值
+     * The lookup table array that stores the mapped pixel values.
      */
     private final short[] lut;
 
     /**
-     * 构造方法
+     * Constructs a ShortLookupTable with a pre-defined LUT array.
      *
-     * @param inBits  输入值的位数
-     * @param outBits 输出值的位数
-     * @param offset  偏移量
-     * @param lut     查找表数组
+     * @param inBits  The bit depth of the input values.
+     * @param outBits The bit depth of the output values.
+     * @param offset  An offset to apply to input values before lookup.
+     * @param lut     The short array representing the lookup table.
      */
     ShortLookupTable(StoredValue inBits, int outBits, int offset, short[] lut) {
         super(inBits, outBits, offset);
@@ -57,15 +57,15 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * 构造方法
+     * Constructs a linear ShortLookupTable.
      *
-     * @param inBits  输入值的位数
-     * @param outBits 输出值的位数
-     * @param minOut  最小输出值
-     * @param maxOut  最大输出值
-     * @param offset  偏移量
-     * @param size    查找表大小
-     * @param flip    是否翻转
+     * @param inBits  The bit depth of the input values.
+     * @param outBits The bit depth of the output values.
+     * @param minOut  The minimum output value.
+     * @param maxOut  The maximum output value.
+     * @param offset  An offset to apply to input values.
+     * @param size    The size of the lookup table to generate.
+     * @param flip    If {@code true}, the mapping is inverted (high input maps to low output).
      */
     ShortLookupTable(StoredValue inBits, int outBits, int minOut, int maxOut, int offset, int size, boolean flip) {
         this(inBits, outBits, offset, new short[minOut == maxOut ? 1 : size]);
@@ -81,9 +81,7 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * 获取查找表长度
-     *
-     * @return 查找表长度
+     * {@inheritDoc}
      */
     @Override
     public int length() {
@@ -91,13 +89,18 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * 查找并转换字节数组
+     * Calculates the lookup table index for a given pixel value, applying the offset and clamping the result.
      *
-     * @param src     源数组
-     * @param srcPos  源数组起始位置
-     * @param dest    目标数组
-     * @param destPos 目标数组起始位置
-     * @param length  转换长度
+     * @param pixel The input pixel value.
+     * @return The calculated index within the bounds of the LUT array.
+     */
+    private int index(int pixel) {
+        int index = inBits.valueOf(pixel) - offset;
+        return Math.min(Math.max(0, index), lut.length - 1);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void lookup(byte[] src, int srcPos, byte[] dest, int destPos, int length) {
@@ -106,24 +109,7 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * 计算索引
-     *
-     * @param pixel 像素值
-     * @return 索引
-     */
-    private int index(int pixel) {
-        int index = inBits.valueOf(pixel) - offset;
-        return Math.min(Math.max(0, index), lut.length - 1);
-    }
-
-    /**
-     * 查找并转换短整型数组到字节数组
-     *
-     * @param src     源数组
-     * @param srcPos  源数组起始位置
-     * @param dest    目标数组
-     * @param destPos 目标数组起始位置
-     * @param length  转换长度
+     * {@inheritDoc}
      */
     @Override
     public void lookup(short[] src, int srcPos, byte[] dest, int destPos, int length) {
@@ -132,13 +118,7 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * 查找并转换字节数组到短整型数组
-     *
-     * @param src     源数组
-     * @param srcPos  源数组起始位置
-     * @param dest    目标数组
-     * @param destPos 目标数组起始位置
-     * @param length  转换长度
+     * {@inheritDoc}
      */
     @Override
     public void lookup(byte[] src, int srcPos, short[] dest, int destPos, int length) {
@@ -147,13 +127,7 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * 查找并转换短整型数组
-     *
-     * @param src     源数组
-     * @param srcPos  源数组起始位置
-     * @param dest    目标数组
-     * @param destPos 目标数组起始位置
-     * @param length  转换长度
+     * {@inheritDoc}
      */
     @Override
     public void lookup(short[] src, int srcPos, short[] dest, int destPos, int length) {
@@ -162,10 +136,7 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * 调整输出位数
-     *
-     * @param outBits 输出位数
-     * @return 当前查找表
+     * {@inheritDoc}
      */
     @Override
     public LookupTable adjustOutBits(int outBits) {
@@ -176,16 +147,17 @@ public class ShortLookupTable extends LookupTable {
                 diff = -diff;
                 for (int i = 0; i < lut.length; i++)
                     lut[i] = (short) ((lut[i] & 0xffff) >> diff);
-            } else
+            } else {
                 for (int i = 0; i < lut.length; i++)
                     lut[i] <<= diff;
+            }
             this.outBits = outBits;
         }
         return this;
     }
 
     /**
-     * 反转查找表
+     * {@inheritDoc}
      */
     @Override
     public void inverse() {
@@ -196,10 +168,7 @@ public class ShortLookupTable extends LookupTable {
     }
 
     /**
-     * 组合查找表
-     *
-     * @param other 其他查找表
-     * @return 当前查找表
+     * {@inheritDoc}
      */
     @Override
     public LookupTable combine(LookupTable other) {

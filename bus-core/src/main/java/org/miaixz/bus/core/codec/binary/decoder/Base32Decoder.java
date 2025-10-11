@@ -34,7 +34,7 @@ import org.miaixz.bus.core.codec.binary.encoder.Base32Encoder;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Base32解码器
+ * Decodes a Base32 encoded string into a byte array.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,20 +42,24 @@ import org.miaixz.bus.core.lang.Symbol;
 public class Base32Decoder implements Decoder<CharSequence, byte[]> {
 
     /**
-     * 解码器
+     * The default Base32 decoder.
      */
     public static final Base32Decoder DECODER = new Base32Decoder(Base32Encoder.DEFAULT_ALPHABET);
+
     /**
-     * 16进制解码器
+     * The Base32 decoder for the hexadecimal alphabet.
      */
     public static final Base32Decoder HEX_DECODER = new Base32Decoder(Base32Encoder.HEX_ALPHABET);
 
+    /**
+     * A lookup table for decoding Base32 characters.
+     */
     private final byte[] lookupTable;
 
     /**
-     * 构造
+     * Constructs a new Base32Decoder with a custom alphabet.
      *
-     * @param alphabet 编码字母表
+     * @param alphabet The alphabet to use for decoding.
      */
     public Base32Decoder(final String alphabet) {
         lookupTable = new byte[128];
@@ -67,13 +71,19 @@ public class Base32Decoder implements Decoder<CharSequence, byte[]> {
         for (int i = 0; i < length; i++) {
             c = alphabet.charAt(i);
             lookupTable[c - Symbol.C_ZERO] = (byte) i;
-            // 支持小写字母解码
+            // Support lowercase decoding
             if (c >= 'A' && c <= 'Z') {
                 lookupTable[Character.toLowerCase(c) - Symbol.C_ZERO] = (byte) i;
             }
         }
     }
 
+    /**
+     * Decodes a Base32 encoded {@link CharSequence} into a byte array.
+     *
+     * @param encoded The Base32 encoded data.
+     * @return The decoded byte array.
+     */
     @Override
     public byte[] decode(final CharSequence encoded) {
         int i, index, lookup, offset, digit;

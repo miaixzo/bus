@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Oracle table column
+ * Represents column information for an Oracle database table.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,139 +44,144 @@ import lombok.Setter;
 public class OracleColumn implements Column {
 
     /**
-     * 表名称，它是引用属性的作用域（如果 DATA_TYPE 不是 REF，则为 null）
+     * The name of the table that is the scope of a REFERENCE attribute (null if DATA_TYPE is not REF).
      */
     @MappingField(value = "SCOPE_TABLE")
     private Object scopeTable;
     /**
-     * 表类别
+     * The table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")
     private Object tableCat;
     /**
-     * 未被使用
+     * Not used.
      */
     @MappingField(value = "BUFFER_LENGTH")
     private String bufferLength;
     /**
-     * ISO 规则用于确定列是否包括 null。
+     * ISO rules are used to determine if the column can include nulls.
      */
     @MappingField(value = "IS_NULLABLE")
     private String isNullable;
     /**
-     * 数据源依赖的类型名称，对于 UDT，该类型名称是完全限定的
+     * The name of the table.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
     /**
-     * 该列的默认值，当值在单引号内时应被解释为一个字符串（可为 null）
+     * The default value for the column, which should be interpreted as a string when the value is enclosed in single
+     * quotes (may be null).
      */
     @MappingField(value = "COLUMN_DEF")
     private String columnDef;
     /**
-     * 表的类别，它是引用属性的作用域（如果 DATA_TYPE 不是 REF，则为 null）
+     * Catalog of the table that is the scope of a REFERENCE attribute (null if DATA_TYPE is not REF).
      */
     @MappingField(value = "SCOPE_CATALOG")
     private Object scopeCatalog;
     /**
-     * 表模式
+     * The schema of the table.
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
     /**
-     * 列名称
+     * The name of the column.
      */
     @MappingField(value = "COLUMN_NAME")
     private String columnName;
     /**
-     * 是否允许使用 NULL。
+     * Whether NULL values are allowed.
      */
     @MappingField(value = "NULLABLE")
     private String nullable;
     /**
-     * 描述列的注释（可为 null）
+     * Comment describing the column (may be null).
      */
     @MappingField(value = "REMARKS")
     private String remarks;
     /**
-     * 小数部分的位数。对于 DECIMAL_DIGITS 不适用的数据类型，则返回 Null。
+     * The number of fractional digits. Null is returned for data types where DECIMAL_DIGITS is not applicable.
      */
     @MappingField(value = "DECIMAL_DIGITS")
     private String decimalDigits;
     /**
-     * 基数（通常为 10 或 2）
+     * Radix (typically either 10 or 2).
      */
     @MappingField(value = "NUM_PREC_RADIX")
     private String numPrecRadix;
     /**
-     *
+     * Subtype code for datetime and interval data types.
      */
     @MappingField(value = "SQL_DATETIME_SUB")
     private String sqlDatetimeSub;
     /**
-     *
+     * Indicates whether this is a generated column.
      */
     @MappingField(value = "IS_GENERATEDCOLUMN")
     private String isGeneratedColumn;
     /**
-     * 指示此列是否自动增加 YES --- 如果该列自动增加 NO --- 如果该列不自动增加
+     * Indicates whether this column is auto-incrementing. YES --- if the column is auto-incrementing, NO --- if it is
+     * not.
      */
     @MappingField(value = "IS_AUTOINCREMENT")
     private String isAutoIncrement;
     /**
-     * SQL数据类型
+     * SQL data type from java.sql.Types.
      */
     @MappingField(value = "SQL_DATA_TYPE")
     private String sqlDataType;
     /**
-     * 对于 char 类型，该长度是列中的最大字节数
+     * For char types, the maximum number of bytes in the column.
      */
     @MappingField(value = "CHAR_OCTET_LENGTH")
     private String charOctetLength;
     /**
-     * 表中的列的索引（从 1 开始）
+     * The 1-based index of the column in the table.
      */
     @MappingField(value = "ORDINAL_POSITION")
     private String ordinalPosition;
     /**
-     * 表的模式，它是引用属性的作用域（如果 DATA_TYPE 不是 REF，则为 null）
+     * Schema of the table that is the scope of a REFERENCE attribute (null if DATA_TYPE is not REF).
      */
     @MappingField(value = "SCOPE_SCHEMA")
     private String scopeSchema;
     /**
-     * 不同类型或用户生成 Ref 类型、来自 java.sql.Types 的 SQL 类型的源类型（如果 DATA_TYPE 不是 DISTINCT 或用户生成的 REF，则为 null）
+     * Source type of a distinct type or user-generated Ref type, from java.sql.Types (null if DATA_TYPE is not DISTINCT
+     * or a user-generated REF).
      */
     @MappingField(value = "SOURCE_DATA_TYPE")
     private String sourceDataType;
     /**
-     * 来自 java.sql.Types 的 SQL 类型
+     * SQL type from java.sql.Types.
      */
     @MappingField(value = "DATA_TYPE")
     private String dataType;
     /**
-     * 数据源依赖的类型名称，对于 UDT，该类型名称是完全限定的
+     * Data source dependent type name; for a UDT, the type name is fully qualified.
      */
     @MappingField(value = "TYPE_NAME")
     private String typeName;
     /**
-     * 列表示给定列的指定列大小。 对于数值数据，这是最大精度。 对于字符数据，这是字符长度。 对于日期时间数据类型，这是 String 表示形式的字符长度（假定允许的最大小数秒组件的精度）。 对于二进制数据，这是字节长度。 对于
-     * ROWID 数据类型，这是字节长度。对于列大小不适用的数据类型，则返回 Null。
+     * The specified column size. For numeric data, this is the maximum precision. For character data, this is the
+     * length in characters. For datetime data types, this is the length in characters of the String representation. For
+     * binary data, this is the length in bytes. For ROWID data types, this is the length in bytes. Null is returned for
+     * data types where the column size is not applicable.
      */
     @MappingField(value = "COLUMN_SIZE")
     private String columnSize;
 
     /**
-     * 是否主键
+     * Indicates if the column is part of the primary key.
      */
     private String primaryKey;
     /**
-     * 列类型（带长度）
+     * The full column type definition, including length or precision.
      */
     @MappingField(value = "COLUMN_TYPE")
     private String columnType;
 
     /**
-     * 列长度
+     * The length of the column.
      */
     @MappingField(value = "COLUMN_LENGTH")
     private String columnLength;

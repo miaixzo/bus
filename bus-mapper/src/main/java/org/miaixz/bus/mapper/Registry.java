@@ -36,7 +36,8 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 支持定制化处理 {@link MappedStatement} 的接口。 实现此接口，通过SPI形式注册，实现customize方法即可
+ * An interface for custom processing of {@link MappedStatement}. Implement this interface and register it via SPI to
+ * customize MappedStatements.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,7 +45,8 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public interface Registry {
 
     /**
-     * 默认 SPI 扩展实现，加载并执行所有注册的 Registry 实现。
+     * The default SPI (Service Provider Interface) extension implementation. It loads and executes all registered
+     * {@link Registry} implementations.
      */
     Registry SPI = new Registry() {
 
@@ -59,11 +61,11 @@ public interface Registry {
     };
 
     /**
-     * 定制化处理 MappedStatement。
+     * Customizes the given {@link MappedStatement}.
      *
-     * @param entity  实体表信息
-     * @param ms      MappedStatement 对象
-     * @param context 提供者上下文，包含方法和接口信息
+     * @param entity  The entity table metadata.
+     * @param ms      The {@link MappedStatement} object to be customized.
+     * @param context The provider context, containing information about the mapper method and interface.
      */
     void customize(TableMeta entity, MappedStatement ms, ProviderContext context);
 

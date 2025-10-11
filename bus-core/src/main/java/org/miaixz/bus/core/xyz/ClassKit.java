@@ -43,11 +43,7 @@ import java.util.function.Predicate;
 
 import org.miaixz.bus.core.bean.NullWrapper;
 import org.miaixz.bus.core.center.stream.EasyStream;
-import org.miaixz.bus.core.convert.BasicType;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.classloader.JarClassLoader;
 import org.miaixz.bus.core.lang.reflect.ClassScanner;
@@ -55,7 +51,7 @@ import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * 类工具类
+ * Class utility.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -63,46 +59,47 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class ClassKit {
 
     /**
-     * 原始类型名和其class对应表,例如：int = int.class
+     * Map of primitive type names to their corresponding wrapper classes.
      */
     private static final Map<String, Class<?>> PRIMITIVE_WRAPPER_MAP = new HashMap<>();
 
     /**
-     * {@code null}安全的获取对象类型
+     * Gets the type of an object in a null-safe manner.
      *
-     * @param <T>    对象类型
-     * @param object 对象，如果为{@code null} 返回{@code null}
-     * @return 对象类型，提供对象如果为{@code null} 返回{@code null}
+     * @param <T>    The object type.
+     * @param object The object. If null, returns null.
+     * @return The object's class, or null if the object is null.
      */
     public static <T> Class<T> getClass(final T object) {
         return ((null == object) ? null : (Class<T>) object.getClass());
     }
 
     /**
-     * 获得外围类 返回定义此类或匿名类所在的类，如果类本身是在包中定义的，返回{@code null}
+     * Gets the enclosing class. Returns the class in which this class or anonymous class is defined. Returns
+     * {@code null} if the class is a top-level class.
      *
-     * @param clazz 类
-     * @return 外围类
+     * @param clazz The class.
+     * @return The enclosing class.
      */
     public static Class<?> getEnclosingClass(final Class<?> clazz) {
         return null == clazz ? null : clazz.getEnclosingClass();
     }
 
     /**
-     * 获取给定类的包的名称. 类似{@code java.lang.String} 字符串类
+     * Gets the package name of the given class.
      *
-     * @param clazz 类
-     * @return 包名，如果类在默认包中定义，则为空字符串
+     * @param clazz The class.
+     * @return The package name, or an empty string if the class is in the default package.
      */
     public static String getPackageName(Class<?> clazz) {
         return getPackageName(clazz.getName());
     }
 
     /**
-     * 获取给定类的包的名称. 类似{@code java.lang.String} 字符串类.
+     * Gets the package name of the given class name.
      *
-     * @param className 完整的类名
-     * @return 包名，如果类在默认包中定义，则为空字符串
+     * @param className The fully qualified class name.
+     * @return The package name, or an empty string if the class is in the default package.
      */
     public static String getPackageName(String className) {
         Assert.notNull(className, "Class name must not be null");
@@ -111,10 +108,10 @@ public class ClassKit {
     }
 
     /**
-     * 是否为顶层类，即定义在包中的类，而非定义在类中的内部类
+     * Checks if the class is a top-level class (not an inner, local, or anonymous class).
      *
-     * @param clazz 类
-     * @return 是否为顶层类
+     * @param clazz The class.
+     * @return {@code true} if it is a top-level class.
      */
     public static boolean isTopLevelClass(final Class<?> clazz) {
         if (null == clazz) {
@@ -124,11 +121,11 @@ public class ClassKit {
     }
 
     /**
-     * 获取类名
+     * Gets the class name of an object.
      *
-     * @param object   获取类名对象
-     * @param isSimple 是否简单类名，如果为true，返回不带包名的类名
-     * @return 类名
+     * @param object   The object to get the class name from.
+     * @param isSimple If true, returns the simple name without the package.
+     * @return The class name.
      */
     public static String getClassName(final Object object, final boolean isSimple) {
         if (null == object) {
@@ -139,16 +136,18 @@ public class ClassKit {
     }
 
     /**
-     * 获取类名 类名并不包含“.class”这个扩展名 例如：ClassKit这个类
-     *
+     * Gets the class name. The name does not include the ".class" extension.
+     * <p>
+     * Example for `ClassKit`:
+     * 
      * <pre>
-     * isSimple为false: "org.miaixz.bus.ClassKit"
-     * isSimple为true: "ClassKit"
+     * isSimple=false: "org.miaixz.bus.core.xyz.ClassKit"
+     * isSimple=true: "ClassKit"
      * </pre>
      *
-     * @param clazz    类
-     * @param isSimple 是否简单类名，如果为true，返回不带包名的类名
-     * @return 类名
+     * @param clazz    The class.
+     * @param isSimple If true, returns the simple name without the package.
+     * @return The class name.
      */
     public static String getClassName(final Class<?> clazz, final boolean isSimple) {
         if (null == clazz) {
@@ -158,10 +157,11 @@ public class ClassKit {
     }
 
     /**
-     * 获取完整类名的短格式如： text.org.miaixz.core.StringKit - o.m.c.StringKit
+     * Gets the short version of a fully qualified class name. e.g., `org.miaixz.bus.core.xyz.StringKit` becomes
+     * `o.m.b.c.x.StringKit`.
      *
-     * @param className 类名
-     * @return 短格式类名
+     * @param className The class name.
+     * @return The short class name.
      */
     public static String getShortClassName(final String className) {
         final List<String> packages = CharsBacker.split(className, Symbol.DOT);
@@ -180,10 +180,11 @@ public class ClassKit {
     }
 
     /**
-     * 获得对象数组的类数组
+     * Gets an array of classes from an array of objects. If an element in the object array is {@code null}, it is
+     * considered `Object.class`.
      *
-     * @param objects 对象数组，如果数组中存在{@code null}元素，则此元素被认为是Object类型
-     * @return 类数组
+     * @param objects The object array.
+     * @return An array of classes.
      */
     public static Class<?>[] getClasses(final Object... objects) {
         final Class<?>[] classes = new Class<?>[objects.length];
@@ -191,7 +192,7 @@ public class ClassKit {
         for (int i = 0; i < objects.length; i++) {
             object = objects[i];
             if (object instanceof NullWrapper) {
-                // 自定义null值的参数类型
+                // Custom type for null value
                 classes[i] = ((NullWrapper<?>) object).getWrappedClass();
             } else if (null == object) {
                 classes[i] = Object.class;
@@ -203,12 +204,12 @@ public class ClassKit {
     }
 
     /**
-     * 指定类是否与给定的类名相同
+     * Checks if the specified class has the same name as the given class name.
      *
-     * @param clazz      类
-     * @param className  类名，可以是全类名（包含包名），也可以是简单类名（不包含包名）
-     * @param ignoreCase 是否忽略大小写
-     * @return 指定类是否与给定的类名相同
+     * @param clazz      The class.
+     * @param className  The class name (can be fully qualified or simple).
+     * @param ignoreCase If true, the comparison is case-insensitive.
+     * @return {@code true} if the names match.
      */
     public static boolean equals(final Class<?> clazz, final String className, final boolean ignoreCase) {
         if (null == clazz || StringKit.isBlank(className)) {
@@ -222,11 +223,11 @@ public class ClassKit {
     }
 
     /**
-     * 扫描指定包路径下所有包含指定注解的类
+     * Scans for all classes with a specific annotation in a given package.
      *
-     * @param packageName     包路径
-     * @param annotationClass 注解类
-     * @return 类集合
+     * @param packageName     The package name.
+     * @param annotationClass The annotation class.
+     * @return A set of classes.
      * @see ClassScanner#scanPackageByAnnotation(String, Class)
      */
     public static Set<Class<?>> scanPackageByAnnotation(
@@ -236,11 +237,11 @@ public class ClassKit {
     }
 
     /**
-     * 扫描指定包路径下所有指定类或接口的子类或实现类
+     * Scans for all subclasses or implementations of a given superclass or interface in a package.
      *
-     * @param packageName 包路径
-     * @param superClass  父类或接口
-     * @return 类集合
+     * @param packageName The package name.
+     * @param superClass  The superclass or interface.
+     * @return A set of classes.
      * @see ClassScanner#scanPackageBySuper(String, Class)
      */
     public static Set<Class<?>> scanPackageBySuper(final String packageName, final Class<?> superClass) {
@@ -248,9 +249,9 @@ public class ClassKit {
     }
 
     /**
-     * 扫描该包路径下所有class文件
+     * Scans all classes in the entire classpath.
      *
-     * @return 类集合
+     * @return A set of classes.
      * @see ClassScanner#scanPackage()
      */
     public static Set<Class<?>> scanPackage() {
@@ -258,10 +259,10 @@ public class ClassKit {
     }
 
     /**
-     * 扫描该包路径下所有class文件
+     * Scans all classes in a given package.
      *
-     * @param packageName 包路径 com | com. | com.abs | com.abs.
-     * @return 类集合
+     * @param packageName The package name.
+     * @return A set of classes.
      * @see ClassScanner#scanPackage(String)
      */
     public static Set<Class<?>> scanPackage(final String packageName) {
@@ -269,52 +270,51 @@ public class ClassKit {
     }
 
     /**
-     * 扫描包路径下满足class过滤器条件的所有class文件， 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException 因为className 应该为
-     * com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理,有可能是一个不完善的地方，以后需要进行修改
+     * Scans a package for all classes that satisfy a filter.
      *
-     * @param packageName 包路径 com | com. | com.abs | com.abs.
-     * @param classFilter class过滤器，过滤掉不需要的class
-     * @return 类集合
+     * @param packageName The package name.
+     * @param classFilter The filter for classes.
+     * @return A set of classes.
      */
     public static Set<Class<?>> scanPackage(final String packageName, final Predicate<Class<?>> classFilter) {
         return ClassScanner.scanPackage(packageName, classFilter);
     }
 
     /**
-     * 获得ClassPath，不解码路径中的特殊字符（例如空格和中文）
+     * Gets the classpath resources without decoding special characters in the path (e.g., spaces, Chinese characters).
      *
-     * @return ClassPath集合
+     * @return A set of classpath resource strings.
      */
     public static Set<String> getClassPathResources() {
         return getClassPathResources(false);
     }
 
     /**
-     * 获得ClassPath
+     * Gets the classpath resources.
      *
-     * @param isDecode 是否解码路径中的特殊字符（例如空格和中文）
-     * @return ClassPath集合
+     * @param isDecode If true, decodes special characters in the path.
+     * @return A set of classpath resource strings.
      */
     public static Set<String> getClassPathResources(final boolean isDecode) {
         return getClassPaths(Normal.EMPTY, isDecode);
     }
 
     /**
-     * 获得ClassPath，不解码路径中的特殊字符（例如空格和中文）
+     * Gets the classpath resources for a specific package without decoding special characters.
      *
-     * @param packageName 包名称
-     * @return ClassPath路径字符串集合
+     * @param packageName The package name.
+     * @return A set of classpath resource strings.
      */
     public static Set<String> getClassPaths(final String packageName) {
         return getClassPaths(packageName, false);
     }
 
     /**
-     * 获得ClassPath
+     * Gets the classpath resources for a specific package.
      *
-     * @param packageName 包名称
-     * @param isDecode    是否解码路径中的特殊字符（例如空格和中文）
-     * @return ClassPath路径字符串集合
+     * @param packageName The package name.
+     * @param isDecode    If true, decodes special characters in the path.
+     * @return A set of classpath resource strings.
      */
     public static Set<String> getClassPaths(final String packageName, final boolean isDecode) {
         final String packagePath = packageName.replace(Symbol.DOT, Symbol.SLASH);
@@ -334,19 +334,19 @@ public class ClassKit {
     }
 
     /**
-     * 获得ClassPath，将编码后的中文路径解码为原字符 这个ClassPath路径会文件路径被标准化处理
+     * Gets the normalized classpath. Decodes special characters.
      *
-     * @return ClassPath
+     * @return The classpath string.
      */
     public static String getClassPath() {
         return getClassPath(false);
     }
 
     /**
-     * 获得ClassPath，这个ClassPath路径会文件路径被标准化处理
+     * Gets the normalized classpath.
      *
-     * @param isEncoded 是否编码路径中的中文
-     * @return ClassPath
+     * @param isEncoded If true, returns the encoded path.
+     * @return The classpath string.
      */
     public static String getClassPath(final boolean isEncoded) {
         final URL classPathUrl = ResourceKit.getResourceUrl(Normal.EMPTY);
@@ -355,18 +355,17 @@ public class ClassKit {
     }
 
     /**
-     * 比较判断types1和types2两组类，如果types1中所有的类都与types2对应位置的类相同，或者是其父类或接口，则返回{@code true}
+     * Checks if each class in `types2` is assignable to the corresponding class in `types1`.
      *
-     * @param types1 类组1
-     * @param types2 类组2
-     * @return 是否相同、父类或接口
+     * @param types1 The array of target types.
+     * @param types2 The array of source types.
+     * @return {@code true} if all types are assignable.
      */
     public static boolean isAllAssignableFrom(final Class<?>[] types1, final Class<?>[] types2) {
         if (ArrayKit.isEmpty(types1) && ArrayKit.isEmpty(types2)) {
             return true;
         }
         if (null == types1 || null == types2) {
-            // 任何一个为null不相等（之前已判断两个都为null的情况）
             return false;
         }
         if (types1.length != types2.length) {
@@ -379,8 +378,7 @@ public class ClassKit {
             type1 = types1[i];
             type2 = types2[i];
             if (isBasicType(type1) && isBasicType(type2)) {
-                // 原始类型和包装类型存在不一致情况
-                if (BasicType.unWrap(type1) != BasicType.unWrap(type2)) {
+                if (EnumValue.Type.unWrap(type1) != EnumValue.Type.unWrap(type2)) {
                     return false;
                 }
             } else if (!type1.isAssignableFrom(type2)) {
@@ -391,20 +389,20 @@ public class ClassKit {
     }
 
     /**
-     * 是否为包装类型
+     * Checks if a class is a primitive wrapper type.
      *
-     * @param clazz 类
-     * @return 是否为包装类型
+     * @param clazz The class.
+     * @return {@code true} if it is a wrapper type.
      */
     public static boolean isPrimitiveWrapper(final Class<?> clazz) {
-        return BasicType.isPrimitiveWrapper(clazz);
+        return EnumValue.Type.isPrimitiveWrapper(clazz);
     }
 
     /**
-     * 是否为基本类型（包括包装类和原始类）
+     * Checks if a class is a basic type (primitive or wrapper).
      *
-     * @param clazz 类
-     * @return 是否为基本类型
+     * @param clazz The class.
+     * @return {@code true} if it is a basic type.
      */
     public static boolean isBasicType(final Class<?> clazz) {
         if (null == clazz) {
@@ -414,41 +412,30 @@ public class ClassKit {
     }
 
     /**
-     * 是否为基本类型的包装类匹配或反之，如：
-     * 
-     * <pre>
-     *     null    匹配 null
-     *     int     匹配 Integer
-     *     long    匹配 Long
-     *     short   匹配 Short
-     *     char    匹配 Character
-     *     float   匹配 Float
-     *     double  匹配 Double
-     *     boolean 匹配 Boolean
-     * </pre>
+     * Checks if two types are a primitive/wrapper pair. e.g., `int` and `Integer`.
      *
-     * @param returnType 类1
-     * @param fieldType  类2
-     * @return 是否为基本类型的包装类
+     * @param class1 The first class.
+     * @param class2 The second class.
+     * @return {@code true} if they are a primitive/wrapper pair.
      */
-    public static boolean isBasicTypeMatch(final Class<?> returnType, final Class<?> fieldType) {
-        if (returnType == fieldType) {
+    public static boolean isBasicTypeMatch(final Class<?> class1, final Class<?> class2) {
+        if (class1 == class2) {
             return true;
         }
-        if (null == returnType || null == fieldType) {
+        if (null == class1 || null == class2) {
             return false;
         }
-        if (returnType.isPrimitive() && BasicType.wrap(returnType) == fieldType) {
+        if (class1.isPrimitive() && EnumValue.Type.wrap(class1) == class2) {
             return true;
         }
-        return fieldType.isPrimitive() && BasicType.wrap(fieldType) == returnType;
+        return class2.isPrimitive() && EnumValue.Type.wrap(class2) == class1;
     }
 
     /**
-     * 是否为 简单值类型 或 简单值类型的数组
+     * Checks if a class is a simple value type or an array of a simple value type.
      *
-     * @param clazz 属性类
-     * @return 是否为 简单值类型 或 简单值类型的数组
+     * @param clazz The class.
+     * @return {@code true} if it is a simple type or an array of a simple type.
      * @see #isSimpleValueType(Class)
      */
     public static boolean isSimpleTypeOrArray(final Class<?> clazz) {
@@ -459,84 +446,71 @@ public class ClassKit {
     }
 
     /**
-     * 是否为简单值类型 包括：
-     * 
+     * Checks if a class is a simple value type. This includes:
+     *
      * <pre>
-     *     原始类型
-     *     枚举
-     *     String、other CharSequence
-     *     Number
-     *     Date
-     *     URI
-     *     URL
-     *     I18n
-     *     Class
-     *     jdk8时间相关类型
+     * - Primitives and their wrappers
+     * - Enums
+     * - String and other CharSequence implementations
+     * - Number implementations
+     * - Date and its subclasses
+     * - URI, URL, Locale, Class
+     * - JDK8+ temporal types (TemporalAccessor)
      * </pre>
      *
-     * @param clazz 类
-     * @return 是否为简单值类型
+     * @param clazz The class.
+     * @return {@code true} if it is a simple value type.
      */
     public static boolean isSimpleValueType(final Class<?> clazz) {
         return isBasicType(clazz) || clazz.isEnum() || CharSequence.class.isAssignableFrom(clazz)
                 || Number.class.isAssignableFrom(clazz) || Date.class.isAssignableFrom(clazz) || clazz.equals(URI.class)
                 || clazz.equals(URL.class) || clazz.equals(Locale.class) || clazz.equals(Class.class)
-                // jdk8 date object
                 || TemporalAccessor.class.isAssignableFrom(clazz);
     }
 
     /**
-     * 检查目标类是否可以从原类转化 转化包括： 1、原类是对象，目标类型是原类型实现的接口 2、目标类型是原类型的父类 3、两者是原始类型或者包装类型（相互转换）
+     * Checks if the target type is assignable from the source type. This includes object inheritance, interface
+     * implementation, and primitive/wrapper conversions.
      *
-     * @param targetType 目标类型
-     * @param sourceType 原类型
-     * @return 是否可转化
+     * @param targetType The target type.
+     * @param sourceType The source type.
+     * @return {@code true} if assignable.
      */
     public static boolean isAssignable(final Class<?> targetType, final Class<?> sourceType) {
         if (null == targetType || null == sourceType) {
             return false;
         }
 
-        // 对象类型
+        // Standard assignability check
         if (targetType.isAssignableFrom(sourceType)) {
             return true;
         }
 
-        // 基本类型
+        // Primitive/wrapper conversion check
         if (targetType.isPrimitive()) {
-            // 目标为原始类型
-            return targetType.equals(BasicType.unWrap(sourceType));
+            return targetType.equals(EnumValue.Type.unWrap(sourceType));
         } else {
-            // 目标为包装类型
-            final Class<?> resolvedWrapper = BasicType.wrap(sourceType, true);
+            final Class<?> resolvedWrapper = EnumValue.Type.wrap(sourceType, true);
             return resolvedWrapper != null && targetType.isAssignableFrom(resolvedWrapper);
         }
     }
 
     /**
-     * 给定类是否实现了序列化接口{@link Serializable}
+     * Checks if the given class implements {@link Serializable}.
      *
-     * @param clazz 类
-     * @return 是否实现序列化接口{@link Serializable}
+     * @param clazz The class.
+     * @return {@code true} if it is serializable.
      */
     public static boolean isSerializable(final Class<?> clazz) {
         return Serializable.class.isAssignableFrom(clazz);
     }
 
     /**
-     * 是否为标准的类 这个类必须：
+     * Checks if a class is a "normal" class (not an interface, abstract class, enum, array, annotation, synthetic, or
+     * primitive type).
      *
-     * <pre>
-     * 1、非接口
-     * 2、非抽象类
-     * 3、非Enum枚举
-     * 4、非数组
-     * 5、非注解
-     * 6、非原始类型（int, long等）
-     * </pre>
-     *
-     * @param clazz 类
-     * @return 是否为标准类
+     * @param clazz The class.
+     * @return {@code true} if it is a normal class.
      */
     public static boolean isNormalClass(final Class<?> clazz) {
         return null != clazz && !clazz.isInterface() && !ModifierKit.isAbstract(clazz) && !clazz.isEnum()
@@ -544,31 +518,31 @@ public class ClassKit {
     }
 
     /**
-     * 判断类是否为枚举类型
+     * Checks if the class is an enum type.
      *
-     * @param clazz 类
-     * @return 是否为枚举类型
+     * @param clazz The class.
+     * @return {@code true} if it is an enum.
      */
     public static boolean isEnum(final Class<?> clazz) {
         return null != clazz && clazz.isEnum();
     }
 
     /**
-     * 获得给定类的第一个泛型参数
+     * Gets the first generic type argument of the given class.
      *
-     * @param clazz 被检查的类，必须是已经确定泛型类型的类
-     * @return {@link Class}
+     * @param clazz The class to inspect.
+     * @return The {@link Class} of the first generic type argument.
      */
     public static Class<?> getTypeArgument(final Class<?> clazz) {
         return getTypeArgument(clazz, 0);
     }
 
     /**
-     * 获得给定类的泛型参数
+     * Gets the generic type argument of a class at a specified index.
      *
-     * @param clazz 被检查的类，必须是已经确定泛型类型的类
-     * @param index 泛型类型的索引号，即第几个泛型类型
-     * @return {@link Class}
+     * @param clazz The class to inspect.
+     * @param index The index of the generic type argument.
+     * @return The {@link Class} of the generic type argument.
      */
     public static Class<?> getTypeArgument(final Class<?> clazz, final int index) {
         final Type argumentType = TypeKit.getTypeArgument(clazz, index);
@@ -576,10 +550,10 @@ public class ClassKit {
     }
 
     /**
-     * 获得给定类所在包的名称
+     * Gets the package name of the given class.
      *
-     * @param clazz 类
-     * @return 包名
+     * @param clazz The class.
+     * @return The package name.
      */
     public static String getPackage(final Class<?> clazz) {
         if (clazz == null) {
@@ -594,30 +568,23 @@ public class ClassKit {
     }
 
     /**
-     * 获得给定类所在包的路径
+     * Gets the package path of the given class (dots replaced with slashes).
      *
-     * @param clazz 类
-     * @return 包名
+     * @param clazz The class.
+     * @return The package path.
      */
     public static String getPackagePath(final Class<?> clazz) {
         return getPackage(clazz).replace(Symbol.C_DOT, Symbol.C_SLASH);
     }
 
     /**
-     * 获取指定类型分的默认值 默认值规则为：
+     * Gets the default value for a given type. Returns 0 for primitive numeric types, false for boolean, and null for
+     * object types.
      *
-     * <pre>
-     * 1、如果为原始类型，返回0
-     * 2、非原始类型返回{@code
-     * null
-     * }
-     * </pre>
-     *
-     * @param clazz 类
-     * @return 默认值
+     * @param clazz The class.
+     * @return The default value.
      */
     public static Object getDefaultValue(final Class<?> clazz) {
-        // 原始类型
         if (clazz.isPrimitive()) {
             return getPrimitiveDefaultValue(clazz);
         }
@@ -625,17 +592,10 @@ public class ClassKit {
     }
 
     /**
-     * 获取指定原始类型分的默认值 默认值规则为：
+     * Gets the default value for a given primitive type.
      *
-     * <pre>
-     * 1、如果为原始类型，返回0
-     * 2、非原始类型返回{@code
-     * null
-     * }
-     * </pre>
-     *
-     * @param clazz 类
-     * @return 默认值
+     * @param clazz The primitive class.
+     * @return The default value.
      */
     public static Object getPrimitiveDefaultValue(final Class<?> clazz) {
         if (long.class == clazz) {
@@ -659,10 +619,10 @@ public class ClassKit {
     }
 
     /**
-     * 获得默认值列表
+     * Gets an array of default values for an array of classes.
      *
-     * @param classes 值类型
-     * @return 默认值列表
+     * @param classes The classes.
+     * @return An array of default values.
      */
     public static Object[] getDefaultValues(final Class<?>... classes) {
         final Object[] values = new Object[classes.length];
@@ -673,15 +633,10 @@ public class ClassKit {
     }
 
     /**
-     * 是否为JDK中定义的类或接口，判断依据：
+     * Checks if a class is a JDK class, based on its package name (`java.` or `javax.`) or if its ClassLoader is null.
      *
-     * <pre>
-     * 1、以java.、javax.开头的包名
-     * 2、ClassLoader为null
-     * </pre>
-     *
-     * @param clazz 被检查的类
-     * @return 是否为JDK中定义的类或接口
+     * @param clazz The class to check.
+     * @return {@code true} if it is a JDK class.
      */
     public static boolean isJdkClass(final Class<?> clazz) {
         final Package objectPackage = clazz.getPackage();
@@ -694,10 +649,11 @@ public class ClassKit {
     }
 
     /**
-     * 获取class类路径URL, 不管是否在jar包中都会返回文件夹的路径 class在jar包中返回jar所在文件夹,class不在jar中返回文件夹目录 jdk中的类不能使用此方法
+     * Gets the location (URL) of the code source for a class. This will be the directory or JAR file from which the
+     * class was loaded.
      *
-     * @param clazz 类
-     * @return URL
+     * @param clazz The class.
+     * @return The location URL.
      */
     public static URL getLocation(final Class<?> clazz) {
         if (null == clazz) {
@@ -707,10 +663,10 @@ public class ClassKit {
     }
 
     /**
-     * 获取class类路径, 不管是否在jar包中都会返回文件夹的路径 class在jar包中返回jar所在文件夹,class不在jar中返回文件夹目录 jdk中的类不能使用此方法
+     * Gets the path of the code source for a class.
      *
-     * @param clazz 类
-     * @return class路径
+     * @param clazz The class.
+     * @return The location path.
      */
     public static String getLocationPath(final Class<?> clazz) {
         final URL location = getLocation(clazz);
@@ -721,11 +677,11 @@ public class ClassKit {
     }
 
     /**
-     * 判断指定类名的类是否存在
+     * Checks if a class with the specified name is present on the classpath.
      *
-     * @param className 全类名
-     * @param loader    {@link ClassLoader}
-     * @return 类名的类是否存在
+     * @param className The fully qualified class name.
+     * @param loader    The {@link ClassLoader}.
+     * @return {@code true} if the class is present.
      */
     public static boolean isForName(final String className, final ClassLoader loader) {
         try {
@@ -736,15 +692,15 @@ public class ClassKit {
     }
 
     /**
-     * 加载指定名称的类，支持：
+     * Loads a class by its name. This method supports:
      * <ul>
-     * <li>替换"/"为"."</li>
-     * <li>自动查找内部类，如java.lang.Thread.State = java.lang.Thread$State</li>
+     * <li>Replacing "/" with "."</li>
+     * <li>Automatically finding inner classes (e.g., `java.lang.Thread.State` becomes `java.lang.Thread$State`)</li>
      * </ul>
      *
-     * @param name   类名
-     * @param loader {@link ClassLoader}，{@code null}表示默认
-     * @return 指定名称对应的类，如果不存在类，返回{@code null}
+     * @param name   The class name.
+     * @param loader The {@link ClassLoader} (null for default).
+     * @return The class, or throws an exception if not found.
      * @see Class#forName(String, boolean, ClassLoader)
      */
     public static Class<?> forName(String name, ClassLoader loader) {
@@ -752,16 +708,16 @@ public class ClassKit {
     }
 
     /**
-     * 加载指定名称的类，支持：
+     * Loads a class by its name. This method supports:
      * <ul>
-     * <li>替换"/"为"."</li>
-     * <li>自动查找内部类，如java.lang.Thread.State = java.lang.Thread$State</li>
+     * <li>Replacing "/" with "."</li>
+     * <li>Automatically finding inner classes (e.g., `java.lang.Thread.State` becomes `java.lang.Thread$State`)</li>
      * </ul>
      *
-     * @param name          类名
-     * @param isInitialized 是否初始化
-     * @param loader        {@link ClassLoader}，{@code null}表示默认
-     * @return 指定名称对应的类，如果不存在类，返回{@code null}
+     * @param name          The class name.
+     * @param isInitialized Whether to initialize the class.
+     * @param loader        The {@link ClassLoader} (null for default).
+     * @return The class, or throws an exception if not found.
      * @see Class#forName(String, boolean, ClassLoader)
      */
     public static Class<?> forName(String name, final boolean isInitialized, ClassLoader loader) {
@@ -793,11 +749,11 @@ public class ClassKit {
         if (null == loader) {
             loader = getClassLoader();
         }
-        // 加载普通类
+
         try {
             return Class.forName(name, isInitialized, loader);
         } catch (final ClassNotFoundException ex) {
-            // 尝试获取内部类，例如java.lang.Thread.State = java.lang.Thread$State
+            // Try to find as an inner class
             final Class<?> clazz = forNameInnerClass(name, isInitialized, loader);
             if (null == clazz) {
                 throw new InternalException(ex);
@@ -807,10 +763,10 @@ public class ClassKit {
     }
 
     /**
-     * 获取指定类的所有父类，结果不包括指定类本身 如果无父类，返回一个空的列表
+     * Gets all superclasses of the given class, excluding the class itself.
      *
-     * @param clazz 类, 可以为{@code null}
-     * @return 指定类的所有父类列表，如果无父类，返回一个空的列表
+     * @param clazz The class.
+     * @return A list of all superclasses, or an empty list if none.
      */
     public static List<Class<?>> getSuperClasses(final Class<?> clazz) {
         if (clazz == null) {
@@ -822,10 +778,10 @@ public class ClassKit {
     }
 
     /**
-     * 获取指定类及其父类所有的实现接口。 结果顺序取决于查找顺序，当前类在前，父类的接口在后。
+     * Gets all interfaces implemented by the given class and its superclasses.
      *
-     * @param cls 被查找的类
-     * @return 接口列表，若提供的查找类为{@code null}，则返回空列表
+     * @param cls The class to inspect.
+     * @return A list of all implemented interfaces.
      */
     public static List<Class<?>> getInterfaces(final Class<?> cls) {
         if (cls == null) {
@@ -841,21 +797,21 @@ public class ClassKit {
     }
 
     /**
-     * 按广度优先遍历包括{@code root}在内，其层级结构中的所有类和接口，直到{@code terminator}返回{@code false}
+     * Traverses the type hierarchy of a class (breadth-first) until the terminator predicate returns false.
      *
-     * @param root       根类
-     * @param terminator 对遍历到的每个类与接口执行的校验，若为{@code false}则立刻中断遍历
+     * @param root       The root class.
+     * @param terminator A predicate to stop traversal.
      */
     public static void traverseTypeHierarchyWhile(final Class<?> root, final Predicate<Class<?>> terminator) {
         traverseTypeHierarchyWhile(root, t -> true, terminator);
     }
 
     /**
-     * 按广度优先遍历包括{@code root}在内，其层级结构中的所有类和接口，直到{@code terminator}返回{@code false}
+     * Traverses the type hierarchy of a class (breadth-first) until the terminator predicate returns false.
      *
-     * @param root       根类
-     * @param filter     过滤器，被过滤的类及其层级结构中的类与接口将被忽略
-     * @param terminator 对遍历到的每个类与接口执行的校验，若为{@code false}则立刻中断遍历
+     * @param root       The root class.
+     * @param filter     A filter to exclude types and their hierarchies.
+     * @param terminator A predicate to stop traversal.
      */
     public static void traverseTypeHierarchyWhile(
             final Class<?> root,
@@ -865,17 +821,12 @@ public class ClassKit {
     }
 
     /**
-     * 按广度优先遍历包括{@code root}在内，其层级结构中的所有类和接口。 类遍历顺序如下：
-     * <ul>
-     * <li>离{@code type}距离越近，则顺序越靠前；</li>
-     * <li>与{@code type}距离相同，则父类优先于接口；</li>
-     * <li>与{@code type}距离相同的接口，则顺序遵循接口在{@link Class#getInterfaces()}的顺序；</li>
-     * </ul>
+     * Traverses the type hierarchy of a class (breadth-first).
      *
-     * @param root        根类
-     * @param filter      过滤器，被过滤的类及其层级结构中的类与接口将被忽略
-     * @param consumer    对遍历到的每个类与接口执行的操作，每个类和接口都只会被访问一次
-     * @param includeRoot 是否包括根类
+     * @param root        The root class.
+     * @param filter      A filter to exclude types and their hierarchies.
+     * @param consumer    An operation to perform on each visited type.
+     * @param includeRoot If true, the root class itself is included in the traversal.
      */
     public static void traverseTypeHierarchy(
             final Class<?> root,
@@ -895,15 +846,15 @@ public class ClassKit {
     }
 
     /**
-     * 获取{@link ClassLoader}，获取顺序如下：
+     * Gets the appropriate ClassLoader in the following order:
      * <ol>
-     * <li>获取调用者的ContextClassLoader</li>
-     * <li>获取当前线程的ContextClassLoader</li>
-     * <li>获取ClassKit对应的ClassLoader</li>
-     * <li>获取系统ClassLoader（{@link ClassLoader#getSystemClassLoader()}）</li>
+     * <li>The caller's ContextClassLoader</li>
+     * <li>The current thread's ContextClassLoader</li>
+     * <li>The ClassLoader of this class (ClassKit)</li>
+     * <li>The system ClassLoader</li>
      * </ol>
      *
-     * @return 类加载器
+     * @return The ClassLoader.
      */
     public static ClassLoader getClassLoader() {
         ClassLoader classLoader = CallerKit.getCallers().getClassLoader();
@@ -920,18 +871,18 @@ public class ClassKit {
     }
 
     /**
-     * 获取调用者的{@link ClassLoader}
+     * Gets the caller's {@link ClassLoader}.
      *
-     * @return {@link ClassLoader}
+     * @return The caller's ClassLoader.
      */
     public static ClassLoader getCallerClassLoader() {
         return CallerKit.getCallers().getClassLoader();
     }
 
     /**
-     * 获取当前线程的{@link ClassLoader}
+     * Gets the current thread's Context ClassLoader.
      *
-     * @return 当前线程的class loader
+     * @return The current thread's context ClassLoader.
      * @see Thread#getContextClassLoader()
      */
     public static ClassLoader getContextClassLoader() {
@@ -939,9 +890,9 @@ public class ClassKit {
     }
 
     /**
-     * 获取系统{@link ClassLoader}
+     * Gets the system {@link ClassLoader}.
      *
-     * @return 系统{@link ClassLoader}
+     * @return The system ClassLoader.
      * @see ClassLoader#getSystemClassLoader()
      */
     public static ClassLoader getSystemClassLoader() {
@@ -949,69 +900,49 @@ public class ClassKit {
     }
 
     /**
-     * 创建新的{@link JarClassLoader}，并使用此Classloader加载目录下的class文件和jar文件
+     * Creates a new {@link JarClassLoader} to load classes and JARs from a directory.
      *
-     * @param jarOrDir jar文件或者包含jar和class文件的目录
-     * @return {@link JarClassLoader}
+     * @param jarOrDir A JAR file or a directory containing JARs and class files.
+     * @return A {@link JarClassLoader}.
      */
     public static JarClassLoader getJarClassLoader(final File jarOrDir) {
         return JarClassLoader.load(jarOrDir);
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名，使用默认ClassLoader并初始化类（调用static模块内容和初始化static属性）
-     * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
+     * Loads a class by name using the default ClassLoader and initializes it.
      *
-     * <pre>
-     * 1、原始类型，例如：int
-     * 2、数组类型，例如：int[]、Long[]、String[]
-     * 3、内部类，例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
-     * </pre>
-     *
-     * @param <T>  目标类的类型
-     * @param name 类名
-     * @return 类名对应的类
-     * @throws InternalException 包装{@link ClassNotFoundException}，没有类名对应的类时抛出此异常
+     * @param <T>  The type of the class.
+     * @param name The class name.
+     * @return The corresponding class.
+     * @throws InternalException wrapping a {@link ClassNotFoundException}.
      */
     public static <T> Class<T> loadClass(final String name) throws InternalException {
         return loadClass(name, true);
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名，使用默认ClassLoader 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
+     * Loads a class by name using the default ClassLoader.
      *
-     * <pre>
-     * 1、原始类型，例如：int
-     * 2、数组类型，例如：int[]、Long[]、String[]
-     * 3、内部类，例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
-     * </pre>
-     *
-     * @param <T>           目标类的类型
-     * @param name          类名
-     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
-     * @return 类名对应的类
-     * @throws InternalException 包装{@link ClassNotFoundException}，没有类名对应的类时抛出此异常
+     * @param <T>           The type of the class.
+     * @param name          The class name.
+     * @param isInitialized If true, the class will be initialized.
+     * @return The corresponding class.
+     * @throws InternalException wrapping a {@link ClassNotFoundException}.
      */
     public static <T> Class<T> loadClass(final String name, final boolean isInitialized) throws InternalException {
         return loadClass(name, isInitialized, null);
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名 此方法支持缓存，第一次被加载的类之后会读取缓存中的类 加载失败的原因可能是此类不存在或其关联引用类不存在
-     * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
+     * Loads a class by name with an optional ClassLoader.
      *
-     * <pre>
-     * 1、原始类型，例如：int
-     * 2、数组类型，例如：int[]、Long[]、String[]
-     * 3、内部类，例如：java.lang.Thread.State会被转为java.lang.Thread$State加载
-     * </pre>
-     *
-     * @param <T>           加载的类的类型
-     * @param name          类名
-     * @param classLoader   {@link ClassLoader}，{@code null} 则使用{@link #getClassLoader()}获取
-     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
-     * @return 类名对应的类
-     * @throws InternalException 包装{@link ClassNotFoundException}，没有类名对应的类时抛出此异常
+     * @param <T>           The type of the class.
+     * @param name          The class name.
+     * @param classLoader   The {@link ClassLoader} (uses default if null).
+     * @param isInitialized If true, the class will be initialized.
+     * @return The corresponding class.
+     * @throws InternalException wrapping a {@link ClassNotFoundException}.
      */
     public static <T> Class<T> loadClass(final String name, final boolean isInitialized, final ClassLoader classLoader)
             throws InternalException {
@@ -1019,11 +950,11 @@ public class ClassKit {
     }
 
     /**
-     * 加载外部类
+     * Loads an external class from a JAR or directory.
      *
-     * @param jarOrDir jar文件或者包含jar和class文件的目录
-     * @param name     类名
-     * @return 类
+     * @param jarOrDir A JAR file or a directory.
+     * @param name     The class name.
+     * @return The class.
      */
     public static Class<?> loadClass(final File jarOrDir, final String name) {
         try {
@@ -1034,22 +965,21 @@ public class ClassKit {
     }
 
     /**
-     * 指定类是否被提供，使用默认ClassLoader 通过调用{@link #loadClass(String, boolean, ClassLoader)}方法尝试加载指定类名的类，如果加载失败返回false
-     * 加载失败的原因可能是此类不存在或其关联引用类不存在
+     * Checks if a class is present on the classpath using the default ClassLoader.
      *
-     * @param className 类名
-     * @return 是否被提供
+     * @param className The class name.
+     * @return {@code true} if the class is present.
      */
     public static boolean isPresent(final String className) {
         return isPresent(className, null);
     }
 
     /**
-     * 指定类是否被提供 通过调用{@link #loadClass(String, boolean, ClassLoader)}方法尝试加载指定类名的类，如果加载失败返回false 加载失败的原因可能是此类不存在或其关联引用类不存在
+     * Checks if a class is present on the classpath using a specific ClassLoader.
      *
-     * @param className   类名
-     * @param classLoader {@link ClassLoader}
-     * @return 是否被提供
+     * @param className   The class name.
+     * @param classLoader The {@link ClassLoader}.
+     * @return {@code true} if the class is present.
      */
     public static boolean isPresent(final String className, final ClassLoader classLoader) {
         try {
@@ -1061,10 +991,10 @@ public class ClassKit {
     }
 
     /**
-     * 将指定的基元类对象转换为其对应的包装器类对象
+     * Converts a primitive class to its corresponding wrapper class.
      *
-     * @param cls 要转换的类可以为null
-     * @return 如果输入为{@code null},则返回{@code cls}， 否则返回{@code cls} 的包装器类
+     * @param cls The class to convert.
+     * @return The wrapper class, or the original class if it's not a primitive.
      */
     public static Class<?> primitiveToWrapper(final Class<?> cls) {
         Class<?> convertedClass = cls;
@@ -1075,20 +1005,18 @@ public class ClassKit {
     }
 
     /**
-     * 尝试转换并加载内部类，例如java.lang.Thread.State = java.lang.Thread$State
+     * Tries to load a class by name, attempting to resolve it as an inner class if necessary.
      *
-     * @param name          类名
-     * @param classLoader   {@link ClassLoader}，{@code null} 则使用系统默认ClassLoader
-     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
-     * @return 类名对应的类，未找到返回{@code null}
+     * @param name          The class name.
+     * @param isInitialized If true, initialize the class.
+     * @param classLoader   The ClassLoader.
+     * @return The class, or null if not found.
      */
     private static Class<?> forNameInnerClass(String name, final boolean isInitialized, final ClassLoader classLoader) {
-        // 尝试获取内部类，例如java.lang.Thread.State = java.lang.Thread$State
         int lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
         Class<?> clazz = null;
-        while (lastDotIndex > 0) {// 类与内部类的分隔符不能在第一位，因此>0
+        while (lastDotIndex > 0) {
             if (!Character.isUpperCase(name.charAt(lastDotIndex + 1))) {
-                // 类名必须大写，非大写的类名跳过
                 break;
             }
             name = name.substring(0, lastDotIndex) + Symbol.C_DOLLAR + name.substring(lastDotIndex + 1);
@@ -1096,20 +1024,18 @@ public class ClassKit {
                 clazz = Class.forName(name, isInitialized, classLoader);
                 break;
             } catch (final ClassNotFoundException ignore) {
-                // ignore
+                // ignore and try next level
             }
-
-            // 继续向前替换.为$
             lastDotIndex = name.lastIndexOf(Symbol.C_DOT);
         }
         return clazz;
     }
 
     /**
-     * 获取指定类的父类和所有接口
+     * Gets the direct superclass and implemented interfaces of a class.
      *
-     * @param clazz 类
-     * @return 类的父类和所有接口
+     * @param clazz The class.
+     * @return A set containing the superclass and interfaces.
      */
     private static Set<Class<?>> getNextTypeHierarchies(final Class<?> clazz) {
         final Set<Class<?>> next = new LinkedHashSet<>();

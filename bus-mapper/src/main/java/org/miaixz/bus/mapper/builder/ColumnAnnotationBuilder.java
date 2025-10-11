@@ -41,7 +41,8 @@ import org.miaixz.bus.mapper.provider.NamingProvider;
 import jakarta.persistence.*;
 
 /**
- * 默认列构建器，支持 jakarta.persistence 注解的实体类，解析字段注解并生成列信息
+ * The default column builder, which supports entity classes annotated with `jakarta.persistence` annotations. It parses
+ * field annotations to generate column information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,36 +50,38 @@ import jakarta.persistence.*;
 public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
 
     /**
-     * 忽略标记，用于表示字段不映射到数据库列
+     * A marker to indicate that a field should not be mapped to a database column.
      */
     private static final Optional<List<ColumnMeta>> IGNORE = Optional.of(Collections.emptyList());
 
     /**
-     * 创建实体列信息，解析字段注解并生成列元数据
+     * Creates entity column information by parsing field annotations and generating column metadata.
      *
-     * @param tableMeta 实体表信息，包含表元数据
-     * @param fieldMeta 字段信息，包含字段元数据
-     * @param chain     列工厂处理链，用于责任链模式
-     * @return 列信息的 Optional 包装对象，若字段被忽略或标记为 Transient 则返回空列表
+     * @param tableMeta The entity table information, containing table metadata.
+     * @param fieldMeta The field information, containing field metadata.
+     * @param chain     The column factory processing chain, used in the chain of responsibility pattern.
+     * @return An {@link Optional} containing a list of column information. Returns an empty list if the field is
+     *         ignored or marked as {@link Transient}.
      */
     @Override
     public Optional<List<ColumnMeta>> createColumn(
             TableMeta tableMeta,
             FieldMeta fieldMeta,
             ColumnSchemaBuilder.Chain chain) {
-        // 优先调用责任链中的下一个处理器
+        // First, invoke the next processor in the chain of responsibility.
         Optional<List<ColumnMeta>> columns = chain.createColumn(tableMeta, fieldMeta);
         if (columns == IGNORE || fieldMeta.isAnnotationPresent(Transient.class)) {
             return IGNORE;
         }
 
-        // 若无列信息且字段未标记为 Transient，生成默认列信息（驼峰转下划线）
+        // If no column information is present and the field is not marked as @Transient,
+        // generate default column information (e.g., camelCase to underscore).
         if (!columns.isPresent()) {
             String columnName = NamingProvider.getDefaultStyle().columnName(tableMeta, fieldMeta);
             columns = Optional.of(Collections.singletonList(ColumnMeta.of(fieldMeta).column(columnName)));
         }
 
-        // 处理列信息中的注解
+        // Process the annotations on the column information.
         if (columns.isPresent()) {
             List<ColumnMeta> columnList = columns.getOrNull();
             for (ColumnMeta columnMeta : columnList) {
@@ -91,18 +94,18 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
     }
 
     /**
-     * 处理字段上的注解，设置列的元数据属性
+     * Processes annotations on a field to set the metadata properties of the column.
      *
-     * @param columnMeta 列元数据对象
-     * @param fieldMeta  字段元数据对象
+     * @param columnMeta The column metadata object.
+     * @param fieldMeta  The field metadata object.
      */
     protected void processAnnotations(ColumnMeta columnMeta, FieldMeta fieldMeta) {
-        // 处理主键注解
+        // Process the primary key annotation.
         if (!columnMeta.id() && fieldMeta.isAnnotationPresent(Id.class)) {
             columnMeta.id(true);
         }
 
-        // 处理列注解
+        // Process the column annotation.
         if (fieldMeta.isAnnotationPresent(Column.class)) {
             Column column = fieldMeta.getAnnotation(Column.class);
             if (!column.name().isEmpty()) {
@@ -114,13 +117,13 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
             }
         }
 
-        // 处理排序注解
+        // Process the order-by annotation.
         if (fieldMeta.isAnnotationPresent(OrderBy.class)) {
             OrderBy orderBy = fieldMeta.getAnnotation(OrderBy.class);
             columnMeta.orderBy(orderBy.value().isEmpty() ? ORDER.ASC : orderBy.value());
         }
 
-        // 处理类型转换器注解
+        // Process the type converter annotation.
         if (fieldMeta.isAnnotationPresent(Convert.class)) {
             Convert convert = fieldMeta.getAnnotation(Convert.class);
             Class converter = convert.converter();

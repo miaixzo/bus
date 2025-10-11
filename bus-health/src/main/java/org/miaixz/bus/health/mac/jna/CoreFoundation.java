@@ -38,6 +38,9 @@ import com.sun.jna.Native;
  */
 public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation {
 
+    /**
+     * Singleton instance of the CoreFoundation library.
+     */
     CoreFoundation INSTANCE = Native.load("CoreFoundation", CoreFoundation.class);
 
     /**
@@ -57,7 +60,25 @@ public interface CoreFoundation extends com.sun.jna.platform.mac.CoreFoundation 
      */
     enum CFDateFormatterStyle {
 
-        kCFDateFormatterNoStyle, kCFDateFormatterShortStyle, kCFDateFormatterMediumStyle, kCFDateFormatterLongStyle,
+        /**
+         * No style for date formatter.
+         */
+        kCFDateFormatterNoStyle,
+        /**
+         * Short style for date formatter.
+         */
+        kCFDateFormatterShortStyle,
+        /**
+         * Medium style for date formatter.
+         */
+        kCFDateFormatterMediumStyle,
+        /**
+         * Long style for date formatter.
+         */
+        kCFDateFormatterLongStyle,
+        /**
+         * Full style for date formatter.
+         */
         kCFDateFormatterFullStyle;
 
         /**

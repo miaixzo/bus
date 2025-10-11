@@ -28,11 +28,22 @@
 package org.miaixz.bus.image.builtin;
 
 /**
+ * This interface defines a contract for classes that provide fuzzy string matching or encoding functionality.
+ * Implementations of this interface should convert an input string into a "fuzzy" representation, which can then be
+ * used for approximate string comparisons.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface FuzzyString {
 
+    /**
+     * Converts the input string into its fuzzy representation. The exact nature of the fuzzy representation depends on
+     * the implementation.
+     *
+     * @param in The input string to convert.
+     * @return The fuzzy representation of the input string.
+     */
     String toFuzzy(String in);
 
 }

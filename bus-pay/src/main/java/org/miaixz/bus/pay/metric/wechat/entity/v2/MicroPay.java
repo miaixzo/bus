@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 付款码支付 支持: 付款支付、支付押金（人脸支付）、支付押金（付款码支付）
+ * Micropay model. Supports: micropay, face payment deposit, micropay deposit.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,33 +49,99 @@ import lombok.experimental.SuperBuilder;
 public class MicroPay extends Material {
 
     /**
-     * 是否押金支付
+     * Whether it is a deposit payment.
      */
     private String deposit;
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID.
+     */
     private String sub_mch_id;
+    /**
+     * Device information.
+     */
     private String device_info;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Signature type.
+     */
     private String sign_type;
+    /**
+     * Body of the request.
+     */
     private String body;
+    /**
+     * Detail information.
+     */
     private String detail;
+    /**
+     * Attached data.
+     */
     private String attach;
+    /**
+     * Merchant order number.
+     */
     private String out_trade_no;
+    /**
+     * Total fee.
+     */
     private String total_fee;
+    /**
+     * Fee type.
+     */
     private String fee_type;
+    /**
+     * Client IP address.
+     */
     private String spbill_create_ip;
+    /**
+     * Goods tag.
+     */
     private String goods_tag;
+    /**
+     * Limit payment method.
+     */
     private String limit_pay;
+    /**
+     * Transaction start time.
+     */
     private String time_start;
+    /**
+     * Transaction expiration time.
+     */
     private String time_expire;
+    /**
+     * Authorization code.
+     */
     private String auth_code;
+    /**
+     * Receipt.
+     */
     private String receipt;
+    /**
+     * Scene information.
+     */
     private String scene_info;
+    /**
+     * OpenID.
+     */
     private String openid;
     /**
-     * 人脸凭证，用于人脸支付
+     * Face credential, used for face payment.
      */
     private String face_code;
 

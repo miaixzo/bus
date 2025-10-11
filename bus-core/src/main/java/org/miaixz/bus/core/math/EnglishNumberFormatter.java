@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 将浮点数类型的number转换成英语的表达方式
+ * Converts a number of a floating-point type into its English representation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,10 +41,11 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class EnglishNumberFormatter {
 
     /**
-     * 将阿拉伯数字转为英文表达式
+     * Converts an Arabic numeral to its English expression.
      *
-     * @param x 阿拉伯数字，可以为{@link Number}对象，也可以是普通对象，最后会使用字符串方式处理
-     * @return 英文表达式
+     * @param x The Arabic numeral, which can be a {@link Number} object or a plain object. It will ultimately be
+     *          processed as a string.
+     * @return The English expression.
      */
     public static String format(final Object x) {
         if (x != null) {
@@ -55,26 +56,28 @@ public class EnglishNumberFormatter {
     }
 
     /**
-     * 将阿拉伯数字转化为简洁计数单位，例如 2100 = 2.1k 范围默认只到w
+     * Converts an Arabic numeral to a concise counting unit, e.g., 2100 becomes 2.1k. The default range only goes up to
+     * 'w' (wan, for Chinese units).
      *
-     * @param value 被格式化的数字
-     * @return 格式化后的数字
+     * @param value The number to be formatted.
+     * @return The formatted number string.
      */
     public static String formatSimple(final long value) {
         return formatSimple(value, true);
     }
 
     /**
-     * 将数字转换为简写形式，格式单位简写为：k(千), m(百万), b(十亿), t(万亿)，如果中文单位，为w(万)
+     * Converts a number to a short form. The format units are abbreviated as: k (thousand), m (million), b (billion), t
+     * (trillion). If using Chinese units, 'w' (wan) is used.
      * <ul>
      * <li>1000 = 1k</li>
-     * <li>10000 = 10k，如果是中文单位，则为1w</li>
-     * <li>100000 = 100k，如果是中文单位，则为10w</li>
+     * <li>10000 = 10k, or 1w if using Chinese units.</li>
+     * <li>100000 = 100k, or 10w if using Chinese units.</li>
      * </ul>
      *
-     * @param number   要转换的数字
-     * @param isCNUnit 是否使用中文单位（w等）
-     * @return 简写形式的字符串
+     * @param number   The number to convert.
+     * @param isCNUnit Whether to use Chinese units (e.g., 'w' for wan).
+     * @return The abbreviated string representation.
      */
     public static String formatSimple(final long number, final boolean isCNUnit) {
         if (number < 1_000) {
@@ -84,7 +87,7 @@ public class EnglishNumberFormatter {
         double value;
         String suffix;
 
-        // 使用国际单位系统：k(千), m(百万), b(十亿), t(万亿)
+        // Use international system of units: k (kilo), m (mega), b (giga), t (tera).
         if (number < 1_000_000) {
             value = number / 1_000.0;
             suffix = "k";
@@ -99,7 +102,7 @@ public class EnglishNumberFormatter {
             suffix = "t";
         }
 
-        // 兼容中文简写形式，如10k->1w
+        // Compatible with Chinese short form, e.g., 10k -> 1w.
         if (isCNUnit) {
             if ("m".equals(suffix)) {
                 suffix = "w";
@@ -110,30 +113,30 @@ public class EnglishNumberFormatter {
             }
         }
 
-        // 格式化数字，最多保留2位小数，去除尾部的0
+        // Format the number to at most two decimal places, removing trailing zeros.
         return MathKit.format("#.##", value) + suffix;
     }
 
     /**
-     * 将阿拉伯数字转为英文表达式
+     * Converts an Arabic numeral string to its English expression.
      *
-     * @param x 阿拉伯数字字符串
-     * @return 英文表达式
+     * @param x The Arabic numeral string.
+     * @return The English expression.
      */
     private static String format(final String x) {
-        final int z = x.indexOf(Symbol.DOT); // 取小数点位置
+        final int z = x.indexOf(Symbol.DOT); // Get the position of the decimal point.
         final String lstr;
         String rstr = Normal.EMPTY;
-        if (z > -1) { // 看是否有小数，如果有，则分别取左边和右边
+        if (z > -1) { // Check for a decimal part.
             lstr = x.substring(0, z);
             rstr = x.substring(z + 1);
         } else {
-            // 否则就是全部
+            // No decimal part.
             lstr = x;
         }
 
-        String lstrrev = StringKit.reverse(lstr); // 对左边的字串取反
-        final String[] a = new String[5]; // 定义5个字串变量来存放解析出来的叁位一组的字串
+        String lstrrev = StringKit.reverse(lstr); // Reverse the integer part string.
+        final String[] a = new String[5]; // Array to store three-digit groups.
 
         switch (lstrrev.length() % 3) {
             case 1:
@@ -144,16 +147,14 @@ public class EnglishNumberFormatter {
                 lstrrev += "0";
                 break;
         }
-        StringBuilder lm = new StringBuilder(); // 用来存放转换后的整数部分
+        StringBuilder lm = new StringBuilder(); // Stores the converted integer part.
         for (int i = 0; i < lstrrev.length() / 3; i++) {
-            a[i] = StringKit.reverse(lstrrev.substring(3 * i, 3 * i + 3)); // 截取第一个三位
-            if (!"000".equals(a[i])) { // 用来避免这种情况：1000000 = one million
-                // thousand only
+            a[i] = StringKit.reverse(lstrrev.substring(3 * i, 3 * i + 3)); // Get a three-digit group.
+            if (!"000".equals(a[i])) {
                 if (i != 0) {
-                    lm.insert(0, transThree(a[i]) + Symbol.SPACE + parseMore(i) + Symbol.SPACE); // 加:
-                    // thousand、million、billion
+                    lm.insert(0, transThree(a[i]) + Symbol.SPACE + parseMore(i) + Symbol.SPACE); // Add thousand,
+                                                                                                 // million, billion.
                 } else {
-                    // 防止i=0时， 在多加两个空格.
                     lm = new StringBuilder(transThree(a[i]));
                 }
             } else {
@@ -161,47 +162,65 @@ public class EnglishNumberFormatter {
             }
         }
 
-        String xs = lm.isEmpty() ? "ZERO " : Symbol.SPACE; // 用来存放转换后小数部分
+        String xs = lm.isEmpty() ? "ZERO " : Symbol.SPACE; // Stores the converted decimal part.
         if (z > -1) {
-            xs += "AND CENTS " + transTwo(rstr) + Symbol.SPACE; // 小数部分存在时转换小数
+            xs += "AND CENTS " + transTwo(rstr) + Symbol.SPACE; // Convert the decimal part if it exists.
         }
 
         return lm.toString().trim() + xs + "ONLY";
     }
 
+    /**
+     * Parses a number between 10 and 19.
+     * 
+     * @param x The number string.
+     * @return The English word for the number.
+     */
     private static String parseTeen(final String x) {
         return Normal.EN_NUMBER_TEEN[Integer.parseInt(x) - 10];
     }
 
+    /**
+     * Parses a multiple of ten.
+     * 
+     * @param x The number string.
+     * @return The English word for the number.
+     */
     private static String parseTen(final String x) {
         return Normal.EN_NUMBER_TEN[Integer.parseInt(x.substring(0, 1)) - 1];
     }
 
+    /**
+     * Parses the scale of the number (thousand, million, etc.).
+     * 
+     * @param i The index of the scale.
+     * @return The English word for the scale.
+     */
     private static String parseMore(final int i) {
         return Normal.EN_NUMBER_MORE[i];
     }
 
     /**
-     * 两位
+     * Converts a two-digit number string to its English representation.
      *
-     * @param x 字符
-     * @return the string
+     * @param x The two-digit string.
+     * @return The English representation.
      */
     private static String transTwo(String x) {
         final String value;
-        // 判断位数
+        // Ensure the string is two digits long.
         if (x.length() > 2) {
             x = x.substring(0, 2);
         } else if (x.length() < 2) {
-            // 单位数出现于小数部分，按照分对待
+            // If a single digit appears in the decimal part, treat it as cents.
             x = x + "0";
         }
 
-        if (x.startsWith("0")) {// 07 - seven 是否小於10
+        if (x.startsWith("0")) { // e.g., 07 -> seven
             value = parseLast(x);
-        } else if (x.startsWith("1")) {// 17 seventeen 是否在10和20之间
+        } else if (x.startsWith("1")) { // e.g., 17 -> seventeen
             value = parseTeen(x);
-        } else if (x.endsWith("0")) {// 是否在10与100之间的能被10整除的数
+        } else if (x.endsWith("0")) { // e.g., 20 -> twenty
             value = parseTen(x);
         } else {
             value = parseTen(x) + Symbol.SPACE + parseLast(x);
@@ -210,16 +229,16 @@ public class EnglishNumberFormatter {
     }
 
     /**
-     * 三位数
+     * Converts a three-digit number string to its English representation.
      *
-     * @param x 字符
-     * @return the string
+     * @param x The three-digit string.
+     * @return The English representation.
      */
     private static String transThree(final String x) {
         final String value;
-        if (x.startsWith("0")) {// 是否小于100
+        if (x.startsWith("0")) { // Less than 100.
             value = transTwo(x.substring(1));
-        } else if ("00".equals(x.substring(1))) {// 是否被100整除
+        } else if ("00".equals(x.substring(1))) { // Divisible by 100.
             value = parseLast(x.substring(0, 1)) + " HUNDRED";
         } else {
             value = parseLast(x.substring(0, 1)) + " HUNDRED AND " + transTwo(x.substring(1));
@@ -227,6 +246,12 @@ public class EnglishNumberFormatter {
         return value;
     }
 
+    /**
+     * Parses the last digit of a number string.
+     * 
+     * @param s The number string.
+     * @return The English word for the last digit.
+     */
     private static String parseLast(final String s) {
         return Normal.EN_NUMBER[Integer.parseInt(s.substring(s.length() - 1))];
     }

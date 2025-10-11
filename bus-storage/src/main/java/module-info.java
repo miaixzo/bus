@@ -53,6 +53,7 @@ module bus.storage {
     requires software.amazon.awssdk.http.auth;
     requires software.amazon.awssdk.http;
     requires software.amazon.awssdk.utils;
+    requires java.net.http;
 
     exports org.miaixz.bus.storage;
     exports org.miaixz.bus.storage.cache;

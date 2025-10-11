@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v2;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v2 版本-分账接口
+ * WeChat Pay V2 API interfaces related to profit sharing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,69 +38,76 @@ import org.miaixz.bus.pay.Matcher;
 public enum ProfitSharingApi implements Matcher {
 
     /**
-     * 请求单次分账
+     * Request single profit sharing.
      */
-    PROFIT_SHARING("/secapi/pay/profitsharing", "请求单次分账"),
+    PROFIT_SHARING("/secapi/pay/profitsharing", "Request single profit sharing"),
 
     /**
-     * 请求多次分账
+     * Request multiple profit sharings.
      */
-    MULTI_PROFIT_SHARING("/secapi/pay/multiprofitsharing", "请求多次分账"),
+    MULTI_PROFIT_SHARING("/secapi/pay/multiprofitsharing", "Request multiple profit sharings"),
 
     /**
-     * 查询分账结果
+     * Query profit sharing result.
      */
-    PROFIT_SHARING_QUERY("/pay/profitsharingquery", "查询分账结果"),
+    PROFIT_SHARING_QUERY("/pay/profitsharingquery", "Query profit sharing result"),
 
     /**
-     * 添加分账接收方
+     * Add profit sharing receiver.
      */
-    PROFIT_SHARING_ADD_RECEIVER("/pay/profitsharingaddreceiver", "添加分账接收方"),
+    PROFIT_SHARING_ADD_RECEIVER("/pay/profitsharingaddreceiver", "Add profit sharing receiver"),
 
     /**
-     * 删除分账接收方
+     * Remove profit sharing receiver.
      */
-    PROFIT_SHARING_REMOVE_RECEIVER("/pay/profitsharingremovereceiver", "删除分账接收方"),
+    PROFIT_SHARING_REMOVE_RECEIVER("/pay/profitsharingremovereceiver", "Remove profit sharing receiver"),
 
     /**
-     * 完结分账
+     * Finish profit sharing.
      */
-    PROFIT_SHARING_FINISH("/secapi/pay/profitsharingfinish", "完结分账"),
+    PROFIT_SHARING_FINISH("/secapi/pay/profitsharingfinish", "Finish profit sharing"),
 
     /**
-     * 查询订单待分账金额
+     * Query order pending profit sharing amount.
      */
-    PROFIT_SHARING_ORDER_AMOUNT_QUERY("/pay/profitsharingorderamountquery", "查询订单待分账金额"),
+    PROFIT_SHARING_ORDER_AMOUNT_QUERY("/pay/profitsharingorderamountquery",
+            "Query order pending profit sharing amount"),
 
     /**
-     * 分账回退
+     * Profit sharing return.
      */
-    PROFIT_SHARING_RETURN("/secapi/pay/profitsharingreturn", "分账回退"),
+    PROFIT_SHARING_RETURN("/secapi/pay/profitsharingreturn", "Profit sharing return"),
 
     /**
-     * 分账回退结果查询
+     * Query profit sharing return result.
      */
-    PROFIT_SHARING_RETURN_QUERY("/pay/profitsharingreturnquery", "分账回退结果查询");
+    PROFIT_SHARING_RETURN_QUERY("/pay/profitsharingreturnquery", "Query profit sharing return result");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new ProfitSharingApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     ProfitSharingApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -108,9 +115,9 @@ public enum ProfitSharingApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -118,9 +125,9 @@ public enum ProfitSharingApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

@@ -47,36 +47,91 @@ import org.miaixz.bus.shade.safety.streams.AlwaysInputStream;
 import org.miaixz.bus.shade.safety.streams.AlwaysOutputStream;
 
 /**
- * 普通JAR包加密器
+ * A {@link EncryptorProvider} implementation for encrypting standard JAR files. This provider handles the structure of
+ * JARs and applies encryption based on a provided filter and key. It also modifies the manifest to redirect the main
+ * class to a custom launcher.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry> implements EncryptorProvider {
 
+    /**
+     * The compression level to use for the output JAR archive.
+     */
     private final int level;
+    /**
+     * The encryption mode, which can include flags like {@link Builder#FLAG_DANGER}.
+     */
     private final int mode;
 
+    /**
+     * Constructs a {@code JarEncryptorProvider} with a delegate encryptor and a default filter. The default filter is
+     * {@link JarAllComplex}, meaning all entries will be considered for encryption.
+     *
+     * @param encryptorProvider The delegate encryptor provider that performs the actual encryption.
+     */
     public JarEncryptorProvider(EncryptorProvider encryptorProvider) {
         this(encryptorProvider, new JarAllComplex());
     }
 
+    /**
+     * Constructs a {@code JarEncryptorProvider} with a delegate encryptor and a custom filter. Uses default compression
+     * level ({@link Deflater#DEFLATED}).
+     *
+     * @param encryptorProvider The delegate encryptor provider that performs the actual encryption.
+     * @param filter            The {@link Complex} filter to apply to JAR entries. Only entries matching the filter
+     *                          will be encrypted.
+     */
     public JarEncryptorProvider(EncryptorProvider encryptorProvider, Complex<JarArchiveEntry> filter) {
         this(encryptorProvider, Deflater.DEFLATED, filter);
     }
 
+    /**
+     * Constructs a {@code JarEncryptorProvider} with a delegate encryptor and a specified compression level. Uses a
+     * default filter ({@link JarAllComplex}).
+     *
+     * @param encryptorProvider The delegate encryptor provider that performs the actual encryption.
+     * @param level             The compression level for the output JAR archive.
+     */
     public JarEncryptorProvider(EncryptorProvider encryptorProvider, int level) {
         this(encryptorProvider, level, new JarAllComplex());
     }
 
+    /**
+     * Constructs a {@code JarEncryptorProvider} with a delegate encryptor, a specified compression level, and a custom
+     * filter. Uses default encryption mode ({@link Builder#MODE_NORMAL}).
+     *
+     * @param encryptorProvider The delegate encryptor provider that performs the actual encryption.
+     * @param level             The compression level for the output JAR archive.
+     * @param filter            The {@link Complex} filter to apply to JAR entries. Only entries matching the filter
+     *                          will be encrypted.
+     */
     public JarEncryptorProvider(EncryptorProvider encryptorProvider, int level, Complex<JarArchiveEntry> filter) {
         this(encryptorProvider, level, Builder.MODE_NORMAL, filter);
     }
 
+    /**
+     * Constructs a {@code JarEncryptorProvider} with a delegate encryptor, a specified compression level, and an
+     * encryption mode. Uses a default filter ({@link JarAllComplex}).
+     *
+     * @param encryptorProvider The delegate encryptor provider that performs the actual encryption.
+     * @param level             The compression level for the output JAR archive.
+     * @param mode              The encryption mode (e.g., {@link Builder#FLAG_DANGER}).
+     */
     public JarEncryptorProvider(EncryptorProvider encryptorProvider, int level, int mode) {
         this(encryptorProvider, level, mode, new JarAllComplex());
     }
 
+    /**
+     * Constructs a {@code JarEncryptorProvider} with all specified parameters.
+     *
+     * @param encryptorProvider The delegate encryptor provider that performs the actual encryption.
+     * @param level             The compression level for the output JAR archive.
+     * @param mode              The encryption mode (e.g., {@link Builder#FLAG_DANGER}).
+     * @param filter            The {@link Complex} filter to apply to JAR entries. Only entries matching the filter
+     *                          will be encrypted.
+     */
     public JarEncryptorProvider(EncryptorProvider encryptorProvider, int level, int mode,
             Complex<JarArchiveEntry> filter) {
         super(encryptorProvider, filter);
@@ -84,6 +139,14 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
         this.mode = mode;
     }
 
+    /**
+     * Encrypts a source JAR file to a destination file.
+     *
+     * @param key  The {@link Key} used for encryption.
+     * @param src  The source unencrypted JAR file.
+     * @param dest The destination file for the encrypted JAR.
+     * @throws IOException If an I/O error occurs during encryption.
+     */
     @Override
     public void encrypt(Key key, File src, File dest) throws IOException {
         try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
@@ -91,6 +154,16 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
         }
     }
 
+    /**
+     * Encrypts a JAR archive from an input stream to an output stream. This method iterates through the entries of the
+     * JAR, encrypting them as necessary. It handles special cases for META-INF/MANIFEST.MF and injects framework
+     * resources.
+     *
+     * @param key The {@link Key} used for encryption.
+     * @param in  The input stream containing the unencrypted JAR archive.
+     * @param out The output stream where the encrypted JAR will be written.
+     * @throws IOException If an I/O error occurs during encryption.
+     */
     @Override
     public void encrypt(Key key, InputStream in, OutputStream out) throws IOException {
         JarArchiveInputStream zis = null;
@@ -105,21 +178,25 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
             JarArchiveEntry entry;
             Manifest manifest = null;
             while (null != (entry = zis.getNextJarEntry())) {
+                // Skip internal xjar resources and directories
                 if (entry.getName().startsWith(Builder.XJAR_SRC_DIR) || entry.getName().endsWith(Builder.XJAR_INF_DIR)
                         || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)) {
                     continue;
                 }
+                // Handle directory entries
                 if (entry.isDirectory()) {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
-                } else if (entry.getName().equals(Builder.META_INF_MANIFEST)) {
+                }
+                // Handle META-INF/MANIFEST.MF special processing
+                else if (entry.getName().equals(Builder.META_INF_MANIFEST)) {
                     manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
                     if (null != mainClass) {
                         attributes.putValue("Jar-Main-Class", mainClass);
-                        attributes.putValue("Main-Class", "org.miaixz.bus.shade.safety.archive.jar.BootJarLauncher");
+                        attributes.putValue("Main-Class", "org.miaixz.bus.shade.safety.boot.jar.JarLauncher");
                     }
                     if ((mode & Builder.FLAG_DANGER) == Builder.FLAG_DANGER) {
                         Builder.retainKey(key, attributes);
@@ -128,7 +205,9 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
                     manifest.write(nos);
-                } else {
+                }
+                // Handle other entries
+                else {
                     JarArchiveEntry jarArchiveEntry = new JarArchiveEntry(entry.getName());
                     jarArchiveEntry.setTime(entry.getTime());
                     zos.putArchiveEntry(jarArchiveEntry);
@@ -144,6 +223,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
                 zos.closeArchiveEntry();
             }
 
+            // Write index for encrypted entries
             if (!indexes.isEmpty()) {
                 JarArchiveEntry xjarInfDir = new JarArchiveEntry(Builder.XJAR_INF_DIR);
                 xjarInfDir.setTime(System.currentTimeMillis());
@@ -160,6 +240,7 @@ public class JarEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry
                 zos.closeArchiveEntry();
             }
 
+            // Inject framework resources if a main class was found
             String mainClass = null != manifest && null != manifest.getMainAttributes()
                     ? manifest.getMainAttributes().getValue("Main-Class")
                     : null;

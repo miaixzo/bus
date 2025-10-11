@@ -28,7 +28,8 @@
 package org.miaixz.bus.shade.safety.algorithm;
 
 /**
- * 对称密钥
+ * Represents a symmetric encryption key, extending the base {@link Key} interface. This interface specifically provides
+ * access to the secret key material used in symmetric cryptography.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,7 +37,10 @@ package org.miaixz.bus.shade.safety.algorithm;
 public interface SymmetricKey extends Key {
 
     /**
-     * @return 密钥
+     * Retrieves the raw byte array of the secret key material. In symmetric cryptography, the same key is used for both
+     * encryption and decryption.
+     *
+     * @return The secret key as a byte array.
      */
     byte[] getSecretKey();
 

@@ -27,14 +27,16 @@
 */
 package org.miaixz.bus.starter.socket;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 配置信息 1. 默认读取配置文件信息 2. 可以自己从写部分类等
+ * Configuration properties for the socket service.
+ * <p>
+ * This class binds properties from the configuration file (e.g., {@code application.yml}) under the prefix
+ * {@code bus.socket}. It allows for customization of the socket server settings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,6 +46,9 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = GeniusBuilder.SOCKET)
 public class SocketProperties {
 
+    /**
+     * The port on which the socket server will listen. Defaults to 7890.
+     */
     private int port = 7890;
 
 }

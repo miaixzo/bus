@@ -30,7 +30,8 @@ package org.miaixz.bus.extra.mq;
 import java.io.Closeable;
 
 /**
- * 消息生产者
+ * Represents a message producer interface for Message Queue (MQ) systems. This interface defines the contract for
+ * sending messages to an MQ broker.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,9 +39,10 @@ import java.io.Closeable;
 public interface Producer extends Closeable {
 
     /**
-     * 发送消息
+     * Sends a {@link Message} to the configured MQ topic or destination. The implementation of this method will handle
+     * the actual transmission of the message.
      *
-     * @param message 消息
+     * @param message The {@link Message} object to be sent.
      */
     void send(Message message);
 

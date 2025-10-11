@@ -31,7 +31,7 @@ import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * tinylog
+ * A factory for creating {@link org.tinylog.Logger} instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,7 +39,8 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
 public class TinyLoggingFactory extends AbstractFactory {
 
     /**
-     * 构造
+     * Constructs a new {@code TinyLoggingFactory}. This factory is responsible for creating loggers based on the
+     * tinylog framework. It also checks for the existence of the {@link org.tinylog.Logger} class.
      */
     public TinyLoggingFactory() {
         super("org.tinylog.Logger");

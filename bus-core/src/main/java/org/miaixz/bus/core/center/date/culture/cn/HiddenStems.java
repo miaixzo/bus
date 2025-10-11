@@ -28,30 +28,55 @@
 package org.miaixz.bus.core.center.date.culture.cn;
 
 /**
- * 藏干类型
+ * Represents the types of Hidden Stems (藏干类型) within Earth Branches in Chinese metaphysics.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum HiddenStems {
 
-    RESIDUAL(0, "余气"), MIDDLE(1, "中气"), PRINCIPAL(2, "本气");
+    /**
+     * Residual Qi (余气)
+     */
+    RESIDUAL(0, "余气"),
 
     /**
-     * 代码
+     * Middle Qi (中气)
+     */
+    MIDDLE(1, "中气"),
+
+    /**
+     * Principal Qi (本气)
+     */
+    PRINCIPAL(2, "本气");
+
+    /**
+     * The code representing the Hidden Stem type.
      */
     private final int code;
 
     /**
-     * 名称
+     * The name of the Hidden Stem type.
      */
     private final String name;
 
+    /**
+     * Constructs a {@code HiddenStems} enum entry.
+     *
+     * @param code The integer code for the Hidden Stem type.
+     * @param name The Chinese character name for the Hidden Stem type.
+     */
     HiddenStems(int code, String name) {
         this.code = code;
         this.name = name;
     }
 
+    /**
+     * Retrieves a {@code HiddenStems} enum entry by its code.
+     *
+     * @param code The code of the Hidden Stem type to retrieve.
+     * @return The {@code HiddenStems} enum entry, or {@code null} if not found.
+     */
     public static HiddenStems fromCode(Integer code) {
         if (null == code) {
             return null;
@@ -64,6 +89,12 @@ public enum HiddenStems {
         return null;
     }
 
+    /**
+     * Retrieves a {@code HiddenStems} enum entry by its name.
+     *
+     * @param name The name of the Hidden Stem type to retrieve.
+     * @return The {@code HiddenStems} enum entry, or {@code null} if not found.
+     */
     public static HiddenStems fromName(String name) {
         if (null == name) {
             return null;
@@ -76,14 +107,29 @@ public enum HiddenStems {
         return null;
     }
 
+    /**
+     * Gets the code of this Hidden Stem type.
+     *
+     * @return The integer code.
+     */
     public int getCode() {
         return code;
     }
 
+    /**
+     * Gets the name of this Hidden Stem type.
+     *
+     * @return The Chinese character name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the name of this Hidden Stem type.
+     *
+     * @return The name of this Hidden Stem type.
+     */
     @Override
     public String toString() {
         return getName();

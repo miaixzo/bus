@@ -30,7 +30,8 @@ package org.miaixz.bus.cron.pattern.matcher;
 import java.util.function.Predicate;
 
 /**
- * 表达式中的某个位置部分匹配器 用于匹配日期位中对应数字是否匹配
+ * A matcher for a single field (part) of a cron expression. This interface is used to determine if a given integer
+ * value (like a minute or an hour) matches the constraints of a specific cron field.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,10 +39,10 @@ import java.util.function.Predicate;
 public interface PartMatcher extends Predicate<Integer> {
 
     /**
-     * 获取指定值之后的匹配值，也可以是指定值本身
+     * Finds the next matching value at or after the given value.
      *
-     * @param value 指定的值
-     * @return 匹配到的值或之后的值
+     * @param value The value to start searching from.
+     * @return The next matching value.
      */
     int nextAfter(int value);
 

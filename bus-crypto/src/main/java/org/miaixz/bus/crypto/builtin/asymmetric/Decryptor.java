@@ -36,11 +36,11 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 
 /**
- * 非对称解密器接口，提供：
+ * Asymmetric decryptor interface, providing methods for:
  * <ul>
- * <li>从bytes解密</li>
- * <li>从Hex(16进制)解密</li>
- * <li>从Base64解密</li>
+ * <li>Decrypting from byte arrays</li>
+ * <li>Decrypting from hexadecimal strings</li>
+ * <li>Decrypting from Base64 encoded strings</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -49,55 +49,59 @@ import org.miaixz.bus.crypto.Builder;
 public interface Decryptor {
 
     /**
-     * 解密
+     * Decrypts the given byte array using the specified key type.
      *
-     * @param bytes   被解密的bytes
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 解密后的bytes
+     * @param bytes   The byte array to be decrypted.
+     * @param keyType The type of key to use for decryption (e.g., {@link KeyType#PrivateKey} or
+     *                {@link KeyType#PublicKey}).
+     * @return The decrypted content as a byte array.
      */
     byte[] decrypt(byte[] bytes, KeyType keyType);
 
     /**
-     * 解密
+     * Decrypts data from an input stream using the specified key type. The input stream will be read entirely and then
+     * decrypted.
      *
-     * @param data    被解密的bytes
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 解密后的bytes
-     * @throws InternalException IO异常
+     * @param data    The input stream containing the encrypted data.
+     * @param keyType The type of key to use for decryption.
+     * @return The decrypted content as a byte array.
+     * @throws InternalException if an I/O error occurs during stream reading or decryption fails.
      */
     default byte[] decrypt(final InputStream data, final KeyType keyType) throws InternalException {
         return decrypt(IoKit.readBytes(data), keyType);
     }
 
     /**
-     * 从Hex或Base64字符串解密，编码为UTF-8格式
+     * Decrypts a string that is either Hex (16-进制) or Base64 encoded, using the specified key type.
      *
-     * @param data    Hex（16进制）或Base64字符串
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 解密后的bytes
+     * @param data    The string to be decrypted, which must be in hexadecimal or Base64 format.
+     * @param keyType The type of key to use for decryption.
+     * @return The decrypted content as a byte array.
      */
     default byte[] decrypt(final String data, final KeyType keyType) {
         return decrypt(Builder.decode(data), keyType);
     }
 
     /**
-     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
+     * Decrypts a string that is either Hex (16-进制) or Base64 encoded, and converts the result to a string using the
+     * specified charset.
      *
-     * @param data    数据，Hex（16进制）或Base64字符串
-     * @param keyType 密钥类型
-     * @param charset 加密前编码
-     * @return 解密后的密文
+     * @param data    The string to be decrypted, which must be in hexadecimal or Base64 format.
+     * @param keyType The type of key to use for decryption.
+     * @param charset The character set to use for decoding the decrypted bytes into a string.
+     * @return The decrypted content as a String.
      */
     default String decryptString(final String data, final KeyType keyType, final java.nio.charset.Charset charset) {
         return StringKit.toString(decrypt(data, keyType), charset);
     }
 
     /**
-     * 解密为字符串，密文需为Hex（16进制）或Base64字符串
+     * Decrypts a string that is either Hex (16-进制) or Base64 encoded, and converts the result to a string using UTF-8
+     * encoding.
      *
-     * @param data    数据，Hex（16进制）或Base64字符串
-     * @param keyType 密钥类型
-     * @return 解密后的密文，UTF-8编码
+     * @param data    The string to be decrypted, which must be in hexadecimal or Base64 format.
+     * @param keyType The type of key to use for decryption.
+     * @return The decrypted content as a String, using UTF-8 encoding.
      */
     default String decryptString(final String data, final KeyType keyType) {
         return decryptString(data, keyType, Charset.UTF_8);

@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.spring.banner;
 
-import java.io.BufferedReader;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -42,8 +38,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 
+import java.io.BufferedReader;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
 /**
- * 处理 Spring Boot Banner 打印，确保单次打印，优先级：Banner - banner.txt - TextBanner
+ * Handles Spring Boot Banner printing, ensuring a single banner is printed. Prioritizes an existing {@link Banner}
+ * bean, then {@code banner.txt}, and finally a default {@link TextBanner}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,19 +52,23 @@ import org.springframework.core.env.EnumerablePropertySource;
 public class BannerPrinter {
 
     /**
-     * 打印 Banner，禁用默认打印，优先检查已有 Banner、banner.txt 或 TextBanner。
+     * Prints the application banner.
+     * <p>
+     * This method disables the default Spring Boot banner printing and checks for an existing {@link Banner} bean, a
+     * {@code banner.txt} file, or falls back to a {@link TextBanner}.
+     * </p>
      *
-     * @param app SpringApplication 实例
-     * @param env Spring 环境配置
+     * @param app The {@link SpringApplication} instance.
+     * @param env The Spring {@link ConfigurableEnvironment}.
      */
     public void printBanner(SpringApplication app, ConfigurableEnvironment env) {
-        // 检查已有 Banner
+        // Check for an already configured Banner
         Banner banner = (Banner) FieldKit.getFieldValue(app, "banner");
         if (banner != null) {
             return;
         }
 
-        // 加载 banner.txt
+        // Load banner.txt if it exists
         String location = env.getProperty(GeniusBuilder.SPRING_BANNER_LOCATION, GeniusBuilder.SPRING_BANNER_TXT);
         if (FileKit.exists(location)) {
             BufferedReader reader = ResourceKit.getReader(location);
@@ -74,17 +79,17 @@ public class BannerPrinter {
             return;
         }
 
-        // 默认 TextBanner
+        // Fallback to default TextBanner
         banner = new TextBanner();
         app.setBanner(banner);
     }
 
     /**
-     * 替换 Banner 文本中的环境变量占位符（如 ${spring.application.name}）。
+     * Replaces environment variable placeholders (e.g., {@code ${spring.application.name}}) in the banner text.
      *
-     * @param text 待处理文本
-     * @param env  Spring 环境配置
-     * @return 替换后的文本
+     * @param text The text containing placeholders.
+     * @param env  The Spring {@link ConfigurableEnvironment}.
+     * @return The text with placeholders replaced by their corresponding environment values.
      */
     private String replacePlaceholders(String text, ConfigurableEnvironment env) {
         Properties props = new Properties();

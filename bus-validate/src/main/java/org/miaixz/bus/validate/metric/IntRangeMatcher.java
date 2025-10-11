@@ -27,40 +27,54 @@
 */
 package org.miaixz.bus.validate.metric;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.IntRange;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * INT RANGE 校验
+ * Validator for the {@link IntRange} annotation, checking if a numeric value is within a specified integer range.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class IntRangeMatcher implements Matcher<Object, IntRange> {
 
-    private static Set<Class<?>> NumberTypes = new HashSet<>();
+    /**
+     * A set of supported numeric types for validation.
+     */
+    private static final Set<Class<?>> NUMBER_TYPES = new HashSet<>();
 
     static {
-        NumberTypes.add(Integer.class);
-        NumberTypes.add(Long.class);
-        NumberTypes.add(Double.class);
-        NumberTypes.add(Float.class);
-        NumberTypes.add(int.class);
-        NumberTypes.add(long.class);
-        NumberTypes.add(double.class);
-        NumberTypes.add(float.class);
-        NumberTypes.add(BigDecimal.class);
-        NumberTypes.add(BigInteger.class);
+        NUMBER_TYPES.add(Integer.class);
+        NUMBER_TYPES.add(Long.class);
+        NUMBER_TYPES.add(Double.class);
+        NUMBER_TYPES.add(Float.class);
+        NUMBER_TYPES.add(int.class);
+        NUMBER_TYPES.add(long.class);
+        NUMBER_TYPES.add(double.class);
+        NUMBER_TYPES.add(float.class);
+        NUMBER_TYPES.add(BigDecimal.class);
+        NUMBER_TYPES.add(BigInteger.class);
     }
 
+    /**
+     * Checks if the given object, which can be a {@link Number} or a {@link String} representing a number, falls within
+     * the range specified by the {@link IntRange} annotation.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link IntRange} annotation instance, providing the min and max range.
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is empty (null) or if its numeric value is within the specified range
+     *         (inclusive), {@code false} otherwise.
+     * @throws IllegalArgumentException if the object is not a supported number type or a parsable numeric string.
+     */
     @Override
     public boolean on(Object object, IntRange annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
@@ -68,15 +82,15 @@ public class IntRangeMatcher implements Matcher<Object, IntRange> {
         }
         BigDecimal num;
         if (object instanceof String) {
-            num = MathKit.add((String) object);
-        } else if (NumberTypes.contains(object.getClass())) {
+            num = MathKit.toBigDecimal((String) object);
+        } else if (NUMBER_TYPES.contains(object.getClass())) {
             String numString = String.valueOf(object);
-            num = MathKit.add(numString);
+            num = MathKit.toBigDecimal(numString);
         } else {
-            throw new IllegalArgumentException("不支持的数字格式:" + object.toString());
+            throw new IllegalArgumentException("Unsupported number format: " + object);
         }
-        BigDecimal max = new BigDecimal(annotation.max());
-        BigDecimal min = new BigDecimal(annotation.min());
+        BigDecimal max = BigDecimal.valueOf(annotation.max());
+        BigDecimal min = BigDecimal.valueOf(annotation.min());
 
         return max.compareTo(num) >= 0 && min.compareTo(num) <= 0;
     }

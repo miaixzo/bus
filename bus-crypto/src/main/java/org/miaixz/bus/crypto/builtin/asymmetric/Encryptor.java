@@ -37,11 +37,11 @@ import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 非对称加密器接口，提供：
+ * Asymmetric encryptor interface, providing methods for:
  * <ul>
- * <li>加密为bytes</li>
- * <li>加密为Hex(16进制)</li>
- * <li>加密为Base64</li>
+ * <li>Encrypting to byte arrays</li>
+ * <li>Encrypting to hexadecimal strings</li>
+ * <li>Encrypting to Base64 encoded strings</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -50,134 +50,142 @@ import org.miaixz.bus.core.xyz.IoKit;
 public interface Encryptor {
 
     /**
-     * 加密
+     * Encrypts the given byte array using the specified key type.
      *
-     * @param data    被加密的bytes
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 加密后的bytes
+     * @param data    The byte array to be encrypted.
+     * @param keyType The type of key to use for encryption (e.g., {@link KeyType#PrivateKey} or
+     *                {@link KeyType#PublicKey}).
+     * @return The encrypted content as a byte array.
      */
     byte[] encrypt(byte[] data, KeyType keyType);
 
     /**
-     * 编码为Hex字符串
+     * Encodes the encrypted byte array into a hexadecimal string.
      *
-     * @param data    被加密的bytes
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return Hex字符串
+     * @param data    The byte array to be encrypted.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a hexadecimal string.
      */
     default String encryptHex(final byte[] data, final KeyType keyType) {
         return HexKit.encodeString(encrypt(data, keyType));
     }
 
     /**
-     * 编码为Base64字符串
+     * Encodes the encrypted byte array into a Base64 string.
      *
-     * @param data    被加密的bytes
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return Base64字符串
+     * @param data    The byte array to be encrypted.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a Base64 encoded string.
      */
     default String encryptBase64(final byte[] data, final KeyType keyType) {
         return Base64.encode(encrypt(data, keyType));
     }
 
     /**
-     * 加密
+     * Encrypts the given string data using the specified charset and key type.
      *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 加密后的bytes
+     * @param data    The string data to be encrypted.
+     * @param charset The character set to use for encoding the string.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a byte array.
      */
     default byte[] encrypt(final String data, final Charset charset, final KeyType keyType) {
         return encrypt(ByteKit.toBytes(data, charset), keyType);
     }
 
     /**
-     * 加密，使用UTF-8编码
+     * Encrypts the given string data using UTF-8 encoding and the specified key type.
      *
-     * @param data    被加密的字符串
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 加密后的bytes
+     * @param data    The string data to be encrypted.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a byte array.
      */
     default byte[] encrypt(final String data, final KeyType keyType) {
         return encrypt(ByteKit.toBytes(data), keyType);
     }
 
     /**
-     * 编码为Hex字符串
+     * Encrypts the given string data using UTF-8 encoding and the specified key type, then returns the result as a
+     * hexadecimal string.
      *
-     * @param data    被加密的字符串
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return Hex字符串
+     * @param data    The string data to be encrypted.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a hexadecimal string.
      */
     default String encryptHex(final String data, final KeyType keyType) {
         return HexKit.encodeString(encrypt(data, keyType));
     }
 
     /**
-     * 编码为Hex字符串
+     * Encrypts the given string data using the specified charset and key type, then returns the result as a hexadecimal
+     * string.
      *
-     * @param data    被加密的bytes
-     * @param charset 编码
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return Hex字符串
+     * @param data    The string data to be encrypted.
+     * @param charset The character set to use for encoding the string.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a hexadecimal string.
      */
     default String encryptHex(final String data, final Charset charset, final KeyType keyType) {
         return HexKit.encodeString(encrypt(data, charset, keyType));
     }
 
     /**
-     * 编码为Base64字符串，使用UTF-8编码
+     * Encrypts the given string data using UTF-8 encoding and the specified key type, then returns the result as a
+     * Base64 encoded string.
      *
-     * @param data    被加密的字符串
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return Base64字符串
+     * @param data    The string data to be encrypted.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a Base64 encoded string.
      */
     default String encryptBase64(final String data, final KeyType keyType) {
         return Base64.encode(encrypt(data, keyType));
     }
 
     /**
-     * 编码为Base64字符串
+     * Encrypts the given string data using the specified charset and key type, then returns the result as a Base64
+     * encoded string.
      *
-     * @param data    被加密的字符串
-     * @param charset 编码
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return Base64字符串
+     * @param data    The string data to be encrypted.
+     * @param charset The character set to use for encoding the string.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a Base64 encoded string.
      */
     default String encryptBase64(final String data, final Charset charset, final KeyType keyType) {
         return Base64.encode(encrypt(data, charset, keyType));
     }
 
     /**
-     * 加密
+     * Encrypts data from an input stream using the specified key type. The input stream will be read entirely and then
+     * encrypted.
      *
-     * @param data    被加密的数据流
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return 加密后的bytes
-     * @throws InternalException IO异常
+     * @param data    The input stream containing the data to be encrypted.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a byte array.
+     * @throws InternalException if an I/O error occurs during stream reading or encryption fails.
      */
     default byte[] encrypt(final InputStream data, final KeyType keyType) throws InternalException {
         return encrypt(IoKit.readBytes(data), keyType);
     }
 
     /**
-     * 编码为Hex字符串
+     * Encrypts data from an input stream using the specified key type, then returns the result as a hexadecimal string.
+     * The input stream will be read entirely and then encrypted.
      *
-     * @param data    被加密的数据流
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return Hex字符串
+     * @param data    The input stream containing the data to be encrypted.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a hexadecimal string.
      */
     default String encryptHex(final InputStream data, final KeyType keyType) {
         return HexKit.encodeString(encrypt(data, keyType));
     }
 
     /**
-     * 编码为Base64字符串
+     * Encrypts data from an input stream using the specified key type, then returns the result as a Base64 encoded
+     * string. The input stream will be read entirely and then encrypted.
      *
-     * @param data    被加密的数据流
-     * @param keyType 私钥或公钥 {@link KeyType}
-     * @return Base64字符串
+     * @param data    The input stream containing the data to be encrypted.
+     * @param keyType The type of key to use for encryption.
+     * @return The encrypted content as a Base64 encoded string.
      */
     default String encryptBase64(final InputStream data, final KeyType keyType) {
         return Base64.encode(encrypt(data, keyType));

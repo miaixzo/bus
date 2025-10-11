@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.RegexMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 正则表达式校验
+ * Validates that the annotated string matches a given regular expression.
+ *
  * <p>
- * 默认被校验对象是null时,通过校验
- * </P>
+ * By default, if the object to be validated is null, the validation passes.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,41 +49,48 @@ import org.miaixz.bus.validate.metric.RegexMatcher;
 @Complex(value = Builder._REGEX, clazz = RegexMatcher.class)
 public @interface Regex {
 
+    /**
+     * The regular expression pattern to match against.
+     *
+     * @return the regular expression pattern.
+     */
     @Filler("pattern")
     String pattern() default Normal.EMPTY;
 
     /**
-     * 如果长度为0,判断能否通过校验 默认为false true：表示长度为零,默认通过校验；false：表示长度为0,仍然要进行正则验证
+     * Specifies whether a string of zero length is permissible. Defaults to {@code false}. If {@code true}, a
+     * zero-length string will pass validation without being checked against the regex. If {@code false}, a zero-length
+     * string is still subject to the regex validation.
      *
-     * @return the boolean
+     * @return {@code true} if a zero-length string is allowed, {@code false} otherwise.
      */
     boolean zeroAble() default false;
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}验证失败,请检查数据格式";
+    String errmsg() default "Validation failed for ${field}, please check the data format";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

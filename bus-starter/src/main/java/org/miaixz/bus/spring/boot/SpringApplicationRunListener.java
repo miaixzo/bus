@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.spring.boot;
 
-import java.lang.management.ManagementFactory;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -47,11 +42,18 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import java.lang.management.ManagementFactory;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 实现 {@link org.springframework.boot.SpringApplicationRunListener} 和 {@link ApplicationListener}，计算启动阶段时间。
+ * Implements {@link org.springframework.boot.SpringApplicationRunListener} and {@link ApplicationListener} to calculate
+ * and report startup stage times.
  * <p>
- * 该类用于监控和记录Spring应用程序启动过程中的各个阶段耗时，支持动态加载和性能统计。 它记录JVM启动、环境准备、上下文初始化等关键阶段的性能指标，为应用程序启动性能分析提供数据支持。
- * </p>
+ * This class monitors and records the time taken for various stages during the Spring application startup process,
+ * including JVM startup, environment preparation, and context initialization. It provides performance metrics for
+ * analyzing application startup performance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -60,51 +62,43 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         ApplicationListener<ApplicationStartedEvent>, Ordered {
 
     /**
-     * Spring Boot主引导和启动Spring应用程序的实例
+     * The Spring Boot application instance.
      */
     private final org.springframework.boot.SpringApplication application;
 
     /**
-     * 收集和报告启动成本的基本组件
+     * The component responsible for collecting and reporting startup costs.
      */
     private final StartupReporter startupReporter;
 
     /**
-     * JVM启动后的运行阶段统计信息
-     * <p>
-     * 记录从JVM启动到SpringApplicationRunListener.starting方法执行完成的时间
-     * </p>
+     * Startup metrics for the JVM starting stage. Records the time from JVM launch until the {@code starting} method of
+     * this listener completes.
      */
     private BaseMetrics jvmStartingStage;
 
     /**
-     * 环境准备阶段的运行阶段统计信息
-     * <p>
-     * 记录从started方法执行到environmentPrepared方法执行完成的时间
-     * </p>
+     * Startup metrics for the environment preparation stage. Records the time from the completion of the
+     * {@code started} method until the {@code environmentPrepared} method completes.
      */
     private BaseMetrics environmentPrepareStage;
 
     /**
-     * 应用程序上下文准备阶段的运行阶段统计信息
-     * <p>
-     * 记录从environmentPrepared方法执行到contextPrepared方法执行完成的时间
-     * </p>
+     * Startup metrics for the application context preparation stage. Records the time from the completion of the
+     * {@code environmentPrepared} method until the {@code contextPrepared} method completes.
      */
     private ChildrenMetrics<BaseMetrics> applicationContextPrepareStage;
 
     /**
-     * 应用程序上下文加载阶段的运行阶段统计信息
-     * <p>
-     * 记录从contextPrepared方法执行到contextLoaded方法执行完成的时间
-     * </p>
+     * Startup metrics for the application context loading stage. Records the time from the completion of the
+     * {@code contextPrepared} method until the {@code contextLoaded} method completes.
      */
     private BaseMetrics applicationContextLoadStage;
 
     /**
-     * 构造函数，初始化SpringApplicationRunListener
+     * Constructs a new {@code SpringApplicationRunListener}.
      *
-     * @param springApplication Spring应用程序实例
+     * @param springApplication The Spring application instance.
      */
     public SpringApplicationRunListener(org.springframework.boot.SpringApplication springApplication) {
         this.application = springApplication;
@@ -115,12 +109,12 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     }
 
     /**
-     * 应用程序启动开始时的回调方法
+     * Callback method invoked when the application is starting.
      * <p>
-     * 记录JVM启动阶段的开始和结束时间，计算JVM启动耗时
+     * Records the start and end times of the JVM starting stage and calculates the elapsed time.
      * </p>
      *
-     * @param bootstrapContext 可配置的引导上下文
+     * @param bootstrapContext The configurable bootstrap context.
      */
     @Override
     public void starting(ConfigurableBootstrapContext bootstrapContext) {
@@ -132,13 +126,15 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     }
 
     /**
-     * 环境准备完成时的回调方法
+     * Callback method invoked when the environment is prepared.
      * <p>
-     * 记录环境准备阶段的开始和结束时间，计算环境准备耗时，并设置应用程序名称
+     * Records the start and end times of the environment preparation stage, calculates the elapsed time, and sets the
+     * application name. It also binds the {@link StartupReporter} to the environment and registers it in the bootstrap
+     * context.
      * </p>
      *
-     * @param bootstrapContext 可配置的引导上下文
-     * @param environment      可配置的环境
+     * @param bootstrapContext The configurable bootstrap context.
+     * @param environment      The configurable environment.
      */
     @Override
     public void environmentPrepared(
@@ -149,14 +145,14 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         environmentPrepareStage.setStartTime(jvmStartingStage.getEndTime());
         environmentPrepareStage.setEndTime(System.currentTimeMillis());
 
-        // 设置应用程序名称并绑定到启动报告器
+        // Set the application name and bind to the startup reporter
         startupReporter.setAppName(environment.getProperty(GeniusBuilder.APP_NAME));
         startupReporter.bindToStartupReporter(environment);
 
-        // 注册启动报告器到引导上下文
+        // Register the startup reporter to the bootstrap context
         bootstrapContext.register(StartupReporter.class, key -> startupReporter);
 
-        // 尝试设置BufferingApplicationStartup（如果可用）
+        // Attempt to set BufferingApplicationStartup (if available)
         try {
             Class.forName("org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup");
             application.setApplicationStartup(
@@ -168,12 +164,13 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     }
 
     /**
-     * 应用程序上下文准备完成时的回调方法
+     * Callback method invoked when the application context is prepared.
      * <p>
-     * 记录应用程序上下文准备阶段的开始和结束时间，计算上下文准备耗时， 并添加SpringApplication中收集的初始化器统计信息
+     * Records the start and end times of the application context preparation stage, calculates the elapsed time, and
+     * adds initializer statistics collected from {@link org.miaixz.bus.spring.boot.SpringApplication}.
      * </p>
      *
-     * @param context 可配置的应用程序上下文
+     * @param context The configurable application context.
      */
     @Override
     public void contextPrepared(ConfigurableApplicationContext context) {
@@ -182,8 +179,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         applicationContextPrepareStage.setStartTime(environmentPrepareStage.getEndTime());
         applicationContextPrepareStage.setEndTime(System.currentTimeMillis());
 
-        // 如果是自定义的SpringApplication，获取初始化器统计信息
-        if (application instanceof SpringApplication springApplication) {
+        // If it's a custom SpringApplication, get initializer statistics
+        if (application instanceof org.miaixz.bus.spring.boot.SpringApplication springApplication) {
             List<BaseMetrics> statisticsList = springApplication.getInitializerStartupStatList();
             applicationContextPrepareStage.setChildren(new ArrayList<>(statisticsList));
             statisticsList.clear();
@@ -195,12 +192,13 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     }
 
     /**
-     * 应用程序上下文加载完成时的回调方法
+     * Callback method invoked when the application context is loaded.
      * <p>
-     * 记录应用程序上下文加载阶段的开始和结束时间，计算上下文加载耗时， 并注册启动报告器和生命周期处理器
+     * Records the start and end times of the application context loading stage, calculates the elapsed time, and
+     * registers the {@link StartupReporterProcessor} and {@link SpringSmartLifecycle} beans.
      * </p>
      *
-     * @param context 可配置的应用程序上下文
+     * @param context The configurable application context.
      */
     @Override
     public void contextLoaded(ConfigurableApplicationContext context) {
@@ -209,11 +207,11 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         applicationContextLoadStage.setStartTime(applicationContextPrepareStage.getEndTime());
         applicationContextLoadStage.setEndTime(System.currentTimeMillis());
 
-        // 注册启动报告器处理器和启动报告器
+        // Register StartupReporterProcessor and StartupReporter
         context.getBeanFactory().addBeanPostProcessor(new StartupReporterProcessor(startupReporter));
         context.getBeanFactory().registerSingleton("STARTUP_REPORTER_BEAN", startupReporter);
 
-        // 注册智能生命周期处理器
+        // Register SpringSmartLifecycle processor
         SpringSmartLifecycle springSmartLifecycle = new SpringSmartLifecycle(startupReporter);
         springSmartLifecycle.setApplicationContext(context);
         context.getBeanFactory().registerSingleton("STARTUP_SMART_LIFECYCLE", springSmartLifecycle);
@@ -222,50 +220,48 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     }
 
     /**
-     * 应用程序启动完成时的回调方法
+     * Callback method invoked when the application has started.
      * <p>
-     * 记录应用程序刷新阶段的开始和结束时间，计算刷新耗时， 添加所有阶段的统计信息到启动报告器，并标记应用程序启动完成
+     * Records the start and end times of the application refresh stage, calculates the elapsed time, adds all stage
+     * statistics to the {@link StartupReporter}, and marks the application boot as finished.
      * </p>
      *
-     * @param context   可配置的应用程序上下文
-     * @param timeTaken 启动所花费的时间
+     * @param context   The configurable application context.
+     * @param timeTaken The total time taken for the application to start.
      */
     @Override
     public void started(ConfigurableApplicationContext context, Duration timeTaken) {
-        // 获取应用程序刷新阶段统计信息
+        // Get application refresh stage statistics
         ChildrenMetrics<ModuleMetrics> applicationRefreshStage = (ChildrenMetrics<ModuleMetrics>) startupReporter
                 .getStageNyName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
 
-        // 设置刷新阶段的时间信息
+        // Set time information for the refresh stage
         applicationRefreshStage.setStartTime(applicationContextLoadStage.getEndTime());
         applicationRefreshStage.setEndTime(System.currentTimeMillis());
         applicationRefreshStage.setCost(applicationRefreshStage.getEndTime() - applicationRefreshStage.getStartTime());
 
-        // 设置根模块的时间信息
+        // Set time information for the root module
         ModuleMetrics rootModule = applicationRefreshStage.getChildren().get(0);
         rootModule.setStartTime(applicationRefreshStage.getStartTime());
         rootModule.setCost(rootModule.getEndTime() - rootModule.getStartTime());
 
-        // 添加所有阶段的统计信息到启动报告器
+        // Add all stage statistics to the startup reporter
         startupReporter.addCommonStartupStat(jvmStartingStage);
         startupReporter.addCommonStartupStat(environmentPrepareStage);
         startupReporter.addCommonStartupStat(applicationContextPrepareStage);
         startupReporter.addCommonStartupStat(applicationContextLoadStage);
 
-        // 标记应用程序启动完成
+        // Mark application boot as finished
         startupReporter.applicationBootFinish();
 
-        // 输出启动完成消息
+        // Log the application started message
         Logger.info(getStartedMessage(context, timeTaken));
     }
 
     /**
-     * 处理应用程序启动事件
-     * <p>
-     * 当接收到ApplicationStartedEvent事件时调用此方法
-     * </p>
+     * Handles {@link ApplicationStartedEvent} events.
      *
-     * @param event 应用程序启动事件
+     * @param event The application started event.
      */
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
@@ -273,9 +269,9 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     }
 
     /**
-     * 获取此监听器的顺序
+     * Returns the order value for this listener.
      *
-     * @return 顺序值，值越小优先级越高
+     * @return The order value, where a lower value indicates higher priority.
      */
     @Override
     public int getOrder() {
@@ -283,14 +279,15 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     }
 
     /**
-     * 生成应用程序启动完成消息
+     * Generates a message indicating that the application has started.
      * <p>
-     * 构建包含应用程序名称、配置名称、活动配置文件、日志级别和启动时间的消息
+     * Constructs a message containing the application name, config name, active profiles, effective logging level, and
+     * total startup time.
      * </p>
      *
-     * @param context            可配置的应用程序上下文
-     * @param timeTakenToStartup 启动所花费的时间
-     * @return 启动完成消息字符串
+     * @param context            The configurable application context.
+     * @param timeTakenToStartup The total time taken for the application to start.
+     * @return The formatted application started message string.
      */
     private String getStartedMessage(ConfigurableApplicationContext context, Duration timeTakenToStartup) {
         StringBuilder message = new StringBuilder();
@@ -307,7 +304,7 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         message.append(" - Active Profiles: ")
                 .append(activeProfiles.length > 0 ? String.join(", ", activeProfiles) : "none");
 
-        // 获取日志级别
+        // Get logging level
         String logging = environment.getProperty(GeniusBuilder.LOGGING_LEVEL);
         if (!StringKit.hasText(logging)) {
             LoggingSystem loggingSystem = context.getBean(LoggingSystem.class);

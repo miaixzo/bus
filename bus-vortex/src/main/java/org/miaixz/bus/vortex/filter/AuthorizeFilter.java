@@ -30,16 +30,20 @@ package org.miaixz.bus.vortex.filter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.miaixz.bus.core.basic.entity.Authorize;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.Delegate;
 import org.miaixz.bus.vortex.magic.ErrorCode;
@@ -56,10 +60,13 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 /**
- * 访问鉴权过滤器，负责验证请求的合法性、方法、令牌和应用 ID
+ * Access authorization filter responsible for verifying the legality of requests, including method, token, and
+ * application ID.
  * <p>
- * 该过滤器是请求处理链中的重要组成部分，它通过检查请求的方法、版本、令牌和应用ID来验证请求的合法性。 过滤器会根据配置的资产信息验证请求的HTTP方法、令牌（如果需要）以及应用ID，确保只有合法的请求能够通过。
- * </p>
+ * This filter is a crucial part of the request processing chain. It validates the legality of requests by checking the
+ * request method, version, token (if required), and application ID. The filter ensures that only legitimate requests
+ * are allowed to proceed by verifying the HTTP method, token, and application ID against the configured asset
+ * information.
  *
  * @author Justubborn
  * @since Java 17+
@@ -68,26 +75,28 @@ import reactor.core.publisher.Mono;
 public class AuthorizeFilter extends AbstractFilter {
 
     /**
-     * 授权提供者，用于处理令牌验证和授权逻辑
+     * The authorization provider, used for handling token validation and authorization logic.
      * <p>
-     * 该组件负责验证传入的访问令牌，并返回授权结果，包括用户信息和权限等。
+     * This component is responsible for validating incoming access tokens and returning authorization results,
+     * including user information and permissions.
      * </p>
      */
     private final AuthorizeProvider provider;
 
     /**
-     * 资产注册表，用于存储和检索API资产信息
+     * The assets registry, used for storing and retrieving API asset information.
      * <p>
-     * 该组件维护所有可用的API资产，包括它们的方法、版本、HTTP方法类型以及是否需要令牌验证等信息。
+     * This component maintains all available API assets, including their methods, versions, HTTP method types, and
+     * whether token validation is required.
      * </p>
      */
     private final AssetsRegistry registry;
 
     /**
-     * 构造器，初始化授权提供者和资产注册表
+     * Constructs an {@code AuthorizeFilter} with the specified authorization provider and assets registry.
      *
-     * @param provider 授权提供者，用于处理令牌验证和授权逻辑
-     * @param registry 资产注册表，用于存储和检索API资产信息
+     * @param provider The authorization provider, used for handling token validation and authorization logic.
+     * @param registry The assets registry, used for storing and retrieving API asset information.
      */
     public AuthorizeFilter(AuthorizeProvider provider, AssetsRegistry registry) {
         this.provider = provider;
@@ -95,67 +104,78 @@ public class AuthorizeFilter extends AbstractFilter {
     }
 
     /**
-     * 内部过滤方法，执行授权验证逻辑
+     * The internal filtering method, which executes the authorization validation logic.
      * <p>
-     * 该方法是过滤器的核心实现，负责执行完整的授权验证流程，包括： 1. 从请求中提取参数并设置上下文 2. 根据方法和版本查找对应的资产 3. 验证HTTP方法是否匹配 4. 如果需要，验证访问令牌 5. 验证应用ID是否匹配
-     * 6. 填充和清理请求参数 7. 将资产信息设置到上下文中
-     * </p>
+     * This method is the core implementation of the filter, responsible for executing the complete authorization
+     * validation process, including:
+     * <ol>
+     * <li>Extracting parameters from the request and setting the context.</li>
+     * <li>Finding the corresponding asset based on the method and version.</li>
+     * <li>Validating if the HTTP method matches.</li>
+     * <li>Validating the access token if required.</li>
+     * <li>Validating if the application ID matches.</li>
+     * <li>Populating and cleaning request parameters.</li>
+     * <li>Setting asset information into the context.</li>
+     * </ol>
      *
-     * @param exchange 当前的 ServerWebExchange 对象，包含请求和响应信息
-     * @param chain    过滤器链，用于将请求传递给下一个过滤器
-     * @param context  请求上下文，包含请求相关的状态信息
-     * @return {@link Mono<Void>} 表示异步处理完成，当所有验证通过后继续执行过滤器链
+     * @param exchange The current {@link ServerWebExchange} object, containing request and response information.
+     * @param chain    The filter chain, used to pass the request to the next filter.
+     * @param context  The request context, containing request-related state information.
+     * @return {@link Mono<Void>} indicating the asynchronous completion of processing. The filter chain continues
+     *         execution if all validations pass.
      */
     @Override
     protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
-        // 从上下文中获取请求参数映射
+        // Get the request parameter map from the context
         Map<String, String> params = getRequestMap(context);
 
-        // 设置上下文中的格式、通道和令牌信息
-        context.setFormat(Format.valueOf(StringKit.toUpperCase(params.get(Config.FORMAT))));
-        context.setChannel(Channel.get(params.get(Config.X_REMOTE_CHANNEL)));
-        context.setToken(exchange.getRequest().getHeaders().getFirst(Config.X_ACCESS_TOKEN));
+        // Set the format, channel, and token information in the context
+        context.setFormats(Formats.valueOf(StringKit.toUpperCase(params.get(Args.FORMAT))));
+        context.setChannel(Channel.get(params.get(Args.X_REMOTE_CHANNEL)));
+        context.setToken(exchange.getRequest().getHeaders().getFirst(Args.X_ACCESS_TOKEN));
 
-        // 获取请求方法和版本
-        String method = params.get(Config.METHOD);
-        String version = params.get(Config.VERSION);
+        // Get the request method and version
+        String method = params.get(Args.METHOD);
+        String version = params.get(Args.VERSION);
 
-        // 从注册表中获取对应的资产信息
+        // Get the corresponding asset information from the registry
         Assets assets = registry.get(method, version);
         if (null == assets) {
-            Format.warn(
-                    exchange,
-                    "AUTH_ASSETS_NOT_FOUND",
-                    "Assets not found for method: " + method + ", version: " + version);
+            Logger.warn("==>     Filter: Assets not found for method: {}, version: {}", method, version);
             return Mono.error(new ValidateException(ErrorCode._100800));
         }
 
-        // 请求基础校验
+        // Basic request validation
         this.method(exchange, assets);
-        if (Consts.TYPE_ONE != assets.getFirewall()) {
-            // 执行认证
+        if (Consts.ZERO != assets.getFirewall()) {
+            // Perform authorize
             this.authorize(exchange, context, assets);
         }
 
-        // 将资产信息设置到上下文中
+        // Set asset information into the context
         context.setAssets(assets);
 
-        // 记录验证通过的信息
-        Format.info(exchange, "AUTH_VALIDATED", "Method: " + method + ", Version: " + version);
+        // Populates IP-related parameters into the request context.
+        this.populate(exchange, context);
 
-        // 继续执行过滤器链
+        // Log successful validation
+        Logger.info("==>     Filter: Method: {}, Version: {} validated successfully", method, version);
+
+        // Continue with the filter chain
         return chain.filter(exchange);
     }
 
     /**
-     * 校验请求的 HTTP 方法是否匹配资产配置
+     * Validates if the HTTP method of the request matches the asset configuration.
      * <p>
-     * 该方法检查当前请求的HTTP方法是否与资产配置中要求的方法一致。 如果不匹配，将根据期望的HTTP方法类型抛出不同的业务异常。
+     * This method checks if the HTTP method of the current request is consistent with the method required in the asset
+     * configuration. If there is a mismatch, a business exception will be thrown based on the expected HTTP method
+     * type.
      * </p>
      *
-     * @param exchange ServerWebExchange 对象，包含请求和响应信息
-     * @param assets   资产信息，包含期望的HTTP方法类型
-     * @throws ValidateException 如果方法不匹配，抛出对应错误
+     * @param exchange The {@link ServerWebExchange} object, containing request and response information.
+     * @param assets   The asset information, containing the expected HTTP method type.
+     * @throws ValidateException if the method does not match, throwing the corresponding error.
      */
     protected void method(ServerWebExchange exchange, Assets assets) {
         ServerHttpRequest request = exchange.getRequest();
@@ -164,7 +184,7 @@ public class AuthorizeFilter extends AbstractFilter {
 
         if (!Objects.equals(request.getMethod(), expectedMethod)) {
             String errors = "HTTP method mismatch, expected: " + expectedMethod + ", actual: " + request.getMethod();
-            Format.warn(exchange, "AUTH_METHOD_MISMATCH", errors);
+            Logger.warn("==>     Filter: {}", errors);
 
             final Errors error = switch (expectedMethod.name()) {
                 case HTTP.GET -> ErrorCode._100200;
@@ -182,90 +202,179 @@ public class AuthorizeFilter extends AbstractFilter {
     }
 
     /**
-     * 校验令牌（如果资产要求）并将认证结果参数填充到请求参数中
+     * Validates the request using either API Key or Token authorize.
      * <p>
-     * 如果资产配置要求令牌验证，该方法将检查请求中是否包含有效的访问令牌。 如果令牌存在且有效，将从授权结果中提取用户信息并添加到请求参数中。 如果令牌缺失或无效，将抛出相应的业务异常。
-     * </p>
+     * This method attempts to authenticate the request using the following priority:
+     * <ol>
+     * <li><b>Token Authentication</b>: If a valid token is present in the request headers.</li>
+     * <li><b>API Key Authentication</b>: If no valid token is found, attempts to use API Key from parameters or
+     * headers.</li>
+     * </ol>
+     * If neither authorize method succeeds, throws a {@link ValidateException}.
      *
-     * @param exchange ServerWebExchange 对象，包含请求和响应信息
-     * @param context  上下文对象，包含令牌和通道信息
-     * @param assets   资产信息，指示是否需要令牌验证
-     * @throws ValidateException 如果令牌缺失或认证失败
+     * @param exchange The {@link ServerWebExchange} object, containing request and response information.
+     * @param context  The context object, containing token and channel information.
+     * @param assets   The asset information (may not contain token/scope configuration).
+     * @throws ValidateException if both authorize methods fail.
      */
     protected void authorize(ServerWebExchange exchange, Context context, Assets assets) {
-        if (Consts.TYPE_ONE == assets.getToken()) {
-            // 检查令牌是否存在
-            if (StringKit.isBlank(context.getToken())) {
-                Format.warn(exchange, "AUTH_TOKEN_MISSING", "Access token is missing");
-                throw new ValidateException(ErrorCode._100106);
-            }
-
-            // 创建令牌对象并进行授权验证
-            Delegate delegate = provider.authorize(
-                    Principal.builder().type(Consts.TYPE_ONE).value(context.getToken())
-                            .channel(context.getChannel().getType()).assets(assets).build());
-
-            // 处理授权结果
-            if (delegate.isOk()) {
-                Authorize auth = delegate.getAuthorize();
-                Map<String, Object> map = new HashMap<>();
-                // 将授权信息转换为Map并添加到请求参数中
-                BeanKit.beanToMap(auth, map, CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
-                map.forEach((k, v) -> context.getRequestMap().put(k, v.toString()));
-                Format.info(
-                        exchange,
-                        "AUTH_TOKEN_VALIDATED",
-                        "Token validated successfully for channel: " + context.getChannel().getType());
-            } else {
-                // 令牌验证失败
-                Format.error(
-                        exchange,
-                        "AUTH_TOKEN_FAILED",
-                        "Error code: " + delegate.getMessage().errcode + ", message: " + delegate.getMessage().errmsg);
-                throw new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
-            }
+        // Try Token Authorize first
+        if (tryApiKeyAuthorize(context, assets)) {
+            Logger.info("==>     Filter: Token authorize succeeded");
+            return;
         }
-        if (Consts.TYPE_ONE == assets.getScope()) {
-            // 优先从请求参数中获取应用ID
-            String[] api_key_params = { "apiKey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID", "X-API-KEY",
-                    "API-KEY", "API-ID" };
-            String apiKey = MapKit.getFirstNonNull(context.getRequestMap(), api_key_params);
-            // 如果请求参数中没有，尝试从请求头中获取
-            if (StringKit.isBlank(apiKey)) {
-                apiKey = MapKit.getFirstNonNull(context.getHeaderMap(), api_key_params);
-            }
 
-            // 如果仍然没有找到应用ID，抛出异常
-            if (StringKit.isBlank(apiKey)) {
-                Format.warn(exchange, "AUTH_APIKEY_MISSING", "No Api Key provided in the request");
-                throw new ValidateException(ErrorCode._100805);
-            }
-
-            // 创建apiKey对象并进行授权验证
-            Delegate delegate = provider.authorize(
-                    Principal.builder().type(Consts.TYPE_TWO).value(apiKey).channel(context.getChannel().getType())
-                            .assets(assets).build());
-
-            // 处理授权结果
-            if (delegate.isOk()) {
-                Authorize auth = delegate.getAuthorize();
-                Map<String, Object> map = new HashMap<>();
-                // 将授权信息转换为Map并添加到请求参数中
-                BeanKit.beanToMap(auth, map, CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
-                map.forEach((k, v) -> context.getRequestMap().put(k, v.toString()));
-                Format.info(
-                        exchange,
-                        "AUTH_TOKEN_VALIDATED",
-                        "Token validated successfully for channel: " + context.getChannel().getType());
-            } else {
-                // apiKey验证失败
-                Format.error(
-                        exchange,
-                        "AUTH_TOKEN_FAILED",
-                        "Error code: " + delegate.getMessage().errcode + ", message: " + delegate.getMessage().errmsg);
-                throw new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
-            }
+        // Fallback to API Key Authorize
+        if (tryTokenAuthorize(context, assets)) {
+            Logger.info("==>     Filter: API Key authorize succeeded");
+            return;
         }
+
+        // If both methods failed
+        Logger.warn("==>     Filter: Both Token and API Key authorize failed");
+        throw new ValidateException(ErrorCode._100806); // Or a more appropriate error code
+    }
+
+    /**
+     * Attempts to authenticate using Token.
+     * <p>
+     * Checks if a valid token is present in the request headers and validates it.
+     * </p>
+     *
+     * @param context The request context
+     * @param assets  The asset configuration
+     * @return {@code true} if authorize succeeded, {@code false} if no token was present
+     * @throws ValidateException if token validation failed
+     */
+    protected boolean tryTokenAuthorize(Context context, Assets assets) {
+        if (StringKit.isBlank(context.getToken())) {
+            return false; // No token present
+        }
+
+        Delegate delegate = this.provider.authorize(
+                Principal.builder().type(Consts.ONE).value(context.getToken()).channel(context.getChannel().getType())
+                        .assets(assets).build());
+
+        if (delegate.isOk()) {
+            populate(delegate.getAuthorize(), context);
+            return true;
+        }
+
+        Logger.error(
+                "==>     Filter: Token validation failed - Error code: {}, message: {}",
+                delegate.getMessage().errcode,
+                delegate.getMessage().errmsg);
+        throw new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
+    }
+
+    /**
+     * Attempts to authenticate using API Key.
+     * <p>
+     * Checks for API Key in request parameters or headers and validates it.
+     * </p>
+     *
+     * @param context The request context
+     * @param assets  The asset configuration
+     * @return {@code true} if authorize succeeded, {@code false} if no API Key was present
+     * @throws ValidateException if API Key validation failed
+     */
+    protected boolean tryApiKeyAuthorize(Context context, Assets assets) {
+        String[] apiKeyParams = { "apiKey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID", "X-API-KEY",
+                "API-KEY", "API-ID" };
+
+        // Try to get API Key from request parameters first
+        String apiKey = MapKit.getFirstNonNull(context.getRequestMap(), apiKeyParams);
+
+        // If not found in parameters, try headers
+        if (StringKit.isBlank(apiKey)) {
+            apiKey = MapKit.getFirstNonNull(context.getHeaderMap(), apiKeyParams);
+        }
+
+        if (StringKit.isBlank(apiKey)) {
+            return false; // No API Key present
+        }
+
+        Delegate delegate = this.provider.authorize(
+                Principal.builder().type(Consts.TWO).value(apiKey).channel(context.getChannel().getType())
+                        .assets(assets).build());
+
+        if (delegate.isOk()) {
+            populate(delegate.getAuthorize(), context);
+            return true;
+        }
+
+        Logger.error(
+                "==>     Filter: API Key validation failed - Error code: {}, message: {}",
+                delegate.getMessage().errcode,
+                delegate.getMessage().errmsg);
+        throw new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
+    }
+
+    /**
+     * Populates IP-related parameters into the request context.
+     * <p>
+     * This method extracts the client's IP address and adds it to the request context. The IP address is determined in
+     * the following order of precedence:
+     * <ol>
+     * <li>Checks the "x_remote_ip" request header.</li>
+     * <li>If absent, checks the "X-Forwarded-For" request header to handle cases with proxies.</li>
+     * <li>If still absent, falls back to the request's remote address.</li>
+     * </ol>
+     * Additionally, it retrieves the request's authority (host and port) and adds it to the context. If the authority
+     * cannot be determined, a default value is used to ensure continued processing without throwing an exception.
+     *
+     * @param exchange ServerWebExchange object containing request and response information.
+     * @param context  Request context where IP address and authority information will be stored.
+     */
+    protected void populate(ServerWebExchange exchange, Context context) {
+        // Extract the client's IP address
+        String clientIp = Optional.ofNullable(exchange.getRequest().getHeaders().getFirst("x_request_ip")).orElseGet(
+                () -> Optional.ofNullable(exchange.getRequest().getHeaders().getFirst("X-Forwarded-For")).orElseGet(
+                        () -> exchange.getRequest().getRemoteAddress() != null
+                                ? exchange.getRequest().getRemoteAddress().getAddress().getHostAddress()
+                                : "unknown"));
+
+        // Add the client IP to the context
+        context.getRequestMap().put("x_request_ipv4", clientIp);
+
+        // Get the domain name and port (authority)
+        Optional<String> authorityOptional = getOriginalAuthority(exchange.getRequest());
+
+        String unknown = Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO;
+        // Use a default authority if none is found to prevent exceptions and ensure smooth processing
+        String domain = authorityOptional.orElse(unknown);
+
+        // Log a warning if the authority could not be determined
+        if (unknown.equals(domain)) {
+            Logger.warn(
+                    "==> Filter: Unable to determine the request domain (host:port). Using default value: {}",
+                    domain);
+        }
+
+        // Add the authority to the request context
+        context.getRequestMap().put("x_request_domain", domain);
+
+        // Purges parameters reserved for internal gateway use.
+        context.getRequestMap().remove(Args.METHOD);
+        context.getRequestMap().remove(Args.FORMAT);
+        context.getRequestMap().remove(Args.VERSION);
+        context.getRequestMap().remove(Args.SIGN);
+    }
+
+    /**
+     * Populates the authorize result into the request context.
+     * <p>
+     * Extracts user information from the authorization result and adds it to the request parameters.
+     * </p>
+     *
+     * @param auth    The authorization result
+     * @param context The request context
+     */
+    protected void populate(Authorize auth, Context context) {
+        Map<String, Object> authMap = new HashMap<>();
+        BeanKit.beanToMap(auth, authMap, CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
+
+        authMap.forEach((k, v) -> context.getRequestMap().put(k, v.toString()));
     }
 
 }

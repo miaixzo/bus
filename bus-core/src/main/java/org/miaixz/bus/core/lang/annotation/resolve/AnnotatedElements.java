@@ -44,86 +44,52 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * {@link AnnotatedElement}工具类，提供对层级结构中{@link AnnotatedElement}上注解及元注解的访问支持，
- * 并提供诸如基于{@link Alias}的属性别名、基于父子注解间的属性值覆盖等特殊的属性映射机制支持。
+ * A utility class for {@link AnnotatedElement} that provides support for accessing annotations and meta-annotations
+ * within a hierarchical structure. It also offers special attribute mapping mechanisms, such as attribute aliasing via
+ * {@link Alias} and attribute value overrides between parent and child annotations.
  *
- * <strong>搜索层级结构</strong> 参考 Spring 中{@code AnnotatedElementUtils}， 工具类提供<em>get</em>以及<em>find</em>两种语义的搜索：
+ * <p>
+ * <b>Hierarchical Search:</b> Inspired by Spring's {@code AnnotatedElementUtils}, this utility provides two search
+ * semantics:
  * <ul>
- * <li><em>get</em>：表示搜索范围仅限于指定的{@link AnnotatedElement}本身；</li>
- * <li><em>find</em>：表示搜索范围除了指定的{@link AnnotatedElement}本身外， 若{@link AnnotatedElement}是类，则还会搜索其所有关联的父类和父接口；
- * 若{@link AnnotatedElement}是方法，则还会搜索其声明类关联的所有父类和父接口中，与该方法具有相同方法签名的方法对象；</li>
+ * <li><em>get</em>: The search scope is limited to the specified {@link AnnotatedElement} itself.</li>
+ * <li><em>find</em>: The search scope includes the specified {@link AnnotatedElement} and, if it's a class, its entire
+ * hierarchy of superclasses and interfaces. If it's a method, it also searches for methods with the same signature in
+ * the hierarchy of the declaring class.</li>
  * </ul>
- * eg: 若类<em>A</em>分别有父类和父接口<em>B</em>、<em>C</em>， 则通过<em>getXXX</em>方法将只能获得<em>A</em>上的注解，
- * 而通过<em>findXXX</em>方法将能获得<em>A</em>、<em>B</em>、<em>C</em>上的注解。
  *
- * <strong>搜索元注解</strong> 工具类支持搜索注解的元注解。在所有格式为<em>getXXX</em>或<em>findXXX</em>的静态方法中，
- * 若不带有<em>directly</em>关键字，则该方法支持搜索元注解，否则不支持搜索元注解。 eg:
- * 若类<em>A</em>分别有父类和父接口<em>B</em>、<em>C</em>，上面分别有注解<em>X</em>与其元注解<em>Y</em>， 则此时基于<em>A</em>有：
- * <ul>
- * <li><em>getDirectlyXXX</em>：能够获得<em>A</em>上的注解<em>X</em>；</li>
- * <li><em>getXXX</em>：能够获得<em>A</em>上的注解<em>X</em>及元注解<em>Y</em>；</li>
- * <li><em>findDirectlyXXX</em>：能够分别获得<em>A</em>、<em>B</em>、<em>C</em>上的注解<em>X</em>；</li>
- * <li><em>findXXX</em>：能够分别获得<em>A</em>、<em>B</em>、<em>C</em>上的注解<em>X</em>及元注解<em>Y</em>；</li>
- * </ul>
- * 注意：在当前实例中将无视{@link Inherited}的效果，即通过<em>directly</em>方法将无法获得父类上带有{@link Inherited}的注解。
+ * <p>
+ * <b>Meta-Annotation Search:</b> The utility supports searching for meta-annotations. Methods without the
+ * {@code directly} keyword will search for meta-annotations, while those with it will not. Note: The effect of
+ * {@link Inherited} is not considered by {@code directly} methods.
  *
- * <strong>注解属性映射</strong> 工具类支持注解对象属性上的一些属性映射机制，即当注解被扫描时， 将根据一些属性映射机制“解析”为其他类型的属性，这里支持的机制包括：
+ * <p>
+ * <b>Annotation Attribute Mapping:</b> The utility supports special mechanisms for mapping annotation attributes:
  * <ul>
- * <li>基于{@link Alias}的属性别名：若注解属性通过{@link Alias}互相关联，则对其中任意属性赋值，则等同于对所有关联属性赋值； eg：
+ * <li><b>Attribute Aliasing with {@link Alias}:</b> If attributes are linked via {@link Alias}, setting a value for one
+ * is equivalent to setting it for all linked attributes.
  * 
- * <pre><code>
- *          // set aliased attributes
- *         {@literal @}interface FooAnnotation {
- *             {@literal @}Alias("alias")
- *              default String value() default "";
- *             {@literal @}Alias("value")
- *              default String alias() default "";
- *          }
- *         {@literal @}FooAnnotation("foo")
- *          class Foo { }
- *
- *          // get resolved annotation
- *          FooAnnotation annotation = getResolvedAnnotation(Foo.class, FooAnnotation.class);
- *          annotation.value(); // = "foo"
- *          annotation.alias(); // = "foo"
- *         }</code></pre>
+ * <pre>{@code
+ * &#64;Alias("alias")
+ * String value() default "";
+ * &#64;Alias("value")
+ * String alias() default "";
+ * }</pre>
  * 
  * </li>
- * <li>基于父子注解的属性覆写：若子注解中存在属性，与其元注解的属性名称、类型皆相同，则子注解的属性值将会覆写其元注解的属性值， 若被覆写的属性值存在关联别名，则关联别名也会被一并覆写。 eg：
- * 
- * <pre><code>
- *         {@literal @}interface Meta {
- *              default String value() default "";
- *          }
- *         {@literal @}Meta("meta")
- *          {@literal @}interface Root {
- *              default String value() default ""; // overwrite for @Meta.value
- *          }
- *         {@literal @}Root("foo")
- *          class Foo { }
- *
- *          // get resolved annotation
- *          Meta meta = getResolvedAnnotation(Foo.class, Meta.class);
- *          meta.value(); // = "foo"
- *          Root root = getResolvedAnnotation(Foo.class, Root.class);
- *          root.value(); // = "foo"
- *         </code></pre>
- * 
- * </li>
+ * <li><b>Attribute Overrides:</b> If an annotation has an attribute with the same name and type as an attribute on its
+ * meta-annotation, its value will override the meta-annotation's attribute value.</li>
  * </ul>
  *
- * <strong>可重复注解支持</strong> 工具类中格式为<em>findAllXXX</em>或<em>getAllXXX</em>格式的方法， 支持获得{@link AnnotatedElement}上的可重复注解。
- * 此处的可重复注解定义包括两方面：
- * <ul>
- * <li>若{@link AnnotatedElement}存在直接声明的注解，该注解有且仅有一个<em>value</em>属性，
- * 该属性类型为注解数组，且数组中注解被{@link java.lang.annotation.Repeatable}注解， 则认为被包括的注解为可重复注解； eg:
- * A上存在注解<em>X</em>，该注解是一个容器注解，内部包含可重复注解<em>Y</em>， 解析<em>X</em>后，得到注解<em>X</em>与它包含的可重复注解<em>Y</em>；</li>
- * <li>若{@link AnnotatedElement}存在直接声明的注解，该注解与其他根注解皆有相同的元注解， 则获得元注解时，可以获得多个该相同的元注解。 eg:
- * A上存在注解<em>X</em>、<em>Y</em>，两者皆有元注解<em>Z</em>， 则通过{@link AnnotatedElement}可以获得两个<em>Z</em></li>
- * </ul>
+ * <p>
+ * <b>Repeatable Annotation Support:</b> Methods like {@code findAllXXX} or {@code getAllXXX} support finding repeatable
+ * annotations, including those declared within a container annotation or multiple annotations sharing the same
+ * meta-annotation.
  *
- * <strong>缓存</strong> 为了避免注解以及{@link AnnotatedElement}层级结构解析过程中的大量反射调用， 工具类为{@link AnnotatedElement}及其元注解信息进行了缓存。
- * 缓存功能默认基于{@link WeakConcurrentMap}实现，会在gc时自动回收部分缓存数据。 但是若有必要，也可以调用{@link #clearCaches()}方法主动清空缓存。
+ * <p>
+ * <b>Caching:</b> To avoid excessive reflection, this utility caches {@link AnnotatedElement} and meta-annotation
+ * information. The cache is backed by a {@link WeakConcurrentMap} and can be cleared manually by calling
+ * {@link #clearCaches()}.
  *
  * @author Kimi Liu
  * @see ResolvedAnnotationMapping
@@ -137,31 +103,29 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class AnnotatedElements {
 
     /**
-     * 支持属性解析的{@link MetaAnnotatedElement}缓存
+     * Cache for {@link MetaAnnotatedElement} with attribute resolution enabled.
      */
     private static final Map<AnnotatedElement, MetaAnnotatedElement<ResolvedAnnotationMapping>> RESOLVED_ELEMENT_CACHE = new WeakConcurrentMap<>();
-
     /**
-     * 不支持属性解析的{@link MetaAnnotatedElement}缓存
+     * Cache for {@link MetaAnnotatedElement} with attribute resolution disabled.
      */
     private static final Map<AnnotatedElement, MetaAnnotatedElement<GenericAnnotationMapping>> ELEMENT_CACHE = new WeakConcurrentMap<>();
-
     /**
-     * 不支持属性解析的{@link RepeatableMetaAnnotatedElement}缓存
+     * Cache for {@link RepeatableMetaAnnotatedElement} with attribute resolution enabled.
      */
     private static final Map<AnnotatedElement, RepeatableMetaAnnotatedElement<ResolvedAnnotationMapping>> RESOLVED_REPEATABLE_ELEMENT_CACHE = new WeakConcurrentMap<>();
-
     /**
-     * 不支持属性解析的{@link RepeatableMetaAnnotatedElement}缓存
+     * Cache for {@link RepeatableMetaAnnotatedElement} with attribute resolution disabled.
      */
     private static final Map<AnnotatedElement, RepeatableMetaAnnotatedElement<GenericAnnotationMapping>> REPEATABLE_ELEMENT_CACHE = new WeakConcurrentMap<>();
 
     /**
-     * 在{@code element}所处层级结构的所有{@link AnnotatedElement}上，是否存在该类型的注解或元注解
+     * Checks if an annotation of the specified type is present on the element or within its hierarchy, including on
+     * meta-annotations.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @return 是否
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return {@code true} if the annotation is present.
      */
     public static boolean isAnnotated(
             final AnnotatedElement element,
@@ -170,12 +134,12 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上，获取该类型的注解或元注解
+     * Finds the first annotation of the specified type on the element or within its hierarchy.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return The annotation instance, or null if not found.
      */
     public static <T extends Annotation> T findAnnotation(
             final AnnotatedElement element,
@@ -184,12 +148,13 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上直接声明的注解、 这些注解包含的可重复注解，以及上述所有注解的元注解中获取指定类型注解
+     * Finds all annotations of the specified type on the element and its hierarchy, including repeatable annotations
+     * and meta-annotations.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return An array of found annotations.
      */
     public static <T extends Annotation> T[] findAllAnnotations(
             final AnnotatedElement element,
@@ -198,23 +163,23 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上，获取所有的注解或元注解
+     * Finds all annotations and meta-annotations on the element and within its hierarchy.
      *
-     * @param element {@link AnnotatedElement}
-     * @return 注解对象
+     * @param element The {@link AnnotatedElement}.
+     * @return An array of all found annotations.
      */
     public static Annotation[] findAnnotations(final AnnotatedElement element) {
         return toHierarchyMetaElement(element, false).getAnnotations();
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上，获取所有的注解或元注解。
-     * 得到的注解支持基于{@link Alias}的别名、及子注解对元注解中同名同类型属性进行覆写的特殊机制。
+     * Finds the first annotation of the specified type on the element or within its hierarchy, applying attribute alias
+     * and override rules.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return The resolved annotation instance, or null if not found.
      */
     public static <T extends Annotation> T findResolvedAnnotation(
             final AnnotatedElement element,
@@ -223,24 +188,24 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上，获取所有的注解或元注解。
-     * 得到的注解支持基于{@link Alias}的别名、及子注解对元注解中同名同类型属性进行覆写的特殊机制。
+     * Finds all annotations and meta-annotations on the element and within its hierarchy, applying attribute alias and
+     * override rules.
      *
-     * @param element {@link AnnotatedElement}
-     * @return 注解对象
+     * @param element The {@link AnnotatedElement}.
+     * @return An array of all found and resolved annotations.
      */
     public static Annotation[] findResolvedAnnotations(final AnnotatedElement element) {
         return toHierarchyMetaElement(element, true).getAnnotations();
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上直接声明的注解、 这些注解包含的可重复注解，以及上述所有注解的元注解中获取指定类型注解。
-     * 得到的注解支持基于{@link Alias}的别名、及子注解对元注解中同名同类型属性进行覆写的特殊机制。
+     * Finds all annotations of the specified type on the element and its hierarchy, including repeatable annotations
+     * and meta-annotations, applying attribute alias and override rules.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return An array of found and resolved annotations.
      */
     public static <T extends Annotation> T[] findAllResolvedAnnotations(
             final AnnotatedElement element,
@@ -249,12 +214,13 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上获取该类型的注解
+     * Finds the first annotation of the specified type that is directly present on the element or any element in its
+     * hierarchy (no meta-annotation search).
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return The annotation instance, or null if not found.
      */
     public static <T extends Annotation> T findDirectlyAnnotation(
             final AnnotatedElement element,
@@ -263,12 +229,13 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}上直接声明的注解、这些注解包含的可重复注解， 以及上述所有注解的元注解中获取指定类型注解。
+     * Finds all directly present annotations of the specified type on the element and its hierarchy, including
+     * repeatable annotations (no meta-annotation search).
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return An array of found annotations.
      */
     public static <T extends Annotation> T[] findAllDirectlyAnnotations(
             final AnnotatedElement element,
@@ -277,22 +244,23 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上获取所有的注解
+     * Finds all annotations directly present on the element and its hierarchy.
      *
-     * @param element {@link AnnotatedElement}
-     * @return 注解对象
+     * @param element The {@link AnnotatedElement}.
+     * @return An array of all directly present annotations.
      */
     public static Annotation[] findDirectlyAnnotations(final AnnotatedElement element) {
         return toHierarchyMetaElement(element, false).getDeclaredAnnotations();
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上，获取所有的注解。 得到的注解支持基于{@link Alias}的别名、及子注解对元注解中同名同类型属性进行覆写的特殊机制。
+     * Finds the first directly present annotation of the specified type on the element or its hierarchy, applying
+     * attribute alias and override rules.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return The resolved annotation instance, or null if not found.
      */
     public static <T extends Annotation> T findDirectlyResolvedAnnotation(
             final AnnotatedElement element,
@@ -301,23 +269,24 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上获取所有的注解。 得到的注解支持基于{@link Alias}的别名、及子注解对元注解中同名同类型属性进行覆写的特殊机制。
+     * Finds all directly present annotations on the element and its hierarchy, applying attribute alias and override
+     * rules.
      *
-     * @param element {@link AnnotatedElement}
-     * @return 注解对象
+     * @param element The {@link AnnotatedElement}.
+     * @return An array of all found and resolved annotations.
      */
     public static Annotation[] findDirectlyResolvedAnnotations(final AnnotatedElement element) {
         return toHierarchyMetaElement(element, true).getDeclaredAnnotations();
     }
 
     /**
-     * 从{@code element}所处层级结构的所有{@link AnnotatedElement}上直接声明的注解、 这些注解包含的可重复注解，以及上述所有注解的元注解中获取指定类型注解。
-     * 得到的注解支持基于{@link Alias}的别名、及子注解对元注解中同名同类型属性进行覆写的特殊机制。
+     * Finds all directly present annotations of the specified type on the element and its hierarchy, including
+     * repeatable annotations, and applies attribute alias and override rules.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return An array of found and resolved annotations.
      */
     public static <T extends Annotation> T[] findAllDirectlyResolvedAnnotations(
             final AnnotatedElement element,
@@ -326,11 +295,11 @@ public class AnnotatedElements {
     }
 
     /**
-     * 在{@code element}上，是否存在该类型的注解或元注解
+     * Checks if an annotation of the specified type is present on the element itself or as a meta-annotation.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @return 是否
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return {@code true} if the annotation is present.
      */
     public static boolean isAnnotationPresent(
             final AnnotatedElement element,
@@ -339,12 +308,12 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}上，获取该类型的注解或元注解
+     * Gets an annotation of the specified type from the element, searching meta-annotations if necessary.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return The annotation instance, or null if not found.
      */
     public static <T extends Annotation> T getAnnotation(
             final AnnotatedElement element,
@@ -353,22 +322,23 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}上，获取所有的注解或元注解
+     * Gets all annotations and meta-annotations present on the element.
      *
-     * @param element {@link AnnotatedElement}
-     * @return 注解对象
+     * @param element The {@link AnnotatedElement}.
+     * @return An array of all annotations.
      */
     public static Annotation[] getAnnotations(final AnnotatedElement element) {
         return toMetaElement(element, false).getAnnotations();
     }
 
     /**
-     * 从{@code element}上直接声明的注解、这些注解包含的可重复注解，以及上述所有注解的元注解中获取指定类型注解
+     * Gets all annotations of the specified type from the element, including repeatable annotations and
+     * meta-annotations.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return An array of all found annotations.
      */
     public static <T extends Annotation> T[] getAllAnnotations(
             final AnnotatedElement element,
@@ -377,12 +347,13 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}上，获取所有的注解或元注解。 得到的注解支持基于{@link Alias}的别名机制。
+     * Gets an annotation of the specified type from the element, searching meta-annotations and applying attribute
+     * alias and override rules.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return The resolved annotation instance, or null if not found.
      */
     public static <T extends Annotation> T getResolvedAnnotation(
             final AnnotatedElement element,
@@ -391,22 +362,23 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}上，获取所有的注解或元注解。 得到的注解支持基于{@link Alias}的别名机制。
+     * Gets all annotations and meta-annotations on the element, applying attribute alias and override rules.
      *
-     * @param element {@link AnnotatedElement}
-     * @return 注解对象
+     * @param element The {@link AnnotatedElement}.
+     * @return An array of all resolved annotations.
      */
     public static Annotation[] getResolvedAnnotations(final AnnotatedElement element) {
         return toMetaElement(element, true).getAnnotations();
     }
 
     /**
-     * 从{@code element}上直接声明的注解、这些注解包含的可重复注解，以及上述所有注解的元注解中获取指定类型注解 得到的注解支持基于{@link Alias}的别名机制。
+     * Gets all annotations of the specified type from the element, including repeatable and meta-annotations, and
+     * applies attribute alias and override rules.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return An array of all found and resolved annotations.
      */
     public static <T extends Annotation> T[] getAllResolvedAnnotations(
             final AnnotatedElement element,
@@ -415,12 +387,12 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}上获取该类型的注解
+     * Gets an annotation that is directly present on the element (no meta-annotation search).
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return The annotation instance, or null if not directly present.
      */
     public static <T extends Annotation> T getDirectlyAnnotation(
             final AnnotatedElement element,
@@ -429,12 +401,12 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}上直接声明的注解、这些注解包含的可重复注解中获取指定类型注解
+     * Gets all directly present annotations of the specified type, including repeatable annotations.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return An array of all directly present annotations.
      */
     public static <T extends Annotation> T[] getAllDirectlyAnnotations(
             final AnnotatedElement element,
@@ -443,22 +415,22 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}上获取所有的注解
+     * Gets all annotations directly present on the element.
      *
-     * @param element {@link AnnotatedElement}
-     * @return 注解对象
+     * @param element The {@link AnnotatedElement}.
+     * @return An array of directly present annotations.
      */
     public static Annotation[] getDirectlyAnnotations(final AnnotatedElement element) {
         return toMetaElement(element, false).getDeclaredAnnotations();
     }
 
     /**
-     * 从{@code element}上，获取所有的注解。 得到的注解支持基于{@link Alias}的别名机制。
+     * Gets a directly present annotation, applying attribute alias and override rules.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return The resolved annotation instance, or null if not directly present.
      */
     public static <T extends Annotation> T getDirectlyResolvedAnnotation(
             final AnnotatedElement element,
@@ -467,22 +439,23 @@ public class AnnotatedElements {
     }
 
     /**
-     * 从{@code element}上，获取所有的注解。 得到的注解支持基于{@link Alias}的别名机制。
+     * Gets all directly present annotations, applying attribute alias and override rules.
      *
-     * @param element {@link AnnotatedElement}
-     * @return 注解对象
+     * @param element The {@link AnnotatedElement}.
+     * @return An array of resolved annotations.
      */
     public static Annotation[] getDirectlyResolvedAnnotations(final AnnotatedElement element) {
         return toMetaElement(element, true).getDeclaredAnnotations();
     }
 
     /**
-     * 从{@code element}上直接声明的注解、这些注解包含的可重复注解中获取指定类型注解
+     * Gets all directly present annotations of the specified type, including repeatable annotations, and applies
+     * attribute alias and override rules.
      *
-     * @param element        {@link AnnotatedElement}
-     * @param annotationType 注解类型
-     * @param <T>            注解类型
-     * @return 注解对象
+     * @param <T>            The type of the annotation.
+     * @param element        The {@link AnnotatedElement}.
+     * @param annotationType The type of the annotation.
+     * @return An array of resolved annotations.
      */
     public static <T extends Annotation> T[] getAllDirectlyResolvedAnnotations(
             final AnnotatedElement element,
@@ -491,14 +464,12 @@ public class AnnotatedElements {
     }
 
     /**
-     * 扫描{@code element}所处层级结构中的{@link AnnotatedElement}， 并将其全部转为{@link MetaAnnotatedElement}后，
-     * 再把所有对象合并为{@link HierarchicalAnnotatedElements}。 得到的对象可访问{@code element}所处层级结构中所有{@link AnnotatedElement}上的注解及元注解。
+     * Scans the hierarchy of the given element and wraps each level in a {@link MetaAnnotatedElement}, then combines
+     * them into a {@link HierarchicalAnnotatedElements} instance.
      *
-     * @param element  元素
-     * @param resolved 是否解析注解属性，若为{@code true}则获得的注解将支持属性别名以及属性覆盖机制
-     * @return {@link HierarchicalAnnotatedElements}实例
-     * @see #getMetaElementCache(AnnotatedElement)
-     * @see #getResolvedMetaElementCache(AnnotatedElement)
+     * @param element  The element to scan.
+     * @param resolved If {@code true}, enables attribute alias and override mechanisms.
+     * @return A {@link HierarchicalAnnotatedElements} instance representing the element's hierarchy.
      */
     public static AnnotatedElement toHierarchyMetaElement(final AnnotatedElement element, final boolean resolved) {
         if (Objects.isNull(element)) {
@@ -511,15 +482,12 @@ public class AnnotatedElements {
     }
 
     /**
-     * 扫描{@code element}所处层级结构中的{@link AnnotatedElement}， 并将其全部转为{@link RepeatableMetaAnnotatedElement}后，
-     * 再把所有对象合并为{@link HierarchicalAnnotatedElements}。
-     * 得到的对象可访问{@code element}所处层级结构中所有{@link AnnotatedElement}上的直接声明的注解， 这些注解包含的可重复注解，以及上述注解的所有元注解。
+     * Scans the hierarchy of the given element, wraps each level in a {@link RepeatableMetaAnnotatedElement}, and
+     * combines them into a {@link HierarchicalAnnotatedElements} instance.
      *
-     * @param element  元素
-     * @param resolved 是否解析注解属性，若为{@code true}则获得的注解将支持属性别名以及属性覆盖机制
-     * @return {@link HierarchicalAnnotatedElements}实例
-     * @see #getRepeatableMetaElementCache(AnnotatedElement)
-     * @see #getResolvedRepeatableMetaElementCache(AnnotatedElement)
+     * @param element  The element to scan.
+     * @param resolved If {@code true}, enables attribute alias and override mechanisms.
+     * @return A {@link HierarchicalAnnotatedElements} instance.
      */
     public static AnnotatedElement toHierarchyRepeatableMetaElement(
             final AnnotatedElement element,
@@ -534,11 +502,11 @@ public class AnnotatedElements {
     }
 
     /**
-     * 扫描{@code element}所处层级结构中的{@link AnnotatedElement}， 再把所有对象合并为{@link HierarchicalAnnotatedElements}
-     * 得到的对象可访问{@code element}所处层级结构中所有{@link AnnotatedElement}上的注解。
+     * Scans the hierarchy of the given element and combines them into a {@link HierarchicalAnnotatedElements}. This
+     * version does not perform meta-annotation searches.
      *
-     * @param element 元素
-     * @return {@link AnnotatedElement}实例
+     * @param element The element to scan.
+     * @return A {@link HierarchicalAnnotatedElements} instance.
      */
     public static AnnotatedElement toHierarchyElement(final AnnotatedElement element) {
         return ObjectKit
@@ -546,13 +514,11 @@ public class AnnotatedElements {
     }
 
     /**
-     * 将{@link AnnotatedElement}转为{@link MetaAnnotatedElement}， 得到的对象可访问{@code element}上所有的注解及元注解。
+     * Wraps an {@link AnnotatedElement} as a {@link MetaAnnotatedElement} to enable meta-annotation searching.
      *
-     * @param element  元素
-     * @param resolved 是否解析注解属性，若为{@code true}则获得的注解将支持属性别名以及属性覆盖机制
-     * @return {@link AnnotatedElement}实例
-     * @see #getMetaElementCache(AnnotatedElement)
-     * @see #getResolvedMetaElementCache(AnnotatedElement)
+     * @param element  The element to wrap.
+     * @param resolved If {@code true}, enables attribute alias and override mechanisms.
+     * @return A {@link MetaAnnotatedElement} instance.
      */
     public static AnnotatedElement toMetaElement(final AnnotatedElement element, final boolean resolved) {
         return ObjectKit.defaultIfNull(
@@ -562,14 +528,12 @@ public class AnnotatedElements {
     }
 
     /**
-     * 将{@link AnnotatedElement}转为{@link RepeatableMetaAnnotatedElement}，
-     * 得到的对象可访问{@link AnnotatedElement}上的直接声明的注解，这些注解包含的可重复注解，以及上述注解的所有元注解。
+     * Wraps an {@link AnnotatedElement} as a {@link RepeatableMetaAnnotatedElement} to enable searching for repeatable
+     * annotations and meta-annotations.
      *
-     * @param element  元素
-     * @param resolved 是否解析注解属性，若为{@code true}则获得的注解将支持属性别名以及属性覆盖机制
-     * @return {@link AnnotatedElement}实例
-     * @see #getMetaElementCache(AnnotatedElement)
-     * @see #getResolvedMetaElementCache(AnnotatedElement)
+     * @param element  The element to wrap.
+     * @param resolved If {@code true}, enables attribute alias and override mechanisms.
+     * @return A {@link RepeatableMetaAnnotatedElement} instance.
      */
     public static AnnotatedElement toRepeatableMetaElement(final AnnotatedElement element, final boolean resolved) {
         return ObjectKit.defaultIfNull(
@@ -579,13 +543,13 @@ public class AnnotatedElements {
     }
 
     /**
-     * 将{@link AnnotatedElement}转为{@link RepeatableMetaAnnotatedElement}， 得到的对象可访问{@link AnnotatedElement}上的直接声明的注解，
-     * 通过{@code collector}从这些注解获得的可重复注解，以及上述注解的所有元注解。 注意：方法将不会通过缓存结果，因此每次调用都需要重新通过反射并获得相关注解。
+     * Wraps an {@link AnnotatedElement} as a {@link RepeatableMetaAnnotatedElement} with a custom collector. This
+     * method does not use caching.
      *
-     * @param collector 可重复注解收集器，为{@code null}时等同于{@link RepeatableAnnotationCollector#none()}
-     * @param element   元素
-     * @param resolved  是否解析注解属性，若为{@code true}则获得的注解将支持属性别名以及属性覆盖机制
-     * @return {@link AnnotatedElement}实例
+     * @param collector The custom repeatable annotation collector.
+     * @param element   The element to wrap.
+     * @param resolved  If {@code true}, enables attribute alias and override mechanisms.
+     * @return A new {@link RepeatableMetaAnnotatedElement} instance.
      */
     public static AnnotatedElement toRepeatableMetaElement(
             final AnnotatedElement element,
@@ -609,11 +573,10 @@ public class AnnotatedElements {
     }
 
     /**
-     * 将一组注解中的非{@code null}注解对象合并为一个{@link AnnotatedElement}
+     * Creates an {@link AnnotatedElement} from a given array of annotations.
      *
-     * @param annotations 注解
-     * @return {@link AnnotatedElement}实例
-     * @see ConstantElement
+     * @param annotations The annotations to include in the element.
+     * @return A new {@link AnnotatedElement} instance.
      */
     public static AnnotatedElement asElement(Annotation... annotations) {
         annotations = ArrayKit.filter(annotations, Objects::nonNull);
@@ -621,20 +584,20 @@ public class AnnotatedElements {
     }
 
     /**
-     * 获取一个不包含任何注解的{@link AnnotatedElement}
+     * Gets a singleton {@link AnnotatedElement} that has no annotations.
      *
-     * @return {@link AnnotatedElement}实例
-     * @see EmptyElement
+     * @return An empty {@link AnnotatedElement} instance.
      */
     public static AnnotatedElement emptyElement() {
         return EmptyElement.INSTANCE;
     }
 
     /**
-     * 创建一个支持注解解析的{@link MetaAnnotatedElement}
+     * Gets a cached (or creates a new) {@link MetaAnnotatedElement} for the given element, with attribute resolution
+     * enabled.
      *
-     * @param element {@link AnnotatedElement}
-     * @return {@link MetaAnnotatedElement}实例
+     * @param element The {@link AnnotatedElement}.
+     * @return A {@link MetaAnnotatedElement} instance.
      */
     public static MetaAnnotatedElement<ResolvedAnnotationMapping> getResolvedMetaElementCache(
             final AnnotatedElement element) {
@@ -646,10 +609,11 @@ public class AnnotatedElements {
     }
 
     /**
-     * 创建一个不支持注解解析的{@link MetaAnnotatedElement}
+     * Gets a cached (or creates a new) {@link MetaAnnotatedElement} for the given element, without attribute
+     * resolution.
      *
-     * @param element {@link AnnotatedElement}
-     * @return {@link MetaAnnotatedElement}实例
+     * @param element The {@link AnnotatedElement}.
+     * @return A {@link MetaAnnotatedElement} instance.
      */
     public static MetaAnnotatedElement<GenericAnnotationMapping> getMetaElementCache(final AnnotatedElement element) {
         return ELEMENT_CACHE.computeIfAbsent(
@@ -660,10 +624,11 @@ public class AnnotatedElements {
     }
 
     /**
-     * 创建一个支持注解解析的{@link RepeatableMetaAnnotatedElement}
+     * Gets a cached (or creates a new) {@link RepeatableMetaAnnotatedElement} for the given element, with attribute
+     * resolution enabled.
      *
-     * @param element {@link AnnotatedElement}
-     * @return {@link MetaAnnotatedElement}实例
+     * @param element The {@link AnnotatedElement}.
+     * @return A {@link RepeatableMetaAnnotatedElement} instance.
      */
     public static RepeatableMetaAnnotatedElement<ResolvedAnnotationMapping> getResolvedRepeatableMetaElementCache(
             final AnnotatedElement element) {
@@ -675,10 +640,11 @@ public class AnnotatedElements {
     }
 
     /**
-     * 创建一个不支持注解解析的{@link RepeatableMetaAnnotatedElement}
+     * Gets a cached (or creates a new) {@link RepeatableMetaAnnotatedElement} for the given element, without attribute
+     * resolution.
      *
-     * @param element {@link AnnotatedElement}
-     * @return {@link MetaAnnotatedElement}实例
+     * @param element The {@link AnnotatedElement}.
+     * @return A {@link RepeatableMetaAnnotatedElement} instance.
      */
     public static RepeatableMetaAnnotatedElement<GenericAnnotationMapping> getRepeatableMetaElementCache(
             final AnnotatedElement element) {
@@ -690,12 +656,8 @@ public class AnnotatedElements {
     }
 
     /**
-     * 清空相关缓存，包括：
-     * <ul>
-     * <li>{@code AnnotatedElements}中的{@link AnnotatedElement}及{@link AnnotationMapping}缓存；</li>
-     * <li>{@link AnnoKit}中的{@link AnnotatedElement}上直接声明的注解缓存；</li>
-     * <li>{@link RepeatableAnnotationCollector}中单例的注解属性缓存；</li>
-     * </ul>
+     * Clears all related annotation caches. This includes caches in this class, {@link AnnoKit}, and
+     * {@link RepeatableAnnotationCollector}.
      *
      * @see AnnoKit#clearCaches()
      * @see RepeatableAnnotationCollector#clearSingletonCaches()
@@ -710,31 +672,16 @@ public class AnnotatedElements {
     }
 
     /**
-     * 由一组注解聚合来的{@link AnnotatedElement}
+     * An {@link AnnotatedElement} implementation backed by a constant array of annotations.
      */
     private static class ConstantElement implements AnnotatedElement {
 
-        /**
-         * 注解对象
-         */
         private final Annotation[] annotations;
 
-        /**
-         * 构造
-         *
-         * @param annotations 注解
-         */
         ConstantElement(final Annotation[] annotations) {
             this.annotations = Objects.requireNonNull(annotations);
         }
 
-        /**
-         * 获取指定类型的注解对象
-         *
-         * @param annotationClass 注解类型
-         * @param <T>             注解类型
-         * @return 注解
-         */
         @Override
         public <T extends Annotation> T getAnnotation(final Class<T> annotationClass) {
             return Stream.of(annotations)
@@ -742,21 +689,11 @@ public class AnnotatedElements {
                     .map(annotationClass::cast).orElse(null);
         }
 
-        /**
-         * 获取指定直接所有的注解对象
-         *
-         * @return 注解
-         */
         @Override
         public Annotation[] getAnnotations() {
             return annotations.clone();
         }
 
-        /**
-         * 获取指定直接声明的注解对象
-         *
-         * @return 注解
-         */
         @Override
         public Annotation[] getDeclaredAnnotations() {
             return annotations.clone();
@@ -764,42 +701,22 @@ public class AnnotatedElements {
     }
 
     /**
-     * 不包含任何注解的{@link AnnotatedElement}
+     * An {@link AnnotatedElement} implementation that contains no annotations.
      */
     private static class EmptyElement implements AnnotatedElement {
 
-        /**
-         * 默认的空实例
-         */
         static final EmptyElement INSTANCE = new EmptyElement();
 
-        /**
-         * 固定返回{@code null}
-         *
-         * @param annotationClass 注解类型
-         * @param <T>             注解类型
-         * @return {@code null}
-         */
         @Override
         public <T extends Annotation> T getAnnotation(final Class<T> annotationClass) {
             return null;
         }
 
-        /**
-         * 固定返回空数组
-         *
-         * @return 空数组
-         */
         @Override
         public Annotation[] getAnnotations() {
             return new Annotation[0];
         }
 
-        /**
-         * 固定返回空数组
-         *
-         * @return 空数组
-         */
         @Override
         public Annotation[] getDeclaredAnnotations() {
             return new Annotation[0];

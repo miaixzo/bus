@@ -39,10 +39,12 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Iterator检查工具类，提供字对象的blank和empty等检查
+ * Utility class for validating {@link Iterator} and {@link Iterable} objects. Provides methods for checking if
+ * iterators/iterables are empty, blank, or contain null elements.
  * <ul>
- * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>Empty definition: {@code null} or an empty string {@code ""}</li>
+ * <li>Blank definition: {@code null} or an empty string {@code ""} or invisible characters like spaces, full-width
+ * spaces, tabs, newlines, etc.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -51,55 +53,59 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class IteratorValidator {
 
     /**
-     * Iterable是否为空
+     * Checks if the given {@link Iterable} is empty.
      *
-     * @param iterable Iterable对象
-     * @return 是否为空
+     * @param iterable the {@link Iterable} object to check
+     * @return {@code true} if the iterable is {@code null} or contains no elements, {@code false} otherwise
      */
     public static boolean isEmpty(final Iterable<?> iterable) {
         return null == iterable || isEmpty(iterable.iterator());
     }
 
     /**
-     * Iterator是否为空
+     * Checks if the given {@link Iterator} is empty.
      *
-     * @param iterator Iterator对象
-     * @return 是否为空
+     * @param iterator the {@link Iterator} object to check
+     * @return {@code true} if the iterator is {@code null} or has no more elements, {@code false} otherwise
      */
     public static boolean isEmpty(final Iterator<?> iterator) {
         return null == iterator || !iterator.hasNext();
     }
 
     /**
-     * Iterable是否为空
+     * Checks if the given {@link Iterable} is not empty.
      *
-     * @param iterable Iterable对象
-     * @return 是否为空
+     * @param iterable the {@link Iterable} object to check
+     * @return {@code true} if the iterable is not {@code null} and contains at least one element, {@code false}
+     *         otherwise
      */
     public static boolean isNotEmpty(final Iterable<?> iterable) {
         return null != iterable && isNotEmpty(iterable.iterator());
     }
 
     /**
-     * Iterator是否为空
+     * Checks if the given {@link Iterator} is not empty.
      *
-     * @param iterator Iterator对象
-     * @return 是否为空
+     * @param iterator the {@link Iterator} object to check
+     * @return {@code true} if the iterator is not {@code null} and has at least one more element, {@code false}
+     *         otherwise
      */
     public static boolean isNotEmpty(final Iterator<?> iterator) {
         return null != iterator && iterator.hasNext();
     }
 
     /**
-     * 是否包含{@code null}元素
+     * Checks if the given {@link Iterator} contains any {@code null} elements.
      * <ul>
-     * <li>Iterator为{@code null}，返回{@code true}</li>
-     * <li>Iterator为空集合，即元素个数为0，返回{@code false}</li>
-     * <li>Iterator中元素为""，返回{@code false}</li>
+     * <li>If the {@link Iterator} is {@code null}, returns {@code true}.</li>
+     * <li>If the {@link Iterator} is empty (contains no elements), returns {@code false}.</li>
+     * <li>If the {@link Iterator} contains elements that are empty strings {@code ""}, returns {@code false} (as empty
+     * strings are not {@code null}).</li>
      * </ul>
      *
-     * @param iter 被检查的{@link Iterator}对象，如果为{@code null} 返回true
-     * @return 是否包含{@code null}元素
+     * @param iter the {@link Iterator} object to check. If {@code null}, returns {@code true}.
+     * @return {@code true} if the iterator contains a {@code null} element or the iterator itself is {@code null},
+     *         {@code false} otherwise
      */
     public static boolean hasNull(final Iterator<?> iter) {
         if (null == iter) {
@@ -115,30 +121,32 @@ public class IteratorValidator {
     }
 
     /**
-     * 是否全部元素为null
+     * Checks if all elements in the given {@link Iterable} are {@code null}.
      *
-     * @param iter iterator 被检查的{@link Iterable}对象，如果为{@code null} 返回true
-     * @return 是否全部元素为null
+     * @param iter the {@link Iterable} object to check. If {@code null}, returns {@code true}.
+     * @return {@code true} if all elements are {@code null} or the iterable itself is {@code null}, {@code false}
+     *         otherwise
      */
     public static boolean isAllNull(final Iterable<?> iter) {
         return isAllNull(null == iter ? null : iter.iterator());
     }
 
     /**
-     * 是否全部元素为null
+     * Checks if all elements in the given {@link Iterator} are {@code null}.
      *
-     * @param iter iterator 被检查的{@link Iterator}对象，如果为{@code null} 返回true
-     * @return 是否全部元素为null
+     * @param iter the {@link Iterator} object to check. If {@code null}, returns {@code true}.
+     * @return {@code true} if all elements are {@code null} or the iterator itself is {@code null}, {@code false}
+     *         otherwise
      */
     public static boolean isAllNull(final Iterator<?> iter) {
         return null == getFirstNoneNull(iter);
     }
 
     /**
-     * 指定字符串集合中，是否包含空字符串。
+     * Checks if any string in the given {@link Iterable} of {@link CharSequence} is blank.
      *
-     * @param args 字符串列表
-     * @return 批量判断字符串是否全部为空白
+     * @param args the {@link Iterable} of {@link CharSequence} to check
+     * @return {@code true} if the iterable is empty or contains any blank string, {@code false} otherwise
      */
     public static boolean hasBlank(final Iterable<? extends CharSequence> args) {
         if (CollectionValidator.isEmpty(args)) {
@@ -153,8 +161,10 @@ public class IteratorValidator {
     }
 
     /**
-     * @param args 字符串列表
-     * @return 批量判断字符串是否全部为空白
+     * Checks if all strings in the given {@link Iterable} of {@link CharSequence} are blank.
+     *
+     * @param args the {@link Iterable} of {@link CharSequence} to check
+     * @return {@code true} if all strings are blank or the iterable is empty, {@code false} otherwise
      */
     public static boolean isAllBlank(final Iterable<? extends CharSequence> args) {
         if (CollectionValidator.isNotEmpty(args)) {
@@ -168,79 +178,85 @@ public class IteratorValidator {
     }
 
     /**
-     * 判断subIter是否为iter的子集合，不考虑顺序，只考虑元素数量。
+     * Determines if {@code subIter} is a sub-collection of {@code iter}, ignoring order and considering element counts.
      * <ul>
-     * <li>如果两个集合为同一集合或，则返回true</li>
-     * <li>如果两个集合元素都相同，则返回true（无论顺序相同与否）</li>
+     * <li>Returns {@code true} if both collections are the same instance.</li>
+     * <li>Returns {@code true} if both collections contain the same elements with the same frequencies (regardless of
+     * order).</li>
      * </ul>
      *
-     * @param subIter 第一个Iterable对象，即子集合。
-     * @param iter    第二个Iterable对象，可以为任何实现了Iterable接口的集合。
-     * @return 如果subIter是iter的子集合，则返回true；否则返回false。
+     * @param subIter the first {@link Iterable} object, considered as the potential sub-collection.
+     * @param iter    the second {@link Iterable} object, which can be any collection implementing {@link Iterable}.
+     * @return {@code true} if {@code subIter} is a sub-collection of {@code iter}; {@code false} otherwise.
      */
     public static boolean isSub(final Iterable<?> subIter, final Iterable<?> iter) {
-        // 如果两个Iterable对象引用相同，则肯定是一个的子集合
+        // If both Iterable objects refer to the same instance, it is definitely a sub-collection.
         if (subIter == iter) {
             return true;
         }
-        // 如果有任何一个Iterable对象为null，则不是子集合关系
+        // If either Iterable object is null, it's not a sub-collection relationship.
         if (subIter == null || iter == null) {
             return false;
         }
 
-        // 使用Map记录每个Iterable中每个元素出现的次数
+        // Use Map to record the occurrence count of each element in each Iterable.
         final Map<?, Integer> countMap1 = countMap(subIter.iterator());
         final Map<?, Integer> countMap2 = countMap(iter.iterator());
 
-        // 遍历第一个Iterable中的每个元素
+        // Iterate through each element in the first Iterable.
         for (final Object object : subIter) {
-            // 比较第一个Iterable中元素的出现次数和第二个Iterable中元素的出现次数
-            // 如果第一个Iterable中元素的出现次数大于第二个Iterable中元素的出现次数，则不是子集合关系
+            // Compare the occurrence count of elements in the first Iterable with those in the second Iterable.
+            // If the occurrence count of an element in the first Iterable is greater than in the second Iterable, it's
+            // not a sub-collection.
             if (MathKit.nullToZero(countMap1.get(object)) > MathKit.nullToZero(countMap2.get(object))) {
                 return false;
             }
         }
-        // 如果所有元素的出现次数比较都满足子集合关系，则返回true
+        // If all element occurrence count comparisons satisfy the sub-collection relationship, return true.
         return true;
     }
 
     /**
-     * 判断两个{@link Iterable}中的元素与其顺序是否相同 当满足下列情况时返回{@code true}：
+     * Determines if two {@link Iterable} objects contain the same elements in the same order. Returns {@code true}
+     * under the following conditions:
      * <ul>
-     * <li>两个{@link Iterable}都为{@code null}；</li>
-     * <li>两个{@link Iterable}满足{@code iterable1 == iterable2}；</li>
-     * <li>两个{@link Iterable}所有具有相同下标的元素皆满足{@link Objects#equals(Object, Object)}；</li>
+     * <li>Both {@link Iterable} objects are {@code null}.</li>
+     * <li>Both {@link Iterable} objects refer to the same instance ({@code iterable1 == iterable2}).</li>
+     * <li>All elements at corresponding positions in both {@link Iterable} objects satisfy
+     * {@link Objects#equals(Object, Object)}.</li>
      * </ul>
-     * 此方法来自Apache-Commons-Collections4。
+     * This method is inspired by Apache Commons Collections4.
      *
-     * @param iterable1 列表1
-     * @param iterable2 列表2
-     * @return 是否相同
+     * @param iterable1 the first {@link Iterable} to compare
+     * @param iterable2 the second {@link Iterable} to compare
+     * @return {@code true} if the two iterables are equal in content and order, {@code false} otherwise
      */
     public static boolean isEqualList(final Iterable<?> iterable1, final Iterable<?> iterable2) {
         return equals(iterable1, iterable2, false);
     }
 
     /**
-     * 判断两个{@link Iterable}中的元素是否相同，可选是否判断顺序 当满足下列情况时返回{@code true}：
+     * Determines if two {@link Iterable} objects contain the same elements, with an option to ignore order. Returns
+     * {@code true} under the following conditions:
      * <ul>
-     * <li>两个{@link Iterable}都为{@code null}；</li>
-     * <li>两个{@link Iterable}满足{@code iterable1 == iterable2}；</li>
-     * <li>如果忽略顺序，则计算两个集合中元素和数量是否相同</li>
-     * <li>如果不忽略顺序，两个{@link Iterable}所有具有相同下标的元素皆满足{@link Objects#equals(Object, Object)}；</li>
+     * <li>Both {@link Iterable} objects are {@code null}.</li>
+     * <li>Both {@link Iterable} objects refer to the same instance ({@code iterable1 == iterable2}).</li>
+     * <li>If order is ignored, it checks if the elements and their frequencies are the same in both collections.</li>
+     * <li>If order is not ignored, all elements at corresponding positions in both {@link Iterable} objects must
+     * satisfy {@link Objects#equals(Object, Object)}.</li>
      * </ul>
      *
-     * @param iterable1   集合1
-     * @param iterable2   集合2
-     * @param ignoreOrder 是否忽略顺序
-     * @return 是否相同
+     * @param iterable1   the first {@link Iterable} to compare
+     * @param iterable2   the second {@link Iterable} to compare
+     * @param ignoreOrder {@code true} to ignore the order of elements, {@code false} to consider order
+     * @return {@code true} if the two iterables are equal based on the specified criteria, {@code false} otherwise
      */
     public static boolean equals(final Iterable<?> iterable1, final Iterable<?> iterable2, final boolean ignoreOrder) {
-        // 如果两个Iterable对象引用相同，则肯定相等
+        // If both Iterable objects refer to the same instance, they are definitely equal.
         if (iterable1 == iterable2) {
             return true;
         }
-        // 如果有任何一个Iterable对象为null，则不是子集合关系
+        // If either Iterable object is null, they are not equal (unless both are null, handled by the previous check).
         if (iterable1 == null || iterable2 == null) {
             return false;
         }
@@ -250,17 +266,17 @@ public class IteratorValidator {
             final Map<?, Integer> countMap2 = countMap(iterable2.iterator());
 
             if (countMap1.size() != countMap2.size()) {
-                // 如果两个Iterable中元素种类不同，则肯定不等
+                // If the number of distinct elements is different, they are not equal.
                 return false;
             }
 
             for (final Object object : iterable1) {
-                // 比较第一个Iterable中元素的出现次数和第二个Iterable中元素的出现次数
+                // Compare the occurrence count of elements in the first Iterable with those in the second Iterable.
                 if (MathKit.nullToZero(countMap1.get(object)) != MathKit.nullToZero(countMap2.get(object))) {
                     return false;
                 }
             }
-            // 如果所有元素的出现次数比较都满足子集合关系，则返回true
+            // If all element occurrence count comparisons match, return true.
             return true;
         } else {
             final Iterator<?> iter1 = iterable1.iterator();
@@ -274,19 +290,20 @@ public class IteratorValidator {
                     return false;
                 }
             }
-            // 当两个Iterable长度不一致时返回false
+            // If one iterator has more elements than the other, they are not equal.
             return !(iter1.hasNext() || iter2.hasNext());
         }
     }
 
     /**
-     * 遍历{@link Iterator}，获取指定index位置的元素
+     * Iterates through the given {@link Iterator} and retrieves the element at the specified index.
      *
-     * @param iterator {@link Iterator}
-     * @param index    位置
-     * @param <E>      元素类型
-     * @return 元素，找不到元素返回{@code null}
-     * @throws IndexOutOfBoundsException index &lt; 0时报错
+     * @param iterator the {@link Iterator} to traverse
+     * @param index    the zero-based index of the element to retrieve
+     * @param <E>      the type of elements in the iterator
+     * @return the element at the specified index, or {@code null} if the index is out of bounds or the iterator is
+     *         {@code null}
+     * @throws IndexOutOfBoundsException if {@code index} is less than 0
      */
     public static <E> E get(final Iterator<E> iterator, int index) throws IndexOutOfBoundsException {
         if (null == iterator) {
@@ -304,23 +321,24 @@ public class IteratorValidator {
     }
 
     /**
-     * 获取集合的第一个元素
+     * Retrieves the first element from the given {@link Iterator}.
      *
-     * @param <T>      集合元素类型
-     * @param iterator {@link Iterator}
-     * @return 第一个元素
+     * @param <T>      the type of elements in the iterator
+     * @param iterator the {@link Iterator} to get the first element from
+     * @return the first element, or {@code null} if the iterator is empty or {@code null}
      */
     public static <T> T getFirst(final Iterator<T> iterator) {
         return get(iterator, 0);
     }
 
     /**
-     * 返回{@link Iterator}中第一个匹配规则的值
+     * Returns the first element from the {@link Iterator} that satisfies the given {@link Predicate}.
      *
-     * @param <T>       数组元素类型
-     * @param iterator  {@link Iterator}
-     * @param predicate 匹配接口，实现此接口自定义匹配规则
-     * @return 匹配元素，如果不存在匹配元素或{@link Iterator}为空，返回 {@code null}
+     * @param <T>       the type of elements in the iterator
+     * @param iterator  the {@link Iterator} to search through
+     * @param predicate the {@link Predicate} to test elements against, must not be {@code null}
+     * @return the first matching element, or {@code null} if no element matches or the iterator is {@code null}
+     * @throws IllegalArgumentException if the {@code predicate} is {@code null}
      */
     public static <T> T getFirst(final Iterator<T> iterator, final Predicate<T> predicate) {
         Assert.notNull(predicate, "Matcher must be not null !");
@@ -336,22 +354,25 @@ public class IteratorValidator {
     }
 
     /**
-     * 获取集合的第一个非空元素
+     * Retrieves the first non-{@code null} element from the given {@link Iterator}.
      *
-     * @param <T>      集合元素类型
-     * @param iterator {@link Iterator}
-     * @return 第一个非空元素，null表示未找到
+     * @param <T>      the type of elements in the iterator
+     * @param iterator the {@link Iterator} to search through
+     * @return the first non-{@code null} element, or {@code null} if all elements are {@code null} or the iterator is
+     *         empty/{@code null}
      */
     public static <T> T getFirstNoneNull(final Iterator<T> iterator) {
         return getFirst(iterator, Objects::nonNull);
     }
 
     /**
-     * 根据集合返回一个元素计数的 {@link Map} 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value 例如：[a,b,c,c,c] 得到： a: 1 b: 1 c: 3
+     * Creates a frequency map for the elements in the given {@link Iterator}. Each element in the iterator becomes a
+     * key in the map, and its corresponding value is the number of times it appears. For example, for an iterator over
+     * {@code [a, b, c, c, c]}, the map would be: {@code {a: 1, b: 1, c: 3}}.
      *
-     * @param <T>  集合元素类型
-     * @param iter {@link Iterator}，如果为null返回一个空的Map
-     * @return {@link Map}
+     * @param <T>  the type of elements in the iterator
+     * @param iter the {@link Iterator} to count elements from. If {@code null}, an empty map is returned.
+     * @return a {@link Map} where keys are elements and values are their frequencies
      */
     public static <T> Map<T, Integer> countMap(final Iterator<T> iter) {
         final Map<T, Integer> countMap = new HashMap<>();

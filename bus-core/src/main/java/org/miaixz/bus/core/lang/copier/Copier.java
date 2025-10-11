@@ -28,9 +28,10 @@
 package org.miaixz.bus.core.lang.copier;
 
 /**
- * 拷贝接口
+ * Generic interface for copying operations. This functional interface defines a single method for performing a copy
+ * operation, returning the copied target object.
  *
- * @param <T> 拷贝目标类型
+ * @param <T> The type of the copied target.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -38,9 +39,9 @@ package org.miaixz.bus.core.lang.copier;
 public interface Copier<T> {
 
     /**
-     * 执行拷贝
+     * Executes the copy operation.
      *
-     * @return 拷贝的目标
+     * @return The copied target object.
      */
     T copy();
 

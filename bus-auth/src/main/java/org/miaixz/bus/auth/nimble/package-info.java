@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 核心组件，所有授权登录都是基于{@code provider}实现
+ * Core components, all authorized logins are based on the {@code provider} implementation.
  *
  * @author Kimi Liu
  * @since Java 17+

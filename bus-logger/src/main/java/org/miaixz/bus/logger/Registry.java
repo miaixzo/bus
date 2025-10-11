@@ -28,7 +28,7 @@
 package org.miaixz.bus.logger;
 
 /**
- * 日志简单工厂类，提供带有缓存的日志对象创建
+ * A simple logger factory that provides cached logger instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,27 +36,27 @@ package org.miaixz.bus.logger;
 public abstract class Registry {
 
     /**
-     * 默认构造
+     * Default constructor.
      */
     public Registry() {
 
     }
 
     /**
-     * 获得日志对象
+     * Gets a logger instance by name.
      *
-     * @param name 日志对象名
-     * @return 日志对象
+     * @param name the name of the logger.
+     * @return a {@link Provider} instance.
      */
     public static Provider get(final String name) {
         return Holder.getFactory().getProvider(name);
     }
 
     /**
-     * 获得日志对象
+     * Gets a logger instance by class.
      *
-     * @param clazz 日志对应类
-     * @return 日志对象
+     * @param clazz the class for which to get the logger.
+     * @return a {@link Provider} instance.
      */
     public static Provider get(final Class<?> clazz) {
         return Holder.getFactory().getProvider(clazz != null ? clazz : Logger.class);

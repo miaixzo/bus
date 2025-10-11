@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 字符串占位符相关封装，包括占位符替换变量和解析变量
+ * Provides utilities for string placeholder processing, including variable replacement and parsing.
  *
  * @author Kimi Liu
  * @since Java 17+

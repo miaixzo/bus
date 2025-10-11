@@ -30,11 +30,21 @@ package org.miaixz.bus.image.builtin;
 import org.miaixz.bus.image.UID;
 
 /**
+ * An implementation of the {@link UIDMapper} interface that generates a new, name-based UID by hashing the original
+ * UID. This can be used for de-identification purposes where original UIDs need to be replaced with consistent but
+ * non-identifiable UIDs.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HashUIDMapper implements UIDMapper {
 
+    /**
+     * Generates a name-based UID by hashing the input UID. The generated UID is consistent for the same input UID.
+     *
+     * @param uid The original UID string to be hashed.
+     * @return A new name-based UID derived from the input UID.
+     */
     @Override
     public String get(String uid) {
         return UID.createNameBasedUID(uid.getBytes());

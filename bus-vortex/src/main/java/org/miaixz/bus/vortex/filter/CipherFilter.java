@@ -28,6 +28,7 @@
 package org.miaixz.bus.vortex.filter;
 
 import java.util.Map;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Algorithm;
@@ -35,13 +36,14 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.vortex.Config;
-import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Format;
 import org.miaixz.bus.crypto.Padding;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 import org.miaixz.bus.crypto.center.AES;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Args;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Formats;
 import org.reactivestreams.Publisher;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -50,20 +52,26 @@ import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
+
 import jakarta.annotation.PostConstruct;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * 数据加解密过滤器，负责对请求参数进行解密和对响应数据进行加密处理
+ * Data encryption and decryption filter, responsible for decrypting request parameters and encrypting response data.
  * <p>
- * 该过滤器在过滤器链中位于较高优先级位置（Ordered.HIGHEST_PRECEDENCE + 1）， 主要用于对加密的请求参数进行解密操作，以及对响应数据进行加密处理。
+ * This filter is positioned at a higher priority in the filter chain (Ordered.HIGHEST_PRECEDENCE + 1). Its primary
+ * purpose is to decrypt encrypted request parameters and encrypt response data.
  * </p>
  * <p>
- * 请求处理阶段：当解密功能启用且上下文标记需要解密时，过滤器会遍历所有请求参数，对非空参数值进行解密处理。 响应处理阶段：当加密功能启用且响应格式为XML或JSON时，过滤器会拦截响应数据，对消息中的数据进行加密处理。
+ * **Request Processing Phase**: When decryption is enabled and the context indicates decryption is needed, the filter
+ * iterates through all request parameters and decrypts non-empty parameter values. **Response Processing Phase**: When
+ * encryption is enabled and the response format is XML or JSON, the filter intercepts the response data and encrypts
+ * the data within the message.
  * </p>
  * <p>
- * 目前支持AES-CBC-PKCS7Padding加解密方式，通过配置文件可以设置加解密密钥和偏移量。
+ * Currently, it supports AES-CBC-PKCS7Padding encryption and decryption. The encryption key and offset can be
+ * configured via configuration files.
  * </p>
  *
  * @author Kimi Liu
@@ -73,45 +81,45 @@ import reactor.core.publisher.Mono;
 public class CipherFilter extends AbstractFilter {
 
     /**
-     * 解密配置对象，包含解密相关的配置信息
+     * Decryption configuration object, containing decryption-related configuration information.
      */
-    private final Config.Decrypt decrypt;
+    private final Args.Decrypt decrypt;
     /**
-     * 加密配置对象，包含加密相关的配置信息
+     * Encryption configuration object, containing encryption-related configuration information.
      */
-    private final Config.Encrypt encrypt;
+    private final Args.Encrypt encrypt;
     /**
-     * 解密工具实例，用于执行实际的解密操作
+     * Decryption utility instance, used to perform actual decryption operations.
      */
     private Crypto decryptCrypto;
     /**
-     * 加密工具实例，用于执行实际的加密操作
+     * Encryption utility instance, used to perform actual encryption operations.
      */
     private Crypto encryptCrypto;
 
     /**
-     * 构造器，初始化加解密配置
+     * Constructs a {@code CipherFilter} with the specified decryption and encryption configurations.
      *
-     * @param decrypt 解密配置对象
-     * @param encrypt 加密配置对象
+     * @param decrypt The decryption configuration object.
+     * @param encrypt The encryption configuration object.
      */
-    public CipherFilter(Config.Decrypt decrypt, Config.Encrypt encrypt) {
+    public CipherFilter(Args.Decrypt decrypt, Args.Encrypt encrypt) {
         this.decrypt = decrypt;
         this.encrypt = encrypt;
     }
 
     /**
-     * 初始化方法，在 bean 创建后执行，配置 AES 加解密实例
+     * Initialization method, executed after the bean is created, to configure AES encryption and decryption instances.
      */
     @PostConstruct
     public void init() {
-        // 初始化解密实例
+        // Initialize decryption instance
         if (decrypt.isEnabled() && Algorithm.AES.getValue().equals(decrypt.getType())) {
             decryptCrypto = new AES(Algorithm.Mode.CBC, Padding.PKCS7Padding, decrypt.getKey().getBytes(),
                     decrypt.getOffset().getBytes());
         }
 
-        // 初始化加密实例
+        // Initialize encryption instance
         if (encrypt.isEnabled() && Algorithm.AES.getValue().equals(encrypt.getType())) {
             encryptCrypto = new AES(Algorithm.Mode.CBC, Padding.PKCS7Padding, encrypt.getKey().getBytes(),
                     encrypt.getOffset().getBytes());
@@ -119,25 +127,27 @@ public class CipherFilter extends AbstractFilter {
     }
 
     /**
-     * 内部过滤方法，执行加解密逻辑
+     * Internal filtering method, executing the encryption and decryption logic.
      *
-     * @param exchange 当前的 ServerWebExchange 对象
-     * @param chain    过滤器链
-     * @param context  请求上下文
-     * @return {@link Mono<Void>} 表示异步处理完成
+     * @param exchange The current {@link ServerWebExchange} object.
+     * @param chain    The filter chain.
+     * @param context  The request context.
+     * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
      */
     @Override
     protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
-        if (Consts.TYPE_ONE == context.getSign()) {
-            // 1. 处理请求解密
+        if (Consts.ONE == context.getSign()) {
+            // 1. Handle request decryption
             if (decrypt.isEnabled()) {
                 doDecrypt(exchange, getRequestMap(context));
-                Format.info(exchange, "DECRYPT_PERFORMED", "Path: " + exchange.getRequest().getURI().getPath());
+                Logger.info(
+                        "==>     Filter: Decryption performed for path: {}",
+                        exchange.getRequest().getURI().getPath());
             }
 
-            // 2. 处理响应加密
+            // 2. Handle response encryption
             if (encrypt.isEnabled()
-                    && (Format.XML.equals(context.getFormat()) || Format.JSON.equals(context.getFormat()))) {
+                    && (Formats.XML.equals(context.getFormats()) || Formats.JSON.equals(context.getFormats()))) {
                 exchange = exchange.mutate().response(process(exchange)).build();
             }
         }
@@ -145,14 +155,14 @@ public class CipherFilter extends AbstractFilter {
     }
 
     /**
-     * 执行解密操作，遍历参数并解密非空值
+     * Performs decryption operation, iterating through parameters and decrypting non-empty values.
      *
-     * @param exchange ServerWebExchange 对象
-     * @param map      请求参数映射
+     * @param exchange The {@link ServerWebExchange} object.
+     * @param map      The request parameter map.
      */
     private void doDecrypt(ServerWebExchange exchange, Map<String, String> map) {
         if (null == decryptCrypto) {
-            Format.warn(exchange, "DECRYPT_SKIPPED", "Decrypt crypto instance not initialized");
+            Logger.warn("==>     Filter: Decrypt crypto instance not initialized");
             return;
         }
 
@@ -164,84 +174,86 @@ public class CipherFilter extends AbstractFilter {
     }
 
     /**
-     * 执行加密操作，加密消息中的数据
+     * Performs encryption operation, encrypting data within the message.
      *
-     * @param message 消息对象
+     * @param message The message object containing data to be encrypted.
      */
     private void doEncrypt(Message message) {
         if (ObjectKit.isNotNull(message.getData())) {
             if (Algorithm.AES.getValue().equals(encrypt.getType())) {
-                // 将数据转换为JSON字符串，然后加密并转换为Base64格式
+                // Convert data to JSON string, then encrypt and convert to Base64 format
                 message.setData(encryptCrypto.encryptBase64(JsonKit.toJsonString(message.getData()), Charset.UTF_8));
             }
         }
     }
 
     /**
-     * 创建响应装饰器，拦截并加密响应数据
+     * Creates a response decorator to intercept and encrypt response data.
      *
-     * @param exchange ServerWebExchange 对象
-     * @return 装饰后的 ServerHttpResponseDecorator
+     * @param exchange The {@link ServerWebExchange} object.
+     * @return The decorated {@link ServerHttpResponseDecorator}.
      */
     private ServerHttpResponseDecorator process(ServerWebExchange exchange) {
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
 
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                // 获取资产配置，检查是否需要签名（加密）
+                // Get asset configuration, check if signing (encryption) is required
                 Integer isSign = getAssets(getContext(exchange)).getSign();
-                if (Consts.TYPE_ONE == isSign) {
-                    // 将响应数据流转换为Flux
+                if (Consts.ONE == isSign) {
+                    // Convert response data stream to Flux
                     Flux<? extends DataBuffer> flux = Flux.from(body);
 
-                    // 收集所有数据缓冲区，然后进行加密处理
+                    // Collect all data buffers, then perform encryption processing
                     return flux.collectList().flatMap(dataBuffers -> {
-                        // 合并所有数据缓冲区
+                        // Merge all data buffers
                         byte[] allBytes = merge(dataBuffers);
 
-                        // 将字节数组转换为字符串
+                        // Convert byte array to string
                         String responseBody = new String(allBytes, Charset.UTF_8);
 
-                        // 将字符串转换为消息对象
+                        // Convert string to message object
                         Message message = JsonKit.toPojo(responseBody, Message.class);
 
-                        // 加密消息数据
+                        // Encrypt message data
                         doEncrypt(message);
 
-                        // 将加密后的消息转换为JSON字符串
+                        // Convert encrypted message to JSON string
                         String result = JsonKit.toJsonString(message);
 
-                        // 记录加密操作日志
-                        Format.info(exchange, "ENCRYPT_PERFORMED", "Path: " + exchange.getRequest().getURI().getPath());
+                        // Log encryption operation
+                        Logger.info(
+                                "==>     Filter: Encryption performed for path: {}",
+                                exchange.getRequest().getURI().getPath());
 
-                        // 将加密后的数据包装为新的数据缓冲区
+                        // Wrap encrypted data as new data buffer
                         DataBufferFactory bufferFactory = bufferFactory();
                         DataBuffer encryptedBuffer = bufferFactory.wrap(result.getBytes(Charset.UTF_8));
 
-                        // 写入加密后的响应
+                        // Write encrypted response
                         return super.writeWith(Mono.just(encryptedBuffer));
                     });
                 }
-                // 如果不需要签名（加密），直接写入原始数据
+                // If signing (encryption) is not required, write original data directly
                 return super.writeWith(body);
             }
         };
     }
 
     /**
-     * 合并多个数据缓冲区为一个字节数组
+     * Merges multiple data buffers into a single byte array.
      *
-     * @param dataBuffers 数据缓冲区列表
-     * @return 合并后的字节数组
+     * @param dataBuffers The list of data buffers.
+     * @return The merged byte array.
      */
     private byte[] merge(java.util.List<? extends DataBuffer> dataBuffers) {
-        // 计算总字节数
+        // Calculate total bytes
         int totalBytes = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
 
-        // 创建结果数组
+        // Create result array
         byte[] result = new byte[totalBytes];
 
-        // 填充数据
+        // Fill data
         int position = 0;
         for (DataBuffer buffer : dataBuffers) {
             int length = buffer.readableByteCount();

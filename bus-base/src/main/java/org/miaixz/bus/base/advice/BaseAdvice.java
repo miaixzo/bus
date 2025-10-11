@@ -31,10 +31,7 @@ import org.miaixz.bus.core.basic.advice.ErrorAdvice;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.spring.Controller;
 import org.miaixz.bus.core.instance.Instances;
-import org.miaixz.bus.core.lang.exception.BusinessException;
-import org.miaixz.bus.core.lang.exception.CrontabException;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -48,7 +45,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 /**
- * 异常信息拦截
+ * Global exception handling advice class. This class unifies the handling of various exceptions thrown in the
+ * application and returns a consistent error response.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,9 +57,10 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class BaseAdvice extends Controller {
 
     /**
-     * 应用到所有@RequestMapping注解方法,在其执行之前初始化数据绑定器
+     * Initializes the data binder for all methods annotated with @RequestMapping. This method is executed before
+     * any @RequestMapping method.
      *
-     * @param binder 绑定器
+     * @param binder the data binder to initialize
      */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -69,9 +68,9 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 把值绑定到Model中, 使全局@RequestMapping可以获取到该值
+     * Binds values to the Model, making them accessible to all @RequestMapping methods globally.
      *
-     * @param model 对象
+     * @param model the Model object to add attributes to
      */
     @ModelAttribute
     public void addAttributes(Model model) {
@@ -79,10 +78,11 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 全局异常拦截 处理全局异常
+     * Global exception handler for all uncaught exceptions. This method processes any {@link Exception} that is not
+     * specifically handled by other exception handlers.
      *
-     * @param e 异常信息
-     * @return 异常提示
+     * @param e the exception information
+     * @return a unified error response object
      */
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
@@ -92,10 +92,10 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 内部异常拦截
+     * Internal exception handler for {@link InternalException}.
      *
-     * @param e 异常信息
-     * @return 异常提示
+     * @param e the internal exception information
+     * @return a unified error response object
      */
     @ResponseBody
     @ExceptionHandler(value = InternalException.class)
@@ -108,10 +108,10 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 拦截业务异常 事务回滚处理
+     * Business exception handler for {@link BusinessException}. This handler typically triggers transaction rollback.
      *
-     * @param e 异常信息
-     * @return 异常提示
+     * @param e the business exception information
+     * @return a unified error response object
      */
     @ResponseBody
     @ExceptionHandler(value = BusinessException.class)
@@ -124,10 +124,11 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 定时任务失败
+     * Crontab exception handler for {@link CrontabException}. This handles exceptions that occur during scheduled task
+     * execution.
      *
-     * @param e 异常信息
-     * @return 异常提示
+     * @param e the crontab exception information
+     * @return a unified error response object
      */
     @ResponseBody
     @ExceptionHandler(value = CrontabException.class)
@@ -140,10 +141,11 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 参数验证失败
+     * Validation exception handler for {@link ValidateException}. This handles exceptions related to parameter
+     * validation failures.
      *
-     * @param e 异常信息
-     * @return 异常提示
+     * @param e the validation exception information
+     * @return a unified error response object
      */
     @ResponseBody
     @ExceptionHandler(value = ValidateException.class)
@@ -156,10 +158,43 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 请求方式拦截
+     * Global handler for unchecked (runtime) exceptions.
      *
-     * @param e 异常信息
-     * @return 异常提示
+     * @param e the exception information
+     * @return a unified error response object
+     */
+    @ResponseBody
+    @ExceptionHandler(value = UncheckedException.class)
+    public Object uncheckedException(UncheckedException e) {
+        this.defaultExceptionHandler(e);
+        if (StringKit.isBlank(e.getErrcode())) {
+            return write(ErrorCode._100805);
+        }
+        return write(e.getErrcode(), e.getErrmsg());
+    }
+
+    /**
+     * Global handler for I/O or other relevant exceptions.
+     *
+     * @param e the exception information
+     * @return a unified error response object
+     */
+    @ResponseBody
+    @ExceptionHandler(value = RelevantException.class)
+    public Object relevantException(RelevantException e) {
+        this.defaultExceptionHandler(e);
+        if (StringKit.isBlank(e.getErrcode())) {
+            return write(ErrorCode._100805);
+        }
+        return write(e.getErrcode(), e.getErrmsg());
+    }
+
+    /**
+     * HTTP request method not supported exception handler for {@link HttpRequestMethodNotSupportedException}. This
+     * handles cases where the client uses an unsupported HTTP method for a given endpoint.
+     *
+     * @param e the HTTP request method not supported exception information
+     * @return a unified error response object
      */
     @ResponseBody
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
@@ -169,10 +204,11 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 媒体类型拦截
+     * HTTP media type not supported exception handler for {@link HttpMediaTypeNotSupportedException}. This handles
+     * cases where the client sends a request with an unsupported media type.
      *
-     * @param e 异常信息
-     * @return 异常提示
+     * @param e the HTTP media type not supported exception information
+     * @return a unified error response object
      */
     @ResponseBody
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
@@ -182,10 +218,11 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 资源未找到
+     * No handler found exception handler for {@link NoHandlerFoundException}. This handles cases where no handler
+     * (e.g., controller method) is found for a given request.
      *
-     * @param e 异常信息
-     * @return 异常提示
+     * @param e the no handler found exception information
+     * @return a unified error response object
      */
     @ResponseBody
     @ExceptionHandler(value = NoHandlerFoundException.class)
@@ -195,10 +232,11 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 参数绑定异常
+     * Parameter binding exception handler for {@link MethodArgumentNotValidException} and {@link BindException}. This
+     * handles exceptions that occur during parameter binding and validation.
      *
-     * @param e 异常信息
-     * @return 异常提示
+     * @param e the parameter binding exception information
+     * @return a unified error response object
      */
     @ResponseBody
     @ExceptionHandler({ MethodArgumentNotValidException.class, BindException.class })
@@ -208,9 +246,11 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true, 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求； 这里可以加上登录校验,权限拦截、请求限流等
+     * Default exception handler for logging and delegating to an external error handling service. This method is called
+     * before the business processor handles the request. It can be used for login verification, permission
+     * interception, request throttling, etc.
      *
-     * @param ex 对象参数
+     * @param ex the exception object
      */
     public void defaultExceptionHandler(Exception ex) {
         try {

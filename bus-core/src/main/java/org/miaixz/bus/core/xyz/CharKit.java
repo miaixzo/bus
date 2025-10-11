@@ -35,7 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.ASCIIStrCache;
 
 /**
- * 字符工具类 部分工具来自于Apache Commons系列
+ * Character utility class. Some methods are inspired by Apache Commons Lang.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,182 +43,180 @@ import org.miaixz.bus.core.text.ASCIIStrCache;
 public class CharKit {
 
     /**
-     * 是否为ASCII字符，ASCII字符位于0~127之间
+     * Checks if the character is an ASCII character (0-127).
      *
      * <pre>
-     *   CharKit.isAscii('a')  = true
-     *   CharKit.isAscii('A')  = true
-     *   CharKit.isAscii('3')  = true
-     *   CharKit.isAscii('-')  = true
-     *   CharKit.isAscii('\n') = true
-     *   CharKit.isAscii('&copy;') = false
+     * CharKit.isAscii('a')  = true
+     * CharKit.isAscii('A')  = true
+     * CharKit.isAscii('3')  = true
+     * CharKit.isAscii('-')  = true
+     * CharKit.isAscii('\n') = true
+     * CharKit.isAscii('&copy;') = false
      * </pre>
      *
-     * @param ch 被检查的字符处
-     * @return true表示为ASCII字符，ASCII字符位于0~127之间
+     * @param ch The character to check.
+     * @return {@code true} if the character is an ASCII character (0-127).
      */
     public static boolean isAscii(final char ch) {
         return ch < 128;
     }
 
     /**
-     * 是否为可见ASCII字符，可见字符位于32~126之间
+     * Checks if the character is a printable ASCII character (32-126).
      *
      * <pre>
-     *   CharKit.isAsciiPrintable('a')  = true
-     *   CharKit.isAsciiPrintable('A')  = true
-     *   CharKit.isAsciiPrintable('3')  = true
-     *   CharKit.isAsciiPrintable('-')  = true
-     *   CharKit.isAsciiPrintable('\n') = false
-     *   CharKit.isAsciiPrintable('&copy;') = false
+     * CharKit.isAsciiPrintable('a')  = true
+     * CharKit.isAsciiPrintable('A')  = true
+     * CharKit.isAsciiPrintable('3')  = true
+     * CharKit.isAsciiPrintable('-')  = true
+     * CharKit.isAsciiPrintable('\n') = false
+     * CharKit.isAsciiPrintable('&copy;') = false
      * </pre>
      *
-     * @param ch 被检查的字符处
-     * @return true表示为ASCII可见字符，可见字符位于32~126之间
+     * @param ch The character to check.
+     * @return {@code true} if the character is a printable ASCII character (32-126).
      */
     public static boolean isAsciiPrintable(final char ch) {
         return ch >= 32 && ch < 127;
     }
 
     /**
-     * 是否为ASCII控制符（不可见字符），控制符位于0~31和127
+     * Checks if the character is an ASCII control character (0-31 and 127).
      *
      * <pre>
-     *   CharKit.isAsciiControl('a')  = false
-     *   CharKit.isAsciiControl('A')  = false
-     *   CharKit.isAsciiControl('3')  = false
-     *   CharKit.isAsciiControl('-')  = false
-     *   CharKit.isAsciiControl('\n') = true
-     *   CharKit.isAsciiControl('&copy;') = false
+     * CharKit.isAsciiControl('a')  = false
+     * CharKit.isAsciiControl('A')  = false
+     * CharKit.isAsciiControl('3')  = false
+     * CharKit.isAsciiControl('-')  = false
+     * CharKit.isAsciiControl('\n') = true
+     * CharKit.isAsciiControl('&copy;') = false
      * </pre>
      *
-     * @param ch 被检查的字符
-     * @return true表示为控制符，控制符位于0~31和127
+     * @param ch The character to check.
+     * @return {@code true} if the character is a control character (0-31 and 127).
      */
     public static boolean isAsciiControl(final char ch) {
         return ch < 32 || ch == 127;
     }
 
     /**
-     * 判断是否为字母（包括大写字母和小写字母） 字母包括A~Z和a~z
+     * Checks if the character is a letter (a-z, A-Z).
      *
      * <pre>
-     *   CharKit.isLetter('a')  = true
-     *   CharKit.isLetter('A')  = true
-     *   CharKit.isLetter('3')  = false
-     *   CharKit.isLetter('-')  = false
-     *   CharKit.isLetter('\n') = false
-     *   CharKit.isLetter('&copy;') = false
+     * CharKit.isLetter('a')  = true
+     * CharKit.isLetter('A')  = true
+     * CharKit.isLetter('3')  = false
+     * CharKit.isLetter('-')  = false
+     * CharKit.isLetter('\n') = false
+     * CharKit.isLetter('&copy;') = false
      * </pre>
      *
-     * @param ch 被检查的字符
-     * @return true表示为字母（包括大写字母和小写字母）字母包括A~Z和a~z
+     * @param ch The character to check.
+     * @return {@code true} if the character is a letter (a-z, A-Z).
      */
     public static boolean isLetter(final char ch) {
         return isLetterUpper(ch) || isLetterLower(ch);
     }
 
     /**
-     * 判断是否为大写字母，大写字母包括A~Z
+     * Checks if the character is an uppercase letter (A-Z).
      *
      * <pre>
-     *   CharKit.isLetterUpper('a')  = false
-     *   CharKit.isLetterUpper('A')  = true
-     *   CharKit.isLetterUpper('3')  = false
-     *   CharKit.isLetterUpper('-')  = false
-     *   CharKit.isLetterUpper('\n') = false
-     *   CharKit.isLetterUpper('&copy;') = false
+     * CharKit.isLetterUpper('a')  = false
+     * CharKit.isLetterUpper('A')  = true
+     * CharKit.isLetterUpper('3')  = false
+     * CharKit.isLetterUpper('-')  = false
+     * CharKit.isLetterUpper('\n') = false
+     * CharKit.isLetterUpper('&copy;') = false
      * </pre>
      *
-     * @param ch 被检查的字符
-     * @return true表示为大写字母，大写字母包括A~Z
+     * @param ch The character to check.
+     * @return {@code true} if the character is an uppercase letter (A-Z).
      */
     public static boolean isLetterUpper(final char ch) {
         return ch >= 'A' && ch <= 'Z';
     }
 
     /**
-     * <p>
-     * 检查字符是否为小写字母，小写字母指a~z
-     * </p>
+     * Checks if the character is a lowercase letter (a-z).
      *
      * <pre>
-     *   CharKit.isLetterLower('a')  = true
-     *   CharKit.isLetterLower('A')  = false
-     *   CharKit.isLetterLower('3')  = false
-     *   CharKit.isLetterLower('-')  = false
-     *   CharKit.isLetterLower('\n') = false
-     *   CharKit.isLetterLower('&copy;') = false
+     * CharKit.isLetterLower('a')  = true
+     * CharKit.isLetterLower('A')  = false
+     * CharKit.isLetterLower('3')  = false
+     * CharKit.isLetterLower('-')  = false
+     * CharKit.isLetterLower('\n') = false
+     * CharKit.isLetterLower('&copy;') = false
      * </pre>
      *
-     * @param ch 被检查的字符
-     * @return true表示为小写字母，小写字母指a~z
+     * @param ch The character to check.
+     * @return {@code true} if the character is a lowercase letter (a-z).
      */
     public static boolean isLetterLower(final char ch) {
         return ch >= 'a' && ch <= 'z';
     }
 
     /**
-     * <p>
-     * 检查是否为数字字符，数字字符指0~9
-     * </p>
+     * Checks if the character is a digit (0-9).
      *
      * <pre>
-     *   CharKit.isNumber('a')  = false
-     *   CharKit.isNumber('A')  = false
-     *   CharKit.isNumber('3')  = true
-     *   CharKit.isNumber('-')  = false
-     *   CharKit.isNumber('\n') = false
-     *   CharKit.isNumber('&copy;') = false
+     * CharKit.isNumber('a')  = false
+     * CharKit.isNumber('A')  = false
+     * CharKit.isNumber('3')  = true
+     * CharKit.isNumber('-')  = false
+     * CharKit.isNumber('\n') = false
+     * CharKit.isNumber('&copy;') = false
      * </pre>
      *
-     * @param ch 被检查的字符
-     * @return true表示为数字字符，数字字符指0~9
+     * @param ch The character to check.
+     * @return {@code true} if the character is a digit (0-9).
      */
     public static boolean isNumber(final char ch) {
         return ch >= '0' && ch <= '9';
     }
 
     /**
-     * 是否为16进制规范的字符，判断是否为如下字符
+     * Checks if the character is a valid hexadecimal character.
+     * <p>
+     * A valid hex character is one of:
      * 
      * <pre>
-     * 1. 0~9
-     * 2. a~f
-     * 4. A~F
+     * 1. 0-9
+     * 2. a-f
+     * 3. A-F
      * </pre>
      *
-     * @param c 字符
-     * @return 是否为16进制规范的字符
+     * @param c The character to check.
+     * @return {@code true} if the character is a valid hexadecimal character.
      */
     public static boolean isHexChar(final char c) {
         return isNumber(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
 
     /**
-     * 是否为字母或数字，包括A~Z、a~z、0~9
+     * Checks if the character is a letter or a digit.
      *
      * <pre>
-     *   CharKit.isLetterOrNumber('a')  = true
-     *   CharKit.isLetterOrNumber('A')  = true
-     *   CharKit.isLetterOrNumber('3')  = true
-     *   CharKit.isLetterOrNumber('-')  = false
-     *   CharKit.isLetterOrNumber('\n') = false
-     *   CharKit.isLetterOrNumber('&copy;') = false
+     * CharKit.isLetterOrNumber('a')  = true
+     * CharKit.isLetterOrNumber('A')  = true
+     * CharKit.isLetterOrNumber('3')  = true
+     * CharKit.isLetterOrNumber('-')  = false
+     * CharKit.isLetterOrNumber('\n') = false
+     * CharKit.isLetterOrNumber('&copy;') = false
      * </pre>
      *
-     * @param ch 被检查的字符
-     * @return true表示为字母或数字，包括A~Z、a~z、0~9
+     * @param ch The character to check.
+     * @return {@code true} if the character is a letter or a digit.
      */
     public static boolean isLetterOrNumber(final char ch) {
         return isLetter(ch) || isNumber(ch);
     }
 
     /**
-     * 字符转为字符串 如果为ASCII字符，使用缓存
+     * Converts a character to a String. Uses a cache for ASCII characters.
      *
-     * @param c 字符
-     * @return 字符串
+     * @param c The character.
+     * @return A String containing the character.
      * @see ASCIIStrCache#toString(char)
      */
     public static String toString(final char c) {
@@ -226,40 +224,40 @@ public class CharKit {
     }
 
     /**
-     * 给定类名是否为字符类，字符类包括：
+     * Checks if the given class is a character class, which includes:
      *
      * <pre>
      * Character.class
      * char.class
      * </pre>
      *
-     * @param clazz 被检查的类
-     * @return true表示为字符类
+     * @param clazz The class to check.
+     * @return {@code true} if it is a character class.
      */
     public static boolean isCharClass(final Class<?> clazz) {
         return clazz == Character.class || clazz == char.class;
     }
 
     /**
-     * 给定对象对应的类是否为字符类，字符类包括：
+     * Checks if the given object is a character type, which includes:
      *
      * <pre>
      * Character.class
      * char.class
      * </pre>
      *
-     * @param value 被检查的对象
-     * @return true表示为字符类
+     * @param value The object to check.
+     * @return {@code true} if the object is a character type.
      */
     public static boolean isChar(final Object value) {
         return value instanceof Character || value.getClass() == char.class;
     }
 
     /**
-     * 是否空白符 空白符包括空格、制表符、全角空格和不间断空格
+     * Checks if the character is a blank character (whitespace, tab, etc.).
      *
-     * @param c 字符
-     * @return 是否空白符
+     * @param c The character.
+     * @return {@code true} if it is a blank character.
      * @see Character#isWhitespace(int)
      * @see Character#isSpaceChar(int)
      */
@@ -268,10 +266,10 @@ public class CharKit {
     }
 
     /**
-     * 是否空白符 空白符包括空格、制表符、全角空格和不间断空格
+     * Checks if the character is a blank character (whitespace, tab, etc.).
      *
-     * @param c 字符
-     * @return 是否空白符
+     * @param c The character code point.
+     * @return {@code true} if it is a blank character.
      * @see Character#isWhitespace(int)
      * @see Character#isSpaceChar(int)
      */
@@ -288,42 +286,43 @@ public class CharKit {
     }
 
     /**
-     * 判断是否为emoji表情符
+     * Checks if the character is an emoji.
      *
-     * @param c 字符
-     * @return 是否为emoji
+     * @param c The character.
+     * @return {@code true} if it is an emoji.
      */
     public static boolean isEmoji(final char c) {
+        // A simple check for common emoji ranges. This is not exhaustive.
         return !((c == 0x0) || (c == 0x9) || (c == 0xA) || (c == 0xD) || ((c >= 0x20) && (c <= 0xD7FF))
                 || ((c >= 0xE000) && (c <= 0xFFFD)) || ((c >= 0x100000) && (c <= 0x10FFFF)));
     }
 
     /**
-     * 是否为Windows或者Linux（Unix）文件分隔符 Windows平台下分隔符为\，Linux（Unix）为/
+     * Checks if the character is a file separator for Windows ('\') or Unix ('/').
      *
-     * @param c 字符
-     * @return 是否为Windows或者Linux（Unix）文件分隔符
+     * @param c The character.
+     * @return {@code true} if it is a file separator.
      */
     public static boolean isFileSeparator(final char c) {
         return Symbol.C_SLASH == c || Symbol.C_BACKSLASH == c;
     }
 
     /**
-     * 是否为零宽字符
+     * Checks if the character is a zero-width character.
      *
-     * @param c 字符
-     * @return 是否为零宽字符
+     * @param c The character to check.
+     * @return {@code true} if the character is a zero-width character.
      */
     public static boolean isZeroWidthChar(final char c) {
         switch (c) {
-            case '\u200B': // 零宽空格
-            case '\u200C': // 零宽非换行空格
-            case '\u200D': // 零宽连接符
-            case '\uFEFF': // 零宽无断空格
-            case '\u2060': // 零宽连字符
-            case '\u2063': // 零宽不连字符
-            case '\u2064': // 零宽连字符
-            case '\u2065': // 零宽不连字符
+            case '\u200B': // Zero-width space
+            case '\u200C': // Zero-width non-joiner
+            case '\u200D': // Zero-width joiner
+            case '\uFEFF': // Zero-width no-break space (Byte Order Mark)
+            case '\u2060': // Word joiner
+            case '\u2063': // Invisible separator
+            case '\u2064': // Invisible plus
+            case '\u2065': // Invisible separator
                 return true;
 
             default:
@@ -332,12 +331,12 @@ public class CharKit {
     }
 
     /**
-     * 比较两个字符是否相同
+     * Compares two characters for equality.
      *
-     * @param c1              字符1
-     * @param c2              字符2
-     * @param caseInsensitive 是否忽略大小写
-     * @return 是否相同
+     * @param c1              The first character.
+     * @param c2              The second character.
+     * @param caseInsensitive If {@code true}, comparison is case-insensitive.
+     * @return {@code true} if the characters are equal.
      */
     public static boolean equals(final char c1, final char c2, final boolean caseInsensitive) {
         if (caseInsensitive) {
@@ -347,40 +346,40 @@ public class CharKit {
     }
 
     /**
-     * 获取字符类型
+     * Gets the general category of a character.
      *
-     * @param c 字符
-     * @return 字符类型
+     * @param c The character (code point).
+     * @return The character type.
+     * @see Character#getType(int)
      */
     public static int getType(final int c) {
         return Character.getType(c);
     }
 
     /**
-     * 获取给定字符的16进制数值
+     * Gets the hexadecimal numeric value of a character.
      *
-     * @param b 字符
-     * @return 16进制字符
+     * @param c The character (code point).
+     * @return The integer value of the hex digit.
      */
-    public static int digit16(final int b) {
-        return Character.digit(b, 16);
+    public static int digit16(final int c) {
+        return Character.digit(c, 16);
     }
 
     /**
-     * 将字母、数字转换为带圈的字符：
+     * Converts a letter or digit to its enclosed (circled) form.
+     * <p>
+     * Examples:
      * 
      * <pre>
-     *     '1' - '①'
-     *     'A' - 'Ⓐ'
-     *     'a' - 'ⓐ'
+     * '1' - '①'
+     * 'A' - 'Ⓐ'
+     * 'a' - 'ⓐ'
      * </pre>
-     * 
-     * 获取带圈数字 /封闭式字母数字 ，从1-20,超过1-20报错
      *
-     * @param c 被转换的字符，如果字符不支持转换，返回原字符
-     * @return 转换后的字符
-     * @see <a href="https://en.wikipedia.org/wiki/List_of_Unicode_characters#Unicode_symbols">Unicode_symbols</a>
-     * @see <a href="https://en.wikipedia.org/wiki/Enclosed_Alphanumerics">Alphanumerics</a>
+     * @param c The character to convert. If the character cannot be converted, it is returned unchanged.
+     * @return The converted character.
+     * @see <a href="https://en.wikipedia.org/wiki/Enclosed_Alphanumerics">Enclosed Alphanumerics</a>
      */
     public static char toCloseChar(final char c) {
         int result = c;
@@ -395,32 +394,33 @@ public class CharKit {
     }
 
     /**
-     * 将[1-20]数字转换为带圈的字符：
+     * Converts a number from 1 to 20 to its enclosed (circled) character form. Also known as Enclosed Alphanumerics.
+     * <p>
+     * Examples:
      * 
      * <pre>
-     *     1 - '①'
-     *     12 - '⑫'
-     *     20 - '⑳'
+     * 1 - '①'
+     * 12 - '⑫'
+     * 20 - '⑳'
      * </pre>
-     * 
-     * 也称作：封闭式字符，英文：Enclosed Alphanumerics
      *
-     * @param number 被转换的数字
-     * @return 转换后的字符
-     * @see <a href=
-     *      "https://en.wikipedia.org/wiki/List_of_Unicode_characters#Unicode_symbols">维基百科wikipedia-Unicode_symbols</a>
-     * @see <a href=
-     *      "https://zh.wikipedia.org/wiki/Unicode%E5%AD%97%E7%AC%A6%E5%88%97%E8%A1%A8">维基百科wikipedia-Unicode字符列表</a>
-     * @see <a href="https://coolsymbol.com/">coolsymbol</a>
-     * @see <a href="https://baike.baidu.com/item/%E7%89%B9%E6%AE%8A%E5%AD%97%E7%AC%A6/112715?fr=aladdin">百度百科 特殊字符</a>
+     * @param number The number to convert (must be between 1 and 20).
+     * @return The converted character.
+     * @see <a href="https://en.wikipedia.org/wiki/Enclosed_Alphanumerics">Enclosed Alphanumerics</a>
      */
     public static char toCloseByNumber(final int number) {
-        if (number > 20) {
-            throw new IllegalArgumentException("Number must be [1-20]");
+        if (number < 1 || number > 20) {
+            throw new IllegalArgumentException("Number must be between 1 and 20.");
         }
         return (char) ('①' + number - 1);
     }
 
+    /**
+     * Converts a byte array to a char array using the UTF-8 charset.
+     *
+     * @param bytes The byte array.
+     * @return The resulting char array.
+     */
     public static char[] getChars(byte[] bytes) {
         ByteBuffer bb = ByteBuffer.allocate(bytes.length);
         bb.put(bytes).flip();

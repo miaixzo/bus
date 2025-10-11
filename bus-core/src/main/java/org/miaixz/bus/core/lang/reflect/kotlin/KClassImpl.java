@@ -35,14 +35,21 @@ import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 
 /**
- * kotlin.reflect.jvm.internal.KClassImpl包装
+ * Wrapper for {@code kotlin.reflect.jvm.internal.KClassImpl}. This class provides utility methods to interact with
+ * Kotlin's internal KClass implementation for reflection purposes, specifically to retrieve constructors.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class KClassImpl {
 
+    /**
+     * The {@link Class} object for {@code kotlin.reflect.jvm.internal.KClassImpl}.
+     */
     private static final Class<?> KCLASS_IMPL_CLASS;
+    /**
+     * The {@link Method} object for {@code KClassImpl.getConstructors()}.
+     */
     private static final Method METHOD_GET_CONSTRUCTORS;
 
     static {
@@ -51,10 +58,11 @@ public class KClassImpl {
     }
 
     /**
-     * 获取Kotlin类的所有构造方法
+     * Retrieves all constructors of a given Kotlin class. This method internally creates an instance of
+     * {@code KClassImpl} and invokes its {@code getConstructors()} method.
      *
-     * @param targetType kotlin类
-     * @return 构造列表
+     * @param targetType The Kotlin class for which to retrieve constructors.
+     * @return A {@link List} of {@code Object} representing the constructors of the Kotlin class.
      */
     public static List<?> getConstructors(final Class<?> targetType) {
         final Object kClassImpl = ReflectKit.newInstance(KCLASS_IMPL_CLASS, targetType);

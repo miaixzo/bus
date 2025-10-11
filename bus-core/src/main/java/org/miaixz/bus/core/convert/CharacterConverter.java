@@ -33,29 +33,38 @@ import org.miaixz.bus.core.xyz.BooleanKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符转换器
+ * Converts an object to a {@link Character}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CharacterConverter extends AbstractConverter {
 
+    /**
+     * Singleton instance.
+     */
+    public static final CharacterConverter INSTANCE = new CharacterConverter();
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852266250201L;
 
     /**
-     * 单例
+     * Internally converts the given value to a {@link Character}.
+     *
+     * @param targetClass The target class, which should be {@link Character}.
+     * @param value       The value to be converted.
+     * @return The converted {@link Character}, or {@code null} if the value is an empty string.
      */
-    public static final CharacterConverter INSTANCE = new CharacterConverter();
-
     @Override
     protected Character convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Boolean) {
             return BooleanKit.toCharacter((Boolean) value);
         } else {
-            final String values = convertToString(value);
-            if (StringKit.isNotBlank(values)) {
-                return values.charAt(0);
+            final String text = convertToString(value);
+            if (StringKit.isNotBlank(text)) {
+                return text.charAt(0);
             }
         }
         return null;

@@ -48,18 +48,26 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.NetKit;
 
 /**
- * 基于 Apache FtpServer（http://apache.apache.org/ftpserver-project/）的FTP服务端简单封装。
+ * A simple encapsulation of an FTP server based on Apache FtpServer (http://apache.apache.org/ftpserver-project/). This
+ * class provides convenient methods for configuring and starting an embedded FTP server.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SimpleFtpServer {
 
+    /**
+     * The factory for creating and configuring the FTP server instance.
+     */
     private final FtpServerFactory serverFactory;
+    /**
+     * The factory for creating and configuring FTP server listeners.
+     */
     private final ListenerFactory listenerFactory;
 
     /**
-     * 构造
+     * Constructs a new {@code SimpleFtpServer} instance. Initializes {@link FtpServerFactory} and
+     * {@link ListenerFactory}.
      */
     public SimpleFtpServer() {
         serverFactory = new FtpServerFactory();
@@ -67,28 +75,30 @@ public class SimpleFtpServer {
     }
 
     /**
-     * 创建FTP服务器，调用{@link SimpleFtpServer#start()}启动即可
+     * Creates a new {@code SimpleFtpServer} instance. To start the server, call {@link SimpleFtpServer#start()}.
      *
-     * @return SimpleFtpServer
+     * @return A new {@code SimpleFtpServer} instance.
      */
     public static SimpleFtpServer of() {
         return new SimpleFtpServer();
     }
 
     /**
-     * 获取 {@link FtpServerFactory}，用于设置FTP服务器相关信息
+     * Retrieves the underlying {@link FtpServerFactory} to allow for advanced configuration of the FTP server
+     * properties.
      *
-     * @return {@link FtpServerFactory}
+     * @return The {@link FtpServerFactory} instance.
      */
     public FtpServerFactory getServerFactory() {
         return this.serverFactory;
     }
 
     /**
-     * 设置连接相关配置，使用ConnectionConfigFactory创建{@link ConnectionConfig}对象
+     * Sets the connection configuration for the FTP server. Use {@link org.apache.ftpserver.ConnectionConfigFactory} to
+     * create a {@link ConnectionConfig} object.
      *
-     * @param connectionConfig 连接配置
-     * @return this
+     * @param connectionConfig The {@link ConnectionConfig} object to set.
+     * @return This {@code SimpleFtpServer} instance, allowing for method chaining.
      */
     public SimpleFtpServer setConnectionConfig(final ConnectionConfig connectionConfig) {
         this.serverFactory.setConnectionConfig(connectionConfig);
@@ -96,19 +106,21 @@ public class SimpleFtpServer {
     }
 
     /**
-     * 获取{@link ListenerFactory}，用于设置端口、用户、SSL等信息
+     * Retrieves the underlying {@link ListenerFactory} to allow for advanced configuration of FTP server listeners,
+     * such as port, SSL, etc.
      *
-     * @return {@link ListenerFactory}
+     * @return The {@link ListenerFactory} instance.
      */
     public ListenerFactory getListenerFactory() {
         return this.listenerFactory;
     }
 
     /**
-     * 自定义默认端口，如果不设置，使用默认端口：21
+     * Sets the default port for the FTP server. If not set, the default port 21 will be used.
      *
-     * @param port 端口
-     * @return this
+     * @param port The port number to set. Must be a valid port number.
+     * @return This {@code SimpleFtpServer} instance, allowing for method chaining.
+     * @throws IllegalArgumentException if the provided port is not a valid port number.
      */
     public SimpleFtpServer setPort(final int port) {
         Assert.isTrue(NetKit.isValidPort(port), "Invalid port!");
@@ -117,19 +129,21 @@ public class SimpleFtpServer {
     }
 
     /**
-     * 获取用户管理器，用于新增、查找和删除用户信息
+     * Retrieves the {@link UserManager} for managing FTP user accounts. This manager can be used to add, find, and
+     * delete user information.
      *
-     * @return 用户管理器
+     * @return The {@link UserManager} instance.
      */
     public UserManager getUserManager() {
         return this.serverFactory.getUserManager();
     }
 
     /**
-     * 自定义用户管理器，一般用于使用配置文件配置用户信息
+     * Sets a custom {@link UserManager} for the FTP server. This is typically used when user information is configured
+     * via a properties file or a custom database.
      *
-     * @param userManager {@link UserManager}
-     * @return this
+     * @param userManager The custom {@link UserManager} to set.
+     * @return This {@code SimpleFtpServer} instance, allowing for method chaining.
      */
     public SimpleFtpServer setUserManager(final UserManager userManager) {
         this.serverFactory.setUserManager(userManager);
@@ -137,10 +151,11 @@ public class SimpleFtpServer {
     }
 
     /**
-     * 增加FTP用户
+     * Adds an FTP user to the server's user manager.
      *
-     * @param user FTP用户信息
-     * @return this
+     * @param user The {@link User} object containing FTP user information.
+     * @return This {@code SimpleFtpServer} instance, allowing for method chaining.
+     * @throws InternalException if an {@link org.apache.ftpserver.ftplet.FtpException} occurs during user saving.
      */
     public SimpleFtpServer addUser(final User user) {
         try {
@@ -152,27 +167,29 @@ public class SimpleFtpServer {
     }
 
     /**
-     * 添加匿名用户
+     * Adds an anonymous user to the FTP server. The anonymous user will have read/write permissions to the specified
+     * home directory.
      *
-     * @param homePath 用户路径，匿名用户对此路径有读写权限
-     * @return this
+     * @param homePath The home directory path for the anonymous user.
+     * @return This {@code SimpleFtpServer} instance, allowing for method chaining.
      */
     public SimpleFtpServer addAnonymous(final String homePath) {
         final BaseUser user = new BaseUser();
         user.setName("anonymous");
         user.setHomeDirectory(homePath);
         final List<Authority> authorities = new ArrayList<>();
-        // 添加用户读写权限
+        // Add write permission for the anonymous user
         authorities.add(new WritePermission());
         user.setAuthorities(authorities);
         return addUser(user);
     }
 
     /**
-     * 删除用户
+     * Deletes an FTP user from the server's user manager.
      *
-     * @param userName 用户名
-     * @return this
+     * @param userName The username of the FTP user to delete.
+     * @return This {@code SimpleFtpServer} instance, allowing for method chaining.
+     * @throws InternalException if an {@link org.apache.ftpserver.ftplet.FtpException} occurs during user deletion.
      */
     public SimpleFtpServer delUser(final String userName) {
         try {
@@ -184,23 +201,24 @@ public class SimpleFtpServer {
     }
 
     /**
-     * 使用SSL安全连接，可以使用SslConfigurationFactory创建{@link SslConfiguration}
+     * Configures the FTP server to use SSL for secure connections. Use {@link SslConfigurationFactory} to create an
+     * {@link SslConfiguration} object.
      *
-     * @param ssl {@link SslConfiguration}
-     * @return this
+     * @param ssl The {@link SslConfiguration} object containing SSL/TLS settings.
+     * @return This {@code SimpleFtpServer} instance, allowing for method chaining.
      */
     public SimpleFtpServer setSsl(final SslConfiguration ssl) {
         this.listenerFactory.setSslConfiguration(ssl);
-        listenerFactory.setImplicitSsl(true);
+        listenerFactory.setImplicitSsl(true); // Enable implicit SSL
         return this;
     }
 
     /**
-     * 使用SSL安全连接
+     * Configures the FTP server to use SSL for secure connections with a given keystore file and password.
      *
-     * @param keystoreFile 密钥文件
-     * @param password     密钥文件密码
-     * @return this
+     * @param keystoreFile The {@link File} object pointing to the keystore file (e.g., JKS, PKCS12).
+     * @param password     The password for the keystore file.
+     * @return This {@code SimpleFtpServer} instance, allowing for method chaining.
      */
     public SimpleFtpServer setSsl(final File keystoreFile, final String password) {
         final SslConfigurationFactory sslFactory = new SslConfigurationFactory();
@@ -210,10 +228,11 @@ public class SimpleFtpServer {
     }
 
     /**
-     * 自定义用户信息配置文件，此方法会重置用户管理器
+     * Sets a custom user information configuration file. This method will reset the current user manager and configure
+     * it to load users from the specified properties file.
      *
-     * @param propertiesFile 配置文件
-     * @return this
+     * @param propertiesFile The {@link File} object pointing to the user properties file.
+     * @return This {@code SimpleFtpServer} instance, allowing for method chaining.
      */
     public SimpleFtpServer setUsersConfig(final File propertiesFile) {
         final PropertiesUserManagerFactory userManagerFactory = new PropertiesUserManagerFactory();
@@ -222,11 +241,12 @@ public class SimpleFtpServer {
     }
 
     /**
-     * 增加FTP动作行为监听处理器，通过实现{@link Ftplet}，可以对用户的行为监听并执行相应动作
+     * Adds an FTP action behavior listener (Ftplet) to the server. By implementing {@link Ftplet}, custom logic can be
+     * executed in response to user actions.
      *
-     * @param name   名称
-     * @param ftplet {@link Ftplet}，用户自定义监听规则
-     * @return this
+     * @param name   The name of the Ftplet.
+     * @param ftplet The {@link Ftplet} instance, which defines custom listener rules.
+     * @return This {@code SimpleFtpServer} instance, allowing for method chaining.
      */
     public SimpleFtpServer addFtplet(final String name, final Ftplet ftplet) {
         this.serverFactory.getFtplets().put(name, ftplet);
@@ -234,11 +254,14 @@ public class SimpleFtpServer {
     }
 
     /**
-     * 启动FTP服务，阻塞当前线程
+     * Starts the FTP server. This method will block the current thread until the server is shut down. A default
+     * listener is created if none is explicitly configured.
+     *
+     * @throws InternalException if an {@link org.apache.ftpserver.ftplet.FtpException} occurs during server startup.
      */
     public void start() {
-        // 一个Listener对应一个监听端口
-        // 可以创建多个监听，此处默认只监听一个
+        // A Listener corresponds to a listening port.
+        // Multiple listeners can be created, but here only one is listened to by default.
         serverFactory.addListener("default", listenerFactory.createListener());
         try {
             serverFactory.createServer().start();

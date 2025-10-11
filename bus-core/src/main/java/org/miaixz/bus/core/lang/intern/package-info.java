@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 规范化表示形式封装 所谓规范化，即当两个对象equals时，规范化的对象则可以实现== 此包中的相关封装类似于 String#intern()
+ * Provides interfaces and implementations for object interning, which ensures that when two objects are
+ * {@code equals()}, their interned representations are {@code ==} (referentially equal). This package offers
+ * functionality similar to {@link String#intern()}.
  *
  * @author Kimi Liu
  * @since Java 17+

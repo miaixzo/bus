@@ -34,7 +34,8 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 抽象模板接口
+ * Abstract template interface. This interface defines the contract for template rendering operations, allowing for
+ * various template engines to be used interchangeably.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,26 +43,27 @@ import org.miaixz.bus.core.xyz.IoKit;
 public interface Template {
 
     /**
-     * 将模板与绑定参数融合后输出到Writer
+     * Renders the template with the given binding parameters and writes the result to a {@link Writer}.
      *
-     * @param bindingMap 绑定的参数，此Map中的参数会替换模板中的变量
-     * @param writer     输出
+     * @param bindingMap A map of parameters to bind to the template variables.
+     * @param writer     The {@link Writer} to which the rendered content will be written.
      */
     void render(Map<?, ?> bindingMap, Writer writer);
 
     /**
-     * 将模板与绑定参数融合后输出到流
+     * Renders the template with the given binding parameters and writes the result to an {@link OutputStream}.
      *
-     * @param bindingMap 绑定的参数，此Map中的参数会替换模板中的变量
-     * @param out        输出
+     * @param bindingMap A map of parameters to bind to the template variables.
+     * @param out        The {@link OutputStream} to which the rendered content will be written.
      */
     void render(Map<?, ?> bindingMap, OutputStream out);
 
     /**
-     * 写出到文件
+     * Renders the template with the given binding parameters and writes the result to a specified {@link File}. The
+     * output stream will be automatically closed after rendering.
      *
-     * @param bindingMap 绑定的参数，此Map中的参数会替换模板中的变量
-     * @param file       输出到的文件
+     * @param bindingMap A map of parameters to bind to the template variables.
+     * @param file       The {@link File} to which the rendered content will be written.
      */
     default void render(final Map<?, ?> bindingMap, final File file) {
         BufferedOutputStream out = null;
@@ -74,10 +76,10 @@ public interface Template {
     }
 
     /**
-     * 将模板与绑定参数融合后返回为字符串
+     * Renders the template with the given binding parameters and returns the result as a {@link String}.
      *
-     * @param bindingMap 绑定的参数，此Map中的参数会替换模板中的变量
-     * @return 融合后的内容
+     * @param bindingMap A map of parameters to bind to the template variables.
+     * @return The rendered content as a {@link String}.
      */
     default String render(final Map<?, ?> bindingMap) {
         final StringWriter writer = new StringWriter();

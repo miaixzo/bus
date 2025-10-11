@@ -44,7 +44,8 @@ import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 
 /**
- * 管控执行
+ * Sentinel execution class for applying various limiting and protection strategies. This class integrates with Alibaba
+ * Sentinel to enforce flow control, hotspot protection, and fallback mechanisms based on configured rules.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,20 +53,22 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
 public class Sentinel {
 
     /**
-     * 执行对应方法及相关规则
+     * Executes the given method with the specified limiting strategy. This method acts as an entry point for applying
+     * different protection strategies (fallback, hotspot, request limit) before or during method invocation.
      *
-     * @param bean         对象信息
-     * @param method       执行方法
-     * @param args         参数
-     * @param name         方法名称
-     * @param strategyMode 规则
-     * @return the object
+     * @param bean         The target object on which the method is to be invoked.
+     * @param method       The {@link Method} to be executed.
+     * @param args         The arguments to be passed to the method.
+     * @param name         The resource name associated with the method for Sentinel rules.
+     * @param strategyMode The {@link StrategyMode} to apply (FALLBACK, HOT_METHOD, REQUEST_LIMIT).
+     * @return The result of the method invocation, or a fallback value if a strategy is triggered.
+     * @throws InternalException if an unsupported {@link StrategyMode} is provided.
      */
     public static Object process(Object bean, Method method, Object[] args, String name, StrategyMode strategyMode) {
-        // 进行各种策略的处理
+        // Process various strategies
         switch (strategyMode) {
             case FALLBACK:
-                // 允许进入则直接调用
+                // If allowed to enter, call directly
                 if (SphO.entry(name)) {
                     try {
                         return MethodKit.invoke(bean, method, args);
@@ -76,15 +79,15 @@ public class Sentinel {
                     if (Holder.load().isLogger()) {
                         Logger.info("Trigger fallback strategy for [{}], args: [{}]", name, JsonKit.toJsonString(args));
                     }
-                    // 进行回调fallback方法
+                    // Call the fallback method
                     return StrategyManager.get(strategyMode).process(bean, method, args);
                 }
             case HOT_METHOD:
-                // 参数转换
+                // Parameter conversion
                 String convertParam = Builder.md5Hex(JsonKit.toJsonString(args));
                 Entry entry = null;
                 try {
-                    // 判断是否进行限流
+                    // Determine if flow control is needed
                     entry = SphU.entry(name, EntryType.IN, 1, convertParam);
                     return MethodKit.invoke(bean, method, args);
                 } catch (BlockException e) {

@@ -32,13 +32,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
 import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * Temporal 工作流执行接口，提供与 Temporal 服务器交互的基本功能。
+ * An interface for executing Temporal workflows, providing the basic contract for interacting with a Temporal server.
  * <p>
- * 该接口定义了执行 Temporal 工作流的规范，包括工作流启动、参数传递等功能。 实现类需要提供与 Temporal 服务器通信的具体实现。
+ * Implementations of this interface are responsible for the concrete communication logic with the Temporal server,
+ * including starting workflows and passing arguments.
  * </p>
  *
  * @author Kimi Liu
@@ -47,28 +49,35 @@ import java.io.Serializable;
 public interface Temporal {
 
     /**
-     * 执行 Temporal 工作流任务。
+     * Executes a Temporal workflow task.
      * <p>
-     * 该方法通过 Temporal gRPC 发起一个工作流任务，支持 HTTP 和 HTTPS 协议， 并返回工作流执行 ID（Run ID）。工作流执行参数将被封装为 Message 对象， 并转换为 JSON
-     * 格式传递给工作流。
+     * This method initiates a workflow task via Temporal's gRPC, supporting both HTTP and HTTPS protocols, and returns
+     * the workflow's Run ID. The workflow arguments are encapsulated in a {@link Message} object and converted to JSON
+     * format for transmission.
      * </p>
      *
-     * @param endpoint Temporal 服务器 Gateway 地址，格式为 "主机名:端口号"， 例如 "https://temporal.example.com:8080"。 必须非空且有效，否则抛出
-     *                 IllegalArgumentException。
-     * @param queue    任务队列名称，工作流将被分发到此队列，必须与 Worker 端监听的队列名称一致。 例如 "cron-queue"；非空字符串。
-     * @param type     工作流类型名称，用于标识要执行的具体工作流，对应 Worker 端注册的工作流实现。 例如 "org.example.Workflow"；非空字符串。
-     * @param args     工作流执行参数，可以是任何可序列化的 Java 对象（POJO、Map 等）， 将被转换为 JSON 格式传递给工作流。通过
-     *                 Message.builder().data(args).build() 封装； 必须非空。
-     * @return 返回工作流执行 ID (Run ID)，唯一标识本次执行，可用于后续查询工作流状态、历史或结果。 如果启动成功，返回非空字符串；失败则抛出异常。
-     * @throws IllegalArgumentException 如果任何必需参数为 null
-     * @throws RuntimeException         如果工作流启动失败
+     * @param endpoint The endpoint address of the Temporal server's gRPC gateway (e.g.,
+     *                 "https://temporal.example.com:8080"). This must be a non-null and valid address.
+     * @param queue    The name of the task queue to which the workflow will be dispatched. This must match the task
+     *                 queue that the target Worker is listening on (e.g., "cron-queue"). Must be a non-empty string.
+     * @param type     The name of the workflow type to be executed. This corresponds to the workflow implementation
+     *                 registered with the Worker (e.g., "org.example.Workflow"). Must be a non-empty string.
+     * @param args     The arguments for the workflow execution. This can be any serializable Java object (POJO, Map,
+     *                 etc.) and will be converted to JSON format. It is typically wrapped using
+     *                 {@code Message.builder().data(args).build()}. Must not be null.
+     * @return The unique Run ID of the workflow execution, which can be used to query the workflow's status, history,
+     *         or result. Returns a non-empty string on successful start.
+     * @throws IllegalArgumentException if any of the required parameters are null or invalid.
+     * @throws RuntimeException         if the workflow fails to start for any reason (e.g., network issues, server
+     *                                  errors).
      */
     String execute(String endpoint, String queue, String type, Object args);
 
     /**
-     * 工作流消息封装类，用于传递工作流执行参数。
+     * A wrapper class for workflow execution arguments.
      * <p>
-     * 该类封装了工作流执行所需的参数信息，支持序列化以便在网络间传输。 使用 Builder 模式创建实例，提供便捷的参数设置方式。
+     * This class encapsulates the parameters required for a workflow execution and is serializable for network
+     * transmission. It is designed to be created using its builder.
      * </p>
      *
      * @author Kimi Liu
@@ -79,15 +88,16 @@ public interface Temporal {
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public class Message implements Serializable {
+    class Message implements Serializable {
 
         @Serial
         private static final long serialVersionUID = 2852290719686L;
 
         /**
-         * 工作流执行参数。
+         * The workflow execution arguments.
          * <p>
-         * 可以是任何可序列化的 Java 对象（POJO、Map 等）， 将被转换为 JSON 格式传递给工作流。
+         * This can be any serializable Java object (POJO, Map, etc.) and will be converted to JSON format before being
+         * passed to the workflow.
          * </p>
          */
         public Object data;

@@ -32,27 +32,53 @@ import java.util.Collection;
 import org.miaixz.bus.shade.safety.Complex;
 
 /**
- * ANY逻辑混合规则,即任意一个规则满足时就满足, 当没有规则的时候,就是不满足
+ * A {@link Complex} implementation that represents a logical OR operation on a collection of sub-filters. If any
+ * sub-filter matches, the entire {@code AnyComplex} matches. If no sub-filters are present, it is considered to never
+ * match (no rules are satisfied).
  *
+ * @param <E> The type of entry to be filtered.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AnyComplex<E> extends MixComplex<E> implements Complex<E> {
 
+    /**
+     * Constructs an empty {@code AnyComplex} filter. When no sub-filters are added, this filter will always return
+     * {@code false} for {@link #on(Object)}.
+     */
     public AnyComplex() {
         super(null);
     }
 
+    /**
+     * Constructs an {@code AnyComplex} filter with an initial collection of sub-filters.
+     *
+     * @param filters The initial collection of {@link Complex} sub-filters.
+     */
     public AnyComplex(Collection<? extends Complex<? extends E>> filters) {
         super(filters);
     }
 
+    /**
+     * Adds a new sub-filter to this {@code AnyComplex} filter.
+     *
+     * @param filter The {@link Complex} filter to add.
+     * @return This {@code AnyComplex} instance, allowing for method chaining.
+     */
     @Override
     public AnyComplex<E> mix(Complex<? extends E> filter) {
         add(filter);
         return this;
     }
 
+    /**
+     * Evaluates the given entry against all sub-filters using a logical OR operation. If there are no sub-filters, it
+     * returns {@code false}. If any sub-filter returns {@code true}, this method immediately returns {@code true}.
+     *
+     * @param entry The entry to be evaluated.
+     * @return {@code true} if any sub-filter returns {@code true}; {@code false} otherwise or if there are no
+     *         sub-filters.
+     */
     @Override
     public boolean on(E entry) {
         Complex[] filters = this.filters.toArray(new Complex[0]);

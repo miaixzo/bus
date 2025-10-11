@@ -41,7 +41,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * {@link Iterable} 和 {@link Iterator} 相关工具类
+ * Utility class for {@link Iterable} and {@link Iterator}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,38 +49,39 @@ import org.w3c.dom.NodeList;
 public class IteratorKit extends IteratorValidator {
 
     /**
-     * 获取{@link Iterator}
+     * Gets an {@link Iterator} from an {@link Iterable}.
      *
-     * @param iterable {@link Iterable}
-     * @param <T>      元素类型
-     * @return 当iterable为null返回{@code null}，否则返回对应的{@link Iterator}
+     * @param <T>      the element type
+     * @param iterable the {@link Iterable} to get the iterator from
+     * @return the iterator, or {@code null} if the iterable is {@code null}
      */
     public static <T> Iterator<T> getIter(final Iterable<T> iterable) {
         return null == iterable ? null : iterable.iterator();
     }
 
     /**
-     * 字段值与列表值对应的Map，常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况 例如：车牌号 = 车
+     * Creates a map from an iterator of objects, where the keys are extracted from a specified field of the objects.
+     * This is useful for looking up objects by a unique ID. For example: license plate number = car.
      *
-     * @param <K>       字段名对应值得类型，不确定请使用Object
-     * @param <V>       对象类型
-     * @param iter      对象列表
-     * @param fieldName 字段名（会通过反射获取其值）
-     * @return 某个字段值与对象对应Map
+     * @param <K>       the type of the key
+     * @param <V>       the type of the value (object)
+     * @param iter      the iterator of objects
+     * @param fieldName the name of the field to be used as the key (its value will be obtained via reflection)
+     * @return a map where keys are field values and values are the corresponding objects
      */
     public static <K, V> Map<K, V> fieldValueMap(final Iterator<V> iter, final String fieldName) {
         return MapKit.putAll(new HashMap<>(), iter, (value) -> (K) FieldKit.getFieldValue(value, fieldName));
     }
 
     /**
-     * 两个字段值组成新的Map
+     * Creates a new map from two fields of the objects in an iterator.
      *
-     * @param <K>               字段名对应值得类型，不确定请使用Object
-     * @param <V>               值类型，不确定使用Object
-     * @param iter              对象列表
-     * @param fieldNameForKey   做为键的字段名（会通过反射获取其值）
-     * @param fieldNameForValue 做为值的字段名（会通过反射获取其值）
-     * @return 某个字段值与对象对应Map
+     * @param <K>               the type of the key
+     * @param <V>               the type of the value
+     * @param iter              the iterator of objects
+     * @param fieldNameForKey   the name of the field to be used as the key (obtained via reflection)
+     * @param fieldNameForValue the name of the field to be used as the value (obtained via reflection)
+     * @return a map constructed from the specified fields
      */
     public static <K, V> Map<K, V> fieldValueAsMap(
             final Iterator<?> iter,
@@ -94,26 +95,26 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 获取指定Bean列表中某个字段，生成新的列表
+     * Extracts a specific field from each bean in an iterable and returns a new list of these field values.
      *
-     * @param <R>       返回元素类型
-     * @param <V>       对象类型
-     * @param iterable  对象列表
-     * @param fieldName 字段名（会通过反射获取其值）
-     * @return 某个字段值与对象对应Map
+     * @param <V>       the type of the objects in the iterable
+     * @param <R>       the type of the field value
+     * @param iterable  the iterable of objects
+     * @param fieldName the name of the field to extract (obtained via reflection)
+     * @return a list of the extracted field values
      */
     public static <V, R> List<R> fieldValueList(final Iterable<V> iterable, final String fieldName) {
         return fieldValueList(getIter(iterable), fieldName);
     }
 
     /**
-     * 获取指定Bean列表中某个字段，生成新的列表
+     * Extracts a specific field from each bean in an iterator and returns a new list of these field values.
      *
-     * @param <R>       返回元素类型
-     * @param <V>       对象类型
-     * @param iter      对象列表
-     * @param fieldName 字段名（会通过反射获取其值）
-     * @return 某个字段值与对象对应Map
+     * @param <V>       the type of the objects in the iterator
+     * @param <R>       the type of the field value
+     * @param iter      the iterator of objects
+     * @param fieldName the name of the field to extract (obtained via reflection)
+     * @return a list of the extracted field values
      */
     public static <V, R> List<R> fieldValueList(final Iterator<V> iter, final String fieldName) {
         final List<R> result = new ArrayList<>();
@@ -128,45 +129,46 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 以 conjunction 为分隔符将集合转换为字符串 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
+     * Joins the elements of an iterator into a string using the specified conjunction. If an element is an array,
+     * {@link Iterable}, or {@link Iterator}, it is recursively joined.
      *
-     * @param <T>         集合元素类型
-     * @param iterator    集合
-     * @param conjunction 分隔符
-     * @return 连接后的字符串
+     * @param <T>         the element type
+     * @param iterator    the iterator
+     * @param conjunction the delimiter to use
+     * @return the joined string
      */
     public static <T> String join(final Iterator<T> iterator, final CharSequence conjunction) {
         return StringJoiner.of(conjunction).append(iterator).toString();
     }
 
     /**
-     * 以 conjunction 为分隔符将集合转换为字符串 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
+     * Joins the elements of an iterator into a string using the specified conjunction, with a prefix and suffix for
+     * each element. If an element is an array, {@link Iterable}, or {@link Iterator}, it is recursively joined.
      *
-     * @param <T>         集合元素类型
-     * @param iterator    集合
-     * @param conjunction 分隔符
-     * @param prefix      每个元素添加的前缀，null表示不添加
-     * @param suffix      每个元素添加的后缀，null表示不添加
-     * @return 连接后的字符串
+     * @param <T>         the element type
+     * @param iterator    the iterator
+     * @param conjunction the delimiter to use
+     * @param prefix      the prefix to add to each element ({@code null} for no prefix)
+     * @param suffix      the suffix to add to each element ({@code null} for no suffix)
+     * @return the joined string
      */
     public static <T> String join(
             final Iterator<T> iterator,
             final CharSequence conjunction,
             final String prefix,
             final String suffix) {
-        return StringJoiner.of(conjunction, prefix, suffix)
-                // 每个元素都添加前后缀
-                .setWrapElement(true).append(iterator).toString();
+        return StringJoiner.of(conjunction, prefix, suffix).setWrapElement(true).append(iterator).toString();
     }
 
     /**
-     * 以 conjunction 为分隔符将集合转换为字符串 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
+     * Joins the elements of an iterator into a string using the specified conjunction and a function to convert
+     * elements to strings. If an element is an array, {@link Iterable}, or {@link Iterator}, it is recursively joined.
      *
-     * @param <T>         集合元素类型
-     * @param iterator    集合
-     * @param conjunction 分隔符
-     * @param func        集合元素转换器，将元素转换为字符串
-     * @return 连接后的字符串
+     * @param <T>         the element type
+     * @param iterator    the iterator
+     * @param conjunction the delimiter to use
+     * @param func        the function to convert each element to a string
+     * @return the joined string
      */
     public static <T> String join(
             final Iterator<T> iterator,
@@ -180,54 +182,62 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 将键列表和值列表转换为Map 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。 如果值多于键，忽略多余的值。
+     * Converts lists of keys and values into a Map. The keys are the primary reference. If there are more keys than
+     * values, the excess keys will have a {@code null} value. If there are more values than keys, the excess values are
+     * ignored.
      *
-     * @param <K>    键类型
-     * @param <V>    值类型
-     * @param keys   键列表
-     * @param values 值列表
-     * @return 标题内容Map
+     * @param <K>    the key type
+     * @param <V>    the value type
+     * @param keys   the iterable of keys
+     * @param values the iterable of values
+     * @return the resulting map
      */
     public static <K, V> Map<K, V> toMap(final Iterable<K> keys, final Iterable<V> values) {
         return toMap(keys, values, false);
     }
 
     /**
-     * 将键列表和值列表转换为Map 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。 如果值多于键，忽略多余的值。
+     * Converts lists of keys and values into a Map. The keys are the primary reference. If there are more keys than
+     * values, the excess keys will have a {@code null} value. If there are more values than keys, the excess values are
+     * ignored.
      *
-     * @param <K>     键类型
-     * @param <V>     值类型
-     * @param keys    键列表
-     * @param values  值列表
-     * @param isOrder 是否有序
-     * @return 标题内容Map
+     * @param <K>     the key type
+     * @param <V>     the value type
+     * @param keys    the iterable of keys
+     * @param values  the iterable of values
+     * @param isOrder whether to create an ordered map (e.g., {@link java.util.LinkedHashMap})
+     * @return the resulting map
      */
     public static <K, V> Map<K, V> toMap(final Iterable<K> keys, final Iterable<V> values, final boolean isOrder) {
         return toMap(null == keys ? null : keys.iterator(), null == values ? null : values.iterator(), isOrder);
     }
 
     /**
-     * 将键列表和值列表转换为Map 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。 如果值多于键，忽略多余的值。
+     * Converts iterators of keys and values into a Map. The keys are the primary reference. If there are more keys than
+     * values, the excess keys will have a {@code null} value. If there are more values than keys, the excess values are
+     * ignored.
      *
-     * @param <K>    键类型
-     * @param <V>    值类型
-     * @param keys   键列表
-     * @param values 值列表
-     * @return 标题内容Map
+     * @param <K>    the key type
+     * @param <V>    the value type
+     * @param keys   the iterator of keys
+     * @param values the iterator of values
+     * @return the resulting map
      */
     public static <K, V> Map<K, V> toMap(final Iterator<K> keys, final Iterator<V> values) {
         return toMap(keys, values, false);
     }
 
     /**
-     * 将键列表和值列表转换为Map 以键为准，值与键位置需对应。如果键元素数多于值元素，多余部分值用null代替。 如果值多于键，忽略多余的值。
+     * Converts iterators of keys and values into a Map. The keys are the primary reference. If there are more keys than
+     * values, the excess keys will have a {@code null} value. If there are more values than keys, the excess values are
+     * ignored.
      *
-     * @param <K>     键类型
-     * @param <V>     值类型
-     * @param keys    键列表
-     * @param values  值列表
-     * @param isOrder 是否有序
-     * @return 标题内容Map
+     * @param <K>     the key type
+     * @param <V>     the value type
+     * @param keys    the iterator of keys
+     * @param values  the iterator of values
+     * @param isOrder whether to create an ordered map (e.g., {@link java.util.LinkedHashMap})
+     * @return the resulting map
      */
     public static <K, V> Map<K, V> toMap(final Iterator<K> keys, final Iterator<V> values, final boolean isOrder) {
         final Map<K, V> resultMap = MapKit.newHashMap(isOrder);
@@ -240,28 +250,28 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 将列表转成值为List的HashMap
+     * Converts an iterable to a {@link HashMap} where values are lists.
      *
-     * @param iterable  值列表
-     * @param keyMapper Map的键映射
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @return HashMap
+     * @param <K>       the key type
+     * @param <V>       the value type
+     * @param iterable  the iterable of values
+     * @param keyMapper the function to map a value to a key
+     * @return a {@link HashMap}
      */
     public static <K, V> Map<K, List<V>> toListMap(final Iterable<V> iterable, final Function<V, K> keyMapper) {
         return toListMap(iterable, keyMapper, v -> v);
     }
 
     /**
-     * 将列表转成值为List的HashMap
+     * Converts an iterable to a {@link HashMap} where values are lists.
      *
-     * @param iterable    值列表
-     * @param keyMapper   Map的键映射
-     * @param valueMapper Map中List的值映射
-     * @param <T>         列表值类型
-     * @param <K>         键类型
-     * @param <V>         值类型
-     * @return HashMap
+     * @param <T>         the type of the elements in the iterable
+     * @param <K>         the key type
+     * @param <V>         the value type in the list
+     * @param iterable    the iterable of values
+     * @param keyMapper   the function to map an element to a key
+     * @param valueMapper the function to map an element to a value in the list
+     * @return a {@link HashMap}
      */
     public static <T, K, V> Map<K, List<V>> toListMap(
             final Iterable<T> iterable,
@@ -271,16 +281,16 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 将列表转成值为List的Map集合
+     * Converts an iterable to a map where values are lists.
      *
-     * @param resultMap   结果Map，可自定义结果Map类型
-     * @param iterable    值列表
-     * @param keyMapper   Map的键映射
-     * @param valueMapper Map中List的值映射
-     * @param <T>         列表值类型
-     * @param <K>         键类型
-     * @param <V>         值类型
-     * @return HashMap
+     * @param <T>         the type of the elements in the iterable
+     * @param <K>         the key type
+     * @param <V>         the value type in the list
+     * @param resultMap   the result map to populate, allowing for custom map types
+     * @param iterable    the iterable of values
+     * @param keyMapper   the function to map an element to a key
+     * @param valueMapper the function to map an element to a value in the list
+     * @return the populated map
      */
     public static <T, K, V> Map<K, List<V>> toListMap(
             Map<K, List<V>> resultMap,
@@ -302,28 +312,28 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 将列表转成HashMap
+     * Converts an iterable to a {@link HashMap}.
      *
-     * @param iterable  值列表
-     * @param keyMapper Map的键映射
-     * @param <K>       键类型
-     * @param <V>       值类型
-     * @return HashMap
+     * @param <K>       the key type
+     * @param <V>       the value type
+     * @param iterable  the iterable of values
+     * @param keyMapper the function to map a value to a key
+     * @return a {@link HashMap}
      */
     public static <K, V> Map<K, V> toMap(final Iterable<V> iterable, final Function<V, K> keyMapper) {
         return toMap(iterable, keyMapper, Function.identity());
     }
 
     /**
-     * 将列表转成HashMap
+     * Converts an iterable to a {@link HashMap}.
      *
-     * @param iterable    值列表
-     * @param keyMapper   Map的键映射
-     * @param valueMapper Map的值映射
-     * @param <T>         列表值类型
-     * @param <K>         键类型
-     * @param <V>         值类型
-     * @return HashMap
+     * @param <T>         the type of the elements in the iterable
+     * @param <K>         the key type
+     * @param <V>         the value type
+     * @param iterable    the iterable of values
+     * @param keyMapper   the function to map an element to a key
+     * @param valueMapper the function to map an element to a value
+     * @return a {@link HashMap}
      */
     public static <T, K, V> Map<K, V> toMap(
             final Iterable<T> iterable,
@@ -333,42 +343,45 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * Enumeration转换为Iterator Adapt the specified {@code Enumeration} to the {@code Iterator} interface
+     * Adapts the specified {@link Enumeration} to the {@link Iterator} interface.
      *
-     * @param <E> 集合元素类型
-     * @param e   {@link Enumeration}
-     * @return {@link Iterator}
+     * @param <E> the element type
+     * @param e   the {@link Enumeration}
+     * @return an {@link Iterator}
      */
     public static <E> Iterator<E> asIterator(final Enumeration<E> e) {
         return new EnumerationIterator<>(Objects.requireNonNull(e));
     }
 
     /**
-     * {@link Iterator} 转为 {@link Iterable}, 但是仅可使用一次
+     * Converts an {@link Iterator} to an {@link Iterable} that can be used only once.
      *
-     * @param <E>  元素类型
-     * @param iter {@link Iterator}
-     * @return {@link Iterable}
+     * @param <E>  the element type
+     * @param iter the {@link Iterator}
+     * @return an {@link Iterable}
      */
     public static <E> Iterable<E> asIterable(final Iterator<E> iter) {
         return () -> iter;
     }
 
     /**
-     * 获得{@link Iterable}对象的元素类型（通过第一个非空元素判断） 注意，此方法至少会调用多次next方法
+     * Gets the element type of an {@link Iterable} object (determined by the first non-null element). Note that this
+     * method will call the next method at least once.
      *
-     * @param iterable {@link Iterable}
-     * @return 元素类型，当列表为空或元素全部为null时，返回null
+     * @param iterable the {@link Iterable}
+     * @return the element type, or {@code null} if the list is empty or all elements are null
      */
     public static Class<?> getElementType(final Iterable<?> iterable) {
         return getElementType(getIter(iterable));
     }
 
     /**
-     * 获得{@link Iterator}对象的元素类型（通过第一个非空元素判断） 注意，此方法至少会调用多次next方法
+     * Gets the element type of an {@link Iterator} object (determined by the first non-null element). Note that this
+     * method will call the next method at least once.
      *
-     * @param iterator {@link Iterator}，为 {@code null}返回{@code null}
-     * @return 元素类型，当列表为空或元素全部为{@code null}时，返回{@code null}
+     * @param iterator the {@link Iterator}
+     * @return the element type, or {@code null} if the iterator is {@code null}, empty, or all elements are
+     *         {@code null}
      */
     public static Class<?> getElementType(final Iterator<?> iterator) {
         if (null == iterator) {
@@ -379,17 +392,20 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 编辑，此方法产生一个新{@link ArrayList} 编辑过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
-     *
+     * Edits an iterator, producing a new {@link ArrayList}. The editing process is defined by the provided editor,
+     * which can:
+     * 
      * <pre>
-     * 1、过滤出需要的对象，如果返回null表示这个元素对象抛弃
-     * 2、修改元素对象，返回集合中为修改后的对象
+     * 1. Filter out desired objects (return {@code
+     * null
+     * } to discard an element).
+     * 2. Modify an element object and return the modified object to be included in the new list.
      * </pre>
      *
-     * @param <T>    集合元素类型
-     * @param iter   集合
-     * @param editor 编辑器接口, {@code null}表示不编辑
-     * @return 过滤后的集合
+     * @param <T>    the element type
+     * @param iter   the iterator
+     * @param editor the editor interface (if {@code null}, no editing is performed)
+     * @return the filtered and/or modified list
      */
     public static <T> List<T> edit(final Iterator<T> iter, final UnaryOperator<T> editor) {
         final List<T> result = new ArrayList<>();
@@ -408,18 +424,20 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 移除集合中满足条件的所有元素，此方法在原集合上直接修改 通过实现{@link Predicate}接口，完成元素的移除，可以实现以下功能：
-     *
+     * Removes all elements from the iterator that satisfy the given predicate. This method modifies the underlying
+     * collection directly. The removal is done by implementing the {@link Predicate} interface:
+     * 
      * <pre>
-     * 1、移除指定对象，{@link Predicate#test(Object)}方法返回{@code
+     * 1. Remove specific objects: objects for which {@link Predicate#test(Object)} returns {@code
      * true
-     * }的对象将被使用{@link Iterator#remove()}方法移除。
+     * } will be removed using {@link Iterator#remove()}.
      * </pre>
      *
-     * @param <E>       集合元素类型
-     * @param iter      集合
-     * @param predicate 过滤器接口，删除{@link Predicate#test(Object)}为{@code true}的元素
-     * @return 编辑后的集合
+     * @param <E>       the element type
+     * @param iter      the iterator
+     * @param predicate the filter interface; elements for which {@link Predicate#test(Object)} is {@code true} will be
+     *                  removed
+     * @return the modified iterator
      */
     public static <E> Iterator<E> remove(final Iterator<E> iter, final Predicate<E> predicate) {
         if (null == iter || null == predicate) {
@@ -435,24 +453,25 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 过滤{@link Iterator}并将过滤后满足条件的元素添加到List中
+     * Filters an {@link Iterator} and adds the elements that satisfy the predicate to a new {@link ArrayList}.
      *
-     * @param <E>       元素类型
-     * @param iter      {@link Iterator}
-     * @param predicate 过滤器，{@link Predicate#test(Object)}为{@code true}保留
-     * @return ArrayList
+     * @param <E>       the element type
+     * @param iter      the {@link Iterator}
+     * @param predicate the filter; elements for which {@link Predicate#test(Object)} is {@code true} are retained
+     * @return an {@link ArrayList} containing the filtered elements
      */
     public static <E> List<E> filterToList(final Iterator<E> iter, final Predicate<E> predicate) {
         return ListKit.of(filtered(iter, predicate));
     }
 
     /**
-     * 获取一个新的 {@link FilterIterator}，用于过滤指定元素
+     * Returns a new {@link FilterIterator} that filters elements from the given iterator.
      *
-     * @param iterator  被包装的 {@link Iterator}
-     * @param predicate 过滤断言，{@link Predicate#test(Object)}为{@code true}保留元素。
-     * @param <E>       元素类型
-     * @return {@link FilterIterator}
+     * @param <E>       the element type
+     * @param iterator  the iterator to wrap
+     * @param predicate the predicate to apply; elements for which {@link Predicate#test(Object)} is {@code true} are
+     *                  retained
+     * @return a new {@link FilterIterator}
      */
     public static <E> FilterIterator<E> filtered(
             final Iterator<? extends E> iterator,
@@ -461,10 +480,10 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 返回一个空Iterator
+     * Returns an empty iterator.
      *
-     * @param <T> 元素类型
-     * @return 空Iterator
+     * @param <T> the element type
+     * @return an empty iterator
      * @see Collections#emptyIterator()
      */
     public static <T> Iterator<T> empty() {
@@ -472,13 +491,13 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 按照给定函数，转换{@link Iterator}为另一种类型的{@link Iterator}
+     * Transforms an {@link Iterator} of one type to an {@link Iterator} of another type using the given function.
      *
-     * @param <F>      源元素类型
-     * @param <T>      目标元素类型
-     * @param iterator 源{@link Iterator}
-     * @param function 转换函数
-     * @return 转换后的{@link Iterator}
+     * @param <F>      the source element type
+     * @param <T>      the target element type
+     * @param iterator the source {@link Iterator}
+     * @param function the transformation function
+     * @return the transformed {@link Iterator}
      */
     public static <F, T> Iterator<T> trans(
             final Iterator<F> iterator,
@@ -487,10 +506,10 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 返回 Iterable 对象的元素数量
+     * Returns the number of elements in an {@link Iterable}.
      *
-     * @param iterable Iterable对象
-     * @return Iterable对象的元素数量
+     * @param iterable the {@link Iterable}
+     * @return the number of elements
      */
     public static int size(final Iterable<?> iterable) {
         if (null == iterable) {
@@ -505,10 +524,10 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 返回 Iterator 对象的元素数量
+     * Returns the number of elements in an {@link Iterator}.
      *
-     * @param iterator Iterator对象
-     * @return Iterator对象的元素数量
+     * @param iterator the {@link Iterator}
+     * @return the number of elements
      */
     public static int size(final Iterator<?> iterator) {
         int size = 0;
@@ -522,9 +541,10 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 清空指定{@link Iterator}，此方法遍历后调用{@link Iterator#remove()}移除每个元素
+     * Clears the specified {@link Iterator} by iterating through it and calling {@link Iterator#remove()} on each
+     * element.
      *
-     * @param iterator {@link Iterator}
+     * @param iterator the {@link Iterator} to clear
      */
     public static void clear(final Iterator<?> iterator) {
         if (null != iterator) {
@@ -536,11 +556,11 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 遍历{@link Iterator} 当consumer为{@code null}表示不处理，但是依旧遍历{@link Iterator}
+     * Iterates over an {@link Iterator}. If the consumer is {@code null}, it still iterates but does nothing.
      *
-     * @param iterator {@link Iterator}
-     * @param consumer 节点消费，{@code null}表示不处理
-     * @param <E>      元素类型
+     * @param <E>      the element type
+     * @param iterator the {@link Iterator}
+     * @param consumer the consumer for each element; if {@code null}, no action is taken
      */
     public static <E> void forEach(final Iterator<E> iterator, final Consumer<? super E> consumer) {
         if (iterator != null) {
@@ -554,11 +574,11 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 循环遍历 {@link Iterator}，使用{@link BiConsumerX} 接受遍历的每条数据，并针对每条数据做处理，支持index
+     * Iterates over an {@link Iterator}, applying a {@link BiConsumerX} to each element along with its index.
      *
-     * @param <T>      集合元素类型
-     * @param iterator {@link Iterator}
-     * @param consumer {@link BiConsumerX} 遍历的每条数据处理器
+     * @param <T>      the element type
+     * @param iterator the {@link Iterator}
+     * @param consumer the {@link BiConsumerX} that processes each element with its index
      */
     public static <T> void forEach(final Iterator<T> iterator, final BiConsumerX<Integer, T> consumer) {
         if (iterator == null) {
@@ -572,38 +592,38 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 拼接 {@link Iterator}为字符串
+     * Converts an {@link Iterator} to a string.
      *
-     * @param iterator {@link Iterator}
-     * @param <E>      元素类型
-     * @return 字符串
+     * @param <E>      the element type
+     * @param iterator the {@link Iterator}
+     * @return a string representation of the iterator's elements
      */
     public static <E> String toString(final Iterator<E> iterator) {
         return toString(iterator, Convert::toStringOrNull);
     }
 
     /**
-     * 拼接 {@link Iterator}为字符串
+     * Converts an {@link Iterator} to a string using a transformation function for each element.
      *
-     * @param iterator  {@link Iterator}
-     * @param transFunc 元素转字符串函数
-     * @param <E>       元素类型
-     * @return 字符串
+     * @param <E>       the element type
+     * @param iterator  the {@link Iterator}
+     * @param transFunc the function to convert each element to a string
+     * @return a string representation of the iterator's elements
      */
     public static <E> String toString(final Iterator<E> iterator, final Function<? super E, String> transFunc) {
         return toString(iterator, transFunc, ", ", "[", "]");
     }
 
     /**
-     * 拼接 {@link Iterator}为字符串
+     * Converts an {@link Iterator} to a string with a specified delimiter, prefix, and suffix.
      *
-     * @param iterator  {@link Iterator}
-     * @param transFunc 元素转字符串函数
-     * @param delimiter 分隔符
-     * @param prefix    前缀
-     * @param suffix    后缀
-     * @param <E>       元素类型
-     * @return 字符串
+     * @param <E>       the element type
+     * @param iterator  the {@link Iterator}
+     * @param transFunc the function to convert each element to a string
+     * @param delimiter the delimiter to use between elements
+     * @param prefix    the prefix for the entire string
+     * @param suffix    the suffix for the entire string
+     * @return a string representation of the iterator's elements
      */
     public static <E> String toString(
             final Iterator<E> iterator,
@@ -617,23 +637,23 @@ public class IteratorKit extends IteratorValidator {
     }
 
     /**
-     * 从给定的对象中获取可能存在的{@link Iterator}，规则如下：
+     * Gets an {@link Iterator} from a given object based on the following rules:
      * <ul>
-     * <li>null - null</li>
-     * <li>Iterator - 直接返回</li>
-     * <li>Enumeration - {@link EnumerationIterator}</li>
-     * <li>Collection - 调用{@link Collection#iterator()}</li>
-     * <li>Map - Entry的{@link Iterator}</li>
-     * <li>Dictionary - values (elements) enumeration returned as iterator</li>
-     * <li>array - {@link ArrayIterator}</li>
-     * <li>NodeList - {@link NodeListIterator}</li>
-     * <li>Node - 子节点</li>
-     * <li>object with iterator() public method，通过反射访问</li>
-     * <li>object - 单对象的{@link ArrayIterator}</li>
+     * <li>null - returns null</li>
+     * <li>Iterator - returns the object itself</li>
+     * <li>Enumeration - returns an {@link EnumerationIterator}</li>
+     * <li>Collection - calls {@link Collection#iterator()}</li>
+     * <li>Map - returns an iterator over the map's entries</li>
+     * <li>Dictionary - returns an iterator over the values (elements)</li>
+     * <li>array - returns an {@link ArrayIterator}</li>
+     * <li>NodeList - returns a {@link NodeListIterator}</li>
+     * <li>Node - returns an iterator over its child nodes</li>
+     * <li>object with a public iterator() method - accessed via reflection</li>
+     * <li>other object - returns an {@link ArrayIterator} containing the single object</li>
      * </ul>
      *
-     * @param object 可以获取{@link Iterator}的对象
-     * @return {@link Iterator}，如果提供对象为{@code null}，返回{@code null}
+     * @param object the object from which to get an {@link Iterator}
+     * @return an {@link Iterator}, or {@code null} if the provided object is {@code null}
      */
     public static Iterator<?> getIter(final Object object) {
         if (object == null) {
@@ -651,13 +671,13 @@ public class IteratorKit extends IteratorValidator {
         } else if (object instanceof NodeList) {
             return new NodeListIterator((NodeList) object);
         } else if (object instanceof Node) {
-            // 遍历子节点
+            // Iterate over child nodes
             return new NodeListIterator(((Node) object).getChildNodes());
         } else if (object instanceof Dictionary) {
             return new EnumerationIterator<>(((Dictionary<?, ?>) object).elements());
         }
 
-        // 反射获取
+        // Reflection
         try {
             final Object iterator = MethodKit.invoke(object, "iterator");
             if (iterator instanceof Iterator) {

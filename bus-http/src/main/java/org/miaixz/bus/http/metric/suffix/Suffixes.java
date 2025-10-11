@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.http.metric.suffix;
 
+import org.miaixz.bus.core.io.source.BufferSource;
+import org.miaixz.bus.core.io.source.GzipSource;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.IoKit;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -34,14 +40,11 @@ import java.net.IDN;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.core.io.source.GzipSource;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.IoKit;
-
 /**
  * A database of public suffixes provided by <a href="https://publicsuffix.org/">publicsuffix.org</a>.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public final class Suffixes {
 
@@ -70,6 +73,11 @@ public final class Suffixes {
     private byte[] publicSuffixListBytes;
     private byte[] publicSuffixExceptionListBytes;
 
+    /**
+     * Returns the singleton instance of the public suffix database.
+     *
+     * @return The singleton instance.
+     */
     public static Suffixes get() {
         return instance;
     }
@@ -177,6 +185,7 @@ public final class Suffixes {
      * }</pre>
      *
      * @param domain A canonicalized domain. An International Domain Name (IDN) should be punycode encoded.
+     * @return The effective TLD plus one, or null.
      */
     public String getEffectiveTldPlusOne(String domain) {
         if (domain == null)
@@ -224,7 +233,7 @@ public final class Suffixes {
         synchronized (this) {
             if (publicSuffixListBytes == null) {
                 throw new IllegalStateException(
-                        "Unable to load " + PUBLIC_SUFFIX_RESOURCE + " resource " + "from the classpath.");
+                        "Unable to load " + PUBLIC_SUFFIX_RESOURCE + " resource from the classpath.");
             }
         }
 
@@ -248,8 +257,7 @@ public final class Suffixes {
         // In theory, wildcard rules are not restricted to having the wildcard in the leftmost position.
         // In practice, wildcards are always in the leftmost position. For now, this implementation
         // cheats and does not attempt every possible permutation. Instead, it only considers wildcards
-        // in the leftmost position. We assert this fact when we generate the public suffix file. If
-        // this assertion ever fails we'll need to refactor this implementation.
+        // in the leftmost position.
         String wildcardMatch = null;
         if (domainLabelsUtf8Bytes.length > 1) {
             byte[][] labelsWithWildcard = domainLabelsUtf8Bytes.clone();
@@ -291,9 +299,9 @@ public final class Suffixes {
     }
 
     /**
-     * Reads the public suffix list treating the operation as uninterruptible. We always want to read the list otherwise
-     * we'll be left in a bad state. If the thread was interrupted prior to this operation, it will be re-interrupted
-     * after the list is read.
+     * Reads the public suffix list, treating the operation as uninterruptible. We always want to read the list,
+     * otherwise we'll be left in a bad state. If the thread was interrupted prior to this operation, it will be
+     * re-interrupted after the list is read.
      */
     private void readTheListUninterruptibly() {
         boolean interrupted = false;
@@ -306,7 +314,7 @@ public final class Suffixes {
                     Thread.interrupted(); // Temporarily clear the interrupted state.
                     interrupted = true;
                 } catch (IOException e) {
-
+                    // This should not happen.
                     return;
                 }
             }
@@ -325,14 +333,14 @@ public final class Suffixes {
         if (resource == null)
             return;
 
-        try (BufferSource BufferSource = IoKit.buffer(new GzipSource(IoKit.source(resource)))) {
-            int totalBytes = BufferSource.readInt();
+        try (BufferSource bufferSource = IoKit.buffer(new GzipSource(IoKit.source(resource)))) {
+            int totalBytes = bufferSource.readInt();
             publicSuffixListBytes = new byte[totalBytes];
-            BufferSource.readFully(publicSuffixListBytes);
+            bufferSource.readFully(publicSuffixListBytes);
 
-            int totalExceptionBytes = BufferSource.readInt();
+            int totalExceptionBytes = bufferSource.readInt();
             publicSuffixExceptionListBytes = new byte[totalExceptionBytes];
-            BufferSource.readFully(publicSuffixExceptionListBytes);
+            bufferSource.readFully(publicSuffixExceptionListBytes);
         }
 
         synchronized (this) {
@@ -344,7 +352,10 @@ public final class Suffixes {
     }
 
     /**
-     * Visible for testing.
+     * Sets the public suffix list bytes for testing.
+     *
+     * @param publicSuffixListBytes          The public suffix list bytes.
+     * @param publicSuffixExceptionListBytes The public suffix exception list bytes.
      */
     void setListBytes(byte[] publicSuffixListBytes, byte[] publicSuffixExceptionListBytes) {
         this.publicSuffixListBytes = publicSuffixListBytes;

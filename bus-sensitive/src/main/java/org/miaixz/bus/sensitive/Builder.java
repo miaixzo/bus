@@ -33,7 +33,8 @@ import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.text.dfa.Sensitive;
 
 /**
- * 脱敏策略工具类 1.提供常见的脱敏策略 2.主要供单独的字符串处理使用
+ * A utility class for applying desensitization strategies. It provides static methods for common desensitization tasks,
+ * primarily intended for processing individual objects or strings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,164 +42,91 @@ import org.miaixz.bus.core.text.dfa.Sensitive;
 public class Builder extends Sensitive {
 
     /**
-     * 全局处理
+     * Constant for enabling all processing (e.g., desensitization and encryption).
      */
     public static final String ALL = "ALL";
     /**
-     * 数据脱敏
+     * Constant for enabling only desensitization.
      */
     public static final String SENS = "SENS";
     /**
-     * 数据安全
+     * Constant for enabling only data security (encryption/decryption).
      */
     public static final String SAFE = "SAFE";
     /**
-     * 请求解密
+     * Constant for processing on input/write operations (e.g., encryption).
      */
     public static final String IN = "IN";
     /**
-     * 响应加密
+     * Constant for processing on output/read operations (e.g., decryption).
      */
     public static final String OUT = "OUT";
-
     /**
-     * 不做任何处理
+     * Constant for performing no processing.
      */
     public static final String NOTHING = "NOTHING";
-
     /**
-     * 不做任何处理
+     * Constant for applying global encryption rules.
      */
     public static final String OVERALL = "OVERALL";
 
     /**
-     * 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Applies desensitization to the given object. This method creates a new provider instance for each call to ensure
+     * thread safety.
      *
-     * @param object 原始对象
-     * @param <T>    泛型
-     * @return 脱敏后的对象
+     * @param object The original object.
+     * @param <T>    The type of the object.
+     * @return The desensitized object.
      */
     public static <T> T on(Object object) {
         return on(object, null, false);
     }
 
     /**
-     * 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Applies desensitization to the given object.
      *
-     * @param object 原始对象
-     * @param clone  是否克隆
-     * @param <T>    泛型
-     * @return 脱敏后的对象
+     * @param object The original object.
+     * @param clone  If true, a deep copy of the object is created before desensitization.
+     * @param <T>    The type of the object.
+     * @return The desensitized object.
      */
     public static <T> T on(Object object, boolean clone) {
         return on(object, null, clone);
     }
 
     /**
-     * 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Applies desensitization to the given object based on a specific annotation context.
      *
-     * @param object     原始对象
-     * @param annotation 注解信息
-     * @param <T>        泛型
-     * @return 脱敏后的对象
+     * @param object     The original object.
+     * @param annotation The annotation providing context for the operation.
+     * @param <T>        The type of the object.
+     * @return The desensitized object.
      */
     public static <T> T on(Object object, Annotation annotation) {
         return (T) Instances.singletion(Provider.class).on(object, annotation, false);
     }
 
     /**
-     * 返回脱敏后的对象 json null 对象,返回字符串 "null"
+     * Serializes the object to a JSON string after applying desensitization.
      *
-     * @param object 对象
-     * @return 结果 json
+     * @param object The object to process and serialize.
+     * @return The desensitized JSON string.
      */
     public static String json(Object object) {
         return Instances.singletion(Provider.class).json(object, null);
     }
 
     /**
-     * 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Applies desensitization to the given object with full options.
      *
-     * @param object     原始对象
-     * @param annotation 注解信息
-     * @param clone      是否克隆
-     * @param <T>        泛型
-     * @return 脱敏后的对象
+     * @param object     The original object.
+     * @param annotation The annotation providing context for the operation.
+     * @param clone      If true, a deep copy of the object is created before desensitization.
+     * @param <T>        The type of the object.
+     * @return The desensitized object.
      */
     public static <T> T on(Object object, Annotation annotation, boolean clone) {
         return (T) Instances.singletion(Provider.class).on(object, annotation, clone);
-    }
-
-    public enum Mode {
-
-        /**
-         * 头部
-         */
-        HEAD,
-        /**
-         * 尾部
-         */
-        TAIL,
-        /**
-         * 中间
-         */
-        MIDDLE
-
-    }
-
-    public enum Type {
-        /**
-         * 不脱敏
-         */
-        NONE,
-        /**
-         * 默认脱敏方式
-         */
-        DEFAUL,
-        /**
-         * 中文名
-         */
-        NAME,
-        /**
-         * 身份证号
-         */
-        CITIZENID,
-        /**
-         * 座机号
-         */
-        PHONE,
-        /**
-         * 手机号
-         */
-        MOBILE,
-        /**
-         * 地址
-         */
-        ADDRESS,
-        /**
-         * 电子邮件
-         */
-        EMAIL,
-        /**
-         * 银行卡
-         */
-        BANK_CARD,
-        /**
-         * 企业银行联号
-         */
-        CNAPS_CODE,
-        /**
-         * 支付签约协议号
-         */
-        PAY_SIGN_NO,
-        /**
-         * 密码
-         */
-        PASSWORD,
-        /**
-         * 普通号码
-         */
-        GENERIC
     }
 
 }

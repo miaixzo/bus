@@ -35,7 +35,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.Builder;
 
 /**
- * BoundSql 拦截器链配置器，负责初始化和管理 SQL 绑定处理器链
+ * Configurator for the {@link BoundSqlBuilder} interceptor chain, responsible for initializing and managing the SQL
+ * binding processor chain.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,17 +44,18 @@ import org.miaixz.bus.pager.Builder;
 public class PageBoundSqlBuilder {
 
     /**
-     * BoundSql 处理器链
+     * The {@link BoundSqlBuilder.Chain} instance that processes BoundSql.
      */
     private BoundSqlBuilder.Chain chain;
 
     /**
-     * 配置 BoundSql 拦截器链，根据属性初始化处理器列表
+     * Configures the {@link BoundSqlBuilder} interceptor chain based on the provided properties. It initializes a list
+     * of handlers from the "boundSqlInterceptors" property and constructs a chain.
      *
-     * @param properties 配置属性
+     * @param properties the configuration properties, typically containing "boundSqlInterceptors"
      */
     public void setProperties(Properties properties) {
-        // 初始化 boundSqlInterceptorChain
+        // Initialize boundSqlInterceptorChain
         String boundSqlInterceptors = properties.getProperty("boundSqlInterceptors");
         if (StringKit.isEmpty(boundSqlInterceptors)) {
             return;
@@ -68,9 +70,9 @@ public class PageBoundSqlBuilder {
     }
 
     /**
-     * 获取 BoundSql 处理器链
+     * Retrieves the configured {@link BoundSqlBuilder.Chain}.
      *
-     * @return 处理器链实例
+     * @return the BoundSql processor chain instance
      */
     public BoundSqlBuilder.Chain getChain() {
         return chain;

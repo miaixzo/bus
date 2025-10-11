@@ -32,9 +32,10 @@ import java.util.Map;
 import org.miaixz.bus.cache.magic.annotation.CacheKey;
 
 /**
- * 注解持有者类
+ * An immutable container for caching-related annotation information extracted from a method.
  * <p>
- * 用于存储和访问方法上的缓存相关注解信息，包括缓存名称、前缀、过期时间等。 提供了Builder模式来方便地创建AnnoHolder实例。
+ * This class stores details such as the cache name, key prefix, expiration time, and mappings of parameters to cache
+ * keys. It is instantiated using a fluent {@link Builder}.
  * </p>
  *
  * @author Kimi Liu
@@ -43,50 +44,50 @@ import org.miaixz.bus.cache.magic.annotation.CacheKey;
 public class AnnoHolder {
 
     /**
-     * 方法对象
+     * The annotated method.
      */
     private final Method method;
 
     /**
-     * 缓存名称
+     * The name of the cache to be used.
      */
     private final String cache;
 
     /**
-     * 缓存键前缀
+     * The prefix for the cache key.
      */
     private final String prefix;
 
     /**
-     * 缓存过期时间（毫秒）
+     * The cache expiration time in milliseconds.
      */
     private final int expire;
 
     /**
-     * 缓存键注解映射，键为参数索引，值为CacheKey注解
+     * A map from parameter index to the corresponding {@link CacheKey} annotation.
      */
     private final Map<Integer, CacheKey> cacheKeyMap;
 
     /**
-     * 多键参数索引，-1表示不是多键缓存
+     * The index of the parameter used for multi-key caching. A value of -1 indicates it is not a multi-key cache.
      */
     private final int multiIndex;
 
     /**
-     * 缓存标识符
+     * The identifier for the cache, used in multi-key scenarios to map results back.
      */
     private final String id;
 
     /**
-     * 私有构造方法
+     * Private constructor to be used by the internal {@link Builder}.
      *
-     * @param method      方法对象
-     * @param cache       缓存名称
-     * @param prefix      缓存键前缀
-     * @param expire      缓存过期时间（毫秒）
-     * @param cacheKeyMap 缓存键注解映射
-     * @param multiIndex  多键参数索引
-     * @param id          缓存标识符
+     * @param method      The annotated method.
+     * @param cache       The name of the cache.
+     * @param prefix      The prefix for the cache key.
+     * @param expire      The cache expiration time in milliseconds.
+     * @param cacheKeyMap A map of parameter indices to {@link CacheKey} annotations.
+     * @param multiIndex  The index of the parameter for multi-key caching.
+     * @param id          The identifier for the cache.
      */
     private AnnoHolder(Method method, String cache, String prefix, int expire, Map<Integer, CacheKey> cacheKeyMap,
             int multiIndex, String id) {
@@ -100,144 +101,114 @@ public class AnnoHolder {
     }
 
     /**
-     * 获取方法对象
+     * Gets the annotated method.
      *
-     * @return 方法对象
+     * @return The {@link Method} object.
      */
     public Method getMethod() {
         return method;
     }
 
     /**
-     * 获取缓存名称
+     * Gets the name of the cache.
      *
-     * @return 缓存名称
+     * @return The cache name.
      */
     public String getCache() {
         return cache;
     }
 
     /**
-     * 获取缓存键前缀
+     * Gets the prefix for the cache key.
      *
-     * @return 缓存键前缀
+     * @return The cache key prefix.
      */
     public String getPrefix() {
         return prefix;
     }
 
     /**
-     * 获取缓存过期时间（毫秒）
+     * Gets the cache expiration time in milliseconds.
      *
-     * @return 缓存过期时间（毫秒）
+     * @return The expiration time in milliseconds.
      */
     public int getExpire() {
         return expire;
     }
 
     /**
-     * 获取缓存键注解映射
+     * Gets the map of parameter indices to {@link CacheKey} annotations.
      *
-     * @return 缓存键注解映射，键为参数索引，值为CacheKey注解
+     * @return A map where the key is the parameter index and the value is the {@link CacheKey} annotation.
      */
     public Map<Integer, CacheKey> getCacheKeyMap() {
         return cacheKeyMap;
     }
 
     /**
-     * 获取多键参数索引
+     * Gets the index of the parameter used for multi-key caching.
      *
-     * @return 多键参数索引，-1表示不是多键缓存
+     * @return The parameter index, or -1 if this is not a multi-key cache.
      */
     public int getMultiIndex() {
         return multiIndex;
     }
 
     /**
-     * 判断是否为多键缓存
+     * Checks if this holder represents a multi-key caching operation.
      *
-     * @return 如果是多键缓存则返回true，否则返回false
+     * @return {@code true} if it is a multi-key cache, otherwise {@code false}.
      */
     public boolean isMulti() {
         return multiIndex != -1;
     }
 
     /**
-     * 获取缓存标识符
+     * Gets the identifier for the cache.
      *
-     * @return 缓存标识符
+     * @return The cache identifier.
      */
     public String getId() {
         return id;
     }
 
     /**
-     * AnnoHolder构建器类
-     * <p>
-     * 使用Builder模式来创建AnnoHolder实例，提供流畅的API设置各个属性。
-     * </p>
+     * A builder for creating {@link AnnoHolder} instances using a fluent API.
      */
     public static class Builder {
 
-        /**
-         * 方法对象
-         */
-        private Method method;
-
-        /**
-         * 缓存名称
-         */
+        private final Method method;
         private String cache;
-
-        /**
-         * 缓存键前缀
-         */
         private String prefix;
-
-        /**
-         * 缓存过期时间（毫秒）
-         */
         private int expire;
-
-        /**
-         * 缓存键注解映射
-         */
         private Map<Integer, CacheKey> cacheKeyMap;
-
-        /**
-         * 多键参数索引，默认为-1
-         */
         private int multiIndex = -1;
-
-        /**
-         * 缓存标识符
-         */
         private String id;
 
         /**
-         * 私有构造方法
+         * Private constructor for the builder.
          *
-         * @param method 方法对象
+         * @param method The method for which the holder is being built.
          */
         private Builder(Method method) {
             this.method = method;
         }
 
         /**
-         * 创建新的Builder实例
+         * Creates a new builder instance for the given method.
          *
-         * @param method 方法对象
-         * @return Builder实例
+         * @param method The method object.
+         * @return A new {@link Builder} instance.
          */
         public static Builder newBuilder(Method method) {
             return new Builder(method);
         }
 
         /**
-         * 设置缓存名称
+         * Sets the cache name.
          *
-         * @param cache 缓存名称
-         * @return Builder实例
+         * @param cache The name of the cache.
+         * @return This builder instance for chaining.
          */
         public Builder setCache(String cache) {
             this.cache = cache;
@@ -245,10 +216,10 @@ public class AnnoHolder {
         }
 
         /**
-         * 设置缓存键前缀
+         * Sets the cache key prefix.
          *
-         * @param prefix 缓存键前缀
-         * @return Builder实例
+         * @param prefix The prefix for the cache key.
+         * @return This builder instance for chaining.
          */
         public Builder setPrefix(String prefix) {
             this.prefix = prefix;
@@ -256,10 +227,10 @@ public class AnnoHolder {
         }
 
         /**
-         * 设置缓存过期时间
+         * Sets the cache expiration time.
          *
-         * @param expire 缓存过期时间（毫秒）
-         * @return Builder实例
+         * @param expire The expiration time in milliseconds.
+         * @return This builder instance for chaining.
          */
         public Builder setExpire(int expire) {
             this.expire = expire;
@@ -267,10 +238,10 @@ public class AnnoHolder {
         }
 
         /**
-         * 设置多键参数索引
+         * Sets the index of the parameter for multi-key caching.
          *
-         * @param multiIndex 多键参数索引
-         * @return Builder实例
+         * @param multiIndex The parameter index.
+         * @return This builder instance for chaining.
          */
         public Builder setMultiIndex(int multiIndex) {
             this.multiIndex = multiIndex;
@@ -278,10 +249,10 @@ public class AnnoHolder {
         }
 
         /**
-         * 设置缓存标识符
+         * Sets the cache identifier.
          *
-         * @param id 缓存标识符
-         * @return Builder实例
+         * @param id The cache identifier.
+         * @return This builder instance for chaining.
          */
         public Builder setId(String id) {
             this.id = id;
@@ -289,10 +260,10 @@ public class AnnoHolder {
         }
 
         /**
-         * 设置缓存键注解映射
+         * Sets the map of parameter indices to {@link CacheKey} annotations.
          *
-         * @param cacheKeyMap 缓存键注解映射
-         * @return Builder实例
+         * @param cacheKeyMap The map of cache key annotations.
+         * @return This builder instance for chaining.
          */
         public Builder setCacheKeyMap(Map<Integer, CacheKey> cacheKeyMap) {
             this.cacheKeyMap = cacheKeyMap;
@@ -300,9 +271,9 @@ public class AnnoHolder {
         }
 
         /**
-         * 构建AnnoHolder实例
+         * Builds and returns the final, immutable {@link AnnoHolder} instance.
          *
-         * @return AnnoHolder实例
+         * @return A new {@link AnnoHolder} instance.
          */
         public AnnoHolder build() {
             return new AnnoHolder(method, cache, prefix, expire, cacheKeyMap, multiIndex, id);

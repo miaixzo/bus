@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -46,7 +46,7 @@ import org.miaixz.bus.socket.buffer.BufferPagePool;
 import org.miaixz.bus.socket.buffer.VirtualBuffer;
 
 /**
- * Worker相关实现
+ * A worker thread implementation that manages a {@link Selector} for handling I/O events, specifically for UDP.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,24 +58,24 @@ public final class Worker implements Runnable {
     private static final Runnable SHUTDOWN_CHANNEL = () -> {
     };
     /**
-     * 当前Worker绑定的Selector
+     * The Selector bound to this worker.
      */
     private final Selector selector;
     /**
-     * 请求队列
+     * Task queue for processing decoded messages.
      */
     private final BlockingQueue<Runnable> requestQueue = new ArrayBlockingQueue<>(256);
     /**
-     * 待注册的事件
+     * Queue for pending channel registration events.
      */
     private final ConcurrentLinkedQueue<Consumer<Selector>> registers = new ConcurrentLinkedQueue<>();
     private final ExecutorService executorService;
     /**
-     * write 内存池
+     * Buffer pool for write operations.
      */
     private BufferPagePool writeBufferPool = null;
     /**
-     * read 内存池
+     * Buffer page for read operations.
      */
     private BufferPage readBufferPage = null;
     private VirtualBuffer standbyBuffer;
@@ -93,7 +93,7 @@ public final class Worker implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        // 启动worker线程组
+        // Start the worker thread pool
         executorService = new ThreadPoolExecutor(threadNum, threadNum, 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(), new ThreadFactory() {
 
@@ -110,7 +110,9 @@ public final class Worker implements Runnable {
     }
 
     /**
-     * 注册事件
+     * Adds a channel registration task to the queue.
+     *
+     * @param register The registration task.
      */
     public void addRegister(Consumer<Selector> register) {
         registers.offer(register);
@@ -122,7 +124,7 @@ public final class Worker implements Runnable {
         try {
             while (true) {
                 Runnable runnable = requestQueue.take();
-                // 服务终止
+                // Shutdown signal
                 if (runnable == SHUTDOWN_CHANNEL) {
                     requestQueue.put(SHUTDOWN_CHANNEL);
                     selector.wakeup();
@@ -152,7 +154,7 @@ public final class Worker implements Runnable {
             selector.select();
         }
         Iterator<SelectionKey> keyIterator = keySet.iterator();
-        // 执行本次已触发待处理的事件
+        // Process the triggered and pending events
         while (keyIterator.hasNext()) {
             SelectionKey key = keyIterator.next();
             UdpChannel udpChannel = (UdpChannel) key.attachment();
@@ -188,7 +190,7 @@ public final class Worker implements Runnable {
             standbyBuffer = readBufferPage.allocate(context.getReadBufferSize());
             buffer.flip();
             Runnable runnable = () -> {
-                // 解码
+                // Decode
                 UdpSession session = new UdpSession(channel, remote, writeBufferPool.allocateBufferPage());
                 try {
                     Monitor monitor = context.getMonitor();
@@ -198,7 +200,7 @@ public final class Worker implements Runnable {
                     }
                     do {
                         Object request = context.getProtocol().decode(buffer, session);
-                        // 理论上每个UDP包都是一个完整的消息
+                        // In theory, each UDP packet is a complete message
                         if (request == null) {
                             context.getProcessor().stateEvent(
                                     session,
@@ -225,7 +227,7 @@ public final class Worker implements Runnable {
     }
 
     /**
-     * 停止服务
+     * Shuts down the worker and its associated resources.
      */
     public void shutdown() {
         try {

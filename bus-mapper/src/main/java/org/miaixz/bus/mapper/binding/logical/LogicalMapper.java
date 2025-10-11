@@ -42,22 +42,24 @@ import org.miaixz.bus.mapper.binding.function.FunctionMapper;
 import org.miaixz.bus.mapper.provider.LogicalProvider;
 
 /**
- * 逻辑删除操作接口，覆盖基础查询、删除、更新方法以支持逻辑删除
+ * An interface for logical delete operations, overriding base query, delete, and update methods to support
+ * soft-deleting records instead of physically removing them.
  *
- * @param <T> 实体类类型
- * @param <I> 主键类型
+ * @param <T> The type of the entity class.
+ * @param <I> The type of the primary key.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T, I>, FunctionMapper<T> {
 
     /**
-     * 根据主键更新实体中非空字段，并强制更新指定字段
+     * Updates non-null fields of an entity by its primary key, while also forcing an update on specified fields. This
+     * operation respects logical deletion rules.
      *
-     * @param entity 实体对象
-     * @param fields 强制更新的字段集合，通过 {@link Fn#of(Fn...)} 创建 {@link Fn.FnArray}
-     * @param <S>    实体类型
-     * @return 1 表示成功，0 表示失败
+     * @param entity The entity object containing the updated values.
+     * @param fields A collection of fields to be forcibly updated, created via {@link Fn#of(Fn...)}.
+     * @param <S>    The type of the entity.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
@@ -67,11 +69,12 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
             @Param("fns") Fn.FnArray<T> fields);
 
     /**
-     * 根据实体字段条件查询唯一实体，仅返回指定字段
+     * Selects a single, unique entity based on its fields, returning only the specified columns. This query will
+     * exclude logically deleted records.
      *
-     * @param entity       实体对象
-     * @param selectFields 查询的字段集合，通过 {@link Fn#of(Fn...)} 创建 {@link Fn.FnArray}
-     * @return 唯一实体对象，若结果多条则抛出异常，可能为空
+     * @param entity       The entity object containing the query criteria.
+     * @param selectFields A collection of fields to be selected, created via {@link Fn#of(Fn...)}.
+     * @return An {@link Optional} containing the unique entity object, or an empty Optional if not found.
      */
     @Override
     @Lang(Caching.class)
@@ -79,11 +82,12 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     Optional<T> selectColumnsOne(@Param("entity") T entity, @Param("fns") Fn.FnArray<T> selectFields);
 
     /**
-     * 根据实体字段条件批量查询，仅返回指定字段
+     * Selects a list of entities based on their fields, returning only the specified columns. This query will exclude
+     * logically deleted records.
      *
-     * @param entity       实体对象
-     * @param selectFields 查询的字段集合，通过 {@link Fn#of(Fn...)} 创建 {@link Fn.FnArray}
-     * @return 实体对象列表
+     * @param entity       The entity object containing the query criteria.
+     * @param selectFields A collection of fields to be selected, created via {@link Fn#of(Fn...)}.
+     * @return A list of entity objects.
      */
     @Override
     @Lang(Caching.class)
@@ -91,10 +95,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     List<T> selectColumns(@Param("entity") T entity, @Param("fns") Fn.FnArray<T> selectFields);
 
     /**
-     * 根据主键逻辑删除记录
+     * Logically deletes a record by its primary key.
      *
-     * @param id 主键
-     * @return 1 表示成功，0 表示失败
+     * @param id The primary key.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
@@ -102,10 +106,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     int deleteByPrimaryKey(I id);
 
     /**
-     * 根据实体条件逻辑删除记录
+     * Logically deletes records based on the conditions in the entity.
      *
-     * @param entity 实体对象
-     * @return 大于等于 1 表示成功，0 表示失败
+     * @param entity The entity object containing the deletion criteria.
+     * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
@@ -113,11 +117,11 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     int delete(T entity);
 
     /**
-     * 根据主键更新实体
+     * Updates an entity by its primary key. This operation respects logical deletion rules.
      *
-     * @param entity 实体对象
-     * @param <S>    实体类型
-     * @return 1 表示成功，0 表示失败
+     * @param entity The entity object with updated values.
+     * @param <S>    A subtype of the entity class.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
@@ -125,11 +129,11 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     <S extends T> int updateByPrimaryKey(S entity);
 
     /**
-     * 根据主键更新实体中非空字段
+     * Updates non-null fields of an entity by its primary key. This operation respects logical deletion rules.
      *
-     * @param entity 实体对象
-     * @param <S>    实体类型
-     * @return 1 表示成功，0 表示失败
+     * @param entity The entity object with updated values.
+     * @param <S>    A subtype of the entity class.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
@@ -137,10 +141,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     <S extends T> int updateByPrimaryKeySelective(S entity);
 
     /**
-     * 根据主键查询实体
+     * Selects an entity by its primary key, excluding logically deleted records.
      *
-     * @param id 主键
-     * @return 实体对象，可能为空
+     * @param id The primary key.
+     * @return The entity object, or null if not found or logically deleted.
      */
     @Override
     @Lang(Caching.class)
@@ -148,10 +152,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     T selectByPrimaryKey(I id);
 
     /**
-     * 根据实体字段条件查询唯一实体
+     * Selects a single entity based on its fields, excluding logically deleted records.
      *
-     * @param entity 实体对象
-     * @return 唯一实体对象，若结果多条则抛出异常，可能为空
+     * @param entity The entity object containing the query criteria.
+     * @return The unique entity object, or null if not found.
      */
     @Override
     @Lang(Caching.class)
@@ -159,10 +163,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     T selectOne(T entity);
 
     /**
-     * 根据实体字段条件批量查询
+     * Selects a list of entities based on their fields, excluding logically deleted records.
      *
-     * @param entity 实体对象
-     * @return 实体对象列表
+     * @param entity The entity object containing the query criteria.
+     * @return A list of entity objects.
      */
     @Override
     @Lang(Caching.class)
@@ -170,10 +174,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     List<T> selectList(T entity);
 
     /**
-     * 根据实体字段条件查询记录总数
+     * Counts the number of records matching the entity's fields, excluding logically deleted records.
      *
-     * @param entity 实体对象
-     * @return 记录总数
+     * @param entity The entity object containing the query criteria.
+     * @return The total number of matching records.
      */
     @Override
     @Lang(Caching.class)
@@ -181,10 +185,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     long selectCount(T entity);
 
     /**
-     * 根据实体字段条件进行游标查询
+     * Performs a cursor-based query based on the entity's fields, excluding logically deleted records.
      *
-     * @param entity 实体对象
-     * @return 实体对象游标
+     * @param entity The entity object containing the query criteria.
+     * @return A {@link Cursor} for the entity objects.
      */
     @Override
     @Lang(Caching.class)
@@ -192,10 +196,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     Cursor<T> selectCursor(T entity);
 
     /**
-     * 根据 Condition 条件进行游标查询
+     * Performs a cursor-based query based on a {@link Condition}, excluding logically deleted records.
      *
-     * @param condition 条件对象
-     * @return 实体对象游标
+     * @param condition The condition object.
+     * @return A {@link Cursor} for the entity objects.
      */
     @Override
     @Lang(Caching.class)
@@ -203,9 +207,9 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     Cursor<T> selectCursorByCondition(Condition<T> condition);
 
     /**
-     * 创建 Condition 查询对象
+     * Creates and returns a new {@link Condition} object.
      *
-     * @return Condition 对象
+     * @return A new {@link Condition} object.
      */
     @Override
     default Condition<T> condition() {
@@ -213,10 +217,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     }
 
     /**
-     * 根据 Condition 条件逻辑删除记录
+     * Logically deletes records based on the given {@link Condition}.
      *
-     * @param condition 条件对象
-     * @return 大于等于 1 表示成功，0 表示失败
+     * @param condition The condition object.
+     * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
@@ -224,12 +228,12 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     int deleteByCondition(Condition<T> condition);
 
     /**
-     * 根据 Condition 条件批量更新实体
+     * Updates entity records based on a {@link Condition}. This operation respects logical deletion rules.
      *
-     * @param entity    实体对象
-     * @param condition 条件对象
-     * @param <S>       实体类型
-     * @return 大于等于 1 表示成功，0 表示失败
+     * @param entity    The entity object with updated values.
+     * @param condition The condition object.
+     * @param <S>       A subtype of the entity class.
+     * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
@@ -237,10 +241,11 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     <S extends T> int updateByCondition(@Param("entity") S entity, @Param("condition") Condition<T> condition);
 
     /**
-     * 根据 Condition 条件和 SET 值更新字段
+     * Updates fields based on a {@link Condition} and the values set in it. This operation respects logical deletion
+     * rules.
      *
-     * @param condition 条件对象
-     * @return 大于等于 1 表示成功，0 表示失败
+     * @param condition The condition object containing the values to be set.
+     * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
@@ -248,12 +253,13 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     int updateByConditionSetValues(@Param("condition") Condition<T> condition);
 
     /**
-     * 根据 Condition 条件批量更新实体非空字段
+     * Updates non-null fields of an entity based on a {@link Condition}. This operation respects logical deletion
+     * rules.
      *
-     * @param entity    实体对象
-     * @param condition 条件对象
-     * @param <S>       实体类型
-     * @return 大于等于 1 表示成功，0 表示失败
+     * @param entity    The entity object with updated values.
+     * @param condition The condition object.
+     * @param <S>       A subtype of the entity class.
+     * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
@@ -261,10 +267,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     <S extends T> int updateByConditionSelective(@Param("entity") S entity, @Param("condition") Condition<T> condition);
 
     /**
-     * 根据 Condition 条件批量查询
+     * Selects a list of entities based on a {@link Condition}, excluding logically deleted records.
      *
-     * @param condition 条件对象
-     * @return 实体对象列表
+     * @param condition The condition object.
+     * @return A list of entity objects.
      */
     @Override
     @Lang(Caching.class)
@@ -272,10 +278,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     List<T> selectByCondition(Condition<T> condition);
 
     /**
-     * 根据 Condition 条件查询唯一实体
+     * Selects a single entity based on a {@link Condition}, excluding logically deleted records.
      *
-     * @param condition 条件对象
-     * @return 唯一实体对象，若结果多条则抛出异常，可能为空
+     * @param condition The condition object.
+     * @return An {@link Optional} containing the unique entity object, or an empty Optional if not found.
      */
     @Override
     @Lang(Caching.class)
@@ -283,10 +289,10 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     Optional<T> selectOneByCondition(Condition<T> condition);
 
     /**
-     * 根据 Condition 条件查询记录总数
+     * Counts the number of records matching a {@link Condition}, excluding logically deleted records.
      *
-     * @param condition 条件对象
-     * @return 记录总数
+     * @param condition The condition object.
+     * @return The total number of matching records.
      */
     @Override
     @Lang(Caching.class)
@@ -294,11 +300,11 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     long countByCondition(Condition<T> condition);
 
     /**
-     * 根据 Condition 条件分页查询
+     * Selects a list of entities with pagination based on a {@link Condition}, excluding logically deleted records.
      *
-     * @param condition 条件对象
-     * @param rowBounds 分页信息
-     * @return 实体对象列表
+     * @param condition The condition object.
+     * @param rowBounds The pagination information.
+     * @return A list of entity objects for the current page.
      */
     @Override
     List<T> selectByCondition(Condition<T> condition, RowBounds rowBounds);

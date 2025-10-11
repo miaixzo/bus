@@ -30,25 +30,28 @@ package org.miaixz.bus.core.center;
 import java.util.Collection;
 
 /**
- * 有边界限制的集合，边界集合有最大容量限制
+ * Defines a collection with a fixed capacity limit. A bounded collection cannot store more elements than its maximum
+ * size. Implementations of this interface determine the behavior when an attempt is made to add an element to a full
+ * collection, such as throwing an exception, blocking the operation, or evicting an existing element.
  *
- * @param <E> 元素类型
+ * @param <E> The type of elements maintained by this collection.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface BoundedCollection<E> extends Collection<E> {
 
     /**
-     * 是否已满，如果集合已满，不允许新增元素
+     * Checks if the collection has reached its maximum capacity. An implementation should return {@code true} if
+     * {@code size() >= maxSize()}.
      *
-     * @return 是否已满
+     * @return {@code true} if the collection is full, {@code false} otherwise.
      */
     boolean isFull();
 
     /**
-     * 获取集合最大允许容量
+     * Returns the maximum number of elements that this collection can hold.
      *
-     * @return 容量
+     * @return The maximum capacity of the collection, which is a non-negative integer.
      */
     int maxSize();
 

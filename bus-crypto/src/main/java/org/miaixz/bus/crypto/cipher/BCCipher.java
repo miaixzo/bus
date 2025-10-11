@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.crypto.Cipher;
 
 /**
- * 基于BouncyCastle库封装的加密解密实现，包装包括：
+ * An implementation of encryption and decryption based on the BouncyCastle library, wrapping:
  * <ul>
  * <li>{@link BufferedBlockCipher}</li>
  * <li>{@link BlockCipher}</li>
@@ -52,15 +52,15 @@ import org.miaixz.bus.crypto.Cipher;
 public class BCCipher implements Cipher, Wrapper<Object> {
 
     /**
-     * {@link BufferedBlockCipher}，块加密，包含engine、mode、padding
+     * {@link BufferedBlockCipher}, for block ciphers, including engine, mode, and padding.
      */
     private BufferedBlockCipher bufferedBlockCipher;
     /**
-     * {@link BlockCipher} 块加密，一般用于AES等对称加密
+     * {@link BlockCipher}, for block ciphers, generally used for symmetric encryption like AES.
      */
     private BlockCipher blockCipher;
     /**
-     * {@link AEADBlockCipher}, 关联数据的认证加密(Authenticated Encryption with Associated Data)
+     * {@link AEADBlockCipher}, for Authenticated Encryption with Associated Data.
      */
     private AEADBlockCipher aeadBlockCipher;
     /**
@@ -69,7 +69,7 @@ public class BCCipher implements Cipher, Wrapper<Object> {
     private StreamCipher streamCipher;
 
     /**
-     * 构造
+     * Constructor.
      *
      * @param bufferedBlockCipher {@link BufferedBlockCipher}
      */
@@ -78,7 +78,7 @@ public class BCCipher implements Cipher, Wrapper<Object> {
     }
 
     /**
-     * 构造
+     * Constructor.
      *
      * @param blockCipher {@link BlockCipher}
      */
@@ -87,7 +87,7 @@ public class BCCipher implements Cipher, Wrapper<Object> {
     }
 
     /**
-     * 构造
+     * Constructor.
      *
      * @param aeadBlockCipher {@link AEADBlockCipher}
      */
@@ -96,7 +96,7 @@ public class BCCipher implements Cipher, Wrapper<Object> {
     }
 
     /**
-     * 构造
+     * Constructor.
      *
      * @param streamCipher {@link StreamCipher}
      */
@@ -104,6 +104,11 @@ public class BCCipher implements Cipher, Wrapper<Object> {
         this.streamCipher = Assert.notNull(streamCipher);
     }
 
+    /**
+     * Gets the raw underlying BouncyCastle cipher object.
+     *
+     * @return The raw cipher object.
+     */
     @Override
     public Object getRaw() {
         if (null != this.bufferedBlockCipher) {
@@ -118,6 +123,11 @@ public class BCCipher implements Cipher, Wrapper<Object> {
         return this.streamCipher;
     }
 
+    /**
+     * Gets the name of the algorithm.
+     *
+     * @return The algorithm name.
+     */
     @Override
     public String getAlgorithm() {
         if (null != this.bufferedBlockCipher) {
@@ -132,6 +142,11 @@ public class BCCipher implements Cipher, Wrapper<Object> {
         return this.streamCipher.getAlgorithmName();
     }
 
+    /**
+     * Gets the block size of the cipher.
+     *
+     * @return The block size, or -1 for stream ciphers.
+     */
     @Override
     public int getBlockSize() {
         if (null != this.bufferedBlockCipher) {
@@ -146,6 +161,12 @@ public class BCCipher implements Cipher, Wrapper<Object> {
         return -1;
     }
 
+    /**
+     * Initializes the cipher with a mode and parameters.
+     *
+     * @param mode       The operation mode (encrypt or decrypt).
+     * @param parameters The parameters for the cipher.
+     */
     @Override
     public void init(final Algorithm.Type mode, final Parameters parameters) {
         Assert.isInstanceOf(BCParameters.class, parameters, "Only support BCParameters!");
@@ -174,6 +195,12 @@ public class BCCipher implements Cipher, Wrapper<Object> {
         this.streamCipher.init(forEncryption, cipherParameters);
     }
 
+    /**
+     * Gets the required size for the output buffer.
+     *
+     * @param len The length of the input data.
+     * @return The required output buffer size.
+     */
     @Override
     public int getOutputSize(final int len) {
         if (null != this.bufferedBlockCipher) {
@@ -185,6 +212,16 @@ public class BCCipher implements Cipher, Wrapper<Object> {
         return -1;
     }
 
+    /**
+     * Processes a block of data.
+     *
+     * @param in     The input buffer.
+     * @param inOff  The offset in the input buffer.
+     * @param len    The length of the input data.
+     * @param out    The output buffer.
+     * @param outOff The offset in the output buffer.
+     * @return The number of bytes processed.
+     */
     @Override
     public int process(final byte[] in, final int inOff, final int len, final byte[] out, final int outOff) {
         if (null != this.bufferedBlockCipher) {
@@ -205,6 +242,13 @@ public class BCCipher implements Cipher, Wrapper<Object> {
         return this.streamCipher.processBytes(in, inOff, len, out, outOff);
     }
 
+    /**
+     * Finishes the encryption/decryption operation.
+     *
+     * @param out    The output buffer.
+     * @param outOff The offset in the output buffer.
+     * @return The number of bytes written to the output buffer.
+     */
     @Override
     public int doFinal(final byte[] out, final int outOff) {
         if (null != this.bufferedBlockCipher) {
@@ -225,17 +269,17 @@ public class BCCipher implements Cipher, Wrapper<Object> {
     }
 
     /**
-     * BouncyCastle库的{@link CipherParameters}封装
+     * A wrapper for BouncyCastle's {@link CipherParameters}.
      */
     public static class BCParameters implements Parameters {
 
         /**
-         * 算法的参数
+         * The algorithm parameters.
          */
         protected final CipherParameters parameters;
 
         /**
-         * 构造
+         * Constructor.
          *
          * @param parameters {@link CipherParameters}
          */

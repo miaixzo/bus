@@ -32,7 +32,7 @@ import java.util.Calendar;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * {@link Calendar} 值单元格设置器
+ * {@link CellSetter} for {@link Calendar} values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,9 +42,9 @@ public class CalendarCellSetter implements CellSetter {
     private final Calendar value;
 
     /**
-     * 构造
+     * Constructs a {@code CalendarCellSetter} with the specified {@link Calendar} value.
      *
-     * @param value 值
+     * @param value The {@link Calendar} value to set in the cell.
      */
     CalendarCellSetter(final Calendar value) {
         this.value = value;

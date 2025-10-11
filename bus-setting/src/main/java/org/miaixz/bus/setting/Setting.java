@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.setting;
 
-import java.io.File;
-import java.io.Serial;
-import java.net.URL;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.util.*;
-import java.util.function.Consumer;
-
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.io.resource.Resource;
@@ -50,15 +42,27 @@ import org.miaixz.bus.setting.magic.AbstractSetting;
 import org.miaixz.bus.setting.magic.GroupedMap;
 import org.miaixz.bus.setting.metric.props.Props;
 
+import java.io.File;
+import java.io.Serial;
+import java.net.URL;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+
 /**
- * 设置工具类。 用于支持设置（配置）文件 用于替换Properties类，提供功能更加强大的配置文件，同时对Properties文件向下兼容
- *
- * <pre>
- *  1、支持变量，默认变量命名为 ${变量名}，变量只能识别读入行的变量，例如第6行的变量在第三行无法读取
- *  2、支持分组，分组为中括号括起来的内容，中括号以下的行都为此分组的内容，无分组相当于空字符分组，若某个key是name，加上分组后的键相当于group.name
- *  3、注释以#开头，但是空行和不带“=”的行也会被跳过，但是建议加#
- *  4、store方法不会保存注释内容，慎重使用
- * </pre>
+ * A utility class for handling {@code .setting} files, which are an enhanced version of Java's {@code .properties}
+ * files with backward compatibility.
+ * <p>
+ * Features:
+ * <ol>
+ * <li>Supports variable substitution using the {@code ${variable_name}} syntax.</li>
+ * <li>Supports grouping of properties under section headers (e.g., {@code [group_name]}). Keys under a group are
+ * accessed as {@code group.key}.</li>
+ * <li>Treats lines starting with '#' as comments.</li>
+ * </ol>
+ * Note: The {@code store} methods do not preserve comments.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -69,147 +73,149 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     private static final long serialVersionUID = 2852263091176L;
 
     /**
-     * 默认字符集
+     * The default character set (UTF-8).
      */
     public static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
     /**
-     * 默认配置文件扩展名
+     * The default file extension for settings files.
      */
     public static final String EXT_NAME = "setting";
     /**
-     * 本设置对象的字符集
+     * The character set for this settings instance.
      */
     protected java.nio.charset.Charset charset;
     /**
-     * 是否使用变量
+     * Whether variable substitution is enabled.
      */
     protected boolean isUseVariable;
     /**
-     * 设定文件的资源
+     * The resource representing the settings file.
      */
     protected Resource resource;
     /**
-     * 附带分组的键值对存储
+     * The underlying storage for key-value pairs, organized by group.
      */
     private GroupedMap groupedMap;
     /**
-     * 当获取key对应值为{@code null}时是否打印debug日志提示用户，默认{@code false}
+     * Whether to log a debug message when a requested key is not found.
      */
     private boolean logIfNull;
 
+    /**
+     * The loader responsible for parsing the file.
+     */
     private Loader loader;
+    /**
+     * The monitor for watching file changes to support auto-reloading.
+     */
     private WatchMonitor watchMonitor;
 
     /**
-     * 空构造
+     * Constructs a new, empty {@code Setting} instance.
      */
     public Setting() {
-        groupedMap = new GroupedMap();
+        this.groupedMap = new GroupedMap();
     }
 
     /**
-     * 构造
+     * Constructs a {@code Setting} by loading a file from a relative or absolute path.
      *
-     * @param path 相对路径或绝对路径
+     * @param path The path to the settings file.
      */
     public Setting(final String path) {
         this(path, false);
     }
 
     /**
-     * 构造
+     * Constructs a {@code Setting} by loading a file.
      *
-     * @param path          相对路径或绝对路径
-     * @param isUseVariable 是否使用变量
+     * @param path          The path to the settings file.
+     * @param isUseVariable {@code true} to enable variable substitution.
      */
     public Setting(final String path, final boolean isUseVariable) {
         this(path, DEFAULT_CHARSET, isUseVariable);
     }
 
     /**
-     * 构造，使用相对于Class文件根目录的相对路径
+     * Constructs a {@code Setting} by loading a file from the classpath.
      *
-     * @param path          相对路径或绝对路径
-     * @param charset       字符集
-     * @param isUseVariable 是否使用变量
+     * @param path          The path to the file (relative or absolute).
+     * @param charset       The character set to use.
+     * @param isUseVariable {@code true} to enable variable substitution.
      */
     public Setting(final String path, final java.nio.charset.Charset charset, final boolean isUseVariable) {
         this(ResourceKit.getResource(Assert.notBlank(path)), charset, isUseVariable);
     }
 
     /**
-     * 构造
+     * Constructs a {@code Setting} from a {@link File}.
      *
-     * @param configFile    配置文件对象
-     * @param charset       字符集
-     * @param isUseVariable 是否使用变量
+     * @param configFile    The configuration file.
+     * @param charset       The character set to use.
+     * @param isUseVariable {@code true} to enable variable substitution.
      */
     public Setting(final File configFile, final java.nio.charset.Charset charset, final boolean isUseVariable) {
         this(ResourceKit.getResource(Assert.notNull(configFile)), charset, isUseVariable);
     }
 
     /**
-     * 构造
+     * Constructs a {@code Setting} from a {@link Resource}.
      *
-     * @param resource      Setting的Resource
-     * @param charset       字符集
-     * @param isUseVariable 是否使用变量
+     * @param resource      The resource representing the settings file.
+     * @param charset       The character set to use.
+     * @param isUseVariable {@code true} to enable variable substitution.
      */
     public Setting(final Resource resource, final java.nio.charset.Charset charset, final boolean isUseVariable) {
         this(resource, new Loader(charset, isUseVariable));
     }
 
     /**
-     * 构造
+     * Constructs a {@code Setting} from a {@link Resource} using a custom loader.
      *
-     * @param resource Setting的Resource
-     * @param loader   自定义配置文件加载器
+     * @param resource The resource representing the settings file.
+     * @param loader   The custom loader to use for parsing.
      */
     public Setting(final Resource resource, Loader loader) {
         this.resource = resource;
-        if (null == loader) {
-            loader = new Loader(DEFAULT_CHARSET, false);
-        }
-        this.loader = loader;
-        this.groupedMap = loader.load(resource);
+        this.loader = Objects.requireNonNullElseGet(loader, () -> new Loader(DEFAULT_CHARSET, false));
+        this.groupedMap = this.loader.load(resource);
     }
 
     /**
-     * 构建一个空的Setting，用于手动加入参数
+     * Creates a new, empty {@code Setting} instance for manual population.
      *
-     * @return Setting
+     * @return A new {@code Setting} instance.
      */
     public static Setting of() {
         return new Setting();
     }
 
     /**
-     * 重新加载配置文件
+     * Reloads the configuration from the original resource file.
      *
-     * @return this
+     * @return This {@code Setting} instance for chaining.
      */
-    synchronized public Setting load() {
+    public synchronized Setting load() {
         Assert.notNull(this.loader, "SettingLoader must be not null!");
         this.groupedMap = loader.load(this.resource);
         return this;
     }
 
     /**
-     * 在配置文件变更时自动加载
+     * Enables automatic reloading of the configuration file when it changes on the filesystem.
      */
     public void autoLoad() {
         autoLoad(null);
     }
 
     /**
-     * 在配置文件变更时自动加载
+     * Enables automatic reloading of the configuration file when it changes, with a callback.
      *
-     * @param callback 加载完成回调
+     * @param callback A consumer to be called after the file has been successfully reloaded.
      */
     public void autoLoad(final Consumer<Setting> callback) {
         Assert.notNull(this.resource, "Setting resource must be not null !");
-        // 先关闭之前的监听
-        IoKit.closeQuietly(this.watchMonitor);
+        IoKit.closeQuietly(this.watchMonitor); // Close any existing monitor
         this.watchMonitor = WatchKit.ofModify(resource.getUrl(), new DelayWatcher(new SimpleWatcher() {
 
             @Serial
@@ -218,18 +224,17 @@ public class Setting extends AbstractSetting implements Map<String, String> {
             @Override
             public void onModify(final WatchEvent<?> event, final WatchKey key) {
                 load();
-                // 如果有回调，加载完毕则执行回调
                 if (callback != null) {
                     callback.accept(Setting.this);
                 }
             }
         }, 600));
         this.watchMonitor.start();
-        Logger.debug("Auto load for [{}] listenning...", this.resource.getUrl());
+        Logger.debug("Auto-load enabled for [{}]", this.resource.getUrl());
     }
 
     /**
-     * 停止自动加载
+     * Stops the automatic reloading of the configuration file.
      */
     public void stopAutoLoad() {
         IoKit.closeQuietly(this.watchMonitor);
@@ -237,48 +242,44 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 获得设定文件的URL
+     * Gets the URL of the loaded settings file.
      *
-     * @return 获得设定文件的路径
+     * @return The URL of the settings file.
      */
     public URL getSettingUrl() {
         return (null == this.resource) ? null : this.resource.getUrl();
     }
 
     /**
-     * 获得设定文件的路径
+     * Gets the file path of the loaded settings file.
      *
-     * @return 获得设定文件的路径
+     * @return The path of the settings file.
      */
     public String getSettingPath() {
         final URL settingUrl = getSettingUrl();
         return (null == settingUrl) ? null : settingUrl.getPath();
     }
 
-    /**
-     * 键值总数
-     *
-     * @return 键值总数
-     */
     @Override
     public int size() {
         return this.groupedMap.size();
     }
 
     @Override
-    public Object getObjByGroup(final CharSequence key, final CharSequence group, final Object defaultValue) {
+    public Object getObjectByGroup(final CharSequence key, final CharSequence group, final Object defaultValue) {
         final String result = this.groupedMap.get(group, key);
         if (result == null && logIfNull) {
-            Logger.debug("No data [{}] in group [{}] !", key, group);
+            Logger.debug("No data found for key [{}] in group [{}]", key, group);
         }
-        return result;
+        return ObjectKit.defaultIfNull(result, defaultValue);
     }
 
     /**
-     * 获取并删除键值对，当指定键对应值非空时，返回并删除这个值，后边的键对应的值不再查找
+     * Gets and removes a property value. It tries each key in the provided list until a non-null value is found, which
+     * is then returned and removed.
      *
-     * @param keys 键列表，常用于别名
-     * @return 字符串值
+     * @param keys A list of keys to try, often used for aliases.
+     * @return The string value, or null if no key is found.
      */
     public String getAndRemove(final String... keys) {
         String value = null;
@@ -292,10 +293,10 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 获得指定分组的所有键值对，此方法获取的是原始键值对，获取的键值对可以被修改
+     * Gets all key-value pairs for a specific group as a mutable map.
      *
-     * @param group 分组
-     * @return map
+     * @param group The group name.
+     * @return A map of the settings in the group.
      */
     public Map<String, String> getMap(final String group) {
         final LinkedHashMap<String, String> map = this.groupedMap.get(group);
@@ -303,10 +304,10 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 获取group分组下所有配置键值对，组成新的Setting
+     * Gets all settings under a specific group as a new {@code Setting} object.
      *
-     * @param group 分组
-     * @return Setting
+     * @param group The group name.
+     * @return A new {@code Setting} instance containing the properties of the group.
      */
     public Setting getSetting(final String group) {
         final Setting setting = new Setting();
@@ -315,10 +316,10 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 获取group分组下所有配置键值对，组成新的{@link java.util.Properties}
+     * Gets all settings under a specific group as a {@link java.util.Properties} object.
      *
-     * @param group 分组
-     * @return Properties对象
+     * @param group The group name.
+     * @return A new {@code Properties} object.
      */
     public java.util.Properties getProperties(final String group) {
         final java.util.Properties properties = new java.util.Properties();
@@ -327,10 +328,10 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 获取group分组下所有配置键值对，组成新的{@link Props}
+     * Gets all settings under a specific group as a {@link Props} object.
      *
-     * @param group 分组
-     * @return Props对象
+     * @param group The group name.
+     * @return A new {@code Props} object.
      */
     public Props getProps(final String group) {
         final Props props = new Props();
@@ -339,27 +340,28 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置 持久化不会保留之前的分组，注意如果配置文件在jar内部或者在exe中，此方法会报错。
+     * Stores the current settings to the original file, overwriting its content. This will not work if the file is
+     * inside a JAR.
      */
     public void store() {
         final URL resourceUrl = getSettingUrl();
-        Assert.notNull(resourceUrl, "Setting path must be not null !");
+        Assert.notNull(resourceUrl, "Setting path must be not null!");
         store(FileKit.file(resourceUrl));
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置 持久化不会保留之前的分组
+     * Stores the current settings to a file at the specified absolute path.
      *
-     * @param absolutePath 设置文件的绝对路径
+     * @param absolutePath The absolute path to the destination file.
      */
     public void store(final String absolutePath) {
         store(FileKit.touch(absolutePath));
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置 持久化不会保留之前的分组
+     * Stores the current settings to the specified file.
      *
-     * @param file 设置文件
+     * @param file The destination file.
      */
     public void store(final File file) {
         Assert.notNull(this.loader, "SettingLoader must be not null!");
@@ -367,17 +369,16 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 转换为{@link Props}对象，原分组变为前缀
+     * Converts this {@code Setting} to a {@link Props} object, flattening the groups into keys with prefixes (e.g.,
+     * "group.key").
      *
-     * @return {@link Props}对象
+     * @return A {@link Props} object.
      */
     public Props toProps() {
         final Props props = new Props();
-        String group;
         for (final Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupedMap.entrySet()) {
-            group = groupEntry.getKey();
+            String group = groupEntry.getKey();
             for (final Entry<String, String> entry : groupEntry.getValue().entrySet()) {
-                // 忽略null的键值对
                 final String key = entry.getKey();
                 final String value = entry.getValue();
                 if (null != key && null != value) {
@@ -389,42 +390,42 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 获取GroupedMap
+     * Gets the underlying {@link GroupedMap} that stores the settings.
      *
-     * @return GroupedMap
+     * @return The underlying {@link GroupedMap} used for storage.
      */
     public GroupedMap getGroupedMap() {
         return this.groupedMap;
     }
 
     /**
-     * 获取所有分组
+     * Gets a list of all group names defined in this setting.
      *
-     * @return 获得所有分组名
+     * @return A list of all group names in this setting.
      */
     public List<String> getGroups() {
         return ListKit.of(this.groupedMap.keySet());
     }
 
     /**
-     * 设置变量的正则 正则只能有一个group表示变量本身，剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
+     * Sets the regular expression for identifying variables.
      *
-     * @param regex 正则
-     * @return this
+     * @param regex The regular expression.
+     * @return this {@code Setting} instance for chaining.
      */
     public Setting setVarRegex(final String regex) {
         if (null == this.loader) {
-            throw new NullPointerException("SettingLoader is null !");
+            throw new NullPointerException("SettingLoader is null!");
         }
         this.loader.setVarRegex(regex);
         return this;
     }
 
     /**
-     * 设置当获取key对应值为{@code null}时是否打印debug日志提示用户
+     * Sets whether to log a debug message when a requested key is not found.
      *
-     * @param logIfNull 当获取key对应值为{@code null}时是否打印debug日志提示用户
-     * @return this
+     * @param logIfNull {@code true} to enable logging.
+     * @return this {@code Setting} instance for chaining.
      */
     public Setting setLogIfNull(final boolean logIfNull) {
         this.logIfNull = logIfNull;
@@ -432,66 +433,66 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 某个分组对应的键值对是否为空
+     * Checks if a specific group is empty.
      *
-     * @param group 分组
-     * @return 是否为空
+     * @param group The group name.
+     * @return {@code true} if the group is empty or does not exist.
      */
     public boolean isEmpty(final String group) {
         return this.groupedMap.isEmpty(group);
     }
 
     /**
-     * 指定分组中是否包含指定key
+     * Checks if a specific group contains a given key.
      *
-     * @param group 分组
-     * @param key   键
-     * @return 是否包含key
+     * @param group The group name.
+     * @param key   The key.
+     * @return {@code true} if the key exists in the group.
      */
     public boolean containsKey(final String group, final String key) {
         return this.groupedMap.containsKey(group, key);
     }
 
     /**
-     * 指定分组中是否包含指定值
+     * Checks if a specific group contains a given value.
      *
-     * @param group 分组
-     * @param value 值
-     * @return 是否包含值
+     * @param group The group name.
+     * @param value The value.
+     * @return {@code true} if the value exists in the group.
      */
     public boolean containsValue(final String group, final String value) {
         return this.groupedMap.containsValue(group, value);
     }
 
     /**
-     * 将键值对加入到对应分组中
+     * Puts a key-value pair into a specific group.
      *
-     * @param key   键
-     * @param group 分组
-     * @param value 值
-     * @return 此key之前存在的值，如果没有返回null
+     * @param key   The key.
+     * @param group The group name.
+     * @param value The value.
+     * @return The previous value associated with the key, or null.
      */
     public String putByGroup(final String key, final String group, final String value) {
         return this.groupedMap.put(group, key, value);
     }
 
     /**
-     * 从指定分组中删除指定值
+     * Removes a key from a specific group.
      *
-     * @param group 分组
-     * @param key   键
-     * @return 被删除的值，如果值不存在，返回null
+     * @param group The group name.
+     * @param key   The key to remove.
+     * @return The removed value, or null if not found.
      */
     public String remove(final String group, final Object key) {
         return this.groupedMap.remove(group, Convert.toString(key));
     }
 
     /**
-     * 加入多个键值对到某个分组下
+     * Puts all key-value pairs from a map into a specific group.
      *
-     * @param group 分组
-     * @param m     键值对
-     * @return this
+     * @param group The group name.
+     * @param m     The map of key-value pairs.
+     * @return this {@code Setting} instance for chaining.
      */
     public Setting putAll(final String group, final Map<? extends String, ? extends String> m) {
         this.groupedMap.putAll(group, m);
@@ -499,10 +500,10 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 添加一个Stting到主配置中
+     * Merges all groups and settings from another {@code Setting} instance into this one.
      *
-     * @param setting Setting配置
-     * @return this
+     * @param setting The {@code Setting} instance to merge.
+     * @return this {@code Setting} instance for chaining.
      */
     public Setting addSetting(final Setting setting) {
         for (final Entry<String, LinkedHashMap<String, String>> e : setting.getGroupedMap().entrySet()) {
@@ -512,10 +513,10 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 清除指定分组下的所有键值对
+     * Clears all key-value pairs from a specific group.
      *
-     * @param group 分组
-     * @return this
+     * @param group The group name.
+     * @return this {@code Setting} instance for chaining.
      */
     public Setting clear(final String group) {
         this.groupedMap.clear(group);
@@ -523,41 +524,41 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 指定分组所有键的Set
+     * Returns a set of all keys within a specific group.
      *
-     * @param group 分组
-     * @return 键Set
+     * @param group The group name.
+     * @return The set of keys.
      */
     public Set<String> keySet(final String group) {
         return this.groupedMap.keySet(group);
     }
 
     /**
-     * 指定分组下所有值
+     * Returns a collection of all values within a specific group.
      *
-     * @param group 分组
-     * @return 值
+     * @param group The group name.
+     * @return The collection of values.
      */
     public Collection<String> values(final String group) {
         return this.groupedMap.values(group);
     }
 
     /**
-     * 指定分组下所有键值对
+     * Returns a set of all key-value entries within a specific group.
      *
-     * @param group 分组
-     * @return 键值对
+     * @param group The group name.
+     * @return The set of entries.
      */
     public Set<Entry<String, String>> entrySet(final String group) {
         return this.groupedMap.entrySet(group);
     }
 
     /**
-     * 设置值
+     * Sets a value in the default (empty) group.
      *
-     * @param key   键
-     * @param value 值
-     * @return this
+     * @param key   The key.
+     * @param value The value.
+     * @return this {@code Setting} instance for chaining.
      */
     public Setting set(final String key, final String value) {
         this.put(key, value);
@@ -565,15 +566,17 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 通过lambda批量设置值 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * Sets multiple properties using an array of lambda method reference suppliers.
+     * <p>
+     * Example:
      * 
      * <pre>
-     * User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
-     * Setting.of().setFields(user::getNickname, user::getUsername);
+     * User user = new User("test", "Test User");
+     * Setting.of().setFields(user::getUsername, user::getNickname);
      * </pre>
      *
-     * @param fields lambda,不能为空
-     * @return this
+     * @param fields An array of suppliers, where each supplier returns a property value.
+     * @return this {@code Setting} instance for chaining.
      */
     public Setting setFields(final SupplierX<String>... fields) {
         Arrays.stream(fields).forEach(f -> set(LambdaKit.getFieldName(f), f.get()));
@@ -581,12 +584,12 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 将键值对加入到对应分组中 此方法用于与getXXX统一参数顺序
+     * Sets a value in a specific group.
      *
-     * @param key   键
-     * @param group 分组
-     * @param value 值
-     * @return 此key之前存在的值，如果没有返回null
+     * @param key   The key.
+     * @param group The group name.
+     * @param value The value.
+     * @return this {@code Setting} instance for chaining.
      */
     public Setting setByGroup(final String key, final String group, final String value) {
         this.putByGroup(key, group, value);
@@ -598,105 +601,51 @@ public class Setting extends AbstractSetting implements Map<String, String> {
         return this.groupedMap.isEmpty();
     }
 
-    /**
-     * 默认分组（空分组）中是否包含指定key对应的值
-     *
-     * @param key 键
-     * @return 默认分组中是否包含指定key对应的值
-     */
     @Override
     public boolean containsKey(final Object key) {
         return this.groupedMap.containsKey(DEFAULT_GROUP, Convert.toString(key));
     }
 
-    /**
-     * 默认分组（空分组）中是否包含指定值
-     *
-     * @param value 值
-     * @return 默认分组中是否包含指定值
-     */
     @Override
     public boolean containsValue(final Object value) {
         return this.groupedMap.containsValue(DEFAULT_GROUP, Convert.toString(value));
     }
 
-    /**
-     * 获取默认分组（空分组）中指定key对应的值
-     *
-     * @param key 键
-     * @return 默认分组（空分组）中指定key对应的值
-     */
     @Override
     public String get(final Object key) {
         return getString((String) key);
     }
 
-    /**
-     * 将指定键值对加入到默认分组（空分组）中
-     *
-     * @param key   键
-     * @param value 值
-     * @return 加入的值
-     */
     @Override
     public String put(final String key, final String value) {
         return this.groupedMap.put(DEFAULT_GROUP, key, value);
     }
 
-    /**
-     * 移除默认分组（空分组）中指定值
-     *
-     * @param key 键
-     * @return 移除的值
-     */
     @Override
     public String remove(final Object key) {
         return remove(DEFAULT_GROUP, key);
     }
 
-    /**
-     * 将键值对Map加入默认分组（空分组）中
-     *
-     * @param m Map
-     */
     @Override
     public void putAll(final Map<? extends String, ? extends String> m) {
         this.groupedMap.putAll(DEFAULT_GROUP, m);
     }
 
-    /**
-     * 清空默认分组（空分组）中的所有键值对
-     */
     @Override
     public void clear() {
         this.groupedMap.clear(DEFAULT_GROUP);
     }
 
-    /**
-     * 获取默认分组（空分组）中的所有键列表
-     *
-     * @return 默认分组（空分组）中的所有键列表
-     */
     @Override
     public Set<String> keySet() {
         return this.groupedMap.keySet(DEFAULT_GROUP);
     }
 
-    /**
-     * 获取默认分组（空分组）中的所有值列表
-     *
-     * @return 默认分组（空分组）中的所有值列表
-     */
     @Override
     public Collection<String> values() {
         return this.groupedMap.values(DEFAULT_GROUP);
     }
 
-    /**
-     * 获取默认分组（空分组）中的所有键值对列表
-     *
-     * @return 默认分组（空分组）中的所有键值对列表
-     */
     @Override
     public Set<Entry<String, String>> entrySet() {
         return this.groupedMap.entrySet(DEFAULT_GROUP);
@@ -704,11 +653,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + groupedMap.hashCode();
-        result = prime * result + ((this.resource == null) ? 0 : this.resource.hashCode());
-        return result;
+        return Objects.hash(groupedMap, resource);
     }
 
     @Override
@@ -716,21 +661,11 @@ public class Setting extends AbstractSetting implements Map<String, String> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final Setting other = (Setting) obj;
-        if (!groupedMap.equals(other.groupedMap)) {
-            return false;
-        }
-        if (this.resource == null) {
-            return other.resource == null;
-        } else {
-            return resource.equals(other.resource);
-        }
+        return Objects.equals(groupedMap, other.groupedMap) && Objects.equals(resource, other.resource);
     }
 
     @Override

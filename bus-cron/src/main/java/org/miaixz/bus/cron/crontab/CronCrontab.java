@@ -30,7 +30,8 @@ package org.miaixz.bus.cron.crontab;
 import org.miaixz.bus.cron.pattern.CronPattern;
 
 /**
- * 定时作业，此类除了定义了作业，也定义了作业的执行周期以及ID。
+ * A scheduled job that encapsulates a task, its execution pattern, and its ID. This class holds not only the job to be
+ * executed but also its scheduling information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,11 +43,11 @@ public class CronCrontab implements Crontab {
     private CronPattern pattern;
 
     /**
-     * 构造
+     * Constructs a new CronCrontab.
      *
-     * @param id      ID
-     * @param pattern 表达式
-     * @param crontab 作业
+     * @param id      The unique identifier for the task.
+     * @param pattern The cron pattern that defines the execution schedule.
+     * @param crontab The task to be executed.
      */
     public CronCrontab(final String id, final CronPattern pattern, final Crontab crontab) {
         this.id = id;
@@ -54,34 +55,37 @@ public class CronCrontab implements Crontab {
         this.crontab = crontab;
     }
 
+    /**
+     * Executes the wrapped cron task.
+     */
     @Override
     public void execute() {
         crontab.execute();
     }
 
     /**
-     * 获取作业ID
+     * Gets the unique identifier of this task.
      *
-     * @return 作业ID
+     * @return The task ID.
      */
     public String getId() {
         return id;
     }
 
     /**
-     * 获取表达式
+     * Gets the cron pattern for this task.
      *
-     * @return 表达式
+     * @return The {@link CronPattern}.
      */
     public CronPattern getPattern() {
         return pattern;
     }
 
     /**
-     * 设置新的定时表达式
+     * Sets a new cron pattern for this task.
      *
-     * @param pattern 表达式
-     * @return this
+     * @param pattern The new cron pattern.
+     * @return this {@link CronCrontab} instance for chaining.
      */
     public CronCrontab setPattern(final CronPattern pattern) {
         this.pattern = pattern;
@@ -89,9 +93,9 @@ public class CronCrontab implements Crontab {
     }
 
     /**
-     * 获取原始作业
+     * Gets the raw, underlying task.
      *
-     * @return 作业
+     * @return The original {@link Crontab} instance.
      */
     public Crontab getRaw() {
         return this.crontab;

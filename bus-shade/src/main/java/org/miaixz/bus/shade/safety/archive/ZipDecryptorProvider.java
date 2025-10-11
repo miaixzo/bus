@@ -41,32 +41,74 @@ import org.miaixz.bus.shade.safety.provider.EntryDecryptorProvider;
 import org.miaixz.bus.shade.safety.streams.AlwaysOutputStream;
 
 /**
- * ZIP压缩包解密器
+ * A {@link DecryptorProvider} implementation for decrypting ZIP archive files. This provider can decrypt individual
+ * entries within a ZIP archive, applying a filter to determine which entries should be decrypted. It also handles
+ * compression levels for the output ZIP.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ZipDecryptorProvider extends EntryDecryptorProvider<ZipArchiveEntry> implements DecryptorProvider {
 
+    /**
+     * The compression level for the output ZIP archive.
+     */
     private final int level;
 
+    /**
+     * Constructs a {@code ZipDecryptorProvider} with a given delegate decryptor. Uses default compression level
+     * ({@link Deflater#DEFLATED}) and no specific filter.
+     *
+     * @param xEncryptor The delegate decryptor provider that performs the actual decryption.
+     */
     public ZipDecryptorProvider(DecryptorProvider xEncryptor) {
         this(xEncryptor, null);
     }
 
+    /**
+     * Constructs a {@code ZipDecryptorProvider} with a given delegate decryptor and a filter. Uses default compression
+     * level ({@link Deflater#DEFLATED}).
+     *
+     * @param decryptorProvider The delegate decryptor provider that performs the actual decryption.
+     * @param filter            The {@link Complex} filter to apply to ZIP entries. Only entries matching the filter
+     *                          will be decrypted.
+     */
     public ZipDecryptorProvider(DecryptorProvider decryptorProvider, Complex<ZipArchiveEntry> filter) {
         this(decryptorProvider, Deflater.DEFLATED, filter);
     }
 
+    /**
+     * Constructs a {@code ZipDecryptorProvider} with a given delegate decryptor and a compression level. No specific
+     * filter is applied.
+     *
+     * @param xEncryptor The delegate decryptor provider that performs the actual decryption.
+     * @param level      The compression level for the output ZIP archive.
+     */
     public ZipDecryptorProvider(DecryptorProvider xEncryptor, int level) {
         this(xEncryptor, level, null);
     }
 
+    /**
+     * Constructs a {@code ZipDecryptorProvider} with a given delegate decryptor, compression level, and a filter.
+     *
+     * @param decryptorProvider The delegate decryptor provider that performs the actual decryption.
+     * @param level             The compression level for the output ZIP archive.
+     * @param filter            The {@link Complex} filter to apply to ZIP entries. Only entries matching the filter
+     *                          will be decrypted.
+     */
     public ZipDecryptorProvider(DecryptorProvider decryptorProvider, int level, Complex<ZipArchiveEntry> filter) {
         super(decryptorProvider, filter);
         this.level = level;
     }
 
+    /**
+     * Decrypts a source ZIP file to a destination ZIP file.
+     *
+     * @param key  The {@link Key} used for decryption.
+     * @param src  The source ZIP file to decrypt.
+     * @param dest The destination ZIP file where the decrypted content will be written.
+     * @throws IOException If an I/O error occurs during decryption.
+     */
     @Override
     public void decrypt(Key key, File src, File dest) throws IOException {
         try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
@@ -74,6 +116,16 @@ public class ZipDecryptorProvider extends EntryDecryptorProvider<ZipArchiveEntry
         }
     }
 
+    /**
+     * Decrypts a ZIP archive from an input stream to an output stream. Each entry in the input ZIP stream is processed.
+     * If an entry matches the configured filter, it is decrypted using the delegate decryptor; otherwise, it is copied
+     * as-is.
+     *
+     * @param key The {@link Key} used for decryption.
+     * @param in  The input stream containing the encrypted ZIP archive.
+     * @param out The output stream where the decrypted ZIP archive will be written.
+     * @throws IOException If an I/O error occurs during decryption.
+     */
     @Override
     public void decrypt(Key key, InputStream in, OutputStream out) throws IOException {
         ZipArchiveInputStream zis = null;
@@ -89,7 +141,7 @@ public class ZipDecryptorProvider extends EntryDecryptorProvider<ZipArchiveEntry
                     continue;
                 }
                 zos.putArchiveEntry(new ZipArchiveEntry(entry.getName()));
-                DecryptorProvider decryptor = on(entry) ? this : xNopDecryptor;
+                DecryptorProvider decryptor = on(entry) ? this.decryptorProvider : xNopDecryptor;
                 try (OutputStream eos = decryptor.decrypt(key, nos)) {
                     Builder.transfer(zis, eos);
                 }

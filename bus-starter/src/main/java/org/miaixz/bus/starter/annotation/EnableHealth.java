@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.health.HealthConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 开启健康检查
+ * Enables application health monitoring and management features.
+ * <p>
+ * This annotation imports the {@link HealthConfiguration}, which sets up beans for gathering system metrics (CPU,
+ * memory, etc.) and provides REST endpoints for liveness ({@code /broken}, {@code /correct}) and readiness
+ * ({@code /accept}, {@code /refuse}) probes, which are essential for container orchestration platforms like Kubernetes.
  *
  * @author Kimi Liu
  * @since Java 17+

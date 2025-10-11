@@ -30,24 +30,45 @@ package org.miaixz.bus.core.io.check.crc16;
 import java.io.Serial;
 
 /**
- * CRC16_DNP：多项式x16+x13+x12+x11+x10+x8+x6+x5+x2+1（0x3D65），初始值0x0000，低位在前，高位在后，结果与0xFFFF异或 0xA6BC是0x3D65按位颠倒后的结果
+ * Implements the CRC16_DNP (Cyclic Redundancy Check) algorithm. This CRC uses the polynomial
+ * x16+x13+x12+x11+x10+x8+x6+x5+x2+1 (0x3D65), an initial value of 0x0000, processes data with the low byte first, high
+ * byte last, and the final result is XORed with 0xFFFF. Note: 0xA6BC is the bit-reversed representation of 0x3D65.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CRC16DNP extends CRC16Checksum {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852278821990L;
 
+    /**
+     * The polynomial used in the CRC16-DNP calculation. It is the bit-reversed form of 0x3D65.
+     */
     private static final int WC_POLY = 0xA6BC;
 
+    /**
+     * Updates the CRC16-DNP checksum with the specified array of bytes. After the superclass update, the internal CRC
+     * value is XORed with 0xFFFF.
+     *
+     * @param b   The byte array to update the checksum with.
+     * @param off The start offset in the data.
+     * @param len The number of bytes to use for the update.
+     */
     @Override
     public void update(final byte[] b, final int off, final int len) {
         super.update(b, off, len);
         wCRCin ^= 0xffff;
     }
 
+    /**
+     * Updates the CRC16-DNP checksum with the specified byte.
+     *
+     * @param b The byte to update the checksum with.
+     */
     @Override
     public void update(final int b) {
         wCRCin ^= (b & 0x00ff);

@@ -31,9 +31,10 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 缓存键注解
+ * Marks a method parameter as a component of a cache key.
  * <p>
- * 用于标记方法参数作为缓存键的一部分。可以指定参数的特定部分或字段作为键的组成部分。
+ * This annotation is used on parameters of a method annotated with {@link Cached}, {@link CachedGet}, or
+ * {@link Invalid} to specify how the parameter contributes to the cache key.
  * </p>
  *
  * @author Kimi Liu
@@ -45,22 +46,25 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface CacheKey {
 
     /**
-     * 使用参数的一部分作为缓存的关键部分
+     * A SpEL (Spring Expression Language) expression to extract a value from the annotated parameter.
      * <p>
-     * 可以使用SpEL表达式指定参数的特定部分作为键的组成部分
+     * The result of this expression will be used as a part of the cache key. If the expression is empty, the string
+     * representation of the entire parameter object will be used.
      * </p>
      *
-     * @return SpEL表达式，用于指定参数的哪部分作为键
+     * @return The SpEL expression to select a portion of the parameter for the key.
      */
     String value() default Normal.EMPTY;
 
     /**
-     * 使用多模型(value has `# i ` index)方法返回{@code Collection} {@code field} 指示与此参数相关的 {@code Collection} 实体字段中的哪个
+     * Specifies the name of a field to be used for mapping in multi-key operations.
      * <p>
-     * 当方法返回Collection类型时，指定Collection中对象的哪个字段作为键的组成部分
+     * This is typically used when a cached method returns a {@code Collection} of objects. The {@code field} indicates
+     * which property of the objects in the returned collection corresponds to the ID used to generate the cache key.
+     * This allows the framework to correctly map the returned values back to the cache keys for writing.
      * </p>
      *
-     * @return 字段名称，用于指定Collection中对象的哪个字段作为键
+     * @return The name of the field to be used for key mapping.
      */
     String field() default Normal.EMPTY;
 

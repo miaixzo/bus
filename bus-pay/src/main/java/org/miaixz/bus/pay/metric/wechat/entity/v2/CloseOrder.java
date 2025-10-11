@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
-import org.miaixz.bus.pay.magic.Material;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 关闭订单
+ * Model for the Close Order API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,12 +47,33 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class CloseOrder extends Material {
 
+    /**
+     * Sub-merchant App ID (for service providers).
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID (for service providers).
+     */
     private String sub_mch_id;
+    /**
+     * Merchant's order number (out_trade_no).
+     */
     private String out_trade_no;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Signature type.
+     */
     private String sign_type;
 
 }

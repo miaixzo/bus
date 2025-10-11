@@ -41,12 +41,12 @@ module bus.socket {
     exports org.miaixz.bus.socket.accord.kcp;
     exports org.miaixz.bus.socket.buffer;
     exports org.miaixz.bus.socket.metric;
-    exports org.miaixz.bus.socket.metric.channels;
+    exports org.miaixz.bus.socket.metric.channel;
     exports org.miaixz.bus.socket.metric.decoder;
     exports org.miaixz.bus.socket.metric.handler;
     exports org.miaixz.bus.socket.metric.message;
     exports org.miaixz.bus.socket.plugin;
-    exports org.miaixz.bus.socket.secure.ssl;
-    exports org.miaixz.bus.socket.secure.ssl.factory;
+    exports org.miaixz.bus.socket.secure;
+    exports org.miaixz.bus.socket.secure.factory;
 
 }

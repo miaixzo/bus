@@ -34,7 +34,12 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 
 /**
- * MAC（Message Authentication Code）算法引擎
+ * MAC (Message Authentication Code) algorithm engine interface. This interface defines the contract for MAC algorithm
+ * implementations, providing methods to update the MAC with data, finalize the MAC calculation, reset the MAC, and
+ * retrieve properties like MAC length and algorithm name.
+ * <p>
+ * Note: Implementations of this interface may not be thread-safe.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,41 +47,44 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 public interface Mac {
 
     /**
-     * 加入需要被摘要的内容
+     * Updates the MAC with the entire contents of the given byte array.
      *
-     * @param in 内容
+     * @param in The byte array containing the data to be processed.
      */
     default void update(final byte[] in) {
         update(in, 0, in.length);
     }
 
     /**
-     * 加入需要被摘要的内容
+     * Updates the MAC with the specified portion of the given byte array.
      *
-     * @param in    内容
-     * @param inOff 内容起始位置
-     * @param len   内容长度
+     * @param in    The byte array containing the data to be processed.
+     * @param inOff The offset in the input array where the data begins.
+     * @param len   The number of bytes to process from the input array.
      */
     void update(byte[] in, int inOff, int len);
 
     /**
-     * 结束并生成摘要
+     * Completes the MAC calculation and returns the result. The MAC is reset after this operation.
      *
-     * @return 摘要内容
+     * @return The calculated MAC value as a byte array.
      */
     byte[] doFinal();
 
     /**
-     * 重置
+     * Resets the MAC to its initial state, discarding all processed data.
      */
     void reset();
 
     /**
-     * 生成摘要
+     * Generates a message digest (MAC) from the data provided by an {@link InputStream}. Uses a default buffer size of
+     * {@link Normal#_8192} if {@code bufferLength} is less than 1. The MAC is reset after this operation.
      *
-     * @param data         {@link InputStream} 数据流
-     * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
-     * @return 摘要bytes
+     * @param data         The {@link InputStream} containing the data to be digested.
+     * @param bufferLength The buffer length to use for reading the stream. If less than 1, {@link Normal#_8192} is used
+     *                     as default.
+     * @return The calculated MAC value as a byte array.
+     * @throws CryptoException if an I/O error occurs during stream reading.
      */
     default byte[] digest(final InputStream data, int bufferLength) {
         if (bufferLength < 1) {
@@ -103,16 +111,16 @@ public interface Mac {
     }
 
     /**
-     * 获取MAC算法块大小
+     * Retrieves the length of the MAC in bytes.
      *
-     * @return MAC算法块大小
+     * @return The MAC length in bytes.
      */
     int getMacLength();
 
     /**
-     * 获取当前算法
+     * Retrieves the name of the MAC algorithm.
      *
-     * @return 算法
+     * @return The algorithm name.
      */
     String getAlgorithm();
 

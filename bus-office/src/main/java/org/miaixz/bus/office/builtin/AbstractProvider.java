@@ -30,7 +30,7 @@ package org.miaixz.bus.office.builtin;
 import org.miaixz.bus.office.Provider;
 
 /**
- * 所有文档转换器实现的基类
+ * Base class for all document converter implementations.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -42,47 +42,58 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * RabbitMQ引擎实现类，用于提供RabbitMQ的消息队列服务
+ * RabbitMQ message queue engine implementation class. This class provides an adapter for interacting with a RabbitMQ
+ * broker, serving as a concrete {@link MQProvider} for RabbitMQ message queue services. It handles the establishment of
+ * connections and provides access to RabbitMQ producers and consumers.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RabbitMQProvider implements MQProvider, Closeable {
 
+    /**
+     * The active RabbitMQ {@link Connection} object, representing the connection to the RabbitMQ broker.
+     */
     private Connection connection;
 
     /**
-     * 默认构造方法，用于SPI方式加载时检查库是否引入
+     * Default constructor for {@code RabbitMQProvider}. This constructor is primarily used when the provider is loaded
+     * via Java's Service Provider Interface (SPI). It includes an assertion to ensure that the RabbitMQ client library
+     * (specifically {@link Connection} class) is present on the classpath, preventing runtime errors if the dependency
+     * is missing.
      */
     public RabbitMQProvider() {
-        // SPI方式加载时检查库是否引入
+        // Check if the library is introduced when loading via SPI
         Assert.notNull(com.rabbitmq.client.Connection.class);
     }
 
     /**
-     * 构造方法，使用MQConfig初始化RabbitMQ连接
+     * Constructs a {@code RabbitMQProvider} with the specified {@link MQConfig}. This constructor initializes the
+     * RabbitMQ connection based on the provided configuration.
      *
-     * @param config RabbitMQ配置对象，包含连接所需信息
+     * @param config The {@link MQConfig} object, containing necessary connection information like the broker URL and
+     *               additional properties.
      */
     public RabbitMQProvider(final MQConfig config) {
         init(config);
     }
 
     /**
-     * 构造方法，使用ConnectionFactory初始化RabbitMQ连接
+     * Constructs a {@code RabbitMQProvider} with an already initialized RabbitMQ {@link ConnectionFactory}. This allows
+     * for more flexible instantiation where the connection factory is managed externally.
      *
-     * @param factory RabbitMQ连接工厂对象
+     * @param factory The pre-configured RabbitMQ {@link ConnectionFactory} object.
      */
-    @SuppressWarnings("resource")
     public RabbitMQProvider(final ConnectionFactory factory) {
         init(factory);
     }
 
     /**
-     * 使用MQConfig初始化RabbitMQ连接
+     * Initializes the RabbitMQ provider using the provided {@link MQConfig}. This method creates a
+     * {@link ConnectionFactory} from the {@link MQConfig} and then establishes a connection to the RabbitMQ broker.
      *
-     * @param config RabbitMQ配置对象，包含连接所需信息
-     * @return 当前RabbitMQProvider实例，支持链式调用
+     * @param config The {@link MQConfig} object, containing necessary connection information.
+     * @return This {@code RabbitMQProvider} instance, allowing for method chaining.
      */
     @Override
     public RabbitMQProvider init(final MQConfig config) {
@@ -90,10 +101,13 @@ public class RabbitMQProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 使用ConnectionFactory初始化RabbitMQ连接
+     * Initializes the RabbitMQ provider using the provided {@link ConnectionFactory}. This method establishes a new
+     * connection to the RabbitMQ broker using the given factory.
      *
-     * @param factory RabbitMQ连接工厂对象
-     * @return 当前RabbitMQProvider实例，支持链式调用
+     * @param factory The RabbitMQ {@link ConnectionFactory} object.
+     * @return This {@code RabbitMQProvider} instance, allowing for method chaining.
+     * @throws MQueueException if an error occurs during connection establishment (e.g., {@link IOException},
+     *                         {@link TimeoutException}).
      */
     public RabbitMQProvider init(final ConnectionFactory factory) {
         try {
@@ -105,9 +119,10 @@ public class RabbitMQProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 获取RabbitMQ生产者实例
+     * Retrieves a {@link Producer} instance configured for RabbitMQ. A new {@link Channel} is created for each producer
+     * to ensure thread safety and proper resource management.
      *
-     * @return RabbitMQ生产者实例
+     * @return A {@link RabbitMQProducer} instance for sending messages to RabbitMQ.
      */
     @Override
     public Producer getProducer() {
@@ -115,9 +130,10 @@ public class RabbitMQProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 获取RabbitMQ消费者实例
+     * Retrieves a {@link Consumer} instance configured for RabbitMQ. A new {@link Channel} is created for each consumer
+     * to ensure thread safety and proper resource management.
      *
-     * @return RabbitMQ消费者实例
+     * @return A {@link RabbitMQConsumer} instance for receiving messages from RabbitMQ.
      */
     @Override
     public Consumer getConsumer() {
@@ -125,9 +141,10 @@ public class RabbitMQProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 关闭RabbitMQ连接，释放资源
+     * Closes the RabbitMQ connection, releasing all associated resources. This method ensures that the connection is
+     * properly shut down.
      *
-     * @throws IOException 关闭连接时发生IO异常
+     * @throws IOException if an I/O error occurs during the closing process.
      */
     @Override
     public void close() throws IOException {
@@ -135,9 +152,11 @@ public class RabbitMQProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 创建RabbitMQ通信通道
+     * Creates a new RabbitMQ communication {@link Channel} from the established connection. Channels are lightweight
+     * and are typically used for most API operations.
      *
-     * @return RabbitMQ通信通道
+     * @return A new RabbitMQ {@link Channel} instance.
+     * @throws MQueueException if an I/O error occurs during channel creation.
      */
     private Channel createChannel() {
         try {
@@ -148,10 +167,12 @@ public class RabbitMQProvider implements MQProvider, Closeable {
     }
 
     /**
-     * 根据配置创建RabbitMQ连接工厂
+     * Creates a RabbitMQ {@link ConnectionFactory} based on the provided generic {@link MQConfig}. It extracts the
+     * broker URL from the {@link MQConfig} and sets it on the factory.
      *
-     * @param config RabbitMQ配置对象，包含连接所需信息
-     * @return 配置好的RabbitMQ连接工厂
+     * @param config The {@link MQConfig} object, containing necessary connection information.
+     * @return The configured RabbitMQ {@link ConnectionFactory}.
+     * @throws MQueueException if an error occurs during factory creation or URI setting.
      */
     private static ConnectionFactory createFactory(final MQConfig config) {
         final ConnectionFactory factory = new ConnectionFactory();

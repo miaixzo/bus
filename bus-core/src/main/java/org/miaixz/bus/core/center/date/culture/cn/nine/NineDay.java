@@ -30,21 +30,28 @@ package org.miaixz.bus.core.center.date.culture.cn.nine;
 import org.miaixz.bus.core.center.date.culture.Replenish;
 
 /**
- * 数九天
+ * Represents a specific day within the "Shu Jiu" (Counting Nine) period. This class extends {@link Replenish} to
+ * associate a specific day index with a {@link Nine} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NineDay extends Replenish {
 
+    /**
+     * Constructs a {@code NineDay} instance with the specified {@link Nine} and day index.
+     *
+     * @param nine     The {@link Nine} instance representing the Counting Nine period.
+     * @param dayIndex The index of the day within the Counting Nine period.
+     */
     public NineDay(Nine nine, int dayIndex) {
         super(nine, dayIndex);
     }
 
     /**
-     * 数九
+     * Gets the {@link Nine} instance associated with this Nine Day.
      *
-     * @return 数九
+     * @return The {@link Nine} instance.
      */
     public Nine getNine() {
         return (Nine) tradition;

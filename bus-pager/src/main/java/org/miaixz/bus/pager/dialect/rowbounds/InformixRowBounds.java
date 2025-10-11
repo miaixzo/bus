@@ -32,13 +32,23 @@ import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 
 /**
- * informix 基于 RowBounds 的分页
+ * Informix dialect for pagination based on {@link RowBounds}. This class provides Informix-specific SQL generation for
+ * pagination using SKIP and FIRST clauses.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class InformixRowBounds extends AbstractRowBounds {
 
+    /**
+     * Generates the Informix-specific pagination SQL using {@link RowBounds}. It constructs a SQL query that uses `SKIP
+     * ?` and `FIRST ?` clauses to limit the results.
+     *
+     * @param sql       the original SQL string
+     * @param rowBounds the {@link RowBounds} object containing offset and limit
+     * @param pageKey   the CacheKey for the paginated query
+     * @return the Informix-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);

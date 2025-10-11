@@ -28,9 +28,9 @@
 package org.miaixz.bus.core.lang.selector;
 
 /**
- * 选择器接口 用于抽象负载均衡策略中的选择方式
+ * A selector interface, used to abstract the selection logic in load balancing strategies.
  *
- * @param <T> 选择对象类型
+ * @param <T> the type of the object to select
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -38,9 +38,9 @@ package org.miaixz.bus.core.lang.selector;
 public interface Selector<T> {
 
     /**
-     * 选择下一个对象
+     * Selects the next object.
      *
-     * @return 下一个对象
+     * @return the next object
      */
     T select();
 

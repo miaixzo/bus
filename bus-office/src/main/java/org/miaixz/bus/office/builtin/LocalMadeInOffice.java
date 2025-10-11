@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.office.Context;
 
 /**
- * 表示本地转换任务的默认行为
+ * Represents the default behavior for local conversion tasks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,7 +40,7 @@ public class LocalMadeInOffice extends AbstractOffice {
 
     @Override
     public void execute(Context context) throws InternalException {
-
+        // No specific implementation for local office execution in this abstract class.
     }
 
 }

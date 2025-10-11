@@ -37,23 +37,27 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 
 /**
- * VIN是Vehicle Identification Number的缩写，即车辆识别号码。VIN码是全球通行的车辆唯一标识符，由17位数字和字母组成。
+ * VIN is an abbreviation for Vehicle Identification Number. A VIN is a globally unique identifier for a vehicle,
+ * consisting of 17 digits and letters.
  * <p>
- * 不同位数代表着不同意义，具体解释如下：
+ * Different digits represent different meanings, as explained below:
  * <ul>
- * <li>1-3位：WMI制造商标示符，代表车辆制造商信息</li>
- * <li>4-8位：VDS车型识别代码，代表车辆品牌、车系、车型及其排量等信息</li>
- * <li>9位：校验位，通过公式计算出来，用于验证VIN码的正确性</li>
- * <li>10位：年份代号，代表车辆生产的年份</li>
- * <li>11位：工厂代码，代表车辆生产工厂信息</li>
- * <li>12-17位：流水号，代表车辆的生产顺序号</li>
+ * <li>Digits 1-3: WMI (World Manufacturer Identifier), representing vehicle manufacturer information.</li>
+ * <li>Digits 4-8: VDS (Vehicle Descriptor Section), representing vehicle brand, series, model, displacement, and other
+ * information.</li>
+ * <li>Digit 9: Check digit, calculated by a formula to verify the correctness of the VIN.</li>
+ * <li>Digit 10: Year code, representing the year of vehicle production.</li>
+ * <li>Digit 11: Plant code, representing the vehicle production plant information.</li>
+ * <li>Digits 12-17: Sequence number, representing the vehicle's production sequence number.</li>
  * </ul>
- * VIN码可以找到汽车详细的个人、工程、制造方面的信息，是判定一个汽车合法性及其历史的重要依据。
+ * The VIN can be used to find detailed personal, engineering, and manufacturing information about a car, and is an
+ * important basis for determining the legality and history of a car.
  * <p>
- * 本实现参考以下标准：
+ * This implementation refers to the following standards:
  * <ul>
  * <li><a href="https://www.iso.org/standard/52200.html">ISO 3779</a></li>
- * <li><a href="http://www.catarc.org.cn/upload/202004/24/202004241005284241.pdf">车辆识别代号管理办法</a></li>
+ * <li><a href="http://www.catarc.org.cn/upload/202004/24/202004241005284241.pdf">Vehicle Identification Number
+ * Management Measures</a></li>
  * <li><a href="https://en.wikipedia.org/wiki/Vehicle_identification_number">Wikipedia</a></li>
  * <li><a href="https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2EBF667F8C032B1EDFD6DF9C1114E02">GB
  * 16735-2019</a></li>
@@ -65,12 +69,21 @@ import org.miaixz.bus.core.xyz.PatternKit;
 public class VIN {
 
     /**
-     * 加权系数，见附录A，表A.3
+     * Weighting factors, see Appendix A, Table A.3
      */
     private static final int[] WEIGHT = { 8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2 };
+    /**
+     * The cycle of the year code.
+     */
     private static final int YEAR_LOOP = 30;
+    /**
+     * The characters used to represent the year.
+     */
     private static final char[] YEAR_ID = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R',
             'S', 'T', 'V', 'W', 'X', 'Y', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+    /**
+     * A map from year characters to their corresponding index.
+     */
     private static final Map<Character, Integer> YEAR_MAP;
 
     static {
@@ -81,12 +94,15 @@ public class VIN {
         YEAR_MAP = MapKit.view(yearMap);
     }
 
+    /**
+     * The VIN code.
+     */
     private final String code;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param vinCode VIN码
+     * @param vinCode The VIN code.
      */
     public VIN(final String vinCode) {
         Assert.isTrue(verify(vinCode), "Invalid VIN code!");
@@ -94,24 +110,24 @@ public class VIN {
     }
 
     /**
-     * 创建VIN
+     * Creates a VIN object.
      *
-     * @param vinCode VIN码
-     * @return VIN对象
+     * @param vinCode The VIN code.
+     * @return A VIN object.
      */
     public static VIN of(final String vinCode) {
         return new VIN(vinCode);
     }
 
     /**
-     * 校验VIN码有效性，要求：
+     * Verifies the validity of the VIN code. It requires:
      * <ul>
-     * <li>满足正则：{@link Pattern#CAR_VIN_PATTERN}</li>
-     * <li>满足第9位校验位和计算的检验值一致</li>
+     * <li>Matching the regular expression: {@link Pattern#CAR_VIN_PATTERN}</li>
+     * <li>The 9th digit (check digit) must match the calculated check digit.</li>
      * </ul>
      *
-     * @param vinCode VIN码
-     * @return 是否有效
+     * @param vinCode The VIN code.
+     * @return {@code true} if the VIN code is valid, {@code false} otherwise.
      */
     public static boolean verify(final String vinCode) {
         Assert.notBlank(vinCode, "VIN code must be not blank!");
@@ -123,10 +139,10 @@ public class VIN {
     }
 
     /**
-     * 计算校验值，见附录A
+     * Calculates the check digit, see Appendix A.
      *
-     * @param vinCode VIN码
-     * @return 校验值
+     * @param vinCode The VIN code.
+     * @return The check digit.
      */
     private static char calculateVerifyCode(final String vinCode) {
         int sum = 0;
@@ -139,11 +155,11 @@ public class VIN {
     }
 
     /**
-     * 获取对应位置字符的权重因子
+     * Gets the weight factor for the character at the specified position.
      *
-     * @param vinCode VIN码
-     * @param i       位置
-     * @return 权重因子
+     * @param vinCode The VIN code.
+     * @param i       The position.
+     * @return The weight factor.
      */
     private static int getWeightFactor(final String vinCode, final int i) {
         final char c = vinCode.charAt(i);
@@ -151,10 +167,10 @@ public class VIN {
     }
 
     /**
-     * 获取字母对应值（见：附录A，表A.2）
+     * Gets the corresponding value for the letter (see Appendix A, Table A.2).
      *
-     * @param vinCodeChar VIN编码中的字符
-     * @return 对应值
+     * @param vinCodeChar The character in the VIN code.
+     * @return The corresponding value.
      */
     private static int getVinValue(final char vinCodeChar) {
         switch (vinCodeChar) {
@@ -215,28 +231,30 @@ public class VIN {
     }
 
     /**
-     * 获取VIN码
+     * Gets the VIN code.
      *
-     * @return VIN码
+     * @return The VIN code.
      */
     public String getCode() {
         return this.code;
     }
 
     /**
-     * 获取国家或地区代码
+     * Gets the country or region code.
      *
-     * @return 国家或地区代码
+     * @return The country or region code.
      */
     public String getCountryCode() {
         return this.code.substring(0, 2);
     }
 
     /**
-     * 获取世界制造厂识别代号WMI（World Manufacturer Identifier） 对年产量大于或等于1000辆的完整车辆或非完整车辆制造,车辆识别代号的第一部分为世界制造)厂识别代号(WMI)
-     * 对年产量小于1000辆的完整车辆和/或非完整车辆制造厂，第三部分的三、四、五位与第一部分的三位字码一起构成世界制造厂识别代号(WMI)
+     * Gets the World Manufacturer Identifier (WMI). For manufacturers of 1000 or more complete or incomplete vehicles
+     * per year, the first part of the VIN is the WMI. For manufacturers of less than 1000 complete and/or incomplete
+     * vehicles per year, the third, fourth, and fifth digits of the third part, together with the three digits of the
+     * first part, constitute the WMI.
      *
-     * @return WMI
+     * @return The WMI.
      */
     public String getWMI() {
         final String wmi = this.code.substring(0, 3);
@@ -244,36 +262,36 @@ public class VIN {
     }
 
     /**
-     * 是否是年产量小于1000的车辆制造厂
+     * Checks if the manufacturer produces less than 1000 vehicles per year.
      *
-     * @return 是否年产量小于1000
+     * @return {@code true} if the annual production is less than 1000, {@code false} otherwise.
      */
     public boolean isLessThan1000() {
         return '9' == this.code.charAt(2);
     }
 
     /**
-     * 获取车辆说明部分 VDS（Vehicle Descriptor section）
+     * Gets the Vehicle Descriptor Section (VDS).
      *
-     * @return VDS值
+     * @return The VDS value.
      */
     public String getVDS() {
         return this.code.substring(3, 9);
     }
 
     /**
-     * 获取车辆特征代码（Vehicle Descriptor Code），相对于VDS，不包含校验位。
+     * Gets the Vehicle Descriptor Code, which, relative to the VDS, does not include the check digit.
      *
-     * @return 车辆特征代码
+     * @return The Vehicle Descriptor Code.
      */
     public String getVehicleDescriptorCode() {
         return this.code.substring(3, 8);
     }
 
     /**
-     * 获取车辆指示部分 VIS（Vehicle Indicator Section）
+     * Gets the Vehicle Indicator Section (VIS).
      *
-     * @return VIS
+     * @return The VIS.
      */
     public String getVIS() {
         return this.code.substring(9);
@@ -289,9 +307,9 @@ public class VIN {
     }
 
     /**
-     * 获取装配厂字码
+     * Gets the assembly plant code defined by the manufacturer.
      *
-     * @return 由厂家自行定义的装配厂字码 string
+     * @return The assembly plant code.
      */
     public char getOemCode() {
         return this.code.charAt(10);
@@ -300,7 +318,7 @@ public class VIN {
     /**
      * Gets year.
      *
-     * @param multiple 1 代表从 1980年开始的第一个30年
+     * @param multiple 1 represents the first 30-year cycle starting from 1980.
      * @return the year
      */
     public Year getYear(final int multiple) {
@@ -309,9 +327,10 @@ public class VIN {
     }
 
     /**
-     * 生产序号 年产量大于1000为6位，年产量小于1000的为3位
+     * Production sequence number. 6 digits for annual output greater than 1000, 3 digits for annual output less than
+     * 1000.
      *
-     * @return 生产序号 string
+     * @return The production sequence number.
      */
     public String getProdNo() {
         return this.code.substring(isLessThan1000() ? 14 : 11, 17);

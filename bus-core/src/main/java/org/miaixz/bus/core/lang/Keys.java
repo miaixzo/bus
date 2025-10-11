@@ -44,7 +44,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 系统属性名称常量池 封装了包括Java运行时环境信息、Java虚拟机信息、Java类信息、OS信息、用户信息等
+ * A constant pool for system property names, encapsulating information about the Java runtime environment, Java Virtual
+ * Machine, Java class information, operating system, and user details.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,248 +53,250 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Keys {
 
     /**
-     * 框架本体
+     * The core framework identifier.
      */
     public static final String BUS = "bus";
 
     /**
-     * 框架名称
+     * The name of the framework.
      */
     public static final String NAME = "bus.name";
 
     /**
-     * 框架版本
+     * The version of the framework.
      */
     public static final String VERSION = "bus.version";
 
     /**
-     * 操作系统名称
+     * The name of the operating system.
      */
     public static final String OS_NAME = "os.name";
 
     /**
-     * 操作系统架构
+     * The architecture of the operating system.
      */
     public static final String OS_ARCH = "os.arch";
 
     /**
-     * 操作系统版本
+     * The version of the operating system.
      */
     public static final String OS_VERSION = "os.version";
     /**
-     * 用户账户名称
+     * The user's account name.
      */
     public static final String USER_NAME = "user.name";
 
     /**
-     * 用户的主目录
+     * The user's home directory.
      */
     public static final String USER_HOME = "user.home";
 
     /**
-     * 当前工作目录
+     * The current working directory.
      */
     public static final String USER_DIR = "user.dir";
     /**
-     * 文件编码
+     * The default character encoding for files.
      */
     public static final String FILE_ENCODING = "file.encoding";
     /**
-     * 当前语言
+     * The current user's language.
      */
     public static final String USER_LANGUAGE = "user.language";
     /**
-     * 当前地区
+     * The current user's country or region.
      */
     public static final String USER_COUNTRY = "user.country";
     /**
-     * 当前区域
+     * The current user's region.
      */
     public static final String USER_REGION = "user.region";
     /**
-     * 文件路径分隔符 在Unix和Linux下 是{@code '/'}; 在Windows下是 {@code '\'}
+     * The file path separator. On Unix and Linux, it is {@code '/'}; on Windows, it is {@code '\'}.
      */
     public static final String FILE_SEPARATOR = "file.separator";
     /**
-     * 多个PATH之间的分隔符 在Unix和Linux下 是{@code ':'}; 在Windows下是 {@code ';'}
+     * The path separator used between multiple paths. On Unix and Linux, it is {@code ':'}; on Windows, it is
+     * {@code ';'}.
      */
     public static final String PATH_SEPARATOR = "path.separator";
     /**
-     * 行分隔符 Unix /n
+     * The line separator. On Unix, it is {@code '\n'}.
      */
     public static final String LINE_SEPARATOR = "line.separator";
 
     /**
-     * Java 运行时环境版本
+     * The Java Runtime Environment version.
      */
     public static final String JAVA_VERSION = "java.version";
 
     /**
-     * Java 运行时环境供应商
+     * The Java Runtime Environment vendor.
      */
     public static final String JAVA_VENDOR = "java.vendor";
 
     /**
-     * Java 供应商的 URL
+     * The URL of the Java vendor.
      */
     public static final String JAVA_VENDOR_URL = "java.vendor.url";
 
     /**
-     * Java 安装目录
+     * The Java installation directory.
      */
     public static final String JAVA_HOME = "java.home";
 
     /**
-     * Java 虚拟机规范版本
+     * The Java Virtual Machine specification version.
      */
     public static final String JAVA_VM_SPECIFICATION_VERSION = "java.vm.specification.version";
 
     /**
-     * Java 虚拟机规范供应商
+     * The Java Virtual Machine specification vendor.
      */
     public static final String JAVA_VM_SPECIFICATION_VENDOR = "java.vm.specification.vendor";
 
     /**
-     * Java 虚拟机规范名称
+     * The Java Virtual Machine specification name.
      */
     public static final String JAVA_VM_SPECIFICATION_NAME = "java.vm.specification.name";
 
     /**
-     * Java 虚拟机实现版本
+     * The Java Virtual Machine implementation version.
      */
     public static final String JAVA_VM_VERSION = "java.vm.version";
 
     /**
-     * Java 虚拟机实现供应商
+     * The Java Virtual Machine implementation vendor.
      */
     public static final String JAVA_VM_VENDOR = "java.vm.vendor";
 
     /**
-     * Java 虚拟机实现名称
+     * The Java Virtual Machine implementation name.
      */
     public static final String JAVA_VM_NAME = "java.vm.name";
     /**
-     * Java 虚拟机实现信息
+     * Additional information about the Java Virtual Machine implementation.
      */
     public static final String JAVA_VM_INFO = " java.vm.info";
 
     /**
-     * Java 运行时环境规范版本
+     * The Java Runtime Environment specification version.
      */
     public static final String JAVA_SPECIFICATION_VERSION = "java.specification.version";
 
     /**
-     * Java 运行时环境规范供应商
+     * The Java Runtime Environment specification vendor.
      */
     public static final String JAVA_SPECIFICATION_VENDOR = "java.specification.vendor";
 
     /**
-     * Java 运行时环境规范名称
+     * The Java Runtime Environment specification name.
      */
     public static final String JAVA_SPECIFICATION_NAME = "java.specification.name";
 
     /**
-     * Java 类格式版本号
+     * The Java class format version number.
      */
     public static final String JAVA_CLASS_VERSION = "java.class.version";
 
     /**
-     * 类路径
+     * The Java ClassPath used by the system.
      */
     public static final String JAVA_CLASS_PATH = "java.class.path";
 
     /**
-     * 加载库时搜索的路径列表
+     * The list of paths searched when loading libraries.
      */
     public static final String JAVA_LIBRARY_PATH = "java.library.path";
 
     /**
-     * 默认的临时文件路径
+     * The default temporary file path.
      */
     public static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
     /**
-     * 要使用的 JIT 编译器的名称
+     * The name of the JIT compiler to use.
      */
     public static final String JAVA_COMPILER = "java.compiler";
 
     /**
-     * 一个或多个扩展目录的路径
+     * The path to one or more extension directories.
      */
     public static final String JAVA_EXT_DIRS = "java.ext.dirs";
     /**
-     * 运行环境名称
+     * The name of the Java Runtime Environment.
      */
     public static final String JAVA_RUNTIME_NAME = " java.runtime.name";
     /**
-     * 运行环境版本
+     * The version of the Java Runtime Environment.
      */
     public static final String JAVA_RUNTIME_VERSION = "java.runtime.version";
     /**
-     * 扩展jdk的系统库目录
+     * The directory for endorsed standards override mechanism.
      */
     public static final String JAVA_ENDORSED_DIRS = "java.endorsed.dirs";
     /**
-     * Transient注解的类名
+     * The class name of the {@code Transient} annotation in Java Beans.
      */
     public static final String JAVA_BEANS_TRANSIENT = "java.beans.Transient";
     /**
-     * BootstrapClassLoader加载的jar包路径
+     * The boot classpath used by the BootstrapClassLoader.
      */
     public static final String SUN_BOOT_CLASS_PATH = "sun.boot.class.path";
     /**
-     * JVM 系统位数 32/64
+     * The bitness of the JVM system (e.g., "32" or "64").
      */
     public static final String SUN_ARCH_DATA_MODEL = "sun.arch.data.model";
     /**
-     * 资源名称
+     * The base name for resource bundles, typically "messages".
      */
     public static final String BUNDLE_NAME = "messages";
     /**
-     * 自定义系统属性：是否解析日期字符串采用严格模式
+     * Custom system property: whether to parse date strings in strict mode.
      */
     public static final String DATE_LENIENT = "bus.date.lenient";
     /**
-     * JDK版本
+     * The major version of the JVM (e.g., 8 for Java 8, 17 for Java 17).
      */
     public static final int JVM_VERSION;
     /**
-     * 是否大于等于JDK17
+     * Indicates whether the current JVM version is 17 or later.
      */
     public static final boolean IS_AT_LEAST_JDK17;
     /**
-     * 是否Android环境
+     * Indicates whether the current environment is Android.
      */
     public static final boolean IS_ANDROID;
     /**
-     * 是否OPENJ9环境
+     * Indicates whether the current JVM is OpenJ9.
      */
     public static final boolean IS_OPENJ9;
 
     /**
-     * 是否GraalVM Native Image环境
+     * Indicates whether the current environment is GraalVM Native Image.
      */
     public static final boolean IS_GRAALVM_NATIVE;
 
     static {
-        // JVM版本
+        // Initialize JVM version.
         JVM_VERSION = _getJvmVersion();
         IS_AT_LEAST_JDK17 = JVM_VERSION >= 17;
 
-        // JVM名称
+        // Initialize JVM name related flags.
         final String jvmName = _getJvmName();
         IS_ANDROID = jvmName.equals("Dalvik");
         IS_OPENJ9 = jvmName.contains("OpenJ9");
-        // GraalVM
+        // Initialize GraalVM Native Image flag.
         IS_GRAALVM_NATIVE = null != System.getProperty("org.graalvm.nativeimage.imagecode");
     }
 
     /**
-     * 取得系统属性，如果因为Java安全的限制而失败，则将错误打在Log中，然后返回 defaultValue
+     * Retrieves a system property or environment variable value. If a {@link SecurityException} occurs due to Java
+     * security restrictions, the error is logged, and the {@code defaultValue} is returned.
      *
-     * @param name         属性名
-     * @param defaultValue 默认值
-     * @return 属性值或defaultValue
+     * @param name         The name of the property or environment variable.
+     * @param defaultValue The default value to return if the property is not found or access is denied.
+     * @return The property value, or {@code defaultValue} if not found or access is denied.
      * @see System#getProperty(String)
      * @see System#getenv(String)
      */
@@ -302,10 +305,11 @@ public class Keys {
     }
 
     /**
-     * 获得System属性
+     * Retrieves a system property or environment variable value. If a {@link SecurityException} occurs, it is logged,
+     * and {@code null} is returned.
      *
-     * @param key 键
-     * @return 属性值
+     * @param key The name of the property or environment variable.
+     * @return The property value, or {@code null} if not found or access is denied.
      * @see System#getProperty(String)
      * @see System#getenv(String)
      */
@@ -314,10 +318,11 @@ public class Keys {
     }
 
     /**
-     * 获得System属性，忽略无权限问题
+     * Retrieves a system property or environment variable value, suppressing any {@link SecurityException}s. If a
+     * security exception occurs, {@code null} is returned without logging the error.
      *
-     * @param key 键
-     * @return 属性值
+     * @param key The name of the property or environment variable.
+     * @return The property value, or {@code null} if not found or access is denied.
      * @see System#getProperty(String)
      * @see System#getenv(String)
      */
@@ -326,11 +331,13 @@ public class Keys {
     }
 
     /**
-     * 取得系统属性，如果因为Java安全的限制而失败，则将错误打在日志中，然后返回 {@code null}
+     * Retrieves a system property or environment variable value. If a {@link SecurityException} occurs due to Java
+     * security restrictions, the error is logged to {@code System.err} (unless in quiet mode), and {@code null} is
+     * returned.
      *
-     * @param name  属性名
-     * @param quiet 安静模式，不将出错信息打在{@code System.err}中
-     * @return 属性值或{@code null}
+     * @param name  The name of the property or environment variable.
+     * @param quiet If {@code true}, security exceptions are suppressed and not logged to {@code System.err}.
+     * @return The property value, or {@code null} if not found or access is denied.
      * @see System#getProperty(String)
      * @see System#getenv(String)
      */
@@ -364,11 +371,11 @@ public class Keys {
     }
 
     /**
-     * 获得boolean类型值
+     * Retrieves a system property or environment variable value and converts it to a boolean.
      *
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param key          The name of the property or environment variable.
+     * @param defaultValue The default boolean value to return if the property is not found or cannot be converted.
+     * @return The boolean value of the property, or {@code defaultValue} if not found or conversion fails.
      */
     public static boolean getBoolean(final String key, final boolean defaultValue) {
         final String value = get(key);
@@ -380,39 +387,41 @@ public class Keys {
     }
 
     /**
-     * 获得int类型值
+     * Retrieves a system property or environment variable value and converts it to an integer.
      *
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param key          The name of the property or environment variable.
+     * @param defaultValue The default integer value to return if the property is not found or cannot be converted.
+     * @return The integer value of the property, or {@code defaultValue} if not found or conversion fails.
      */
     public static int getInt(final String key, final int defaultValue) {
         return Convert.toInt(get(key), defaultValue);
     }
 
     /**
-     * 获得long类型值
+     * Retrieves a system property or environment variable value and converts it to a long.
      *
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
+     * @param key          The name of the property or environment variable.
+     * @param defaultValue The default long value to return if the property is not found or cannot be converted.
+     * @return The long value of the property, or {@code defaultValue} if not found or conversion fails.
      */
     public static long getLong(final String key, final long defaultValue) {
         return Convert.toLong(get(key), defaultValue);
     }
 
     /**
-     * @return 属性列表
+     * Retrieves all system properties as a {@link Properties} object.
+     *
+     * @return A {@link Properties} object containing all system properties.
      */
     public static Properties getProps() {
         return System.getProperties();
     }
 
     /**
-     * 设置系统属性，value为{@code null}表示移除此属性
+     * Sets a system property. If {@code value} is {@code null}, the property is removed.
      *
-     * @param key   属性名
-     * @param value 属性值，{@code null}表示移除此属性
+     * @param key   The name of the property to set or remove.
+     * @param value The value to set for the property, or {@code null} to remove the property.
      */
     public static void set(final String key, final String value) {
         if (null == value) {
@@ -423,47 +432,48 @@ public class Keys {
     }
 
     /**
-     * 获得Java ClassPath路径，不包括 jre
+     * Retrieves the Java ClassPath entries, excluding JRE-specific paths.
      *
-     * @return Java ClassPath路径，不包括 jre
+     * @return An array of strings representing the Java ClassPath entries.
      */
     public static String[] getJavaClassPaths() {
         return get(JAVA_CLASS_PATH).split(get(PATH_SEPARATOR));
     }
 
     /**
-     * 获取用户路径（绝对路径）
+     * Retrieves the user's home directory path.
      *
-     * @return 用户路径
+     * @return The absolute path to the user's home directory.
      */
     public static String getUserHomePath() {
         return get(USER_HOME);
     }
 
     /**
-     * 获取临时文件路径（绝对路径）
+     * Retrieves the default temporary directory path.
      *
-     * @return 临时文件路径
+     * @return The absolute path to the temporary directory.
      */
     public static String getTmpDirPath() {
         return get(JAVA_IO_TMPDIR);
     }
 
     /**
-     * 获取JVM名称
+     * Retrieves the name of the Java Virtual Machine (JVM).
      *
-     * @return JVM名称
+     * @return The JVM name.
      */
     static String _getJvmName() {
         return getQuietly(JAVA_VM_NAME);
     }
 
     /**
-     * 根据{@code java.specification.version}属性值，获取版本号 默认8
+     * Retrieves the major version number of the JVM based on the {@code java.specification.version} property. Defaults
+     * to 8 if the version cannot be determined or is not explicitly set.
      *
-     * @return 版本号
+     * @return The major JVM version number.
      */
-    public static int _getJvmVersion() {
+    static int _getJvmVersion() {
         int jvmVersion = 8;
 
         String javaSpecVer = getQuietly(JAVA_SPECIFICATION_VERSION);
@@ -480,11 +490,13 @@ public class Keys {
     }
 
     /**
-     * 获取指定容器环境的对象的属性 如获取DNS属性，则URI为类似：dns:miaixz.org
+     * Retrieves attributes for a specified JNDI URI from the naming service. For example, to get DNS attributes, the
+     * URI might be {@code "dns:miaixz.org"}.
      *
-     * @param uri     URI字符串，格式为[scheme:][name]/[domain]
-     * @param attrIds 需要获取的属性ID名称
-     * @return {@link Attributes}
+     * @param uri     The URI string, typically in the format {@code [scheme:][name]/[domain]}.
+     * @param attrIds An array of attribute IDs to retrieve.
+     * @return An {@link Attributes} object containing the requested attributes.
+     * @throws InternalException if a {@link NamingException} occurs during the operation.
      */
     public static Attributes getAttributes(final String uri, final String... attrIds) {
         try {
@@ -495,10 +507,12 @@ public class Keys {
     }
 
     /**
-     * 创建{@link InitialDirContext}
+     * Creates a new {@link InitialDirContext} instance.
      *
-     * @param environment 环境参数，{@code null}表示无参数
-     * @return {@link InitialDirContext}
+     * @param environment A map of environment properties for the context. If {@code null} or empty, no environment
+     *                    properties are used.
+     * @return A new {@link InitialDirContext} instance.
+     * @throws InternalException if a {@link NamingException} occurs during context creation.
      */
     static InitialDirContext createInitialDirContext(final Map<String, String> environment) {
         try {
@@ -512,10 +526,12 @@ public class Keys {
     }
 
     /**
-     * 创建{@link InitialContext}
+     * Creates a new {@link InitialContext} instance.
      *
-     * @param environment 环境参数，{@code null}表示无参数
-     * @return {@link InitialContext}
+     * @param environment A map of environment properties for the context. If {@code null} or empty, no environment
+     *                    properties are used.
+     * @return A new {@link InitialContext} instance.
+     * @throws InternalException if a {@link NamingException} occurs during context creation.
      */
     static InitialContext createInitialContext(final Map<String, String> environment) {
         try {

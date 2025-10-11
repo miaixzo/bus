@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Bean相关操作，包括Bean信息描述，Bean路径表达式、动态Bean等
+ * Provides operations related to JavaBeans, including bean information description, bean path expressions, and dynamic
+ * beans.
  *
  * @author Kimi Liu
  * @since Java 17+

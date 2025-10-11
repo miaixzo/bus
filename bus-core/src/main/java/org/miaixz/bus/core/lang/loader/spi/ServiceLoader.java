@@ -30,46 +30,47 @@ package org.miaixz.bus.core.lang.loader.spi;
 import java.util.List;
 
 /**
- * SPI服务加载接口 用户实现此接口用于制定不同的服务加载方式
+ * SPI (Service Provider Interface) service loading interface. Users implement this interface to define different ways
+ * of loading services.
  *
- * @param <S> 服务对象类型
+ * @param <S> The type of the service object.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ServiceLoader<S> extends Iterable<S> {
 
     /**
-     * 加载服务
+     * Loads the services.
      */
     void load();
 
     /**
-     * 服务总数
+     * Gets the total number of services.
      *
-     * @return 总数
+     * @return The total number of services.
      */
     int size();
 
     /**
-     * 获取服务名称列表
+     * Gets the list of service names.
      *
-     * @return 服务名称列表
+     * @return The list of service names.
      */
     List<String> getServiceNames();
 
     /**
-     * 获取指定服务的实现类
+     * Gets the implementation class for the specified service.
      *
-     * @param serviceName 服务名称
-     * @return 服务名称对应的实现类
+     * @param serviceName The name of the service.
+     * @return The implementation class corresponding to the service name.
      */
     Class<S> getServiceClass(String serviceName);
 
     /**
-     * 获取指定名称对应的服务
+     * Gets the service corresponding to the specified name.
      *
-     * @param serviceName 服务名称
-     * @return 服务对象
+     * @param serviceName The name of the service.
+     * @return The service object.
      */
     S getService(String serviceName);
 

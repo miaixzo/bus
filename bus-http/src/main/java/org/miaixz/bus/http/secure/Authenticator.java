@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.http.secure;
 
-import java.io.IOException;
-
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.Route;
 
+import java.io.IOException;
+
 /**
- * 在连接到代理服务器之前执行抢占式身份验证， 或者在收到来自源web服务器或代理服务器的挑战后执行被动身份验证. 代理身份验证器可以实现抢占式身份验证、反应式身份验证或两者都实现.
- * 应用程序可以为源服务器或代理服务器配置Httpd的身份验证器，或者两者都配置.
+ * Responds to authentication challenges from origin web servers or proxies. Implementations may either attempt to
+ * authenticate preemptively (before a challenge is received) or reactively (in response to a challenge). An application
+ * can supply a single authenticator for both origin and proxy authentication, or separate authenticators for each.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,18 +44,21 @@ import org.miaixz.bus.http.Route;
 public interface Authenticator {
 
     /**
-     * 不知道任何凭据且不尝试进行身份验证的验证程序
+     * An authenticator that does not attempt to authenticate and always returns null.
      */
     Authenticator NONE = (route, response) -> null;
 
     /**
-     * 该请求包含满足{@code response}中的身份验证挑战的凭据。如果无法满足挑战，则返回null 该路线是最好的努力，它目前可能不总是提供，即使在逻辑上可用
-     * 在应用程序拦截器中手动重用身份验证器时，例如在实现特定于客户机的重试时，也可能不提供此功能
+     * Returns a request that includes a credential to satisfy an authentication challenge in {@code response}. Returns
+     * {@code null} if the challenge cannot be satisfied.
+     * <p>
+     * The {@code route} parameter is a best-effort and may not always be provided, especially when an authenticator is
+     * invoked manually in an application interceptor (e.g., for client-specific retries).
      *
-     * @param route    路由信息
-     * @param response 响应体
-     * @return 返回一个请求
-     * @throws IOException 异常信息
+     * @param route    The route that resulted in the challenge, or null if not available.
+     * @param response The response containing the authentication challenge.
+     * @return A new request with the appropriate authentication header, or null if no response is possible.
+     * @throws IOException if an I/O error occurs.
      */
     Request authenticate(Route route, Response response) throws IOException;
 

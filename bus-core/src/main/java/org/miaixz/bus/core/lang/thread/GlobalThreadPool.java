@@ -30,28 +30,38 @@ package org.miaixz.bus.core.lang.thread;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.SynchronousQueue;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 全局公共线程池 此线程池是一个无限线程池，即加入的线程不等待任何线程，直接执行
+ * Global common thread pool. This thread pool is an unbounded thread pool, meaning that submitted tasks are executed
+ * directly without waiting for other tasks.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GlobalThreadPool {
 
+    /**
+     * The underlying {@link ExecutorService} for the global thread pool.
+     */
     private static ExecutorService executor;
 
     static {
         init();
     }
 
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
     private GlobalThreadPool() {
     }
 
     /**
-     * 初始化全局线程池
+     * Initializes or re-initializes the global thread pool. If an existing executor is present, it will be shut down
+     * immediately before creating a new one. The new executor uses a {@link SynchronousQueue} to ensure immediate
+     * execution of tasks.
      */
     synchronized public static void init() {
         if (null != executor) {
@@ -61,9 +71,11 @@ public class GlobalThreadPool {
     }
 
     /**
-     * 关闭公共线程池
+     * Shuts down the global common thread pool.
      *
-     * @param isNow 是否立即关闭而不等待正在执行的线程
+     * @param isNow {@code true} to attempt to stop all actively executing tasks, halts the processing of waiting tasks,
+     *              and returns a list of the tasks that were awaiting execution. {@code false} to allow previously
+     *              submitted tasks to execute, but no new tasks will be accepted.
      */
     synchronized public static void shutdown(final boolean isNow) {
         if (null != executor) {
@@ -76,18 +88,19 @@ public class GlobalThreadPool {
     }
 
     /**
-     * 获得 {@link ExecutorService}
+     * Retrieves the {@link ExecutorService} instance of the global thread pool.
      *
-     * @return {@link ExecutorService}
+     * @return The {@link ExecutorService} used by the global thread pool.
      */
     public static ExecutorService getExecutor() {
         return executor;
     }
 
     /**
-     * 直接在公共线程池中执行线程
+     * Executes the given command in the global thread pool.
      *
-     * @param runnable 可运行对象
+     * @param runnable The {@link Runnable} task to execute.
+     * @throws InternalException if an exception occurs during task submission.
      */
     public static void execute(final Runnable runnable) {
         try {
@@ -98,21 +111,23 @@ public class GlobalThreadPool {
     }
 
     /**
-     * 执行有返回值的异步方法 Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
+     * Submits a {@link Callable} task for execution and returns a {@link Future} representing that task. The
+     * {@code Future}'s {@code get} method will return the task's result upon successful completion.
      *
-     * @param <T>  执行的Task
-     * @param task {@link Callable}
-     * @return Future
+     * @param <T>  The type of the task's result.
+     * @param task The {@link Callable} task to submit.
+     * @return A {@link Future} representing the pending completion of the task.
      */
     public static <T> Future<T> submit(final Callable<T> task) {
         return executor.submit(task);
     }
 
     /**
-     * 执行有返回值的异步方法 Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
+     * Submits a {@link Runnable} task for execution and returns a {@link Future} representing that task. The
+     * {@code Future}'s {@code get} method will return {@code null} upon successful completion.
      *
-     * @param runnable 可运行对象
-     * @return {@link Future}
+     * @param runnable The {@link Runnable} task to submit.
+     * @return A {@link Future} representing the pending completion of the task.
      */
     public static Future<?> submit(final Runnable runnable) {
         return executor.submit(runnable);

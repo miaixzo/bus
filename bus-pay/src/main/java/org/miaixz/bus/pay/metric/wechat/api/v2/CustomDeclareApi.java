@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v2;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v2 版本-清关报关接口
+ * WeChat Pay V2 API interfaces related to customs declaration.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,39 +38,47 @@ import org.miaixz.bus.pay.Matcher;
 public enum CustomDeclareApi implements Matcher {
 
     /**
-     * 订单附加信息提交接口
+     * Order additional information submission interface.
      */
-    CUSTOM_DECLARE_ORDER("/cgi-bin/mch/customs/customdeclareorder", "订单附加信息提交接口"),
+    CUSTOM_DECLARE_ORDER("/cgi-bin/mch/customs/customdeclareorder",
+            "Order additional information submission interface"),
 
     /**
-     * 订单附加信息查询接口
+     * Order additional information query interface.
      */
-    CUSTOM_DECLARE_QUERY("/cgi-bin/mch/customs/customdeclarequery", "订单附加信息查询接口"),
+    CUSTOM_DECLARE_QUERY("/cgi-bin/mch/customs/customdeclarequery", "Order additional information query interface"),
 
     /**
-     * 订单附加信息重推接口
+     * Order additional information re-push interface.
      */
-    CUSTOM_DECLARE_RE_DECLARE("/cgi-bin/mch/newcustoms/customdeclareredeclare", "订单附加信息重推接口");
+    CUSTOM_DECLARE_RE_DECLARE("/cgi-bin/mch/newcustoms/customdeclareredeclare",
+            "Order additional information re-push interface");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new CustomDeclareApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     CustomDeclareApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -78,9 +86,9 @@ public enum CustomDeclareApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -88,9 +96,9 @@ public enum CustomDeclareApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

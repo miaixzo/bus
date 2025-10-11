@@ -31,7 +31,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * 日期信息获取接口，用于提供日期格式、时区和地域信息。
+ * Interface for date information retrieval, providing date format, time zone, and locale information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,23 +39,23 @@ import java.util.TimeZone;
 public interface DatePrinter {
 
     /**
-     * 获取日期格式化或转换的模式。
+     * Gets the pattern for date formatting or conversion.
      *
-     * @return {@link java.text.SimpleDateFormat} 兼容的格式字符串
+     * @return The format string compatible with {@link java.text.SimpleDateFormat}.
      */
     String getPattern();
 
     /**
-     * 获取时区信息。
+     * Gets the time zone information.
      *
-     * @return 时区对象
+     * @return The {@link TimeZone} object.
      */
     TimeZone getTimeZone();
 
     /**
-     * 获取地域信息。
+     * Gets the locale information.
      *
-     * @return 地域对象
+     * @return The {@link Locale} object.
      */
     Locale getLocale();
 

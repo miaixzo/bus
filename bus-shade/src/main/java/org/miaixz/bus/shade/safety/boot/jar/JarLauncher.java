@@ -42,23 +42,45 @@ import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.Launcher;
 
 /**
- * JAR包启动器
+ * A custom launcher for standard JAR files that integrates with the {@link Launcher} to provide enhanced security
+ * features such as JAR encryption and decryption. This class acts as the entry point for launching encrypted JARs.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JarLauncher {
 
+    /**
+     * The internal {@link Launcher} instance responsible for handling encryption/decryption setup.
+     */
     private final Launcher launcher;
 
+    /**
+     * Constructs a new {@code JarLauncher} and initializes the underlying {@link Launcher}.
+     *
+     * @param args Command-line arguments passed to the application.
+     * @throws Exception If an error occurs during the initialization of the {@link Launcher}.
+     */
     public JarLauncher(String... args) throws Exception {
         this.launcher = new Launcher(args);
     }
 
+    /**
+     * The main entry point for launching the JAR application with security features.
+     *
+     * @param args Command-line arguments.
+     * @throws Exception If an error occurs during application launch.
+     */
     public static void main(String... args) throws Exception {
         new JarLauncher(args).launch();
     }
 
+    /**
+     * Launches the JAR application using a custom {@link JarClassLoader} that supports encrypted resources. It
+     * determines the main class from the JAR's manifest and invokes its {@code main} method.
+     *
+     * @throws Exception If an error occurs during the launch process, such as failing to find the main class or method.
+     */
     public void launch() throws Exception {
         JarClassLoader jarClassLoader;
 

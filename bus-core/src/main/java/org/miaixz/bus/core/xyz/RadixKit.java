@@ -28,12 +28,13 @@
 package org.miaixz.bus.core.xyz;
 
 /**
- * 进制转换工具类，可以转换为任意进制 把一个十进制整数根据自己定义的进制规则进行转换 主要应用一下情况：
+ * Radix (base) conversion utility class. This can be used to convert a decimal integer to a custom-defined base.
+ * <p>
+ * Applications include:
  * <ul>
- * <li>根据ID生成邀请码,并且尽可能的缩短。并且不希望直接猜测出和ID的关联</li>
- * <li>短连接的生成，根据ID转成短连接，同样不希望被猜测到</li>
- * <li>数字加密，通过两次不同进制的转换，让有规律的数字看起来没有任何规律</li>
- * <li>....</li>
+ * <li>Generating short, non-guessable invitation codes from IDs.</li>
+ * <li>Generating short URLs.</li>
+ * <li>Obfuscating numbers through multiple radix conversions.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -42,58 +43,51 @@ package org.miaixz.bus.core.xyz;
 public class RadixKit {
 
     /**
-     * 把一个整型数值转换成自己定义的进制 长度即进制
-     * <ul>
-     * <li>encode("AB",10) 51转换成2进制，A=0;B=1 。 二进制1010，结果 BABA</li>
-     * <li>encode("VIP",21) 21转换成3进制，V=0;I=1;P=2 ，三进制210 ,得到结果PIV</li>
-     * </ul>
+     * Encodes an integer into a custom radix string. The length of the `radixs` string determines the base.
      *
-     * @param radixs 自定进制,不要重复，否则转不回来的。
-     * @param num    要转换的数值
-     * @return 自定义进制字符串
+     * @param radixs The custom character set for the radix (e.g., "0123456789abcdef"). Must not contain duplicate
+     *               characters.
+     * @param num    The number to convert.
+     * @return The custom radix string.
      */
     public static String encode(final String radixs, final int num) {
-        // 考虑到负数问题
         final long tmpNum = (num >= 0 ? num : (0x100000000L - (~num + 1)));
         return encode(radixs, tmpNum, 32);
     }
 
     /**
-     * 把一个长整型数值转换成自己定义的进制
+     * Encodes a long into a custom radix string.
      *
-     * @param radixs 自定进制,不要重复，否则转不回来的。
-     * @param num    要转换的数值
-     * @return 自定义进制字符串
+     * @param radixs The custom character set for the radix.
+     * @param num    The number to convert.
+     * @return The custom radix string.
      */
     public static String encode(final String radixs, final long num) {
         if (num < 0) {
-            throw new RuntimeException("暂不支持负数！");
+            throw new RuntimeException("Negative numbers are not supported yet.");
         }
-
         return encode(radixs, num, 64);
     }
 
     /**
-     * 把转换后的进制字符还原成int 值
+     * Decodes a custom radix string back to an integer value.
      *
-     * @param radixs 自定进制,需要和encode的保持一致
-     * @param encode 需要转换成十进制的字符串
-     * @return int
+     * @param radixs The custom character set (must be the same as used for encoding).
+     * @param encode The string to decode.
+     * @return The decoded integer.
      */
     public static int decodeToInt(final String radixs, final String encode) {
-        // 还原负数
         return (int) decode(radixs, encode);
     }
 
     /**
-     * 把转换后进制的字符还原成long 值
+     * Decodes a custom radix string back to a long value.
      *
-     * @param radixs 自定进制,需要和encode的保持一致
-     * @param encode 需要转换成十进制的字符串
-     * @return long
+     * @param radixs The custom character set (must be the same as used for encoding).
+     * @param encode The string to decode.
+     * @return The decoded long.
      */
     public static long decode(final String radixs, final String encode) {
-        // 目标是多少进制
         final int rl = radixs.length();
         long res = 0L;
 
@@ -103,24 +97,25 @@ public class RadixKit {
         return res;
     }
 
-    private static String encode(final String radixs, final long num, final int maxLength) {
+    /**
+     * Private helper for encoding.
+     *
+     * @param radixs    The custom radix characters.
+     * @param num       The number.
+     * @param maxLength The max length of the result.
+     * @return The encoded string.
+     */
+    private static String encode(final String radixs, long num, final int maxLength) {
         if (radixs.length() < 2) {
-            throw new RuntimeException("自定义进制最少两个字符哦！");
+            throw new RuntimeException("Custom radix must have at least two characters!");
         }
-        // 目标是多少进制
         final int rl = radixs.length();
-        // 考虑到负数问题
-        long tmpNum = num;
-        // 进制的结果，二进制最小进制转换结果是32个字符
-        // StringBuilder 比较耗时
         final char[] aa = new char[maxLength];
-        // 因为反需字符串比较耗时
         int i = aa.length;
         do {
-            aa[--i] = radixs.charAt((int) (tmpNum % rl));
-            tmpNum /= rl;
-        } while (tmpNum > 0);
-        // 去掉前面的字符串，trim比较耗时
+            aa[--i] = radixs.charAt((int) (num % rl));
+            num /= rl;
+        } while (num > 0);
         return new String(aa, i, aa.length - i);
     }
 

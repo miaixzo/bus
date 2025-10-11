@@ -36,7 +36,8 @@ import java.util.Map;
 import org.miaixz.bus.extra.template.Template;
 
 /**
- * Beetl模板实现
+ * Beetl template implementation. This class wraps a Beetl {@link org.beetl.core.Template} object, providing a unified
+ * interface for rendering templates.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,22 +47,25 @@ public class BeetlTemplate implements Template, Serializable {
     @Serial
     private static final long serialVersionUID = 2852288593976L;
 
+    /**
+     * The raw Beetl template object.
+     */
     private final org.beetl.core.Template rawTemplate;
 
     /**
-     * 构造
+     * Constructs a new {@code BeetlTemplate} instance.
      *
-     * @param beetlTemplate Beetl的模板对象 {@link org.beetl.core.Template}
+     * @param beetlTemplate The raw Beetl template object to be wrapped. Must not be {@code null}.
      */
     public BeetlTemplate(final org.beetl.core.Template beetlTemplate) {
         this.rawTemplate = beetlTemplate;
     }
 
     /**
-     * 包装Beetl模板
+     * Wraps a Beetl template object into a {@code BeetlTemplate} instance.
      *
-     * @param beetlTemplate Beetl的模板对象 {@link org.beetl.core.Template}
-     * @return BeetlTemplate
+     * @param beetlTemplate The raw Beetl template object ({@link org.beetl.core.Template}).
+     * @return A new {@code BeetlTemplate} instance, or {@code null} if the input {@code beetlTemplate} is {@code null}.
      */
     public static BeetlTemplate wrap(final org.beetl.core.Template beetlTemplate) {
         return (null == beetlTemplate) ? null : new BeetlTemplate(beetlTemplate);

@@ -27,12 +27,16 @@
 */
 package org.miaixz.bus.core;
 
+import java.io.Serializable;
+
 /**
- * 实例持有类
+ * A generic interface for holding an instance of a specific type. This can be used as a simple container or marker for
+ * objects in various contexts.
  *
+ * @param <T> The type of the instance being held.
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Holder<T> {
+public interface Holder<T> extends Serializable {
 
 }

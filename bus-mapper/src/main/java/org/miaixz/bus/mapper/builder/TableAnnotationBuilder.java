@@ -40,7 +40,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 /**
- * 默认表构建器，支持处理 jakarta.persistence 注解的实体类
+ * The default table builder, which supports processing entity classes annotated with `jakarta.persistence` annotations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,11 +48,11 @@ import jakarta.persistence.Table;
 public class TableAnnotationBuilder implements TableSchemaBuilder {
 
     /**
-     * 根据注解或默认命名规则为实体类创建表元数据
+     * Creates table metadata for an entity class based on annotations or default naming conventions.
      *
-     * @param entityClass 实体类
-     * @param chain       表结构构建器链
-     * @return 表元数据
+     * @param entityClass The entity class.
+     * @param chain       The table schema builder chain.
+     * @return The table metadata.
      */
     @Override
     public TableMeta createTable(Class<?> entityClass, Chain chain) {
@@ -61,15 +61,15 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
             tableMeta = TableMeta.of(entityClass);
         }
 
-        // 处理表相关注解及默认表名
+        // Process table-related annotations and set the default table name.
         processTableAnnotations(tableMeta, entityClass);
 
-        // 为 @Entity 注解的类启用自动结果映射
+        // Enable automatic result mapping for classes annotated with @Entity.
         if (entityClass.isAnnotationPresent(Entity.class)) {
             tableMeta.autoResultMap(true);
         }
 
-        // 表名不为空时，添加表前缀
+        // If the table name is not empty, add the table prefix.
         if (StringKit.isNotEmpty(tableMeta.table())) {
             String key = Holder.getKey() + Symbol.DOT + Args.TABLE_PREFIX_KEY;
             String prefix = Context.INSTANCE.getProperty(key, Normal.EMPTY);
@@ -81,10 +81,11 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
     }
 
     /**
-     * 处理 @Table 注解，设置表名、目录和模式，或使用默认命名规则
+     * Processes the {@link Table} annotation to set the table name, catalog, and schema, or uses default naming
+     * conventions if the annotation is not present.
      *
-     * @param entityClass 实体类
-     * @param tableMeta   表元数据
+     * @param entityClass The entity class.
+     * @param tableMeta   The table metadata.
      */
     protected void processTableAnnotations(TableMeta tableMeta, Class<?> entityClass) {
         if (entityClass.isAnnotationPresent(Table.class)) {
@@ -99,7 +100,7 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
                 tableMeta.schema(table.schema());
             }
         } else if (StringKit.isEmpty(tableMeta.table())) {
-            // 未设置表名时，使用默认命名规则（类名转为下划线格式）
+            // If the table name is not set, use the default naming convention (class name to underscore format).
             tableMeta.table(NamingProvider.getDefaultStyle().tableName(entityClass));
         }
     }

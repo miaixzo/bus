@@ -33,15 +33,19 @@ import java.io.IOException;
 import org.miaixz.bus.core.center.date.StopWatch;
 
 /**
- * 高并发测试工具类
+ * A utility class for high concurrency testing. It allows simulating a specified number of threads executing a given
+ * task concurrently and measures the total execution time.
  *
+ * <p>
+ * Example usage:
+ * 
  * <pre>
- * 模拟1000个线程并发
+ * // Simulate 1000 concurrent threads
  * ConcurrencyTester ct = new ConcurrencyTester(1000);
- * ct.test(() -&gt; {
- *      // 需要并发测试的业务代码
+ * ct.test(() -> {
+ *     // Business logic to be concurrently tested
  * });
- * Console.logger(ct.getInterval());
+ * System.out.println(ct.getInterval());
  * ct.close();
  * </pre>
  *
@@ -50,14 +54,23 @@ import org.miaixz.bus.core.center.date.StopWatch;
  */
 public class ConcurrencyTester implements Closeable {
 
+    /**
+     * The {@link SyncFinisher} used to manage and synchronize the concurrent execution of tasks.
+     */
     private final SyncFinisher sf;
+    /**
+     * The {@link StopWatch} used to measure the total time taken for all concurrent tasks to complete.
+     */
     private final StopWatch timeInterval;
+    /**
+     * The measured execution time in milliseconds for the last test run.
+     */
     private long interval;
 
     /**
-     * 构造
+     * Constructs a new {@code ConcurrencyTester} with the specified number of threads.
      *
-     * @param threadSize 线程数
+     * @param threadSize The number of threads to simulate for concurrent execution.
      */
     public ConcurrencyTester(final int threadSize) {
         this.sf = new SyncFinisher(threadSize);
@@ -65,10 +78,11 @@ public class ConcurrencyTester implements Closeable {
     }
 
     /**
-     * 执行测试 执行测试后不会关闭线程池，可以调用{@link #close()}释放线程池
+     * Executes the given {@link Runnable} concurrently using the configured number of threads. After the test, the
+     * thread pool will not be automatically closed. Call {@link #close()} to release resources.
      *
-     * @param runnable 要测试的内容
-     * @return this
+     * @param runnable The {@link Runnable} task to be executed concurrently.
+     * @return This {@code ConcurrencyTester} instance for method chaining.
      */
     public ConcurrencyTester test(final Runnable runnable) {
         this.sf.clearWorker();
@@ -82,14 +96,14 @@ public class ConcurrencyTester implements Closeable {
     }
 
     /**
-     * 重置测试器，重置包括：
+     * Resets the tester, which includes:
      *
      * <ul>
-     * <li>清空worker</li>
-     * <li>重置计时器</li>
+     * <li>Clearing all registered worker tasks.</li>
+     * <li>Resetting the internal timer.</li>
      * </ul>
      *
-     * @return this
+     * @return This {@code ConcurrencyTester} instance for method chaining.
      */
     public ConcurrencyTester reset() {
         this.sf.clearWorker();
@@ -97,14 +111,19 @@ public class ConcurrencyTester implements Closeable {
     }
 
     /**
-     * 获取执行时间
+     * Retrieves the execution time of the last concurrent test run.
      *
-     * @return 执行时间，单位毫秒
+     * @return The execution time in milliseconds.
      */
     public long getInterval() {
         return this.interval;
     }
 
+    /**
+     * Closes the underlying {@link SyncFinisher} and releases its resources.
+     *
+     * @throws IOException If an I/O error occurs during closing.
+     */
     @Override
     public void close() throws IOException {
         this.sf.close();

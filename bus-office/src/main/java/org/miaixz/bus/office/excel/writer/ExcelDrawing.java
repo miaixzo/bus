@@ -41,21 +41,22 @@ import org.miaixz.bus.office.excel.shape.ExcelPictureType;
 import org.miaixz.bus.office.excel.style.ShapeConfig;
 
 /**
- * Excel绘制工具类 用于辅助写出指定的图形
- * 
+ * Excel drawing utility class, used to assist in writing specified graphics.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ExcelDrawing {
 
     /**
-     * 写出图片，本方法只是将数据写入Workbook中的Sheet，并不写出到文件 添加图片到当前sheet中
+     * Writes a picture to the current sheet in the workbook. This method only writes data to the Workbook's Sheet and
+     * does not write to a file.
      *
-     * @param sheet        {@link Sheet}
-     * @param pictureData  数据bytes
-     * @param imgType      图片类型，对应poi中Workbook类中的图片类型2-7变量
-     * @param clientAnchor 图片的位置和大小信息
-     * 
+     * @param sheet        The {@link Sheet} to add the picture to.
+     * @param pictureData  The picture data as a byte array.
+     * @param imgType      The picture type, corresponding to the picture type constants in the POI {@link Workbook}
+     *                     class (e.g., {@code PICTURE_TYPE_PNG}).
+     * @param clientAnchor The position and size information of the picture.
      */
     public static void drawingPicture(
             final Sheet sheet,
@@ -71,11 +72,14 @@ public class ExcelDrawing {
     }
 
     /**
-     * 绘制简单形状
+     * Draws a simple shape on the Excel sheet.
      *
-     * @param sheet        {@link Sheet}
-     * @param clientAnchor 绘制区域信息
-     * @param shapeConfig  形状配置，包括形状类型、线条样式、线条宽度、线条颜色、填充颜色等
+     * @param sheet        The {@link Sheet} to draw on.
+     * @param clientAnchor The drawing area information.
+     * @param shapeConfig  The shape configuration, including shape type, line style, line width, line color, fill
+     *                     color, etc.
+     * @throws UnsupportedOperationException if the patriarch type is not supported (e.g., not HSSFPatriarch or
+     *                                       XSSFDrawing).
      */
     public static void drawingSimpleShape(final Sheet sheet, final SimpleAnchor clientAnchor, ShapeConfig shapeConfig) {
         final Drawing<?> patriarch = sheet.createDrawingPatriarch();
@@ -109,11 +113,11 @@ public class ExcelDrawing {
     }
 
     /**
-     * 添加批注
+     * Adds a cell comment to the specified cell.
      *
-     * @param cell         {@link Cell}
-     * @param clientAnchor 绘制区域信息
-     * @param content      内容
+     * @param cell         The {@link Cell} to add the comment to.
+     * @param clientAnchor The drawing area information for the comment.
+     * @param content      The content of the comment.
      */
     public static void drawingCellComment(final Cell cell, final SimpleAnchor clientAnchor, final String content) {
         final Sheet sheet = cell.getSheet();

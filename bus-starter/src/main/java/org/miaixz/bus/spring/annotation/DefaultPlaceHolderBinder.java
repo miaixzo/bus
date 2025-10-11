@@ -30,15 +30,25 @@ package org.miaixz.bus.spring.annotation;
 import org.springframework.core.env.Environment;
 
 /**
- * 实现{@link PlaceHolderBinder}从环境中解析占位符
+ * Default implementation of {@link PlaceHolderBinder} that resolves placeholders from the Spring {@link Environment}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DefaultPlaceHolderBinder implements PlaceHolderBinder {
 
+    /**
+     * Singleton instance of {@code DefaultPlaceHolderBinder}.
+     */
     public static final DefaultPlaceHolderBinder INSTANCE = new DefaultPlaceHolderBinder();
 
+    /**
+     * Resolves placeholders in the given string using the provided Spring {@link Environment}.
+     *
+     * @param environment The Spring {@link Environment} to use for placeholder resolution.
+     * @param string      The string containing placeholders (e.g., "${my.property}").
+     * @return The string with all placeholders resolved.
+     */
     @Override
     public String bind(Environment environment, String string) {
         return environment.resolvePlaceholders(string);

@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 数据脱敏规则实现
+ * Provides various concrete implementations of desensitization strategies
+ * ({@link org.miaixz.bus.sensitive.metric.StrategyProvider}) and condition logic
+ * ({@link org.miaixz.bus.sensitive.metric.ConditionProvider}).
  *
  * @author Kimi Liu
  * @since Java 17+

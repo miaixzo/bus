@@ -42,46 +42,54 @@ import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 
 /**
- * FreeMarker模板引擎封装 见：<a href="https://freemarker.apache.org/">https://freemarker.apache.org/</a>
+ * FreeMarker template engine encapsulation. This class provides an implementation of {@link TemplateProvider} for the
+ * FreeMarker template engine, allowing for configuration and retrieval of FreeMarker templates. For more information,
+ * see: <a href="https://freemarker.apache.org/">https://freemarker.apache.org/</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FreemarkerProvider implements TemplateProvider {
 
+    /**
+     * The underlying FreeMarker configuration object.
+     */
     private Configuration cfg;
 
     /**
-     * 默认构造
+     * Default constructor for FreemarkerProvider. Checks if the FreeMarker library is available (via
+     * {@link Configuration} class).
      */
     public FreemarkerProvider() {
-        // SPI方式加载时检查库是否引入
+        // Check if the library is introduced when loading via SPI
         Assert.notNull(Configuration.class);
     }
 
     /**
-     * 构造
+     * Constructs a new FreemarkerProvider with the given template configuration.
      *
-     * @param config 模板配置
+     * @param config The {@link TemplateConfig} for initializing the FreeMarker engine.
      */
     public FreemarkerProvider(final TemplateConfig config) {
         init(config);
     }
 
     /**
-     * 构造
+     * Constructs a new FreemarkerProvider with an existing FreeMarker {@link Configuration} instance.
      *
-     * @param freemarkerCfg {@link Configuration}
+     * @param freemarkerCfg The pre-initialized {@link Configuration} instance.
      */
     public FreemarkerProvider(final Configuration freemarkerCfg) {
         init(freemarkerCfg);
     }
 
     /**
-     * 创建配置项
+     * Creates a new FreeMarker {@link Configuration} instance based on the provided {@link TemplateConfig}. This method
+     * sets up the template loader and default encoding according to the configuration.
      *
-     * @param config 模板配置
-     * @return {@link Configuration }
+     * @param config The {@link TemplateConfig} containing settings for the template engine.
+     * @return A new {@link Configuration} instance.
+     * @throws InternalException if an {@link IOException} occurs during template loader setup.
      */
     private static Configuration create(TemplateConfig config) {
         if (null == config) {
@@ -134,9 +142,9 @@ public class FreemarkerProvider implements TemplateProvider {
     }
 
     /**
-     * 初始化引擎
+     * Initializes the FreeMarker engine with a pre-configured {@link Configuration}.
      *
-     * @param freemarkerCfg Configuration
+     * @param freemarkerCfg The {@link Configuration} instance to use.
      */
     private void init(final Configuration freemarkerCfg) {
         this.cfg = freemarkerCfg;
@@ -155,9 +163,10 @@ public class FreemarkerProvider implements TemplateProvider {
     }
 
     /**
-     * 获取原始引擎的钩子方法，用于自定义特殊属性，如插件等
+     * Provides a hook to access the raw FreeMarker {@link Configuration} engine. This can be used for custom
+     * configurations or accessing specific FreeMarker functionalities, such as plugins.
      *
-     * @return {@link Configuration}
+     * @return The raw {@link Configuration} instance.
      */
     @Override
     public Configuration getRaw() {

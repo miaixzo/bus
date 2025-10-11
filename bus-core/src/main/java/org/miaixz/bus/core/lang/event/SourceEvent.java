@@ -31,20 +31,25 @@ import java.io.Serial;
 import java.util.EventObject;
 
 /**
- * 基于事件源的事件实现
- * 
+ * An event implementation based on an event source. This class extends {@link EventObject} and implements the
+ * {@link Event} marker interface, providing a basic event structure that carries a source object.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SourceEvent extends EventObject implements Event {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852251732571L;
 
     /**
-     * 构造
+     * Constructs a new {@code SourceEvent} with the specified event source.
      *
-     * @param source 事件源
+     * @param source The object on which the Event initially occurred. Must not be {@code null}.
+     * @throws IllegalArgumentException if source is null.
      */
     public SourceEvent(final Object source) {
         super(source);

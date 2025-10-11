@@ -32,13 +32,23 @@ import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 
 /**
- * Xugudb 基于 RowBounds 的分页
+ * Xugudb dialect for pagination based on {@link RowBounds}. This class provides Xugudb-specific SQL generation for
+ * pagination using offset and limit.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class XugudbRowBounds extends AbstractRowBounds {
 
+    /**
+     * Generates the Xugudb-specific pagination SQL using {@link RowBounds}. It appends {@code LIMIT ?} or
+     * {@code LIMIT ?, ?} to the original SQL based on the offset.
+     *
+     * @param sql       the original SQL string
+     * @param rowBounds the {@link RowBounds} object containing offset and limit
+     * @param pageKey   the CacheKey for the paginated query
+     * @return the Xugudb-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 14);

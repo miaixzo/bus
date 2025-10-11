@@ -45,7 +45,8 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.*;
 
 /**
- * 条件：多表条件处理基类，提供处理 SELECT、UPDATE、DELETE 语句并根据表元数据追加条件的方法。
+ * Base class for handling multi-table conditions. Provides methods for processing SELECT, UPDATE, and DELETE statements
+ * and appending conditions based on table metadata.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,15 +54,16 @@ import net.sf.jsqlparser.statement.select.*;
 public abstract class ConditionHandler extends SqlParserHandler implements MapperHandler {
 
     /**
-     * 条件表达式追加模式（默认追加到最后，仅作用于 UPDATE、DELETE、SELECT 语句）。
+     * The mode for appending conditional expressions (defaults to appending at the end, only for UPDATE, DELETE,
+     * SELECT).
      */
     private EnumValue.AppendMode appendMode = EnumValue.AppendMode.LAST;
 
     /**
-     * 处理 SELECT 语句体，应用指定的条件片段。
+     * Processes the body of a SELECT statement, applying the specified condition segment.
      *
-     * @param selectBody   SELECT 语句体
-     * @param whereSegment Mapper 全路径，用于条件应用
+     * @param selectBody   the body of the SELECT statement
+     * @param whereSegment the full Mapper path, used for applying conditions
      */
     protected void processSelectBody(Select selectBody, final String whereSegment) {
         if (selectBody == null) {
@@ -82,12 +84,12 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
     }
 
     /**
-     * 处理 DELETE 和 UPDATE 语句的 WHERE 条件。
+     * Handles the WHERE conditions for DELETE and UPDATE statements.
      *
-     * @param table        表对象
-     * @param where        当前 WHERE 条件
-     * @param whereSegment Mapper 全路径
-     * @return 追加后的 WHERE 表达式
+     * @param table        the Table object
+     * @param where        the current WHERE condition
+     * @param whereSegment the full Mapper path
+     * @return the appended WHERE expression
      */
     protected Expression andExpression(Table table, Expression where, final String whereSegment) {
         final Expression expression = buildTableExpression(table, where, whereSegment);
@@ -105,10 +107,10 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
     }
 
     /**
-     * 处理 PlainSelect 语句，包含 SELECT 项、FROM 项和 JOIN。
+     * Processes a PlainSelect statement, including its SELECT items, FROM item, and JOINs.
      *
-     * @param plainSelect  PlainSelect 对象
-     * @param whereSegment Mapper 全路径
+     * @param plainSelect  the PlainSelect object
+     * @param whereSegment the full Mapper path
      */
     protected void processPlainSelect(final PlainSelect plainSelect, final String whereSegment) {
         List<SelectItem<?>> selectItems = plainSelect.getSelectItems();
@@ -116,56 +118,57 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
             selectItems.forEach(selectItem -> processSelectItem(selectItem, whereSegment));
         }
 
-        // 处理 WHERE 子句中的子查询
+        // Process subqueries in the WHERE clause
         Expression where = plainSelect.getWhere();
         processWhereSubSelect(where, whereSegment);
 
-        // 处理 FROM 项
+        // Process the FROM item
         FromItem fromItem = plainSelect.getFromItem();
         List<Table> list = processFromItem(fromItem, whereSegment);
         List<Table> mainTables = new ArrayList<>(list);
 
-        // 处理 JOIN
+        // Process JOINs
         List<Join> joins = plainSelect.getJoins();
         if (CollKit.isNotEmpty(joins)) {
             processJoins(mainTables, joins, whereSegment);
         }
 
-        // 若存在主表，追加 WHERE 条件
+        // If main tables exist, append WHERE conditions
         if (CollKit.isNotEmpty(mainTables)) {
             plainSelect.setWhere(builderExpression(where, mainTables, whereSegment));
         }
     }
 
     /**
-     * 处理 FROM 项，返回主表列表。
+     * Processes a FROM item and returns a list of main tables.
      *
-     * @param fromItem     FROM 子句中的项
-     * @param whereSegment Mapper 全路径
-     * @return 主表列表
+     * @param fromItem     the item in the FROM clause
+     * @param whereSegment the full Mapper path
+     * @return a list of main tables
      */
     private List<Table> processFromItem(FromItem fromItem, final String whereSegment) {
         List<Table> mainTables = new ArrayList<>();
-        // 处理无 JOIN 的逻辑
+        // Handle logic without JOINs
         if (fromItem instanceof Table) {
             Table fromTable = (Table) fromItem;
             mainTables.add(fromTable);
         } else if (fromItem instanceof ParenthesedFromItem) {
-            // SubJoin 类型也需 WHERE 条件
+            // SubJoin types also need WHERE conditions
             List<Table> tables = processSubJoin((ParenthesedFromItem) fromItem, whereSegment);
             mainTables.addAll(tables);
         } else {
-            // 处理其他 FROM 项
+            // Process other FROM items
             processOtherFromItem(fromItem, whereSegment);
         }
         return mainTables;
     }
 
     /**
-     * 处理 WHERE 条件中的子查询，支持 {@code IN、=、>、<、>=、<=、<>、EXISTS、NOT EXISTS} 前提：子查询需放在括号中，且通常位于比较操作符右侧。
+     * Processes subqueries in the WHERE clause, supporting IN, =, &gt;, &lt;, &gt;=, &lt;=, &lt;&gt;, EXISTS, NOT
+     * EXISTS. Prerequisite: Subqueries must be in parentheses and usually on the right side of a comparison operator.
      *
-     * @param where        WHERE 条件
-     * @param whereSegment Mapper 全路径
+     * @param where        the WHERE condition
+     * @param whereSegment the full Mapper path
      */
     protected void processWhereSubSelect(Expression where, final String whereSegment) {
         if (where == null) {
@@ -176,14 +179,14 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
             return;
         }
         if (where.toString().contains("SELECT")) {
-            // 处理子查询
+            // Process subqueries
             if (where instanceof BinaryExpression) {
-                // 比较操作符、AND、OR 等
+                // Comparison operators, AND, OR, etc.
                 BinaryExpression expression = (BinaryExpression) where;
                 processWhereSubSelect(expression.getLeftExpression(), whereSegment);
                 processWhereSubSelect(expression.getRightExpression(), whereSegment);
             } else if (where instanceof InExpression) {
-                // IN 子句
+                // IN clause
                 InExpression expression = (InExpression) where;
                 Expression inExpression = expression.getRightExpression();
                 if (inExpression instanceof Select) {
@@ -193,11 +196,11 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
                     processWhereSubSelect(leftExpression, whereSegment);
                 }
             } else if (where instanceof ExistsExpression) {
-                // EXISTS 子句
+                // EXISTS clause
                 ExistsExpression expression = (ExistsExpression) where;
                 processWhereSubSelect(expression.getRightExpression(), whereSegment);
             } else if (where instanceof NotExpression) {
-                // NOT EXISTS 子句
+                // NOT EXISTS clause
                 NotExpression expression = (NotExpression) where;
                 processWhereSubSelect(expression.getExpression(), whereSegment);
             } else if (where instanceof ParenthesedExpressionList) {
@@ -208,10 +211,10 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
     }
 
     /**
-     * 处理 SELECT 项中的子查询或函数。
+     * Processes subqueries or functions in a SELECT item.
      *
-     * @param selectItem   SELECT 项
-     * @param whereSegment Mapper 全路径
+     * @param selectItem   the SELECT item
+     * @param whereSegment the full Mapper path
      */
     protected void processSelectItem(SelectItem selectItem, final String whereSegment) {
         Expression expression = selectItem.getExpression();
@@ -226,10 +229,10 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
     }
 
     /**
-     * 处理函数，支持 select fun(args..) 和嵌套函数 select fun1(fun2(args..),args..)。
+     * Processes a function, supporting `select fun(args..)` and nested functions `select fun1(fun2(args..),args..)`.
      *
-     * @param function     函数表达式
-     * @param whereSegment Mapper 全路径
+     * @param function     the function expression
+     * @param whereSegment the full Mapper path
      */
     protected void processFunction(Function function, final String whereSegment) {
         ExpressionList<?> parameters = function.getParameters();
@@ -252,13 +255,13 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
     }
 
     /**
-     * 处理其他 FROM 项（如子查询）。
+     * Processes other FROM items (e.g., subqueries).
      *
-     * @param fromItem     FROM 子句中的项
-     * @param whereSegment Mapper 全路径
+     * @param fromItem     the item in the FROM clause
+     * @param whereSegment the full Mapper path
      */
     protected void processOtherFromItem(FromItem fromItem, final String whereSegment) {
-        // 移除括号
+        // Remove parentheses
         while (fromItem instanceof ParenthesedFromItem) {
             fromItem = ((ParenthesedFromItem) fromItem).getFromItem();
         }
@@ -269,11 +272,11 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
     }
 
     /**
-     * 处理 SubJoin，返回主表列表。
+     * Processes a SubJoin and returns a list of main tables.
      *
-     * @param subJoin      SubJoin 对象
-     * @param whereSegment Mapper 全路径
-     * @return SubJoin 中的主表列表
+     * @param subJoin      the SubJoin object
+     * @param whereSegment the full Mapper path
+     * @return a list of main tables from the SubJoin
      */
     private List<Table> processSubJoin(ParenthesedFromItem subJoin, final String whereSegment) {
         while (subJoin.getJoins() == null && subJoin.getFromItem() instanceof ParenthesedFromItem) {
@@ -288,17 +291,17 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
     }
 
     /**
-     * 处理 JOIN 语句，返回主表列表。
+     * Processes JOIN statements and returns a list of main tables.
      *
-     * @param mainTables 主表列表（可为 null）
-     * @param joins      JOIN 集合
-     * @param segment    Mapper 全路径
-     * @return 右连接查询的表列表
+     * @param mainTables the list of main tables (can be null)
+     * @param joins      the collection of JOINs
+     * @param segment    the full Mapper path
+     * @return a list of tables from the right join query
      */
     private List<Table> processJoins(List<Table> mainTables, List<Join> joins, final String segment) {
-        // JOIN 表达式中的主表
+        // Main table in the JOIN expression
         Table mainTable = null;
-        // 当前 JOIN 的左表
+        // Left table of the current JOIN
         Table leftTable = null;
 
         if (mainTables.size() == 1) {
@@ -306,13 +309,13 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
             leftTable = mainTable;
         }
 
-        // 存储多 ON 表达式的表
+        // Stack to store tables for multiple ON expressions
         Deque<List<Table>> onTableDeque = new LinkedList<>();
         for (Join join : joins) {
-            // 处理 ON 表达式
+            // Process ON expression
             FromItem joinItem = join.getRightItem();
 
-            // 从当前 JOIN 获取表（SubJoin 视为表）
+            // Get tables from the current JOIN (SubJoin is treated as a table)
             List<Table> joinTables = null;
             if (joinItem instanceof Table) {
                 joinTables = new ArrayList<>();
@@ -322,17 +325,17 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
             }
 
             if (joinTables != null && !joinTables.isEmpty()) {
-                // 处理隐式 INNER JOIN
+                // Handle implicit INNER JOIN
                 if (join.isSimple()) {
                     mainTables.addAll(joinTables);
                     continue;
                 }
 
-                // 检查当前表是否应忽略
+                // Check if the current table should be ignored
                 Table joinTable = joinTables.get(0);
 
                 List<Table> onTables = null;
-                // 处理 RIGHT JOIN
+                // Handle RIGHT JOIN
                 if (join.isRight()) {
                     mainTable = joinTable;
                     mainTables.clear();
@@ -340,7 +343,7 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
                         onTables = Collections.singletonList(leftTable);
                     }
                 } else if (join.isInner()) {
-                    // 处理 INNER JOIN
+                    // Handle INNER JOIN
                     if (mainTable == null) {
                         onTables = Collections.singletonList(joinTable);
                     } else {
@@ -356,9 +359,9 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
                     mainTables.add(mainTable);
                 }
 
-                // 获取 JOIN 的 ON 表达式
+                // Get ON expressions of the JOIN
                 Collection<Expression> originOnExpressions = join.getOnExpressions();
-                // 立即处理单个 ON 表达式
+                // Immediately process single ON expression
                 if (originOnExpressions.size() == 1 && onTables != null) {
                     List<Expression> onExpressions = new LinkedList<>();
                     onExpressions.add(builderExpression(originOnExpressions.iterator().next(), onTables, segment));
@@ -366,9 +369,9 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
                     leftTable = mainTable == null ? joinTable : mainTable;
                     continue;
                 }
-                // 将表名压入栈，忽略的表为 null
+                // Push table names to the stack, ignored tables are null
                 onTableDeque.push(onTables);
-                // 处理多个 ON 表达式
+                // Handle multiple ON expressions
                 if (originOnExpressions.size() > 1) {
                     Collection<Expression> onExpressions = new LinkedList<>();
                     for (Expression originOnExpression : originOnExpressions) {
@@ -392,30 +395,30 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
     }
 
     /**
-     * 构建并处理条件表达式。
+     * Builds and processes a conditional expression.
      *
-     * @param expression 当前条件表达式
-     * @param tables     表列表
-     * @param segment    Mapper 全路径
-     * @return 构建后的条件表达式
+     * @param expression the current conditional expression
+     * @param tables     the list of tables
+     * @param segment    the full Mapper path
+     * @return the constructed conditional expression
      */
     protected Expression builderExpression(Expression expression, List<Table> tables, final String segment) {
-        // 无表时直接返回
+        // Return directly if no tables
         if (CollKit.isEmpty(tables)) {
             return expression;
         }
-        // 为每个表构建条件
+        // Build conditions for each table
         List<Expression> expressions = tables.stream().map(item -> buildTableExpression(item, expression, segment))
                 .filter(Objects::nonNull).collect(Collectors.toList());
 
-        // 无条件时直接返回
+        // Return directly if no conditions
         if (CollKit.isEmpty(expressions)) {
             return expression;
         }
 
-        // 注入表达式
+        // Inject expression
         Expression injectExpression = expressions.get(0);
-        // 多表时使用 AND 组合
+        // Combine with AND for multiple tables
         if (expressions.size() > 1) {
             for (int i = 1; i < expressions.size(); i++) {
                 injectExpression = new AndExpression(injectExpression, expressions.get(i));
@@ -433,11 +436,12 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
     }
 
     /**
-     * 追加条件表达式，默认追加到后面，可通过 appendMode 配置追加位置。
+     * Appends a conditional expression. By default, it appends to the end, but the position can be configured via
+     * `appendMode`.
      *
-     * @param expression       原 SQL 条件表达式
-     * @param injectExpression 注入的条件表达式
-     * @return 追加后的完整表达式（WHERE 或 ON 条件）
+     * @param expression       the original SQL conditional expression
+     * @param injectExpression the conditional expression to be injected
+     * @return the complete appended expression (for WHERE or ON clauses)
      */
     protected Expression appendExpression(Expression expression, Expression injectExpression) {
         if (EnumValue.AppendMode.LAST == appendMode || appendMode == null) {
@@ -448,12 +452,13 @@ public abstract class ConditionHandler extends SqlParserHandler implements Mappe
     }
 
     /**
-     * 构建数据库表的查询条件。
+     * Builds the query condition for a database table.
      *
-     * @param table   表对象
-     * @param where   当前 WHERE 条件
-     * @param segment Mapper 全路径
-     * @return 新增的查询条件（不会覆盖原有 WHERE 条件，仅追加），为 null 则不加入新条件
+     * @param table   the Table object
+     * @param where   the current WHERE condition
+     * @param segment the full Mapper path
+     * @return the new query condition to be added (does not overwrite the original WHERE, only appends). Returns null
+     *         if no new condition is added.
      */
     public abstract Expression buildTableExpression(final Table table, final Expression where, final String segment);
 

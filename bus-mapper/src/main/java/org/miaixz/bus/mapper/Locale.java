@@ -34,7 +34,8 @@ import java.util.ResourceBundle;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 多语言支持工具类，支持通过 JVM 参数设置 Locale，例如：{@code -Duser.country=US -Duser.language=en}。
+ * A utility class for multi-language support (i18n). The locale can be set via JVM arguments, for example:
+ * {@code -Duser.country=US -Duser.language=en}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,13 +43,14 @@ import org.miaixz.bus.logger.Logger;
 public class Locale {
 
     /**
-     * 获取指定语言的格式化文本，当资源文件或键不存在时，返回 {@code MessageFormat.format(key, args)}。
+     * Gets a formatted string for a specific locale from a resource bundle. If the resource bundle or key is not found,
+     * it returns the result of {@code MessageFormat.format(key, args)}.
      *
-     * @param locale     语言环境
-     * @param bundleName 资源文件名
-     * @param key        字符串键
-     * @param args       格式化参数
-     * @return 格式化后的文本
+     * @param locale     The locale for which to get the message.
+     * @param bundleName The name of the resource bundle.
+     * @param key        The key for the desired string.
+     * @param args       An array of objects to be formatted and substituted in the message.
+     * @return The formatted string.
      */
     public static String message(java.util.Locale locale, String bundleName, String key, Object... args) {
         ResourceBundle bundle;
@@ -67,49 +69,51 @@ public class Locale {
     }
 
     /**
-     * 获取默认语言环境的格式化文本，当资源文件或键不存在时，返回 {@code MessageFormat.format(key, args)}。
+     * Gets a formatted string for the default locale from a resource bundle. If the resource bundle or key is not
+     * found, it returns the result of {@code MessageFormat.format(key, args)}.
      *
-     * @param bundleName 资源文件名
-     * @param key        字符串键
-     * @param args       格式化参数
-     * @return 格式化后的文本
+     * @param bundleName The name of the resource bundle.
+     * @param key        The key for the desired string.
+     * @param args       An array of objects to be formatted and substituted in the message.
+     * @return The formatted string.
      */
     public static String message(String bundleName, String key, Object... args) {
         return message(java.util.Locale.getDefault(), bundleName, key, args);
     }
 
     /**
-     * 获取指定语言环境的语言包。
+     * Returns a {@link Language} instance for the specified locale and bundle name.
      *
-     * @param locale     语言环境
-     * @param bundleName 语言包名称
-     * @return 语言包实例
+     * @param locale     The locale for the language pack.
+     * @param bundleName The name of the resource bundle.
+     * @return A {@link Language} instance.
      */
     public static Language language(java.util.Locale locale, String bundleName) {
         return (key, args) -> message(locale, bundleName, key, args);
     }
 
     /**
-     * 获取默认语言环境的语言包。
+     * Returns a {@link Language} instance for the default locale and specified bundle name.
      *
-     * @param bundleName 语言包名称
-     * @return 语言包实例
+     * @param bundleName The name of the resource bundle.
+     * @return A {@link Language} instance.
      */
     public static Language language(String bundleName) {
         return language(java.util.Locale.getDefault(), bundleName);
     }
 
     /**
-     * 语言包接口，定义获取格式化文本的方法。
+     * A functional interface for retrieving formatted text from a language pack.
      */
+    @FunctionalInterface
     public interface Language {
 
         /**
-         * 获取对应语言的格式化文本。
+         * Gets the formatted text for the corresponding language.
          *
-         * @param key  字符串键
-         * @param args 格式化参数
-         * @return 格式化后的文本
+         * @param key  The key for the desired string.
+         * @param args An array of objects to be formatted and substituted in the message.
+         * @return The formatted string.
          */
         String message(String key, Object... args);
     }

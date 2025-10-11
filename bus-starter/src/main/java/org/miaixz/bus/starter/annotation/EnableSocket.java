@@ -27,13 +27,16 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.socket.SocketConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用WebSocket
+ * Enables AIO-based socket server features.
+ * <p>
+ * This annotation imports the {@link SocketConfiguration}, which sets up the
+ * {@link org.miaixz.bus.starter.socket.SocketQuickService} to manage the lifecycle of an AIO (Asynchronous I/O) server.
  *
  * @author Kimi Liu
  * @since Java 17+

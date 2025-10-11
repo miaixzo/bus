@@ -27,58 +27,59 @@
 */
 package org.miaixz.bus.http;
 
-import java.net.URL;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.cache.CacheControl;
 
+import java.net.URL;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
- * HTTP 请求类，封装 HTTP 请求的所有信息，包括 URL、方法、头部、请求体和标签。
+ * An HTTP request, encapsulating all information for a single request, including the URL, method, headers, body, and
+ * tags.
  * <p>
- * 注意：当 {@link #body} 为空时，实例是不可变的；否则，请求体可能影响实例状态。
- * </p>
+ * Note: Instances of this class are immutable if the {@link #body} is null or also immutable. The request body can,
+ * however, affect the state of the instance.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Request {
+public final class Request {
 
     /**
-     * 请求的 URL
+     * The URL for this request.
      */
     final UnoUrl url;
     /**
-     * HTTP 方法（GET、POST 等）
+     * The HTTP method (e.g., GET, POST).
      */
     final String method;
     /**
-     * 请求头部
+     * The request headers.
      */
     final Headers headers;
     /**
-     * 请求体（可能为 null）
+     * The request body, which may be null.
      */
     final RequestBody body;
     /**
-     * 标签映射，用于附加元数据
+     * A map of tags for attaching metadata.
      */
     final Map<Class<?>, Object> tags;
     /**
-     * 缓存控制（延迟初始化）
+     * The cache control directives, lazily initialized.
      */
     private volatile CacheControl cacheControl;
 
     /**
-     * 构造函数，基于 Builder 初始化 Request 实例。
+     * Constructs a new {@code Request} instance from a builder.
      *
-     * @param builder Builder 实例，包含所有请求属性
+     * @param builder The builder instance containing all request properties.
      */
     Request(Builder builder) {
         this.url = builder.url;
@@ -89,103 +90,106 @@ public class Request {
     }
 
     /**
-     * 获取请求的 URL。
+     * Returns the URL for this request.
      *
-     * @return UnoUrl 对象
+     * @return The {@link UnoUrl} object.
      */
     public UnoUrl url() {
         return url;
     }
 
     /**
-     * 获取 HTTP 方法。
+     * Returns the HTTP method for this request.
      *
-     * @return 方法名称（如 GET、POST）
+     * @return The method name (e.g., GET, POST).
      */
     public String method() {
         return method;
     }
 
     /**
-     * 获取所有请求头部。
+     * Returns all headers for this request.
      *
-     * @return Headers 对象
+     * @return The {@link Headers} object.
      */
     public Headers headers() {
         return headers;
     }
 
     /**
-     * 获取指定名称的第一个头部值。
+     * Returns the first header value for the given name.
      *
-     * @param name 头部名称
-     * @return 头部值（不存在时为 null）
+     * @param name The header name.
+     * @return The header value, or null if not found.
      */
     public String header(String name) {
         return headers.get(name);
     }
 
     /**
-     * 获取指定名称的头部值列表。
+     * Returns a list of header values for the given name.
      *
-     * @param name 头部名称
-     * @return 头部值列表（可能为空）
+     * @param name The header name.
+     * @return A list of header values, which may be empty.
      */
     public List<String> headers(String name) {
         return headers.values(name);
     }
 
     /**
-     * 获取请求体。
+     * Returns the request body.
      *
-     * @return RequestBody 对象（可能为 null）
+     * @return The {@link RequestBody} object, which may be null.
      */
     public RequestBody body() {
         return body;
     }
 
     /**
-     * 获取使用 {@code Object.class} 作为键的标签。
+     * Returns the tag attached to this request with {@code Object.class} as the key.
      * <p>
-     * 如果没有附加标签，返回 null。如果需要获取派生请求的标签，需通过 {@link #newBuilder()} 创建新实例。
+     * If no tag is attached, this returns null. To get a tag from a derived request, a new instance must be created
+     * with {@link #newBuilder()}.
      * </p>
      *
-     * @return 标签对象（可能为 null）
+     * @return The tag object, which may be null.
      */
     public Object tag() {
         return tag(Object.class);
     }
 
     /**
-     * 获取指定类型的标签。
+     * Returns the tag of the specified type attached to this request.
      * <p>
-     * 使用指定的 {@code type} 作为键从标签映射中获取值。返回值为指定类型的实例， 或 null（如果标签不存在）。
+     * This uses the specified {@code type} as a key to look up a value from the tags map. The returned value will be an
+     * instance of the specified type, or null if no tag is found.
      * </p>
      *
-     * @param type 标签类型
-     * @param <T>  标签值的类型
-     * @return 标签值（可能为 null）
+     * @param type The type of the tag.
+     * @param <T>  The type of the tag value.
+     * @return The tag value, which may be null.
      */
     public <T> T tag(Class<? extends T> type) {
         return type.cast(tags.get(type));
     }
 
     /**
-     * 创建新的 Builder 实例，基于当前 Request。
+     * Creates a new builder instance initialized with this request's properties.
      *
-     * @return Builder 实例
+     * @return A new {@link Builder} instance.
      */
     public Builder newBuilder() {
         return new Builder(this);
     }
 
     /**
-     * 获取缓存控制指令。
+     * Returns the cache control directives for this request.
      * <p>
-     * 即使请求不包含 "Cache-Control" 头部，也返回非 null 的 CacheControl 对象。 使用延迟初始化以提高性能。
+     * This returns a non-null {@link CacheControl} object even if this request does not have a "Cache-Control" header.
+     * Lazily initialized for performance.
      * </p>
      *
-     * @return CacheControl 对象
+     * @return The {@link CacheControl} object.
      */
     public CacheControl cacheControl() {
         CacheControl result = cacheControl;
@@ -193,18 +197,18 @@ public class Request {
     }
 
     /**
-     * 检查请求是否使用 HTTPS 协议。
+     * Returns true if this request uses the HTTPS protocol.
      *
-     * @return true 如果 URL 使用 HTTPS
+     * @return {@code true} if the URL uses HTTPS.
      */
     public boolean isHttps() {
         return url.isHttps();
     }
 
     /**
-     * 返回请求的字符串表示。
+     * Returns a string representation of this request.
      *
-     * @return 包含方法、URL 和标签的字符串
+     * @return A string containing the method, URL, and tags.
      */
     @Override
     public String toString() {
@@ -212,33 +216,33 @@ public class Request {
     }
 
     /**
-     * Request 构建器，用于创建和修改 Request 实例。
+     * A builder for creating and modifying {@link Request} instances.
      */
     public static class Builder {
 
         /**
-         * 请求的 URL
+         * The URL for the request.
          */
         UnoUrl url;
         /**
-         * HTTP 方法
+         * The HTTP method.
          */
         String method;
         /**
-         * 请求头部构建器
+         * The request headers builder.
          */
         Headers.Builder headers;
         /**
-         * 请求体
+         * The request body.
          */
         RequestBody body;
         /**
-         * 标签映射（可变或空）
+         * A map of tags (mutable or empty).
          */
         Map<Class<?>, Object> tags = Collections.emptyMap();
 
         /**
-         * 默认构造函数，初始化 GET 请求。
+         * Default constructor that initializes a GET request.
          */
         public Builder() {
             this.method = "GET";
@@ -246,9 +250,9 @@ public class Request {
         }
 
         /**
-         * 构造函数，基于现有 Request 初始化 Builder。
+         * Constructor that initializes the builder with an existing request.
          *
-         * @param request Request 实例
+         * @param request The {@link Request} instance.
          */
         Builder(Request request) {
             this.url = request.url;
@@ -259,11 +263,11 @@ public class Request {
         }
 
         /**
-         * 设置请求的 URL。
+         * Sets the URL for this request.
          *
-         * @param url UnoUrl 对象
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 url 为 null
+         * @param url The {@link UnoUrl} object.
+         * @return this builder instance.
+         * @throws NullPointerException if url is null.
          */
         public Builder url(UnoUrl url) {
             if (url == null)
@@ -273,21 +277,21 @@ public class Request {
         }
 
         /**
-         * 设置请求的 URL（字符串格式）。
+         * Sets the URL for this request from a string.
          * <p>
-         * 将 WebSocket URL（ws: 或 wss:）转换为 HTTP URL（http: 或 https:）。
+         * This converts WebSocket URLs (ws: or wss:) to HTTP URLs (http: or https:).
          * </p>
          *
-         * @param url URL 字符串
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 url 为 null
-         * @throws IllegalArgumentException 如果 URL 无效
+         * @param url The URL string.
+         * @return this builder instance.
+         * @throws NullPointerException     if url is null.
+         * @throws IllegalArgumentException if the URL is invalid.
          */
         public Builder url(String url) {
             if (url == null)
                 throw new NullPointerException("url == null");
 
-            // 转换 WebSocket URL 为 HTTP URL
+            // Handle WebSocket URLs.
             if (url.regionMatches(true, 0, "ws:", 0, 3)) {
                 url = "http:" + url.substring(3);
             } else if (url.regionMatches(true, 0, "wss:", 0, 4)) {
@@ -298,12 +302,12 @@ public class Request {
         }
 
         /**
-         * 设置请求的 URL（URL 对象）。
+         * Sets the URL for this request from a {@link URL} object.
          *
-         * @param url URL 对象
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 url 为 null
-         * @throws IllegalArgumentException 如果 URL 方案不是 http 或 https
+         * @param url The {@link URL} object.
+         * @return this builder instance.
+         * @throws NullPointerException     if url is null.
+         * @throws IllegalArgumentException if the URL scheme is not http or https.
          */
         public Builder url(URL url) {
             if (url == null)
@@ -312,11 +316,11 @@ public class Request {
         }
 
         /**
-         * 设置指定名称的头部值，替换现有同名头部。
+         * Sets a header, replacing any existing headers with the same name.
          *
-         * @param name  头部名称
-         * @param value 头部值
-         * @return 当前 Builder 实例
+         * @param name  The header name.
+         * @param value The header value.
+         * @return this builder instance.
          */
         public Builder header(String name, String value) {
             headers.set(name, value);
@@ -324,14 +328,15 @@ public class Request {
         }
 
         /**
-         * 添加指定名称和值的头部，保留现有同名头部。
+         * Adds a header, preserving any existing headers with the same name.
          * <p>
-         * 对于某些头部（如 Content-Length、Content-Encoding），Http 客户端可能根据请求体替换值。
+         * For certain headers (like Content-Length, Content-Encoding), the HTTP client may replace the value based on
+         * the request body.
          * </p>
          *
-         * @param name  头部名称
-         * @param value 头部值
-         * @return 当前 Builder 实例
+         * @param name  The header name.
+         * @param value The header value.
+         * @return this builder instance.
          */
         public Builder addHeader(String name, String value) {
             headers.add(name, value);
@@ -339,10 +344,10 @@ public class Request {
         }
 
         /**
-         * 移除指定名称的所有头部。
+         * Removes all headers with the given name.
          *
-         * @param name 头部名称
-         * @return 当前 Builder 实例
+         * @param name The header name.
+         * @return this builder instance.
          */
         public Builder removeHeader(String name) {
             headers.removeAll(name);
@@ -350,10 +355,10 @@ public class Request {
         }
 
         /**
-         * 设置所有头部，替换现有头部。
+         * Sets all headers, replacing any existing headers.
          *
-         * @param headers Headers 对象
-         * @return 当前 Builder 实例
+         * @param headers The {@link Headers} object.
+         * @return this builder instance.
          */
         public Builder headers(Headers headers) {
             this.headers = headers.newBuilder();
@@ -361,13 +366,14 @@ public class Request {
         }
 
         /**
-         * 设置缓存控制头部。
+         * Sets the cache control header.
          * <p>
-         * 替换现有的 Cache-Control 头部。如果 cacheControl 无指令，移除 Cache-Control 头部。
+         * This replaces any existing Cache-Control header. If {@code cacheControl} has no directives, the Cache-Control
+         * header will be removed.
          * </p>
          *
-         * @param cacheControl CacheControl 对象
-         * @return 当前 Builder 实例
+         * @param cacheControl The {@link CacheControl} object.
+         * @return this builder instance.
          */
         public Builder cacheControl(CacheControl cacheControl) {
             String value = cacheControl.toString();
@@ -377,80 +383,80 @@ public class Request {
         }
 
         /**
-         * 设置为 GET 请求。
+         * Sets this request to be a GET request.
          *
-         * @return 当前 Builder 实例
+         * @return this builder instance.
          */
         public Builder get() {
             return method(HTTP.GET, null);
         }
 
         /**
-         * 设置为 HEAD 请求。
+         * Sets this request to be a HEAD request.
          *
-         * @return 当前 Builder 实例
+         * @return this builder instance.
          */
         public Builder head() {
             return method(HTTP.HEAD, null);
         }
 
         /**
-         * 设置为 POST 请求。
+         * Sets this request to be a POST request.
          *
-         * @param body 请求体
-         * @return 当前 Builder 实例
+         * @param body The request body.
+         * @return this builder instance.
          */
         public Builder post(RequestBody body) {
             return method(HTTP.POST, body);
         }
 
         /**
-         * 设置为 DELETE 请求（带请求体）。
+         * Sets this request to be a DELETE request with a request body.
          *
-         * @param body 请求体
-         * @return 当前 Builder 实例
+         * @param body The request body.
+         * @return this builder instance.
          */
         public Builder delete(RequestBody body) {
             return method(HTTP.DELETE, body);
         }
 
         /**
-         * 设置为 DELETE 请求（无请求体）。
+         * Sets this request to be a DELETE request with no request body.
          *
-         * @return 当前 Builder 实例
+         * @return this builder instance.
          */
         public Builder delete() {
             return delete(RequestBody.create(null, Normal.EMPTY_BYTE_ARRAY));
         }
 
         /**
-         * 设置为 PUT 请求。
+         * Sets this request to be a PUT request.
          *
-         * @param body 请求体
-         * @return 当前 Builder 实例
+         * @param body The request body.
+         * @return this builder instance.
          */
         public Builder put(RequestBody body) {
             return method(HTTP.PUT, body);
         }
 
         /**
-         * 设置为 PATCH 请求。
+         * Sets this request to be a PATCH request.
          *
-         * @param body 请求体
-         * @return 当前 Builder 实例
+         * @param body The request body.
+         * @return this builder instance.
          */
         public Builder patch(RequestBody body) {
             return method(HTTP.PATCH, body);
         }
 
         /**
-         * 设置 HTTP 方法和请求体。
+         * Sets the HTTP method and request body.
          *
-         * @param method HTTP 方法
-         * @param body   请求体（可能为 null）
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 method 为 null
-         * @throws IllegalArgumentException 如果 method 为空、请求体与方法不匹配
+         * @param method The HTTP method.
+         * @param body   The request body, which may be null.
+         * @return this builder instance.
+         * @throws NullPointerException     if method is null.
+         * @throws IllegalArgumentException if method is empty or if the body is not compatible with the method.
          */
         public Builder method(String method, RequestBody body) {
             if (null == method)
@@ -469,26 +475,27 @@ public class Request {
         }
 
         /**
-         * 使用 {@code Object.class} 作为键附加标签。
+         * Attaches a tag to this request using {@code Object.class} as the key.
          *
-         * @param tag 标签对象
-         * @return 当前 Builder 实例
+         * @param tag The tag object.
+         * @return this builder instance.
          */
         public Builder tag(Object tag) {
             return tag(Object.class, tag);
         }
 
         /**
-         * 使用指定类型作为键附加标签。
+         * Attaches a tag to this request using the specified type as the key.
          * <p>
-         * 标签用于附加调试、计时或其他元数据，可在拦截器、事件监听器或回调中读取。 使用 null 移除指定类型的现有标签。
+         * Tags can be used to attach metadata for debugging, timing, or other purposes, and can be read in
+         * interceptors, event listeners, or callbacks. Use null to remove an existing tag of the specified type.
          * </p>
          *
-         * @param type 标签类型
-         * @param tag  标签值（可能为 null）
-         * @param <T>  标签值的类型
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 type 为 null
+         * @param type The type of the tag.
+         * @param tag  The tag value, which may be null.
+         * @param <T>  The type of the tag value.
+         * @return this builder instance.
+         * @throws NullPointerException if type is null.
          */
         public <T> Builder tag(Class<? super T> type, T tag) {
             if (null == type)
@@ -506,10 +513,10 @@ public class Request {
         }
 
         /**
-         * 构建 Request 实例。
+         * Builds a new {@link Request} instance.
          *
-         * @return Request 对象
-         * @throws IllegalStateException 如果 URL 未设置
+         * @return A new {@link Request} object.
+         * @throws IllegalStateException if the URL is not set.
          */
         public Request build() {
             if (null == url)

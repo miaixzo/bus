@@ -36,10 +36,15 @@ import java.util.function.Function;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 忽略大小写的Map 对KEY忽略大小写，get("Value")和get("value")获得的值相同，put进入的值也会被覆盖
+ * A {@link Map} implementation that treats keys as case-insensitive. All keys are internally converted to lowercase
+ * strings for storage and retrieval. This means that {@code get("Value")} and {@code get("value")} will retrieve the
+ * same entry.
+ * <p>
+ * When a key is {@code put} into the map, it is converted to lowercase. If a lowercase version of the key already
+ * exists, its value will be overwritten. This map does not preserve the original casing of keys.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys in the map (typically {@code String} or a type convertible to {@code String}).
+ * @param <V> The type of values in the map.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -49,35 +54,38 @@ public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
     private static final long serialVersionUID = 2852268989329L;
 
     /**
-     * 构造
+     * Constructs an empty {@code CaseInsensitiveMap} with the default initial capacity (16).
      */
     public CaseInsensitiveMap() {
         this(Normal._16);
     }
 
     /**
-     * 构造
+     * Constructs an empty {@code CaseInsensitiveMap} with the specified initial capacity.
      *
-     * @param initialCapacity 初始大小
+     * @param initialCapacity The initial capacity of the map.
      */
     public CaseInsensitiveMap(final int initialCapacity) {
         this(initialCapacity, Normal.DEFAULT_LOAD_FACTOR);
     }
 
     /**
-     * 构造 注意此构造将传入的Map所有值复制到当前map中，不修改传入map
+     * Constructs a new {@code CaseInsensitiveMap} with the same mappings as the specified map. Keys from the input map
+     * will be converted to lowercase for internal storage.
      *
-     * @param m 被包装的自定义Map创建器
+     * @param m The map whose mappings are to be placed in this map.
      */
     public CaseInsensitiveMap(final Map<? extends K, ? extends V> m) {
         this(Normal.DEFAULT_LOAD_FACTOR, m);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CaseInsensitiveMap} with the specified load factor and the same mappings as the specified
+     * map. Keys from the input map will be converted to lowercase for internal storage.
      *
-     * @param loadFactor 加载因子
-     * @param m          Map
+     * @param loadFactor The load factor for the map.
+     * @param m          The map whose mappings are to be placed in this map. Its data will be copied into a new
+     *                   {@link HashMap}.
      */
     public CaseInsensitiveMap(final float loadFactor, final Map<? extends K, ? extends V> m) {
         this(m.size(), loadFactor);
@@ -85,22 +93,24 @@ public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
     }
 
     /**
-     * 构造
+     * Constructs an empty {@code CaseInsensitiveMap} with the specified initial capacity and load factor.
      *
-     * @param initialCapacity 初始大小
-     * @param loadFactor      加载因子
+     * @param initialCapacity The initial capacity of the map.
+     * @param loadFactor      The load factor for the map.
      */
     public CaseInsensitiveMap(final int initialCapacity, final float loadFactor) {
         this(MapBuilder.of(new HashMap<>(initialCapacity, loadFactor)));
     }
 
     /**
-     * 构造 注意此构造将传入的Map作为被包装的Map，针对任何修改，传入的Map都会被同样修改。
+     * Constructs a {@code CaseInsensitiveMap} by wrapping a map provided by a {@link MapBuilder}. The
+     * {@code MapBuilder} should provide an empty map, as existing entries in a non-empty map will not have their keys
+     * transformed, potentially leading to inconsistent behavior.
      *
-     * @param emptyMapBuilder 被包装的自定义Map创建器
+     * @param emptyMapBuilder A {@link MapBuilder} that provides an empty {@link Map} instance.
      */
     CaseInsensitiveMap(final MapBuilder<K, V> emptyMapBuilder) {
-        // 使Function可以被序列化
+        // The Function is made Serializable to allow the map to be serialized.
         super(emptyMapBuilder.build(), (Function<Object, K> & Serializable) (key) -> {
             if (key instanceof CharSequence) {
                 key = key.toString().toLowerCase();

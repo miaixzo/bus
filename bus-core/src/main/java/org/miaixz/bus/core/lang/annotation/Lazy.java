@@ -33,7 +33,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注解: 将一个单例类标记为惰性初始化, 或者标记为不受立即加载影响的方法(例如,AppConfig中的方法)
+ * Indicates that a component, such as a singleton bean, should be initialized lazily.
+ * <p>
+ * This annotation can be applied to a class to signal that it should not be instantiated at application startup but
+ * rather on its first access. It can also be used on methods, particularly factory methods (e.g., those annotated with
+ * {@code @Bean} in a configuration class), to indicate that the bean they define should be created lazily.
+ * <p>
+ * Lazy initialization is beneficial for improving application startup performance by deferring the creation of
+ * resource-intensive or infrequently used components. It can also be used as a strategy to break circular dependencies
+ * between beans.
  *
  * @author Kimi Liu
  * @since Java 17+

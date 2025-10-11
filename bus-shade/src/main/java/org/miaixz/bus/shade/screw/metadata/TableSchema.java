@@ -35,7 +35,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 表信息领域对象
+ * Domain object for table schema information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,15 +48,15 @@ public class TableSchema implements Serializable {
     private static final long serialVersionUID = 2852277958951L;
 
     /**
-     * 表名
+     * Table name.
      */
     private String tableName;
     /**
-     * 备注
+     * Remarks on the table.
      */
     private String remarks;
     /**
-     * 表列
+     * List of columns in the table.
      */
     private List<ColumnSchema> columns;
 

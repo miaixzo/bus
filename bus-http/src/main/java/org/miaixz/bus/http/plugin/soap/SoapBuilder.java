@@ -27,17 +27,7 @@
 */
 package org.miaixz.bus.http.plugin.soap;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
-
+import jakarta.xml.soap.*;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -49,10 +39,21 @@ import org.miaixz.bus.http.Httpz;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.SoapX;
 
-import jakarta.xml.soap.*;
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
- * SOAP 支持 此对象用于构建一个SOAP消息，并通过HTTP接口发出消息内容。 SOAP消息本质上是一个XML文本，可以通过调用{@link #getString(boolean)} 方法获取消息体
+ * A builder for creating and sending SOAP messages.
+ * <p>
+ * This class is used to construct a SOAP message and send it via an HTTP interface. The SOAP message is essentially an
+ * XML text, which can be retrieved by calling the {@link #getString(boolean)} method.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -60,63 +61,63 @@ import jakarta.xml.soap.*;
 public class SoapBuilder {
 
     /**
-     * Soap协议 soap1.1 : text/xml soap1.2 : application/soap+xml
+     * The SOAP protocol version (SOAP 1.1: text/xml, SOAP 1.2: application/soap+xml).
      */
     private final Protocol protocol;
     /**
-     * 应用于方法上的命名空间URI
+     * The namespace URI to be applied to the method.
      */
     private final String namespaceURI;
     /**
-     * 存储头信息
+     * A map to store header information.
      */
     private final Map<String, String> headers = new HashMap<>();
     /**
-     * 请求的URL地址
+     * The URL of the web service.
      */
     private String url;
     /**
-     * SOAP消息
+     * The SOAP message.
      */
     private SOAPMessage message;
     /**
-     * 消息工厂，用于创建消息
+     * The message factory for creating SOAP messages.
      */
     private MessageFactory factory;
     /**
-     * 消息方法节点
+     * The SOAP body element representing the method.
      */
     private SOAPBodyElement methodEle;
     /**
-     * 默认字符编码
+     * The default character encoding.
      */
     private java.nio.charset.Charset charset = Charset.UTF_8;
 
     /**
-     * 构造，默认使用soap1.2版本协议
+     * Constructs a new {@code SoapBuilder} with the default SOAP 1.2 protocol.
      *
-     * @param url WS的URL地址
+     * @param url The URL of the web service.
      */
     public SoapBuilder(final String url) {
         this(url, Protocol.SOAP_1_2);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SoapBuilder} with a specified protocol version.
      *
-     * @param url      WS的URL地址
-     * @param protocol 协议版本，见{@link Protocol}
+     * @param url      The URL of the web service.
+     * @param protocol The protocol version, see {@link Protocol}.
      */
     public SoapBuilder(final String url, final Protocol protocol) {
         this(url, protocol, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SoapBuilder} with a specified protocol version and namespace URI.
      *
-     * @param url          WS的URL地址
-     * @param protocol     协议版本，见{@link Protocol}
-     * @param namespaceURI 方法上的命名空间URI
+     * @param url          The URL of the web service.
+     * @param protocol     The protocol version, see {@link Protocol}.
+     * @param namespaceURI The namespace URI for the method.
      */
     public SoapBuilder(final String url, final Protocol protocol, final String namespaceURI) {
         this.url = url;
@@ -126,46 +127,46 @@ public class SoapBuilder {
     }
 
     /**
-     * 创建SOAP客户端，默认使用soap1.2版本协议
+     * Creates a new SOAP client with the default SOAP 1.2 protocol.
      *
-     * @param url WS的URL地址
-     * @return this
+     * @param url The URL of the web service.
+     * @return A new {@code SoapBuilder} instance.
      */
     public static SoapBuilder of(final String url) {
         return new SoapBuilder(url);
     }
 
     /**
-     * 创建SOAP客户端
+     * Creates a new SOAP client with a specified protocol.
      *
-     * @param url      WS的URL地址
-     * @param protocol 协议，见{@link Protocol}
-     * @return this
+     * @param url      The URL of the web service.
+     * @param protocol The protocol version, see {@link Protocol}.
+     * @return A new {@code SoapBuilder} instance.
      */
     public static SoapBuilder of(final String url, final Protocol protocol) {
         return new SoapBuilder(url, protocol);
     }
 
     /**
-     * 创建SOAP客户端
+     * Creates a new SOAP client with a specified protocol and namespace URI.
      *
-     * @param url          WS的URL地址
-     * @param protocol     协议，见{@link Protocol}
-     * @param namespaceURI 方法上的命名空间URI
-     * @return this
+     * @param url          The URL of the web service.
+     * @param protocol     The protocol version, see {@link Protocol}.
+     * @param namespaceURI The namespace URI for the method.
+     * @return A new {@code SoapBuilder} instance.
      */
     public static SoapBuilder of(final String url, final Protocol protocol, final String namespaceURI) {
         return new SoapBuilder(url, protocol, namespaceURI);
     }
 
     /**
-     * 设置方法参数
+     * Sets a parameter for a method node.
      *
-     * @param ele    方法节点
-     * @param name   参数名
-     * @param value  参数值
-     * @param prefix 命名空间前缀， {@code null}表示不使用前缀
-     * @return {@link SOAPElement}子节点
+     * @param ele    The method node.
+     * @param name   The parameter name.
+     * @param value  The parameter value.
+     * @param prefix The namespace prefix, or {@code null} for no prefix.
+     * @return The child {@link SOAPElement}.
      */
     private static SOAPElement setParam(
             final SOAPElement ele,
@@ -185,21 +186,19 @@ public class SoapBuilder {
 
         if (null != value) {
             if (value instanceof SOAPElement) {
-                // 单个子节点
+                // Single child node.
                 try {
                     ele.addChildElement((SOAPElement) value);
                 } catch (final SOAPException e) {
                     throw new InternalException(e);
                 }
             } else if (value instanceof Map) {
-                // 多个字节点
-                Entry entry;
-                for (final Object object : ((Map) value).entrySet()) {
-                    entry = (Entry) object;
+                // Multiple child nodes.
+                for (final Entry<?, ?> entry : ((Map<?, ?>) value).entrySet()) {
                     setParam(childEle, StringKit.toStringOrNull(entry.getKey()), entry.getValue(), prefix);
                 }
             } else {
-                // 单个值
+                // Single value.
                 childEle.setValue(value.toString());
             }
         }
@@ -208,28 +207,26 @@ public class SoapBuilder {
     }
 
     /**
-     * 初始化
+     * Initializes the SOAP client.
      *
-     * @param protocol 协议版本枚举，见{@link Protocol}
-     * @return this
+     * @param protocol The protocol version enum, see {@link Protocol}.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder init(final Protocol protocol) {
-        // 创建消息工厂
         try {
             this.factory = MessageFactory.newInstance(protocol.name);
-            // 根据消息工厂创建SoapMessage
             this.message = factory.createMessage();
         } catch (final SOAPException e) {
             throw new InternalException(e);
         }
-
         return this;
     }
 
     /**
-     * 重置SOAP客户端，用于客户端复用 重置后需调用serMethod方法重新指定请求方法，并调用setParam方法重新定义参数
+     * Resets the SOAP client for reuse. After resetting, you must call {@code setMethod} to specify a new request
+     * method and {@code setParam} to redefine the parameters.
      *
-     * @return this
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder reset() {
         try {
@@ -238,15 +235,14 @@ public class SoapBuilder {
             throw new InternalException(e);
         }
         this.methodEle = null;
-
         return this;
     }
 
     /**
-     * 设置编码
+     * Sets the character encoding.
      *
-     * @param charset 编码
-     * @return this
+     * @param charset The character encoding.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder charset(final java.nio.charset.Charset charset) {
         if (null != charset) {
@@ -255,18 +251,17 @@ public class SoapBuilder {
                 this.message.setProperty(SOAPMessage.CHARACTER_SET_ENCODING, charset.name());
                 this.message.setProperty(SOAPMessage.WRITE_XML_DECLARATION, "true");
             } catch (final SOAPException e) {
-                // ignore
+                // Ignore.
             }
         }
-
         return this;
     }
 
     /**
-     * 设置Webservice请求地址
+     * Sets the web service request URL.
      *
-     * @param url Webservice请求地址
-     * @return this
+     * @param url The web service request URL.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder setUrl(final String url) {
         this.url = url;
@@ -274,27 +269,27 @@ public class SoapBuilder {
     }
 
     /**
-     * 设置一个header 如果覆盖模式，则替换之前的值，否则加入到值列表中
+     * Sets a header. If in override mode, it replaces the previous value; otherwise, it adds to the list of values.
      *
-     * @param name       Header名
-     * @param value      Header值
-     * @param isOverride 是否覆盖已有值
-     * @return this
+     * @param name       The header name.
+     * @param value      The header value.
+     * @param isOverride Whether to override an existing value.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder header(final String name, final String value, final boolean isOverride) {
         if (null != name && null != value) {
             final String values = headers.get(name.trim());
             if (isOverride || StringKit.isEmpty(values)) {
-                headers.put(name.trim(), values);
+                headers.put(name.trim(), value);
             }
         }
         return this;
     }
 
     /**
-     * 获取headers
+     * Gets the headers.
      *
-     * @return Header Map
+     * @return The header map.
      */
     public Map<String, String> headers() {
         this.headers.put(HTTP.CONTENT_TYPE, getXmlContentType());
@@ -302,9 +297,9 @@ public class SoapBuilder {
     }
 
     /**
-     * 清除所有头信息，包括全局头信息
+     * Clears all headers, including global headers.
      *
-     * @return this
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder clearHeaders() {
         this.headers.clear();
@@ -312,14 +307,15 @@ public class SoapBuilder {
     }
 
     /**
-     * 增加SOAP头信息，方法返回{@link SOAPHeaderElement}可以设置具体属性和子节点
+     * Adds a SOAP header. The method returns a {@link SOAPHeaderElement} that can be used to set attributes and child
+     * nodes.
      *
-     * @param name           头信息标签名
-     * @param actorURI       中间的消息接收者
-     * @param roleUri        Role的URI
-     * @param mustUnderstand 标题项对于要对其进行处理的接收者来说是强制的还是可选的
-     * @param relay          relay属性
-     * @return {@link SOAPHeaderElement}
+     * @param name           The name of the header element.
+     * @param actorURI       The URI of the intermediary actor.
+     * @param roleUri        The URI of the role.
+     * @param mustUnderstand Whether the header is mandatory for the recipient.
+     * @param relay          The relay attribute.
+     * @return The {@link SOAPHeaderElement}.
      */
     public SOAPHeaderElement addSOAPHeader(
             final QName name,
@@ -350,21 +346,23 @@ public class SoapBuilder {
     }
 
     /**
-     * 增加SOAP头信息，方法返回{@link SOAPHeaderElement}可以设置具体属性和子节点
+     * Adds a SOAP header. The method returns a {@link SOAPHeaderElement} that can be used to set attributes and child
+     * nodes.
      *
-     * @param localName 头节点名称
-     * @return {@link SOAPHeaderElement}
+     * @param localName The local name of the header element.
+     * @return The {@link SOAPHeaderElement}.
      */
     public SOAPHeaderElement addSOAPHeader(final String localName) {
         return addSOAPHeader(new QName(localName));
     }
 
     /**
-     * 增加SOAP头信息，方法返回{@link SOAPHeaderElement}可以设置具体属性和子节点
+     * Adds a SOAP header with a value. The method returns a {@link SOAPHeaderElement} that can be used to set
+     * attributes and child nodes.
      *
-     * @param localName 头节点名称
-     * @param value     头节点的值
-     * @return {@link SOAPHeaderElement}
+     * @param localName The local name of the header element.
+     * @param value     The value of the header element.
+     * @return The {@link SOAPHeaderElement}.
      */
     public SOAPHeaderElement addSOAPHeader(final String localName, final String value) {
         final SOAPHeaderElement soapHeaderElement = addSOAPHeader(localName);
@@ -373,10 +371,11 @@ public class SoapBuilder {
     }
 
     /**
-     * 增加SOAP头信息，方法返回{@link SOAPHeaderElement}可以设置具体属性和子节点
+     * Adds a SOAP header. The method returns a {@link SOAPHeaderElement} that can be used to set attributes and child
+     * nodes.
      *
-     * @param name 头节点名称
-     * @return {@link SOAPHeaderElement}
+     * @param name The qualified name of the header element.
+     * @return The {@link SOAPHeaderElement}.
      */
     public SOAPHeaderElement addSOAPHeader(final QName name) {
         final SOAPHeaderElement ele;
@@ -389,24 +388,24 @@ public class SoapBuilder {
     }
 
     /**
-     * 设置请求方法
+     * Sets the request method.
      *
-     * @param name            方法名及其命名空间
-     * @param params          参数
-     * @param useMethodPrefix 是否使用方法的命名空间前缀
-     * @return this
+     * @param name            The name and namespace of the method.
+     * @param params          The parameters.
+     * @param useMethodPrefix Whether to use the method's namespace prefix.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder setMethod(final Name name, final Map<String, Object> params, final boolean useMethodPrefix) {
         return setMethod(new QName(name.getURI(), name.getLocalName(), name.getPrefix()), params, useMethodPrefix);
     }
 
     /**
-     * 设置请求方法
+     * Sets the request method.
      *
-     * @param name            方法名及其命名空间
-     * @param params          参数
-     * @param useMethodPrefix 是否使用方法的命名空间前缀
-     * @return this
+     * @param name            The name and namespace of the method.
+     * @param params          The parameters.
+     * @param useMethodPrefix Whether to use the method's namespace prefix.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder setMethod(final QName name, final Map<String, Object> params, final boolean useMethodPrefix) {
         setMethod(name);
@@ -420,21 +419,23 @@ public class SoapBuilder {
     }
 
     /**
-     * 设置请求方法 方法名自动识别前缀，前缀和方法名使用“:”分隔 当识别到前缀后，自动添加xmlns属性，关联到默认的namespaceURI
+     * Sets the request method. The method name automatically recognizes a prefix, separated by a colon. When a prefix
+     * is recognized, an xmlns attribute is automatically added, associated with the default namespace URI.
      *
-     * @param methodName 方法名
-     * @return this
+     * @param methodName The method name.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder setMethod(final String methodName) {
         return setMethod(methodName, ObjectKit.defaultIfNull(this.namespaceURI, XMLConstants.NULL_NS_URI));
     }
 
     /**
-     * 设置请求方法 方法名自动识别前缀，前缀和方法名使用“:”分隔 当识别到前缀后，自动添加xmlns属性，关联到传入的namespaceURI
+     * Sets the request method. The method name automatically recognizes a prefix, separated by a colon. When a prefix
+     * is recognized, an xmlns attribute is automatically added, associated with the given namespace URI.
      *
-     * @param methodName   方法名（可有前缀也可无）
-     * @param namespaceURI 命名空间URI
-     * @return this
+     * @param methodName   The method name (with or without a prefix).
+     * @param namespaceURI The namespace URI.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder setMethod(final String methodName, final String namespaceURI) {
         final List<String> methodNameList = StringKit.split(methodName, Symbol.COLON);
@@ -448,10 +449,10 @@ public class SoapBuilder {
     }
 
     /**
-     * 设置请求方法
+     * Sets the request method.
      *
-     * @param name 方法名及其命名空间
-     * @return this
+     * @param name The name and namespace of the method.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder setMethod(final QName name) {
         try {
@@ -464,23 +465,23 @@ public class SoapBuilder {
     }
 
     /**
-     * 设置方法参数，使用方法的前缀
+     * Sets a method parameter, using the method's prefix.
      *
-     * @param name  参数名
-     * @param value 参数值，可以是字符串或Map或{@link SOAPElement}
-     * @return this
+     * @param name  The parameter name.
+     * @param value The parameter value, which can be a string, map, or {@link SOAPElement}.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder setParam(final String name, final Object value) {
         return setParam(name, value, true);
     }
 
     /**
-     * 设置方法参数
+     * Sets a method parameter.
      *
-     * @param name            参数名
-     * @param value           参数值，可以是字符串或Map或{@link SOAPElement}
-     * @param useMethodPrefix 是否使用方法的命名空间前缀
-     * @return this
+     * @param name            The parameter name.
+     * @param value           The parameter value, which can be a string, map, or {@link SOAPElement}.
+     * @param useMethodPrefix Whether to use the method's namespace prefix.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder setParam(final String name, final Object value, final boolean useMethodPrefix) {
         setParam(this.methodEle, name, value, useMethodPrefix ? this.methodEle.getPrefix() : null);
@@ -488,21 +489,21 @@ public class SoapBuilder {
     }
 
     /**
-     * 批量设置参数，使用方法的前缀
+     * Sets multiple parameters, using the method's prefix.
      *
-     * @param params 参数列表
-     * @return this
+     * @param params The list of parameters.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder setParams(final Map<String, Object> params) {
         return setParams(params, true);
     }
 
     /**
-     * 批量设置参数
+     * Sets multiple parameters.
      *
-     * @param params          参数列表
-     * @param useMethodPrefix 是否使用方法的命名空间前缀
-     * @return this
+     * @param params          The list of parameters.
+     * @param useMethodPrefix Whether to use the method's namespace prefix.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder setParams(final Map<String, Object> params, final boolean useMethodPrefix) {
         for (final Entry<String, Object> entry : MapKit.wrap(params)) {
@@ -512,38 +513,38 @@ public class SoapBuilder {
     }
 
     /**
-     * 获取方法节点 用于创建子节点等操作
+     * Gets the method element, which can be used to create child nodes.
      *
-     * @return {@link SOAPBodyElement}
+     * @return The {@link SOAPBodyElement}.
      */
     public SOAPBodyElement getMethodEle() {
         return this.methodEle;
     }
 
     /**
-     * 获取SOAP消息对象 {@link SOAPMessage}
+     * Gets the SOAP message object.
      *
-     * @return {@link SOAPMessage}
+     * @return The {@link SOAPMessage}.
      */
     public SOAPMessage getMessage() {
         return this.message;
     }
 
     /**
-     * 获取SOAP请求消息
+     * Gets the SOAP request message as a string.
      *
-     * @param pretty 是否格式化
-     * @return 消息字符串
+     * @param pretty Whether to format the XML.
+     * @return The message string.
      */
     public String getString(final boolean pretty) {
         return SoapX.toString(this.message, pretty, this.charset);
     }
 
     /**
-     * 将SOAP消息的XML内容输出到流
+     * Writes the XML content of the SOAP message to an output stream.
      *
-     * @param out 输出流
-     * @return this
+     * @param out The output stream.
+     * @return This {@code SoapBuilder} instance.
      */
     public SoapBuilder write(final OutputStream out) {
         try {
@@ -555,9 +556,9 @@ public class SoapBuilder {
     }
 
     /**
-     * 执行Webservice请求，即发送SOAP内容
+     * Executes the web service request by sending the SOAP content.
      *
-     * @return 返回结果
+     * @return The resulting {@link SOAPMessage}.
      */
     public SOAPMessage sendForMessage() {
         final Response res = sendForResponse();
@@ -577,19 +578,19 @@ public class SoapBuilder {
     }
 
     /**
-     * 执行Webservice请求，即发送SOAP内容
+     * Executes the web service request by sending the SOAP content.
      *
-     * @return 返回结果
+     * @return The result as a string.
      */
     public String send() {
         return send(false);
     }
 
     /**
-     * 执行Webservice请求，即发送SOAP内容
+     * Executes the web service request by sending the SOAP content.
      *
-     * @param pretty 是否格式化
-     * @return 返回结果
+     * @param pretty Whether to format the result.
+     * @return The result as a string.
      */
     public String send(final boolean pretty) {
         final String body;
@@ -602,9 +603,9 @@ public class SoapBuilder {
     }
 
     /**
-     * 发送请求，获取异步响应
+     * Sends the request and gets an asynchronous response.
      *
-     * @return 响应对象
+     * @return The response object.
      */
     public Response sendForResponse() {
         try {
@@ -615,18 +616,17 @@ public class SoapBuilder {
     }
 
     /**
-     * 获取请求的Content-Type，附加编码信息 XML消息体的Content-Type soap1.1 : text/xml soap1.2 : application/soap+xml soap1.1与soap1.2区别:
-     * https://www.cnblogs.com/qlqwjy/p/7577147.html
+     * Gets the Content-Type of the request, with character encoding information appended.
      *
-     * @return 请求的Content-Type
+     * @return The Content-Type of the request.
      */
     private String getXmlContentType() {
         switch (this.protocol) {
             case SOAP_1_1:
-                return MediaType.TEXT_XML.concat(";charset=" + this.charset.toString());
+                return MediaType.TEXT_XML + ";charset=" + this.charset.toString();
 
             case SOAP_1_2:
-                return MediaType.APPLICATION_SOAP_XML.concat(";charset=" + this.charset.toString());
+                return MediaType.APPLICATION_SOAP_XML + ";charset=" + this.charset.toString();
 
             default:
                 throw new InternalException("Unsupported protocol: {}", this.protocol);

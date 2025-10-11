@@ -34,9 +34,10 @@ import java.util.Map;
 import org.miaixz.bus.core.xyz.CollKit;
 
 /**
- * 可添加对象工具类
+ * A factory and utility class for creating and manipulating collections, maps, and arrays.
  * <p>
- * 提供创建和操作数组、集合和Map的工具方法，支持初始化和批量添加元素。 通过工厂模式创建不同类型的可添加对象，并提供统一的操作接口。
+ * This class provides a unified interface, {@link Addable}, for populating different kinds of data structures (Array,
+ * Collection, Map) and retrieving the final result.
  * </p>
  *
  * @author Kimi Liu
@@ -45,11 +46,12 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class Addables {
 
     /**
-     * 创建新的可添加对象
+     * Creates a new {@link Addable} instance based on the target type.
      *
-     * @param type 对象类型
-     * @param size 初始大小
-     * @return 可添加对象实例
+     * @param type The class of the object to create (e.g., {@code List.class}, {@code Map.class},
+     *             {@code String[].class}).
+     * @param size The initial size or capacity hint.
+     * @return An {@link Addable} instance capable of building the specified type.
      */
     public static Addable newAddable(Class<?> type, int size) {
         if (Map.class.isAssignableFrom(type)) {
@@ -62,11 +64,12 @@ public class Addables {
     }
 
     /**
-     * 创建新的集合实例
+     * Creates a new {@link Collection} instance of a specific type.
      *
-     * @param type           集合类型
-     * @param initCollection 初始集合，用于初始化新集合
-     * @return 新的集合实例
+     * @param type           The concrete class of the collection to instantiate (e.g., {@code ArrayList.class}).
+     * @param initCollection An optional collection whose elements will be added to the new collection.
+     * @return A new {@link Collection} instance.
+     * @throws RuntimeException if the collection cannot be instantiated via its default constructor.
      */
     public static Collection newCollection(Class<?> type, Collection initCollection) {
         try {
@@ -83,11 +86,12 @@ public class Addables {
     }
 
     /**
-     * 创建新的Map实例
+     * Creates a new {@link Map} instance of a specific type.
      *
-     * @param type    Map类型
-     * @param initMap 初始Map，用于初始化新Map
-     * @return 新的Map实例
+     * @param type    The concrete class of the map to instantiate (e.g., {@code HashMap.class}).
+     * @param initMap An optional map whose entries will be added to the new map.
+     * @return A new {@link Map} instance.
+     * @throws RuntimeException if the map cannot be instantiated via its default constructor.
      */
     public static Map newMap(Class<?> type, Map initMap) {
         try {
@@ -104,69 +108,50 @@ public class Addables {
     }
 
     /**
-     * 可添加对象接口
-     * <p>
-     * 定义了初始化、添加元素和获取结果的操作
-     * </p>
+     * An interface for objects that can be built by adding elements to them.
      *
-     * @param <T> 结果类型
+     * @param <T> The type of the object being built.
      */
     public interface Addable<T> {
 
         /**
-         * 初始化可添加对象
+         * Initializes the addable with a specific type and initial size.
          *
-         * @param type     对象类型
-         * @param initSize 初始大小
-         * @return 当前实例
+         * @param type     The class of the object to build.
+         * @param initSize The initial size or capacity.
+         * @return This {@link Addable} instance for chaining.
          */
         Addable init(Class<T> type, int initSize);
 
         /**
-         * 批量添加元素
+         * Adds all elements from a list to the object being built.
          *
-         * @param list 元素列表
-         * @return 当前实例
+         * @param list The list of elements to add.
+         * @return This {@link Addable} instance for chaining.
          */
         Addable addAll(List<Object> list);
 
         /**
-         * 获取结果
+         * Gets the final, constructed object.
          *
-         * @return 结果对象
+         * @return The built object.
          */
         T get();
     }
 
     /**
-     * 数组可添加对象实现类
+     * An {@link Addable} implementation for building arrays.
      */
     private static class ArrayAddable implements Addable<Object[]> {
 
-        /**
-         * 数组实例
-         */
         private Object[] instance;
 
-        /**
-         * 初始化数组
-         *
-         * @param type     数组类型
-         * @param initSize 初始大小
-         * @return 当前实例
-         */
         @Override
         public Addable init(Class<Object[]> type, int initSize) {
             this.instance = new Object[initSize];
             return this;
         }
 
-        /**
-         * 批量添加元素
-         *
-         * @param list 元素列表
-         * @return 当前实例
-         */
         @Override
         public Addable addAll(List<Object> list) {
             for (int i = 0; i < list.size(); ++i) {
@@ -175,11 +160,6 @@ public class Addables {
             return this;
         }
 
-        /**
-         * 获取结果
-         *
-         * @return 数组实例
-         */
         @Override
         public Object[] get() {
             return this.instance;
@@ -187,22 +167,12 @@ public class Addables {
     }
 
     /**
-     * 集合可添加对象实现类
+     * An {@link Addable} implementation for building collections.
      */
     private static class CollectionAddable implements Addable<Collection> {
 
-        /**
-         * 集合实例
-         */
         private Collection instance;
 
-        /**
-         * 初始化集合
-         *
-         * @param type     集合类型
-         * @param initSize 初始大小
-         * @return 当前实例
-         */
         @Override
         public Addable init(Class<Collection> type, int initSize) {
             try {
@@ -215,23 +185,12 @@ public class Addables {
             return this;
         }
 
-        /**
-         * 批量添加元素
-         *
-         * @param list 元素列表
-         * @return 当前实例
-         */
         @Override
         public Addable addAll(List<Object> list) {
             this.instance.addAll(list);
             return this;
         }
 
-        /**
-         * 获取结果
-         *
-         * @return 集合实例
-         */
         @Override
         public Collection get() {
             return this.instance;
@@ -239,22 +198,12 @@ public class Addables {
     }
 
     /**
-     * Map可添加对象实现类
+     * An {@link Addable} implementation for building maps.
      */
     private static class MapAddable implements Addable<Map> {
 
-        /**
-         * Map实例
-         */
         private Map instance;
 
-        /**
-         * 初始化Map
-         *
-         * @param type     Map类型
-         * @param initSize 初始大小
-         * @return 当前实例
-         */
         @Override
         public Addable init(Class<Map> type, int initSize) {
             try {
@@ -268,10 +217,10 @@ public class Addables {
         }
 
         /**
-         * 批量添加元素
+         * Adds all entries to the map.
          *
-         * @param list 元素列表，每个元素应该是Map.Entry类型
-         * @return 当前实例
+         * @param list A list of objects, where each object is expected to be a {@link Map.Entry}.
+         * @return This {@link Addable} instance for chaining.
          */
         @Override
         public Addable addAll(List<Object> list) {
@@ -283,11 +232,6 @@ public class Addables {
             return this;
         }
 
-        /**
-         * 获取结果
-         *
-         * @return Map实例
-         */
         @Override
         public Map get() {
             return instance;

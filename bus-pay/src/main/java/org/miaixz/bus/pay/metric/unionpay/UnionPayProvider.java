@@ -36,46 +36,70 @@ import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.pay.magic.Material;
 import org.miaixz.bus.pay.metric.AbstractProvider;
-import org.miaixz.bus.pay.metric.unionpay.api.UnionPayApi;
 
 /**
- * 云闪付接口
+ * UnionPay Cloud QuickPass provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class UnionPayProvider extends AbstractProvider<Material, Context> {
 
+    /**
+     * Constructs a new UnionPayProvider.
+     *
+     * @param context The context.
+     */
     public UnionPayProvider(Context context) {
         this(context, null);
     }
 
+    /**
+     * Constructs a new UnionPayProvider.
+     *
+     * @param context The context.
+     * @param complex The complex object.
+     */
     public UnionPayProvider(Context context, Complex complex) {
         this(context, complex, null);
     }
 
+    /**
+     * Constructs a new UnionPayProvider.
+     *
+     * @param context The context.
+     * @param complex The complex object.
+     * @param cache   The cache.
+     */
     public UnionPayProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
+    /**
+     * Executes a POST request with the given URL and parameters.
+     *
+     * @param url    The URL to post to.
+     * @param params The parameters to post.
+     * @return The response from the server.
+     */
     public static String execution(String url, Map<String, String> params) {
         return post(url, XmlKit.mapToXmlString(params));
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the complete URL for the API request.
      *
-     * @return {@link String} 返回完整的接口请求URL
+     * @return The complete URL.
      */
     public String getUrl() {
         return getUrl(this.complex);
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the complete URL for the API request.
      *
-     * @param complex {@link UnionPayApi} 支付 API 接口枚举
-     * @return {@link String} 返回完整的接口请求URL
+     * @param complex The payment API interface enumeration.
+     * @return The complete URL.
      */
     public String getUrl(Complex complex) {
         return (complex.isSandbox() ? Registry.UNIONPAY.sandbox() : Registry.UNIONPAY.service())

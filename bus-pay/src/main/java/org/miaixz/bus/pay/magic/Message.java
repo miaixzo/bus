@@ -42,7 +42,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 统一授权响应类
+ * Unified authorization response class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,16 +57,40 @@ public class Message extends org.miaixz.bus.core.basic.entity.Message {
     @Serial
     private static final long serialVersionUID = 2852292670363L;
 
+    /**
+     * The body of the message.
+     */
     private String body;
+    /**
+     * The body of the message as a byte array.
+     */
     private byte[] bodyByte;
+    /**
+     * The HTTP status code of the response.
+     */
     private int status;
+    /**
+     * The headers of the message.
+     */
     private Map<String, List<String>> headers;
 
+    /**
+     * Retrieves the first header value for the given header name.
+     *
+     * @param name The name of the header.
+     * @return The first header value, or null if the header is not found or empty.
+     */
     public String getHeader(String name) {
         List<String> values = this.headerList(name);
         return CollKit.isEmpty(values) ? null : values.get(0);
     }
 
+    /**
+     * Retrieves a list of header values for the given header name, case-insensitively.
+     *
+     * @param name The name of the header.
+     * @return A list of header values, or null if the header is not found.
+     */
     private List<String> headerList(String name) {
         if (StringKit.isBlank(name)) {
             return null;

@@ -39,31 +39,44 @@ import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 提供通用唯一识别码（universally unique identifier）（UUID）实现，UUID表示一个128位的值。 此类拷贝自java.util.UUID，用于生成不带-的UUID字符串
+ * Provides a class for generating universally unique identifiers (UUIDs). A UUID represents a 128-bit value. This class
+ * is a copy of `java.util.UUID` and is used to generate UUID strings without hyphens.
  * <ul>
- * <li>Generate UUID 不同版本UUID在线生成和参考：<a href="https://idtools.co/uuid/v4">Generate UUID</a></li>
- * <li>UUID 的 5 个版本：<a href="https://juejin.cn/post/7297225106203689001">UUID 5 version 区别</a></li>
- * <li>UUID代码实现参考：<a href="https://github.com/sake/uuid4j">sake/uuid4j实现</a></li>
+ * <li>Generate UUID: For online generation and reference of different UUID versions, see
+ * <a href="https://idtools.co/uuid/v4">Generate UUID</a>.</li>
+ * <li>5 Versions of UUID: For the differences between UUID versions, see
+ * <a href="https://juejin.cn/post/7297225106203689001">UUID 5 version 区别</a>.</li>
+ * <li>UUID Implementation Reference: For a code implementation reference, see
+ * <a href="https://github.com/sake/uuid4j">sake/uuid4j</a>.</li>
  * </ul>
  * <ul>
- * <li>UUIDv1: Structure,形如：xxxxxxxx-xxxx-1xxx-yxxx-xxxxxxxxxxxx，UUID v1 表示为 32 个字符的十六进制字符串，分五组显示，并用连字符分隔;
- * <strong>基于时间</strong>，同时访问主机的 MAC 地址； generate a time based UUID (V1)</li>
- * <li>UUIDv2: Structure,形如：xxxxxxxx-xxxx-2xxx-yxxx-xxxxxxxxxxxx，UUID v2 的结构与其他 UUID 相同;需要<strong> DCE–分布式计算机环境
- * </strong>生成唯一标识符;由于基于计算主机名，有隐私风险，未大规模使用</li>
- * <li>UUIDv3: Structure,形如：xxxxxxxx-xxxx-3xxx-yxxx-xxxxxxxxxxxx，UUID v3 的结构与其他 UUID 相同;需要<strong> 基于命名·使用MD5哈希加密
- * </strong>生成唯一标识符;</li>
- * <li>UUIDv4: Structure,形如：xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx，UUID v4 的结构与其他 UUID
- * 相同,<strong>使用最多的版本</strong>，使用<strong>随机数生成</strong>。 默认实现都是该版本； generate a random UUID (V4)</li>
- * <li>UUIDv5: Structure,形如：xxxxxxxx-xxxx-5xxx-yxxx-xxxxxxxxxxxx，UUID v5 的结构与其他 UUID 相同,需要根据<strong> 基于命名·使用SHA-1哈希加密
- * </strong>生成唯一标识符； generate name based UUID with SHA1 hashing (v5)</li>
- * <li>UUIDv6: Structure,形如：xxxxxxxx-xxxx-6xxx-yxxx-xxxxxxxxxxxx，UUID v6 的结构与其他 UUID 相同,<strong>与 UUIDv1
- * 的字段兼容版本</strong>,<strong>结合 UUIDv1 和 UUIDv4 的优点</strong>，确保基于时间的自然排序和更好的隐私;</li>
- * <li>UUIDv7: Structure,形如：xxxxxxxx-xxxx-7xxx-yxxx-xxxxxxxxxxxx，UUID v7 的结构与其他 UUID 相同,提供了从 <strong>Unix Epoch
- * 时间戳</strong>派生的时间排序值，以及改进的熵特性。如果可能，<strong>建议使用版本 1 和 6</strong>； generate a ordered time based UUID (V7)</li>
+ * <li>UUIDv1: Structure: `xxxxxxxx-xxxx-1xxx-yxxx-xxxxxxxxxxxx`. UUID v1 is represented as a 32-character hexadecimal
+ * string, displayed in five groups separated by hyphens. It is <strong>time-based</strong> and accesses the host's MAC
+ * address.</li>
+ * <li>UUIDv2: Structure: `xxxxxxxx-xxxx-2xxx-yxxx-xxxxxxxxxxxx`. The structure of UUID v2 is the same as other UUIDs.
+ * It requires <strong>DCE (Distributed Computing Environment)</strong> to generate a unique identifier. Due to privacy
+ * risks associated with being based on the computer hostname, it is not widely used.</li>
+ * <li>UUIDv3: Structure: `xxxxxxxx-xxxx-3xxx-yxxx-xxxxxxxxxxxx`. The structure of UUID v3 is the same as other UUIDs.
+ * It requires <strong>name-based generation using MD5 hashing</strong>.</li>
+ * <li>UUIDv4: Structure: `xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`. The structure of UUID v4 is the same as other UUIDs.
+ * This is the <strong>most widely used version</strong> and is generated using <strong>random numbers</strong>. The
+ * default implementation is this version.</li>
+ * <li>UUIDv5: Structure: `xxxxxxxx-xxxx-5xxx-yxxx-xxxxxxxxxxxx`. The structure of UUID v5 is the same as other UUIDs.
+ * It requires <strong>name-based generation using SHA-1 hashing</strong>.</li>
+ * <li>UUIDv6: Structure: `xxxxxxxx-xxxx-6xxx-yxxx-xxxxxxxxxxxx`. The structure of UUID v6 is the same as other UUIDs.
+ * It is a <strong>version compatible with the fields of UUIDv1</strong>, combining the advantages of UUIDv1 and UUIDv4
+ * to ensure time-based natural sorting and better privacy.</li>
+ * <li>UUIDv7: Structure: `xxxxxxxx-xxxx-7xxx-yxxx-xxxxxxxxxxxx`. The structure of UUID v7 is the same as other UUIDs.
+ * It provides a time-sorted value derived from the <strong>Unix Epoch timestamp</strong>, along with improved entropy
+ * characteristics. If possible, <strong>versions 1 and 6 are recommended</strong>.</li>
  * </ul>
- * version 字段保存描述此 UUID 类型的值。有 7 种不同的基本 UUID 类型：基于时间的 UUIDv1、DCE 安全 UUIDv2、基于名称的 UUIDv3 、随机生成的 UUIDv4、基于名称的SHA-1算法的
- * UUIDv5、基于时间的随机生成的 UUIDv6 和 基于时间戳的 UUIDv7。 这些类型的 version 值分别为 1、2、3、4、5、6 和 7。最常用的V4 这些通用标识符具有不同的变体。此类的方法用于操作
- * Leach-Salz 变体，不过构造方法允许创建任何 UUID 变体（将在下面进行描述）。 变体 2 (Leach-Salz) UUID 的布局如下： long 型数据的最高有效位由以下无符号字段组成：
+ * The version field holds a value that describes the type of this UUID. There are 7 different basic UUID types:
+ * time-based UUIDv1, DCE security UUIDv2, name-based UUIDv3, randomly generated UUIDv4, name-based SHA-1 algorithm
+ * UUIDv5, time-based randomly generated UUIDv6, and timestamp-based UUIDv7. The version values for these types are 1,
+ * 2, 3, 4, 5, 6, and 7, respectively. The most commonly used is V4. These universal identifiers have different
+ * variants. The methods of this class are used to manipulate the Leach-Salz variant, but the constructor allows the
+ * creation of any UUID variant (described below). The layout of a variant 2 (Leach-Salz) UUID is as follows: The most
+ * significant long consists of the following unsigned fields:
  * 
  * <pre>
  * 0xFFFFFFFF00000000 time_low
@@ -72,7 +85,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * 0x0000000000000FFF time_hi
  * </pre>
  * 
- * long 型数据的最低有效位由以下无符号字段组成：
+ * The least significant long consists of the following unsigned fields:
  * 
  * <pre>
  * 0xC000000000000000 variant
@@ -80,7 +93,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * 0x0000FFFFFFFFFFFF node
  * </pre>
  * 
- * variant 字段包含一个表示 UUID 布局的值。以上描述的位布局仅在 UUID 的 variant 值为 2（表示 Leach-Salz 变体）时才有效。
+ * The variant field contains a value that indicates the layout of the UUID. The bit layout described above is valid
+ * only for a UUID with a variant value of 2, which indicates the Leach-Salz variant.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -93,9 +107,9 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     private final No128 idValue;
 
     /**
-     * 私有构造
+     * Private constructor.
      *
-     * @param data 数据
+     * @param data The data to construct the UUID from.
      */
     private UUID(final byte[] data) {
         long msb = 0;
@@ -111,48 +125,53 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 使用指定的数据构造新的 UUID。
+     * Constructs a new {@code UUID} using the specified data.
      *
-     * @param mostSigBits  用于 {@code UUID} 的最高有效 64 位
-     * @param leastSigBits 用于 {@code UUID} 的最低有效 64 位
+     * @param mostSigBits  The most significant 64 bits of the {@code UUID}.
+     * @param leastSigBits The least significant 64 bits of the {@code UUID}.
      */
     public UUID(final long mostSigBits, final long leastSigBits) {
         this.idValue = new No128(mostSigBits, leastSigBits);
     }
 
     /**
-     * 获取类型 4 UUIDv4（伪随机生成的）UUID 的静态工厂。 使用加密的本地线程伪随机数生成器生成该 UUID。
+     * Static factory to retrieve a type 4 (pseudo randomly generated) UUID. The {@code UUID} is generated using a
+     * cryptographically strong local thread pseudo-random number generator.
      *
-     * @return 随机生成的 {@code UUID}
+     * @return A randomly generated {@code UUID}.
      */
     public static UUID fastUUID() {
         return randomUUID(false);
     }
 
     /**
-     * 获取类型 4 UUIDv4（伪随机生成的）UUID 的静态工厂。 使用加密的强伪随机数生成器生成该 UUID。
+     * Static factory to retrieve a type 4 (pseudo randomly generated) UUID. The {@code UUID} is generated using a
+     * cryptographically strong pseudo-random number generator.
      *
-     * @return 随机生成的 {@code UUID}
+     * @return A randomly generated {@code UUID}.
      */
     public static UUID randomUUID() {
         return randomUUID(true);
     }
 
     /**
-     * 获取类型 4 UUIDv4（伪随机生成的）UUID 的静态工厂。 使用加密的强伪随机数生成器生成该 UUID。
+     * Static factory to retrieve a type 4 (pseudo randomly generated) UUID. The {@code UUID} is generated using a
+     * cryptographically strong pseudo-random number generator.
      *
-     * @param isSecure 是否使用{@link SecureRandom}如果是可以获得更安全的随机码，否则可以得到更好的性能
-     * @return 随机生成的 {@code UUID}
+     * @param isSecure If {@code true}, uses {@link SecureRandom} for better security; otherwise, uses a faster but less
+     *                 secure random number generator.
+     * @return A randomly generated {@code UUID}.
      */
     public static UUID randomUUID(final boolean isSecure) {
         return randomUUID(isSecure ? Holder.NUMBER_GENERATOR : RandomKit.getRandom());
     }
 
     /**
-     * 获取类型 4 UUIDv4（伪随机生成的）UUID 的静态工厂。 使用加密的强伪随机数生成器生成该 UUID。
+     * Static factory to retrieve a type 4 (pseudo randomly generated) UUID. The {@code UUID} is generated using the
+     * specified random number generator.
      *
-     * @param random 随机数生成器
-     * @return 随机生成的 {@code UUID}
+     * @param random The random number generator to use.
+     * @return A randomly generated {@code UUID}.
      */
     public static UUID randomUUID(final Random random) {
         final byte[] randomBytes = RandomKit.randomBytes(16, random);
@@ -166,10 +185,10 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 根据指定的字节数组获取类型 3 UUIDv3（基于名称的·使用MD5哈希加密）UUID 的静态工厂。
+     * Static factory to retrieve a type 3 (name-based, MD5 hashed) UUID based on the specified byte array.
      *
-     * @param name 用于构造 UUID 的字节数组。
-     * @return 根据指定数组生成的 {@code UUID}
+     * @param name A byte array to be used to construct a {@code UUID}.
+     * @return A {@code UUID} generated from the specified array.
      */
     public static UUID nameUUIDFromBytes(final byte[] name) {
         final MessageDigest md;
@@ -187,11 +206,12 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 根据 {@link #toString()} 方法中描述的字符串标准表示形式创建{@code UUID}。
+     * Creates a {@code UUID} from the string standard representation as described in the {@link #toString()} method.
      *
-     * @param name 指定 {@code UUID} 字符串
-     * @return 具有指定值的 {@code UUID}
-     * @throws IllegalArgumentException 如果 name 与 {@link #toString} 中描述的字符串表示形式不符抛出此异常
+     * @param name A string that specifies a {@code UUID}.
+     * @return A {@code UUID} with the specified value.
+     * @throws IllegalArgumentException If name does not conform to the string representation as described in
+     *                                  {@link #toString()}.
      */
     public static UUID fromString(final String name) {
         final String[] components = name.split(Symbol.MINUS);
@@ -216,11 +236,11 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 返回指定数字对应的hex值
+     * Returns the hex value corresponding to the specified number.
      *
-     * @param val    值
-     * @param digits 位
-     * @return 值
+     * @param val    The value.
+     * @param digits The number of digits.
+     * @return The hex value.
      */
     private static String digits(final long val, final int digits) {
         final long hi = 1L << (digits * 4);
@@ -228,36 +248,37 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 返回此 UUID 的 128 位值中的最低有效 64 位。
+     * Returns the least significant 64 bits of this UUID's 128-bit value.
      *
-     * @return 此 UUID 的 128 位值中的最低有效 64 位。
+     * @return The least significant 64 bits of this UUID's 128-bit value.
      */
     public long getLeastSignificantBits() {
         return this.idValue.getLeastSigBits();
     }
 
     /**
-     * 返回此 UUID 的 128 位值中的最高有效 64 位。
+     * Returns the most significant 64 bits of this UUID's 128-bit value.
      *
-     * @return 此 UUID 的 128 位值中最高有效 64 位。
+     * @return The most significant 64 bits of this UUID's 128-bit value.
      */
     public long getMostSignificantBits() {
         return this.idValue.getMostSigBits();
     }
 
     /**
-     * 与此 {@code UUID} 相关联的版本号. 版本号描述此 {@code UUID} 是如何生成的。 版本号具有以下含意:
+     * The version number associated with this {@code UUID}. The version number describes how this {@code UUID} was
+     * generated. The version number has the following meaning:
      * <ul>
-     * <li>UUIDv1 基于时间的 UUID
-     * <li>UUIDv2 DCE 安全 UUID
-     * <li>UUIDv3 基于名称的MD5散列算法的 UUID
-     * <li>UUIDv4 随机生成的 UUID
-     * <li>UUIDv5 基于名称的SHA-1散列算法的 UUID
-     * <li>UUIDv6 基于时间的随机生成的 UUID （UUIDv1 + UUIDv4）
-     * <li>UUIDv7 基于时间戳Unix epoch的 UUID
+     * <li>1 Time-based UUID
+     * <li>2 DCE security UUID
+     * <li>3 Name-based UUID (MD5 hash)
+     * <li>4 Randomly generated UUID
+     * <li>5 Name-based UUID (SHA-1 hash)
+     * <li>6 Time-based, randomly generated UUID (UUIDv1 + UUIDv4)
+     * <li>7 Timestamp-based UUID (Unix epoch)
      * </ul>
      *
-     * @return 此 {@code UUID} 的版本号
+     * @return The version number of this {@code UUID}.
      */
     public int version() {
         // Version is bits masked by 0x000000000000F000 in MS long
@@ -265,15 +286,16 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 与此 {@code UUID} 相关联的变体号。变体号描述 {@code UUID} 的布局。 变体号具有以下含意：
+     * The variant number associated with this {@code UUID}. The variant number describes the layout of the
+     * {@code UUID}. The variant number has the following meaning:
      * <ul>
-     * <li>0 为 NCS 向后兼容保留
-     * <li>2 <a href="http://www.ietf.org/rfc/rfc4122.txt">IETF&nbsp;RFC&nbsp;4122</a>(Leach-Salz), 用于此类
-     * <li>6 保留，微软向后兼容
-     * <li>7 保留供以后定义使用
+     * <li>0 Reserved for NCS backward compatibility
+     * <li>2 <a href="http://www.ietf.org/rfc/rfc4122.txt">IETF&nbsp;RFC&nbsp;4122</a> (Leach-Salz), used by this class
+     * <li>6 Reserved, Microsoft backward compatibility
+     * <li>7 Reserved for future definition
      * </ul>
      *
-     * @return 此 {@code UUID} 相关联的变体号
+     * @return The variant number of this {@code UUID}.
      */
     public int variant() {
         final long leastSigBits = this.getLeastSignificantBits();
@@ -286,12 +308,14 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 与此 UUID 相关联的时间戳值。 60 位的时间戳值根据此 {@code UUID} 的 time_low、time_mid 和 time_hi 字段构造。 所得到的时间戳以 100 毫微秒为单位，从 UTC（通用协调时间）
-     * 1582 年 10 月 15 日零时开始。 时间戳值仅在在基于时间的 UUID（其 version 类型为 1）中才有意义。 如果此 {@code UUID} 不是基于时间的 UUID，则此方法抛出
-     * UnsupportedOperationException。
+     * The timestamp value associated with this UUID. The 60-bit timestamp value is constructed from the time_low,
+     * time_mid, and time_hi fields of this {@code UUID}. The resulting timestamp is measured in 100-nanosecond units
+     * since midnight, October 15, 1582 UTC. The timestamp value is only meaningful in a time-based UUID, which has
+     * version type 1. If this {@code UUID} is not a time-based UUID then this method throws
+     * UnsupportedOperationException.
      *
-     * @return 时间戳值
-     * @throws UnsupportedOperationException 如果此 {@code UUID} 不是 version 为 1 的 UUID。
+     * @return The timestamp value.
+     * @throws UnsupportedOperationException If this {@code UUID} is not a version 1 UUID.
      */
     public long timestamp() throws UnsupportedOperationException {
         final long mostSigBits = this.getMostSignificantBits();
@@ -302,11 +326,13 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 与此 UUID 相关联的时钟序列值。 14 位的时钟序列值根据此 UUID 的 clock_seq 字段构造。clock_seq 字段用于保证在基于时间的 UUID 中的时间唯一性。 {@code clockSequence}
-     * 值仅在基于时间的 UUID（其 version 类型为 1）中才有意义。 如果此 UUID 不是基于时间的 UUID，则此方法抛出 UnsupportedOperationException。
+     * The clock sequence value associated with this UUID. The 14-bit clock sequence value is constructed from the
+     * clock_seq field of this UUID. The clock_seq field is used to guarantee temporal uniqueness in a time-based UUID.
+     * The {@code clockSequence} value is only meaningful in a time-based UUID, which has version type 1. If this UUID
+     * is not a time-based UUID, this method throws UnsupportedOperationException.
      *
-     * @return 此 {@code UUID} 的时钟序列
-     * @throws UnsupportedOperationException 如果此 UUID 的 version 不为 1
+     * @return The clock sequence of this {@code UUID}.
+     * @throws UnsupportedOperationException If the version of this UUID is not 1.
      */
     public int clockSequence() throws UnsupportedOperationException {
         checkTimeBase();
@@ -314,11 +340,13 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 与此 UUID 相关的节点值。 48 位的节点值根据此 UUID 的 node 字段构造。此字段旨在用于保存机器的 IEEE 802 地址，该地址用于生成此 UUID 以保证空间唯一性。 节点值仅在基于时间的 UUID（其
-     * version 类型为 1）中才有意义。 如果此 UUID 不是基于时间的 UUID，则此方法抛出 UnsupportedOperationException。
+     * The node value associated with this UUID. The 48-bit node value is constructed from the node field of this UUID.
+     * This field is intended to hold the IEEE 802 address of the machine that generated this UUID to guarantee spatial
+     * uniqueness. The node value is only meaningful in a time-based UUID, which has version type 1. If this UUID is not
+     * a time-based UUID, this method throws UnsupportedOperationException.
      *
-     * @return 此 {@code UUID} 的节点值
-     * @throws UnsupportedOperationException 如果此 UUID 的 version 不为 1
+     * @return The node value of this {@code UUID}.
+     * @throws UnsupportedOperationException If the version of this UUID is not 1.
      */
     public long node() throws UnsupportedOperationException {
         checkTimeBase();
@@ -326,7 +354,8 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 返回此{@code UUID} 的字符串表现形式。 UUID 的字符串表示形式由此 BNF 描述：
+     * Returns a {@code String} object representing this {@code UUID}. The UUID string representation is as described by
+     * this BNF:
      *
      * <pre>
      * {@code
@@ -341,7 +370,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * }
      * </pre>
      *
-     * @return 此{@code UUID} 的字符串表现形式
+     * @return A string representation of this {@code UUID}.
      * @see #toString(boolean)
      */
     @Override
@@ -350,7 +379,8 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 返回此{@code UUID} 的字符串表现形式。 UUID 的字符串表示形式由此 BNF 描述：
+     * Returns a {@code String} object representing this {@code UUID}. The UUID string representation is as described by
+     * this BNF:
      *
      * <pre>
      * {@code
@@ -365,8 +395,8 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
      * }
      * </pre>
      *
-     * @param isSimple 是否简单模式，简单模式为不带'-'的UUID字符串
-     * @return 此{@code UUID} 的字符串表现形式
+     * @param isSimple If {@code true}, the UUID string will not contain hyphens.
+     * @return A string representation of this {@code UUID}.
      */
     public String toString(final boolean isSimple) {
         final long mostSigBits = this.getLeastSignificantBits();
@@ -400,9 +430,9 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 返回此 UUID 的哈希码。
+     * Returns a hash code for this UUID.
      *
-     * @return UUID 的哈希码值。
+     * @return A hash code value for this UUID.
      */
     @Override
     public int hashCode() {
@@ -411,10 +441,12 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 将此对象与指定对象比较。 当且仅当参数不为 {@code null}、而是一个 UUID 对象、具有与此 UUID 相同的 varriant、包含相同的值（每一位均相同）时，结果才为 {@code true}。
+     * Compares this object to the specified object. The result is {@code true} if and only if the argument is not
+     * {@code null}, is a {@code UUID} object, has the same variant, and contains the same value, bit for bit, as this
+     * UUID.
      *
-     * @param object 要与之比较的对象
-     * @return 如果对象相同，则返回 {@code true}；否则返回 {@code false}
+     * @param object The object to compare with.
+     * @return {@code true} if the objects are the same; {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object object) {
@@ -429,10 +461,12 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 将此 UUID 与指定的 UUID 比较。 如果两个 UUID 不同，且第一个 UUID 的最高有效字段大于第二个 UUID 的对应字段，则第一个 UUID 大于第二个 UUID。
+     * Compares this UUID with the specified UUID. If the two UUIDs are different, and the most significant field of the
+     * first UUID is greater than the corresponding field of the second UUID, the first UUID is greater than the second
+     * UUID.
      *
-     * @param val 与此 UUID 比较的 UUID
-     * @return 在此 UUID 小于、等于或大于 val 时，分别返回 -1、0 或 1。
+     * @param val The {@code UUID} to which this {@code UUID} is to be compared.
+     * @return -1, 0 or 1 as this {@code UUID} is less than, equal to, or greater than {@code val}.
      */
     @Override
     public int compareTo(final UUID val) {
@@ -446,7 +480,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * 检查是否为time-based版本UUID
+     * Checks if this is a time-based UUID.
      */
     private void checkTimeBase() {
         if (version() != 1) {
@@ -455,7 +489,7 @@ public class UUID implements java.io.Serializable, Comparable<UUID> {
     }
 
     /**
-     * {@link SecureRandom} 的单例
+     * Singleton for {@link SecureRandom}.
      */
     private static class Holder {
 

@@ -44,7 +44,7 @@ import org.miaixz.bus.office.excel.xyz.CellKit;
 import org.miaixz.bus.office.excel.xyz.SheetKit;
 
 /**
- * 模板上下文，记录了模板中变量所在的Cell
+ * Template context, which records the cells where variables are located in the template.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,50 +52,53 @@ import org.miaixz.bus.office.excel.xyz.SheetKit;
 public class TemplateContext {
 
     /**
-     * 变量正则
+     * Regular expression for variables.
      * <ol>
-     * <li>变量名只能包含字母、数字、下划线、$符号、.符号，不能以数字开头</li>
-     * <li>变量以 { 开始，以 } 结束</li>
-     * <li>\{表示转义，非变量符号</li>
-     * <li>.开头的变量表示列表，.出现在中间，表示表达式子对象</li>
+     * <li>Variable names can only contain letters, numbers, underscores, dollar signs, and periods, and cannot start
+     * with a number.</li>
+     * <li>Variables start with '{' and end with '}'.</li>
+     * <li>'\{' indicates an escaped character, not a variable symbol.</li>
+     * <li>Variables starting with '.' indicate a list. If '.' appears in the middle, it indicates a sub-object of an
+     * expression.</li>
      * </ol>
      */
     private static final Pattern VAR_PATTERN = Pattern.compile("(?<!\\\\)\\{([.$_a-zA-Z]+\\d*[.$_a-zA-Z]*)}");
     private static final Pattern ESCAPE_VAR_PATTERN = Pattern.compile("\\\\\\{([.$_a-zA-Z]+\\d*[.$_a-zA-Z]*)\\\\}");
 
     /**
-     * 存储变量对应单元格的映射
+     * Map storing the mapping between variable names and their corresponding cells.
      */
     private final Map<String, Cell> varMap = new LinkedHashMap<>();
 
     /**
-     * 构造
+     * Constructs a new {@code TemplateContext}.
      *
-     * @param templateSheet 模板sheet
+     * @param templateSheet The template sheet.
      */
     public TemplateContext(final Sheet templateSheet) {
         init(templateSheet);
     }
 
     /**
-     * 获取变量对应的单元格，列表变量以.开头
+     * Gets the cell corresponding to the variable name. List variables start with a dot.
      *
-     * @param varName 变量名
-     * @return 单元格
+     * @param varName The variable name.
+     * @return The {@link Cell} object.
      */
     public Cell getCell(final String varName) {
         return varMap.get(varName);
     }
 
     /**
-     * 获取当前替换的数据行对应变量的底部索引 此方法用户获取填充行，以便下移填充行后的行
+     * Gets the bottom index of the row corresponding to the current filled data variable. This method is used to obtain
+     * the filled row to shift rows after the filled row.
      * <ul>
-     * <li>如果为实体单元格，直接填充，无需下移，返回0</li>
-     * <li>如果为{@link VirtualCell}，返回最底部虚拟单元格各行号</li>
+     * <li>If it is an actual cell, it is filled directly without shifting, returning 0.</li>
+     * <li>If it is a {@link VirtualCell}, it returns the row number of the bottom-most virtual cell.</li>
      * </ul>
      *
-     * @param rowDataBean 填充数据
-     * @return 最大行索引，-1表示无数据填充，0表示无需下移
+     * @param rowDataBean The data bean to fill.
+     * @return The maximum row index. -1 indicates no data filled, 0 indicates no shifting needed.
      */
     public int getBottomRowIndex(final Object rowDataBean) {
         final AtomicInteger bottomRowIndex = new AtomicInteger(-1);
@@ -104,7 +107,7 @@ public class TemplateContext {
                 if (cell instanceof VirtualCell) {
                     bottomRowIndex.set(Math.max(bottomRowIndex.get(), cell.getRowIndex()));
                 } else if (bottomRowIndex.get() < 0) {
-                    // 实体单元格，直接填充，无需下移
+                    // Actual cell, fill directly, no need to shift.
                     bottomRowIndex.set(0);
                 }
             }
@@ -113,10 +116,11 @@ public class TemplateContext {
     }
 
     /**
-     * 填充变量名name指向的单元格
+     * Fills the cell pointed to by the variable name.
      *
-     * @param rowDataBean 一行数据的键值对
-     * @param isListVar   是否为列表填充，列表填充会自动指向下一列，否则填充结束后删除变量
+     * @param rowDataBean The key-value pair of a row of data.
+     * @param isListVar   {@code true} if it is a list fill (automatically points to the next column), {@code false}
+     *                    otherwise (variable is deleted after filling).
      */
     public void fill(final Object rowDataBean, final boolean isListVar) {
         final Map<String, Cell> varMap = this.varMap;
@@ -126,51 +130,52 @@ public class TemplateContext {
             }
 
             final String templateStr = cell.getStringCellValue();
-            // 填充单元格
+            // Fill cell.
             if (fill(cell, name, rowDataBean)) {
-                // 指向下一个单元格
+                // Point to the next cell.
                 putNext(name, cell, templateStr, isListVar);
             }
         });
 
         if (!isListVar) {
-            // 清理已经匹配完毕的变量
+            // Clear variables that have been matched.
             MapKit.removeNullValue(varMap);
         }
     }
 
     /**
-     * 将变量指向下一行的单元格 如果为列表，则指向下一行的虚拟单元格（不创建单元格） 如果非列表，则清空此变量
+     * Points the variable to the cell in the next row. If it is a list, it points to a virtual cell in the next row
+     * (without creating a physical cell). If it is not a list, this variable is cleared.
      *
-     * @param name        变量名
-     * @param currentCell 当前单元格
-     * @param templateStr 模板字符串
-     * @param isListVar   是否为列表填充
+     * @param name        The variable name.
+     * @param currentCell The current cell.
+     * @param templateStr The template string.
+     * @param isListVar   {@code true} if it is a list fill, {@code false} otherwise.
      */
     private void putNext(final String name, final Cell currentCell, final String templateStr, final boolean isListVar) {
         if (isListVar) {
-            // 指向下一列的单元格
+            // Point to the cell in the next column.
             final Cell next = new VirtualCell(currentCell, currentCell.getColumnIndex(), currentCell.getRowIndex() + 1,
                     templateStr);
             varMap.put(name, next);
         } else {
-            // 非列表，一次性填充，即变量填充后，和此单元格去掉关联
+            // Not a list, one-time fill, meaning the variable is disassociated from this cell after filling.
             varMap.put(name, null);
         }
     }
 
     /**
-     * 填充数据
+     * Fills data into a cell.
      *
-     * @param cell        单元格，非模板中变量所在单元格则为{@link VirtualCell}
-     * @param name        变量名
-     * @param rowDataBean 填充的数据，可以为Map或Bean
-     * @return 是否填充成功，{@code false}表示无数据
+     * @param cell        The cell. If it is not a variable cell in the template, it is a {@link VirtualCell}.
+     * @param name        The variable name.
+     * @param rowDataBean The data to fill, can be a {@link Map} or a Bean.
+     * @return {@code true} if filling is successful, {@code false} if no data is available for filling.
      */
     private boolean fill(Cell cell, final String name, final Object rowDataBean) {
         final String templateStr = cell.getStringCellValue();
         if (cell instanceof VirtualCell) {
-            // 虚拟单元格，转换为实际单元格
+            // Virtual cell, convert to actual cell.
             final Cell newCell;
 
             newCell = CellKit.getCell(cell.getSheet(), cell.getColumnIndex(), cell.getRowIndex(), true);
@@ -181,20 +186,20 @@ public class TemplateContext {
         }
 
         final Object cellValue;
-        // 模板替换
+        // Template replacement.
         if (StringKit.equals(name, StringKit.unWrap(templateStr, Symbol.BRACE_LEFT, Symbol.BRACE_RIGHT))) {
-            // 一个单元格只有一个变量，支持多级表达式
+            // A cell has only one variable, supporting multi-level expressions.
             cellValue = BeanKit.getProperty(rowDataBean, name);
             if (null == cellValue) {
-                // 对应表达式无提供的值，跳过填充
+                // No value provided for the corresponding expression, skip filling.
                 return false;
             }
         } else {
-            // 模板中存在多个变量或模板填充，直接赋值为String
-            // 没有找到值的变量保留原样
+            // Multiple variables or template filling in the template, assign directly as String.
+            // Variables for which no value is found remain unchanged.
             cellValue = StringKit.formatByBean(templateStr, rowDataBean, true);
             if (ObjectKit.equals(cellValue, templateStr)) {
-                // 模板无修改，说明没有变量替换，跳过填充
+                // No changes in the template, meaning no variable replacement, skip filling.
                 return false;
             }
         }
@@ -203,26 +208,26 @@ public class TemplateContext {
     }
 
     /**
-     * 初始化，提取变量及位置，并将转义的变量回填
+     * Initializes the template context by extracting variables and their positions, and replacing escaped variables.
      *
-     * @param templateSheet 模板sheet
+     * @param templateSheet The template sheet.
      */
     private void init(final Sheet templateSheet) {
         SheetKit.walk(templateSheet, (cell, ctx) -> {
             if (CellType.STRING == cell.getCellType()) {
-                // 只读取字符串类型的单元格
+                // Only read string type cells.
                 final String cellValue = cell.getStringCellValue();
 
-                // 字符串中可能有多个变量
+                // A string may contain multiple variables.
                 final List<String> vars = PatternKit.findAllGroup1(VAR_PATTERN, cellValue);
                 if (CollKit.isNotEmpty(vars)) {
-                    // 模板变量
+                    // Template variables.
                     for (final String var : vars) {
                         varMap.put(var, cell);
                     }
                 }
 
-                // 替换转义的变量
+                // Replace escaped variables.
                 final String text = PatternKit.replaceAll(
                         cellValue,
                         ESCAPE_VAR_PATTERN,

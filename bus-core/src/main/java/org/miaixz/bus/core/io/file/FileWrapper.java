@@ -38,7 +38,8 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 文件包装器，扩展文件对象
+ * File wrapper, extending the {@link File} object. This class provides a convenient way to encapsulate a {@link File}
+ * object along with its character encoding, offering additional utility methods related to file properties.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,19 +50,21 @@ public class FileWrapper implements Wrapper<File>, Serializable {
     private static final long serialVersionUID = 2852227812657L;
 
     /**
-     * 被包装的文件
+     * The wrapped {@link File} object.
      */
     protected File file;
     /**
-     * 编码
+     * The character set used for the file, typically for reading or writing text content.
      */
     protected java.nio.charset.Charset charset;
 
     /**
-     * 构造
+     * Constructs a new {@code FileWrapper} instance.
      *
-     * @param file    文件（非{@code null}）
-     * @param charset 编码，使用 {@link Charset}，传入{@code null}则使用默认编码{@link Charset#UTF_8}
+     * @param file    The {@link File} object to wrap. Must not be {@code null}.
+     * @param charset The character set to use for file operations. If {@code null}, {@link Charset#UTF_8} is used as
+     *                the default encoding.
+     * @throws NullPointerException if the provided {@code file} is {@code null}.
      */
     public FileWrapper(final File file, final java.nio.charset.Charset charset) {
         this.file = Assert.notNull(file);
@@ -69,9 +72,9 @@ public class FileWrapper implements Wrapper<File>, Serializable {
     }
 
     /**
-     * 获得文件
+     * Gets the raw, wrapped {@link File} object.
      *
-     * @return 文件
+     * @return The wrapped {@link File} object.
      */
     @Override
     public File getRaw() {
@@ -79,10 +82,11 @@ public class FileWrapper implements Wrapper<File>, Serializable {
     }
 
     /**
-     * 设置文件
+     * Sets the wrapped {@link File} object.
      *
-     * @param file 文件
-     * @return 自身
+     * @param file The new {@link File} object to set. Must not be {@code null}.
+     * @return This {@code FileWrapper} instance, allowing for method chaining.
+     * @throws NullPointerException if the provided {@code file} is {@code null}.
      */
     public FileWrapper setFile(final File file) {
         this.file = file;
@@ -90,19 +94,20 @@ public class FileWrapper implements Wrapper<File>, Serializable {
     }
 
     /**
-     * 获得字符集编码
+     * Gets the character set encoding associated with this file wrapper.
      *
-     * @return 编码
+     * @return The {@link java.nio.charset.Charset} used for file operations.
      */
     public java.nio.charset.Charset getCharset() {
         return charset;
     }
 
     /**
-     * 设置字符集编码
+     * Sets the character set encoding for this file wrapper.
      *
-     * @param charset 编码
-     * @return 自身
+     * @param charset The new {@link java.nio.charset.Charset} to set. If {@code null}, {@link Charset#UTF_8} will be
+     *                used.
+     * @return This {@code FileWrapper} instance, allowing for method chaining.
      */
     public FileWrapper setCharset(final java.nio.charset.Charset charset) {
         this.charset = charset;
@@ -110,9 +115,9 @@ public class FileWrapper implements Wrapper<File>, Serializable {
     }
 
     /**
-     * 可读的文件大小
+     * Returns a human-readable string representation of the file size. For example, "1.23 MB", "456 KB", "789 Bytes".
      *
-     * @return 大小
+     * @return A string representing the readable file size.
      */
     public String readableFileSize() {
         return FileKit.readableFileSize(file.length());

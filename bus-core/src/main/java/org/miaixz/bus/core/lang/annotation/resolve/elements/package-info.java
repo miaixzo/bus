@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * AnnotatedElement 对象实现
+ * This package provides implementations of {@link java.lang.reflect.AnnotatedElement} that enhance annotation
+ * processing capabilities, particularly for handling meta-annotations and annotation hierarchies.
  *
  * @author Kimi Liu
  * @since Java 17+

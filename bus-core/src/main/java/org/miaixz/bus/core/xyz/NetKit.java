@@ -50,7 +50,7 @@ import org.miaixz.bus.core.net.ip.IPv4;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * 网络相关工具
+ * Network related utility class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,10 +58,10 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class NetKit {
 
     /**
-     * 根据long值获取ip v4地址
+     * Converts a long value to an IPv4 address string.
      *
-     * @param longIP IP的long表示形式
-     * @return IP V4 地址
+     * @param longIP The long representation of the IP address.
+     * @return The IPv4 address string.
      * @see IPv4#longToIpv4(long)
      */
     public static String longToIpv4(final long longIP) {
@@ -69,10 +69,10 @@ public class NetKit {
     }
 
     /**
-     * 根据ip地址计算出long型的数据
+     * Converts an IPv4 address string to its long representation.
      *
-     * @param strIP IP V4 地址
-     * @return long值
+     * @param strIP The IPv4 address string.
+     * @return The long representation of the IP address.
      * @see IPv4#ipv4ToLong(String)
      */
     public static long ipv4ToLong(final String strIP) {
@@ -80,18 +80,18 @@ public class NetKit {
     }
 
     /**
-     * 检测本地端口可用性
+     * Checks if a local port is usable (not occupied).
      *
-     * @param port 被检测的端口
-     * @return 是否可用
+     * @param port The port to check.
+     * @return {@code true} if the port is usable, {@code false} otherwise.
      */
     public static boolean isUsableLocalPort(final int port) {
         if (!isValidPort(port)) {
-            // 给定的IP未在指定端口范围中
+            // The given IP is not within the specified port range.
             return false;
         }
 
-        // 某些绑定非127.0.0.1的端口无法被检测到
+        // Some ports bound to non-127.0.0.1 cannot be detected.
         try (final ServerSocket ss = new ServerSocket(port)) {
             ss.setReuseAddress(true);
         } catch (final IOException ignored) {
@@ -108,41 +108,47 @@ public class NetKit {
     }
 
     /**
-     * 是否为有效的端口 此方法并不检查端口是否被占用
+     * Checks if a port number is valid. This method does not check if the port is occupied.
      *
-     * @param port 端口号
-     * @return 是否有效
+     * @param port The port number.
+     * @return {@code true} if the port is valid (0-65535), {@code false} otherwise.
      */
     public static boolean isValidPort(final int port) {
-        // 有效端口是0～65535
+        // Valid ports are 0 to 65535
         return port >= 0 && port <= Normal._65535;
     }
 
     /**
-     * 查找1024~65535范围内的可用端口 此方法只检测给定范围内的随机一个端口，检测65535-1024次
+     * Finds an available local port in the range 1024 to 65535. This method checks a random port within the given range
+     * up to (65535 - 1024) times.
      *
-     * @return 可用的端口
+     * @return An available port.
+     * @throws InternalException If no available port is found within the range after multiple attempts.
      */
     public static int getUsableLocalPort() {
         return getUsableLocalPort(Normal._1024);
     }
 
     /**
-     * 查找指定范围内的可用端口，最大值为65535 此方法只检测给定范围内的随机一个端口，检测65535-minPort次
+     * Finds an available local port within the specified range, up to a maximum of 65535. This method checks a random
+     * port within the given range up to (65535 - minPort) times.
      *
-     * @param minPort 端口最小值（包含）
-     * @return 可用的端口
+     * @param minPort The minimum port number (inclusive).
+     * @return An available port.
+     * @throws InternalException If no available port is found within the range after multiple attempts.
      */
     public static int getUsableLocalPort(final int minPort) {
         return getUsableLocalPort(minPort, Normal._65535);
     }
 
     /**
-     * 查找指定范围内的可用端口 此方法只检测给定范围内的随机一个端口，检测maxPort-minPort次
+     * Finds an available local port within the specified range. This method checks a random port within the given range
+     * up to (maxPort - minPort) times.
      *
-     * @param minPort 端口最小值（包含）
-     * @param maxPort 端口最大值（包含）
-     * @return 可用的端口
+     * @param minPort The minimum port number (inclusive).
+     * @param maxPort The maximum port number (inclusive).
+     * @return An available port.
+     * @throws InternalException If no available port is found within the range after multiple attempts.
      */
     public static int getUsableLocalPort(final int minPort, final int maxPort) {
         final int maxPortExclude = maxPort + 1;
@@ -159,12 +165,14 @@ public class NetKit {
     }
 
     /**
-     * 获取多个本地可用端口
+     * Retrieves multiple usable local ports within a specified range.
      *
-     * @param numRequested 尝试次数
-     * @param minPort      端口最小值（包含）
-     * @param maxPort      端口最大值（包含）
-     * @return 可用的端口
+     * @param numRequested The number of usable ports to find.
+     * @param minPort      The minimum port number (inclusive).
+     * @param maxPort      The maximum port number (inclusive).
+     * @return A {@link TreeSet} containing the available ports.
+     * @throws InternalException If the requested number of ports cannot be found within the range after multiple
+     *                           attempts.
      */
     public static TreeSet<Integer> getUsableLocalPorts(final int numRequested, final int minPort, final int maxPort) {
         final TreeSet<Integer> availablePorts = new TreeSet<>();
@@ -182,18 +190,18 @@ public class NetKit {
     }
 
     /**
-     * 判定是否为内网IPv4 私有IP：
+     * Determines if an IPv4 address is a private IP address. Private IP ranges:
      * 
      * <pre>
-     * A类 10.0.0.0-10.255.255.255
-     * B类 172.16.0.0-172.31.255.255
-     * C类 192.168.0.0-192.168.255.255
+     * A class: 10.0.0.0 - 10.255.255.255
+     * B class: 172.16.0.0 - 172.31.255.255
+     * C class: 192.168.0.0 - 192.168.255.255
      * </pre>
      * 
-     * 当然，还有127这个网段是环回地址
+     * Also, the 127.x.x.x range is a loopback address.
      *
-     * @param ipAddress IP地址
-     * @return 是否为内网IP
+     * @param ipAddress The IP address to check.
+     * @return {@code true} if the IP address is a private IP, {@code false} otherwise.
      * @see IPv4#isInnerIP(String)
      */
     public static boolean isInnerIP(final String ipAddress) {
@@ -201,11 +209,12 @@ public class NetKit {
     }
 
     /**
-     * 相对URL转换为绝对URL
+     * Converts a relative URL to an absolute URL.
      *
-     * @param absoluteBasePath 基准路径，绝对
-     * @param relativePath     相对路径
-     * @return 绝对URL
+     * @param absoluteBasePath The base path, which must be absolute.
+     * @param relativePath     The relative path.
+     * @return The absolute URL string.
+     * @throws InternalException If an error occurs during URL conversion.
      */
     public static String toAbsoluteUrl(final String absoluteBasePath, final String relativePath) {
         try {
@@ -217,30 +226,30 @@ public class NetKit {
     }
 
     /**
-     * 隐藏掉IP地址的最后一部分为 * 代替
+     * Hides the last part of an IP address with an asterisk (*).
      *
-     * @param ip IP地址
-     * @return 隐藏部分后的IP
+     * @param ip The IP address string.
+     * @return The IP address with the last part hidden.
      */
     public static String hideIpPart(final String ip) {
         return StringKit.builder(ip.length()).append(ip, 0, ip.lastIndexOf(".") + 1).append(Symbol.STAR).toString();
     }
 
     /**
-     * 隐藏掉IP地址的最后一部分为 * 代替
+     * Hides the last part of an IP address (represented as a long) with an asterisk (*).
      *
-     * @param ip IP地址
-     * @return 隐藏部分后的IP
+     * @param ip The IP address as a long value.
+     * @return The IP address with the last part hidden.
      */
     public static String hideIpPart(final long ip) {
         return hideIpPart(longToIpv4(ip));
     }
 
     /**
-     * 通过域名得到IP
+     * Resolves a hostname to its IP address.
      *
-     * @param hostName HOST
-     * @return ip address or hostName if UnknownHostException
+     * @param hostName The hostname.
+     * @return The IP address string, or the hostname itself if {@link UnknownHostException} occurs.
      */
     public static String getIpByHost(final String hostName) {
         try {
@@ -251,10 +260,10 @@ public class NetKit {
     }
 
     /**
-     * 获取指定名称的网卡信息
+     * Retrieves a network interface by its name.
      *
-     * @param name 网络接口名，例如Linux下默认是eth0
-     * @return 网卡，未找到返回{@code null}
+     * @param name The name of the network interface (e.g., "eth0" on Linux).
+     * @return The {@link NetworkInterface} object, or {@code null} if not found.
      */
     public static NetworkInterface getNetworkInterface(final String name) {
         final Enumeration<NetworkInterface> networkInterfaces;
@@ -276,9 +285,10 @@ public class NetKit {
     }
 
     /**
-     * 获取本机所有网卡
+     * Retrieves all network interfaces on the local machine.
      *
-     * @return 所有网卡，异常返回{@code null}
+     * @return A {@link Collection} of {@link NetworkInterface} objects, or {@code null} if a {@link SocketException}
+     *         occurs.
      */
     public static Collection<NetworkInterface> getNetworkInterfaces() {
         final Enumeration<NetworkInterface> networkInterfaces;
@@ -292,9 +302,9 @@ public class NetKit {
     }
 
     /**
-     * 获得本机的IPv4地址列表 返回的IP列表有序，按照系统设备顺序
+     * Retrieves a sorted list of local IPv4 addresses. The IP list is ordered according to the system device order.
      *
-     * @return IP地址列表 {@link LinkedHashSet}
+     * @return A {@link LinkedHashSet} of IPv4 address strings.
      */
     public static LinkedHashSet<String> localIpv4s() {
         final LinkedHashSet<InetAddress> localAddressList = localAddressList(t -> t instanceof Inet4Address);
@@ -303,10 +313,10 @@ public class NetKit {
     }
 
     /**
-     * 地址列表转换为IP地址列表
+     * Converts a set of {@link InetAddress} objects to a {@link LinkedHashSet} of IP address strings.
      *
-     * @param addressList 地址{@link Inet4Address} 列表
-     * @return IP地址字符串列表
+     * @param addressList A set of {@link InetAddress} objects.
+     * @return A {@link LinkedHashSet} of IP address strings.
      */
     public static LinkedHashSet<String> toIpList(final Set<InetAddress> addressList) {
         final LinkedHashSet<String> ipSet = new LinkedHashSet<>();
@@ -318,9 +328,10 @@ public class NetKit {
     }
 
     /**
-     * 获得本机的IP地址列表（包括Ipv4和Ipv6） 返回的IP列表有序，按照系统设备顺序
+     * Retrieves a sorted list of local IP addresses (including IPv4 and IPv6). The IP list is ordered according to the
+     * system device order.
      *
-     * @return IP地址列表 {@link LinkedHashSet}
+     * @return A {@link LinkedHashSet} of IP address strings.
      */
     public static LinkedHashSet<String> localIps() {
         final LinkedHashSet<InetAddress> localAddressList = localAddressList(null);
@@ -328,21 +339,26 @@ public class NetKit {
     }
 
     /**
-     * 获取所有满足过滤条件的本地IP地址对象
+     * Retrieves all local IP address objects that satisfy the given filter condition.
      *
-     * @param addressPredicate 过滤器，{@link Predicate#test(Object)}为{@code true}保留，null表示不过滤，获取所有地址
-     * @return 过滤后的地址对象列表
+     * @param addressPredicate The predicate to filter {@link InetAddress} objects. If {@code null}, no filtering is
+     *                         applied.
+     * @return A {@link LinkedHashSet} of filtered {@link InetAddress} objects.
+     * @throws InternalException If an error occurs while getting network interfaces.
      */
     public static LinkedHashSet<InetAddress> localAddressList(final Predicate<InetAddress> addressPredicate) {
         return localAddressList(null, addressPredicate);
     }
 
     /**
-     * 获取所有满足过滤条件的本地IP地址对象
+     * Retrieves all local IP address objects that satisfy the given network interface and address filter conditions.
      *
-     * @param networkInterfaceFilter 过滤器，null表示不过滤，获取所有网卡
-     * @param addressPredicate       过滤器，{@link Predicate#test(Object)}为{@code true}保留，null表示不过滤，获取所有地址
-     * @return 过滤后的地址对象列表
+     * @param networkInterfaceFilter The predicate to filter {@link NetworkInterface} objects. If {@code null}, no
+     *                               filtering is applied.
+     * @param addressPredicate       The predicate to filter {@link InetAddress} objects. If {@code null}, no filtering
+     *                               is applied.
+     * @return A {@link LinkedHashSet} of filtered {@link InetAddress} objects.
+     * @throws InternalException If an error occurs while getting network interfaces.
      */
     public static LinkedHashSet<InetAddress> localAddressList(
             final Predicate<NetworkInterface> networkInterfaceFilter,
@@ -376,11 +392,14 @@ public class NetKit {
     }
 
     /**
-     * 获取本机网卡IP地址，这个地址为所有网卡中非回路地址的第一个 如果获取失败调用 {@link InetAddress#getLocalHost()}方法获取。 此方法不会抛出异常，获取失败将返回{@code null}
-     * 参考：<a href="http://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java">
-     * http://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java</a>
+     * Retrieves the local machine's IPv4 address. This method returns the first non-loopback address found across all
+     * network interfaces. If retrieval fails, it falls back to {@link InetAddress#getLocalHost()}. This method does not
+     * throw exceptions and returns {@code null} on failure.
      *
-     * @return 本机网卡IP地址，获取失败返回{@code null}
+     * @return The local machine's IPv4 address string, or {@code null} if retrieval fails.
+     * @see <a href=
+     *      "http://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java">Getting
+     *      the IP address of the current machine using Java</a>
      */
     public static String getLocalhostStringV4() {
         final InetAddress localhost = IPv4.getLocalhost();
@@ -391,39 +410,37 @@ public class NetKit {
     }
 
     /**
-     * 获取本机网卡IPv4地址，规则如下：
-     *
+     * Retrieves the local machine's IPv4 address based on the following rules:
      * <ul>
-     * <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv4地址</li>
-     * <li>多网卡则返回第一个满足条件的地址</li>
-     * <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
+     * <li>Must be a non-loopback, non-site-local, IPv4 address.</li>
+     * <li>If multiple network cards exist, the first address that meets the conditions is returned.</li>
+     * <li>If no address meets the requirements, {@link InetAddress#getLocalHost()} is used to get the address.</li>
      * </ul>
-     *
      * <p>
-     * 此方法不会抛出异常，获取失败将返回{@code null}
-     * </p>
+     * This method does not throw exceptions and returns {@code null} on failure.
      *
-     * @return 本机网卡IP地址，获取失败返回{@code null}
+     * @return The local machine's IPv4 address, or {@code null} if retrieval fails.
      */
     public static InetAddress getLocalhostV4() {
         return IPv4.getLocalhost();
     }
 
     /**
-     * 获得本机MAC地址，默认使用获取到的IPv4本地地址对应网卡
+     * Retrieves the local machine's MAC address, using the network interface corresponding to the obtained IPv4 local
+     * address by default.
      *
-     * @return 本机MAC地址
+     * @return The local machine's MAC address string.
      */
     public static String getLocalMacAddressV4() {
         return IPv4.getLocalMacAddress();
     }
 
     /**
-     * 创建 {@link InetSocketAddress}
+     * Creates an {@link InetSocketAddress}.
      *
-     * @param host 域名或IP地址，空表示任意地址
-     * @param port 端口，0表示系统分配临时端口
-     * @return {@link InetSocketAddress}
+     * @param host The hostname or IP address. An empty string indicates any local address.
+     * @param port The port number. 0 indicates that the system should assign a temporary port.
+     * @return A new {@link InetSocketAddress}.
      */
     public static InetSocketAddress createAddress(final String host, final int port) {
         if (StringKit.isBlank(host)) {
@@ -433,13 +450,13 @@ public class NetKit {
     }
 
     /**
-     * 简易的使用Socket发送数据
+     * Sends data using a simple SocketChannel.
      *
-     * @param host    Server主机
-     * @param port    Server端口
-     * @param isBlock 是否阻塞方式
-     * @param data    需要发送的数据
-     * @throws InternalException IO异常
+     * @param host    The server host.
+     * @param port    The server port.
+     * @param isBlock Whether to use blocking mode.
+     * @param data    The data to send as a {@link ByteBuffer}.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void netCat(final String host, final int port, final boolean isBlock, final ByteBuffer data)
             throws InternalException {
@@ -452,12 +469,12 @@ public class NetKit {
     }
 
     /**
-     * 使用普通Socket发送数据
+     * Sends data using a regular {@link Socket}.
      *
-     * @param host Server主机
-     * @param port Server端口
-     * @param data 数据
-     * @throws InternalException IO异常
+     * @param host The server host.
+     * @param port The server port.
+     * @param data The data to send as a byte array.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void netCat(final String host, final int port, final byte[] data) throws InternalException {
         OutputStream out = null;
@@ -473,11 +490,12 @@ public class NetKit {
     }
 
     /**
-     * 是否在CIDR规则配置范围内 方法来自：【成都】小邓
+     * Checks if an IP address is within a given CIDR range. Method source: [Chengdu] Xiaodeng
      *
-     * @param ip   需要验证的IP
-     * @param cidr CIDR规则
-     * @return 是否在范围内
+     * @param ip   The IP address to validate.
+     * @param cidr The CIDR rule (e.g., "192.168.1.0/24").
+     * @return {@code true} if the IP is within the range, {@code false} otherwise.
+     * @throws IllegalArgumentException If the CIDR string is invalid.
      */
     public static boolean isInRange(final String ip, final String cidr) {
         final int maskSplitMarkIndex = cidr.lastIndexOf(Symbol.SLASH);
@@ -492,23 +510,23 @@ public class NetKit {
     }
 
     /**
-     * Unicode域名转puny code
+     * Converts a Unicode domain name to Punycode.
      *
-     * @param unicode Unicode域名
-     * @return puny code
+     * @param unicode The Unicode domain name.
+     * @return The Punycode representation of the domain name.
      */
     public static String idnToASCII(final String unicode) {
         return IDN.toASCII(unicode);
     }
 
     /**
-     * 从多级反向代理中获得第一个非unknown IP地址
+     * Retrieves the first non-"unknown" IP address from a multi-stage reverse proxy string.
      *
-     * @param ip 获得的IP地址
-     * @return 第一个非unknown IP地址
+     * @param ip The IP address string obtained from a proxy header.
+     * @return The first non-"unknown" IP address.
      */
     public static String getMultistageReverseProxyIp(String ip) {
-        // 多级反向代理检测
+        // Multi-stage reverse proxy detection
         if (ip != null && StringKit.indexOf(ip, Symbol.C_COMMA) > 0) {
             final List<String> ips = CharsBacker.splitTrim(ip, Symbol.COMMA);
             for (final String subIp : ips) {
@@ -522,45 +540,46 @@ public class NetKit {
     }
 
     /**
-     * 检测给定字符串是否为未知，多用于检测HTTP请求相关
+     * Checks if the given string is considered "unknown", often used for HTTP request headers.
      *
-     * @param checkString 被检测的字符串
-     * @return 是否未知
+     * @param checkString The string to check.
+     * @return {@code true} if the string is blank or equals "unknown" (case-insensitive), {@code false} otherwise.
      */
     public static boolean isUnknown(final String checkString) {
         return StringKit.isBlank(checkString) || "unknown".equalsIgnoreCase(checkString);
     }
 
     /**
-     * 检测IP地址是否能ping通
+     * Checks if an IP address is reachable (pingable).
      *
-     * @param ip IP地址
-     * @return 返回是否ping通
+     * @param ip The IP address.
+     * @return {@code true} if the IP address is reachable, {@code false} otherwise.
      */
     public static boolean ping(final String ip) {
         return ping(ip, 200);
     }
 
     /**
-     * 检测IP地址是否能ping通
+     * Checks if an IP address is reachable (pingable) within a specified timeout.
      *
-     * @param ip      IP地址
-     * @param timeout 检测超时（毫秒）
-     * @return 是否ping通
+     * @param ip      The IP address.
+     * @param timeout The timeout in milliseconds.
+     * @return {@code true} if the IP address is reachable within the timeout, {@code false} otherwise.
      */
     public static boolean ping(final String ip, final int timeout) {
         try {
-            return InetAddress.getByName(ip).isReachable(timeout); // 当返回值是true时，说明host是可用的，false则不可。
+            return InetAddress.getByName(ip).isReachable(timeout); // If the return value is true, the host is
+                                                                   // available; otherwise, it is not.
         } catch (final Exception ex) {
             return false;
         }
     }
 
     /**
-     * 解析Cookie信息
+     * Parses a Cookie string into a list of {@link HttpCookie} objects.
      *
-     * @param cookieStr Cookie字符串
-     * @return cookie字符串
+     * @param cookieStr The Cookie string.
+     * @return A {@link List} of {@link HttpCookie} objects, or an empty list if the input string is blank.
      */
     public static List<HttpCookie> parseCookies(final String cookieStr) {
         if (StringKit.isBlank(cookieStr)) {
@@ -570,11 +589,11 @@ public class NetKit {
     }
 
     /**
-     * 检查远程端口是否开启
+     * Checks if a remote port is open.
      *
-     * @param address 远程地址
-     * @param timeout 检测超时
-     * @return 远程端口是否开启
+     * @param address The remote address.
+     * @param timeout The connection timeout in milliseconds.
+     * @return {@code true} if the remote port is open, {@code false} otherwise.
      */
     public static boolean isOpen(final InetSocketAddress address, final int timeout) {
         try (final Socket sc = new Socket()) {
@@ -586,34 +605,34 @@ public class NetKit {
     }
 
     /**
-     * 设置全局验证
+     * Sets a global authenticator for HTTP authentication.
      *
-     * @param user 用户名
-     * @param pass 密码，考虑安全，此处不使用String
+     * @param user The username.
+     * @param pass The password as a character array (for security reasons, not a String).
      */
     public static void setGlobalAuthenticator(final String user, final char[] pass) {
         setGlobalAuthenticator(new NonAuthenticator(user, pass));
     }
 
     /**
-     * 设置全局验证
+     * Sets a global authenticator for HTTP authentication.
      *
-     * @param authenticator 验证器
+     * @param authenticator The {@link Authenticator} to set as default.
      */
     public static void setGlobalAuthenticator(final Authenticator authenticator) {
         Authenticator.setDefault(authenticator);
     }
 
     /**
-     * 获取DNS信息，如TXT信息：
+     * Retrieves DNS information, such as TXT records.
      * 
      * <pre class="code">
-     * NetKit.attrNames("xxx.cn", "TXT")
+     * NetKit.getDnsInfo("example.com", "TXT")
      * </pre>
      *
-     * @param hostName  主机域名
-     * @param attrNames 属性
-     * @return DNS信息
+     * @param hostName  The hostname or domain name.
+     * @param attrNames The attribute names to retrieve (e.g., "TXT", "MX").
+     * @return A {@link List} of DNS information strings.
      */
     public static List<String> getDnsInfo(final String hostName, final String... attrNames) {
         final String uri = StringKit.addPrefixIfNot(hostName, "dns:");
@@ -631,10 +650,11 @@ public class NetKit {
     }
 
     /**
-     * 获取地址名称，如果无名称返回地址 如果提供的地址为{@code null}返回{@code null}
+     * Retrieves the host name of an {@link InetAddress}. If the host name is empty, the host address is returned. If
+     * the provided address is {@code null}, {@code null} is returned.
      *
-     * @param address {@link InetAddress}，提供{@code null}返回{@code null}
-     * @return 地址名称或地址
+     * @param address The {@link InetAddress}. Returns {@code null} if the input is {@code null}.
+     * @return The host name or host address, or {@code null} if the input address is {@code null}.
      */
     public static String getAddressName(final InetAddress address) {
         if (null == address) {
@@ -648,21 +668,21 @@ public class NetKit {
     }
 
     /**
-     * 获得指定地址信息中的MAC地址，使用分隔符“-”
+     * Retrieves the MAC address from the given {@link InetAddress}, using a hyphen "-" as a separator.
      *
-     * @param inetAddress {@link InetAddress}
-     * @return MAC地址，用-分隔
+     * @param inetAddress The {@link InetAddress}.
+     * @return The MAC address string, separated by hyphens.
      */
     public static String getMacAddress(final InetAddress inetAddress) {
         return getMacAddress(inetAddress, Symbol.MINUS);
     }
 
     /**
-     * 获得指定地址信息中的MAC地址
+     * Retrieves the MAC address from the given {@link InetAddress} using a specified separator.
      *
-     * @param inetAddress {@link InetAddress}
-     * @param separator   分隔符，推荐使用“-”或者“:”
-     * @return MAC地址，用-分隔
+     * @param inetAddress The {@link InetAddress}.
+     * @param separator   The separator string (e.g., "-" or ":").
+     * @return The MAC address string, separated by the specified separator.
      */
     public static String getMacAddress(final InetAddress inetAddress, final String separator) {
         if (null == inetAddress) {
@@ -673,10 +693,11 @@ public class NetKit {
     }
 
     /**
-     * 获得指定地址信息中的硬件地址（MAC地址）
+     * Retrieves the hardware address (MAC address) from the given {@link InetAddress}.
      *
-     * @param inetAddress {@link InetAddress}
-     * @return 硬件地址
+     * @param inetAddress The {@link InetAddress}.
+     * @return The hardware address as a byte array, or {@code null} if an error occurs or the address is invalid.
+     * @throws InternalException If a {@link SocketException} occurs during retrieval.
      */
     public static byte[] getHardwareAddress(final InetAddress inetAddress) {
         if (null == inetAddress) {
@@ -684,7 +705,7 @@ public class NetKit {
         }
 
         try {
-            // 获取地址对应网卡
+            // Get the network interface corresponding to the address
             final NetworkInterface networkInterface = NetworkInterface.getByInetAddress(inetAddress);
             if (null != networkInterface) {
                 return networkInterface.getHardwareAddress();
@@ -696,11 +717,12 @@ public class NetKit {
     }
 
     /**
-     * 将bytes类型的mac地址转换为可读字符串，通常地址每个byte位使用16进制表示，并用指定分隔符分隔
+     * Converts a byte array MAC address to a human-readable string, typically using hexadecimal representation for each
+     * byte and separated by a specified delimiter.
      *
-     * @param mac       MAC地址（网卡硬件地址）
-     * @param separator 分隔符
-     * @return MAC地址字符串
+     * @param mac       The MAC address as a byte array.
+     * @param separator The separator string.
+     * @return The MAC address string.
      */
     public static String toMacAddress(final byte[] mac, final String separator) {
         if (null == mac) {
@@ -708,14 +730,14 @@ public class NetKit {
         }
 
         final StringBuilder sb = new StringBuilder(
-                // 字符串长度 = byte个数*2（每个byte转16进制后占2位） + 分隔符总长度
+                // String length = number of bytes * 2 (each byte becomes 2 hex digits) + total length of separators
                 mac.length * 2 + (mac.length - 1) * separator.length());
         String s;
         for (int i = 0; i < mac.length; i++) {
             if (i != 0) {
                 sb.append(separator);
             }
-            // 字节转换为整数
+            // Convert byte to integer
             s = Integer.toHexString(mac[i] & 0xFF);
             sb.append(s.length() == 1 ? 0 + s : s);
         }

@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-连锁品牌分账接口
+ * WeChat Pay V3 API interfaces for brand profit sharing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,59 +38,65 @@ import org.miaixz.bus.pay.Matcher;
 public enum BrandProfitSharingApi implements Matcher {
 
     /**
-     * 分账/查询分账
+     * Profit sharing/query profit sharing.
      */
-    ORDERS("/v3/brand/profitsharing/orders", "分账/查询分账"),
+    ORDERS("/v3/brand/profitsharing/orders", "Profit sharing/query profit sharing"),
 
     /**
-     * 分账回退-查询分账回退
+     * Profit sharing return - query profit sharing return.
      */
-    RETURN_ORDERS("/v3/brand/profitsharing/returnorders", "分账回退-查询分账回退"),
+    RETURN_ORDERS("/v3/brand/profitsharing/returnorders", "Profit sharing return - query profit sharing return"),
 
     /**
-     * 完结分账
+     * Complete profit sharing.
      */
-    FINISH_ORDER("/v3/brand/profitsharing/finish-order", "完结分账"),
+    FINISH_ORDER("/v3/brand/profitsharing/finish-order", "Complete profit sharing"),
 
     /**
-     * 查询订单剩余待分金额
+     * Query remaining amount to be shared for the order.
      */
-    QUERY("/v3/brand/profitsharing/orders/%s/amounts", "查询订单剩余待分金额"),
+    QUERY("/v3/brand/profitsharing/orders/%s/amounts", "Query remaining amount to be shared for the order"),
 
     /**
-     * 查询最大分账比例
+     * Query maximum profit sharing ratio.
      */
-    BRAND__CONFIGS("/v3/brand/profitsharing/brand-configs/%s", "查询最大分账比例"),
+    BRAND__CONFIGS("/v3/brand/profitsharing/brand-configs/%s", "Query maximum profit sharing ratio"),
 
     /**
-     * 添加分账接收方
+     * Add profit sharing receiver.
      */
-    RECEIVERS_ADD("/v3/brand/profitsharing/receivers/add", "添加分账接收方"),
+    RECEIVERS_ADD("/v3/brand/profitsharing/receivers/add", "Add profit sharing receiver"),
 
     /**
-     * 删除分账接收方
+     * Delete profit sharing receiver.
      */
-    RECEIVERS_DELETE("/v3/brand/profitsharing/receivers/delete", "删除分账接收方");
+    RECEIVERS_DELETE("/v3/brand/profitsharing/receivers/delete", "Delete profit sharing receiver");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new BrandProfitSharingApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     BrandProfitSharingApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -98,9 +104,9 @@ public enum BrandProfitSharingApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -108,9 +114,9 @@ public enum BrandProfitSharingApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

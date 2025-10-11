@@ -28,38 +28,61 @@
 package org.miaixz.bus.extra.captcha.provider;
 
 import java.awt.*;
+import java.io.Serial;
 
 import org.miaixz.bus.extra.captcha.AbstractProvider;
 import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
 
 /**
- * 点选文字验证码
+ * Click Word CAPTCHA Provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ClickWordProvider extends AbstractProvider {
 
+    @Serial
+    private static final long serialVersionUID = -2852291580758L;
+
+    /**
+     * Constructor.
+     *
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param codeCount      Number of characters.
+     * @param interfereCount Number of interfering elements.
+     */
     public ClickWordProvider(int width, int height, int codeCount, int interfereCount) {
         super(width, height, codeCount, interfereCount);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param generator      CAPTCHA code generator.
+     * @param interfereCount Number of interfering elements.
+     */
     public ClickWordProvider(int width, int height, CodeStrategy generator, int interfereCount) {
         super(width, height, generator, interfereCount);
     }
 
     @Override
     protected Image createImage(String code) {
+        // TODO: Implementation for creating the click-word CAPTCHA image goes here.
         return null;
     }
 
     @Override
     public String get() {
+        // TODO: Implementation for getting the CAPTCHA code/data goes here.
         return null;
     }
 
     @Override
     public boolean verify(String inputCode) {
+        // TODO: Implementation for verifying the user's input goes here.
         return false;
     }
 

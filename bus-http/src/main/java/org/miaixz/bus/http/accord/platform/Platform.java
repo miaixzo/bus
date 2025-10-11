@@ -27,17 +27,6 @@
 */
 package org.miaixz.bus.http.accord.platform;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
-
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.secure.BasicCertificateChainCleaner;
@@ -46,10 +35,21 @@ import org.miaixz.bus.http.secure.CertificateChainCleaner;
 import org.miaixz.bus.http.secure.TrustRootIndex;
 import org.miaixz.bus.logger.Logger;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 访问特定于平台的特性. 服务器名称指示(SNI) 支持Android 2.3+ 支持Android 4.0+. 支持Android 5.0+ 支持 OpenJDK 7+ 支持 OpenJDK 7 and 8 (via the
- * JettyALPN-boot library) 支持OpenJDK 9 SSLParameters和SSLSocket特性 升级到Android 2.3+和OpenJDK 7+。没有用于恢复用于
- * 创建{@link SSLSocketFactory}的trustmanager的公共api 支持Android 6.0+ {@code NetworkSecurityPolicy}
+ * Provides access to platform-specific features.
+ * <p>
+ * This class abstracts away differences in Java and Android runtimes, providing a consistent API for features like TLS
+ * extensions (SNI, ALPN), trust manager extraction, and network security policy checks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,17 +58,27 @@ public class Platform {
 
     private static final Platform PLATFORM = findPlatform();
 
+    /**
+     * Returns the platform-specific implementation.
+     *
+     * @return The current platform.
+     */
     public static Platform get() {
         return PLATFORM;
     }
 
+    /**
+     * Converts a list of {@link Protocol} objects to a list of their string representations.
+     *
+     * @param protocols The list of protocols.
+     * @return A list of protocol names.
+     */
     public static List<String> alpnProtocolNames(List<Protocol> protocols) {
         List<String> names = new ArrayList<>(protocols.size());
         for (int i = 0, size = protocols.size(); i < size; i++) {
             Protocol protocol = protocols.get(i);
             if (protocol == Protocol.HTTP_1_0) {
-                // No HTTP/1.0 for ALPN
-                continue;
+                continue; // No HTTP/1.0 for ALPN.
             }
             names.add(protocol.toString());
         }
@@ -76,9 +86,9 @@ public class Platform {
     }
 
     /**
-     * 尝试将主机运行时与有能力的平台实现匹配
+     * Attempts to match the host runtime with a capable platform implementation.
      *
-     * @return 平台信息
+     * @return The platform implementation.
      */
     private static Platform findPlatform() {
         Platform jdk = JdkPlatform.buildIfSupported();
@@ -90,16 +100,18 @@ public class Platform {
     }
 
     /**
-     * Returns the concatenation of 8-bit, length prefixed protocol names.
+     * Returns the concatenation of 8-bit, length-prefixed protocol names.
      * http://tools.ietf.org/html/draft-agl-tls-nextprotoneg-04#page-4
+     *
+     * @param protocols The list of protocols.
+     * @return The concatenated, length-prefixed protocol names.
      */
     static byte[] concatLengthPrefixed(List<Protocol> protocols) {
         Buffer result = new Buffer();
         for (int i = 0, size = protocols.size(); i < size; i++) {
             Protocol protocol = protocols.get(i);
             if (protocol == Protocol.HTTP_1_0) {
-                // No HTTP/1.0 for ALPN.
-                continue;
+                continue; // No HTTP/1.0 for ALPN.
             }
             result.writeByte(protocol.toString().length());
             result.writeUtf8(protocol.toString());
@@ -107,13 +119,22 @@ public class Platform {
         return result.readByteArray();
     }
 
+    /**
+     * Reads a field from an object via reflection, returning null if the field is not found or not accessible.
+     *
+     * @param instance  The object instance.
+     * @param fieldType The type of the field.
+     * @param fieldName The name of the field.
+     * @param <T>       The field type.
+     * @return The field value, or null.
+     */
     static <T> T readFieldOrNull(Object instance, Class<T> fieldType, String fieldName) {
         for (Class<?> c = instance.getClass(); c != Object.class; c = c.getSuperclass()) {
             try {
                 Field field = c.getDeclaredField(fieldName);
                 field.setAccessible(true);
                 Object value = field.get(instance);
-                if (null == value || !fieldType.isInstance(value))
+                if (value == null || !fieldType.isInstance(value))
                     return null;
                 return fieldType.cast(value);
             } catch (NoSuchFieldException ignored) {
@@ -122,10 +143,10 @@ public class Platform {
             }
         }
 
-        // 没有找到我们想要的地方。作为最后的尝试，请尝试查找委托上的值
+        // Try to find the value on a delegate, as a last resort.
         if (!fieldName.equals("delegate")) {
             Object delegate = readFieldOrNull(instance, Object.class, "delegate");
-            if (null != delegate)
+            if (delegate != null)
                 return readFieldOrNull(delegate, fieldType, fieldName);
         }
 
@@ -133,28 +154,30 @@ public class Platform {
     }
 
     /**
-     * 自定义头文件中使用的前缀
+     * Returns the prefix used in custom headers.
      *
-     * @return 前缀
+     * @return The prefix string.
      */
     public String getPrefix() {
         return "Httpd";
     }
 
     /**
-     * 管理哪些X509证书可用于对安全套接字的远程端进行身份验证。 决策可能基于可信的证书颁发机构、证书撤销列表、在线状态检查或其他方法
+     * Manages which X.509 certificates can be used to authenticate the remote end of a secure socket. Decisions may be
+     * based on trusted certificate authorities, certificate revocation lists, online status checks, or other methods.
      *
-     * @param sslSocketFactory 安全套接字工厂
-     * @return 信任证书管理器
+     * @param sslSocketFactory The SSL socket factory.
+     * @return The trust manager.
      */
     protected X509TrustManager trustManager(SSLSocketFactory sslSocketFactory) {
-        // 尝试从OpenJDK套接字工厂获取信任管理器。为了支持Robolectric，我们尝试在所有平台上都这样做，
-        // Robolectric混合了来自Android和Oracle JDK的类。注意，我们不支持HTTP/2或其他Robolectric上的好特性
+        // Attempt to get the trust manager from an OpenJDK socket factory. This is necessary to support
+        // Robolectric, which mixes classes from Android and Oracle JDKs. Note that we don't support HTTP/2
+        // or other nice features on Robolectric.
         try {
-            // 创建SSLContext对象，并使用我们指定的信任证书管理器初始化
+            // Create an SSLContext object and initialize it with our specified trust manager.
             Class<?> sslContextClass = Class.forName("sun.security.ssl.SSLContextImpl");
             Object context = readFieldOrNull(sslSocketFactory, sslContextClass, "context");
-            if (null == context)
+            if (context == null)
                 return null;
             return readFieldOrNull(context, X509TrustManager.class, "trustManager");
         } catch (ClassNotFoundException e) {
@@ -163,47 +186,61 @@ public class Platform {
     }
 
     /**
-     * 在{@code sslSocket}上为{@code route}配置TLS扩展
+     * Configures TLS extensions on the {@code sslSocket} for the given {@code route}.
      *
-     * @param sslSocket 套接字信息
-     * @param hostname  客户端握手不为空;服务器端握手为空.
-     * @param protocols 服务协议
+     * @param sslSocket The SSL socket.
+     * @param hostname  The hostname for client-side handshakes; null for server-side.
+     * @param protocols The supported protocols.
      */
     public void configureTlsExtensions(SSLSocket sslSocket, String hostname, List<Protocol> protocols) {
     }
 
     /**
-     * 在TLS握手后调用，以释放由{@link #configureTlsExtensions}分配的资源
+     * Called after the TLS handshake to release any resources allocated by {@link #configureTlsExtensions}.
      *
-     * @param sslSocket 安全套接字
+     * @param sslSocket The SSL socket.
      */
     public void afterHandshake(SSLSocket sslSocket) {
-
     }
 
     /**
-     * 返回协商的协议，如果没有协商协议，则返回null
+     * Returns the negotiated protocol, or null if no protocol was negotiated.
      *
-     * @param socket 套接字
-     * @return 协议
+     * @param socket The socket.
+     * @return The negotiated protocol.
      */
     public String getSelectedProtocol(SSLSocket socket) {
         return null;
     }
 
+    /**
+     * Connects the given socket to the specified address.
+     *
+     * @param socket         The socket to connect.
+     * @param address        The address to connect to.
+     * @param connectTimeout The connection timeout in milliseconds.
+     * @throws IOException if an I/O error occurs.
+     */
     public void connectSocket(Socket socket, InetSocketAddress address, int connectTimeout) throws IOException {
         socket.connect(address, connectTimeout);
     }
 
+    /**
+     * Returns true if cleartext traffic is permitted for the given hostname.
+     *
+     * @param hostname The hostname to check.
+     * @return {@code true} if cleartext traffic is permitted.
+     */
     public boolean isCleartextTrafficPermitted(String hostname) {
         return true;
     }
 
     /**
-     * 返回一个对象，该对象持有在执行此方法时创建的堆栈跟踪。 用于{@link java.io.Closeable}与{@link #logCloseableLeak(String, Object)}
+     * Returns an object that holds a stack trace created at the time this method was called. Used for debugging
+     * {@link java.io.Closeable} leaks with {@link #logCloseableLeak(String, Object)}.
      *
-     * @param closer 闭合器
-     * @return 返回一个对象
+     * @param closer A string describing the closeable resource.
+     * @return An object holding the stack trace.
      */
     public Object getStackTraceForCloseable(String closer) {
         if (Logger.isDebugEnabled()) {
@@ -212,32 +249,60 @@ public class Platform {
         return null;
     }
 
+    /**
+     * Logs a message about a leaked closeable resource.
+     *
+     * @param message    The message to log.
+     * @param stackTrace An object holding the stack trace, created by {@link #getStackTraceForCloseable(String)}.
+     */
     public void logCloseableLeak(String message, Object stackTrace) {
-        if (null == stackTrace) {
-            message += " To see where this was allocated, set the Httpd logger level to FINE: "
+        if (stackTrace == null) {
+            message += " To see where this was allocated, set the Httpd logger level to DEBUG: "
                     + "Logger.getLogger(Httpd.class.getName()).setLevel(Level.DEBUG);";
         }
         Logger.warn(message, stackTrace);
     }
 
+    /**
+     * Builds a certificate chain cleaner for the given trust manager.
+     *
+     * @param trustManager The trust manager.
+     * @return A certificate chain cleaner.
+     */
     public CertificateChainCleaner buildCertificateChainCleaner(X509TrustManager trustManager) {
         return new BasicCertificateChainCleaner(buildTrustRootIndex(trustManager));
     }
 
+    /**
+     * Builds a certificate chain cleaner for the given SSL socket factory.
+     *
+     * @param sslSocketFactory The SSL socket factory.
+     * @return A certificate chain cleaner.
+     */
     public CertificateChainCleaner buildCertificateChainCleaner(SSLSocketFactory sslSocketFactory) {
         X509TrustManager trustManager = trustManager(sslSocketFactory);
-        if (null == trustManager) {
+        if (trustManager == null) {
             throw new IllegalStateException("Unable to extract the trust manager on " + Platform.get()
                     + ", sslSocketFactory is " + sslSocketFactory.getClass());
         }
-
         return buildCertificateChainCleaner(trustManager);
     }
 
+    /**
+     * Builds a trust root index for the given trust manager.
+     *
+     * @param trustManager The trust manager.
+     * @return A trust root index.
+     */
     public TrustRootIndex buildTrustRootIndex(X509TrustManager trustManager) {
         return new BasicTrustRootIndex(trustManager.getAcceptedIssuers());
     }
 
+    /**
+     * Configures the given SSL socket factory.
+     *
+     * @param socketFactory The SSL socket factory to configure.
+     */
     public void configureSslSocketFactory(SSLSocketFactory socketFactory) {
 
     }

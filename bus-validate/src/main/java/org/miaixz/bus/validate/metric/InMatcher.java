@@ -34,19 +34,28 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.In;
 
 /**
- * IN 校验
+ * Validator for the {@link In} annotation, checking if a value is present in a specified array of strings.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class InMatcher implements Matcher<Object, In> {
 
+    /**
+     * Checks if the given object is present in the array of strings specified in the {@link In} annotation.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link In} annotation instance, which provides the array of allowed values.
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is empty (null) or if its string representation is found in the annotation's
+     *         value array, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, In annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
             return false;
         }
-        return ArrayKit.contains(annotation.value(), object);
+        return ArrayKit.contains(annotation.value(), object.toString());
     }
 
 }

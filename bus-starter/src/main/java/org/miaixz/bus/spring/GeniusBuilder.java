@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.spring;
 
-import java.io.File;
-import java.time.Duration;
-
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -39,16 +36,23 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 
+import java.io.File;
+
 /**
- * 全局常量配置
+ * Global constant configuration for the Bus Spring Starter.
+ * <p>
+ * This class defines various constants used throughout the Bus Spring Starter module, including property prefixes,
+ * banner configurations, and internal stage names for startup metrics. It also provides utility methods for environment
+ * checks related to Spring Cloud and logging.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GeniusBuilder {
 
-    /***
-     * Bus banner for miaixz.org
+    /**
+     * Bus banner ASCII art for miaixz.org.
      */
     public static final String[] BUS_BANNER = {
             " ███╗   ███╗██╗ █████╗ ██╗██╗  ██╗███████╗    ██████╗ ██████╗  ██████╗  ",
@@ -58,293 +62,328 @@ public class GeniusBuilder {
             " ██║ ╚═╝ ██║██║██║  ██║██║██╔╝ ██╗███████╗██╗╚██████╔╝██║  ██║╚██████╔╝ ",
             " ╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  " };
 
-    /***
-     * Bus boot banner
+    /**
+     * Bus boot banner prefix.
      */
     public static final String BUS_BOOT_BANNER = " :: Bus Boot :: ";
 
     /**
-     * Spring boot banner
+     * Spring Boot banner prefix.
      */
     public static final String SPRING_BOOT_BANNER = " :: Spring Boot :: ";
 
+    /**
+     * Default path for Spring context metadata.
+     */
     public static final String SPRING_CONTEXT_PATH = "META-INF/spring";
 
+    /**
+     * Default profile value.
+     */
     public static final String DEFAULT_PROFILE_VALUE = "default";
 
-    /** module.properties keywords **/
+    /**
+     * Key for Spring Parent module in module.properties.
+     */
     public static final String SPRING_PARENT = "Spring-Parent";
 
+    /**
+     * Key for Module Name in module.properties.
+     */
     public static final String MODULE_NAME = "Module-Name";
 
+    /**
+     * Key for Required Module in module.properties.
+     */
     public static final String REQUIRE_MODULE = "Require-Module";
 
+    /**
+     * Key for Module Profile in module.properties.
+     */
     public static final String MODULE_PROFILE = "Module-Profile";
 
     /**
-     * Bus config property source key
+     * Property source name for Bus configurations.
      */
     public static final String BUS_PROPERTY_SOURCE = "configurationProperties";
 
     /**
-     * Bus priority config key
+     * Property source name for high-priority Bus configurations.
      */
     public static final String BUS_HIGH_PRIORITY = "priorityConfig";
 
     /**
-     * Bus scenes key
+     * Property key for Bus scenes configuration.
      */
     public static final String BUS_SCENES = Keys.BUS + Symbol.DOT + "scenes";
 
     /**
-     * Bus scenes path
+     * Path for Bus scenes configuration files.
      */
     public static final String BUS_SCENES_PATH = Keys.BUS + File.separator + "scenes";
 
     /**
-     * Bus logging path
+     * Default logging path for Bus applications.
      */
     public static final String BUS_LOGGING_PATH = File.separator + "logs";
 
     /**
-     * Logging path key
+     * Property key for logging path.
      */
     public static final String LOGGING_PATH = "logging.path";
 
     /**
-     * Logging path prefix
+     * Prefix for logging path properties.
      */
     public static final String LOGGING_PATH_PREFIX = "logging.path.";
 
     /**
-     * Logging level key
+     * Property key for logging level.
      */
     public static final String LOGGING_LEVEL = "logging.level";
 
     /**
-     * Logging level prefix
+     * Prefix for logging level properties.
      */
     public static final String LOGGING_LEVEL_PREFIX = "logging.level.";
 
     /**
-     * Logging pattern console key
+     * Property key for console logging pattern.
      */
     public static final String LOGGING_PATTERN_CONSOLE = "logging.pattern.console";
 
     /**
-     * Logging pattern file key
+     * Property key for file logging pattern.
      */
     public static final String LOGGING_PATTERN_FILE = "logging.pattern.file";
 
     /**
-     * Spring banner file
+     * Default Spring banner file name.
      */
     public static final String SPRING_BANNER_TXT = "banner.txt";
 
     /**
-     * Spring banner location
+     * Property key for Spring banner location.
      */
     public static final String SPRING_BANNER_LOCATION = "spring.banner.location";
 
     /**
-     * bus startup logging extra info
+     * Prefix for Bus startup logging extra information.
      */
     public static final String BUS_SWITCH_LISTENER_PREFIX_ = "bus.switch.listener.";
 
     /**
-     * Bus banner key
+     * Property key for Bus banner configuration.
      */
     public static final String BANNER = Keys.BUS + Symbol.DOT + "banner";
 
     /**
-     * Bus cache key
+     * Property key for Bus cache configuration.
      */
     public static final String CACHE = Keys.BUS + Symbol.DOT + "cache";
 
     /**
-     * Bus bridge key
+     * Property key for Bus bridge configuration.
      */
     public static final String BRIDGE = Keys.BUS + Symbol.DOT + "bridge";
 
     /**
-     * Bus cors key
+     * Property key for Bus CORS configuration.
      */
     public static final String CORS = Keys.BUS + Symbol.DOT + "cors";
 
     /**
-     * Bus druid key
+     * Property key for Bus Druid configuration.
      */
     public static final String DRUID = Keys.BUS + Symbol.DOT + "druid";
 
     /**
-     * Bus dubbo key
+     * Property key for Bus Dubbo configuration.
      */
     public static final String DUBBO = Keys.BUS + Symbol.DOT + "dubbo";
 
     /**
-     * Bus elastic key
+     * Property key for Bus Elasticsearch configuration.
      */
     public static final String ELASTIC = Keys.BUS + Symbol.DOT + "elastic";
 
     /**
-     * Bus vortex key
+     * Property key for Bus Vortex gateway configuration.
      */
     public static final String VORTEX = Keys.BUS + Symbol.DOT + "vortex";
 
     /**
-     * Bus vortex key
+     * Property key for Bus health configuration.
      */
     public static final String HEALTH = Keys.BUS + Symbol.DOT + "health";
 
     /**
-     * Bus i18n key
+     * Property key for Bus i18n configuration.
      */
     public static final String I18N = Keys.BUS + Symbol.DOT + "i18n";
 
     /**
-     * Bus image key
+     * Property key for Bus image processing configuration.
      */
     public static final String IMAGE = Keys.BUS + Symbol.DOT + "image";
 
     /**
-     * Bus limiter key
+     * Property key for Bus limiter configuration.
      */
     public static final String LIMITER = Keys.BUS + Symbol.DOT + "limiter";
 
     /**
-     * Bus mongo key
+     * Property key for Bus MongoDB configuration.
      */
     public static final String MONGO = Keys.BUS + Symbol.DOT + "mongo";
 
     /**
-     * Bus mapper key
+     * Property key for Bus Mapper (MyBatis) configuration.
      */
     public static final String MAPPER = Keys.BUS + Symbol.DOT + "mapper";
 
     /**
-     * Bus notify key
+     * Property key for Bus notify configuration.
      */
     public static final String NOTIFY = Keys.BUS + Symbol.DOT + "notify";
 
     /**
-     * Bus auth key
+     * Property key for Bus authentication configuration.
      */
     public static final String AUTH = Keys.BUS + Symbol.DOT + "auth";
 
     /**
-     * Bus office key
+     * Property key for Bus office document processing configuration.
      */
     public static final String OFFICE = Keys.BUS + Symbol.DOT + "office";
 
     /**
-     * Bus pay key
+     * Property key for Bus payment configuration.
      */
     public static final String PAY = Keys.BUS + Symbol.DOT + "pay";
 
     /**
-     * Bus sensitive key
+     * Property key for Bus sensitive data handling configuration.
      */
     public static final String SENSITIVE = Keys.BUS + Symbol.DOT + "sensitive";
 
     /**
-     * Bus socket key
+     * Property key for Bus socket communication configuration.
      */
     public static final String SOCKET = Keys.BUS + Symbol.DOT + "socket";
 
     /**
-     * Bus storage key
+     * Property key for Bus object storage configuration.
      */
     public static final String STORAGE = Keys.BUS + Symbol.DOT + "storage";
 
     /**
-     * Bus tracer key
+     * Property key for Bus distributed tracing configuration.
      */
     public static final String TRACER = Keys.BUS + Symbol.DOT + "tracer";
 
     /**
-     * Bus validate key
+     * Property key for Bus validation configuration.
      */
     public static final String VALIDATE = Keys.BUS + Symbol.DOT + "validate";
 
     /**
-     * Bus wrapper key
+     * Property key for Bus request/response wrapper configuration.
      */
     public static final String WRAPPER = Keys.BUS + Symbol.DOT + "wrapper";
 
     /**
-     * Bus zookeeper key
+     * Property key for Bus ZooKeeper configuration.
      */
     public static final String ZOOKEEPER = Keys.BUS + Symbol.DOT + "zookeeper";
 
     /**
-     * Bus temp work key
+     * Property key for Bus temporary work directory configuration.
      */
     public static final String WORK = Keys.BUS + Symbol.DOT + "work";
 
-    /***
-     * Spring application name key
+    /**
+     * Spring application name property key.
      */
     public static final String APP_NAME = "spring.application.name";
 
     /**
-     * Spring datasource key
+     * Spring data source property key.
      */
     public static final String DATASOURCE = "spring.datasource";
 
     /**
-     * SpringCloud property source key
+     * Spring Cloud bootstrap property source name.
      */
     public static final String CLOUD_BOOTSTRAP = "bootstrap";
 
     /**
-     * Property name for bootstrap configuration class name.
+     * Class name for Spring Cloud BootstrapConfiguration.
      */
     public static final String CLOUD_BOOTSTRAP_CONFIGURATION_CLASS = "org.springframework.cloud.bootstrap.BootstrapConfiguration";
 
     /**
-     * The running stage since JVM started to
-     * {@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)} ()}
+     * Stage name for JVM startup metrics. Represents the time from JVM start to the completion of
+     * {@link SpringApplicationRunListener#starting(ConfigurableBootstrapContext)}.
      */
     public static final String JVM_STARTING_STAGE = "JvmStartingStage";
 
     /**
-     * The running stage since {@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)}
-     * ()} to
-     * {@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}
-     * (ConfigurableEnvironment)}}
+     * Stage name for environment preparation metrics. Represents the time from
+     * {@link SpringApplicationRunListener#starting(ConfigurableBootstrapContext)} to
+     * {@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}.
      */
     public static final String ENVIRONMENT_PREPARE_STAGE = "EnvironmentPrepareStage";
 
     /**
-     * The running stage since
+     * Stage name for application context preparation metrics. Represents the time from
      * {@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}
-     * (ConfigurableEnvironment)} to
-     * {@link SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)}}
+     * to {@link SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)}.
      */
     public static final String APPLICATION_CONTEXT_PREPARE_STAGE = "ApplicationContextPrepareStage";
 
     /**
-     * The running stage since {@link SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)} to
-     * {@link SpringApplicationRunListener#contextLoaded(ConfigurableApplicationContext)}}
+     * Stage name for application context loading metrics. Represents the time from
+     * {@link SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)} to
+     * {@link SpringApplicationRunListener#contextLoaded(ConfigurableApplicationContext)}.
      */
     public static final String APPLICATION_CONTEXT_LOAD_STAGE = "ApplicationContextLoadStage";
 
     /**
-     * The running stage since {@link SpringApplicationRunListener#contextLoaded(ConfigurableApplicationContext)} to
-     * StartupContextRefreshedListener.onApplicationEvent(ContextRefreshedEvent)
+     * Stage name for application context refresh metrics. Represents the time from
+     * {@link SpringApplicationRunListener#contextLoaded(ConfigurableApplicationContext)} to the completion of the
+     * application context refresh event.
      */
     public static final String APPLICATION_CONTEXT_REFRESH_STAGE = "ApplicationContextRefreshStage";
 
+    /**
+     * Startup step name for Spring bean instantiation.
+     */
     public static final String SPRING_BEANS_INSTANTIATE = "spring.beans.instantiate";
 
+    /**
+     * Startup step name for Spring bean smart initialization.
+     */
     public static final String SPRING_BEANS_SMART_INSTANTIATE = "spring.beans.smart-initialize";
 
+    /**
+     * Startup step name for Spring context BeanDefinitionRegistry post-processing.
+     */
     public static final String SPRING_CONTEXT_BEANDEF_REGISTRY_POST_PROCESSOR = "spring.context.beandef-registry.post-process";
 
+    /**
+     * Startup step name for Spring context BeanFactory post-processing.
+     */
     public static final String SPRING_CONTEXT_BEAN_FACTORY_POST_PROCESSOR = "spring.context.bean-factory.post-process";
 
+    /**
+     * Startup step name for Spring bean post-processing.
+     */
     public static final String SPRING_BEAN_POST_PROCESSOR = "spring.context.beans.post-process";
 
+    /**
+     * Startup step name for Spring configuration classes enhancement.
+     */
     public static final String SPRING_CONFIG_CLASSES_ENHANCE = "spring.context.config-classes.enhance";
 
     private static boolean LOCAL_ENV = false;
@@ -352,47 +391,57 @@ public class GeniusBuilder {
     private static boolean TEST_ENV = false;
 
     /**
-     * Check whether spring cloud Bootstrap environment enabled
+     * Checks whether the Spring Cloud Bootstrap environment is enabled.
      *
-     * @return true indicates spring cloud Bootstrap environment enabled
+     * @param environment The current {@link Environment}.
+     * @return {@code true} if Spring Cloud Bootstrap environment is enabled, {@code false} otherwise.
      */
     public static boolean isSpringCloudEnvironmentEnabled(Environment environment) {
         return ClassKit.isPresent(CLOUD_BOOTSTRAP_CONFIGURATION_CLASS, null) && bootstrapEnabled(environment);
     }
 
+    /**
+     * Checks if Spring Cloud bootstrap is enabled via properties or marker class.
+     *
+     * @param environment The current {@link Environment}.
+     * @return {@code true} if bootstrap is enabled, {@code false} otherwise.
+     */
     public static boolean bootstrapEnabled(Environment environment) {
         return environment.getProperty("spring.cloud.bootstrap.enabled", Boolean.class, false)
                 || ClassKit.isPresent("org.springframework.cloud.bootstrap.marker.Marker", null);
     }
 
     /**
-     * Check whether import spring cloud BootstrapConfiguration
+     * Checks whether Spring Cloud is present in the classpath.
      *
-     * @return true indicates spring cloud BootstrapConfiguration is imported
+     * @return {@code true} if Spring Cloud is detected, {@code false} otherwise.
      */
     public static boolean isSpringCloud() {
         return ClassKit.isPresent(CLOUD_BOOTSTRAP_CONFIGURATION_CLASS, null);
     }
 
     /**
-     * Check whether running in spring test environment
+     * Checks whether the application is running in a Spring test environment.
      *
-     * @return true indicates in spring test environment
+     * @return {@code true} if in a Spring test environment, {@code false} otherwise.
      */
     public static boolean isSpringTestEnv() {
         return TEST_ENV;
     }
 
     /**
-     * Check whether running in local development environment
+     * Checks whether the application is running in a local development environment.
      *
-     * @return true indicates in local development environment
+     * @return {@code true} if in a local development environment, {@code false} otherwise.
      */
-
     public static boolean isLocalEnv() {
         return LOCAL_ENV;
     }
 
+    /**
+     * Initializes the {@code TEST_ENV} flag by inspecting the current stack trace. This method is typically called once
+     * during application startup.
+     */
     private static void initSpringTestEnv() {
         StackTraceElement[] stackTrace = new RuntimeException().getStackTrace();
         for (StackTraceElement stackTraceElement : stackTrace) {
@@ -405,14 +454,32 @@ public class GeniusBuilder {
         }
     }
 
+    /**
+     * Checks if a given property key is related to logging configuration.
+     *
+     * @param key The property key to check.
+     * @return {@code true} if the key is a logging configuration key, {@code false} otherwise.
+     */
     public static boolean isLoggingConfig(String key) {
         return isLoggingPrefix(key) || LOGGING_PATH.equals(key) || Keys.FILE_ENCODING.equals(key);
     }
 
+    /**
+     * Checks if a given property key starts with a logging-related prefix.
+     *
+     * @param key The property key to check.
+     * @return {@code true} if the key starts with a logging prefix, {@code false} otherwise.
+     */
     public static boolean isLoggingPrefix(String key) {
         return key.startsWith(LOGGING_LEVEL_PREFIX) || key.startsWith(LOGGING_PATH_PREFIX);
     }
 
+    /**
+     * Checks if a given property key is related to logging patterns.
+     *
+     * @param key The property key to check.
+     * @return {@code true} if the key is a logging pattern key, {@code false} otherwise.
+     */
     public static boolean isLoggingPattern(String key) {
         return LOGGING_PATTERN_CONSOLE.equals(key) || LOGGING_PATTERN_FILE.equals(key);
     }

@@ -32,7 +32,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 
 /**
- * 用于根据用户引入的json库 自动创建对应的json解析器
+ * Factory for creating JSON provider instances. This factory automatically detects the JSON library introduced by the
+ * user (e.g., Jackson, Gson, Fastjson) and creates a corresponding JSON parser.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,18 +41,22 @@ import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 public class JsonFactory {
 
     /**
-     * 获得单例的 {@link JsonProvider}
+     * Retrieves the singleton instance of {@link JsonProvider}. The provider is created based on the first available
+     * JSON library found on the classpath via SPI.
      *
-     * @return 单例的 {@link JsonProvider}
+     * @return The singleton {@link JsonProvider} instance.
      */
     public static JsonProvider get() {
         return Instances.singletion(JsonFactory.class).create();
     }
 
     /**
-     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * Creates a new instance of {@link JsonProvider} based on the JSON engine JARs available on the classpath. It is
+     * recommended to use the singleton instance provided by {@link #get()} for better performance, as this method
+     * creates a new engine instance on each call.
      *
-     * @return {@link JsonProvider}
+     * @return A new {@link JsonProvider} instance.
+     * @throws InternalException if no JSON library (e.g., Jackson, Gson, Fastjson) is found on the classpath.
      */
     public static JsonProvider create() {
         final JsonProvider engine = NormalSpiLoader.loadFirstAvailable(JsonProvider.class);

@@ -39,57 +39,60 @@ import org.miaixz.bus.core.lang.reflect.kotlin.KClassImpl;
 import org.miaixz.bus.core.lang.reflect.kotlin.KParameter;
 
 /**
- * Kotlin反射包装相关工具类
+ * Utility class for Kotlin reflection wrapper.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class KotlinKit {
 
+    /**
+     * The Kotlin Metadata annotation class.
+     */
     private static final Class<? extends Annotation> META_DATA_CLASS = (Class<? extends Annotation>) Optional
             .ofTry(() -> Class.forName("kotlin.Metadata")).getOrNull();
 
     /**
-     * 是否提供或处于Kotlin环境中
+     * Whether the Kotlin environment is provided or enabled.
      */
     public static final boolean IS_KOTLIN_ENABLE = null != META_DATA_CLASS;
 
     /**
-     * 检查给定的类是否为Kotlin类 Kotlin类带有@kotlin.Metadata注解
+     * Checks if the given class is a Kotlin class. Kotlin classes are annotated with @kotlin.Metadata.
      *
-     * @param clazz 类
-     * @return 是否Kotlin类
+     * @param clazz the class to check
+     * @return {@code true} if it is a Kotlin class, {@code false} otherwise
      */
     public static boolean isKotlinClass(final Class<?> clazz) {
         return IS_KOTLIN_ENABLE && clazz.isAnnotationPresent(META_DATA_CLASS);
     }
 
     /**
-     * 获取Kotlin类的所有构造方法
+     * Gets all constructors of a Kotlin class.
      *
-     * @param targetType kotlin类
-     * @return 构造列表
+     * @param targetType the Kotlin class
+     * @return a list of constructors
      */
     public static List<?> getConstructors(final Class<?> targetType) {
         return KClassImpl.getConstructors(targetType);
     }
 
     /**
-     * 获取参数列表
+     * Gets the parameter list of a Kotlin class, method, or constructor.
      *
-     * @param kCallable kotlin的类、方法或构造
-     * @return 参数列表
+     * @param kCallable the Kotlin class, method, or constructor
+     * @return a list of parameters
      */
     public static List<KParameter> getParameters(final Object kCallable) {
         return KCallable.getParameters(kCallable);
     }
 
     /**
-     * 从{@link ValueProvider}中提取对应name的参数列表
+     * Extracts parameter values from a {@link ValueProvider} corresponding to their names.
      *
-     * @param kCallable     kotlin的类、方法或构造
-     * @param valueProvider {@link ValueProvider}
-     * @return 参数数组
+     * @param kCallable     the Kotlin class, method, or constructor
+     * @param valueProvider the {@link ValueProvider}
+     * @return an array of parameter values
      */
     public static Object[] getParameterValues(final Object kCallable, final ValueProvider<String> valueProvider) {
         final List<KParameter> parameters = getParameters(kCallable);
@@ -103,24 +106,24 @@ public class KotlinKit {
     }
 
     /**
-     * 实例化Kotlin对象
+     * Instantiates a Kotlin object.
      *
-     * @param <T>        对象类型
-     * @param targetType 对象类型
-     * @param map        参数名和参数值的Map
-     * @return 对象
+     * @param <T>        the object type
+     * @param targetType the target class type
+     * @param map        a map of parameter names to parameter values
+     * @return the instantiated object
      */
     public static <T> T newInstance(final Class<T> targetType, final Map<String, ?> map) {
         return newInstance(targetType, new MapValueProvider(map));
     }
 
     /**
-     * 实例化Kotlin对象
+     * Instantiates a Kotlin object.
      *
-     * @param <T>           对象类型
-     * @param targetType    对象类型
-     * @param valueProvider 值提供器，用于提供构造所需参数值
-     * @return 对象
+     * @param <T>           the object type
+     * @param targetType    the target class type
+     * @param valueProvider a value provider for constructor parameters
+     * @return the instantiated object
      */
     public static <T> T newInstance(final Class<T> targetType, final ValueProvider<String> valueProvider) {
         final List<?> constructors = getConstructors(targetType);

@@ -28,48 +28,20 @@
 package org.miaixz.bus.cron;
 
 import org.miaixz.bus.cron.crontab.CronCrontab;
-import org.miaixz.bus.cron.crontab.Crontab;
 
 /**
- * 作业执行器 执行具体的作业，执行完毕销毁 作业执行器唯一关联一个作业，负责管理作业的运行的生命周期。
+ * Represents a task executor that runs a specific cron job. Each executor is associated with a single task and manages
+ * its execution lifecycle. It is designed to be run once and then discarded.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Executor implements Runnable {
-
-    private final Scheduler scheduler;
-    private final CronCrontab task;
+public record Executor(Scheduler scheduler, CronCrontab task) implements Runnable {
 
     /**
-     * 构造
-     *
-     * @param scheduler 调度器
-     * @param task      被执行的任务
+     * Executes the task. This method notifies listeners at the start and end of the execution. It also handles
+     * exceptions and ensures that the manager is notified upon completion.
      */
-    public Executor(final Scheduler scheduler, final CronCrontab task) {
-        this.scheduler = scheduler;
-        this.task = task;
-    }
-
-    /**
-     * 获得原始任务对象
-     *
-     * @return 任务对象
-     */
-    public Crontab getTask() {
-        return this.task.getRaw();
-    }
-
-    /**
-     * 获得原始任务对象
-     *
-     * @return 任务对象
-     */
-    public CronCrontab getCronTask() {
-        return this.task;
-    }
-
     @Override
     public void run() {
         try {

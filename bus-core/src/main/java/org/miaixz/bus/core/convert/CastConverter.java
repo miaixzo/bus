@@ -34,29 +34,49 @@ import java.lang.reflect.Type;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 
 /**
- * 强转转换器
+ * A converter that performs a direct cast if the value is already an instance of the target type. This serves as an
+ * optimization to bypass unnecessary conversion logic.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CastConverter implements MatcherConverter, Serializable {
 
+    /**
+     * Singleton instance.
+     */
+    public static final CastConverter INSTANCE = new CastConverter();
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852266109781L;
 
     /**
-     * 单例
+     * Checks if the value is already an instance of the raw target type.
+     *
+     * @param targetType The target type.
+     * @param rawType    The raw class of the target type.
+     * @param value      The value to be checked.
+     * @return {@code true} if the value is an instance of the raw type, {@code false} otherwise.
      */
-    public static final CastConverter INSTANCE = new CastConverter();
-
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return rawType.isInstance(value);
     }
 
+    /**
+     * Returns the value directly without any conversion, as it is already of a compatible type.
+     *
+     * @param targetType The target type.
+     * @param value      The value to be "converted".
+     * @return The original value.
+     * @throws ConvertException This exception is not thrown in this implementation.
+     */
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {
-        // 此处无需逻辑，目标对象类型是value的父类或接口，直接返回匹配即可
+        // No conversion logic is needed, as the value is already of the target type
+        // or a subclass/implementation thereof.
         return value;
     }
 

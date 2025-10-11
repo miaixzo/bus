@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 用户关系
+ * User relationship model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,9 +48,21 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class UserRelation extends Material {
 
+    /**
+     * Version number.
+     */
     private String version;
+    /**
+     * Merchant number.
+     */
     private String merchant;
+    /**
+     * User ID.
+     */
     private String userId;
+    /**
+     * Signature.
+     */
     private String sign;
 
 }

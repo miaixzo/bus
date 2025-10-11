@@ -34,37 +34,61 @@ import java.util.Objects;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 软引用对象，在GC报告内存不足时会被GC回收
+ * A soft reference object that wraps an object of type {@code T}. Softly referenced objects are subject to garbage
+ * collection when the JVM determines that memory is running low. This class extends {@link SoftReference} and
+ * implements the {@link Ref} interface to provide a consistent reference API.
  *
- * @param <T> 键类型
+ * @param <T> The type of the object held by this soft reference.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SoftObject<T> extends SoftReference<T> implements Ref<T> {
 
+    /**
+     * The pre-calculated hash code of the referenced object. This is stored to ensure consistent hash code behavior
+     * even if the referenced object is cleared.
+     */
     private final int hashCode;
 
     /**
-     * 构造
+     * Constructs a new soft reference to the given object. The reference is registered with the given queue. The hash
+     * code of the object is pre-calculated and stored.
      *
-     * @param object 原始对象
-     * @param queue  {@link ReferenceQueue}
+     * @param object The object to be softly referenced.
+     * @param queue  The reference queue with which the soft reference is to be registered.
      */
     public SoftObject(final T object, final ReferenceQueue<? super T> queue) {
         super(object, queue);
         hashCode = Objects.hashCode(object);
     }
 
+    /**
+     * Returns the hash code for this soft reference. The hash code is based on the hash code of the referenced object
+     * at the time of construction. This ensures that the hash code remains consistent even if the referenced object is
+     * cleared.
+     *
+     * @return The hash code of this soft reference.
+     */
     @Override
     public int hashCode() {
         return hashCode;
     }
 
+    /**
+     * Compares this soft reference to the specified object. The result is {@code true} if and only if the argument is a
+     * {@code SoftObject} and the objects referenced by both soft references are {@code equals()}. If the referenced
+     * object of either {@code SoftObject} has been cleared, their {@code get()} method will return {@code null}.
+     *
+     * @param other The object to compare with.
+     * @return {@code true} if the given object refers to the same object as this soft reference, {@code false}
+     *         otherwise.
+     */
     @Override
     public boolean equals(final Object other) {
         if (other == this) {
             return true;
         } else if (other instanceof SoftObject) {
+            // Compare the actual referenced objects using ObjectKit.equals for null-safe comparison
             return ObjectKit.equals(((SoftObject<?>) other).get(), get());
         }
         return false;

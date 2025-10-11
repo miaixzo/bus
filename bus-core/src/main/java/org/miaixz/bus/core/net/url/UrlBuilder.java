@@ -40,7 +40,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 
 /**
- * URL 生成器，格式形如：
+ * A builder for creating URLs in the format:
  * 
  * <pre>
  * [scheme:]scheme-specific-part[#fragment]
@@ -58,51 +58,51 @@ public final class UrlBuilder implements Builder<String> {
     private static final long serialVersionUID = 2852231355809L;
 
     /**
-     * 协议，例如http
+     * The URL scheme (e.g., "http").
      */
     private String scheme;
     /**
-     * 主机，例如127.0.0.1
+     * The host (e.g., "127.0.0.1").
      */
     private String host;
     /**
-     * 端口，默认-1
+     * The port number (-1 for default).
      */
     private int port = -1;
     /**
-     * 路径，例如/aa/bb/cc
+     * The path (e.g., "/aa/bb/cc").
      */
     private UrlPath path;
     /**
-     * 查询语句，例如a=1&amp;b=2
+     * The query string (e.g., "a=1&amp;b=2").
      */
     private UrlQuery query;
     /**
-     * 标识符，例如#后边的部分
+     * The fragment identifier (the part after "#").
      */
     private String fragment;
     /**
-     * 编码，用于URLEncode和URLDecode
+     * The character set for URL encoding and decoding.
      */
     private java.nio.charset.Charset charset;
 
     /**
-     * 构造
+     * Constructs a new {@link UrlBuilder} with default settings (UTF-8 charset).
      */
     public UrlBuilder() {
         this.charset = Charset.UTF_8;
     }
 
     /**
-     * 构造
+     * Constructs a new {@link UrlBuilder} with the specified components.
      *
-     * @param scheme   协议，默认http
-     * @param host     主机，例如127.0.0.1
-     * @param port     端口，-1表示默认端口
-     * @param path     路径，例如/aa/bb/cc
-     * @param query    查询，例如a=1&amp;b=2
-     * @param fragment 标识符例如#后边的部分
-     * @param charset  编码，用于URLEncode和URLDecode，{@code null}表示不编码
+     * @param scheme   The URL scheme (e.g., "http").
+     * @param host     The host (e.g., "127.0.0.1").
+     * @param port     The port number (-1 for default).
+     * @param path     The URL path.
+     * @param query    The URL query.
+     * @param fragment The fragment identifier.
+     * @param charset  The character set for encoding and decoding ({@code null} for no encoding).
      */
     public UrlBuilder(final String scheme, final String host, final int port, final UrlPath path, final UrlQuery query,
             final String fragment, final java.nio.charset.Charset charset) {
@@ -116,10 +116,10 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 使用UrlBuilder构建UrlBuilder
+     * Creates a new {@link UrlBuilder} from an existing {@link UrlBuilder}.
      *
-     * @param builder {@code UrlBuilder}
-     * @return UrlBuilder
+     * @param builder The {@link UrlBuilder} to copy.
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder of(final UrlBuilder builder) {
         return of(
@@ -133,11 +133,11 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 使用URI构建UrlBuilder
+     * Creates a new {@link UrlBuilder} from a {@link URI}.
      *
-     * @param uri     URI
-     * @param charset 编码，用于URLEncode和URLDecode
-     * @return UrlBuilder
+     * @param uri     The {@link URI}.
+     * @param charset The character set for encoding and decoding.
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder of(final URI uri, final java.nio.charset.Charset charset) {
         return of(
@@ -151,36 +151,40 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 使用URL字符串构建UrlBuilder，当传入的URL没有协议时，按照http协议对待 此方法不对URL编码
+     * Creates a new {@link UrlBuilder} from a URL string, assuming the HTTP protocol if no protocol is specified. This
+     * method does not perform any URL encoding.
      *
-     * @param httpUrl URL字符串
-     * @return UrlBuilder
+     * @param httpUrl The URL string.
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder ofHttpWithoutEncode(final String httpUrl) {
         return ofHttp(httpUrl, null);
     }
 
     /**
-     * 使用URL字符串构建UrlBuilder，当传入的URL没有协议时，按照http协议对待，编码默认使用UTF-8
+     * Creates a new {@link UrlBuilder} from a URL string, assuming the HTTP protocol if no protocol is specified. The
+     * default encoding is UTF-8.
      *
-     * @param httpUrl URL字符串
-     * @return UrlBuilder
+     * @param httpUrl The URL string.
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder ofHttp(final String httpUrl) {
         return ofHttp(httpUrl, Charset.UTF_8);
     }
 
     /**
-     * 使用URL字符串构建UrlBuilder，当传入的URL没有协议时，按照http协议对待。
+     * Creates a new {@link UrlBuilder} from a URL string, assuming the HTTP protocol if no protocol is specified.
      * <ul>
-     * <li>如果url用户传入的URL没有做编码，则charset设置为{@code null}，此时URL不会解码，在build时也不会编码。</li>
-     * <li>如果url已经编码，或部分编码，则需要设置charset，此时URL会解码编码后的参数，在build时也会编码。</li>
-     * <li>如果url未编码，且存在歧义字符串，则需要设置charset为{@code null}，并调用{@link #setCharset(java.nio.charset.Charset)}在build时编码URL。</li>
+     * <li>If the URL is not encoded, set {@code charset} to {@code null} to prevent decoding and encoding.</li>
+     * <li>If the URL is already encoded (or partially encoded), set {@code charset} to decode and re-encode during the
+     * build.</li>
+     * <li>If the URL is not encoded and contains ambiguous characters, set {@code charset} to {@code null} and then
+     * call {@link #setCharset(java.nio.charset.Charset)} to encode the URL during the build.</li>
      * </ul>
      *
-     * @param httpUrl URL字符串
-     * @param charset 编码，用于URLEncode和URLDecode，如果为{@code null}，则不对传入的URL解码
-     * @return UrlBuilder
+     * @param httpUrl The URL string.
+     * @param charset The character set for encoding and decoding; if {@code null}, no decoding is performed.
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder ofHttp(String httpUrl, final java.nio.charset.Charset charset) {
         Assert.notBlank(httpUrl, "Url must be not blank!");
@@ -194,26 +198,29 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 使用URL字符串构建UrlBuilder，默认使用UTF-8编码 注意：此方法如果提供的URL为非网络协议，自动尝试使用文件协议
+     * Creates a new {@link UrlBuilder} from a URL string with default UTF-8 encoding. If the URL does not have a
+     * network protocol, it will attempt to use the file protocol.
      *
-     * @param url URL字符串
-     * @return UrlBuilder
+     * @param url The URL string.
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder of(final String url) {
         return of(url, Charset.UTF_8);
     }
 
     /**
-     * 使用URL字符串构建UrlBuilder，规则如下：
+     * Creates a new {@link UrlBuilder} from a URL string.
      * <ul>
-     * <li>如果url用户传入的URL没有做编码，则charset设置为{@code null}，此时URL不会解码，在build时也不会编码。</li>
-     * <li>如果url已经编码，或部分编码，则需要设置charset，此时URL会解码编码后的参数，在build时也会编码。</li>
-     * <li>如果url未编码，且存在歧义字符串，则需要设置charset为{@code null}，并调用{@link #setCharset(java.nio.charset.Charset)}在build时编码URL。</li>
+     * <li>If the URL is not encoded, set {@code charset} to {@code null} to prevent decoding and encoding.</li>
+     * <li>If the URL is already encoded (or partially encoded), set {@code charset} to decode and re-encode during the
+     * build.</li>
+     * <li>If the URL is not encoded and contains ambiguous characters, set {@code charset} to {@code null} and then
+     * call {@link #setCharset(java.nio.charset.Charset)} to encode the URL during the build.</li>
      * </ul>
      *
-     * @param url     URL字符串
-     * @param charset 编码，用于URLEncode和URLDecode
-     * @return UrlBuilder
+     * @param url     The URL string.
+     * @param charset The character set for encoding and decoding.
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder of(final String url, final java.nio.charset.Charset charset) {
         Assert.notBlank(url, "Url must be not blank!");
@@ -221,11 +228,11 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 使用URL构建UrlBuilder
+     * Creates a new {@link UrlBuilder} from a {@link URL}.
      *
-     * @param url     URL
-     * @param charset 编码，用于URLEncode和URLDecode，{@code null}表示不解码
-     * @return UrlBuilder
+     * @param url     The {@link URL}.
+     * @param charset The character set for encoding and decoding ({@code null} for no decoding).
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder of(final URL url, final java.nio.charset.Charset charset) {
         return of(
@@ -239,16 +246,16 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 构建UrlBuilder
+     * Creates a new {@link UrlBuilder} with the specified components.
      *
-     * @param scheme   协议，默认http
-     * @param host     主机，例如127.0.0.1
-     * @param port     端口，-1表示默认端口
-     * @param path     路径，例如/aa/bb/cc
-     * @param query    查询，例如a=1&amp;b=2
-     * @param fragment 标识符例如#后边的部分
-     * @param charset  编码，用于URLEncode和URLDecode
-     * @return UrlBuilder
+     * @param scheme   The URL scheme (e.g., "http").
+     * @param host     The host (e.g., "127.0.0.1").
+     * @param port     The port number (-1 for default).
+     * @param path     The URL path string.
+     * @param query    The URL query string.
+     * @param fragment The fragment identifier.
+     * @param charset  The character set for encoding and decoding.
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder of(
             final String scheme,
@@ -262,16 +269,16 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 构建UrlBuilder
+     * Creates a new {@link UrlBuilder} with the specified components.
      *
-     * @param scheme   协议，默认http
-     * @param host     主机，例如127.0.0.1
-     * @param port     端口，-1表示默认端口
-     * @param path     路径，例如/aa/bb/cc
-     * @param query    查询，例如a=1&amp;b=2
-     * @param fragment 标识符例如#后边的部分
-     * @param charset  编码，用于URLEncode和URLDecode
-     * @return UrlBuilder
+     * @param scheme   The URL scheme (e.g., "http").
+     * @param host     The host (e.g., "127.0.0.1").
+     * @param port     The port number (-1 for default).
+     * @param path     The {@link UrlPath}.
+     * @param query    The {@link UrlQuery}.
+     * @param fragment The fragment identifier.
+     * @param charset  The character set for encoding and decoding.
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder of(
             final String scheme,
@@ -285,28 +292,28 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 创建空的UrlBuilder
+     * Creates a new, empty {@link UrlBuilder}.
      *
-     * @return UrlBuilder
+     * @return A new {@link UrlBuilder} instance.
      */
     public static UrlBuilder of() {
         return new UrlBuilder();
     }
 
     /**
-     * 获取协议，例如http
+     * Returns the URL scheme (e.g., "http").
      *
-     * @return 协议，例如http
+     * @return The URL scheme.
      */
     public String getScheme() {
         return scheme;
     }
 
     /**
-     * 设置协议，例如http
+     * Sets the URL scheme (e.g., "http").
      *
-     * @param scheme 协议，例如http
-     * @return this
+     * @param scheme The URL scheme.
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder setScheme(final String scheme) {
         this.scheme = scheme;
@@ -314,28 +321,28 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 获取协议，例如http，如果用户未定义协议，使用默认的http协议
+     * Returns the URL scheme, defaulting to "http" if not specified.
      *
-     * @return 协议，例如http
+     * @return The URL scheme.
      */
     public String getSchemeWithDefault() {
         return StringKit.defaultIfEmpty(this.scheme, Protocol.HTTP.name);
     }
 
     /**
-     * 获取 主机，例如127.0.0.1
+     * Returns the host (e.g., "127.0.0.1").
      *
-     * @return 主机，例如127.0.0.1
+     * @return The host.
      */
     public String getHost() {
         return host;
     }
 
     /**
-     * 设置主机，例如127.0.0.1
+     * Sets the host (e.g., "127.0.0.1").
      *
-     * @param host 主机，例如127.0.0.1
-     * @return this
+     * @param host The host.
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder setHost(final String host) {
         this.host = host;
@@ -343,19 +350,19 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 获取端口，默认-1
+     * Returns the port number.
      *
-     * @return 端口，默认-1
+     * @return The port number, or -1 if not set.
      */
     public int getPort() {
         return port;
     }
 
     /**
-     * 设置端口，默认-1
+     * Sets the port number.
      *
-     * @param port 端口，默认-1
-     * @return this
+     * @param port The port number (-1 for default).
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder setPort(final int port) {
         this.port = port;
@@ -363,42 +370,41 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 获取端口，如果未自定义返回协议默认端口
+     * Returns the port number, or the default port for the protocol if not set.
      *
-     * @return 端口
+     * @return The port number.
      */
     public int getPortWithDefault() {
         int port = getPort();
         if (port <= 0) {
             port = toURL().getDefaultPort();
-            return port;
         }
         return port;
     }
 
     /**
-     * 获得authority部分
+     * Returns the authority part of the URL (host:port).
      *
-     * @return authority部分
+     * @return The authority string.
      */
     public String getAuthority() {
         return (port < 0) ? host : host + Symbol.COLON + port;
     }
 
     /**
-     * 获取路径，例如/aa/bb/cc
+     * Returns the {@link UrlPath} object.
      *
-     * @return 路径，例如/aa/bb/cc
+     * @return The {@link UrlPath}.
      */
     public UrlPath getPath() {
         return path;
     }
 
     /**
-     * 设置路径，例如/aa/bb/cc，将覆盖之前所有的path相关设置
+     * Sets the URL path, replacing any existing path.
      *
-     * @param path 路径，例如/aa/bb/cc
-     * @return this
+     * @param path The {@link UrlPath}.
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder setPath(final UrlPath path) {
         this.path = path;
@@ -406,19 +412,19 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 获得路径，例如/aa/bb/cc
+     * Returns the path string.
      *
-     * @return 路径，例如/aa/bb/cc
+     * @return The path string (e.g., "/aa/bb/cc").
      */
     public String getPaths() {
         return null == this.path ? Symbol.SLASH : this.path.build(charset);
     }
 
     /**
-     * 增加路径，在现有路径基础上追加路径
+     * Appends a path to the existing path.
      *
-     * @param path 路径，例如aaa/bbb/ccc
-     * @return this
+     * @param path The path to append (e.g., "aaa/bbb/ccc").
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder addPath(final CharSequence path) {
         UrlPath.of(path, this.charset).getSegments().forEach(this::addPathSegment);
@@ -426,25 +432,24 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 是否path的末尾加 /
+     * Sets whether to add a trailing slash to the path.
      *
-     * @param withEngTag 是否path的末尾加 /
-     * @return this
+     * @param withEngTag {@code true} to add a trailing slash.
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder setWithEndTag(final boolean withEngTag) {
         if (null == this.path) {
             this.path = UrlPath.of();
         }
-
         this.path.setWithEndTag(withEngTag);
         return this;
     }
 
     /**
-     * 增加路径节点，路径节点中的"/"会被转义为"%2F"
+     * Adds a path segment. Slashes ("/") in the segment will be encoded as "%2F".
      *
-     * @param segment 路径节点
-     * @return this
+     * @param segment The path segment.
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder addPathSegment(final CharSequence segment) {
         if (StringKit.isEmpty(segment)) {
@@ -458,19 +463,19 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 获取查询语句，例如a=1&amp;b=2 可能为{@code null}
+     * Returns the {@link UrlQuery} object.
      *
-     * @return 查询语句，例如a=1&amp;b=2，可能为{@code null}
+     * @return The {@link UrlQuery}, which may be {@code null}.
      */
     public UrlQuery getQuery() {
         return query;
     }
 
     /**
-     * 设置查询语句，例如a=1&amp;b=2，将覆盖之前所有的query相关设置
+     * Sets the URL query, replacing any existing query.
      *
-     * @param query 查询语句，例如a=1&amp;b=2
-     * @return this
+     * @param query The {@link UrlQuery}.
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder setQuery(final UrlQuery query) {
         this.query = query;
@@ -478,26 +483,25 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 获取查询语句，例如a=1&amp;b=2
+     * Returns the query string.
      *
-     * @return 查询语句，例如a=1&amp;b=2
+     * @return The query string (e.g., "a=1&amp;b=2").
      */
     public String getQuerys() {
         return null == this.query ? null : this.query.build(this.charset);
     }
 
     /**
-     * 添加查询项，支持重复键，默认非严格模式
+     * Adds a query parameter. Duplicate keys are allowed.
      *
-     * @param key   键
-     * @param value 值
-     * @return this
+     * @param key   The parameter key.
+     * @param value The parameter value.
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder addQuery(final String key, final Object value) {
         if (StringKit.isEmpty(key)) {
             return this;
         }
-
         if (this.query == null) {
             this.query = UrlQuery.of();
         }
@@ -506,19 +510,19 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 获取标识符，#后边的部分
+     * Returns the fragment identifier (the part after "#").
      *
-     * @return 标识符，例如#后边的部分
+     * @return The fragment identifier.
      */
     public String getFragment() {
         return fragment;
     }
 
     /**
-     * 设置标识符，例如#后边的部分
+     * Sets the fragment identifier (the part after "#").
      *
-     * @param fragment 标识符，例如#后边的部分
-     * @return this
+     * @param fragment The fragment identifier.
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder setFragment(final String fragment) {
         if (StringKit.isEmpty(fragment)) {
@@ -529,28 +533,28 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 获取标识符，#后边的部分
+     * Returns the encoded fragment identifier.
      *
-     * @return 标识符，例如#后边的部分
+     * @return The encoded fragment identifier.
      */
     public String getFragmentEncoded() {
         return RFC3986.FRAGMENT.encode(this.fragment, this.charset);
     }
 
     /**
-     * 获取编码，用于URLEncode和URLDecode
+     * Returns the character set for URL encoding and decoding.
      *
-     * @return 编码
+     * @return The character set.
      */
     public java.nio.charset.Charset getCharset() {
         return charset;
     }
 
     /**
-     * 设置编码，用于URLEncode和URLDecode
+     * Sets the character set for URL encoding and decoding.
      *
-     * @param charset 编码
-     * @return this
+     * @param charset The character set.
+     * @return This {@link UrlBuilder} for method chaining.
      */
     public UrlBuilder setCharset(final java.nio.charset.Charset charset) {
         this.charset = charset;
@@ -558,9 +562,9 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 创建URL字符串
+     * Builds the URL string.
      *
-     * @return URL字符串
+     * @return The URL string.
      */
     @Override
     public String build() {
@@ -568,33 +572,30 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 转换为{@link URL} 对象
+     * Converts this builder to a {@link URL} object.
      *
-     * @return {@link URL}
+     * @return The {@link URL}.
      */
     public URL toURL() {
         return toURL(null);
     }
 
     /**
-     * 转换为{@link URL} 对象
+     * Converts this builder to a {@link URL} object.
      *
-     * @param handler {@link URLStreamHandler}，null表示默认
-     * @return {@link URL}
+     * @param handler The {@link URLStreamHandler} ({@code null} for default).
+     * @return The {@link URL}.
      */
     public URL toURL(final URLStreamHandler handler) {
         final StringBuilder fileBuilder = new StringBuilder();
 
-        // path
         fileBuilder.append(getPaths());
 
-        // query
         final String query = getQuerys();
         if (StringKit.isNotBlank(query)) {
             fileBuilder.append(Symbol.C_QUESTION_MARK).append(query);
         }
 
-        // fragment
         if (StringKit.isNotBlank(this.fragment)) {
             fileBuilder.append(Symbol.C_HASH).append(getFragmentEncoded());
         }
@@ -607,9 +608,9 @@ public final class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * 转换为URI
+     * Converts this builder to a {@link URI} object.
      *
-     * @return URI
+     * @return The {@link URI}.
      */
     public URI toURI() {
         try {

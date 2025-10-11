@@ -33,9 +33,9 @@ import java.util.ArrayList;
 import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
- * 随机选择器
+ * A selector that randomly picks an element from a list.
  *
- * @param <T> 元素类型
+ * @param <T> the type of the elements
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -45,16 +45,16 @@ public class RandomSelector<T> extends ArrayList<T> implements Selector<T> {
     private static final long serialVersionUID = 2852277695036L;
 
     /**
-     * 构造
+     * Constructs an empty {@code RandomSelector}.
      */
     public RandomSelector() {
         super();
     }
 
     /**
-     * 构造
+     * Constructs a new {@code RandomSelector} and initializes it with the elements from the given iterable.
      *
-     * @param objList 对象列表
+     * @param objList the iterable of objects to add
      */
     public RandomSelector(final Iterable<T> objList) {
         this();
@@ -63,6 +63,12 @@ public class RandomSelector<T> extends ArrayList<T> implements Selector<T> {
         }
     }
 
+    /**
+     * Selects an element randomly from the list.
+     *
+     * @return a randomly selected element
+     * @throws IndexOutOfBoundsException if the selector is empty
+     */
     @Override
     public T select() {
         return get(RandomKit.randomInt(0, size()));

@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.validate.magic;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -45,8 +38,16 @@ import org.miaixz.bus.validate.*;
 import org.miaixz.bus.validate.magic.annotation.Inside;
 import org.miaixz.bus.validate.magic.annotation.NotBlank;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 /**
- * 校验检查器
+ * The validation checker. This class is responsible for orchestrating the validation process based on the provided
+ * {@link Verified} object and its associated {@link Material} rules.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,12 +55,12 @@ import org.miaixz.bus.validate.magic.annotation.NotBlank;
 public class Checker {
 
     /**
-     * 根据指定的校验器校验对象
+     * Validates an object against a specific validator rule.
      *
-     * @param verified 被校验对象
-     * @param material 校验器属性
-     * @return 校验结果
-     * @throws ValidateException 如果校验环境的fast设置为true, 则校验失败时立刻抛出该异常
+     * @param verified The object to be validated, wrapped in a {@link Verified} instance.
+     * @param material The validation rule material.
+     * @return A {@link Collector} containing the validation results.
+     * @throws ValidateException if fast-fail is enabled in the context and validation fails.
      */
     public Collector object(Verified verified, Material material) throws ValidateException {
         Collector collector = new Collector(verified);
@@ -76,10 +77,10 @@ public class Checker {
     }
 
     /**
-     * 校验对象内部的所有字段
+     * Performs a deep validation on all fields of the object within the {@link Verified} instance.
      *
-     * @param verified 被校验对象
-     * @return 校验结果
+     * @param verified The object to be validated.
+     * @return A {@link Collector} containing the validation results for all internal fields.
      */
     public Collector inside(Verified verified) {
         Collector collector = new Collector(verified);
@@ -96,16 +97,16 @@ public class Checker {
             Annotation[] annotations = field.getDeclaredAnnotations();
             String[] xFields = verified.getContext().getField();
             String[] xSkip = null == verified.getContext().getSkip() ? null : verified.getContext().getSkip();
-            // 过滤当前需跳过的属性
+            // Filter out fields that should be skipped.
             if (ArrayKit.isNotEmpty(xSkip) && Arrays.asList(xSkip).contains(field.getName())) {
                 continue;
             }
-            // 过滤当前需要校验的属性
+            // Filter for fields that should be validated.
             if (ArrayKit.isNotEmpty(xFields) && !Arrays.asList(xFields).contains(field.getName())) {
                 continue;
             }
 
-            // 属性校验开始
+            // Start field validation.
             verified.getContext().setInside(false);
             verified = new Verified(value, annotations, verified.getContext(), field.getName());
             if (null != value && Provider.isCollection(value) && hasInside(annotations)) {
@@ -116,8 +117,7 @@ public class Checker {
 
             if (verified.getList().isEmpty()) {
                 Logger.warn("==>    Request: Please check the annotation on property: {}", field.getName());
-                // throw new ValidateException(ErrorCode._100511);
-                // 创建包含默认Material的Verified对象
+                // Create a Verified object with a default Material.
                 verified = new Verified(value, new Annotation[0], verified.getContext(), field.getName());
                 verified.getList().add(without(field));
             }
@@ -128,63 +128,63 @@ public class Checker {
     }
 
     /**
-     * 创建一个表示字段不能为空的校验规则Material对象
+     * Creates a {@link Material} object representing a "not blank" validation rule.
      *
-     * @param field 需要校验的字段
-     * @return 配置好校验规则的Material对象
+     * @param field The field to be validated.
+     * @return A {@link Material} object configured with the validation rule.
      */
     public Material without(Field field) {
-        // 创建新的Material对象用于存储校验规则
+        // Create a new Material object to store the validation rule.
         Material material = new Material();
 
-        // 设置校验器名称为"NOT_BLANK"
+        // Set the validator name to "NOT_BLANK".
         material.setName(Builder._NOT_BLANK);
 
-        // 从Registry获取NotBlank校验器的类对象并设置
-        // 这里使用require方法确保校验器存在
+        // Get the NotBlank validator class from the Registry and set it.
+        // The require method is used here to ensure the validator exists.
         material.setClazz(Registry.getInstance().require(Builder._NOT_BLANK).getClass());
 
-        // 使用动态代理创建NotBlank注解实例
-        // 代理对象会返回注解方法的默认值
+        // Create a NotBlank annotation instance using a dynamic proxy.
+        // The proxy will return the default values for the annotation methods.
         material.setAnnotation(
                 (NotBlank) Proxy.newProxyInstance(
-                        // 使用注解的类加载器
+                        // Use the annotation's class loader.
                         NotBlank.class.getClassLoader(),
-                        // 实现的接口
+                        // The implemented interface.
                         new Class<?>[] { NotBlank.class },
-                        // 调用处理器
+                        // The invocation handler.
                         (proxy, method, args) -> {
-                            // 返回注解方法的默认值
+                            // Return the default value of the annotation method.
                             return method.getDefaultValue();
                         }));
 
-        // 设置错误消息模板，使用${field}占位符
-        material.setErrmsg("请检查${field}参数");
+        // Set the error message template, using the ${field} placeholder.
+        material.setErrmsg("Please check the ${field} parameter");
 
-        // 设置默认错误码
+        // Set the default error code.
         material.setErrcode(Builder.DEFAULT_ERRCODE);
 
-        // 设置需要校验的字段名称
+        // Set the name of the field to be validated.
         material.setField(field.getName());
 
-        // 设置校验分组为空数组（表示不分组）
+        // Set the validation groups to an empty array (meaning no group).
         material.setGroup(new String[0]);
 
-        // 添加校验参数：
-        // 1. FIELD参数：字段名称
+        // Add validation parameters:
+        // 1. FIELD parameter: the field name.
         material.addParam(Builder.FIELD, field.getName());
-        // 2. VALUE参数：空字符串（表示校验空值）
+        // 2. VALUE parameter: an empty string (for validating against null/empty).
         material.addParam(Builder.VALUE, Normal.EMPTY);
 
         return material;
     }
 
     /**
-     * 根据校验器属性校验对象
+     * Performs the actual validation of an object against a rule.
      *
-     * @param verified 被校验的对象
-     * @param material 校验器属性
-     * @return 校验结果
+     * @param verified The object to be validated.
+     * @param material The validation rule material.
+     * @return A {@link Collector} containing the validation result.
      */
     public Collector doObject(Verified verified, Material material) {
         Matcher matcher = (Matcher) Registry.getInstance().require(material.getName(), material.getClazz());
@@ -210,11 +210,11 @@ public class Checker {
     }
 
     /**
-     * 校验集合对象元素
+     * Validates each element of a collection.
      *
-     * @param verified 被校验对象
-     * @param material 校验器属性
-     * @return 校验结果
+     * @param verified The collection object to be validated.
+     * @param material The validation rule to apply to each element.
+     * @return A {@link Collector} containing the results for each element.
      */
     public Collector doCollection(Verified verified, Material material) {
         Collector collector = new Collector(verified);
@@ -230,11 +230,11 @@ public class Checker {
     }
 
     /**
-     * 校验数组对象元素
+     * Validates each element of an array.
      *
-     * @param verified 被校验对象
-     * @param material 校验器属性
-     * @return 校验结果
+     * @param verified The array object to be validated.
+     * @param material The validation rule to apply to each element.
+     * @return A {@link Collector} containing the results for each element.
      */
     public Collector doArrayObject(Verified verified, Material material) {
         Collector collector = new Collector(verified);
@@ -249,10 +249,10 @@ public class Checker {
     }
 
     /**
-     * 校验数组对象元素
+     * Performs a deep validation on each element of an array.
      *
-     * @param verified 被校验对象
-     * @return 校验结果
+     * @param verified The array object to be validated.
+     * @return A {@link Collector} containing the deep validation results for each element.
      */
     public Collector doArrayInside(Verified verified) {
         Collector collector = new Collector(verified);
@@ -264,10 +264,10 @@ public class Checker {
     }
 
     /**
-     * 校验集合对象元素
+     * Performs a deep validation on each element of a collection.
      *
-     * @param verified 被校验对象
-     * @return 校验结果
+     * @param verified The collection object to be validated.
+     * @return A {@link Collector} containing the deep validation results for each element.
      */
     private Collector doCollectionInside(Verified verified) {
         Collector collector = new Collector(verified);
@@ -279,10 +279,10 @@ public class Checker {
     }
 
     /**
-     * 是否为内部校验注解
+     * Checks if the given array of annotations contains the {@link Inside} annotation.
      *
-     * @param annotations 注解
-     * @return 校验结果
+     * @param annotations The array of annotations to check.
+     * @return {@code true} if {@link Inside} is present, {@code false} otherwise.
      */
     public boolean hasInside(Annotation[] annotations) {
         return Arrays.stream(annotations).anyMatch(an -> an instanceof Inside);

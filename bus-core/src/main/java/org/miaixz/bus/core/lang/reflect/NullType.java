@@ -30,7 +30,8 @@ package org.miaixz.bus.core.lang.reflect;
 import java.lang.reflect.Type;
 
 /**
- * 空类型表示
+ * Represents a null type. This class is used to signify a type that is explicitly null or undefined. It implements the
+ * {@link Type} interface to allow it to be used in contexts where a type is expected.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,13 +39,21 @@ import java.lang.reflect.Type;
 public class NullType implements Type {
 
     /**
-     * 单例对象
+     * Singleton instance of {@code NullType}.
      */
     public static NullType INSTANCE = new NullType();
 
+    /**
+     * Private constructor to enforce the singleton pattern.
+     */
     private NullType() {
     }
 
+    /**
+     * Returns a string representation of this {@code NullType}.
+     *
+     * @return A string "Type of null".
+     */
     @Override
     public String toString() {
         return "Type of null";

@@ -32,17 +32,29 @@ import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 公众号-订阅/模板消息
+ * WeChat Official Account subscription/template message provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WechatMpProvider extends AbstractProvider<WechatMaterial, Context> {
 
+    /**
+     * Constructs a {@code WechatMpProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public WechatMpProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends a WeChat Official Account subscription or template message. Implementations should override this method to
+     * provide specific sending logic.
+     *
+     * @param entity The {@link WechatMaterial} containing message details.
+     * @return A {@link Message} indicating the result of the sending operation, or {@code null} if not implemented.
+     */
     @Override
     public Message send(WechatMaterial entity) {
         return null;

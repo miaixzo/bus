@@ -43,32 +43,31 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 敏感数据处理的上下文过滤器，不依赖第三方 JSON 库。 处理带有 @Entry 或 @Shield 注解的字段脱敏。 通过最小化对象创建和高效的类型检查优化性能。
+ * A context-aware filter for processing sensitive data. It handles the desensitization logic for fields annotated with
+ * {@link Entry} or {@link Shield} and is designed to be independent of third-party JSON libraries.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Filter {
 
-    /**
-     * 脱敏上下文
-     */
+    /** The desensitization context. */
     private final Context sensitiveContext;
 
     /**
-     * 构造函数，初始化上下文
+     * Constructs a new filter with the given context.
      *
-     * @param context 脱敏上下文
+     * @param context The desensitization context.
      */
     public Filter(Context context) {
         this.sensitiveContext = context;
     }
 
     /**
-     * 从注解中获取自定义条件提供者
+     * Extracts a custom condition provider from an array of annotations.
      *
-     * @param annotations 字段注解数组
-     * @return 条件提供者实例，若无则返回 null
+     * @param annotations The array of annotations on a field.
+     * @return An instance of the condition provider, or null if none is found.
      */
     private static ConditionProvider getConditionOpt(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
@@ -81,31 +80,28 @@ public class Filter {
     }
 
     /**
-     * 处理对象字段进行脱敏
+     * Processes a specific field of an object for desensitization.
      *
-     * @param object 被处理的对象
-     * @param field  被处理的字段
-     * @param value  字段值
-     * @return 脱敏后的值
+     * @param object The object being processed.
+     * @param field  The field to process.
+     * @param value  The current value of the field.
+     * @return The desensitized value.
      */
     public Object process(Object object, Field field, Object value) {
-        // 初始化上下文
         sensitiveContext.setCurrentField(field);
         sensitiveContext.setCurrentObject(object);
         sensitiveContext.setBeanClass(object.getClass());
         sensitiveContext.setAllFieldList(ListKit.of(FieldKit.getFields(object.getClass())));
 
-        // 处理 @Entry 注解
         Entry sensitiveEntry = field.getAnnotation(Entry.class);
         if (ObjectKit.isNull(sensitiveEntry)) {
             sensitiveContext.setEntry(value);
             return handleSensitive(sensitiveContext, field);
         }
 
-        // 处理字段类型
         final Class<?> fieldTypeClass = field.getType();
         if (TypeKit.isJavaBean(fieldTypeClass) || TypeKit.isMap(fieldTypeClass)) {
-            return value; // JavaBean 和 Map 递归处理或跳过
+            return value; // Skip recursive processing for JavaBeans and Maps here.
         }
 
         if (TypeKit.isArray(fieldTypeClass)) {
@@ -116,15 +112,15 @@ public class Filter {
             return processCollection((Collection<?>) value);
         }
 
-        return value; // 无需处理时返回原值
+        return value;
     }
 
     /**
-     * 处理数组类型
+     * Handles desensitization for array types.
      *
-     * @param fieldTypeClass 数组元素类型
-     * @param arrays         要处理的数组
-     * @return 处理后的数组
+     * @param fieldTypeClass The class type of the array.
+     * @param arrays         The array to process.
+     * @return The processed array with desensitized elements.
      */
     private Object processArray(Class<?> fieldTypeClass, Object[] arrays) {
         if (ArrayKit.isEmpty(arrays)) {
@@ -149,10 +145,10 @@ public class Filter {
     }
 
     /**
-     * 处理集合类型
+     * Handles desensitization for collection types.
      *
-     * @param collection 要处理的集合
-     * @return 处理后的集合
+     * @param collection The collection to process.
+     * @return The processed collection with desensitized elements.
      */
     private Object processCollection(Collection<?> collection) {
         if (CollKit.isEmpty(collection)) {
@@ -176,17 +172,16 @@ public class Filter {
     }
 
     /**
-     * 处理脱敏信息
+     * Applies the desensitization logic to a field's value based on its annotations.
      *
-     * @param context 上下文
-     * @param field   当前字段
-     * @return 脱敏后的值
+     * @param context The current desensitization context.
+     * @param field   The field being processed.
+     * @return The desensitized value.
      */
     private Object handleSensitive(final Context context, final Field field) {
         try {
             final Object originalFieldVal = context.getEntry();
 
-            // 处理 @Shield 注解
             Shield sensitive = field.getAnnotation(Shield.class);
             if (ObjectKit.isNotNull(sensitive)) {
                 ConditionProvider condition = ReflectKit.newInstance(sensitive.condition());
@@ -200,7 +195,6 @@ public class Filter {
                 }
             }
 
-            // 处理自定义注解
             Annotation[] annotations = field.getAnnotations();
             if (ArrayKit.isNotEmpty(annotations)) {
                 ConditionProvider condition = getConditionOpt(annotations);
@@ -215,15 +209,16 @@ public class Filter {
             context.setEntry(null);
             return originalFieldVal;
         } catch (Exception e) {
-            throw new InternalException("脱敏处理失败: " + e.getMessage(), e);
+            throw new InternalException("Desensitization failed: " + e.getMessage(), e);
         }
     }
 
     /**
-     * 判断是否为基本类型
+     * Checks if the given class is a base type that should be processed directly (i.e., not recursively explored as a
+     * complex object).
      *
-     * @param fieldTypeClass 字段类型
-     * @return 是否为基本类型
+     * @param fieldTypeClass The class of the field type.
+     * @return {@code true} if it is a base type, {@code false} otherwise.
      */
     private boolean isBaseType(final Class<?> fieldTypeClass) {
         return TypeKit.isBase(fieldTypeClass) && !TypeKit.isJavaBean(fieldTypeClass) && !TypeKit.isArray(fieldTypeClass)

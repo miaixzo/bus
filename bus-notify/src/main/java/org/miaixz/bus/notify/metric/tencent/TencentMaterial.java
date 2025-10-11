@@ -37,7 +37,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 腾讯云
+ * Material for Tencent Cloud notification services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,12 +50,14 @@ import lombok.experimental.SuperBuilder;
 public class TencentMaterial extends Material {
 
     /**
-     * 短信应用ID.
+     * The SMS application ID.
      */
     private String smsAppId;
 
     /**
-     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
+     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The default API request address for Tencent Cloud SMS.
      */
     @Override
     public String getUrl() {

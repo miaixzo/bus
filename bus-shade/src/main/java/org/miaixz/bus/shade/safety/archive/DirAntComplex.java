@@ -33,17 +33,30 @@ import org.miaixz.bus.shade.safety.Complex;
 import org.miaixz.bus.shade.safety.complex.AntComplex;
 
 /**
- * 文件记录Ant表达式规则
+ * A {@link Complex} implementation that filters {@link File} entries based on Ant-style path matching. This class
+ * extends {@link AntComplex} and provides a way to apply Ant patterns to file names.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DirAntComplex extends AntComplex<File> implements Complex<File> {
 
+    /**
+     * Constructs a new {@code DirAntComplex} with the specified Ant pattern.
+     *
+     * @param ant The Ant-style pattern to use for filtering.
+     */
     public DirAntComplex(String ant) {
         super(ant);
     }
 
+    /**
+     * Converts a {@link File} entry into a string representation for pattern matching. This implementation returns the
+     * name of the file.
+     *
+     * @param entry The {@link File} entry to convert.
+     * @return The name of the file.
+     */
     @Override
     protected String toText(File entry) {
         return entry.getName();

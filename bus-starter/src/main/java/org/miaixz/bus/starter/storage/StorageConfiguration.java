@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.starter.storage;
 
+import jakarta.annotation.Resource;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.storage.cache.StorageCache;
@@ -35,32 +36,32 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import jakarta.annotation.Resource;
-
 /**
- * 存储服务自动配置类，用于配置存储相关的Bean。
+ * Auto-configuration class for storage services.
  *
- * 该类负责创建并配置以下主要组件：
+ * <p>
+ * This class is responsible for creating and configuring the following main components:
+ *
  * <ul>
- * <li>{@link StorageService} - 存储服务提供者工厂，用于创建各种存储服务</li>
- * <li>{@link CacheX} - 存储缓存实现，默认使用{@link StorageCache}作为缓存实现</li>
+ * <li>{@link StorageService} - A factory for creating various storage service providers.</li>
+ * <li>{@link CacheX} - The caching implementation for storage, defaulting to {@link StorageCache}.</li>
  * </ul>
- * 
+ *
  * <pre>
- * // 在application.yml中配置
+ * // Example configuration in application.yml
  * bus:
- *   storage:
- *     cache:
- *       type: default  # 使用默认缓存
+ * storage:
+ * cache:
+ * type: default  # Use the default cache
  *
- * // 在代码中直接注入使用
+ * // Example usage in code
  * &#64;Autowired
- * private StorageProviderService storageProviderService;
+ * private StorageService storageService;
  *
- * // 获取阿里云OSS存储服务
- * Provider ossProvider = storageProviderService.require(StorageRegistry.ALIYUN_OSS);
- * // 上传文件
- * ossProvider.upload("文件路径", "文件内容");
+ * // Get the Aliyun OSS storage provider
+ * StorageProvider ossProvider = storageService.require(StorageRegistry.ALIYUN_OSS);
+ * // Upload a file
+ * ossProvider.upload("filePath", "fileContent");
  * </pre>
  *
  * @author Kimi Liu
@@ -70,34 +71,41 @@ import jakarta.annotation.Resource;
 public class StorageConfiguration {
 
     /**
-     * 存储配置属性，包含各种存储组件的配置信息。 通过{@link EnableConfigurationProperties}注解自动注入。
+     * Storage configuration properties, which include settings for various storage providers. This is automatically
+     * injected by Spring Boot via the {@link EnableConfigurationProperties} annotation.
      */
     @Resource
-    StorageProperties properties;
+    private StorageProperties properties;
 
     /**
-     * 创建存储服务提供者工厂Bean。
+     * Creates the primary {@link StorageService} bean.
      *
      * <p>
-     * 该方法创建一个{@link StorageService}实例，用于管理和创建各种存储服务提供者。 该实例会使用传入的缓存实现和配置属性来初始化。
+     * This method creates a {@link StorageService} instance, which acts as a factory for managing and creating various
+     * storage service providers. The instance is initialized with the provided cache implementation and configuration
+     * properties.
      * </p>
      *
-     * @param CacheX 缓存实现，用于存储文件元数据等临时数据
-     * @return 配置好的存储服务提供者工厂实例
+     * @param cachex The caching implementation, used for storing file metadata and other temporary data.
+     * @return A fully configured {@code StorageService} instance.
      */
     @Bean
-    public StorageService storageProviderFactory(CacheX CacheX) {
-        return new StorageService(this.properties, CacheX);
+    public StorageService storageService(CacheX cachex) {
+        return new StorageService(this.properties, cachex);
     }
 
     /**
-     * 创建默认的存储缓存实现Bean。 当满足以下条件时，该方法会创建一个默认的缓存实现：
+     * Creates the default {@link CacheX} bean for storage operations.
+     *
+     * <p>
+     * This bean is only created if the following conditions are met:
+     * </p>
      * <ul>
-     * <li>容器中不存在自定义的{@link CacheX} Bean</li>
-     * <li>配置属性中缓存类型设置为"default"（默认值）</li>
+     * <li>No custom {@link CacheX} bean is already present in the container.</li>
+     * <li>The configuration property {@code bus.storage.cache.type} is set to "default" (or is missing).</li>
      * </ul>
      *
-     * @return 默认的存储缓存实现实例
+     * @return The default storage cache implementation instance.
      */
     @Bean
     @ConditionalOnMissingBean(CacheX.class)

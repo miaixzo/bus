@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 日期封装，日期的核心为DateTime类
+ * Provides date-related encapsulations, with {@link org.miaixz.bus.core.center.date.DateTime} as the core class.
  *
  * @author Kimi Liu
  * @since Java 17+

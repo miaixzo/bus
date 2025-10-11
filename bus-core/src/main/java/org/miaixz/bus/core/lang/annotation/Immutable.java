@@ -30,7 +30,14 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 不可变类
+ * A marker annotation that indicates a class or method return type is immutable.
+ * <p>
+ * An object is considered immutable if its state cannot be modified after it is created. This property is highly
+ * valuable in concurrent programming because immutable objects are inherently thread-safe and can be shared freely
+ * without the need for locking.
+ * <p>
+ * This annotation is primarily for documentation purposes and for use by static analysis tools to verify immutability
+ * constraints.
  *
  * @author Kimi Liu
  * @since Java 17+

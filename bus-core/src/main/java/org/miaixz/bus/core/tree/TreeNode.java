@@ -32,9 +32,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 树节点 每个属性都可以在{@link NodeConfig}中被重命名 在你的项目里它可以是部门实体、地区实体等任意类树节点实体 类树节点实体: 包含key，父Key.不限于这些属性的可以构造成一颗树的实体对象
+ * Represents a generic node in a tree structure. Each property of this node can be renamed using {@link NodeConfig}. In
+ * your application, this could be a department entity, a region entity, or any other class that can be structured as a
+ * tree node (i.e., it has a key and a parent key).
  *
- * @param <T> ID类型
+ * @param <T> The type of the identifier for the node.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -44,43 +46,43 @@ public class TreeNode<T> implements Node<T> {
     private static final long serialVersionUID = 2852250559730L;
 
     /**
-     * ID
+     * The unique identifier of the node.
      */
     private T id;
 
     /**
-     * 父节点ID
+     * The identifier of the parent node.
      */
     private T parentId;
 
     /**
-     * 名称
+     * The name or label of the node.
      */
     private CharSequence name;
 
     /**
-     * 顺序 越小优先级越高 默认0
+     * The order or weight of the node. A smaller value indicates a higher priority. Defaults to 0.
      */
     private Comparable<?> weight = 0;
 
     /**
-     * 扩展字段
+     * A map to hold extended properties.
      */
     private Map<String, Object> extra;
 
     /**
-     * 空构造
+     * Default constructor.
      */
     public TreeNode() {
     }
 
     /**
-     * 构造
+     * Constructs a new TreeNode with the specified details.
      *
-     * @param id       ID
-     * @param parentId 父节点ID
-     * @param name     名称
-     * @param weight   权重
+     * @param id       The unique identifier of the node.
+     * @param parentId The identifier of the parent node.
+     * @param name     The name of the node.
+     * @param weight   The weight for ordering.
      */
     public TreeNode(final T id, final T parentId, final String name, final Comparable<?> weight) {
         this.id = id;
@@ -89,7 +91,6 @@ public class TreeNode<T> implements Node<T> {
         if (weight != null) {
             this.weight = weight;
         }
-
     }
 
     @Override
@@ -137,18 +138,18 @@ public class TreeNode<T> implements Node<T> {
     }
 
     /**
-     * 获取扩展字段
+     * Gets the map of extended properties.
      *
-     * @return 扩展字段Map
+     * @return The map of extended properties.
      */
     public Map<String, Object> getExtra() {
         return extra;
     }
 
     /**
-     * 设置扩展字段
+     * Sets the map of extended properties.
      *
-     * @param extra 扩展字段
+     * @param extra The map of extended properties.
      * @return this
      */
     public TreeNode<T> setExtra(final Map<String, Object> extra) {

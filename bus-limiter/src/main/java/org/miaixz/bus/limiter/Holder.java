@@ -28,19 +28,35 @@
 package org.miaixz.bus.limiter;
 
 /**
- * 全局上下文
+ * Global context holder for the limiter module. This class provides static methods to set and retrieve the
+ * {@link Context} object, making it accessible throughout the application.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Holder {
 
+    /**
+     * The global {@link Context} instance for the limiter module. This instance holds configuration and shared
+     * resources.
+     */
     private static Context context;
 
+    /**
+     * Sets the global {@link Context} instance. This method should typically be called once during application
+     * initialization.
+     *
+     * @param context The {@link Context} object to be set as the global instance.
+     */
     public static void set(Context context) {
         Holder.context = context;
     }
 
+    /**
+     * Retrieves the global {@link Context} instance.
+     *
+     * @return The currently set global {@link Context} object.
+     */
     public static Context load() {
         return context;
     }

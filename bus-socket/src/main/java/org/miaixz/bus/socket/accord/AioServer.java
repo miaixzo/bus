@@ -27,6 +27,15 @@
 */
 package org.miaixz.bus.socket.accord;
 
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.socket.Context;
+import org.miaixz.bus.socket.Handler;
+import org.miaixz.bus.socket.Message;
+import org.miaixz.bus.socket.Status;
+import org.miaixz.bus.socket.buffer.BufferPagePool;
+import org.miaixz.bus.socket.buffer.VirtualBuffer;
+import org.miaixz.bus.socket.metric.channel.AsynchronousChannelProvider;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketOption;
@@ -39,17 +48,8 @@ import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.socket.Context;
-import org.miaixz.bus.socket.Handler;
-import org.miaixz.bus.socket.Message;
-import org.miaixz.bus.socket.Status;
-import org.miaixz.bus.socket.buffer.BufferPagePool;
-import org.miaixz.bus.socket.buffer.VirtualBuffer;
-import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
-
 /**
- * AIO服务端
+ * AIO Server Implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,40 +57,42 @@ import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
 public class AioServer {
 
     /**
-     * 线程序号
+     * Thread sequence number for naming.
      */
     private static long threadSeqNumber;
     /**
-     * 客户端服务配置 调用AioClient的各setXX()方法，都是为了设置config的各配置项
+     * Server configuration context. All setXX() methods of AioServer are used to set configuration items in this
+     * context.
      */
     private final Context context = new Context();
     /**
-     * 异步服务器套接字通道
+     * Asynchronous server socket channel.
      */
     private AsynchronousServerSocketChannel serverSocketChannel = null;
     /**
-     * 异步通道组
+     * Asynchronous channel group for handling I/O events.
      */
     private AsynchronousChannelGroup asynchronousChannelGroup;
     /**
-     * 是否开启低内存模式
+     * Whether to enable low memory mode.
      */
     private boolean lowMemory = true;
     /**
-     * write 内存池
+     * Write buffer pool.
      */
     private BufferPagePool writeBufferPool = null;
     /**
-     * read 内存池
+     * Read buffer pool.
      */
     private BufferPagePool readBufferPool = null;
 
     /**
-     * 设置服务端启动必要参数配置
+     * Sets the necessary parameters to start the AIO server.
      *
-     * @param port    绑定服务端口号
-     * @param message 协议编解码
-     * @param handler 消息处理器
+     * @param <T>     the type of message handled by this server
+     * @param port    the port number to bind the server to
+     * @param message the protocol message codec
+     * @param handler the message handler
      */
     public <T> AioServer(int port, Message<T> message, Handler<T> handler) {
         context.setPort(port);
@@ -100,10 +102,13 @@ public class AioServer {
     }
 
     /**
-     * @param host    绑定服务端Host地址
-     * @param port    绑定服务端口号
-     * @param message 协议编解码
-     * @param handler 消息处理器
+     * Sets the necessary parameters to start the AIO server.
+     *
+     * @param <T>     the type of message handled by this server
+     * @param host    the host address to bind the server to
+     * @param port    the port number to bind the server to
+     * @param message the protocol message codec
+     * @param handler the message handler
      */
     public <T> AioServer(String host, int port, Message<T> message, Handler<T> handler) {
         this(port, message, handler);
@@ -111,9 +116,9 @@ public class AioServer {
     }
 
     /**
-     * 启动Server端的AIO服务
+     * Starts the AIO server.
      *
-     * @throws IOException IO异常
+     * @throws IOException if an I/O error occurs
      */
     public void start() throws IOException {
         asynchronousChannelGroup = new AsynchronousChannelProvider(lowMemory).openAsynchronousChannelGroup(
@@ -123,9 +128,10 @@ public class AioServer {
     }
 
     /**
-     * 内部启动逻辑
+     * Internal startup logic.
      *
-     * @throws IOException IO异常
+     * @param asynchronousChannelGroup the asynchronous channel group to use
+     * @throws IOException if an I/O error occurs
      */
     public void start(AsynchronousChannelGroup asynchronousChannelGroup) throws IOException {
         try {
@@ -137,13 +143,13 @@ public class AioServer {
             }
 
             this.serverSocketChannel = AsynchronousServerSocketChannel.open(asynchronousChannelGroup);
-            // 设置套接字选项
+            // Set socket options
             if (context.getSocketOptions() != null) {
                 for (Map.Entry<SocketOption<Object>, Object> entry : context.getSocketOptions().entrySet()) {
                     this.serverSocketChannel.setOption(entry.getKey(), entry.getValue());
                 }
             }
-            // 绑定主机
+            // Bind host
             if (context.getHost() != null) {
                 serverSocketChannel
                         .bind(new InetSocketAddress(context.getHost(), context.getPort()), context.getBacklog());
@@ -158,6 +164,9 @@ public class AioServer {
         }
     }
 
+    /**
+     * Starts the thread to accept incoming connections.
+     */
     private void startAcceptThread() {
         Supplier<VirtualBuffer> readBufferSupplier = () -> readBufferPool.allocateBufferPage()
                 .allocate(context.getReadBufferSize());
@@ -184,13 +193,13 @@ public class AioServer {
     }
 
     /**
-     * 为每个新建立的连接创建Session对象
+     * Creates a session for each new connection.
      *
-     * @param channel            当前已建立连接通道
-     * @param readBufferSupplier
+     * @param channel            the newly established channel
+     * @param readBufferSupplier a supplier for read buffers
      */
     private void createSession(AsynchronousSocketChannel channel, Supplier<VirtualBuffer> readBufferSupplier) {
-        // 连接成功则构造AIOSession对象
+        // On successful connection, create an AioSession object
         TcpSession session = null;
         AsynchronousSocketChannel acceptChannel = channel;
         try {
@@ -216,7 +225,7 @@ public class AioServer {
     }
 
     /**
-     * 停止服务端
+     * Stops the server.
      */
     public void shutdown() {
         try {
@@ -234,10 +243,10 @@ public class AioServer {
     }
 
     /**
-     * 设置读缓存区大小
+     * Sets the read buffer size.
      *
-     * @param size 单位：byte
-     * @return this
+     * @param size the size in bytes
+     * @return this AioServer instance
      */
     public AioServer setReadBufferSize(int size) {
         this.context.setReadBufferSize(size);
@@ -245,17 +254,15 @@ public class AioServer {
     }
 
     /**
-     * 设置Socket的TCP参数配置。
+     * Sets the TCP socket options.
      * <p>
-     * AIO客户端的有效可选范围为：<br/>
-     * 2. StandardSocketOptions.SO_RCVBUF<br/>
-     * 4. StandardSocketOptions.SO_REUSEADDR<br/>
+     * The valid options for an AIO server are: 1. StandardSocketOptions.SO_RCVBUF 2. StandardSocketOptions.SO_REUSEADDR
      * </p>
      *
-     * @param socketOption 配置项
-     * @param value        配置值
-     * @param <V>          配置项类型
-     * @return this
+     * @param <V>          the type of the socket option value
+     * @param socketOption the socket option
+     * @param value        the value of the socket option
+     * @return this AioServer instance
      */
     public <V> AioServer setOption(SocketOption<V> socketOption, V value) {
         context.setOption(socketOption, value);
@@ -263,10 +270,10 @@ public class AioServer {
     }
 
     /**
-     * 设置服务工作线程数,设置数值必须大于等于2
+     * Sets the number of server worker threads. The value must be greater than or equal to 2.
      *
-     * @param threadNum 线程数
-     * @return this
+     * @param threadNum the number of threads
+     * @return this AioServer instance
      */
     public AioServer setThreadNum(int threadNum) {
         if (threadNum <= 1) {
@@ -277,11 +284,11 @@ public class AioServer {
     }
 
     /**
-     * 设置输出缓冲区容量
+     * Sets the output buffer capacity.
      *
-     * @param bufferSize     单个内存块大小
-     * @param bufferCapacity 内存块数量上限
-     * @return this
+     * @param bufferSize     the size of a single buffer block
+     * @param bufferCapacity the maximum number of buffer blocks
+     * @return this AioServer instance
      */
     public AioServer setWriteBuffer(int bufferSize, int bufferCapacity) {
         this.context.setWriteBufferSize(bufferSize);
@@ -290,10 +297,10 @@ public class AioServer {
     }
 
     /**
-     * 设置 backlog 大小
+     * Sets the backlog size.
      *
-     * @param backlog backlog大小
-     * @return this
+     * @param backlog the backlog size
+     * @return this AioServer instance
      */
     public final AioServer setBacklog(int backlog) {
         this.context.setBacklog(backlog);
@@ -301,21 +308,23 @@ public class AioServer {
     }
 
     /**
-     * 设置读写内存池。 该方法适用于多个AioQuickServer、AioQuickClient共享内存池的场景， <b>以获得更好的性能表现</b>
+     * Sets the read and write buffer pool. This method is suitable for scenarios where multiple AioServers and
+     * AioClients share a buffer pool to achieve better performance.
      *
-     * @param bufferPool 内存池对象
-     * @return this
+     * @param bufferPool the buffer pool to use
+     * @return this AioServer instance
      */
     public AioServer setBufferPagePool(BufferPagePool bufferPool) {
         return setBufferPagePool(bufferPool, bufferPool);
     }
 
     /**
-     * 设置读写内存池。 该方法适用于多个AioQuickServer、AioQuickClient共享内存池的场景， <b>以获得更好的性能表现</b>
+     * Sets the read and write buffer pools. This method is suitable for scenarios where multiple AioServers and
+     * AioClients share buffer pools to achieve better performance.
      *
-     * @param readBufferPool  读内存池对象
-     * @param writeBufferPool 写内存池对象
-     * @return this
+     * @param readBufferPool  the buffer pool for read operations
+     * @param writeBufferPool the buffer pool for write operations
+     * @return this AioServer instance
      */
     public AioServer setBufferPagePool(BufferPagePool readBufferPool, BufferPagePool writeBufferPool) {
         this.writeBufferPool = writeBufferPool;
@@ -324,9 +333,9 @@ public class AioServer {
     }
 
     /**
-     * 禁用低代码模式
+     * Disables low memory mode.
      *
-     * @return this
+     * @return this AioServer instance
      */
     public AioServer disableLowMemory() {
         this.lowMemory = false;

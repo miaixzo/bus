@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 加解密服务实现
+ * Provides implementations for cryptographic services. This package contains concrete
+ * {@link org.miaixz.bus.crypto.Provider} implementations for various cryptographic algorithms, such as AES, DES, RC4,
+ * RSA, SM2, and SM4.
  *
  * @author Kimi Liu
  * @since Java 17+

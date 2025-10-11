@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
 
 /**
- * 圆圈干扰验证码
+ * Circle interference CAPTCHA provider.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,58 +51,58 @@ public class CircleProvider extends AbstractProvider {
     private static final long serialVersionUID = 2852291580758L;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width  图片宽
-     * @param height 图片高
+     * @param width  Image width.
+     * @param height Image height.
      */
     public CircleProvider(final int width, final int height) {
         this(width, height, 5);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width     图片宽
-     * @param height    图片高
-     * @param codeCount 字符个数
+     * @param width     Image width.
+     * @param height    Image height.
+     * @param codeCount Number of characters.
      */
     public CircleProvider(final int width, final int height, final int codeCount) {
         this(width, height, codeCount, 15);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param codeCount      字符个数
-     * @param interfereCount 验证码干扰元素个数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param codeCount      Number of characters.
+     * @param interfereCount Number of interfering elements.
      */
     public CircleProvider(final int width, final int height, final int codeCount, final int interfereCount) {
         this(width, height, new RandomStrategy(codeCount), interfereCount);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param generator      验证码生成器
-     * @param interfereCount 验证码干扰元素个数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param generator      CAPTCHA code generator.
+     * @param interfereCount Number of interfering elements.
      */
     public CircleProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount) {
         super(width, height, generator, interfereCount);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param codeCount      字符个数
-     * @param interfereCount 验证码干扰元素个数
-     * @param sizeBaseHeight 字体的大小 高度的倍数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param codeCount      Number of characters.
+     * @param interfereCount Number of interfering elements.
+     * @param sizeBaseHeight Font size as a multiplier of the height.
      */
     public CircleProvider(final int width, final int height, final int codeCount, final int interfereCount,
             final float sizeBaseHeight) {
@@ -116,10 +116,10 @@ public class CircleProvider extends AbstractProvider {
         final Graphics2D g = ImageKit.createGraphics(image, this.background);
 
         try {
-            // 随机画干扰圈圈
+            // Draw random interference circles
             drawInterfere(g);
 
-            // 画字符串
+            // Draw the string
             drawString(g, code);
         } finally {
             g.dispose();
@@ -129,13 +129,13 @@ public class CircleProvider extends AbstractProvider {
     }
 
     /**
-     * 绘制字符串
+     * Draws the string.
      *
-     * @param g    {@link Graphics2D}画笔
-     * @param code 验证码
+     * @param g    The {@link Graphics2D} object.
+     * @param code The CAPTCHA code.
      */
     private void drawString(final Graphics2D g, final String code) {
-        // 指定透明度
+        // Specify transparency
         if (null != this.textAlpha) {
             g.setComposite(this.textAlpha);
         }
@@ -143,9 +143,9 @@ public class CircleProvider extends AbstractProvider {
     }
 
     /**
-     * 画随机干扰
+     * Draws random interference.
      *
-     * @param g {@link Graphics2D}
+     * @param g The {@link Graphics2D} object.
      */
     private void drawInterfere(final Graphics2D g) {
         final ThreadLocalRandom random = RandomKit.getRandom();

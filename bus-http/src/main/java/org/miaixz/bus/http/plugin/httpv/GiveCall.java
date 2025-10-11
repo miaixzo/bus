@@ -28,25 +28,33 @@
 package org.miaixz.bus.http.plugin.httpv;
 
 /**
+ * Represents an asynchronous call that can be canceled and from which a result can be retrieved.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface GiveCall extends Cancelable {
 
     /**
-     * @return 是否被取消
+     * Returns {@code true} if this call was canceled before it completed normally.
+     *
+     * @return {@code true} if this call was canceled.
      */
     boolean isCanceled();
 
     /**
-     * @return 请求是否执行完成，包含取消和失败
+     * Returns {@code true} if this call completed. Completion may be due to normal termination, an exception, or
+     * cancellation -- in all of these cases, this method will return {@code true}.
+     *
+     * @return {@code true} if this call completed.
      */
     boolean isDone();
 
     /**
-     * 如果需要，则等待计算完成，然后检索其结果
+     * Waits if necessary for the computation to complete, and then retrieves its result. This method will block the
+     * current thread until the result is available.
      *
-     * @return 请求执行结果，若请求未执行完，则阻塞当前线程直到请求执行完成
+     * @return The result of the request execution.
      */
     CoverResult getResult();
 

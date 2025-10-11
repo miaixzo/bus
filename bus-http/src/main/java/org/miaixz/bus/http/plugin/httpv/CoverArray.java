@@ -28,7 +28,7 @@
 package org.miaixz.bus.http.plugin.httpv;
 
 /**
- * 可以是 xml、yml、protobuf 等任何一种格式的数据
+ * Represents data that can be in any format, such as XML, YAML, Protobuf, etc., structured as an array.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,60 +36,60 @@ package org.miaixz.bus.http.plugin.httpv;
 public interface CoverArray {
 
     /**
-     * @return JSON 的键值对数量
+     * @return The number of elements in the array.
      */
     int size();
 
     /**
-     * @return 是否为空
+     * @return True if the array is empty.
      */
     boolean isEmpty();
 
     /**
-     * @param index 元素下标
-     * @return 子 JsonObj
+     * @param index The element index.
+     * @return The sub-object as a CoverWapper.
      */
     CoverWapper getMapper(int index);
 
     /**
-     * @param index 元素下标
-     * @return 子 JsonArr
+     * @param index The element index.
+     * @return The sub-array as a CoverArray.
      */
     CoverArray getArray(int index);
 
     /**
-     * @param index 元素下标
-     * @return boolean 值
+     * @param index The element index.
+     * @return The boolean value.
      */
     boolean getBool(int index);
 
     /**
-     * @param index 元素下标
-     * @return int 值
+     * @param index The element index.
+     * @return The int value.
      */
     int getInt(int index);
 
     /**
-     * @param index 元素下标
-     * @return long 值
+     * @param index The element index.
+     * @return The long value.
      */
     long getLong(int index);
 
     /**
-     * @param index 元素下标
-     * @return float 值
+     * @param index The element index.
+     * @return The float value.
      */
     float getFloat(int index);
 
     /**
-     * @param index 元素下标
-     * @return double 值
+     * @param index The element index.
+     * @return The double value.
      */
     double getDouble(int index);
 
     /**
-     * @param index 元素下标
-     * @return String 值
+     * @param index The element index.
+     * @return The String value.
      */
     String getString(int index);
 

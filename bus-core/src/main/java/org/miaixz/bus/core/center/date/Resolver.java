@@ -46,7 +46,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 日期解析
+ * Date parsing utility.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,7 +54,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Resolver extends Converter {
 
     /**
-     * 将日期字符串转换为{@link DateTime}对象，格式：
+     * Converts a date string to a {@link DateTime} object. Supported formats include:
      * <ol>
      * <li>yyyy-MM-dd HH:mm:ss</li>
      * <li>yyyy/MM/dd HH:mm:ss</li>
@@ -79,105 +79,106 @@ public class Resolver extends Converter {
      * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ</li>
      * </ol>
      *
-     * @param date 日期字符串
-     * @return 日期
+     * @param date The date string.
+     * @return The {@link DateTime} object.
      */
     public static DateTime parse(final CharSequence date) {
         return (DateTime) RegisterDateParser.INSTANCE.parse(date);
     }
 
     /**
-     * 构建DateTime对象
+     * Constructs a DateTime object from a date string and a {@link DateFormat} object.
      *
-     * @param date   Date字符串
-     * @param format 格式化器 {@link SimpleDateFormat}
-     * @return DateTime对象
+     * @param date   The date string.
+     * @param format The formatter {@link SimpleDateFormat}.
+     * @return The {@link DateTime} object.
      */
     public static DateTime parse(final CharSequence date, final DateFormat format) {
         return new DateTime(date, format);
     }
 
     /**
-     * 构建DateTime对象
+     * Constructs a DateTime object from a date string and a {@link PositionDateParser} object.
      *
-     * @param date   Date字符串
-     * @param parser 格式化器,{@link FormatBuilder}
-     * @return DateTime对象
+     * @param date   The date string.
+     * @param parser The formatter, {@link FormatBuilder}.
+     * @return The {@link DateTime} object.
      */
     public static DateTime parse(final CharSequence date, final PositionDateParser parser) {
         return new DateTime(date, parser);
     }
 
     /**
-     * 构建DateTime对象
+     * Constructs a DateTime object from a date string, a {@link PositionDateParser} object, and a lenient flag.
      *
-     * @param date    Date字符串
-     * @param parser  格式化器,{@link FormatBuilder}
-     * @param lenient 是否宽容模式
-     * @return DateTime对象
+     * @param date    The date string.
+     * @param parser  The formatter, {@link FormatBuilder}.
+     * @param lenient Whether to use lenient parsing.
+     * @return The {@link DateTime} object.
      */
     public static DateTime parse(final CharSequence date, final PositionDateParser parser, final boolean lenient) {
         return new DateTime(date, parser, lenient);
     }
 
     /**
-     * 构建DateTime对象
+     * Constructs a DateTime object from a date string and a {@link DateTimeFormatter} object.
      *
-     * @param date      Date字符串
-     * @param formatter 格式化器,{@link DateTimeFormatter}
-     * @return DateTime对象
+     * @param date      The date string.
+     * @param formatter The formatter, {@link DateTimeFormatter}.
+     * @return The {@link DateTime} object.
      */
     public static DateTime parse(final CharSequence date, final DateTimeFormatter formatter) {
         return new DateTime(date, formatter);
     }
 
     /**
-     * 将特定格式的日期转换为Date对象
+     * Converts a date string of a specific format to a {@link DateTime} object.
      *
-     * @param date   特定格式的日期
-     * @param format 格式，例如yyyy-MM-dd
-     * @return 日期对象
+     * @param date   The date string in a specific format.
+     * @param format The format, e.g., "yyyy-MM-dd".
+     * @return The {@link DateTime} object.
      */
     public static DateTime parse(final CharSequence date, final String format) {
         return new DateTime(date, format);
     }
 
     /**
-     * 将特定格式的日期转换为Date对象
+     * Converts a date string of a specific format and locale to a {@link DateTime} object.
      *
-     * @param date   特定格式的日期
-     * @param format 格式，例如yyyy-MM-dd
-     * @param locale 区域信息
-     * @return 日期对象
+     * @param date   The date string in a specific format.
+     * @param format The format, e.g., "yyyy-MM-dd".
+     * @param locale The locale information.
+     * @return The {@link DateTime} object.
      */
     public static DateTime parse(final CharSequence date, final String format, final Locale locale) {
         final FormatManager formatManager = FormatManager.getInstance();
         if (formatManager.isCustomFormat(format)) {
-            // 自定义格式化器忽略Locale
+            // Custom formatter ignores Locale
             return new DateTime(formatManager.parse(date, format));
         }
         return new DateTime(date, Formatter.newSimpleFormat(format, locale, null));
     }
 
     /**
-     * 通过给定的日期格式解析日期时间字符串 传入的日期格式会逐个尝试，直到解析成功，返回{@link DateTime}对象，否则抛出{@link DateException}异常
+     * Parses a date-time string using a given array of date formats. The provided date formats will be tried one by one
+     * until parsing succeeds. Returns a {@link DateTime} object, otherwise throws a {@link DateException}.
      *
-     * @param date          日期时间字符串，非空
-     * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
-     * @return 解析后的Date
-     * @throws IllegalArgumentException if the date string or pattern array is null
-     * @throws DateException            if none of the date patterns were suitable
+     * @param date          The date-time string, must not be null.
+     * @param parsePatterns An array of date-time formats to try, must not be null, see SimpleDateFormat.
+     * @return The parsed {@link DateTime} object.
+     * @throws IllegalArgumentException if the date string or pattern array is null.
+     * @throws DateException            if none of the date patterns were suitable.
      */
     public static DateTime parse(final String date, final String... parsePatterns) throws DateException {
         return date(Calendar.parseByPatterns(date, parsePatterns));
     }
 
     /**
-     * 解析日期时间字符串为{@link LocalDateTime}
+     * Parses a date-time string into a {@link LocalDateTime} object.
      *
-     * @param date   日期时间字符串
-     * @param format 日期格式，类似于yyyy-MM-dd HH:mm:ss,SSS
-     * @return {@link LocalDateTime}
+     * @param date   The date-time string.
+     * @param format The date format, e.g., "yyyy-MM-dd HH:mm:ss,SSS".
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime parseTime(CharSequence date, final String format) {
         if (StringKit.isBlank(date)) {
@@ -191,12 +192,12 @@ public class Resolver extends Converter {
 
         DateTimeFormatter formatter = null;
         if (StringKit.isNotBlank(format)) {
-            // 修复yyyyMMddHHmmssSSS格式不能解析的问题
+            // Fix the issue where yyyyMMddHHmmssSSS format cannot be parsed
             if (StringKit.startWithIgnoreEquals(format, Fields.PURE_DATETIME) && format.endsWith("S")) {
-                // 需要填充的0的个数
+                // Number of zeros to pad
                 final int paddingWidth = 3 - (format.length() - Fields.PURE_DATETIME.length());
                 if (paddingWidth > 0) {
-                    // 将yyyyMMddHHmmssS、yyyyMMddHHmmssSS的日期统一替换为yyyyMMddHHmmssSSS格式，用0补
+                    // Unify yyyyMMddHHmmssS, yyyyMMddHHmmssSS dates to yyyyMMddHHmmssSSS format, padded with 0s
                     date += StringKit.repeat('0', paddingWidth);
                 }
                 formatter = Formatter.PURE_DATETIME_MS_FORMATTER;
@@ -209,12 +210,12 @@ public class Resolver extends Converter {
     }
 
     /**
-     * 解析日期时间字符串为{@link LocalDateTime}，格式支持日期时间、日期、时间
-     * 如果formatter为{@code null}，则使用{@link DateTimeFormatter#ISO_LOCAL_DATE_TIME}
+     * Parses a date-time string into a {@link LocalDateTime} object. Supports date-time, date, and time formats. If the
+     * formatter is {@code null}, {@link DateTimeFormatter#ISO_LOCAL_DATE_TIME} is used.
      *
-     * @param date      日期时间字符串
-     * @param formatter 日期格式化器，预定义的格式见：{@link DateTimeFormatter}
-     * @return {@link LocalDateTime}
+     * @param date      The date-time string.
+     * @param formatter The date formatter; predefined formats can be found in {@link DateTimeFormatter}.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime parseTime(final CharSequence date, final DateTimeFormatter formatter) {
         if (StringKit.isBlank(date)) {
@@ -228,11 +229,11 @@ public class Resolver extends Converter {
     }
 
     /**
-     * 解析日期字符串为{@link LocalDate}
+     * Parses a date string into a {@link LocalDate} object.
      *
-     * @param date   日期字符串
-     * @param format 日期格式，类似于yyyy-MM-dd
-     * @return {@link LocalDateTime}
+     * @param date   The date string.
+     * @param format The date format, e.g., "yyyy-MM-dd".
+     * @return The {@link LocalDate} object.
      */
     public static LocalDate parseDate(final CharSequence date, final String format) {
         if (StringKit.isBlank(date)) {
@@ -242,11 +243,11 @@ public class Resolver extends Converter {
     }
 
     /**
-     * 解析日期时间字符串为{@link LocalDate}，格式支持日期
+     * Parses a date-time string into a {@link LocalDate} object. Supports date formats only.
      *
-     * @param date      日期时间字符串
-     * @param formatter 日期格式化器，预定义的格式见：{@link DateTimeFormatter}
-     * @return {@link LocalDate}
+     * @param date      The date-time string.
+     * @param formatter The date formatter; predefined formats can be found in {@link DateTimeFormatter}.
+     * @return The {@link LocalDate} object.
      */
     public static LocalDate parseDate(final CharSequence date, final DateTimeFormatter formatter) {
         if (StringKit.isBlank(date)) {
@@ -260,24 +261,26 @@ public class Resolver extends Converter {
     }
 
     /**
-     * 解析日期时间字符串为{@link LocalDate}，仅支持yyyy-MM-dd'T'HH:mm:ss格式，例如：2007-12-03T10:15:30
+     * Parses a date-time string into a {@link LocalDate} object. Only supports "yyyy-MM-dd'T'HH:mm:ss" format, e.g.,
+     * "2007-12-03T10:15:30".
      *
-     * @param date 日期时间字符串
-     * @return {@link LocalDate}
+     * @param date The date-time string.
+     * @return The {@link LocalDate} object.
      */
     public static LocalDate parseDateByISO(final CharSequence date) {
         return parseDate(date, (DateTimeFormatter) null);
     }
 
     /**
-     * 解析日期时间字符串为{@link LocalDateTime}，支持：
+     * Parses a date-time string into a {@link LocalDateTime} object. Supports:
      * <ul>
-     * <li>{@link DateTimeFormatter#ISO_LOCAL_DATE_TIME} yyyy-MM-dd'T'HH:mm:ss格式，例如：2007-12-03T10:15:30</li>
-     * <li>yyyy-MM-dd HH:mm:ss</li>
+     * <li>{@link DateTimeFormatter#ISO_LOCAL_DATE_TIME} "yyyy-MM-dd'T'HH:mm:ss" format, e.g.,
+     * "2007-12-03T10:15:30"</li>
+     * <li>"yyyy-MM-dd HH:mm:ss"</li>
      * </ul>
      *
-     * @param date 日期时间字符串
-     * @return {@link LocalDateTime}
+     * @param date The date-time string.
+     * @return The {@link LocalDateTime} object.
      */
     public static LocalDateTime parseTimeByISO(final CharSequence date) {
         if (StringKit.contains(date, 'T')) {
@@ -288,60 +291,61 @@ public class Resolver extends Converter {
     }
 
     /**
-     * 标准化日期，默认处理以空格区分的日期时间格式，空格前为日期，空格后为时间： 将以下字符替换为"-"
-     *
+     * Normalizes a date string. By default, it processes date-time formats separated by spaces, where the part before
+     * the space is the date and after is the time. Replaces the following characters with "-":
+     * 
      * <pre>
      * "."
      * "/"
-     * "年"
-     * "月"
+     * "年" (year)
+     * "月" (month)
      * </pre>
      * <p>
-     * 将以下字符去除
-     *
+     * Removes the following characters:
+     * 
      * <pre>
-     * "日"
+     * "日" (day)
      * </pre>
      * <p>
-     * 将以下字符替换为":"
-     *
+     * Replaces the following characters with ":":
+     * 
      * <pre>
-     * "时"
-     * "分"
-     * "秒"
+     * "时" (hour)
+     * "分" (minute)
+     * "秒" (second)
      * </pre>
      * <p>
-     * 当末位是":"时去除之（不存在毫秒时）
+     * Removes the trailing ":" if it exists (when milliseconds are not present).
      *
-     * @param date 日期时间字符串
-     * @return 格式化后的日期字符串
+     * @param date The date-time string.
+     * @return The normalized date string.
      */
     public static String normalize(final CharSequence date) {
         if (StringKit.isBlank(date)) {
             return StringKit.toString(date);
         }
 
-        // 日期时间分开处理
+        // Process date and time separately
         final List<String> dateAndTime = CharsBacker.splitTrim(date, Symbol.SPACE);
         final int size = dateAndTime.size();
         if (size < 1 || size > 2) {
-            // 非可被标准处理的格式
+            // Not a format that can be standardized
             return StringKit.toString(date);
         }
 
         final StringBuilder builder = StringKit.builder();
 
-        // 日期部分（"\"、"/"、"."、"年"、"月"都替换为"-"）
+        // Date part (replace "\", "/", ".", "年", "月" with "-")
         String datePart = dateAndTime.get(0).replaceAll("[/.年月]", Symbol.MINUS);
         datePart = StringKit.removeSuffix(datePart, "日");
         builder.append(datePart);
 
-        // 时间部分
+        // Time part
         if (size == 2) {
             builder.append(Symbol.C_SPACE);
             String timePart = dateAndTime.get(1).replaceAll("[时分秒]", Symbol.COLON);
             timePart = StringKit.removeSuffix(timePart, Symbol.COLON);
-            // 将ISO8601中的逗号替换为.
+            // Replace comma in ISO8601 with dot
             timePart = timePart.replace(Symbol.C_COMMA, '.');
             builder.append(timePart);
         }

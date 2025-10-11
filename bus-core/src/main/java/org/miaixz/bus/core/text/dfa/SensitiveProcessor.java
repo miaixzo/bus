@@ -30,7 +30,9 @@ package org.miaixz.bus.core.text.dfa;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * 敏感词过滤处理器，默认按字符数替换成*
+ * Interface for processing sensitive words. Implementations can define custom logic for how sensitive words are
+ * handled, such as replacing them with a mask character. The default implementation replaces each character of the
+ * found sensitive word with an asterisk.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,10 +40,11 @@ import org.miaixz.bus.core.lang.Symbol;
 public interface SensitiveProcessor {
 
     /**
-     * 敏感词过滤处理
+     * Processes a found sensitive word. The default implementation replaces each character of the
+     * {@link FoundWord#getFoundWord()} with an asterisk ({@code *}).
      *
-     * @param foundWord 敏感词匹配到的内容
-     * @return 敏感词过滤后的内容，默认按字符数替换成*
+     * @param foundWord The {@link FoundWord} object representing the sensitive word found in the text.
+     * @return The processed string, typically a masked version of the sensitive word.
      */
     default String process(final FoundWord foundWord) {
         final int length = foundWord.getFoundWord().length();

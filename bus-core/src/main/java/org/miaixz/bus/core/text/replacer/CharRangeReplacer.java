@@ -32,28 +32,46 @@ import java.io.Serial;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 区间字符串替换，指定区间，将区间中的所有字符去除，替换为指定的字符，字符重复次数为区间长度，即替换后字符串长度不变 此方法使用{@link String#codePoints()}完成拆分替换
+ * A string replacer that operates on a specified character range. It replaces all characters within the given range
+ * with a specified replacement character. The length of the string remains unchanged after replacement. This
+ * implementation uses {@link String#codePoints()} for splitting and replacement when {@code isCodePoint} is true.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CharRangeReplacer extends StringReplacer {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852238751018L;
 
+    /**
+     * The inclusive starting index of the character range to be replaced.
+     */
     private final int beginInclude;
+    /**
+     * The exclusive ending index of the character range to be replaced.
+     */
     private final int endExclude;
+    /**
+     * The character used for replacement within the specified range.
+     */
     private final char replacedChar;
+    /**
+     * Flag indicating whether to treat the input as code points (true) or characters (false).
+     */
     private final boolean isCodePoint;
 
     /**
-     * 构造
+     * Constructs a new {@code CharRangeReplacer}.
      *
-     * @param beginInclude 开始位置（包含）
-     * @param endExclude   结束位置（不包含）
-     * @param replacedChar 被替换的字符串
-     * @param isCodePoint  是否code point模式，此模式下emoji等会被作为单独的字符
+     * @param beginInclude The inclusive starting position of the range.
+     * @param endExclude   The exclusive ending position of the range.
+     * @param replacedChar The character to replace the characters within the range with.
+     * @param isCodePoint  {@code true} to treat the input as code points (e.g., for emoji), {@code false} for
+     *                     characters.
      */
     public CharRangeReplacer(final int beginInclude, final int endExclude, final char replacedChar,
             final boolean isCodePoint) {
@@ -63,6 +81,14 @@ public class CharRangeReplacer extends StringReplacer {
         this.isCodePoint = isCodePoint;
     }
 
+    /**
+     * Applies the character range replacement logic to the given text. Characters within the specified range
+     * ({@code beginInclude} to {@code endExclude}) are replaced with {@code replacedChar}, while characters outside
+     * this range remain unchanged.
+     *
+     * @param text The character sequence to be processed.
+     * @return The character sequence after the range replacement has been applied.
+     */
     @Override
     public String apply(final CharSequence text) {
         if (StringKit.isEmpty(text)) {
@@ -82,35 +108,44 @@ public class CharRangeReplacer extends StringReplacer {
             endExclude = strLength;
         }
         if (beginInclude > endExclude) {
-            // 如果起始位置大于结束位置，不替换
+            // If the start position is greater than the end position, no replacement occurs.
             return originalStr;
         }
 
-        // 新字符串长度不变
+        // New string length remains unchanged
         final StringBuilder stringBuilder = new StringBuilder(originalStr.length());
         for (int i = 0; i < strLength; i++) {
             if (i >= beginInclude && i < endExclude) {
-                // 区间内的字符全部替换
+                // All characters within the range are replaced
                 replace(originalStr, i, stringBuilder);
             } else {
-                // 其它字符保留
+                // Other characters are retained
                 append(stringBuilder, chars[i]);
             }
         }
         return stringBuilder.toString();
     }
 
+    /**
+     * Appends the {@code replacedChar} to the output. This method is called for each character within the replacement
+     * range.
+     *
+     * @param text The original text (not directly used in this implementation).
+     * @param pos  The current position (not directly used in this implementation).
+     * @param out  The {@code StringBuilder} to which the {@code replacedChar} is appended.
+     * @return The number of characters consumed, which is 1 for a single character replacement.
+     */
     @Override
     protected int replace(final CharSequence text, final int pos, final StringBuilder out) {
         out.appendCodePoint(replacedChar);
-        return pos;
+        return 1; // Consumes one character
     }
 
     /**
-     * 追加字符
+     * Appends a character (or code point) to the {@code StringBuilder}.
      *
-     * @param stringBuilder {@link StringBuilder}
-     * @param c             字符
+     * @param stringBuilder The {@code StringBuilder} to append to.
+     * @param c             The character or code point to append.
      */
     private void append(final StringBuilder stringBuilder, final int c) {
         if (isCodePoint) {

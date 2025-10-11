@@ -30,8 +30,10 @@ package org.miaixz.bus.base.mapper;
 import java.io.Serializable;
 
 /**
- * Core Mapper 接口
+ * Core Mapper interface, extending from {@code org.miaixz.bus.mapper.Mapper}, providing basic persistence operations.
  *
+ * @param <T> the entity type
+ * @param <I> the type of the primary key, which must implement {@link Serializable} interface
  * @author Kimi Liu
  * @since Java 17+
  */

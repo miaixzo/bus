@@ -29,7 +29,10 @@ package org.miaixz.bus.core.io.file;
 
 import java.io.IOException;
 import java.io.Serial;
-import java.nio.file.*;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import org.miaixz.bus.core.io.file.visitor.CopyVisitor;
 import org.miaixz.bus.core.lang.Assert;
@@ -38,7 +41,8 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 文件复制封装
+ * Encapsulates file and directory copying operations. This class provides methods to copy files or directories with
+ * various options, including overwriting existing files and handling recursive copies.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,19 +52,25 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
     @Serial
     private static final long serialVersionUID = 2852228290187L;
 
+    /**
+     * The copy options, such as {@link StandardCopyOption#REPLACE_EXISTING}.
+     */
     private final CopyOption[] options;
 
     /**
-     * 构造
+     * Constructs a new {@code PathCopier} instance.
      *
-     * @param src     源文件或目录，不能为{@code null}且必须存在
-     * @param target  目标文件或目录
-     * @param options 移动参数
+     * @param src     The source file or directory to be copied. Must not be {@code null} and must exist.
+     * @param target  The target destination for the copy operation. Must not be {@code null}.
+     * @param options An array of {@link CopyOption} specifying how the copy operation should be performed. If
+     *                {@code null}, an empty array is used.
+     * @throws IllegalArgumentException if the source path is {@code null} or does not exist, or if the target path is
+     *                                  {@code null}.
      */
     public PathCopier(final Path src, final Path target, final CopyOption[] options) {
-        Assert.notNull(target, "Src path must be not null !");
+        Assert.notNull(src, "Src path must be not null !");
         if (!PathResolve.exists(src, false)) {
-            throw new IllegalArgumentException("Src path is not exist!");
+            throw new IllegalArgumentException("Src path does not exist!");
         }
         this.src = src;
         this.target = Assert.notNull(target, "Target path must be not null !");
@@ -68,12 +78,13 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
     }
 
     /**
-     * 创建文件或目录拷贝器
+     * Creates a file or directory copier with the specified source, target, and overwrite option.
      *
-     * @param src        源文件或目录
-     * @param target     目标文件或目录
-     * @param isOverride 是否覆盖目标文件
-     * @return {@code PathCopier}
+     * @param src        The source file or directory to be copied.
+     * @param target     The target destination for the copy operation.
+     * @param isOverride Whether to overwrite the target file if it exists. If {@code true},
+     *                   {@link StandardCopyOption#REPLACE_EXISTING} is used.
+     * @return A new {@code PathCopier} instance.
      */
     public static PathCopier of(final Path src, final Path target, final boolean isOverride) {
         return of(
@@ -83,29 +94,25 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
     }
 
     /**
-     * 创建文件或目录拷贝器
+     * Creates a file or directory copier with the specified source, target, and copy options.
      *
-     * @param src     源文件或目录
-     * @param target  目标文件或目录
-     * @param options 拷贝参数
-     * @return {@code PathCopier}
+     * @param src     The source file or directory to be copied.
+     * @param target  The target destination for the copy operation.
+     * @param options An array of {@link CopyOption} specifying how the copy operation should be performed.
+     * @return A new {@code PathCopier} instance.
      */
     public static PathCopier of(final Path src, final Path target, final CopyOption[] options) {
         return new PathCopier(src, target, options);
     }
 
     /**
-     * 拷贝目录下的所有文件或目录到目标目录中，此方法不支持文件对文件的拷贝。
-     * <ul>
-     * <li>源文件为目录，目标也为目录或不存在，则拷贝目录下所有文件和目录到目标目录下</li>
-     * <li>源文件为文件，目标为目录或不存在，则拷贝文件到目标目录下</li>
-     * </ul>
+     * Copies all files and directories under the source directory to the target directory recursively.
      *
-     * @param src     源文件路径，如果为目录只在目标中创建新目录
-     * @param target  目标目录，如果为目录使用与源文件相同的文件名
-     * @param options {@link StandardCopyOption}
-     * @return Path
-     * @throws InternalException IO异常
+     * @param src     The source directory path.
+     * @param target  The target directory.
+     * @param options An array of {@link CopyOption} specifying how the copy operation should be performed.
+     * @return The target {@link Path} after the copy operation.
+     * @throws InternalException if an I/O error occurs during the copy operation.
      */
     private static Path copyContent(final Path src, final Path target, final CopyOption... options)
             throws InternalException {
@@ -118,13 +125,15 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
     }
 
     /**
-     * 通过JDK7+的 {@link Files#copy(Path, Path, CopyOption...)} 方法拷贝文件 此方法不支持递归拷贝目录，如果src传入是目录，只会在目标目录中创建空目录
+     * Copies a single file using the JDK7+ {@link Files#copy(Path, Path, CopyOption...)} method.
      *
-     * @param src     源文件路径，如果为目录只在目标中创建新目录
-     * @param target  目标文件或目录，如果为目录使用与源文件相同的文件名
-     * @param options {@link StandardCopyOption}
-     * @return Path
-     * @throws InternalException IO异常
+     * @param src     The source file path. Must not be {@code null}.
+     * @param target  The target file or directory. If the target is a directory, the source file will be copied into it
+     *                with its original name.
+     * @param options An array of {@link CopyOption} specifying how the copy operation should be performed.
+     * @return The target {@link Path} after the copy operation.
+     * @throws InternalException        if an I/O error occurs during the copy operation.
+     * @throws IllegalArgumentException if the source or target file is {@code null}.
      */
     private static Path copyFile(final Path src, final Path target, final CopyOption... options)
             throws InternalException {
@@ -132,7 +141,6 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
         Assert.notNull(target, "Target file or directory is null !");
 
         final Path targetPath = PathResolve.isDirectory(target) ? target.resolve(src.getFileName()) : target;
-        // 创建级联父目录
         PathResolve.mkParentDirs(targetPath);
         try {
             return Files.copy(src, targetPath, options);
@@ -142,19 +150,14 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
     }
 
     /**
-     * 复制src到target中
-     * <ul>
-     * <li>src路径和target路径相同时，不执行操作</li>
-     * <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
-     * <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
-     * <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
-     * <li>src为目录，target为已存在目录，整个src目录连同其目录拷贝到目标目录中</li>
-     * <li>src为目录，target为不存在路径，则自动创建目标为新目录，并只拷贝src内容到目标目录中，相当于重命名目录。</li>
-     * <li>src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     * </ul>
+     * Copies the source path (file or directory) to the target path. If the source is a directory and the target exists
+     * and is a directory, the source directory's content will be copied into a new subdirectory within the target,
+     * named after the source directory. If the source is a directory and the target does not exist, the source
+     * directory and its content will be copied to the target path.
      *
-     * @return 目标Path
-     * @throws InternalException IO异常
+     * @return The target {@link Path} after the copy operation.
+     * @throws InternalException        if an I/O error occurs during the copy operation.
+     * @throws IllegalArgumentException if {@code src} is a directory and {@code target} is an existing file.
      */
     @Override
     public Path copy() throws InternalException {
@@ -163,11 +166,9 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
                 if (PathResolve.isDirectory(target)) {
                     return copyContent(src, target.resolve(src.getFileName()), options);
                 } else {
-                    // src目录，target文件，无法拷贝
-                    throw new IllegalArgumentException("Can not copier directory to a file!");
+                    throw new IllegalArgumentException("Cannot copy a directory to a file!");
                 }
             } else {
-                // 目标不存在，按照重命名对待
                 return copyContent(src, target, options);
             }
         }
@@ -175,19 +176,13 @@ public class PathCopier extends SrcToDestCopier<Path, PathCopier> {
     }
 
     /**
-     * 复制src的内容到target中
-     * <ul>
-     * <li>src路径和target路径相同时，不执行操作</li>
-     * <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
-     * <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
-     * <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
-     * <li>src为目录，target为已存在目录，整个src目录下的内容拷贝到目标目录中</li>
-     * <li>src为目录，target为不存在路径，则自动创建目标为新目录，整个src目录下的内容拷贝到目标目录中，相当于重命名目录。</li>
-     * <li>src为目录，target为文件，抛出IO异常</li>
-     * </ul>
+     * Copies the content of the source path (file or directory) to the target path. If the source is a directory, its
+     * content (files and subdirectories) will be copied directly into the target directory. If the source is a file, it
+     * will be copied to the target path.
      *
-     * @return 目标Path
-     * @throws InternalException IO异常
+     * @return The target {@link Path} after the copy operation.
+     * @throws InternalException        if an I/O error occurs during the copy operation.
+     * @throws IllegalArgumentException if {@code src} is a directory and {@code target} is an existing file.
      */
     public Path copyContent() throws InternalException {
         if (PathResolve.isDirectory(src, false)) {

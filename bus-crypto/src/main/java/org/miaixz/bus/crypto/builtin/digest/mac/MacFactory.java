@@ -34,7 +34,8 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.crypto.Builder;
 
 /**
- * {@link Mac} 简单工厂类
+ * Simple factory class for creating {@link Mac} instances. This factory provides methods to create MAC engines based on
+ * the specified algorithm and key.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,27 +43,27 @@ import org.miaixz.bus.crypto.Builder;
 public class MacFactory {
 
     /**
-     * 根据给定算法和密钥生成对应的{@link Mac}
+     * Creates a {@link Mac} instance for the given algorithm and key.
      *
-     * @param algorithm 算法，见{@link Algorithm}
-     * @param key       密钥
-     * @return {@link Mac}
+     * @param algorithm The MAC algorithm, see {@link Algorithm}.
+     * @param key       The cryptographic key.
+     * @return A new {@link Mac} instance.
      */
     public static Mac createEngine(final String algorithm, final Key key) {
         return createEngine(algorithm, key, null);
     }
 
     /**
-     * 根据给定算法和密钥生成对应的{@link Mac}
+     * Creates a {@link Mac} instance for the given algorithm, key, and algorithm parameter specification.
      *
-     * @param algorithm 算法，见{@link Algorithm}
-     * @param key       密钥
-     * @param spec      spec
-     * @return {@link Mac}
+     * @param algorithm The MAC algorithm, see {@link Algorithm}.
+     * @param key       The cryptographic key.
+     * @param spec      The {@link AlgorithmParameterSpec} for initializing the MAC.
+     * @return A new {@link Mac} instance.
      */
     public static Mac createEngine(final String algorithm, final Key key, final AlgorithmParameterSpec spec) {
         if (algorithm.equalsIgnoreCase(Algorithm.HMACSM3.getValue())) {
-            // HmacSM3算法是BC库实现的，忽略加盐
+            // HmacSM3 algorithm is implemented by BC library, ignore salt
             return Builder.createHmacSm3Engine(key.getEncoded());
         }
         return new JCEMac(algorithm, key, spec);

@@ -27,13 +27,15 @@
 */
 package org.miaixz.bus.starter.sensitive;
 
+import jakarta.annotation.Resource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
-import jakarta.annotation.Resource;
-
 /**
- * 脱敏配置
+ * Auto-configuration for data desensitization and encryption/decryption.
+ * <p>
+ * This class enables the {@link SensitiveProperties} and imports the necessary advice beans, {@link RequestBodyAdvice}
+ * and {@link ResponseBodyAdvice}, to activate the sensitive data handling functionality for Spring MVC controllers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,7 +44,10 @@ import jakarta.annotation.Resource;
 @Import({ RequestBodyAdvice.class, ResponseBodyAdvice.class })
 public class SensitiveConfiguration {
 
+    /**
+     * Injected sensitive data configuration properties.
+     */
     @Resource
-    SensitiveProperties properties;
+    private SensitiveProperties properties;
 
 }

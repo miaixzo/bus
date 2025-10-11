@@ -38,7 +38,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 生成构造工厂
+ * A factory for creating {@link TemplateEngine} instances based on the provided configuration.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,28 +47,43 @@ import lombok.Setter;
 @Setter
 public class EngineFactory implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
+    /**
+     * The engine configuration.
+     */
     private EngineConfig engineConfig;
 
+    /**
+     * Constructs a new {@code EngineFactory} with the specified engine configuration.
+     *
+     * @param configuration The {@link EngineConfig} to use. Must not be null.
+     */
     public EngineFactory(EngineConfig configuration) {
         Assert.notNull(configuration, "EngineConfig can not be empty!");
         this.engineConfig = configuration;
     }
 
+    /**
+     * Private default constructor to prevent direct instantiation.
+     */
     private EngineFactory() {
     }
 
     /**
-     * 获取配置的数据库类型实例
+     * Creates a new instance of a {@link TemplateEngine} implementation based on the configured template type. It
+     * determines the implementation class from the engine configuration and instantiates it.
      *
-     * @return {@link TemplateEngine} 数据库查询对象
+     * @return A new {@link TemplateEngine} instance.
+     * @throws InternalException if the engine class cannot be instantiated.
      */
     public TemplateEngine newInstance() {
         try {
-            // 获取实现类
+            // Get the implementation class from the configuration.
             Class<? extends TemplateEngine> query = this.engineConfig.getProduceType().getImplClass();
-            // 获取有参构造
+            // Get the constructor that accepts an EngineConfig.
             Constructor<? extends TemplateEngine> constructor = query.getConstructor(EngineConfig.class);
-            // 实例化
+            // Instantiate the engine class.
             return constructor.newInstance(engineConfig);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
                 | InvocationTargetException e) {

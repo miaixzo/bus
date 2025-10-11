@@ -38,13 +38,24 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Compare;
 
 /**
- * 数据长度校验
+ * Validator for comparing the value of the annotated field with another field. It supports both numeric and string
+ * comparisons. <strong>Note:</strong> This validator assumes that the object passed to the {@code on} method is the
+ * containing bean, not the field value itself, to access the other field for comparison.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CompareMatcher implements Matcher<Object, Compare> {
 
+    /**
+     * Performs the comparison validation.
+     *
+     * @param object     The object to be validated. This is expected to be the bean containing the fields to compare.
+     * @param annotation The {@link Compare} annotation instance, which specifies the comparison details.
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the comparison is successful according to the specified condition, {@code false}
+     *         otherwise.
+     */
     @Override
     public boolean on(Object object, Compare annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
@@ -61,7 +72,7 @@ public class CompareMatcher implements Matcher<Object, Compare> {
                         _matched = _compValue == 0;
                         break;
 
-                    case NOT_EQ:
+                    case NE:
                         _matched = _compValue != 0;
                         break;
 
@@ -73,11 +84,11 @@ public class CompareMatcher implements Matcher<Object, Compare> {
                         _matched = _compValue < 0;
                         break;
 
-                    case GT_EQ:
+                    case GE:
                         _matched = _compValue >= 0;
                         break;
 
-                    case LT_EQ:
+                    case LE:
                         _matched = _compValue <= 0;
                         break;
 
@@ -90,7 +101,7 @@ public class CompareMatcher implements Matcher<Object, Compare> {
                         _matched = StringKit.equals(value.toString(), object.toString());
                         break;
 
-                    case NOT_EQ:
+                    case NE:
                         _matched = !StringKit.equals(value.toString(), object.toString());
                         break;
 

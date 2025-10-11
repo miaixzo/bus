@@ -31,7 +31,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.Aware;
 
 /**
- * 接口可以由任何对象来实现，只要对象希望得到它所运行的{@link StartupReporter}的通知。
+ * Interface to be implemented by any object that wishes to be notified of the {@link StartupReporter} that it operates
+ * in.
+ * <p>
+ * This is similar to Spring's {@link org.springframework.context.ApplicationContextAware} but specifically for the
+ * {@link StartupReporter} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,10 +43,12 @@ import org.springframework.beans.factory.Aware;
 public interface StartupReporterAware extends Aware {
 
     /**
-     * 设置该对象运行的StartupReporter
+     * Set the {@link StartupReporter} that this object runs in. Normally this call will occur prior to any other
+     * initialization callbacks being applied, e.g. {@code InitializingBean}'s {@code afterPropertiesSet()} or a custom
+     * init-method.
      *
-     * @param startupReporter 这个对象要使用的StartupReporter对象
-     * @throws BeansException 异常
+     * @param startupReporter The {@link StartupReporter} object to be used by this object.
+     * @throws BeansException in case of initialization errors.
      */
     void setStartupReporter(StartupReporter startupReporter) throws BeansException;
 

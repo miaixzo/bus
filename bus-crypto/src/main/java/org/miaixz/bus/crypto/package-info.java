@@ -26,18 +26,26 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 加密解密模块，实现了对JDK中加密解密算法的封装。 入口为Builder或加密算法类，例如：
+ * Provides classes for cryptographic operations, encapsulating encryption and decryption algorithms available in the
+ * JDK and other providers.
+ * <p>
+ * The main entry points for cryptographic operations are {@link org.miaixz.bus.crypto.Builder} or specific algorithm
+ * classes. For example:
+ * </p>
  * 
  * <pre>
- *   Builder.md5(); 或 MD5 md5 = new MD5();
+ * Builder.md5(); // Using the Builder utility class
+ * // or
+ * MD5 md5 = new MD5(); // Using a specific algorithm class
  * </pre>
- * 
- * <pre>
- *
- * 1. 对称加密（symmetric），例如：AES、DES等
- * 2. 非对称加密（asymmetric），例如：RSA、DSA等
- * 3. 摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
- * </pre>
+ * <p>
+ * This package supports three main categories of encryption:
+ * </p>
+ * <ol>
+ * <li>Symmetric encryption (e.g., AES, DES)</li>
+ * <li>Asymmetric encryption (e.g., RSA, DSA)</li>
+ * <li>Digest encryption (e.g., MD5, SHA-1, SHA-256, HMAC)</li>
+ * </ol>
  *
  * @author Kimi Liu
  * @since Java 17+

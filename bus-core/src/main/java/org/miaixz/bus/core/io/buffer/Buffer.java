@@ -57,42 +57,98 @@ import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 内存中字节的集合.
+ * A mutable, resizable collection of bytes in memory.
+ *
+ * <p>
+ * This class provides a flexible and efficient way to work with binary data. It uses a linked list of segments to store
+ * data, allowing for efficient insertion, deletion, and resizing operations without requiring large contiguous memory
+ * allocations.
+ *
+ * <p>
+ * Key features:
+ * <ul>
+ * <li>Efficient read/write operations for primitive types and strings</li>
+ * <li>Support for various character encodings with UTF-8 as the default</li>
+ * <li>Cryptographic hash and HMAC computation</li>
+ * <li>Integration with Java I/O streams and NIO buffers</li>
+ * <li>Memory-efficient segment pooling</li>
+ * </ul>
+ *
+ * <p>
+ * Example usage:
+ * 
+ * <pre>{@code
+ * Buffer buffer = new Buffer();
+ * buffer.writeUtf8("Hello, World!");
+ * buffer.writeInt(42);
+ *
+ * String message = buffer.readUtf8();
+ * int number = buffer.readInt();
+ * }</pre>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel {
 
+    /**
+     * Unicode replacement character (U+FFFD) used when invalid UTF-8 sequences are encountered.
+     */
     public static final int REPLACEMENT_CHARACTER = '\ufffd';
 
     /**
-     * 头部信息
+     * The head segment of the linked list that stores the buffer's data. This is the first segment in the segment
+     * chain.
      */
     public SectionBuffer head;
+
     /**
-     * 信息大小
+     * The total number of bytes currently stored in this buffer.
      */
     public long size;
 
+    /**
+     * Creates a new empty buffer with no initial capacity.
+     */
     public Buffer() {
 
     }
 
+    /**
+     * Returns the number of bytes currently stored in this buffer.
+     *
+     * @return the size of the buffer in bytes
+     */
     public final long size() {
         return size;
     }
 
+    /**
+     * Returns this buffer instance.
+     *
+     * @return this buffer
+     */
     @Override
     public Buffer buffer() {
         return this;
     }
 
+    /**
+     * Returns this buffer instance.
+     *
+     * @return this buffer
+     */
     @Override
     public Buffer getBuffer() {
         return this;
     }
 
+    /**
+     * Returns an output stream that writes to this buffer. The returned stream will append all written bytes to this
+     * buffer.
+     *
+     * @return an output stream that writes to this buffer
+     */
     @Override
     public OutputStream outputStream() {
         return new OutputStream() {
@@ -122,37 +178,78 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         };
     }
 
+    /**
+     * Returns this buffer without any modifications. This method is part of the BufferSink interface and is included
+     * for compatibility.
+     *
+     * @return this buffer
+     */
     @Override
     public Buffer emitCompleteSegments() {
         return this;
     }
 
+    /**
+     * Returns this buffer sink.
+     *
+     * @return this buffer sink
+     */
     @Override
     public BufferSink emit() {
         return this;
     }
 
+    /**
+     * Returns true if this buffer contains no bytes.
+     *
+     * @return true if the buffer is empty, false otherwise
+     */
     @Override
     public boolean exhausted() {
         return size == 0;
     }
 
+    /**
+     * Throws an EOFException if this buffer contains fewer than {@code byteCount} bytes. This method is useful for
+     * validating that sufficient data is available before reading.
+     *
+     * @param byteCount the minimum number of bytes that must be available
+     * @throws EOFException if the buffer has fewer than {@code byteCount} bytes
+     */
     @Override
     public void require(long byteCount) throws EOFException {
         if (size < byteCount)
             throw new EOFException();
     }
 
+    /**
+     * Returns true if this buffer contains at least {@code byteCount} bytes.
+     *
+     * @param byteCount the number of bytes to check for
+     * @return true if the buffer has at least {@code byteCount} bytes, false otherwise
+     */
     @Override
     public boolean request(long byteCount) {
         return size >= byteCount;
     }
 
+    /**
+     * Returns a buffer source that can peek at this buffer without consuming its data. The returned source provides a
+     * read-only view of this buffer's current contents.
+     *
+     * @return a peekable buffer source
+     */
     @Override
     public BufferSource peek() {
         return IoKit.buffer(new PeekSource(this));
     }
 
+    /**
+     * Returns an input stream that reads from this buffer. The returned stream will consume bytes from this buffer as
+     * they are read.
+     *
+     * @return an input stream that reads from this buffer
+     */
     @Override
     public InputStream inputStream() {
         return new InputStream() {
@@ -186,24 +283,28 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 将其内容复制到 {@code out}.
+     * Copies all bytes from this buffer to the specified output stream. This method does not modify the source buffer.
      *
-     * @param out 输出流
-     * @return Buffer 内容
-     * @throws IOException 抛出异常
+     * @param out the output stream to write to
+     * @return this buffer
+     * @throws IOException              if an I/O error occurs while writing
+     * @throws IllegalArgumentException if {@code out} is null
      */
     public final Buffer copyTo(OutputStream out) throws IOException {
         return copyTo(out, 0, size);
     }
 
     /**
-     * 从这里复制{@code byteCount}字节，从{@code offset}开始，复制到 {@code out}.
+     * Copies {@code byteCount} bytes from this buffer, starting at {@code offset}, to the specified output stream. This
+     * method does not modify the source buffer.
      *
-     * @param out       输出流
-     * @param offset    偏移量
-     * @param byteCount 偏移量
-     * @return Buffer 内容
-     * @throws IOException 抛出异常
+     * @param out       the output stream to write to
+     * @param offset    the starting position in this buffer (0-based)
+     * @param byteCount the number of bytes to copy
+     * @return this buffer
+     * @throws IOException               if an I/O error occurs while writing
+     * @throws IllegalArgumentException  if {@code out} is null
+     * @throws IndexOutOfBoundsException if {@code offset} or {@code byteCount} are invalid
      */
     public final Buffer copyTo(OutputStream out, long offset, long byteCount) throws IOException {
         if (null == out) {
@@ -230,12 +331,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 从这里复制{@code byteCount}字节，从{@code offset}开始，复制到{@code out}.
+     * Copies {@code byteCount} bytes from this buffer, starting at {@code offset}, to the specified destination buffer.
+     * This method does not modify the source buffer.
      *
-     * @param out       输出流
-     * @param offset    偏移量
-     * @param byteCount 偏移量
-     * @return Buffer 内容
+     * @param out       the destination buffer
+     * @param offset    the starting position in this buffer (0-based)
+     * @param byteCount the number of bytes to copy
+     * @return this buffer
+     * @throws IllegalArgumentException  if {@code out} is null
+     * @throws IndexOutOfBoundsException if {@code offset} or {@code byteCount} are invalid
      */
     public final Buffer copyTo(Buffer out, long offset, long byteCount) {
         if (null == out) {
@@ -268,23 +372,28 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 将其内容写入{@code out}.
+     * Writes all bytes from this buffer to the specified output stream. This method consumes the bytes from this
+     * buffer.
      *
-     * @param out 输出流
-     * @return Buffer 内容
-     * @throws IOException 抛出异常
+     * @param out the output stream to write to
+     * @return this buffer
+     * @throws IOException              if an I/O error occurs while writing
+     * @throws IllegalArgumentException if {@code out} is null
      */
     public final Buffer writeTo(OutputStream out) throws IOException {
         return writeTo(out, size);
     }
 
     /**
-     * 将{@code byteCount}字节写入{@code out}.
+     * Writes {@code byteCount} bytes from this buffer to the specified output stream. This method consumes the bytes
+     * from this buffer.
      *
-     * @param out       输出流
-     * @param byteCount 偏移量
-     * @return Buffer 内容
-     * @throws IOException 抛出异常
+     * @param out       the output stream to write to
+     * @param byteCount the number of bytes to write
+     * @return this buffer
+     * @throws IOException               if an I/O error occurs while writing
+     * @throws IllegalArgumentException  if {@code out} is null
+     * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
      */
     public final Buffer writeTo(OutputStream out, long byteCount) throws IOException {
         if (null == out) {
@@ -312,11 +421,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 将{@code in}中的字节读入并转为bytes
+     * Reads all bytes from the specified input stream into this buffer. This method reads until the end of the stream
+     * is reached.
      *
-     * @param in 输入流
-     * @return Buffer 内容
-     * @throws IOException 抛出异常
+     * @param in the input stream to read from
+     * @return this buffer
+     * @throws IOException              if an I/O error occurs while reading
+     * @throws IllegalArgumentException if {@code in} is null
      */
     public final Buffer readFrom(InputStream in) throws IOException {
         readFrom(in, Long.MAX_VALUE, true);
@@ -324,12 +435,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * Read {@code byteCount} bytes from {@code in} to this.
+     * Reads {@code byteCount} bytes from the specified input stream into this buffer. This method reads exactly
+     * {@code byteCount} bytes or throws an exception if fewer bytes are available.
      *
-     * @param in        输入流
-     * @param byteCount 偏移量
-     * @return Buffer 内容
-     * @throws IOException 抛出异常
+     * @param in        the input stream to read from
+     * @param byteCount the number of bytes to read
+     * @return this buffer
+     * @throws IOException              if an I/O error occurs while reading
+     * @throws IllegalArgumentException if {@code in} is null or {@code byteCount} is negative
+     * @throws EOFException             if the end of the stream is reached before reading {@code byteCount} bytes
      */
     public final Buffer readFrom(InputStream in, long byteCount) throws IOException {
         if (byteCount < 0)
@@ -338,6 +452,16 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Internal method to read bytes from an input stream into this buffer.
+     *
+     * @param in        the input stream to read from
+     * @param byteCount the number of bytes to read
+     * @param forever   if true, read until the end of the stream
+     * @throws IOException              if an I/O error occurs while reading
+     * @throws IllegalArgumentException if {@code in} is null
+     * @throws EOFException             if the end of the stream is reached before reading the required bytes
+     */
     private void readFrom(InputStream in, long byteCount, boolean forever) throws IOException {
         if (null == in) {
             throw new IllegalArgumentException("in == null");
@@ -365,6 +489,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     /**
      * Returns the number of bytes in segments that are not writable. This is the number of bytes that can be flushed
      * immediately to an underlying sink without harming throughput.
+     *
+     * @return the number of bytes in complete segments
      */
     public final long completeSegmentByteCount() {
         long result = size;
@@ -379,6 +505,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return result;
     }
 
+    /**
+     * Reads and returns a single byte from this buffer.
+     *
+     * @return the byte read
+     * @throws IllegalStateException if the buffer is empty
+     */
     @Override
     public byte readByte() {
         if (size == 0)
@@ -403,10 +535,11 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 返回{@code pos}处的字节.
+     * Returns the byte at the specified position in this buffer without consuming it.
      *
-     * @param pos long
-     * @return byte 内容
+     * @param pos the position of the byte to return (0-based)
+     * @return the byte at the specified position
+     * @throws IndexOutOfBoundsException if {@code pos} is out of bounds
      */
     public final byte getByte(long pos) {
         IoKit.checkOffsetAndCount(size, pos, 1);
@@ -427,6 +560,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
     }
 
+    /**
+     * Reads and returns a 16-bit big-endian short value from this buffer.
+     *
+     * @return the short value read
+     * @throws IllegalStateException if the buffer contains fewer than 2 bytes
+     */
     @Override
     public short readShort() {
         if (size < 2)
@@ -455,6 +594,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return (short) s;
     }
 
+    /**
+     * Reads and returns a 32-bit big-endian integer value from this buffer.
+     *
+     * @return the integer value read
+     * @throws IllegalStateException if the buffer contains fewer than 4 bytes
+     */
     @Override
     public int readInt() {
         if (size < 4)
@@ -484,6 +629,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return i;
     }
 
+    /**
+     * Reads and returns a 64-bit big-endian long value from this buffer.
+     *
+     * @return the long value read
+     * @throws IllegalStateException if the buffer contains fewer than 8 bytes
+     */
     @Override
     public long readLong() {
         if (size < 8)
@@ -513,21 +664,44 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return v;
     }
 
+    /**
+     * Reads and returns a 16-bit little-endian short value from this buffer.
+     *
+     * @return the short value read
+     */
     @Override
     public short readShortLe() {
         return IoKit.reverseBytesShort(readShort());
     }
 
+    /**
+     * Reads and returns a 32-bit little-endian integer value from this buffer.
+     *
+     * @return the integer value read
+     */
     @Override
     public int readIntLe() {
         return IoKit.reverseBytesInt(readInt());
     }
 
+    /**
+     * Reads and returns a 64-bit little-endian long value from this buffer.
+     *
+     * @return the long value read
+     */
     @Override
     public long readLongLe() {
         return IoKit.reverseBytesLong(readLong());
     }
 
+    /**
+     * Reads and returns a decimal long value from this buffer. The number may be preceded by an optional '-' sign for
+     * negative values.
+     *
+     * @return the long value read
+     * @throws NumberFormatException if the number is too large or invalid
+     * @throws IllegalStateException if the buffer is empty
+     */
     @Override
     public long readDecimalLong() {
         if (size == 0)
@@ -588,6 +762,14 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return negative ? value : -value;
     }
 
+    /**
+     * Reads and returns a hexadecimal unsigned long value from this buffer. The number may contain uppercase or
+     * lowercase hexadecimal digits (0-9, a-f, A-F).
+     *
+     * @return the unsigned long value read
+     * @throws NumberFormatException if the number is too large or invalid
+     * @throws IllegalStateException if the buffer is empty
+     */
     @Override
     public long readHexadecimalUnsignedLong() {
         if (size == 0)
@@ -624,7 +806,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                     break;
                 }
 
-                // Detect when the shift will overflow.
+                // Detect when the shift would overflow.
                 if ((value & 0xf000000000000000L) != 0) {
                     Buffer buffer = new Buffer().writeHexadecimalUnsignedLong(value).writeByte(b);
                     throw new NumberFormatException("Number too large: " + buffer.readUtf8());
@@ -646,16 +828,39 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return value;
     }
 
+    /**
+     * Reads and returns a byte string containing all remaining bytes in this buffer. This method consumes all bytes
+     * from the buffer.
+     *
+     * @return a byte string containing all remaining bytes
+     */
     @Override
     public ByteString readByteString() {
         return new ByteString(readByteArray());
     }
 
+    /**
+     * Reads and returns a byte string containing {@code byteCount} bytes from this buffer. This method consumes the
+     * specified number of bytes from the buffer.
+     *
+     * @param byteCount the number of bytes to read
+     * @return a byte string containing the read bytes
+     * @throws EOFException              if the buffer contains fewer than {@code byteCount} bytes
+     * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
+     */
     @Override
     public ByteString readByteString(long byteCount) throws EOFException {
         return new ByteString(readByteArray(byteCount));
     }
 
+    /**
+     * Finds and returns the index of the first matching option in the specified segment buffer. If a match is found,
+     * the matching bytes are consumed from this buffer.
+     *
+     * @param segmentBuffer the segment buffer containing options to match against
+     * @return the index of the matching option, or -1 if no match is found
+     * @throws IllegalArgumentException if {@code segmentBuffer} is null
+     */
     @Override
     public int select(SegmentBuffer segmentBuffer) {
         int index = selectPrefix(segmentBuffer, false);
@@ -673,10 +878,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 返回此缓冲区前缀的选项中的值的索引。如果没有找到值，则返回-1 此方法执行两个同步迭代:迭代trie和迭代这个缓冲区。当它在trie中到达一个结果时， 当它在trie中不匹配时，以及当缓冲区耗尽时，它将返回
+     * Returns the index of the first matching option in the specified segment buffer. This method performs two
+     * synchronized iterations: one through the trie and one through this buffer.
      *
-     * @param selectTruncated 如果可能的结果出现但被截断，则true返回-2 例如，如果缓冲区包含[ab]，并且选项是[abc, abd]，则返回-2
-     *                        请注意，由于选项是按优先顺序列出的，而且第一个选项可能是另一个选项的前缀， 这使得情况变得复杂。例如，如果缓冲区包含[ab]而选项是[abc, a]，则返回-2
+     * @param segmentBuffer   the segment buffer containing options to match against
+     * @param selectTruncated if true, returns -2 when a possible result is present but truncated
+     * @return the index of the matching option, -1 if no match is found, or -2 if a match is truncated
+     * @throws IllegalArgumentException if {@code segmentBuffer} is null
      */
     public int selectPrefix(SegmentBuffer segmentBuffer, boolean selectTruncated) {
         SectionBuffer head = this.head;
@@ -776,6 +984,16 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return prefixIndex; // Return any matches we encountered while searching for a deeper match.
     }
 
+    /**
+     * Reads {@code byteCount} bytes from this buffer and writes them to the specified sink. This method consumes the
+     * bytes from this buffer.
+     *
+     * @param sink      the sink to write to
+     * @param byteCount the number of bytes to read
+     * @throws EOFException              if the buffer contains fewer than {@code byteCount} bytes
+     * @throws IllegalArgumentException  if {@code sink} is null
+     * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
+     */
     @Override
     public void readFully(Buffer sink, long byteCount) throws EOFException {
         if (size < byteCount) {
@@ -785,6 +1003,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         sink.write(this, byteCount);
     }
 
+    /**
+     * Reads all remaining bytes from this buffer and writes them to the specified sink. This method consumes all bytes
+     * from this buffer.
+     *
+     * @param sink the sink to write to
+     * @return the number of bytes read and written
+     * @throws IOException              if an I/O error occurs while writing
+     * @throws IllegalArgumentException if {@code sink} is null
+     */
     @Override
     public long readAll(Sink sink) throws IOException {
         long byteCount = size;
@@ -794,6 +1021,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return byteCount;
     }
 
+    /**
+     * Reads and returns a UTF-8 string containing all remaining bytes in this buffer. This method consumes all bytes
+     * from the buffer.
+     *
+     * @return a UTF-8 string containing all remaining bytes
+     */
     @Override
     public String readUtf8() {
         try {
@@ -803,11 +1036,28 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
     }
 
+    /**
+     * Reads and returns a UTF-8 string containing {@code byteCount} bytes from this buffer. This method consumes the
+     * specified number of bytes from the buffer.
+     *
+     * @param byteCount the number of bytes to read
+     * @return a UTF-8 string containing the read bytes
+     * @throws EOFException              if the buffer contains fewer than {@code byteCount} bytes
+     * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
+     */
     @Override
     public String readUtf8(long byteCount) throws EOFException {
         return readString(byteCount, Charset.UTF_8);
     }
 
+    /**
+     * Reads and returns a string containing all remaining bytes in this buffer, decoded using the specified charset.
+     * This method consumes all bytes from the buffer.
+     *
+     * @param charset the charset to use for decoding
+     * @return a string containing all remaining bytes
+     * @throws IllegalArgumentException if {@code charset} is null
+     */
     @Override
     public String readString(java.nio.charset.Charset charset) {
         try {
@@ -817,6 +1067,17 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
     }
 
+    /**
+     * Reads and returns a string containing {@code byteCount} bytes from this buffer, decoded using the specified
+     * charset. This method consumes the specified number of bytes.
+     *
+     * @param byteCount the number of bytes to read
+     * @param charset   the charset to use for decoding
+     * @return a string containing the read bytes
+     * @throws EOFException              if the buffer contains fewer than {@code byteCount} bytes
+     * @throws IllegalArgumentException  if {@code charset} is null
+     * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
+     */
     @Override
     public String readString(long byteCount, java.nio.charset.Charset charset) throws EOFException {
         IoKit.checkOffsetAndCount(size, 0, byteCount);
@@ -847,6 +1108,14 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return result;
     }
 
+    /**
+     * Reads and returns a UTF-8 string from this buffer up to the next line break. Returns null if the buffer is empty.
+     * The line break characters are consumed but not included in the returned string. Handles both LF (\n) and CRLF
+     * (\r\n) line endings.
+     *
+     * @return a UTF-8 string up to the next line break, or null if the buffer is empty
+     * @throws EOFException if an I/O error occurs
+     */
     @Override
     public String readUtf8Line() throws EOFException {
         long newline = indexOf((byte) Symbol.C_LF);
@@ -858,11 +1127,28 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return readUtf8Line(newline);
     }
 
+    /**
+     * Reads and returns a UTF-8 string from this buffer up to the next line break. Throws an EOFException if the buffer
+     * does not contain a line break. The line break characters are consumed but not included in the returned string.
+     *
+     * @return a UTF-8 string up to the next line break
+     * @throws EOFException if the buffer does not contain a line break
+     */
     @Override
     public String readUtf8LineStrict() throws EOFException {
         return readUtf8LineStrict(Long.MAX_VALUE);
     }
 
+    /**
+     * Reads and returns a UTF-8 string from this buffer up to the next line break, limiting the search to {@code limit}
+     * bytes. Throws an EOFException if the buffer does not contain a line break within the limit. The line break
+     * characters are consumed but not included in the returned string.
+     *
+     * @param limit the maximum number of bytes to search for a line break
+     * @return a UTF-8 string up to the next line break
+     * @throws EOFException             if the buffer does not contain a line break within the limit
+     * @throws IllegalArgumentException if {@code limit} is negative
+     */
     @Override
     public String readUtf8LineStrict(long limit) throws EOFException {
         if (limit < 0)
@@ -880,6 +1166,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 "\\n not found: limit=" + Math.min(size(), limit) + " content=" + data.readByteString().hex() + '…');
     }
 
+    /**
+     * Internal method to read a UTF-8 line ending at the specified position.
+     *
+     * @param newline the position of the line break
+     * @return a UTF-8 string up to the line break
+     * @throws EOFException if an I/O error occurs
+     */
     public String readUtf8Line(long newline) throws EOFException {
         if (newline > 0 && getByte(newline - 1) == Symbol.C_CR) {
             String result = readUtf8((newline - 1));
@@ -893,6 +1186,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
     }
 
+    /**
+     * Reads and returns a UTF-8 code point from this buffer. Handles 1 to 4 byte UTF-8 sequences. Invalid sequences are
+     * replaced with the Unicode replacement character (U+FFFD).
+     *
+     * @return the UTF-8 code point read
+     * @throws EOFException if the buffer is empty or contains an incomplete UTF-8 sequence
+     */
     @Override
     public int readUtf8CodePoint() throws EOFException {
         if (size == 0)
@@ -966,6 +1266,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return codePoint;
     }
 
+    /**
+     * Reads and returns a byte array containing all remaining bytes in this buffer. This method consumes all bytes from
+     * the buffer.
+     *
+     * @return a byte array containing all remaining bytes
+     */
     @Override
     public byte[] readByteArray() {
         try {
@@ -975,6 +1281,16 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
     }
 
+    /**
+     * Reads and returns a byte array containing {@code byteCount} bytes from this buffer. This method consumes the
+     * specified number of bytes from the buffer.
+     *
+     * @param byteCount the number of bytes to read
+     * @return a byte array containing the read bytes
+     * @throws EOFException              if the buffer contains fewer than {@code byteCount} bytes
+     * @throws IllegalArgumentException  if {@code byteCount} is greater than Integer.MAX_VALUE
+     * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
+     */
     @Override
     public byte[] readByteArray(long byteCount) throws EOFException {
         IoKit.checkOffsetAndCount(size, 0, byteCount);
@@ -987,11 +1303,26 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return result;
     }
 
+    /**
+     * Reads bytes from this buffer into the specified byte array. Reads up to {@code sink.length} bytes or until the
+     * buffer is empty.
+     *
+     * @param sink the byte array to read into
+     * @return the number of bytes read, or -1 if the buffer is empty
+     * @throws NullPointerException if {@code sink} is null
+     */
     @Override
     public int read(byte[] sink) {
         return read(sink, 0, sink.length);
     }
 
+    /**
+     * Reads bytes from this buffer into the specified byte array until it is full.
+     *
+     * @param sink the byte array to read into
+     * @throws EOFException         if the buffer becomes empty before the array is full
+     * @throws NullPointerException if {@code sink} is null
+     */
     @Override
     public void readFully(byte[] sink) throws EOFException {
         int offset = 0;
@@ -1003,6 +1334,16 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
     }
 
+    /**
+     * Reads bytes from this buffer into the specified byte array.
+     *
+     * @param sink      the byte array to read into
+     * @param offset    the starting offset in the byte array
+     * @param byteCount the maximum number of bytes to read
+     * @return the number of bytes read, or -1 if the buffer is empty
+     * @throws NullPointerException      if {@code sink} is null
+     * @throws IndexOutOfBoundsException if {@code offset} or {@code byteCount} are invalid
+     */
     @Override
     public int read(byte[] sink, int offset, int byteCount) {
         IoKit.checkOffsetAndCount(sink.length, offset, byteCount);
@@ -1024,6 +1365,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return toCopy;
     }
 
+    /**
+     * Reads bytes from this buffer into the specified byte buffer. Reads up to {@code sink.remaining()} bytes or until
+     * the buffer is empty.
+     *
+     * @param sink the byte buffer to read into
+     * @return the number of bytes read, or -1 if the buffer is empty
+     * @throws IOException          if an I/O error occurs
+     * @throws NullPointerException if {@code sink} is null
+     */
     @Override
     public int read(java.nio.ByteBuffer sink) throws IOException {
         SectionBuffer s = head;
@@ -1046,7 +1396,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 丢弃此缓冲区中的所有字节。在使用完缓冲区后调用此方法将把它的段返回到池中
+     * Discards all bytes in this buffer. After calling this method, the buffer will be empty.
      */
     public final void clear() {
         try {
@@ -1057,7 +1407,11 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 从这个缓冲区的头部丢弃{@code byteCount}字节.
+     * Discards {@code byteCount} bytes from the beginning of this buffer.
+     *
+     * @param byteCount the number of bytes to discard
+     * @throws EOFException             if the buffer contains fewer than {@code byteCount} bytes
+     * @throws IllegalArgumentException if {@code byteCount} is negative
      */
     @Override
     public void skip(long byteCount) throws EOFException {
@@ -1079,6 +1433,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
     }
 
+    /**
+     * Writes the specified byte string to this buffer.
+     *
+     * @param byteString the byte string to write
+     * @return this buffer
+     * @throws IllegalArgumentException if {@code byteString} is null
+     */
     @Override
     public Buffer write(ByteString byteString) {
         if (null == byteString) {
@@ -1088,11 +1449,28 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Writes the specified string to this buffer using UTF-8 encoding.
+     *
+     * @param string the string to write
+     * @return this buffer
+     * @throws IllegalArgumentException if {@code string} is null
+     */
     @Override
     public Buffer writeUtf8(String string) {
         return writeUtf8(string, 0, string.length());
     }
 
+    /**
+     * Writes a substring of the specified string to this buffer using UTF-8 encoding.
+     *
+     * @param string     the string to write
+     * @param beginIndex the beginning index, inclusive
+     * @param endIndex   the ending index, exclusive
+     * @return this buffer
+     * @throws IllegalArgumentException  if {@code string} is null or indices are invalid
+     * @throws IndexOutOfBoundsException if indices are out of bounds
+     */
     @Override
     public Buffer writeUtf8(String string, int beginIndex, int endIndex) {
         if (null == string) {
@@ -1173,6 +1551,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Writes the specified Unicode code point to this buffer using UTF-8 encoding.
+     *
+     * @param codePoint the Unicode code point to write
+     * @return this buffer
+     * @throws IllegalArgumentException if the code point is invalid
+     */
     @Override
     public Buffer writeUtf8CodePoint(int codePoint) {
         if (codePoint < 0x80) {
@@ -1209,11 +1594,30 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Writes the specified string to this buffer using the specified charset.
+     *
+     * @param string  the string to write
+     * @param charset the charset to use for encoding
+     * @return this buffer
+     * @throws IllegalArgumentException if {@code string} or {@code charset} is null
+     */
     @Override
     public Buffer writeString(String string, java.nio.charset.Charset charset) {
         return writeString(string, 0, string.length(), charset);
     }
 
+    /**
+     * Writes a substring of the specified string to this buffer using the specified charset.
+     *
+     * @param string     the string to write
+     * @param beginIndex the beginning index, inclusive
+     * @param endIndex   the ending index, exclusive
+     * @param charset    the charset to use for encoding
+     * @return this buffer
+     * @throws IllegalArgumentException  if {@code string} or {@code charset} is null or indices are invalid
+     * @throws IndexOutOfBoundsException if indices are out of bounds
+     */
     @Override
     public Buffer writeString(String string, int beginIndex, int endIndex, java.nio.charset.Charset charset) {
         if (null == string) {
@@ -1238,6 +1642,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return write(data, 0, data.length);
     }
 
+    /**
+     * Writes the specified byte array to this buffer.
+     *
+     * @param source the byte array to write
+     * @return this buffer
+     * @throws IllegalArgumentException if {@code source} is null
+     */
     @Override
     public Buffer write(byte[] source) {
         if (null == source) {
@@ -1246,6 +1657,16 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return write(source, 0, source.length);
     }
 
+    /**
+     * Writes a portion of the specified byte array to this buffer.
+     *
+     * @param source    the byte array to write
+     * @param offset    the starting offset in the byte array
+     * @param byteCount the number of bytes to write
+     * @return this buffer
+     * @throws IllegalArgumentException  if {@code source} is null
+     * @throws IndexOutOfBoundsException if {@code offset} or {@code byteCount} are invalid
+     */
     @Override
     public Buffer write(byte[] source, int offset, int byteCount) {
         if (null == source) {
@@ -1267,6 +1688,14 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Writes bytes from the specified byte buffer to this buffer. Reads all remaining bytes from the source buffer.
+     *
+     * @param source the byte buffer to read from
+     * @return the number of bytes written
+     * @throws IOException              if an I/O error occurs
+     * @throws IllegalArgumentException if {@code source} is null
+     */
     @Override
     public int write(java.nio.ByteBuffer source) throws IOException {
         if (null == source) {
@@ -1289,6 +1718,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return byteCount;
     }
 
+    /**
+     * Reads all bytes from the specified source and writes them to this buffer. Continues reading until the source is
+     * exhausted.
+     *
+     * @param source the source to read from
+     * @return the total number of bytes read
+     * @throws IOException              if an I/O error occurs
+     * @throws IllegalArgumentException if {@code source} is null
+     */
     @Override
     public long writeAll(Source source) throws IOException {
         if (null == source) {
@@ -1301,6 +1739,16 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return totalBytesRead;
     }
 
+    /**
+     * Reads {@code byteCount} bytes from the specified source and writes them to this buffer.
+     *
+     * @param source    the source to read from
+     * @param byteCount the number of bytes to read
+     * @return this buffer
+     * @throws IOException              if an I/O error occurs
+     * @throws IllegalArgumentException if {@code source} is null
+     * @throws EOFException             if the end of the source is reached before reading {@code byteCount} bytes
+     */
     @Override
     public BufferSink write(Source source, long byteCount) throws IOException {
         while (byteCount > 0) {
@@ -1312,6 +1760,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Writes a single byte to this buffer.
+     *
+     * @param b the byte to write
+     * @return this buffer
+     */
     @Override
     public Buffer writeByte(int b) {
         SectionBuffer tail = writableSegment(1);
@@ -1320,6 +1774,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Writes a 16-bit big-endian short value to this buffer.
+     *
+     * @param s the short value to write
+     * @return this buffer
+     */
     @Override
     public Buffer writeShort(int s) {
         SectionBuffer tail = writableSegment(2);
@@ -1332,11 +1792,23 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Writes a 16-bit little-endian short value to this buffer.
+     *
+     * @param s the short value to write
+     * @return this buffer
+     */
     @Override
     public Buffer writeShortLe(int s) {
         return writeShort(IoKit.reverseBytesShort((short) s));
     }
 
+    /**
+     * Writes a 32-bit big-endian integer value to this buffer.
+     *
+     * @param i the integer value to write
+     * @return this buffer
+     */
     @Override
     public Buffer writeInt(int i) {
         SectionBuffer tail = writableSegment(4);
@@ -1351,11 +1823,23 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Writes a 32-bit little-endian integer value to this buffer.
+     *
+     * @param i the integer value to write
+     * @return this buffer
+     */
     @Override
     public Buffer writeIntLe(int i) {
         return writeInt(IoKit.reverseBytesInt(i));
     }
 
+    /**
+     * Writes a 64-bit big-endian long value to this buffer.
+     *
+     * @param v the long value to write
+     * @return this buffer
+     */
     @Override
     public Buffer writeLong(long v) {
         SectionBuffer tail = writableSegment(8);
@@ -1374,11 +1858,23 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Writes a 64-bit little-endian long value to this buffer.
+     *
+     * @param v the long value to write
+     * @return this buffer
+     */
     @Override
     public Buffer writeLongLe(long v) {
         return writeLong(IoKit.reverseBytesLong(v));
     }
 
+    /**
+     * Writes a decimal long value to this buffer.
+     *
+     * @param v the long value to write
+     * @return this buffer
+     */
     @Override
     public Buffer writeDecimalLong(long v) {
         if (v == 0) {
@@ -1422,6 +1918,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return this;
     }
 
+    /**
+     * Writes an unsigned long value to this buffer in hexadecimal format.
+     *
+     * @param v the unsigned long value to write
+     * @return this buffer
+     */
     @Override
     public Buffer writeHexadecimalUnsignedLong(long v) {
         if (v == 0) {
@@ -1442,9 +1944,11 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * @param minimumCapacity int
-     * @return segment SectionBuffer Returns a tail segment that we can write at least {@code minimumCapacity} bytes to,
-     *         creating it if necessary.
+     * Returns a tail segment that we can write at least {@code minimumCapacity} bytes to, creating it if necessary.
+     *
+     * @param minimumCapacity the minimum number of bytes the segment must be able to hold
+     * @return a writable segment
+     * @throws IllegalArgumentException if {@code minimumCapacity} is invalid
      */
     public SectionBuffer writableSegment(int minimumCapacity) {
         if (minimumCapacity < 1 || minimumCapacity > SectionBuffer.SIZE)
@@ -1462,6 +1966,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return tail;
     }
 
+    /**
+     * Writes {@code byteCount} bytes from the specified source buffer to this buffer. This method consumes the bytes
+     * from the source buffer.
+     *
+     * @param source    the source buffer to read from
+     * @param byteCount the number of bytes to write
+     * @throws IllegalArgumentException  if {@code source} is null or equals this buffer
+     * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
+     */
     @Override
     public void write(Buffer source, long byteCount) {
         if (null == source) {
@@ -1508,6 +2021,16 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
     }
 
+    /**
+     * Reads {@code byteCount} bytes from this buffer and writes them to the specified sink buffer. This method consumes
+     * the bytes from this buffer.
+     *
+     * @param sink      the sink buffer to write to
+     * @param byteCount the number of bytes to read
+     * @return the number of bytes read, or -1 if this buffer is empty
+     * @throws IllegalArgumentException  if {@code sink} is null
+     * @throws IndexOutOfBoundsException if {@code byteCount} is invalid
+     */
     @Override
     public long read(Buffer sink, long byteCount) {
         if (null == sink) {
@@ -1526,20 +2049,41 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return byteCount;
     }
 
+    /**
+     * Returns the index of the first occurrence of the specified byte in this buffer.
+     *
+     * @param b the byte to search for
+     * @return the index of the first occurrence of the byte, or -1 if not found
+     */
     @Override
     public long indexOf(byte b) {
         return indexOf(b, 0, Long.MAX_VALUE);
     }
 
     /**
-     * Returns the index of {@code b} in this at or beyond {@code fromIndex}, or -1 if this buffer does not contain
-     * {@code b} in that range.
+     * Returns the index of the first occurrence of the specified byte in this buffer, starting at the specified
+     * position.
+     *
+     * @param b         the byte to search for
+     * @param fromIndex the starting position for the search (0-based)
+     * @return the index of the first occurrence of the byte, or -1 if not found
+     * @throws IndexOutOfBoundsException if {@code fromIndex} is out of bounds
      */
     @Override
     public long indexOf(byte b, long fromIndex) {
         return indexOf(b, fromIndex, Long.MAX_VALUE);
     }
 
+    /**
+     * Returns the index of the first occurrence of the specified byte in this buffer, within the specified range.
+     *
+     * @param b         the byte to search for
+     * @param fromIndex the starting position for the search (0-based)
+     * @param toIndex   the ending position for the search (exclusive)
+     * @return the index of the first occurrence of the byte, or -1 if not found
+     * @throws IllegalArgumentException  if the range is invalid
+     * @throws IndexOutOfBoundsException if indices are out of bounds
+     */
     @Override
     public long indexOf(byte b, long fromIndex, long toIndex) {
         if (fromIndex < 0 || toIndex < fromIndex) {
@@ -1592,11 +2136,30 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return -1L;
     }
 
+    /**
+     * Returns the index of the first occurrence of the specified byte string in this buffer.
+     *
+     * @param bytes the byte string to search for
+     * @return the index of the first occurrence of the byte string, or -1 if not found
+     * @throws IOException              if an I/O error occurs
+     * @throws IllegalArgumentException if {@code bytes} is null or empty
+     */
     @Override
     public long indexOf(ByteString bytes) throws IOException {
         return indexOf(bytes, 0);
     }
 
+    /**
+     * Returns the index of the first occurrence of the specified byte string in this buffer, starting at the specified
+     * position.
+     *
+     * @param bytes     the byte string to search for
+     * @param fromIndex the starting position for the search (0-based)
+     * @return the index of the first occurrence of the byte string, or -1 if not found
+     * @throws IOException               if an I/O error occurs
+     * @throws IllegalArgumentException  if {@code bytes} is null or empty
+     * @throws IndexOutOfBoundsException if {@code fromIndex} is out of bounds
+     */
     @Override
     public long indexOf(ByteString bytes, long fromIndex) throws IOException {
         if (bytes.size() == 0)
@@ -1647,11 +2210,28 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return -1L;
     }
 
+    /**
+     * Returns the index of the first occurrence of any byte from the specified target bytes in this buffer.
+     *
+     * @param targetBytes the bytes to search for
+     * @return the index of the first occurrence of any target byte, or -1 if not found
+     * @throws IllegalArgumentException if {@code targetBytes} is null
+     */
     @Override
     public long indexOfElement(ByteString targetBytes) {
         return indexOfElement(targetBytes, 0);
     }
 
+    /**
+     * Returns the index of the first occurrence of any byte from the specified target bytes in this buffer, starting at
+     * the specified position.
+     *
+     * @param targetBytes the bytes to search for
+     * @param fromIndex   the starting position for the search (0-based)
+     * @return the index of the first occurrence of any target byte, or -1 if not found
+     * @throws IllegalArgumentException  if {@code targetBytes} is null
+     * @throws IndexOutOfBoundsException if {@code fromIndex} is out of bounds
+     */
     @Override
     public long indexOfElement(ByteString targetBytes, long fromIndex) {
         if (fromIndex < 0)
@@ -1724,11 +2304,32 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return -1L;
     }
 
+    /**
+     * Returns true if the bytes in this buffer starting at the specified offset match the specified byte string.
+     *
+     * @param offset the starting offset in this buffer (0-based)
+     * @param bytes  the byte string to compare with
+     * @return true if the bytes match, false otherwise
+     * @throws IllegalArgumentException  if {@code bytes} is null
+     * @throws IndexOutOfBoundsException if {@code offset} is out of bounds
+     */
     @Override
     public boolean rangeEquals(long offset, ByteString bytes) {
         return rangeEquals(offset, bytes, 0, bytes.size());
     }
 
+    /**
+     * Returns true if the bytes in this buffer starting at the specified offset match the specified portion of the byte
+     * string.
+     *
+     * @param offset      the starting offset in this buffer (0-based)
+     * @param bytes       the byte string to compare with
+     * @param bytesOffset the starting offset in the byte string
+     * @param byteCount   the number of bytes to compare
+     * @return true if the bytes match, false otherwise
+     * @throws IllegalArgumentException  if {@code bytes} is null
+     * @throws IndexOutOfBoundsException if any offset or count is invalid
+     */
     @Override
     public boolean rangeEquals(long offset, ByteString bytes, int bytesOffset, int byteCount) {
         if (offset < 0 || bytesOffset < 0 || byteCount < 0 || size - offset < byteCount
@@ -1746,6 +2347,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     /**
      * Returns true if the range within this buffer starting at {@code segmentPos} in {@code segment} is equal to
      * {@code bytes[bytesOffset..bytesLimit)}.
+     *
+     * @param segment     the segment to compare
+     * @param segmentPos  the starting position in the segment
+     * @param bytes       the byte string to compare with
+     * @param bytesOffset the starting offset in the byte string
+     * @param bytesLimit  the ending offset in the byte string
+     * @return true if the bytes match, false otherwise
      */
     private boolean rangeEquals(
             SectionBuffer segment,
@@ -1775,26 +2383,44 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return true;
     }
 
+    /**
+     * Flushes this buffer. This implementation does nothing as the buffer is in-memory.
+     */
     @Override
     public void flush() {
     }
 
+    /**
+     * Returns true if this buffer is open. Buffers are always open unless explicitly closed.
+     *
+     * @return true if this buffer is open, false otherwise
+     */
     @Override
     public boolean isOpen() {
         return true;
     }
 
+    /**
+     * Closes this buffer. This implementation does nothing as the buffer is in-memory.
+     */
     @Override
     public void close() {
     }
 
+    /**
+     * Returns the timeout for this buffer. This implementation returns a timeout with no time limit.
+     *
+     * @return the timeout for this buffer
+     */
     @Override
     public Timeout timeout() {
         return Timeout.NONE;
     }
 
     /**
-     * For testing. This returns the sizes of the segments in this buffer.
+     * For testing purposes only. Returns the sizes of the segments in this buffer.
+     *
+     * @return a list of segment sizes
      */
     List<Integer> segmentSizes() {
         if (null == head) {
@@ -1809,33 +2435,48 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * @return the 128-bit MD5 hash of this buffer.
+     * Returns the 128-bit MD5 hash of this buffer.
+     *
+     * @return the MD5 hash of this buffer as a byte string
      */
     public ByteString md5() {
         return digest(Algorithm.MD5.getValue());
     }
 
     /**
-     * @return the 160-bit SHA-1 hash of this buffer.
+     * Returns the 160-bit SHA-1 hash of this buffer.
+     *
+     * @return the SHA-1 hash of this buffer as a byte string
      */
     public ByteString sha1() {
         return digest(Algorithm.SHA1.getValue());
     }
 
     /**
-     * @return the 256-bit SHA-256 hash of this buffer.
+     * Returns the 256-bit SHA-256 hash of this buffer.
+     *
+     * @return the SHA-256 hash of this buffer as a byte string
      */
     public ByteString sha256() {
         return digest(Algorithm.SHA256.getValue());
     }
 
     /**
-     * @return the 512-bit SHA-512 hash of this buffer.
+     * Returns the 512-bit SHA-512 hash of this buffer.
+     *
+     * @return the SHA-512 hash of this buffer as a byte string
      */
     public ByteString sha512() {
         return digest(Algorithm.SHA512.getValue());
     }
 
+    /**
+     * Computes the digest of this buffer using the specified algorithm.
+     *
+     * @param algorithm the digest algorithm to use
+     * @return the digest of this buffer as a byte string
+     * @throws AssertionError if the algorithm is not available
+     */
     private ByteString digest(String algorithm) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
@@ -1852,29 +2493,47 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * @param key ByteString
-     * @return the 160-bit SHA-1 HMAC of this buffer.
+     * Returns the 160-bit SHA-1 HMAC of this buffer using the specified key.
+     *
+     * @param key the key to use for the HMAC
+     * @return the SHA-1 HMAC of this buffer as a byte string
+     * @throws IllegalArgumentException if {@code key} is null
      */
     public ByteString hmacSha1(ByteString key) {
         return hmac(Algorithm.HMACSHA1.getValue(), key);
     }
 
     /**
-     * @param key ByteString
-     * @return the 256-bit SHA-256 HMAC of this buffer.
+     * Returns the 256-bit SHA-256 HMAC of this buffer using the specified key.
+     *
+     * @param key the key to use for the HMAC
+     * @return the SHA-256 HMAC of this buffer as a byte string
+     * @throws IllegalArgumentException if {@code key} is null
      */
     public ByteString hmacSha256(ByteString key) {
         return hmac(Algorithm.HMACSHA256.getValue(), key);
     }
 
     /**
-     * @param key ByteString
-     * @return the 512-bit SHA-512 HMAC of this buffer.
+     * Returns the 512-bit SHA-512 HMAC of this buffer using the specified key.
+     *
+     * @param key the key to use for the HMAC
+     * @return the SHA-512 HMAC of this buffer as a byte string
+     * @throws IllegalArgumentException if {@code key} is null
      */
     public final ByteString hmacSha512(ByteString key) {
         return hmac(Algorithm.HMACSHA512.getValue(), key);
     }
 
+    /**
+     * Computes the HMAC of this buffer using the specified algorithm and key.
+     *
+     * @param algorithm the HMAC algorithm to use
+     * @param key       the key to use for the HMAC
+     * @return the HMAC of this buffer as a byte string
+     * @throws IllegalArgumentException if {@code key} is null or invalid
+     * @throws AssertionError           if the algorithm is not available
+     */
     private ByteString hmac(String algorithm, ByteString key) {
         try {
             Mac mac = Mac.getInstance(algorithm);
@@ -1893,6 +2552,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
     }
 
+    /**
+     * Compares this buffer to the specified object for equality. Two buffers are considered equal if they contain the
+     * same bytes in the same order.
+     *
+     * @param o the object to compare with
+     * @return true if the objects are equal, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -1932,6 +2598,11 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return true;
     }
 
+    /**
+     * Returns a hash code value for this buffer. The hash code is based on the bytes contained in the buffer.
+     *
+     * @return a hash code value for this buffer
+     */
     @Override
     public int hashCode() {
         SectionBuffer s = head;
@@ -1949,8 +2620,10 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * Returns a human-readable string that describes the contents of this buffer. Typically this is a string like
-     * {@code [text=Hello]} or {@code [hex=0000ffff]}.
+     * Returns a human-readable string that describes the contents of this buffer. The format of the returned string
+     * depends on the buffer contents.
+     *
+     * @return a string representation of this buffer
      */
     @Override
     public String toString() {
@@ -1958,7 +2631,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * Returns a deep copy of this buffer.
+     * Returns a deep copy of this buffer. The new buffer contains the same bytes but can be modified independently.
+     *
+     * @return a deep copy of this buffer
      */
     @Override
     public Buffer clone() {
@@ -1977,6 +2652,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     /**
      * Returns an immutable copy of this buffer as a byte string.
+     *
+     * @return an immutable copy of this buffer as a byte string
+     * @throws IllegalArgumentException if the buffer size exceeds Integer.MAX_VALUE
      */
     public ByteString snapshot() {
         if (size > Integer.MAX_VALUE) {
@@ -1987,6 +2665,10 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     /**
      * Returns an immutable copy of the first {@code byteCount} bytes of this buffer as a byte string.
+     *
+     * @param byteCount the number of bytes to include in the snapshot
+     * @return an immutable copy of the specified bytes as a byte string
+     * @throws IllegalArgumentException if {@code byteCount} is invalid
      */
     public ByteString snapshot(int byteCount) {
         if (byteCount == 0)
@@ -1994,10 +2676,24 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return new ByteBuffer(this, byteCount);
     }
 
+    /**
+     * Returns a new unsafe cursor for reading this buffer. The cursor provides direct access to the underlying segments
+     * for efficient operations.
+     *
+     * @return a new unsafe cursor for reading this buffer
+     */
     public UnsafeCursor readUnsafe() {
         return readUnsafe(new UnsafeCursor());
     }
 
+    /**
+     * Attaches the specified unsafe cursor to this buffer for reading. The cursor provides direct access to the
+     * underlying segments for efficient operations.
+     *
+     * @param unsafeCursor the cursor to attach
+     * @return the attached cursor
+     * @throws IllegalStateException if the cursor is already attached to a buffer
+     */
     public UnsafeCursor readUnsafe(UnsafeCursor unsafeCursor) {
         if (null != unsafeCursor.buffer) {
             throw new IllegalStateException("already attached to a buffer");
@@ -2008,10 +2704,24 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return unsafeCursor;
     }
 
+    /**
+     * Returns a new unsafe cursor for reading and writing this buffer. The cursor provides direct access to the
+     * underlying segments for efficient operations.
+     *
+     * @return a new unsafe cursor for reading and writing this buffer
+     */
     public UnsafeCursor readAndWriteUnsafe() {
         return readAndWriteUnsafe(new UnsafeCursor());
     }
 
+    /**
+     * Attaches the specified unsafe cursor to this buffer for reading and writing. The cursor provides direct access to
+     * the underlying segments for efficient operations.
+     *
+     * @param unsafeCursor the cursor to attach
+     * @return the attached cursor
+     * @throws IllegalStateException if the cursor is already attached to a buffer
+     */
     public UnsafeCursor readAndWriteUnsafe(UnsafeCursor unsafeCursor) {
         if (null != unsafeCursor.buffer) {
             throw new IllegalStateException("already attached to a buffer");
@@ -2023,22 +2733,69 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 不安全的游标
+     * An unsafe cursor that provides direct access to the underlying segments of a buffer. This class allows for
+     * efficient reading and writing of buffer data without the overhead of the normal buffer API, but it requires
+     * careful handling to avoid data corruption.
+     *
+     * <p>
+     * Unsafe cursors are intended for advanced use cases where performance is critical. They provide direct access to
+     * the segment data arrays, bypassing the normal bounds checking and segment management of the Buffer class.
+     *
+     * <p>
+     * Example usage:
+     * 
+     * <pre>{@code
+     * try (UnsafeCursor cursor = buffer.readUnsafe()) {
+     *     while (cursor.next() != -1) {
+     *         // Process cursor.data[cursor.start ... cursor.end)
+     *     }
+     * }
+     * }</pre>
      */
     public static final class UnsafeCursor implements Closeable {
 
+        /**
+         * The buffer this cursor is attached to.
+         */
         public Buffer buffer;
+
+        /**
+         * True if this cursor can write to the buffer, false if it can only read.
+         */
         public boolean readWrite;
+
+        /**
+         * The current offset in the buffer.
+         */
         public long offset = -1L;
+
+        /**
+         * The data array of the current segment.
+         */
         public byte[] data;
+
+        /**
+         * The starting position of the readable data in the current segment.
+         */
         public int start = -1;
+
+        /**
+         * The ending position of the readable data in the current segment.
+         */
         public int end = -1;
+
+        /**
+         * The current segment.
+         */
         private SectionBuffer segment;
 
         /**
          * Seeks to the next range of bytes, advancing the offset by {@code end - start}. Returns the size of the
          * readable range (at least 1), or -1 if we have reached the end of the buffer and there are no more bytes to
          * read.
+         *
+         * @return the size of the readable range, or -1 if at the end of the buffer
+         * @throws IllegalStateException if the cursor is not attached to a buffer
          */
         public int next() {
             if (offset == buffer.size)
@@ -2049,8 +2806,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
 
         /**
-         * Reposition the cursor so that the data at {@code offset} is readable at {@code data[start]}. Returns the
+         * Repositions the cursor so that the data at {@code offset} is readable at {@code data[start]}. Returns the
          * number of bytes readable in {@code data} (at least 1), or -1 if there are no data to read.
+         *
+         * @param offset the new offset in the buffer (0-based)
+         * @return the number of bytes readable in the current segment, or -1 if at the end of the buffer
+         * @throws IllegalStateException     if the cursor is not attached to a buffer
+         * @throws IndexOutOfBoundsException if {@code offset} is out of bounds
          */
         public int seek(long offset) {
             if (offset < -1 || offset > buffer.size) {
@@ -2124,20 +2886,25 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
 
         /**
-         * Change the size of the buffer so that it equals {@code newSize} by either adding new capacity at the end or
+         * Changes the size of the buffer so that it equals {@code newSize} by either adding new capacity at the end or
          * truncating the buffer at the end. Newly added capacity may span multiple segments.
          *
+         * <p>
          * As a side-effect this cursor will {@link #seek seek}. If the buffer is being enlarged it will move
          * {@link #offset} to the first byte of newly-added capacity. This is the size of the buffer prior to the
          * {@code resizeBuffer()} call. If the buffer is being shrunk it will move {@link #offset} to the end of the
          * buffer.
          *
-         * Warning: it is the caller’s responsibility to write new data to every byte of the newly-allocated capacity.
-         * Failure to do so may cause serious security problems as the data in the returned buffers is not zero filled.
-         * Buffers may contain dirty pooled segments that hold very sensitive data from other parts of the current
-         * process.
+         * <p>
+         * <strong>Warning:</strong> it is the caller's responsibility to write new data to every byte of the
+         * newly-allocated capacity. Failure to do so may cause serious security problems as the data in the returned
+         * buffers is not zero filled. Buffers may contain dirty pooled segments that hold very sensitive data from
+         * other parts of the current process.
          *
-         * @return the previous size of the buffer.
+         * @param newSize the new size of the buffer
+         * @return the previous size of the buffer
+         * @throws IllegalStateException    if the cursor is not attached to a buffer or is read-only
+         * @throws IllegalArgumentException if {@code newSize} is negative
          */
         public long resizeBuffer(long newSize) {
             if (buffer == null) {
@@ -2198,25 +2965,29 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
 
         /**
-         * Grow the buffer by adding a <strong>contiguous range</strong> of capacity in a single segment. This adds at
+         * Grows the buffer by adding a <strong>contiguous range</strong> of capacity in a single segment. This adds at
          * least {@code minByteCount} bytes but may add up to a full segment of additional capacity.
          *
+         * <p>
          * As a side-effect this cursor will {@link #seek seek}. It will move {@link #offset} to the first byte of
-         * newly-added capacity. This is the size of the buffer prior to the {@code
-         * expandBuffer()} call.
+         * newly-added capacity. This is the size of the buffer prior to the {@code expandBuffer()} call.
          *
+         * <p>
          * If {@code minByteCount} bytes are available in the buffer's current tail segment that will be used; otherwise
          * another segment will be allocated and appended. In either case this returns the number of bytes of capacity
          * added to this buffer.
          *
-         * Warning: it is the caller’s responsibility to either write new data to every byte of the newly-allocated
-         * capacity, or to {@link #resizeBuffer shrink} the buffer to the data written. Failure to do so may cause
-         * serious security problems as the data in the returned buffers is not zero filled. Buffers may contain dirty
-         * pooled segments that hold very sensitive data from other parts of the current process.
+         * <p>
+         * <strong>Warning:</strong> it is the caller's responsibility to either write new data to every byte of the
+         * newly-allocated capacity, or to {@link #resizeBuffer shrink} the buffer to the data written. Failure to do so
+         * may cause serious security problems as the data in the returned buffers is not zero filled. Buffers may
+         * contain dirty pooled segments that hold very sensitive data from other parts of the current process.
          *
          * @param minByteCount the size of the contiguous capacity. Must be positive and not greater than the capacity
          *                     size of a single segment (8 KiB).
          * @return the number of bytes expanded by. Not less than {@code minByteCount}.
+         * @throws IllegalStateException    if the cursor is not attached to a buffer or is read-only
+         * @throws IllegalArgumentException if {@code minByteCount} is invalid
          */
         public final long expandBuffer(int minByteCount) {
             if (minByteCount <= 0) {
@@ -2248,6 +3019,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             return result;
         }
 
+        /**
+         * Detaches this cursor from its buffer. After calling this method, the cursor can no longer be used to access
+         * the buffer.
+         *
+         * @throws IllegalStateException if the cursor is not attached to a buffer
+         */
         @Override
         public void close() {
             if (null == buffer) {

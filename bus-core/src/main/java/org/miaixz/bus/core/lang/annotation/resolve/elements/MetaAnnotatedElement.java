@@ -34,7 +34,6 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 import org.miaixz.bus.core.center.stream.EasyStream;
-import org.miaixz.bus.core.lang.annotation.resolve.AnnotatedElements;
 import org.miaixz.bus.core.lang.annotation.resolve.AnnotationMapping;
 import org.miaixz.bus.core.lang.annotation.resolve.ResolvedAnnotationMapping;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -44,18 +43,23 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * <p>
- * 注解元素映射，用于包装一个{@link AnnotatedElement}，然后将被包装的元素上， 直接声明的注解以及这些注解的元组全部解析为{@link ResolvedAnnotationMapping}。
- * 从而用于支持对元注解的访问操作。
+ * An enhanced {@link AnnotatedElement} wrapper that processes annotations directly declared on the wrapped element, as
+ * well as their meta-annotations, into {@link ResolvedAnnotationMapping} objects. This enables advanced operations such
+ * as accessing meta-annotations and resolving their attributes.
  *
  * <p>
- * 默认情况下，总是不扫描{@link java.lang}包下的注解， 并且在当前实例中，{@link Inherited}注解将不生效，
- * 即通过<em>directly</em>方法将无法获得父类上带有{@link Inherited}的注解。
+ * By default, annotations within the {@code java.lang} package are not scanned. Additionally, within this instance, the
+ * {@link Inherited} annotation does not take effect, meaning that {@code getDeclaredAnnotation} methods will not
+ * retrieve {@link Inherited} annotations from superclasses.
  *
  * <p>
- * 在一个{@link MetaAnnotatedElement}中， {@link AnnotatedElement}上同类型的注解或元注解只会被保留一个， 即当出现两个根注解都具有相同元注解时，仅有第一个根注解上的元注解会被保留，
- * 因此当通过{@link #getAnnotationsByType(Class)} 或{@link #getDeclaredAnnotationsByType(Class)}方法用于只能获得一个注解对象。
+ * In a {@link MetaAnnotatedElement}, only one annotation or meta-annotation of the same type from the
+ * {@link AnnotatedElement} will be retained. For example, if two root annotations have the same meta-annotation, only
+ * the meta-annotation from the first root annotation encountered will be kept. Therefore, methods like
+ * {@link #getAnnotationsByType(Class)} or {@link #getDeclaredAnnotationsByType(Class)} will return at most one
+ * annotation object.
  *
- * @param <T> AnnotationMapping类型
+ * @param <T> The type of {@link AnnotationMapping} used for wrapping annotations.
  * @author Kimi Liu
  * @see ResolvedAnnotationMapping
  * @since Java 17+
@@ -63,40 +67,46 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> implements AnnotatedElement, Iterable<T> {
 
     /**
-     * 注解对象
+     * The underlying {@link AnnotatedElement} being wrapped.
      */
     private final AnnotatedElement element;
 
     /**
-     * 创建{@link AnnotationMapping}的工厂方法，返回值为{@code null}时将忽略该注解
+     * A factory function for creating {@link AnnotationMapping} instances. If the function returns {@code null}, the
+     * annotation will be ignored.
      */
     private final BiFunction<T, Annotation, T> mappingFactory;
 
     /**
-     * 注解映射，此处为懒加载，默认为{@code null}，获取该属性必须通过{@link #getAnnotationMappings()}触发初始化
+     * A lazy-loaded map of annotation types to their corresponding {@link AnnotationMapping} instances. This map is
+     * {@code null} by default and initialized upon the first call to {@link #getAnnotationMappings()}.
      */
     private volatile Map<Class<? extends Annotation>, T> annotationMappings;
 
     /**
-     * 解析注解属性
+     * Constructs a new {@code MetaAnnotatedElement} with the specified {@link AnnotatedElement} and mapping factory.
      *
-     * @param element        被注解元素
-     * @param mappingFactory 创建{@link AnnotationMapping}的工厂方法，返回值为{@code null}时将忽略该注解
+     * @param element        The {@link AnnotatedElement} to wrap. Must not be {@code null}.
+     * @param mappingFactory The factory function for creating {@link AnnotationMapping} instances. Must not be
+     *                       {@code null}.
      */
     public MetaAnnotatedElement(final AnnotatedElement element, final BiFunction<T, Annotation, T> mappingFactory) {
         this.element = Objects.requireNonNull(element);
         this.mappingFactory = Objects.requireNonNull(mappingFactory);
-        // 等待懒加载
+        // Lazy initialization
         this.annotationMappings = null;
     }
 
     /**
-     * 获取{@link AnnotatedElement}上的注解结构，该方法会针对相同的{@link AnnotatedElement}缓存映射对象
+     * Creates a new {@code MetaAnnotatedElement} instance. This method caches the mapping object for the same
+     * {@link AnnotatedElement}.
      *
-     * @param element        被注解元素
-     * @param mappingFactory 创建{@link AnnotationMapping}的工厂方法，返回值为{@code null}时将忽略该注解
-     * @param <A>            {@link AnnotationMapping}类型
-     * @return {@link AnnotatedElement}上的注解结构
+     * @param element        The {@link AnnotatedElement} to wrap.
+     * @param mappingFactory The factory function for creating {@link AnnotationMapping} instances. If it returns
+     *                       {@code null}, the annotation will be ignored.
+     * @param <A>            The type of {@link AnnotationMapping}.
+     * @return A {@code MetaAnnotatedElement} instance representing the annotation structure on the
+     *         {@link AnnotatedElement}.
      */
     public static <A extends AnnotationMapping<Annotation>> MetaAnnotatedElement<A> create(
             final AnnotatedElement element,
@@ -105,29 +115,31 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 从{@link AnnotatedElement}直接声明的注解的层级结构中获得注解映射对象
+     * Retrieves an {@link AnnotationMapping} object for the specified annotation type from the hierarchical structure
+     * of annotations directly declared on the {@link AnnotatedElement}.
      *
-     * @param annotationType 注解类型
-     * @return 注解映射对象
+     * @param annotationType The type of the annotation to retrieve.
+     * @return An {@link Optional} containing the {@link AnnotationMapping} object, or empty if not found.
      */
     public Optional<T> getMapping(final Class<? extends Annotation> annotationType) {
         return Optional.ofNullable(annotationType).map(getAnnotationMappings()::get);
     }
 
     /**
-     * 获取被包装的{@link AnnotatedElement}
+     * Retrieves the wrapped {@link AnnotatedElement}.
      *
-     * @return 被包装的 {@link AnnotatedElements}
+     * @return The wrapped {@link AnnotatedElement}.
      */
     public AnnotatedElement getElement() {
         return element;
     }
 
     /**
-     * 从{@link AnnotatedElement}直接声明的注解中获得注解映射对象
+     * Retrieves an {@link AnnotationMapping} object for the specified annotation type from the annotations directly
+     * declared on the {@link AnnotatedElement}.
      *
-     * @param annotationType 注解类型
-     * @return 注解映射对象
+     * @param annotationType The type of the annotation to retrieve.
+     * @return An {@link Optional} containing the {@link AnnotationMapping} object, or empty if not found.
      */
     public Optional<T> getDeclaredMapping(final Class<? extends Annotation> annotationType) {
         return EasyStream.of(getAnnotationMappings().values()).filter(T::isRoot)
@@ -135,10 +147,11 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 注解是否是{@link AnnotatedElement}直接声明的注解，或者在这些注解的层级结构中存在
+     * Checks if the specified annotation type is present on the {@link AnnotatedElement} or in its meta-annotation
+     * hierarchy.
      *
-     * @param annotationType 注解元素
-     * @return 是否
+     * @param annotationType The type of the annotation to check for.
+     * @return {@code true} if the annotation is present, {@code false} otherwise.
      */
     @Override
     public boolean isAnnotationPresent(final Class<? extends Annotation> annotationType) {
@@ -146,11 +159,12 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 从{@link AnnotatedElement}直接声明的注解的层级结构中获得注解对象
+     * Retrieves an annotation of the specified type from the hierarchical structure of annotations directly declared on
+     * the {@link AnnotatedElement}.
      *
-     * @param annotationType 注解类型
-     * @param <A>            注解类型
-     * @return 注解对象
+     * @param annotationType The type of the annotation to retrieve.
+     * @param <A>            The type of the annotation.
+     * @return The annotation instance, or {@code null} if not found.
      */
     @Override
     public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
@@ -158,11 +172,11 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 从{@link AnnotatedElement}直接声明的注解中获得注解对象
+     * Retrieves a directly declared annotation of the specified type from the {@link AnnotatedElement}.
      *
-     * @param annotationType 注解类型
-     * @param <A>            注解类型
-     * @return 注解对象
+     * @param annotationType The type of the annotation to retrieve.
+     * @param <A>            The type of the annotation.
+     * @return The directly declared annotation instance, or {@code null} if not found.
      */
     @Override
     public <A extends Annotation> A getDeclaredAnnotation(final Class<A> annotationType) {
@@ -170,11 +184,13 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 获取{@link AnnotatedElement}直接的指定类型注解
+     * Retrieves all annotations of the specified type from the {@link AnnotatedElement} and its meta-annotation
+     * hierarchy. Due to the nature of {@code MetaAnnotatedElement} retaining only one instance of each annotation type,
+     * this method will return an array with at most one element.
      *
-     * @param annotationType 注解类型
-     * @param <A>            注解类型
-     * @return {@link AnnotatedElement}直接声明的指定类型注解
+     * @param annotationType The type of the annotation to retrieve.
+     * @param <A>            The type of the annotation.
+     * @return An array containing the annotation instance if found, otherwise an empty array.
      */
     @Override
     public <A extends Annotation> A[] getAnnotationsByType(final Class<A> annotationType) {
@@ -186,11 +202,13 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 获取{@link AnnotatedElement}直接声明的指定类型注解
+     * Retrieves all directly declared annotations of the specified type from the {@link AnnotatedElement}. Due to the
+     * nature of {@code MetaAnnotatedElement} retaining only one instance of each annotation type, this method will
+     * return an array with at most one element.
      *
-     * @param annotationType 注解类型
-     * @param <A>            注解类型
-     * @return {@link AnnotatedElement}直接声明的指定类型注解
+     * @param annotationType The type of the annotation to retrieve.
+     * @param <A>            The type of the annotation.
+     * @return An array containing the directly declared annotation instance if found, otherwise an empty array.
      */
     @Override
     public <A extends Annotation> A[] getDeclaredAnnotationsByType(final Class<A> annotationType) {
@@ -202,9 +220,9 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 获取{@link AnnotatedElement}直接声明的注解的映射对象
+     * Retrieves all directly declared annotations on the {@link AnnotatedElement} as resolved annotation objects.
      *
-     * @return {@link AnnotatedElement}直接声明的注解的映射对象
+     * @return An array of resolved annotation objects directly declared on the element.
      */
     @Override
     public Annotation[] getDeclaredAnnotations() {
@@ -213,9 +231,10 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 获取所有注解
+     * Retrieves all annotations (including meta-annotations) present on the {@link AnnotatedElement} as resolved
+     * annotation objects.
      *
-     * @return 所有注解
+     * @return An array of all resolved annotation objects found on the element and its meta-annotation hierarchy.
      */
     @Override
     public Annotation[] getAnnotations() {
@@ -223,9 +242,9 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 获取注解映射对象集合的迭代器
+     * Returns an iterator over the {@link AnnotationMapping} objects representing the annotations on this element.
      *
-     * @return 迭代器
+     * @return An iterator over {@link AnnotationMapping} objects.
      */
     @Override
     public Iterator<T> iterator() {
@@ -233,10 +252,13 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 比较两个实例是否相等
+     * Compares this {@code MetaAnnotatedElement} to the specified object. The result is {@code true} if and only if the
+     * argument is not {@code null} and is a {@code MetaAnnotatedElement} object that wraps the same
+     * {@link AnnotatedElement} and uses the same {@link BiFunction} for mapping.
      *
-     * @param o 对象
-     * @return 是否
+     * @param o The object to compare this {@code MetaAnnotatedElement} against.
+     * @return {@code true} if the given object represents a {@code MetaAnnotatedElement} equivalent to this
+     *         {@code MetaAnnotatedElement}, {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object o) {
@@ -251,9 +273,9 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 获取实例的哈希值
+     * Returns a hash code for this {@code MetaAnnotatedElement}.
      *
-     * @return 哈希值
+     * @return A hash code value for this object.
      */
     @Override
     public int hashCode() {
@@ -261,9 +283,9 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 获取注解映射，若当前实例未完成初始化则先进行初始化
+     * Retrieves the map of annotation types to their {@link AnnotationMapping} instances, initializing it if necessary.
      *
-     * @return 不可变的注解映射集合
+     * @return An unmodifiable map of annotation types to {@link AnnotationMapping} instances.
      */
     protected final Map<Class<? extends Annotation>, T> getAnnotationMappings() {
         initAnnotationMappingsIfNecessary();
@@ -271,11 +293,12 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 该注解是否需要映射 默认情况下，已经处理过、或在{@link java.lang}包下的注解不会被处理
+     * Determines whether a given annotation needs to be mapped. By default, annotations that have already been
+     * processed or are in the {@code java.lang} package are not processed.
      *
-     * @param mappings   当前已处理的注解
-     * @param annotation 注解对象
-     * @return 是否
+     * @param mappings   The map of currently processed annotations.
+     * @param annotation The annotation object to check.
+     * @return {@code true} if the annotation needs mapping, {@code false} otherwise.
      */
     protected boolean isNeedMapping(final Map<Class<? extends Annotation>, T> mappings, final Annotation annotation) {
         return !CharsBacker.startWith(annotation.annotationType().getName(), "java.lang.")
@@ -283,17 +306,21 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 创建注解映射
+     * Creates an {@link AnnotationMapping} instance using the provided factory.
+     *
+     * @param source     The source {@link AnnotationMapping} (parent annotation in the hierarchy).
+     * @param annotation The annotation to map.
+     * @return The created {@link AnnotationMapping} instance.
      */
     private T createMapping(final T source, final Annotation annotation) {
         return mappingFactory.apply(source, annotation);
     }
 
     /**
-     * 扫描{@link AnnotatedElement}上直接声明的注解，然后按广度优先扫描这些注解的元注解， 直到将所有类型的注解对象皆加入{@link #annotationMappings}为止
+     * Initializes the {@link #annotationMappings} map if it has not already been initialized. This method uses
+     * double-checked locking to ensure thread-safe lazy initialization.
      */
     private void initAnnotationMappingsIfNecessary() {
-        // 双重检查保证初始化过程线程安全
         if (Objects.isNull(annotationMappings)) {
             synchronized (this) {
                 if (Objects.isNull(annotationMappings)) {
@@ -306,19 +333,22 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 初始化
+     * Scans annotations directly declared on the {@link AnnotatedElement} and then performs a breadth-first search
+     * through their meta-annotations until all unique annotation types are added to the {@link #annotationMappings}.
+     *
+     * @param mappings The map to populate with annotation mappings.
      */
     private void initAnnotationMappings(final Map<Class<? extends Annotation>, T> mappings) {
         final Deque<T> deque = new LinkedList<>();
         Arrays.stream(AnnoKit.getDeclaredAnnotations(element)).filter(m -> isNeedMapping(mappings, m))
                 .map(annotation -> createMapping(null, annotation)).filter(Objects::nonNull).forEach(deque::addLast);
         while (!deque.isEmpty()) {
-            // 若已有该类型的注解，则不再进行扫描
+            // If an annotation of this type has already been processed, skip it.
             final T mapping = deque.removeFirst();
             if (!isNeedMapping(mappings, mapping)) {
                 continue;
             }
-            // 保存该注解，并将其需要处理的元注解也加入队列
+            // Save the annotation and add its meta-annotations to the queue for processing.
             mappings.put(mapping.annotationType(), mapping);
             for (final Annotation annotation : AnnoKit.getDeclaredAnnotations(mapping.annotationType())) {
                 if (mappings.containsKey(annotation.annotationType())) {

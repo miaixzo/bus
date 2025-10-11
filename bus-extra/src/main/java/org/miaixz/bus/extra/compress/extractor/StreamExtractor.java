@@ -46,52 +46,55 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数据解压器，即将归档打包的数据释放
+ * Data decompressor, used to extract data from an archive package.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StreamExtractor implements Extractor {
 
+    /**
+     * The underlying ArchiveInputStream from Apache Commons Compress.
+     */
     private final ArchiveInputStream<?> in;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param charset 编码
-     * @param file    包文件
+     * @param charset The character encoding.
+     * @param file    The archive file.
      */
     public StreamExtractor(final Charset charset, final File file) {
         this(charset, null, file);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param charset      编码
-     * @param archiverName 归档包格式，null表示自动检测
-     * @param file         包文件
+     * @param charset      The character encoding.
+     * @param archiverName The name of the archive format, null for auto-detection.
+     * @param file         The archive file.
      */
     public StreamExtractor(final Charset charset, final String archiverName, final File file) {
         this(charset, archiverName, FileKit.getInputStream(file));
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param charset 编码
-     * @param in      包流
+     * @param charset The character encoding.
+     * @param in      The archive stream.
      */
     public StreamExtractor(final Charset charset, final InputStream in) {
         this(charset, null, in);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param charset      编码
-     * @param archiverName 归档包格式，null表示自动检测
-     * @param in           包流
+     * @param charset      The character encoding.
+     * @param archiverName The name of the archive format, null for auto-detection.
+     * @param in           The archive stream.
      */
     public StreamExtractor(final Charset charset, final String archiverName, InputStream in) {
         if (in instanceof ArchiveInputStream) {
@@ -105,7 +108,7 @@ public class StreamExtractor implements Extractor {
             if (StringKit.isBlank(archiverName)) {
                 this.in = factory.createArchiveInputStream(in);
             } else if ("tgz".equalsIgnoreCase(archiverName) || "tar.gz".equalsIgnoreCase(archiverName)) {
-                // 支持tgz格式解压
+                // Support for tgz format decompression
                 try {
                     this.in = new TarArchiveInputStream(new GzipCompressorInputStream(in));
                 } catch (final IOException e) {
@@ -115,7 +118,7 @@ public class StreamExtractor implements Extractor {
                 this.in = factory.createArchiveInputStream(archiverName, in);
             }
         } catch (final ArchiveException e) {
-            // 如果报错可能持有文件句柄，导致无法删除文件
+            // If an error occurs, the file handle may be held, preventing file deletion.
             IoKit.closeQuietly(in);
             throw new InternalException(e);
         }
@@ -131,7 +134,7 @@ public class StreamExtractor implements Extractor {
                     continue;
                 }
                 if (entry.isDirectory() || !in.canReadEntryData(entry)) {
-                    // 目录或无法读取的文件直接跳过
+                    // Skip directories or unreadable files directly
                     continue;
                 }
 
@@ -145,10 +148,12 @@ public class StreamExtractor implements Extractor {
     }
 
     /**
-     * 释放（解压）到指定目录，结束后自动关闭流，此方法只能调用一次
+     * Extracts (decompresses) to the specified directory. The stream is automatically closed after completion. This
+     * method can only be called once.
      *
-     * @param targetDir 目标目录
-     * @param predicate 解压文件过滤器，用于指定需要释放的文件，null表示不过滤。当{@link Predicate#test(Object)}为{@code true}时释放。
+     * @param targetDir The target directory.
+     * @param predicate A filter for extracted files, used to specify which files to extract. null means no filtering.
+     *                  Extracts when {@link Predicate#test(Object)} is {@code true}.
      */
     @Override
     public void extract(final File targetDir, final Predicate<ArchiveEntry> predicate) {
@@ -162,11 +167,12 @@ public class StreamExtractor implements Extractor {
     }
 
     /**
-     * 释放（解压）到指定目录
+     * Extracts (decompresses) to the specified directory.
      *
-     * @param targetDir 目标目录
-     * @param predicate 解压文件过滤器，用于指定需要释放的文件，null表示不过滤。当{@link Predicate#test(Object)}为{@code true}释放。
-     * @throws IOException IO异常
+     * @param targetDir The target directory.
+     * @param predicate A filter for extracted files, used to specify which files to extract. null means no filtering.
+     *                  Extracts when {@link Predicate#test(Object)} is {@code true}.
+     * @throws IOException if an I/O error occurs.
      */
     private void extractInternal(final File targetDir, final Predicate<ArchiveEntry> predicate) throws IOException {
         Assert.isTrue(null != targetDir && ((!targetDir.exists()) || targetDir.isDirectory()), "target must be dir.");
@@ -178,12 +184,12 @@ public class StreamExtractor implements Extractor {
                 continue;
             }
             if (!in.canReadEntryData(entry)) {
-                // 无法读取的文件直接跳过
+                // Skip unreadable files directly
                 continue;
             }
             outItemFile = FileKit.file(targetDir, entry.getName());
             if (entry.isDirectory()) {
-                // 创建对应目录
+                // Create the corresponding directory
                 // noinspection ResultOfMethodCallIgnored
                 outItemFile.mkdirs();
             } else {

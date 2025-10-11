@@ -47,10 +47,12 @@ import java.lang.management.ManagementFactory;
 import java.util.*;
 
 /**
- * 收集和启动报告成本的基本组件。
+ * A core component for collecting and reporting startup costs.
  * <p>
- * 该类负责收集应用程序启动过程中的各项性能指标，包括JVM启动时间、环境准备时间、 上下文刷新时间等，并提供统计和报告功能。它能够从Spring的启动事件中提取信息， 转换为结构化的统计模型，并支持自定义Bean指标的定制化处理。
- * </p>
+ * This class is responsible for gathering various performance metrics during the application startup process, including
+ * JVM startup time, environment preparation time, context refresh time, etc. It provides functionalities for statistics
+ * and reporting. It can extract information from Spring's startup events, convert them into structured statistical
+ * models, and support customized processing of bean metrics.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,46 +60,48 @@ import java.util.*;
 public class StartupReporter {
 
     /**
-     * Spring Bean实例化类型集合
+     * Collection of Spring Bean instantiation types.
      */
     public static final Collection<String> SPRING_BEAN_INSTANTIATE_TYPES = Set
             .of(GeniusBuilder.SPRING_BEANS_INSTANTIATE, GeniusBuilder.SPRING_BEANS_SMART_INSTANTIATE);
 
     /**
-     * Spring上下文后处理器类型集合
+     * Collection of Spring context post-processor types.
      */
     public static final Collection<String> SPRING_CONTEXT_POST_PROCESSOR_TYPES = Set.of(
             GeniusBuilder.SPRING_CONTEXT_BEANDEF_REGISTRY_POST_PROCESSOR,
             GeniusBuilder.SPRING_CONTEXT_BEAN_FACTORY_POST_PROCESSOR);
 
     /**
-     * Spring配置类增强类型集合
+     * Collection of Spring configuration classes enhancement types.
      */
     public static final Collection<String> SPRING_CONFIG_CLASSES_ENHANCE_TYPES = Set
             .of(GeniusBuilder.SPRING_CONFIG_CLASSES_ENHANCE, GeniusBuilder.SPRING_BEAN_POST_PROCESSOR);
 
     /**
-     * 启动统计信息
+     * Startup statistics data.
      */
     public final StartupMetrics statics;
 
     /**
-     * Bean指标自定义器列表
+     * List of bean metrics customizers.
      */
     public final List<BeanMetricsCustomizer> beanMetricsCustomizers;
 
     /**
-     * 缓冲区大小，用于BufferingApplicationStartup
+     * Buffer size for {@link BufferingApplicationStartup}. Default is 4096.
      */
     public int bufferSize = 4096;
 
     /**
-     * 成本阈值，用于过滤Bean初始化统计
+     * Cost threshold in milliseconds for filtering bean initialization statistics. Beans with initialization cost below
+     * this threshold might be filtered out. Default is 50ms.
      */
     public int costThreshold = 50;
 
     /**
-     * 构造函数，初始化StartupReporter
+     * Constructs a new {@code StartupReporter} instance. Initializes startup metrics and loads
+     * {@link BeanMetricsCustomizer} implementations from Spring factories.
      */
     public StartupReporter() {
         this.statics = new StartupMetrics();
@@ -107,13 +111,10 @@ public class StartupReporter {
     }
 
     /**
-     * 将环境绑定到{@link StartupReporter}
-     * <p>
-     * 通过Spring的Binder机制，将环境配置中以"bus.startup"为前缀的属性绑定到当前实例
-     * </p>
+     * Binds environment properties prefixed with "bus.startup" to this {@code StartupReporter} instance.
      *
-     * @param environment 要绑定的环境
-     * @throws IllegalStateException 如果绑定过程中发生异常
+     * @param environment The environment to bind from.
+     * @throws IllegalStateException if an error occurs during binding.
      */
     public void bindToStartupReporter(ConfigurableEnvironment environment) {
         try {
@@ -124,18 +125,18 @@ public class StartupReporter {
     }
 
     /**
-     * 设置应用程序名称
+     * Sets the application name in the startup statistics.
      *
-     * @param appName 应用程序名称
+     * @param appName The name of the application.
      */
     public void setAppName(String appName) {
         this.statics.setAppName(appName);
     }
 
     /**
-     * 结束应用程序启动
+     * Marks the application boot as finished.
      * <p>
-     * 设置应用程序启动耗时，并对所有阶段统计信息按开始时间进行排序
+     * Calculates the total application boot elapsed time and sorts all collected stage statistics by their start time.
      * </p>
      */
     public void applicationBootFinish() {
@@ -149,19 +150,19 @@ public class StartupReporter {
     }
 
     /**
-     * 添加要报告的普通启动状态
+     * Adds a common startup statistic to the collection.
      *
-     * @param stat 增加的启动状态
+     * @param stat The {@link BaseMetrics} object representing a startup stage.
      */
     public void addCommonStartupStat(BaseMetrics stat) {
         statics.getStageStats().add(stat);
     }
 
     /**
-     * 按名称查找启动统计中报告的阶段
+     * Finds a reported startup stage by its name.
      *
-     * @param stageName 阶段名称
-     * @return 报告的对象，当找不到对象时返回null
+     * @param stageName The name of the stage to find.
+     * @return The {@link BaseMetrics} object if found, otherwise {@code null}.
      */
     public BaseMetrics getStageNyName(String stageName) {
         return statics.getStageStats().stream()
@@ -169,12 +170,13 @@ public class StartupReporter {
     }
 
     /**
-     * 从模型中提取阶段并返回{@link StartupMetrics}
+     * Drains and returns all collected startup statistics.
      * <p>
-     * 创建一个新的StartupMetrics实例，复制当前实例的数据，并清空当前实例的阶段统计列表
+     * Creates a new {@link StartupMetrics} instance, copies the current instance's data, and then clears the current
+     * instance's stage statistics list.
      * </p>
      *
-     * @return 包含所有启动统计信息的新实例
+     * @return A new {@link StartupMetrics} instance containing all collected startup statistics.
      */
     public StartupMetrics drainStartupStatics() {
         StartupMetrics startupReporterStatics = new StartupMetrics();
@@ -192,13 +194,15 @@ public class StartupReporter {
     }
 
     /**
-     * 转换 {@link BufferingApplicationStartup} 到 {@link BeanMetrics} 列表
+     * Generates a list of {@link BeanMetrics} from the {@link BufferingApplicationStartup} data.
      * <p>
-     * 从应用程序上下文中获取BufferingApplicationStartup，并将其中的启动事件转换为BeanMetrics列表。 转换过程中会构建Bean的层级关系，并根据成本阈值过滤掉部分统计信息。
+     * This method extracts startup events from the application context's {@link BufferingApplicationStartup}, converts
+     * them into {@link BeanMetrics}, builds their hierarchical relationships, and filters statistics based on the
+     * {@link #costThreshold}.
      * </p>
      *
-     * @param context 可配置的应用程序上下文
-     * @return Bean指标列表
+     * @param context The configurable application context.
+     * @return A list of {@link BeanMetrics} representing the bean initialization statistics.
      */
     public List<BeanMetrics> generateBeanStats(ConfigurableApplicationContext context) {
         List<BeanMetrics> rootBeanList = new ArrayList<>();
@@ -206,30 +210,30 @@ public class StartupReporter {
         if (applicationStartup instanceof BufferingApplicationStartup bufferingApplicationStartup) {
             Map<Long, BeanMetrics> beanStatIdMap = new HashMap<>();
             StartupTimeline startupTimeline = bufferingApplicationStartup.drainBufferedTimeline();
-            // 获取所有启动事件
+            // Get all startup events
             List<StartupTimeline.TimelineEvent> timelineEvents = startupTimeline.getEvents();
-            // 将启动事件转换为Bean统计
+            // Convert startup events to Bean statistics
             timelineEvents.forEach(timelineEvent -> {
                 BeanMetrics bean = eventToBeanStat(timelineEvent);
                 rootBeanList.add(bean);
                 beanStatIdMap.put(timelineEvent.getStartupStep().getId(), bean);
             });
-            // 构建状态树
+            // Build the state tree
             timelineEvents.forEach(timelineEvent -> {
                 BeanMetrics parentBean = beanStatIdMap.get(timelineEvent.getStartupStep().getParentId());
                 BeanMetrics bean = beanStatIdMap.get(timelineEvent.getStartupStep().getId());
                 if (parentBean != null) {
-                    // 父节点实际成本减去子节点
+                    // Parent node's actual cost subtracts child node's cost
                     parentBean.setRealRefreshElapsedTime(parentBean.getRealRefreshElapsedTime() - bean.getCost());
-                    // 从根列表中移除子节点
+                    // Remove child node from the root list
                     rootBeanList.remove(bean);
-                    // 如果子列表开销大于阈值，则将其放到父节点的子列表中
+                    // If the child's cost is greater than the threshold, add it to the parent's child list
                     if (filterBeanInitializeByCost(bean)) {
                         parentBean.addChild(bean);
                         customBeanStat(context, bean);
                     }
                 } else {
-                    // 如果根节点小于阈值，则移除根节点
+                    // If the root node's cost is less than the threshold, remove it from the root list
                     if (!filterBeanInitializeByCost(bean)) {
                         rootBeanList.remove(bean);
                     } else {
@@ -242,13 +246,14 @@ public class StartupReporter {
     }
 
     /**
-     * 根据成本阈值过滤Bean初始化统计
+     * Filters bean initialization statistics based on a cost threshold.
      * <p>
-     * 对于特定类型的Bean（如实例化、后处理器、配置类增强），只有当其成本超过阈值时才保留
+     * For specific bean types (instantiation, post-processors, config class enhancements), a bean is retained only if
+     * its cost exceeds the configured {@link #costThreshold}.
      * </p>
      *
-     * @param bean Bean指标
-     * @return 如果应该保留则返回true，否则返回false
+     * @param bean The {@link BeanMetrics} to filter.
+     * @return {@code true} if the bean should be retained, {@code false} otherwise.
      */
     private boolean filterBeanInitializeByCost(BeanMetrics bean) {
         String name = bean.getType();
@@ -261,13 +266,15 @@ public class StartupReporter {
     }
 
     /**
-     * 将启动时间线事件转换为Bean指标
+     * Converts a {@link StartupTimeline.TimelineEvent} to a {@link BeanMetrics} object.
      * <p>
-     * 从时间线事件中提取时间信息、类型、名称和标签，构建BeanMetrics对象
+     * Extracts time information, type, name, and tags from the timeline event to construct a {@link BeanMetrics}
+     * object. Special handling is applied for bean instantiation and context post-processor types to extract the
+     * correct bean name.
      * </p>
      *
-     * @param timelineEvent 启动时间线事件
-     * @return 转换后的Bean指标
+     * @param timelineEvent The startup timeline event.
+     * @return The converted {@link BeanMetrics} object.
      */
     private BeanMetrics eventToBeanStat(StartupTimeline.TimelineEvent timelineEvent) {
         BeanMetrics bean = new BeanMetrics();
@@ -293,11 +300,11 @@ public class StartupReporter {
     }
 
     /**
-     * 从标签中获取指定键的值
+     * Extracts the value associated with a given key from a collection of {@link StartupStep.Tags}.
      *
-     * @param tags 标签集合
-     * @param key  要查找的键
-     * @return 找到的值，如果找不到则返回null
+     * @param tags The collection of tags.
+     * @param key  The key to search for.
+     * @return The value of the tag if found, otherwise {@code null}.
      */
     private String getValueFromTags(StartupStep.Tags tags, String key) {
         for (StartupStep.Tag tag : tags) {
@@ -309,14 +316,15 @@ public class StartupReporter {
     }
 
     /**
-     * 自定义Bean指标
+     * Customizes a {@link BeanMetrics} object, particularly for bean instantiation types.
      * <p>
-     * 对于Bean实例化类型的指标，获取对应的Bean实例，并应用所有注册的自定义器进行处理
+     * For bean instantiation metrics, it retrieves the actual bean instance from the context and applies all registered
+     * {@link BeanMetricsCustomizer}s to further enrich the metrics.
      * </p>
      *
-     * @param context  可配置的应用程序上下文
-     * @param beanStat Bean指标
-     * @return 自定义处理后的Bean指标
+     * @param context  The configurable application context.
+     * @param beanStat The {@link BeanMetrics} to customize.
+     * @return The customized {@link BeanMetrics} object.
      */
     private BeanMetrics customBeanStat(ConfigurableApplicationContext context, BeanMetrics beanStat) {
         if (!context.isActive()) {

@@ -36,32 +36,59 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.ErrorCode;
 
 /**
- * 企业微信 二维码登录
+ * WeChat Enterprise QR code login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WeChatEeQrcodeProvider extends AbstractWeChatEeProvider {
 
+    /**
+     * Constructs a {@code WeChatEeQrcodeProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public WeChatEeQrcodeProvider(Context context) {
         super(context, Registry.WECHAT_EE);
     }
 
+    /**
+     * Constructs a {@code WeChatEeQrcodeProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public WeChatEeQrcodeProvider(Context context, CacheX cache) {
         super(context, Registry.WECHAT_EE, cache);
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(complex.authorize()).queryParam("login_type", context.getLoginType())
-                // 登录类型为企业自建应用/服务商代开发应用时填企业 CorpID，第三方登录时填登录授权 SuiteID
+                // When login_type is CorpApp/Service Provider developed app, fill in Enterprise CorpID; when
+                // third-party login, fill in Login Authorization SuiteID
                 .queryParam("appid", context.getAppKey())
-                // 企业自建应用/服务商代开发应用 AgentID，当login_type=CorpApp时填写
+                // Enterprise self-built application/service provider developed app AgentID, filled when
+                // login_type=CorpApp
                 .queryParam("agentid", context.getUnionId()).queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("state", getRealState(state)).queryParam("lang", context.getLang()).build()
                 .concat("#wechat_redirect");
     }
 
+    /**
+     * Checks the completeness and validity of the context configuration for WeChat Enterprise QR code login.
+     * Specifically, it ensures that if the login type is "CorpApp", the agent ID (unionId) is not empty.
+     *
+     * @param context the authentication context
+     * @throws AuthorizedException if the agent ID is empty for "CorpApp" login type
+     */
     @Override
     protected void check(Context context) {
         super.check(context);

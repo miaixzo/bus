@@ -33,7 +33,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注解: 用于在输出到CLI表或Excel/CSV等时为字段/getter提供标签.
+ * Provides a descriptive label for a field or getter method, which is useful when exporting data to formats like CLI
+ * tables, Excel spreadsheets, or CSV files. The label can be used as a human-readable column header instead of the
+ * programmatic field name.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,9 +45,9 @@ import java.lang.annotation.Target;
 public @interface Label {
 
     /**
-     * 指定的标签
+     * The label to be assigned to the annotated field or getter method.
      *
-     * @return 字段或getter方法的标签
+     * @return The label text.
      */
     String value();
 

@@ -31,7 +31,8 @@ import java.io.Serial;
 import java.util.Map;
 
 /**
- * JWT头部信息
+ * JWT Header information. This class extends {@link Claims} to specifically handle the header part of a JSON Web Token,
+ * defining standard header parameters like algorithm, type, content type, and key ID.
  * 
  * @author Kimi Liu
  * @since Java 17+
@@ -42,27 +43,28 @@ public class JWTHeader extends Claims {
     private static final long serialVersionUID = 2852289258085L;
 
     /**
-     * 加密算法，通常为HMAC SHA256（HS256）
+     * The cryptographic algorithm used for signing or encrypting the JWT. Commonly used values include "HS256" (HMAC
+     * SHA256).
      */
     public static String ALGORITHM = "alg";
     /**
-     * 声明类型，一般为jwt
+     * The type of the token, typically "JWT".
      */
     public static String TYPE = "typ";
     /**
-     * 内容类型（content type）
+     * The content type of the JWT.
      */
     public static String CONTENT_TYPE = "cty";
     /**
-     * jwk的ID编号
+     * The Key ID (kid) parameter, used to hint which key was used to secure the JWS.
      */
     public static String KEY_ID = "kid";
 
     /**
-     * 增加“alg”头信息
+     * Adds the "alg" (algorithm) header parameter.
      *
-     * @param algorithm 算法ID，如HS265
-     * @return this
+     * @param algorithm the algorithm ID, e.g., "HS256"
+     * @return this {@link JWTHeader} instance
      */
     public JWTHeader setAlgorithm(final String algorithm) {
         setClaim(ALGORITHM, algorithm);
@@ -70,10 +72,10 @@ public class JWTHeader extends Claims {
     }
 
     /**
-     * 增加“typ”头信息
+     * Adds the "typ" (type) header parameter.
      *
-     * @param type 类型，如JWT
-     * @return this
+     * @param type the type, e.g., "JWT"
+     * @return this {@link JWTHeader} instance
      */
     public JWTHeader setType(final String type) {
         setClaim(TYPE, type);
@@ -81,10 +83,10 @@ public class JWTHeader extends Claims {
     }
 
     /**
-     * 增加“cty”头信息
+     * Adds the "cty" (content type) header parameter.
      *
-     * @param contentType 内容类型
-     * @return this
+     * @param contentType the content type
+     * @return this {@link JWTHeader} instance
      */
     public JWTHeader setContentType(final String contentType) {
         setClaim(CONTENT_TYPE, contentType);
@@ -92,10 +94,10 @@ public class JWTHeader extends Claims {
     }
 
     /**
-     * 增加“kid”头信息
+     * Adds the "kid" (key ID) header parameter.
      *
-     * @param keyId kid
-     * @return this
+     * @param keyId the Key ID
+     * @return this {@link JWTHeader} instance
      */
     public JWTHeader setKeyId(final String keyId) {
         setClaim(KEY_ID, keyId);
@@ -103,10 +105,10 @@ public class JWTHeader extends Claims {
     }
 
     /**
-     * 增加自定义JWT认证头
+     * Adds multiple custom JWT authentication headers.
      *
-     * @param headerClaims 头信息
-     * @return this
+     * @param headerClaims a map containing multiple header claims to add
+     * @return this {@link JWTHeader} instance
      */
     public JWTHeader addHeaders(final Map<String, ?> headerClaims) {
         putAll(headerClaims);

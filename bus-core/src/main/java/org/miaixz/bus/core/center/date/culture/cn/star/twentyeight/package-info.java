@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 二十八宿
+ * Provides classes related to the Twenty-Eight Mansions (二十八宿), a system of lunar mansions used in Chinese astronomy
+ * and astrology.
  *
  * @author Kimi Liu
  * @since Java 17+

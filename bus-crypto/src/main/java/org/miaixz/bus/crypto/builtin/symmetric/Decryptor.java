@@ -37,11 +37,11 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 
 /**
- * 对称解密器接口，提供：
+ * Symmetric decryptor interface, providing:
  * <ul>
- * <li>从bytes解密</li>
- * <li>从Hex(16进制)解密</li>
- * <li>从Base64解密</li>
+ * <li>Decrypt from bytes</li>
+ * <li>Decrypt from Hex (hexadecimal)</li>
+ * <li>Decrypt from Base64</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -50,102 +50,104 @@ import org.miaixz.bus.crypto.Builder;
 public interface Decryptor {
 
     /**
-     * 解密
+     * Decrypts the given byte array.
      *
-     * @param bytes 被解密的bytes
-     * @return 解密后的bytes
+     * @param bytes The byte array to be decrypted.
+     * @return The decrypted byte array.
      */
     byte[] decrypt(byte[] bytes);
 
     /**
-     * 解密，针对大数据量，结束后不关闭流
+     * Decrypts data from an input stream and writes it to an output stream. This method is designed for large amounts
+     * of data and does not close the streams upon completion.
      *
-     * @param data    加密的字符串
-     * @param out     输出流，可以是文件或网络位置
-     * @param isClose 是否关闭流，包括输入和输出流
-     * @throws InternalException IO异常
+     * @param data    The input stream containing the encrypted data.
+     * @param out     The output stream to write the decrypted data to, which can be a file or a network location.
+     * @param isClose Whether to close both the input and output streams after the operation.
+     * @throws InternalException if an I/O error occurs.
      */
     void decrypt(InputStream data, OutputStream out, boolean isClose);
 
     /**
-     * 解密为字符串
+     * Decrypts a byte array into a string using the specified charset.
      *
-     * @param bytes   被解密的bytes
-     * @param charset 解密后的charset
-     * @return 解密后的String
+     * @param bytes   The byte array to be decrypted.
+     * @param charset The charset to use for decoding the decrypted bytes.
+     * @return The decrypted string.
      */
     default String decryptString(final byte[] bytes, final java.nio.charset.Charset charset) {
         return StringKit.toString(decrypt(bytes), charset);
     }
 
     /**
-     * 解密为字符串，默认UTF-8编码
+     * Decrypts a byte array into a string using the default UTF-8 charset.
      *
-     * @param bytes 被解密的bytes
-     * @return 解密后的String
+     * @param bytes The byte array to be decrypted.
+     * @return The decrypted string.
      */
     default String decryptString(final byte[] bytes) {
         return decryptString(bytes, Charset.UTF_8);
     }
 
     /**
-     * 解密Hex（16进制）或Base64表示的字符串
+     * Decrypts a string that is either Hex (hexadecimal) or Base64 encoded.
      *
-     * @param data 被解密的String，必须为16进制字符串或Base64表示形式
-     * @return 解密后的bytes
+     * @param data The string to be decrypted, must be in Hex or Base64 format.
+     * @return The decrypted byte array.
      */
     default byte[] decrypt(final String data) {
         return decrypt(Builder.decode(data));
     }
 
     /**
-     * 解密Hex（16进制）或Base64表示的字符串
+     * Decrypts a Hex (hexadecimal) or Base64 encoded string into a string using the specified charset.
      *
-     * @param data    被解密的String
-     * @param charset 解密后的charset
-     * @return 解密后的String
+     * @param data    The string to be decrypted.
+     * @param charset The charset to use for the resulting string.
+     * @return The decrypted string.
      */
     default String decryptString(final String data, final java.nio.charset.Charset charset) {
         return StringKit.toString(decrypt(data), charset);
     }
 
     /**
-     * 解密Hex（16进制）或Base64表示的字符串，默认UTF-8编码
+     * Decrypts a Hex (hexadecimal) or Base64 encoded string into a string using the default UTF-8 charset.
      *
-     * @param data 被解密的String
-     * @return 解密后的String
+     * @param data The string to be decrypted.
+     * @return The decrypted string.
      */
     default String decryptString(final String data) {
         return decryptString(data, Charset.UTF_8);
     }
 
     /**
-     * 解密，会关闭流
+     * Decrypts data from an input stream. This method closes the stream after reading.
      *
-     * @param data 被解密的bytes
-     * @return 解密后的bytes
-     * @throws InternalException IO异常
+     * @param data The input stream containing the data to be decrypted.
+     * @return The decrypted byte array.
+     * @throws InternalException if an I/O error occurs.
      */
     default byte[] decrypt(final InputStream data) throws InternalException {
         return decrypt(IoKit.readBytes(data));
     }
 
     /**
-     * 解密，不会关闭流
+     * Decrypts data from an input stream into a string using the specified charset. This method does not close the
+     * stream.
      *
-     * @param data    被解密的InputStream
-     * @param charset 解密后的charset
-     * @return 解密后的String
+     * @param data    The input stream to be decrypted.
+     * @param charset The charset to use for the resulting string.
+     * @return The decrypted string.
      */
     default String decryptString(final InputStream data, final java.nio.charset.Charset charset) {
         return StringKit.toString(decrypt(data), charset);
     }
 
     /**
-     * 解密
+     * Decrypts data from an input stream into a string using the default UTF-8 charset.
      *
-     * @param data 被解密的InputStream
-     * @return 解密后的String
+     * @param data The input stream to be decrypted.
+     * @return The decrypted string.
      */
     default String decryptString(final InputStream data) {
         return decryptString(data, Charset.UTF_8);

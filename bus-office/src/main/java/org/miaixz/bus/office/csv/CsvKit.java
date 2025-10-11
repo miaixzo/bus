@@ -33,7 +33,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**
- * CSV工具
+ * Utility class for CSV operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,99 +41,99 @@ import java.nio.charset.Charset;
 public class CsvKit {
 
     /**
-     * 获取CSV读取器，调用此方法创建的Reader须自行指定读取的资源
+     * Gets a CSV reader. The caller must specify the resource to read from.
      *
-     * @param config 配置, 允许为空.
-     * @return {@link CsvReader}
+     * @param config Configuration for the CSV reader, may be {@code null} for default configuration.
+     * @return A new {@link CsvReader} instance.
      */
     public static CsvReader getReader(final CsvReadConfig config) {
         return new CsvReader(config);
     }
 
     /**
-     * 获取CSV读取器，调用此方法创建的Reader须自行指定读取的资源
+     * Gets a CSV reader with default configuration. The caller must specify the resource to read from.
      *
-     * @return {@link CsvReader}
+     * @return A new {@link CsvReader} instance.
      */
     public static CsvReader getReader() {
         return new CsvReader();
     }
 
     /**
-     * 获取CSV读取器
+     * Gets a CSV reader for the given {@link Reader} and configuration.
      *
-     * @param reader {@link Reader}
-     * @param config 配置, {@code null}表示默认配置
-     * @return {@link CsvReader}
+     * @param reader The {@link Reader} to read CSV data from.
+     * @param config Configuration for the CSV reader, may be {@code null} for default configuration.
+     * @return A new {@link CsvReader} instance.
      */
     public static CsvReader getReader(final Reader reader, final CsvReadConfig config) {
         return new CsvReader(reader, config);
     }
 
     /**
-     * 获取CSV读取器
+     * Gets a CSV reader for the given {@link Reader} with default configuration.
      *
-     * @param reader {@link Reader}
-     * @return {@link CsvReader}
+     * @param reader The {@link Reader} to read CSV data from.
+     * @return A new {@link CsvReader} instance.
      */
     public static CsvReader getReader(final Reader reader) {
         return getReader(reader, null);
     }
 
     /**
-     * 获取CSV生成器（写出器），使用默认配置，覆盖已有文件（如果存在）
+     * Gets a CSV writer with default configuration, overwriting the file if it exists.
      *
-     * @param filePath File CSV文件路径
-     * @param charset  编码
-     * @return {@link CsvWriter}
+     * @param filePath The path to the CSV file.
+     * @param charset  The character set to use for writing.
+     * @return A new {@link CsvWriter} instance.
      */
     public static CsvWriter getWriter(final String filePath, final Charset charset) {
         return new CsvWriter(filePath, charset);
     }
 
     /**
-     * 获取CSV生成器（写出器），使用默认配置，覆盖已有文件（如果存在）
+     * Gets a CSV writer with default configuration, overwriting the file if it exists.
      *
-     * @param file    File CSV文件
-     * @param charset 编码
-     * @return {@link CsvWriter}
+     * @param file    The CSV file.
+     * @param charset The character set to use for writing.
+     * @return A new {@link CsvWriter} instance.
      */
     public static CsvWriter getWriter(final File file, final Charset charset) {
         return new CsvWriter(file, charset);
     }
 
     /**
-     * 获取CSV生成器（写出器），使用默认配置
+     * Gets a CSV writer with default configuration.
      *
-     * @param filePath File CSV文件路径
-     * @param charset  编码
-     * @param isAppend 是否追加
-     * @return {@link CsvWriter}
+     * @param filePath The path to the CSV file.
+     * @param charset  The character set to use for writing.
+     * @param isAppend {@code true} to append to the file if it exists, {@code false} to overwrite.
+     * @return A new {@link CsvWriter} instance.
      */
     public static CsvWriter getWriter(final String filePath, final Charset charset, final boolean isAppend) {
         return new CsvWriter(filePath, charset, isAppend);
     }
 
     /**
-     * 获取CSV生成器（写出器），使用默认配置
+     * Gets a CSV writer with default configuration.
      *
-     * @param file     File CSV文件
-     * @param charset  编码
-     * @param isAppend 是否追加
-     * @return {@link CsvWriter}
+     * @param file     The CSV file.
+     * @param charset  The character set to use for writing.
+     * @param isAppend {@code true} to append to the file if it exists, {@code false} to overwrite.
+     * @return A new {@link CsvWriter} instance.
      */
     public static CsvWriter getWriter(final File file, final Charset charset, final boolean isAppend) {
         return new CsvWriter(file, charset, isAppend);
     }
 
     /**
-     * 获取CSV生成器（写出器）
+     * Gets a CSV writer.
      *
-     * @param file     File CSV文件
-     * @param charset  编码
-     * @param isAppend 是否追加
-     * @param config   写出配置，null则使用默认配置
-     * @return {@link CsvWriter}
+     * @param file     The CSV file.
+     * @param charset  The character set to use for writing.
+     * @param isAppend {@code true} to append to the file if it exists, {@code false} to overwrite.
+     * @param config   Write configuration, {@code null} for default configuration.
+     * @return A new {@link CsvWriter} instance.
      */
     public static CsvWriter getWriter(
             final File file,
@@ -144,21 +144,21 @@ public class CsvKit {
     }
 
     /**
-     * 获取CSV生成器（写出器）
+     * Gets a CSV writer for the given {@link Writer} with default configuration.
      *
-     * @param writer Writer
-     * @return {@link CsvWriter}
+     * @param writer The {@link Writer} to write CSV data to.
+     * @return A new {@link CsvWriter} instance.
      */
     public static CsvWriter getWriter(final Writer writer) {
         return new CsvWriter(writer);
     }
 
     /**
-     * 获取CSV生成器（写出器）
+     * Gets a CSV writer for the given {@link Writer} and configuration.
      *
-     * @param writer Writer
-     * @param config 写出配置，null则使用默认配置
-     * @return {@link CsvWriter}
+     * @param writer The {@link Writer} to write CSV data to.
+     * @param config Write configuration, {@code null} for default configuration.
+     * @return A new {@link CsvWriter} instance.
      */
     public static CsvWriter getWriter(final Writer writer, final CsvWriteConfig config) {
         return new CsvWriter(writer, config);

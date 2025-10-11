@@ -34,7 +34,8 @@ import java.io.Serializable;
 import org.apache.poi.sl.usermodel.ShapeType;
 
 /**
- * 形状配置 用于在Excel中定义形状的样式，包括形状类型、线条样式、线条宽度、线条颜色、填充颜色等
+ * Shape configuration, used to define the style of shapes in Excel, including shape type, line style, line width, line
+ * color, fill color, etc.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,49 +46,49 @@ public class ShapeConfig implements Serializable {
     private static final long serialVersionUID = 2852286218800L;
 
     /**
-     * 形状类型，如矩形、圆形等，默认直线
+     * The type of the shape, such as rectangle, circle, etc. Default is a line.
      */
     private ShapeType shapeType = ShapeType.LINE;
     /**
-     * 线条样式，如实线、虚线等，默认实线
+     * The line style, such as solid, dashed, etc. Default is solid.
      */
     private LineStyle lineStyle = LineStyle.SOLID;
     /**
-     * 线条宽度，以磅为单位
+     * The width of the line, in points.
      */
     private int lineWidth = 1;
     /**
-     * 线条颜色
+     * The color of the line.
      */
     private Color lineColor = Color.BLACK;
     /**
-     * 填充颜色，{@code null表示不填充}
+     * The fill color. {@code null} indicates no filling.
      */
     private Color fillColor;
 
     /**
-     * 创建一个形状配置
+     * Creates a new shape configuration instance.
      *
-     * @return this
+     * @return A new {@code ShapeConfig} instance.
      */
     public static ShapeConfig of() {
         return new ShapeConfig();
     }
 
     /**
-     * 获取形状类型
+     * Gets the shape type.
      *
-     * @return 形状类型
+     * @return The {@link ShapeType}.
      */
     public ShapeType getShapeType() {
         return shapeType;
     }
 
     /**
-     * 设置形状类型
+     * Sets the shape type.
      *
-     * @param shapeType 形状类型
-     * @return 当前形状配置对象，用于链式调用
+     * @param shapeType The {@link ShapeType} to set.
+     * @return This {@code ShapeConfig} instance, for chaining.
      */
     public ShapeConfig setShapeType(final ShapeType shapeType) {
         this.shapeType = shapeType;
@@ -95,19 +96,19 @@ public class ShapeConfig implements Serializable {
     }
 
     /**
-     * 获取线条样式
+     * Gets the line style.
      *
-     * @return 线条样式
+     * @return The {@link LineStyle}.
      */
     public LineStyle getLineStyle() {
         return lineStyle;
     }
 
     /**
-     * 设置线条样式
+     * Sets the line style.
      *
-     * @param lineStyle 线条样式
-     * @return 当前形状配置对象，用于链式调用
+     * @param lineStyle The {@link LineStyle} to set.
+     * @return This {@code ShapeConfig} instance, for chaining.
      */
     public ShapeConfig setLineStyle(final LineStyle lineStyle) {
         this.lineStyle = lineStyle;
@@ -115,19 +116,19 @@ public class ShapeConfig implements Serializable {
     }
 
     /**
-     * 获取线条宽度
+     * Gets the line width.
      *
-     * @return 线条宽度，以磅为单位
+     * @return The line width in points.
      */
     public int getLineWidth() {
         return lineWidth;
     }
 
     /**
-     * 设置线条宽度
+     * Sets the line width.
      *
-     * @param lineWidth 线条宽度，以磅为单位
-     * @return 当前形状配置对象，用于链式调用
+     * @param lineWidth The line width in points.
+     * @return This {@code ShapeConfig} instance, for chaining.
      */
     public ShapeConfig setLineWidth(final int lineWidth) {
         this.lineWidth = lineWidth;
@@ -135,19 +136,19 @@ public class ShapeConfig implements Serializable {
     }
 
     /**
-     * 获取线条颜色
+     * Gets the line color.
      *
-     * @return 线条颜色
+     * @return The {@link Color} of the line.
      */
     public Color getLineColor() {
         return lineColor;
     }
 
     /**
-     * 设置线条颜色
+     * Sets the line color.
      *
-     * @param lineColor 线条颜色
-     * @return 当前形状配置对象，用于链式调用
+     * @param lineColor The {@link Color} to set for the line.
+     * @return This {@code ShapeConfig} instance, for chaining.
      */
     public ShapeConfig setLineColor(final Color lineColor) {
         this.lineColor = lineColor;
@@ -155,19 +156,19 @@ public class ShapeConfig implements Serializable {
     }
 
     /**
-     * 获取填充颜色，{@code null表示不填充}
+     * Gets the fill color. {@code null} indicates no filling.
      *
-     * @return 填充颜色，{@code null表示不填充}
+     * @return The {@link Color} of the fill, or {@code null} if no filling.
      */
     public Color getFillColor() {
         return fillColor;
     }
 
     /**
-     * 设置填充颜色，{@code null表示不填充}
+     * Sets the fill color. {@code null} indicates no filling.
      *
-     * @param fillColor 填充颜色，{@code null表示不填充}
-     * @return 当前形状配置对象，用于链式调用
+     * @param fillColor The {@link Color} to set for the fill, or {@code null} for no filling.
+     * @return This {@code ShapeConfig} instance, for chaining.
      */
     public ShapeConfig setFillColor(final Color fillColor) {
         this.fillColor = fillColor;

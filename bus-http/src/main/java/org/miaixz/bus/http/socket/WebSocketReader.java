@@ -27,82 +27,82 @@
 */
 package org.miaixz.bus.http.socket;
 
-import java.io.IOException;
-import java.net.ProtocolException;
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Normal;
 
+import java.io.IOException;
+import java.net.ProtocolException;
+import java.util.concurrent.TimeUnit;
+
 /**
- * WebSocket 协议帧读取器
- * <p>
- * 用于从 WebSocket 数据源读取和解析协议帧，支持控制帧（如 ping、pong、close）和消息帧（文本或二进制）。 此类非线程安全，需在单一线程中操作。
- * </p>
+ * 
+ * A reader for WebSocket protocol frames. This class parses frames from a source, handling control frames (ping, pong,
+ * close) and message frames (text, binary). This class is not thread-safe and must be operated from a single thread.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class WebSocketReader {
+public final class WebSocketReader {
 
     /**
-     * 是否为客户端
+     * True if this is a client-side reader.
      */
     final boolean isClient;
     /**
-     * 数据源
+     * The source from which to read frames.
      */
     final BufferSource source;
     /**
-     * 帧回调接口
+     * The callback for frame events.
      */
     final FrameCallback frameCallback;
     /**
-     * 控制帧缓冲区
+     * A buffer for reading control frames.
      */
     private final Buffer controlFrameBuffer = new Buffer();
     /**
-     * 消息帧缓冲区
+     * A buffer for reading message frames.
      */
     private final Buffer messageFrameBuffer = new Buffer();
     /**
-     * 掩码密钥
+     * The mask key for unmasking client frames. Only used on the server side.
      */
     private final byte[] maskKey;
     /**
-     * 掩码游标
+     * A cursor for efficiently applying the mask. Only used on the server side.
      */
     private final Buffer.UnsafeCursor maskCursor;
     /**
-     * 是否已关闭
+     * True if the reader has been closed.
      */
     boolean closed;
     /**
-     * 操作码
+     * The opcode of the current frame.
      */
     int opcode;
     /**
-     * 帧长度
+     * The length of the current frame.
      */
     long frameLength;
     /**
-     * 是否为最终帧
+     * True if the current frame is the final frame of a message.
      */
     boolean isFinalFrame;
     /**
-     * 是否为控制帧
+     * True if the current frame is a control frame.
      */
     boolean isControlFrame;
 
     /**
-     * 构造函数，初始化 WebSocketReader 实例
+     * 
+     * Constructs a new WebSocketReader.
      *
-     * @param isClient      是否为客户端
-     * @param source        数据源
-     * @param frameCallback 帧回调接口
-     * @throws NullPointerException 如果 source 或 frameCallback 为 null
+     * @param isClient      True if this is a client-side reader.
+     * @param source        The data source.
+     * @param frameCallback The callback for frame events.
+     * @throws NullPointerException if source or frameCallback is null.
      */
     WebSocketReader(boolean isClient, BufferSource source, FrameCallback frameCallback) {
         if (source == null)
@@ -113,18 +113,16 @@ public class WebSocketReader {
         this.source = source;
         this.frameCallback = frameCallback;
 
-        // Masks are only a concern for server writers.
         maskKey = isClient ? null : new byte[4];
         maskCursor = isClient ? null : new Buffer.UnsafeCursor();
     }
 
     /**
-     * 处理下一个协议帧
-     * <p>
-     * 对于控制帧，调用一次 {@link FrameCallback} 方法。 对于消息帧，调用 {@link FrameCallback#onReadMessage}，可能包含多个帧的连续消息。 控制帧可能在消息帧之间交错处理。
-     * </p>
+     * 
+     * Processes the next frame from the source. Control frames will invoke a single callback, while message frames may
+     * be delivered across multiple frames and will invoke {@link FrameCallback#onReadMessage}.
      *
-     * @throws IOException 如果读取或解析失败
+     * @throws IOException if a read or protocol error occurs.
      */
     void processNextFrame() throws IOException {
         readHeader();
@@ -136,15 +134,15 @@ public class WebSocketReader {
     }
 
     /**
-     * 读取帧头
+     * 
+     * Reads the header of the next frame.
      *
-     * @throws IOException 如果读取失败或帧头格式无效
+     * @throws IOException if a read or protocol error occurs.
      */
     private void readHeader() throws IOException {
         if (closed)
             throw new IOException("closed");
 
-        // Disable the timeout to read the first byte of a new frame.
         int b0;
         long timeoutBefore = source.timeout().timeoutNanos();
         source.timeout().clearTimeout();
@@ -203,9 +201,10 @@ public class WebSocketReader {
     }
 
     /**
-     * 读取控制帧
+     * 
+     * Reads the payload of a control frame and invokes the appropriate callback.
      *
-     * @throws IOException 如果读取失败或控制帧格式无效
+     * @throws IOException if a read or protocol error occurs.
      */
     private void readControlFrame() throws IOException {
         if (frameLength > 0) {
@@ -252,9 +251,10 @@ public class WebSocketReader {
     }
 
     /**
-     * 读取消息帧
+     * 
+     * Reads the payload of a message frame and invokes the message callback.
      *
-     * @throws IOException 如果读取失败或操作码无效
+     * @throws IOException if a read or protocol error occurs.
      */
     private void readMessageFrame() throws IOException {
         int opcode = this.opcode;
@@ -272,9 +272,10 @@ public class WebSocketReader {
     }
 
     /**
-     * 读取直到非控制帧
+     * 
+     * Skips control frames until a non-control frame is found.
      *
-     * @throws IOException 如果读取失败
+     * @throws IOException if a read error occurs.
      */
     private void readUntilNonControlFrame() throws IOException {
         while (!closed) {
@@ -287,12 +288,11 @@ public class WebSocketReader {
     }
 
     /**
-     * 读取消息体
-     * <p>
-     * 跨多个帧读取消息体，处理交错的控制帧并解码掩码数据。
-     * </p>
+     * 
+     * Reads a complete message, which may be split across multiple frames. This method handles interleaved control
+     * frames.
      *
-     * @throws IOException 如果读取失败或帧格式无效
+     * @throws IOException if a read or protocol error occurs.
      */
     private void readMessage() throws IOException {
         while (true) {
@@ -311,7 +311,7 @@ public class WebSocketReader {
             }
 
             if (isFinalFrame)
-                break; // We are exhausted and have no continuations.
+                break;
 
             readUntilNonControlFrame();
             if (opcode != WebSocketProtocol.OPCODE_CONTINUATION) {
@@ -321,45 +321,51 @@ public class WebSocketReader {
     }
 
     /**
-     * WebSocket 帧回调接口
+     * 
+     * A callback interface for WebSocket frame events.
      */
     public interface FrameCallback {
 
         /**
-         * 接收文本消息
+         * 
+         * Invoked when a text message is received.
          *
-         * @param text 文本内容
-         * @throws IOException 如果处理失败
+         * @param text The text content.
+         * @throws IOException if an error occurs during processing.
          */
         void onReadMessage(String text) throws IOException;
 
         /**
-         * 接收二进制消息
+         * 
+         * Invoked when a binary message is received.
          *
-         * @param bytes 二进制内容
-         * @throws IOException 如果处理失败
+         * @param bytes The binary content.
+         * @throws IOException if an error occurs during processing.
          */
         void onReadMessage(ByteString bytes) throws IOException;
 
         /**
-         * 接收 ping 帧
+         * 
+         * Invoked when a ping frame is received.
          *
-         * @param buffer ping 数据
+         * @param buffer The ping payload.
          */
         void onReadPing(ByteString buffer);
 
         /**
-         * 接收 pong 帧
+         * 
+         * Invoked when a pong frame is received.
          *
-         * @param buffer pong 数据
+         * @param buffer The pong payload.
          */
         void onReadPong(ByteString buffer);
 
         /**
-         * 接收 close 帧
+         * 
+         * Invoked when a close frame is received.
          *
-         * @param code   关闭代码
-         * @param reason 关闭原因
+         * @param code   The close code.
+         * @param reason The close reason.
          */
         void onReadClose(int code, String reason);
     }

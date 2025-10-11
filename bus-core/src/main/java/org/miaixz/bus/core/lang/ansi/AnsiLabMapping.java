@@ -31,7 +31,8 @@ import java.awt.*;
 import java.util.Map;
 
 /**
- * ANSI颜色和Lab颜色的对应查找表
+ * Abstract base class for mapping ANSI colors to Lab colors. This class provides functionality to find the closest
+ * {@link AnsiElement} for a given {@link LabColor} or {@link Color}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,25 +40,28 @@ import java.util.Map;
 public abstract class AnsiLabMapping {
 
     /**
-     * ANSI颜色和Lab颜色对应表
+     * A map storing the correspondence between {@link AnsiElement} and {@link LabColor}. Subclasses are expected to
+     * populate this map.
      */
     protected Map<AnsiElement, LabColor> ansiLabMap;
 
     /**
-     * 查找与给定LabColor最接近的AnsiElement颜色
+     * Looks up the {@link AnsiElement} that is closest to the given {@link Color}. The input {@link Color} is first
+     * converted to a {@link LabColor} for comparison.
      *
-     * @param color {@link LabColor}
-     * @return 最接近的Ansi4BitColor
+     * @param color The {@link Color} to find the closest {@link AnsiElement} for.
+     * @return The {@link AnsiElement} that is closest to the given color.
      */
     public AnsiElement lookupClosest(final Color color) {
         return lookupClosest(new LabColor(color));
     }
 
     /**
-     * 查找与给定LabColor最接近的AnsiElement颜色
+     * Looks up the {@link AnsiElement} that is closest to the given {@link LabColor}. The "closest" color is determined
+     * by calculating the color difference (distance) between the input color and each color in the {@link #ansiLabMap}.
      *
-     * @param color {@link LabColor}
-     * @return 最接近的Ansi4BitColor
+     * @param color The {@link LabColor} to find the closest {@link AnsiElement} for.
+     * @return The {@link AnsiElement} that is closest to the given color.
      */
     public AnsiElement lookupClosest(final LabColor color) {
         AnsiElement closest = null;

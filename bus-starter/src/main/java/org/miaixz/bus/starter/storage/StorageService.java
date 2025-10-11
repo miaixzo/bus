@@ -41,32 +41,31 @@ import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.metric.*;
 
 /**
- * 存储服务提供类，用于管理和创建各种文件存储服务提供者实例。 该类维护了一个存储组件的缓存，支持通过配置或手动注册方式添加存储组件。
- *
+ * A service provider class for managing and creating various file storage provider instances. This class maintains a
+ * cache of storage components and supports adding them through configuration or manual registration.
  * <p>
- * 该类支持多种文件存储方式，包括但不限于：
- * </p>
+ * It supports a variety of file storage methods, including but not limited to:
+ *
  * <ul>
- * <li>云存储服务：阿里云OSS、腾讯云COS、华为云OBS、亚马逊S3、七牛云、又拍云等</li>
- * <li>本地存储：本地文件系统</li>
- * <li>网络存储：FTP、SFTP、WebDAV等</li>
- * <li>代码托管存储：GitLab</li>
+ * <li>Cloud Storage Services: Aliyun OSS, Tencent COS, Huawei OBS, Amazon S3, Qiniu Cloud, Upyun, etc.</li>
+ * <li>Local Storage: Local file system</li>
+ * <li>Network Storage: FTP, SFTP, WebDAV, etc.</li>
+ * <li>Code Hosting Storage: GitLab</li>
  * </ul>
  *
  * <p>
- * 使用示例：
- * </p>
+ * <strong>Usage Example:</strong>
  * 
- * <pre>
- * // 创建配置
+ * <pre>{@code
+ * // Create configuration
  * StorageProperties properties = new StorageProperties();
- * // 创建服务
- * StorageProviderService service = new StorageProviderService(properties);
- * // 获取阿里云OSS存储服务提供者
+ * // Create the service
+ * StorageService service = new StorageService(properties);
+ * // Get the Aliyun OSS storage service provider
  * Provider ossProvider = service.require(Registry.ALIYUN);
- * // 上传文件
- * ossProvider.upload("文件路径", "文件内容");
- * </pre>
+ * // Upload a file
+ * ossProvider.upload("filePath", "fileContent");
+ * }</pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -74,105 +73,140 @@ import org.miaixz.bus.storage.metric.*;
 public class StorageService {
 
     /**
-     * 存储组件缓存，用于存储已注册的存储组件。 使用ConcurrentHashMap保证线程安全。
+     * Cache for storing registered storage component contexts. Uses {@link ConcurrentHashMap} for thread safety.
      */
-    private static Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Registry, Context> CACHE = new ConcurrentHashMap<>();
 
     /**
-     * 存储配置属性，包含各种存储组件的配置信息。
+     * Storage configuration properties, containing settings for various storage components.
      */
     public StorageProperties properties;
 
     /**
-     * 缓存接口，用于存储文件元数据等临时数据。
+     * Cache interface for storing file metadata or other temporary data.
      */
-    public CacheX CacheX;
+    public CacheX cacheX;
 
     /**
-     * 使用默认缓存创建存储服务提供者实例。
+     * Constructs a storage service provider instance with the default cache.
      *
-     * @param properties 存储配置属性，不能为null
+     * @param properties The storage configuration properties (must not be null).
      */
     public StorageService(StorageProperties properties) {
         this(properties, StorageCache.INSTANCE);
     }
 
     /**
-     * 使用指定缓存创建存储服务提供者实例。
+     * Constructs a storage service provider instance with a specified cache.
      *
-     * @param properties 存储配置属性，不能为null
-     * @param CacheX     缓存实现，不能为null
+     * @param properties The storage configuration properties (must not be null).
+     * @param cacheX     The cache implementation to use (must not be null).
      */
-    public StorageService(StorageProperties properties, CacheX CacheX) {
+    public StorageService(StorageProperties properties, CacheX cacheX) {
         this.properties = properties;
-        this.CacheX = CacheX;
+        this.cacheX = cacheX;
     }
 
     /**
-     * 注册存储组件到缓存中。 如果已存在相同类型的组件，则抛出异常。
+     * Registers a storage component in the cache. Throws an exception if a component of the same type is already
+     * registered.
      *
-     * @param type    存储组件类型，不能为null
-     * @param context 存储组件上下文，不能为null
-     * @throws InternalException 如果已存在相同类型的组件
+     * @param registry The type of the storage component (must not be null).
+     * @param context  The context of the storage component (must not be null).
+     * @throws InternalException if a component of the same type already exists.
      */
-    public static void register(Registry type, Context context) {
-        if (CACHE.containsKey(type)) {
-            throw new InternalException("重复注册同名称的组件：" + type.name());
+    public static void register(Registry registry, Context context) {
+        if (CACHE.containsKey(registry)) {
+            throw new InternalException("A component with the same name is already registered: " + registry.name());
         }
-        CACHE.putIfAbsent(type, context);
+        CACHE.putIfAbsent(registry, context);
     }
 
     /**
-     * 根据存储组件类型获取对应的存储服务提供者实例。 首先从缓存中查找，如果不存在则从配置中获取。
+     * Retrieves the corresponding storage service provider instance based on the component type. It first searches the
+     * cache; if not found, it retrieves from the configuration.
      *
-     * @param type 存储组件类型，不能为null
-     * @return 对应的存储服务提供者实例
-     * @throws InternalException 如果找不到对应的存储组件
+     * @param registry The type of the storage component (must not be null).
+     * @return The corresponding storage service provider instance.
+     * @throws InternalException if the corresponding storage component cannot be found.
      */
-    public Provider require(Registry type) {
-        // 从缓存中获取存储组件上下文
-        Context context = CACHE.get(type);
-        // 如果缓存中不存在，则从配置中获取
+    public Provider require(Registry registry) {
+        // Get the storage component context from the cache
+        Context context = CACHE.get(registry);
+        // If not in the cache, get it from the properties
         if (ObjectKit.isEmpty(context)) {
-            context = properties.getType().get(type);
+            context = properties.getType().get(registry);
         }
 
-        // 根据不同的存储类型创建对应的存储服务提供者实例
-        if (Registry.ALIYUN.equals(type)) {
-            return new AliYunOssProvider(context);
-        } else if (Registry.AMAZON.equals(type)) {
-            return new AmazonS3Provider(context);
-        } else if (Registry.BAIDU.equals(type)) {
-            return new BaiduBosProvider(context);
-        } else if (Registry.FTP.equals(type)) {
-            return new FtpFileProvider(context);
-        } else if (Registry.GITLAB.equals(type)) {
-            return new GitlabFileProvider(context);
-        } else if (Registry.GOOGLE.equals(type)) {
-            return new GoogleCsProvider(context);
-        } else if (Registry.HUAWEI.equals(type)) {
-            return new HuaweiObsProvider(context);
-        } else if (Registry.JD.equals(type)) {
-            return new JdOssProvider(context);
-        } else if (Registry.LOCAL.equals(type)) {
-            return new LocalFileProvider(context);
-        } else if (Registry.MINIO.equals(type)) {
-            return new MinioOssProvider(context);
-        } else if (Registry.QINIU.equals(type)) {
-            return new QiniuOssProvider(context);
-        } else if (Registry.TENCENT.equals(type)) {
-            return new TencentCosProvider(context);
-        } else if (Registry.SFTP.equals(type)) {
-            return new SftpFileProvider(context);
-        } else if (Registry.SMB.equals(type)) {
-            return new SmbFileProvider(context);
-        } else if (Registry.UPYUN.equals(type)) {
-            return new UpyunOssProvider(context);
-        } else if (Registry.WEBDAV.equals(type)) {
-            return new WebDavProvider(context);
+        // Create the corresponding provider instance based on the storage type
+        switch (registry) {
+            case ALIYUN:
+                return new AliYunOssProvider(context);
+
+            case AMAZON:
+                return new AmazonS3Provider(context);
+
+            case AZURE:
+                return new AzureBsProvider(context);
+
+            case BACKBLAZE_B2:
+                return new BackblazeB2Provider(context);
+
+            case BAIDU:
+                return new BaiduBosProvider(context);
+
+            case CLOUDFLARE_R2:
+                return new CloudflareR2Provider(context);
+
+            case FTP:
+                return new FtpFileProvider(context);
+
+            case S3:
+                return new GenericS3Provider(context);
+
+            case GITLAB:
+                return new GitlabFileProvider(context);
+
+            case GOOGLE:
+                return new GoogleCsProvider(context);
+
+            case HUAWEI:
+                return new HuaweiObsProvider(context);
+
+            case JD:
+                return new JdOssProvider(context);
+
+            case LOCAL:
+                return new LocalFileProvider(context);
+
+            case MINIO:
+                return new MinioOssProvider(context);
+
+            case QINIU:
+                return new QiniuOssProvider(context);
+
+            case TENCENT:
+                return new TencentCosProvider(context);
+
+            case SFTP:
+                return new SftpFileProvider(context);
+
+            case SMB:
+                return new SmbFileProvider(context);
+
+            case UPYUN:
+                return new UpyunOssProvider(context);
+
+            case WASABI:
+                return new WasabiProvider(context);
+
+            case WEBDAV:
+                return new WebDavProvider(context);
+
+            default:
+                // If no matching storage type is found, throw an exception
+                throw new InternalException(ErrorCode._100803.getValue());
         }
-        // 如果没有匹配的存储类型，抛出异常
-        throw new InternalException(ErrorCode._100803.getValue());
     }
 
 }

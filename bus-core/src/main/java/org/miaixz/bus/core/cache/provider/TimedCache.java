@@ -42,11 +42,14 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.lang.thread.lock.NoLock;
 
 /**
- * 定时缓存, 此缓存没有容量限制，对象只有在过期后才会被移除, 此缓存采用读写乐观锁，用于可脏读的场景，不能使用LinkedHashMap
+ * A cache with a timeout but no capacity limit. Objects are removed only when they expire.
+ * <p>
+ * This cache uses an optimistic locking approach, making it suitable for scenarios where dirty reads are acceptable. It
+ * is not compatible with {@link LinkedHashMap} because read operations on a {@code LinkedHashMap} can modify its
+ * internal structure, which would conflict with the locking strategy.
  *
- *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -56,44 +59,47 @@ public class TimedCache<K, V> extends LockedCache<K, V> {
     private static final long serialVersionUID = 2852232272208L;
 
     /**
-     * 正在执行的定时任务
+     * The scheduled task for the pruning job.
      */
     private ScheduledFuture<?> pruneJobFuture;
 
     /**
-     * 构造
+     * Constructs a timed cache with a specified timeout.
      *
-     * @param timeout 超时（过期）时长，单位毫秒
+     * @param timeout The timeout for cache entries in milliseconds.
      */
     public TimedCache(final long timeout) {
         this(timeout, new HashMap<>());
     }
 
     /**
-     * 构造
+     * Constructs a timed cache with a specified timeout and a custom underlying map.
      *
-     * @param timeout 过期时长
-     * @param map     存储缓存对象的map
+     * @param timeout The timeout for cache entries in milliseconds.
+     * @param map     The map to use for storing cache objects.
      */
     public TimedCache(final long timeout, final Map<Mutable<K>, CacheObject<K, V>> map) {
-        this.capacity = 0;
-        // 如果使用线程安全的Map，则不加锁，否则默认使用ReentrantLock
+        this.capacity = 0; // No capacity limit
+        this.timeout = timeout;
+        // Use NoLock for thread-safe maps, otherwise default to ReentrantLock.
         this.lock = map instanceof ConcurrentMap ? NoLock.INSTANCE : new ReentrantLock();
-        this.cacheMap = Assert.isNotInstanceOf(LinkedHashMap.class, map);
+        this.cacheMap = Assert.isNotInstanceOf(
+                LinkedHashMap.class,
+                map,
+                "LinkedHashMap is not supported for TimedCache due to its structural modification on get().");
     }
 
     /**
-     * 清理过期对象
+     * Prunes the cache by removing all expired objects.
      *
-     * @return 清理数
+     * @return The number of items pruned.
      */
     @Override
     protected int pruneCache() {
         int count = 0;
         final Iterator<CacheObject<K, V>> values = cacheObjIter();
-        CacheObject<K, V> co;
         while (values.hasNext()) {
-            co = values.next();
+            CacheObject<K, V> co = values.next();
             if (co.isExpired()) {
                 values.remove();
                 onRemove(co.key, co.object);
@@ -104,10 +110,10 @@ public class TimedCache<K, V> extends LockedCache<K, V> {
     }
 
     /**
-     * 定时清理
+     * Schedules a periodic pruning task to remove expired objects.
      *
-     * @param delay 间隔时长，单位毫秒
-     * @return this
+     * @param delay The interval in milliseconds between pruning tasks.
+     * @return This {@link TimedCache} instance.
      */
     public TimedCache<K, V> schedulePrune(final long delay) {
         this.pruneJobFuture = GlobalPruneTimer.INSTANCE.schedule(this::prune, delay);
@@ -115,7 +121,7 @@ public class TimedCache<K, V> extends LockedCache<K, V> {
     }
 
     /**
-     * 取消定时清理
+     * Cancels the scheduled pruning task.
      */
     public void cancelPruneSchedule() {
         if (null != pruneJobFuture) {

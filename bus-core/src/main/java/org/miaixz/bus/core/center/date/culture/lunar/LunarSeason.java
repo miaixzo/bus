@@ -30,31 +30,62 @@ package org.miaixz.bus.core.center.date.culture.lunar;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 农历季节
+ * Represents a season in the Lunar calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LunarSeason extends Samsara {
 
+    /**
+     * Names of lunar seasons.
+     */
     public static final String[] NAMES = { "孟春", "仲春", "季春", "孟夏", "仲夏", "季夏", "孟秋", "仲秋", "季秋", "孟冬", "仲冬", "季冬" };
 
+    /**
+     * Constructs a {@code LunarSeason} with the given index.
+     *
+     * @param index The index of the season.
+     */
     public LunarSeason(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * Constructs a {@code LunarSeason} with the given name.
+     *
+     * @param name The name of the season.
+     */
     public LunarSeason(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Creates a {@code LunarSeason} instance from the given index.
+     *
+     * @param index The index of the season.
+     * @return A new {@link LunarSeason} instance.
+     */
     public static LunarSeason fromIndex(int index) {
         return new LunarSeason(index);
     }
 
+    /**
+     * Creates a {@code LunarSeason} instance from the given name.
+     *
+     * @param name The name of the season.
+     * @return A new {@link LunarSeason} instance.
+     */
     public static LunarSeason fromName(String name) {
         return new LunarSeason(name);
     }
 
+    /**
+     * Gets the next lunar season after a specified number of seasons.
+     *
+     * @param n The number of seasons to add.
+     * @return The {@link LunarSeason} after {@code n} seasons.
+     */
     public LunarSeason next(int n) {
         return fromIndex(nextIndex(n));
     }

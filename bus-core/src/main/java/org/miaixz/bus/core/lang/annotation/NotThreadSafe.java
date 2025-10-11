@@ -30,7 +30,18 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 线程不安全安全注解
+ * A marker annotation indicating that a class or method is <strong>not</strong> thread-safe.
+ * <p>
+ * This annotation is the counterpart to {@link ThreadSafe} and serves as a clear warning that the annotated component
+ * should not be used concurrently by multiple threads without external synchronization.
+ * <ul>
+ * <li>When applied to a <strong>class</strong>, it signifies that instances of the class are not safe for concurrent
+ * access.</li>
+ * <li>When applied to a <strong>method</strong>, it signifies that the specific method is not thread-safe.</li>
+ * </ul>
+ * <p>
+ * Its primary purpose is for documentation and to be leveraged by static analysis tools to help prevent
+ * concurrency-related bugs.
  *
  * @author Kimi Liu
  * @since Java 17+

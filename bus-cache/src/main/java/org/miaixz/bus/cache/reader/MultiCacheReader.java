@@ -29,19 +29,21 @@ package org.miaixz.bus.cache.reader;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.miaixz.bus.cache.Builder;
 import org.miaixz.bus.cache.magic.AnnoHolder;
 import org.miaixz.bus.cache.magic.CacheKeys;
 import org.miaixz.bus.cache.magic.MethodHolder;
-import org.miaixz.bus.cache.support.*;
+import org.miaixz.bus.cache.support.Addables;
+import org.miaixz.bus.cache.support.PreventObjects;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
 
 /**
- * 多缓存读取器
+ * A cache reader for handling multi-key (batch) cache operations.
  * <p>
- * 用于处理多键缓存操作，支持批量读取、部分命中和全部命中场景。 能够处理Map和Collection类型的返回值，并提供缓存命中率统计功能。
+ * This class implements the logic for batch reads, handling scenarios involving partial hits, full hits, and full
+ * misses. It is capable of processing methods that return either a {@link Map} or a {@link Collection}, and it
+ * integrates with the metrics component to record hit rates.
  * </p>
  *
  * @author Kimi Liu
@@ -50,53 +52,51 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
 public class MultiCacheReader extends AbstractReader {
 
     /**
-     * 合并Map类型的结果
-     * <p>
-     * 将方法执行返回的Map与缓存命中的键值对合并，返回合并后的Map
-     * </p>
+     * Merges the results from a method invocation with cached values into a single map.
      *
-     * @param resultMapType        返回结果Map的类型
-     * @param proceedEntryValueMap 方法执行返回的Map
-     * @param key2MultiEntry       键到多参数条目的映射
-     * @param hitKeyValueMap       缓存命中的键值对
-     * @return 合并后的Map
+     * @param resultMapType        The expected type of the final result map.
+     * @param proceedEntryValueMap The map returned by the original method invocation (containing non-cached values).
+     * @param key2MultiEntry       A map from a cache key to its corresponding source entry (from the multi-key
+     *                             argument).
+     * @param hitKeyValueMap       The map of keys to values that were found in the cache.
+     * @return A new map containing the merged results.
      */
-    private static Map mergeMap(
+    private static Map<Object, Object> mergeMap(
             Class<?> resultMapType,
-            Map proceedEntryValueMap,
+            Map<Object, Object> proceedEntryValueMap,
             Map<String, Object> key2MultiEntry,
             Map<String, Object> hitKeyValueMap) {
-        Map resultMap = Addables.newMap(resultMapType, proceedEntryValueMap);
+        Map<Object, Object> resultMap = Addables.newMap(resultMapType, proceedEntryValueMap);
         mergeCacheValueToResultMap(resultMap, hitKeyValueMap, key2MultiEntry);
         return resultMap;
     }
 
     /**
-     * 将缓存命中的键值对转换为Map类型的结果
+     * Converts cache hits into a result map.
      *
-     * @param resultMapType  返回结果Map的类型
-     * @param key2MultiEntry 键到多参数条目的映射
-     * @param hitKeyValueMap 缓存命中的键值对
-     * @return 转换后的Map
+     * @param resultMapType  The expected type of the final result map.
+     * @param key2MultiEntry A map from a cache key to its corresponding source entry.
+     * @param hitKeyValueMap The map of keys to values that were found in the cache.
+     * @return A new map containing only the values from the cache.
      */
-    private static Map toMap(
+    private static Map<Object, Object> toMap(
             Class<?> resultMapType,
             Map<String, Object> key2MultiEntry,
             Map<String, Object> hitKeyValueMap) {
-        Map resultMap = Addables.newMap(resultMapType, null);
+        Map<Object, Object> resultMap = Addables.newMap(resultMapType, null);
         mergeCacheValueToResultMap(resultMap, hitKeyValueMap, key2MultiEntry);
         return resultMap;
     }
 
     /**
-     * 将缓存命中的内容合并到返回Map中
+     * Merges cached values into a result map.
      *
-     * @param resultMap      返回结果Map
-     * @param hitKeyValueMap 缓存命中的键值对
-     * @param key2MultiEntry 键到多参数条目的映射
+     * @param resultMap      The map to merge values into.
+     * @param hitKeyValueMap The map of keys to values that were found in the cache.
+     * @param key2MultiEntry A map from a cache key to its corresponding source entry.
      */
     private static void mergeCacheValueToResultMap(
-            Map resultMap,
+            Map<Object, Object> resultMap,
             Map<String, Object> hitKeyValueMap,
             Map<String, Object> key2MultiEntry) {
         for (Map.Entry<String, Object> entry : hitKeyValueMap.entrySet()) {
@@ -111,46 +111,43 @@ public class MultiCacheReader extends AbstractReader {
     }
 
     /**
-     * 合并Collection类型的结果
-     * <p>
-     * 将方法执行返回的Collection与缓存命中的值合并，返回合并后的Collection
-     * </p>
+     * Merges the results from a method invocation with cached values into a single collection.
      *
-     * @param collectionType    返回结果Collection的类型
-     * @param proceedCollection 方法执行返回的Collection
-     * @param hitKeyValueMap    缓存命中的键值对
-     * @return 合并后的Collection
+     * @param collectionType    The expected type of the final result collection.
+     * @param proceedCollection The collection returned by the original method invocation.
+     * @param hitKeyValueMap    The map of keys to values that were found in the cache.
+     * @return A new collection containing the merged results.
      */
-    private static Collection mergeCollection(
+    private static Collection<Object> mergeCollection(
             Class<?> collectionType,
-            Collection proceedCollection,
+            Collection<Object> proceedCollection,
             Map<String, Object> hitKeyValueMap) {
-        Collection resultCollection = Addables.newCollection(collectionType, proceedCollection);
+        Collection<Object> resultCollection = Addables.newCollection(collectionType, proceedCollection);
         mergeCacheValueToResultCollection(resultCollection, hitKeyValueMap);
         return resultCollection;
     }
 
     /**
-     * 将缓存命中的键值对转换为Collection类型的结果
+     * Converts cache hits into a result collection.
      *
-     * @param collectionType 返回结果Collection的类型
-     * @param hitKeyValueMap 缓存命中的键值对
-     * @return 转换后的Collection
+     * @param collectionType The expected type of the final result collection.
+     * @param hitKeyValueMap The map of keys to values that were found in the cache.
+     * @return A new collection containing only the values from the cache.
      */
-    private static Collection toCollection(Class<?> collectionType, Map<String, Object> hitKeyValueMap) {
-        Collection resultCollection = Addables.newCollection(collectionType, null);
+    private static Collection<Object> toCollection(Class<?> collectionType, Map<String, Object> hitKeyValueMap) {
+        Collection<Object> resultCollection = Addables.newCollection(collectionType, null);
         mergeCacheValueToResultCollection(resultCollection, hitKeyValueMap);
         return resultCollection;
     }
 
     /**
-     * 将缓存命中的内容合并到返回Collection中
+     * Merges cached values into a result collection.
      *
-     * @param resultCollection 返回结果Collection
-     * @param hitKeyValueMap   缓存命中的键值对
+     * @param resultCollection The collection to merge values into.
+     * @param hitKeyValueMap   The map of keys to values that were found in the cache.
      */
     private static void mergeCacheValueToResultCollection(
-            Collection resultCollection,
+            Collection<Object> resultCollection,
             Map<String, Object> hitKeyValueMap) {
         for (Object inCacheValue : hitKeyValueMap.values()) {
             if (PreventObjects.isPrevent(inCacheValue)) {
@@ -161,31 +158,33 @@ public class MultiCacheReader extends AbstractReader {
     }
 
     /**
-     * 执行缓存读取操作
+     * Executes the multi-key cache read operation.
      *
-     * @param annoHolder   注解持有者，包含缓存相关的注解信息
-     * @param methodHolder 方法持有者，包含方法相关的信息
-     * @param baseInvoker  代理调用链，用于执行原始方法
-     * @param needWrite    是否需要写入缓存
-     * @return 缓存值或方法执行结果
-     * @throws Throwable 可能抛出的异常
+     * @param annoHolder   The holder for the caching annotations.
+     * @param methodHolder The holder for method metadata.
+     * @param baseInvoker  The proxy chain invoker.
+     * @param needWrite    If {@code true}, write results to cache on miss.
+     * @return The final result, assembled from the cache and/or method invocation.
+     * @throws Throwable if the underlying method invocation throws an exception.
      */
     @Override
     public Object read(AnnoHolder annoHolder, MethodHolder methodHolder, ProxyChain baseInvoker, boolean needWrite)
             throws Throwable {
-        // 组装键
+        // 1. Generate keys
         Map[] pair = Builder.generateMultiKey(annoHolder, baseInvoker.getArguments());
         Map<String, Object> key2MultiEntry = pair[1];
-        // 请求缓存
+
+        // 2. Request from cache
         Set<String> keys = key2MultiEntry.keySet();
         CacheKeys cacheKeys = manage.readBatch(annoHolder.getCache(), keys);
         doRecord(cacheKeys, annoHolder);
+
         Object result;
-        // 有未命中键：部分命中或全部未命中
+        // 3. Handle misses (partial or full miss)
         if (!cacheKeys.getMissKeySet().isEmpty()) {
             result = handlePartHit(baseInvoker, cacheKeys, annoHolder, methodHolder, pair, needWrite);
         }
-        // 没有未命中键：全部命中或空键
+        // 4. Handle full hit
         else {
             Map<String, Object> keyValueMap = cacheKeys.getHitKeyMap();
             result = handleFullHit(baseInvoker, keyValueMap, methodHolder, key2MultiEntry);
@@ -194,16 +193,16 @@ public class MultiCacheReader extends AbstractReader {
     }
 
     /**
-     * 处理部分命中场景
+     * Handles the scenario where some, but not all, keys were found in the cache.
      *
-     * @param baseInvoker  代理调用链
-     * @param cacheKeys    缓存键集合
-     * @param annoHolder   注解持有者
-     * @param methodHolder 方法持有者
-     * @param pair         键映射对
-     * @param needWrite    是否需要写入缓存
-     * @return 处理结果
-     * @throws Throwable 可能抛出的异常
+     * @param baseInvoker  The proxy chain invoker.
+     * @param cacheKeys    The results from the initial cache read.
+     * @param annoHolder   The annotation metadata.
+     * @param methodHolder The method metadata.
+     * @param pair         The key mapping pair.
+     * @param needWrite    Flag indicating if results should be written to cache.
+     * @return The merged result.
+     * @throws Throwable if the underlying method invocation throws an exception.
      */
     private Object handlePartHit(
             ProxyChain baseInvoker,
@@ -216,33 +215,31 @@ public class MultiCacheReader extends AbstractReader {
         Map<String, Object> key2MultiEntry = pair[1];
         Set<String> missKeys = cacheKeys.getMissKeySet();
         Map<String, Object> hitKeyValueMap = cacheKeys.getHitKeyMap();
-        // 用未命中的keys调用方法
+
+        // Invoke the original method with only the arguments for the missed keys
         Object[] missArgs = toMissArgs(
                 missKeys,
                 key2MultiEntry,
                 baseInvoker.getArguments(),
                 annoHolder.getMultiIndex());
         Object proceed = doLogInvoke(() -> baseInvoker.proceed(missArgs));
+
         Object result;
         if (null != proceed) {
             Class<?> returnType = proceed.getClass();
             methodHolder.setReturnType(returnType);
+
             if (Map.class.isAssignableFrom(returnType)) {
-                Map proceedEntryValueMap = (Map) proceed;
-                // 为了兼容@CachedGet注解, 客户端缓存
+                Map<Object, Object> proceedEntryValueMap = (Map<Object, Object>) proceed;
                 if (needWrite) {
-                    // 将方法调用返回的map转换成key_value_map写入Cache
                     Map<String, Object> keyValueMap = Builder
                             .mapToKeyValue(proceedEntryValueMap, missKeys, multiEntry2Key, context.getPrevent());
                     manage.writeBatch(annoHolder.getCache(), keyValueMap, annoHolder.getExpire());
                 }
-                // 将方法调用返回的map与从Cache中读取的key_value_map合并返回
                 result = mergeMap(returnType, proceedEntryValueMap, key2MultiEntry, hitKeyValueMap);
             } else {
-                Collection proceedCollection = asCollection(proceed, returnType);
-                // 为了兼容@CachedGet注解, 客户端缓存
+                Collection<Object> proceedCollection = asCollection(proceed, returnType);
                 if (needWrite) {
-                    // 将方法调用返回的collection转换成key_value_map写入Cache
                     Map<String, Object> keyValueMap = Builder.collectionToKeyValue(
                             proceedCollection,
                             annoHolder.getId(),
@@ -251,25 +248,24 @@ public class MultiCacheReader extends AbstractReader {
                             context.getPrevent());
                     manage.writeBatch(annoHolder.getCache(), keyValueMap, annoHolder.getExpire());
                 }
-                // 将方法调用返回的collection与从Cache中读取的key_value_map合并返回
-                Collection resultCollection = mergeCollection(returnType, proceedCollection, hitKeyValueMap);
+                Collection<Object> resultCollection = mergeCollection(returnType, proceedCollection, hitKeyValueMap);
                 result = asType(resultCollection, returnType);
             }
         } else {
-            // 作为全部命中处理
+            // If the method returns null, treat it as a full hit with only the cached values.
             result = handleFullHit(baseInvoker, hitKeyValueMap, methodHolder, key2MultiEntry);
         }
         return result;
     }
 
     /**
-     * 将Collection转换为指定类型
+     * Converts a collection to the specified return type (either Collection or Array).
      *
-     * @param collection 集合对象
-     * @param returnType 返回类型
-     * @return 转换后的对象
+     * @param collection The collection to convert.
+     * @param returnType The target type.
+     * @return The converted object.
      */
-    private Object asType(Collection collection, Class<?> returnType) {
+    private Object asType(Collection<Object> collection, Class<?> returnType) {
         if (Collection.class.isAssignableFrom(returnType)) {
             return collection;
         }
@@ -277,28 +273,28 @@ public class MultiCacheReader extends AbstractReader {
     }
 
     /**
-     * 将对象转换为Collection
+     * Converts an object (which may be an array) into a Collection.
      *
-     * @param proceed    原始对象
-     * @param returnType 返回类型
-     * @return 转换后的Collection
+     * @param proceed    The object to convert.
+     * @param returnType The class of the object.
+     * @return The object as a Collection.
      */
-    private Collection asCollection(Object proceed, Class<?> returnType) {
+    private Collection<Object> asCollection(Object proceed, Class<?> returnType) {
         if (Collection.class.isAssignableFrom(returnType)) {
-            return (Collection) proceed;
+            return (Collection<Object>) proceed;
         }
         return Arrays.asList((Object[]) proceed);
     }
 
     /**
-     * 处理全部命中场景
+     * Handles the scenario where all requested keys were found in the cache.
      *
-     * @param baseInvoker    代理调用链
-     * @param keyValueMap    缓存命中的键值对
-     * @param methodHolder   方法持有者
-     * @param key2MultiEntry 键到多参数条目的映射
-     * @return 处理结果
-     * @throws Throwable 可能抛出的异常
+     * @param baseInvoker    The proxy chain invoker.
+     * @param keyValueMap    The map of keys to values found in the cache.
+     * @param methodHolder   The method metadata.
+     * @param key2MultiEntry A map from cache key to its source entry.
+     * @return The reconstructed result object.
+     * @throws Throwable if the underlying method invocation throws an exception.
      */
     private Object handleFullHit(
             ProxyChain baseInvoker,
@@ -307,14 +303,14 @@ public class MultiCacheReader extends AbstractReader {
             Map<String, Object> key2MultiEntry) throws Throwable {
         Object result;
         Class<?> returnType = methodHolder.getReturnType();
-        // 当方法返回类型未被缓存时，例如：应用重启后的全部命中
+        // If the return type is unknown (e.g., after an app restart), invoke the method to discover it.
         if (null == returnType) {
             result = doLogInvoke(baseInvoker::proceed);
-            // 捕获返回类型以备下次使用
             if (null != result) {
                 methodHolder.setReturnType(result.getClass());
             }
         } else {
+            // Reconstruct the result from the cached values.
             if (methodHolder.isCollection()) {
                 result = toCollection(returnType, keyValueMap);
             } else {
@@ -325,37 +321,34 @@ public class MultiCacheReader extends AbstractReader {
     }
 
     /**
-     * 将未命中的键转换为方法参数
+     * Creates a new arguments array for re-invoking the original method with only the missed keys.
      *
-     * @param missKeys   未命中的键集合
-     * @param keyIdMap   键到ID的映射
-     * @param args       原始方法参数
-     * @param multiIndex 多参数索引
-     * @return 转换后的方法参数
+     * @param missKeys   The set of keys that were not found in the cache.
+     * @param keyIdMap   A map from cache key to its source entry.
+     * @param args       The original method arguments.
+     * @param multiIndex The index of the argument that contains the collection of keys.
+     * @return A new arguments array.
      */
     private Object[] toMissArgs(Set<String> missKeys, Map<String, Object> keyIdMap, Object[] args, int multiIndex) {
         List<Object> missedMultiEntries = missKeys.stream().map(keyIdMap::get).collect(Collectors.toList());
         Class<?> multiArgType = args[multiIndex].getClass();
-        // 对将Map作为CacheKey的支持就到这儿了, 不会再继续下去...
         Addables.Addable addable = Addables.newAddable(multiArgType, missedMultiEntries.size());
         args[multiIndex] = addable.addAll(missedMultiEntries).get();
         return args;
     }
 
     /**
-     * 记录缓存命中率
+     * Records cache hit and request counts for metrics.
      *
-     * @param cacheKeys  缓存键集合
-     * @param annoHolder 注解持有者
+     * @param cacheKeys  The results from the cache read.
+     * @param annoHolder The annotation metadata.
      */
     private void doRecord(CacheKeys cacheKeys, AnnoHolder annoHolder) {
         Set<String> missKeys = cacheKeys.getMissKeySet();
-        // 计数
         int hitCount = cacheKeys.getHitKeyMap().size();
         int totalCount = hitCount + missKeys.size();
         Logger.info("multi cache hit rate: {}/{}, missed keys: {}", hitCount, totalCount, missKeys);
         if (null != this.metrics) {
-            // 分组模板
             String pattern = Builder.generatePattern(annoHolder);
             this.metrics.hitIncr(pattern, hitCount);
             this.metrics.reqIncr(pattern, totalCount);

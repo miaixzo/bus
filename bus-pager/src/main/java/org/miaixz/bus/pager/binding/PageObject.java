@@ -37,7 +37,9 @@ import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.Paging;
 
 /**
- * 分页参数对象工具类
+ * Utility class for handling pagination parameter objects. This class provides methods to extract pagination
+ * information from various parameter types, including {@link Paging} objects and objects that can be introspected via
+ * MyBatis's MetaObject.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,11 +47,21 @@ import org.miaixz.bus.pager.Paging;
 public abstract class PageObject {
 
     /**
-     * request获取方法
+     * Indicates whether the application has access to `jakarta.servlet.ServletRequest`.
      */
     protected static Boolean hasRequest;
+    /**
+     * The `jakarta.servlet.ServletRequest` class, if available.
+     */
     protected static Class<?> requestClass;
+    /**
+     * The `getParameterMap` method of `jakarta.servlet.ServletRequest`, if available.
+     */
     protected static Method getParameterMap;
+    /**
+     * A map storing parameter name mappings for pagination properties. Keys are common parameter names (e.g.,
+     * "pageNo"), values are the actual property names.
+     */
     protected static Map<String, String> PARAMS = new HashMap<>(6, 1);
 
     static {
@@ -69,12 +81,17 @@ public abstract class PageObject {
     }
 
     /**
-     * 对象中获取分页参数
+     * Extracts pagination parameters from an object and creates a {@link Page} instance. It supports {@link Paging}
+     * objects, `jakarta.servlet.ServletRequest` objects, and generic objects that can be introspected by MyBatis's
+     * MetaObject.
      *
-     * @param <T>      对象
-     * @param params   参数
-     * @param required 是否必须
-     * @return 结果
+     * @param <T>      the type of elements in the paginated data
+     * @param params   the parameter object from which to extract pagination information
+     * @param required if true, throws a {@link PageException} if required pagination parameters are missing
+     * @return a {@link Page} object configured with the extracted parameters, or null if no pagination parameters are
+     *         found and not required
+     * @throws PageException if `params` is null, or if required parameters are missing, or if pagination parameters are
+     *                       not valid numbers
      */
     public static <T> Page<T> getPageFromObject(Object params, boolean required) {
         if (params == null) {
@@ -104,7 +121,7 @@ public abstract class PageObject {
             try {
                 paramsObject = MetaObject.forObject(getParameterMap.invoke(params));
             } catch (Exception e) {
-                // 忽略
+                // Ignore exception, proceed with other methods
             }
         } else {
             paramsObject = MetaObject.forObject(params);
@@ -135,21 +152,21 @@ public abstract class PageObject {
             throw new PageException("pagination parameters are not a valid number type!", e);
         }
         Page page = new Page(pageNo, pageSize);
-        // count查询
+        // count query
         Object _count = getParamValue(paramsObject, "count", false);
         if (_count != null) {
             page.setCount(Boolean.valueOf(String.valueOf(_count)));
         }
-        // 排序
+        // order by
         if (hasOrderBy) {
             page.setOrderBy(orderBy.toString());
         }
-        // 分页合理化
+        // pagination reasonableness
         Object reasonable = getParamValue(paramsObject, "reasonable", false);
         if (reasonable != null) {
             page.setReasonable(Boolean.valueOf(String.valueOf(reasonable)));
         }
-        // 查询全部
+        // query all
         Object pageSizeZero = getParamValue(paramsObject, "pageSizeZero", false);
         if (pageSizeZero != null) {
             page.setPageSizeZero(Boolean.valueOf(String.valueOf(pageSizeZero)));
@@ -158,12 +175,13 @@ public abstract class PageObject {
     }
 
     /**
-     * 从对象中取参数
+     * Retrieves a parameter value from a {@link org.apache.ibatis.reflection.MetaObject}.
      *
-     * @param paramsObject 参数
-     * @param paramName    参数名
-     * @param required     是否必须
-     * @return 结果
+     * @param paramsObject the MetaObject representing the parameter object
+     * @param paramName    the name of the parameter to retrieve (e.g., "pageNo", "pageSize")
+     * @param required     if true, throws a {@link PageException} if the parameter is not found
+     * @return the value of the parameter, or null if not found and not required
+     * @throws PageException if the parameter is required but not found
      */
     protected static Object getParamValue(
             org.apache.ibatis.reflection.MetaObject paramsObject,
@@ -187,6 +205,13 @@ public abstract class PageObject {
         return value;
     }
 
+    /**
+     * Sets custom parameter name mappings for pagination properties. The input string should be a semicolon, comma, or
+     * ampersand-separated list of key-value pairs, where keys are common parameter names and values are the actual
+     * property names. Example: "pageNo=pageNum;pageSize=limit"
+     *
+     * @param params a string containing custom parameter mappings
+     */
     public static void setParams(String params) {
         if (StringKit.isNotEmpty(params)) {
             String[] ps = params.split("[;|,|&]");

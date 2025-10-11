@@ -40,24 +40,48 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 
 /**
- * 文件资源加载器
+ * A resource loader for files within a file system directory.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FileLoader extends ResourceLoader implements Loader {
 
+    /**
+     * The context URL for resources within the file system.
+     */
     private final URL context;
+    /**
+     * The root directory from which to load files.
+     */
     private final File root;
 
+    /**
+     * Constructs a {@code FileLoader} with the given root directory.
+     *
+     * @param root The root directory from which to load files.
+     * @throws IOException If an I/O error occurs when converting the file to a URL.
+     */
     public FileLoader(File root) throws IOException {
         this(root.toURI().toURL(), root);
     }
 
+    /**
+     * Constructs a {@code FileLoader} with the given file URL.
+     *
+     * @param fileURL The URL of the root directory for file resources.
+     */
     public FileLoader(URL fileURL) {
         this(fileURL, new File(UrlDecoder.decode(fileURL.getPath(), Charset.UTF_8)));
     }
 
+    /**
+     * Constructs a {@code FileLoader} with a specified context URL and root directory.
+     *
+     * @param context The context URL for resources within the file system.
+     * @param root    The root directory from which to load files.
+     * @throws IllegalArgumentException If {@code context} or {@code root} is {@code null}.
+     */
     public FileLoader(URL context, File root) {
         if (null == context) {
             throw new IllegalArgumentException("context must not be null");
@@ -69,17 +93,42 @@ public class FileLoader extends ResourceLoader implements Loader {
         this.root = root;
     }
 
+    @Override
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) {
         return new Enumerator(context, root, path, recursively, null != filter ? filter : Filters.ALWAYS);
     }
 
+    /**
+     * An {@link Enumeration} implementation for iterating over resources within a file system directory.
+     */
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
 
+        /**
+         * The context URL for resources within the file system.
+         */
         private final URL context;
+        /**
+         * Whether to search for resources in subdirectories recursively.
+         */
         private final boolean recursively;
+        /**
+         * The filter to apply to resources.
+         */
         private final Filter filter;
+        /**
+         * A queue of files and directories to be processed.
+         */
         private final Queue<File> queue;
 
+        /**
+         * Constructs a new {@code Enumerator}.
+         *
+         * @param context     The context URL for resources within the file system.
+         * @param root        The root directory from which to load files.
+         * @param path        The base path to search for resources.
+         * @param recursively Whether to search for resources in subdirectories.
+         * @param filter      The filter to apply to resources.
+         */
         Enumerator(URL context, File root, String path, boolean recursively, Filter filter) {
             this.context = context;
             this.recursively = recursively;
@@ -96,6 +145,7 @@ public class FileLoader extends ResourceLoader implements Loader {
             }
         }
 
+        @Override
         public boolean hasMoreElements() {
             if (null != next) {
                 return true;

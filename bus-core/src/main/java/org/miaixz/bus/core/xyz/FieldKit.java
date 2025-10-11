@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.reflect.field.FieldInvoker;
 import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
 
 /**
- * 反射中{@link Field}字段工具类，包括字段获取和字段赋值。
+ * Utility class for reflection on {@link Field}s.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,77 +51,75 @@ import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
 public class FieldKit {
 
     /**
-     * 字段缓存
+     * Field cache.
      */
     private static final WeakConcurrentMap<Class<?>, FieldReflect> FIELDS_CACHE = new WeakConcurrentMap<>();
 
     /**
-     * 清除方法缓存
+     * Clears the field cache.
      */
     synchronized static void clearCache() {
         FIELDS_CACHE.clear();
     }
 
     /**
-     * 是否为父类引用字段 当字段所在类是对象子类时（对象中定义的非static的class），会自动生成一个以"this$0"为名称的字段，指向父类对象
+     * Checks if a field is a reference to the outer class (e.g., `this$0`).
      *
-     * @param field 字段
-     * @return 是否为父类引用字段
+     * @param field The field.
+     * @return `true` if it is an outer class reference field.
      */
     public static boolean isOuterClassField(final Field field) {
         return "this$0".equals(field.getName());
     }
 
     /**
-     * 查找指定类中是否包含指定名称对应的字段，包括所有字段（包括非public字段），也包括父类和Object类的字段
+     * Checks if a class contains a field with the specified name, including superclasses.
      *
-     * @param beanClass 被查找字段的类,不能为null
-     * @param name      字段名
-     * @return 是否包含字段
-     * @throws SecurityException 安全异常
+     * @param beanClass The class to inspect.
+     * @param name      The field name.
+     * @return `true` if the field exists.
+     * @throws SecurityException if a security manager denies access.
      */
     public static boolean hasField(final Class<?> beanClass, final String name) throws SecurityException {
         return null != getField(beanClass, name);
     }
 
     /**
-     * 获取字段名，如果存在{@link Alias}注解，读取注解的值作为名称
+     * Gets the name of a field, using the value of an {@link Alias} annotation if present.
      *
-     * @param field 字段
-     * @return 字段名
+     * @param field The field.
+     * @return The field name.
      */
     public static String getFieldName(final Field field) {
         return getFieldName(field, true);
     }
 
     /**
-     * 获取字段名，可选是否使用{@link Alias}注解，读取注解的值作为名称
+     * Gets the name of a field.
      *
-     * @param field    字段
-     * @param useAlias 是否检查并使用{@link Alias}注解
-     * @return 字段名
+     * @param field    The field.
+     * @param useAlias If true, checks for an {@link Alias} annotation.
+     * @return The field name.
      */
     public static String getFieldName(final Field field, final boolean useAlias) {
         if (null == field) {
             return null;
         }
-
         if (useAlias) {
             final Alias alias = field.getAnnotation(Alias.class);
             if (null != alias) {
                 return alias.value();
             }
         }
-
         return field.getName();
     }
 
     /**
-     * 获取本类定义的指定名称的字段，包括私有字段，但是不包括父类字段
+     * Gets a declared field of a class by name, including private fields but not inherited ones.
      *
-     * @param beanClass Bean的Class
-     * @param name      字段名称
-     * @return 字段对象，如果未找到返回{@code null}
+     * @param beanClass The class.
+     * @param name      The field name.
+     * @return The `Field` object, or `null` if not found.
      */
     public static Field getDeclaredField(final Class<?> beanClass, final String name) {
         final Field[] fields = getDeclaredFields(beanClass, (field -> StringKit.equals(name, field.getName())));
@@ -129,12 +127,12 @@ public class FieldKit {
     }
 
     /**
-     * 查找指定类中的指定name的字段（包括非public字段），也包括父类和Object类的字段， 字段不存在则返回{@code null}
+     * Gets a field of a class by name, including private and inherited fields.
      *
-     * @param beanClass 被查找字段的类,不能为null
-     * @param name      字段名
-     * @return 字段
-     * @throws SecurityException 安全异常
+     * @param beanClass The class.
+     * @param name      The field name.
+     * @return The `Field` object, or `null` if not found.
+     * @throws SecurityException if a security manager denies access.
      */
     public static Field getField(final Class<?> beanClass, final String name) throws SecurityException {
         final Field[] fields = getFields(beanClass, (field -> StringKit.equals(name, field.getName())));
@@ -142,10 +140,10 @@ public class FieldKit {
     }
 
     /**
-     * 获取指定类中字段名和字段对应的有序Map，包括其父类中的字段 如果子类与父类中存在同名字段，则父类字段忽略
+     * Gets a map of field names to `Field` objects for a class, including inherited fields.
      *
-     * @param beanClass 类
-     * @return 字段名和字段对应的Map，有序
+     * @param beanClass The class.
+     * @return A map of field names to fields.
      */
     public static Map<String, Field> getFieldMap(final Class<?> beanClass) {
         final Field[] fields = getFields(beanClass);
@@ -157,23 +155,23 @@ public class FieldKit {
     }
 
     /**
-     * 获得一个类中所有字段列表，包括其父类中的字段 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     * Gets all fields of a class, including inherited fields.
      *
-     * @param beanClass 类
-     * @return 字段列表
-     * @throws SecurityException 安全检查异常
+     * @param beanClass The class.
+     * @return An array of fields.
+     * @throws SecurityException if a security manager denies access.
      */
     public static Field[] getFields(final Class<?> beanClass) throws SecurityException {
         return getFields(beanClass, null);
     }
 
     /**
-     * 获得一个类中所有满足条件的字段列表，包括其父类中的字段 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     * Gets all fields of a class that satisfy a predicate, including inherited fields.
      *
-     * @param beanClass 类
-     * @param filter    field过滤器，过滤掉不需要的field，{@link Predicate#test(Object)}为{@code true}保留，null表示全部保留
-     * @return 字段列表
-     * @throws SecurityException 安全检查异常
+     * @param beanClass The class.
+     * @param filter    A predicate to filter the fields.
+     * @return An array of fields.
+     * @throws SecurityException if a security manager denies access.
      */
     public static Field[] getFields(final Class<?> beanClass, final Predicate<Field> filter) throws SecurityException {
         Assert.notNull(beanClass);
@@ -181,12 +179,12 @@ public class FieldKit {
     }
 
     /**
-     * 获得当前类声明的所有字段（包括非public字段），但不包括父类的字段
+     * Gets all declared fields of a class that satisfy a predicate (does not include inherited fields).
      *
-     * @param beanClass 类
-     * @param filter    field过滤器，过滤掉不需要的field，{@link Predicate#test(Object)}为{@code true}保留，null表示全部保留
-     * @return 字段列表
-     * @throws SecurityException 安全检查异常
+     * @param beanClass The class.
+     * @param filter    A predicate to filter the fields.
+     * @return An array of fields.
+     * @throws SecurityException if a security manager denies access.
      */
     public static Field[] getDeclaredFields(final Class<?> beanClass, final Predicate<Field> filter)
             throws SecurityException {
@@ -195,12 +193,12 @@ public class FieldKit {
     }
 
     /**
-     * 获得一个类中所有字段列表，直接反射获取，无缓存 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     * Gets all fields of a class directly via reflection (no cache).
      *
-     * @param beanClass            类
-     * @param withSuperClassFields 是否包括父类的字段列表
-     * @return 字段列表
-     * @throws SecurityException 安全检查异常
+     * @param beanClass            The class.
+     * @param withSuperClassFields If true, includes fields from superclasses.
+     * @return An array of fields.
+     * @throws SecurityException if a security manager denies access.
      */
     public static Field[] getFieldsDirectly(final Class<?> beanClass, final boolean withSuperClassFields)
             throws SecurityException {
@@ -208,12 +206,12 @@ public class FieldKit {
     }
 
     /**
-     * 获取字段值
+     * Gets the value of a field.
      *
-     * @param object    对象，如果static字段，此处为类
-     * @param fieldName 字段名
-     * @return 字段值
-     * @throws InternalException 包装IllegalAccessException异常
+     * @param object    The object (or class for a static field).
+     * @param fieldName The field name.
+     * @return The field's value.
+     * @throws InternalException if access fails.
      */
     public static Object getFieldValue(final Object object, final String fieldName) throws InternalException {
         if (null == object || StringKit.isBlank(fieldName)) {
@@ -225,30 +223,29 @@ public class FieldKit {
     }
 
     /**
-     * 获取静态字段值
+     * Gets the value of a static field.
      *
-     * @param field 字段
-     * @return 字段值
-     * @throws InternalException 包装IllegalAccessException异常
+     * @param field The field.
+     * @return The field's value.
+     * @throws InternalException if access fails.
      */
     public static Object getStaticFieldValue(final Field field) throws InternalException {
         return getFieldValue(null, field);
     }
 
     /**
-     * 获取字段值
+     * Gets the value of a field.
      *
-     * @param object 对象，static字段则此字段为null
-     * @param field  字段
-     * @return 字段值
-     * @throws InternalException 包装IllegalAccessException异常
+     * @param object The object (or `null` for a static field).
+     * @param field  The field.
+     * @return The field's value.
+     * @throws InternalException if access fails.
      */
     public static Object getFieldValue(Object object, final Field field) throws InternalException {
         if (null == field) {
             return null;
         }
         if (object instanceof Class) {
-            // 静态字段获取时对象为null
             object = null;
         }
 
@@ -263,21 +260,21 @@ public class FieldKit {
     }
 
     /**
-     * 获取所有字段的值
+     * Gets the values of all fields of an object.
      *
-     * @param object bean对象，如果是static字段，此处为类class
-     * @return 字段值数组
+     * @param object The object (or class for static fields).
+     * @return An array of field values.
      */
     public static Object[] getFieldsValue(final Object object) {
         return getFieldsValue(object, null);
     }
 
     /**
-     * 获取所有字段的值
+     * Gets the values of all fields of an object that satisfy a predicate.
      *
-     * @param object bean对象，如果是static字段，此处为类class
-     * @param filter 字段过滤器，{@code null}返回原集合
-     * @return 字段值数组
+     * @param object The object.
+     * @param filter The field filter.
+     * @return An array of field values.
      */
     public static Object[] getFieldsValue(final Object object, final Predicate<Field> filter) {
         if (null != object) {
@@ -290,10 +287,10 @@ public class FieldKit {
     }
 
     /**
-     * 获取所有字段及对应值
+     * Gets a map of all field names to their corresponding values.
      *
-     * @param object bean对象，如果是static字段，此处为类class
-     * @return 字段值数组
+     * @param object The object.
+     * @return A map of field names to values.
      */
     public static Object getFieldsAndValue(final Object object) {
         if (null != object) {
@@ -313,11 +310,11 @@ public class FieldKit {
     }
 
     /**
-     * 获取所有字段及对应值
+     * Gets a map of field names to their values for all fields that satisfy a predicate.
      *
-     * @param object bean对象，如果是static字段，此处为类class
-     * @param filter 字段过滤器，{@code null}返回原集合
-     * @return 字段值数组
+     * @param object The object.
+     * @param filter The field filter.
+     * @return A map of field names to values.
      */
     public static Object getFieldsAndValue(final Object object, final Predicate<Field> filter) {
         if (null != object) {
@@ -337,12 +334,12 @@ public class FieldKit {
     }
 
     /**
-     * 设置字段值
+     * Sets the value of a field.
      *
-     * @param object    对象,static字段则此处传Class
-     * @param fieldName 字段名
-     * @param value     值，值类型必须与字段类型匹配，不会自动转换对象类型
-     * @throws InternalException 包装IllegalAccessException异常
+     * @param object    The object (or class for a static field).
+     * @param fieldName The field name.
+     * @param value     The new value.
+     * @throws InternalException if the field doesn't exist or access fails.
      */
     public static void setFieldValue(final Object object, final String fieldName, final Object value)
             throws InternalException {
@@ -355,36 +352,36 @@ public class FieldKit {
     }
 
     /**
-     * 设置静态（static）字段值
+     * Sets the value of a static field.
      *
-     * @param field 字段
-     * @param value 值，值类型必须与字段类型匹配，不会自动转换对象类型
-     * @throws InternalException 包装IllegalAccessException异常
+     * @param field The field.
+     * @param value The new value.
+     * @throws InternalException if access fails.
      */
     public static void setStaticFieldValue(final Field field, final Object value) throws InternalException {
         setFieldValue(null, field, value);
     }
 
     /**
-     * 设置字段值，如果值类型必须与字段类型匹配，会自动转换对象类型
+     * Sets the value of a field, with automatic type conversion.
      *
-     * @param object 对象，如果是static字段，此参数为null
-     * @param field  字段
-     * @param value  值，类型不匹配会自动转换对象类型
-     * @throws InternalException 包装IllegalAccessException异常
+     * @param object The object (or `null` for a static field).
+     * @param field  The field.
+     * @param value  The new value.
+     * @throws InternalException if access fails.
      */
     public static void setFieldValue(final Object object, final Field field, Object value) throws InternalException {
         setFieldValue(object, field, value, CompositeConverter.getInstance());
     }
 
     /**
-     * 设置字段值，如果值类型必须与字段类型匹配，会自动转换对象类型
+     * Sets the value of a field, with automatic type conversion using a specified converter.
      *
-     * @param object    对象，如果是static字段，此参数为null
-     * @param field     字段
-     * @param value     值，类型不匹配会自动转换对象类型
-     * @param converter 转换器，用于转换给定value为字段类型，{@code null}表示不转换
-     * @throws InternalException 包装IllegalAccessException异常
+     * @param object    The object (or `null` for a static field).
+     * @param field     The field.
+     * @param value     The new value.
+     * @param converter The converter to use for type conversion.
+     * @throws InternalException if access fails.
      */
     public static void setFieldValue(
             final Object object,
@@ -397,10 +394,10 @@ public class FieldKit {
     }
 
     /**
-     * 给定类是否存在serialVersionUID字段
+     * Checks if a field is the `serialVersionUID` field.
      *
-     * @param field 字段
-     * @return 是否存在serialVersionUID字段
+     * @param field The field.
+     * @return `true` if it is the `serialVersionUID` field.
      */
     public static boolean isSerialVersionUID(Field field) {
         return "serialVersionUID".equals(field.getName())

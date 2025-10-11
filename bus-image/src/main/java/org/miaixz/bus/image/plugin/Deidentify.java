@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.builtin.DeIdentifier;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -37,23 +34,51 @@ import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
+ * The {@code Deidentify} class provides functionality to de-identify DICOM files. It reads a DICOM file, applies
+ * de-identification rules using the {@link DeIdentifier}, and writes the modified dataset to a new file.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Deidentify {
 
+    /**
+     * The de-identifier instance with configured options.
+     */
     private final DeIdentifier deidentifier;
+    /**
+     * Encoding options for writing the de-identified DICOM file.
+     */
     private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
 
+    /**
+     * Constructs a new {@code Deidentify} object with the specified de-identification options.
+     *
+     * @param options The de-identification options to apply.
+     */
     public Deidentify(DeIdentifier.Option... options) {
         deidentifier = new DeIdentifier(options);
     }
 
+    /**
+     * Sets the encoding options for the output DICOM file.
+     *
+     * @param encOpts The encoding options.
+     */
     public void setEncodingOptions(ImageEncodingOptions encOpts) {
         this.encOpts = encOpts;
     }
 
+    /**
+     * Recursively processes a source directory or a single file for de-identification.
+     *
+     * @param src  The source file or directory.
+     * @param dest The destination file or directory.
+     */
     private void mtranscode(File src, File dest) {
         if (src.isDirectory()) {
             dest.mkdir();
@@ -70,6 +95,13 @@ public class Deidentify {
         }
     }
 
+    /**
+     * Reads a DICOM file, de-identifies its dataset, and writes the result to a destination file.
+     *
+     * @param src  The source DICOM file.
+     * @param dest The destination file for the de-identified DICOM object.
+     * @throws IOException if an I/O error occurs during file reading or writing.
+     */
     public void transcode(File src, File dest) throws IOException {
         Attributes fmi;
         Attributes dataset;

@@ -30,17 +30,16 @@ package org.miaixz.bus.cron;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.cron.crontab.CronCrontab;
-import org.miaixz.bus.cron.crontab.Crontab;
 
 /**
- * 作业执行管理器 负责管理作业的启动、停止等
- *
+ * Manages the execution of jobs, including starting and stopping them.
  * <p>
- * 此类用于管理正在运行的作业情况，作业启动后加入任务列表，任务结束移除
+ * This class keeps track of currently running jobs, adding them to a list upon startup and removing them upon
+ * completion.
  * </p>
  *
  * @author Kimi Liu
@@ -52,37 +51,54 @@ public class Manager implements Serializable {
     private static final long serialVersionUID = 2852287209701L;
 
     /**
-     * 执行器列表
+     * List of running task executors.
      */
     private final List<Executor> executors = new ArrayList<>();
+
+    /**
+     * List of task launchers.
+     */
+    protected final List<Launcher> launchers = new ArrayList<>();
+    /**
+     * The scheduler that this manager belongs to.
+     */
     protected Scheduler scheduler;
 
     /**
-     * 构造
+     * Constructs a new Manager.
      *
-     * @param scheduler {@link Scheduler}
+     * @param scheduler The {@link Scheduler} that this manager belongs to.
      */
     public Manager(final Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
     /**
-     * 获取所有正在执行的任务调度执行器
+     * Gets all currently executing task executors.
      *
-     * @return 任务执行器列表
+     * @return A list of task executors.
      */
     public List<Executor> getExecutors() {
-        return Collections.unmodifiableList(this.executors);
+        return ListKit.view(this.executors);
     }
 
     /**
-     * 启动 执行器TaskExecutor，即启动作业
+     * Gets an unmodifiable list of all launchers.
      *
-     * @param task {@link Crontab}
-     * @return {@link Executor}
+     * @return A list of launchers.
      */
-    public Executor spawnExecutor(final CronCrontab task) {
-        final Executor executor = new Executor(this.scheduler, task);
+    public List<Launcher> getLaunchers() {
+        return ListKit.view(this.launchers);
+    }
+
+    /**
+     * Spawns a TaskExecutor, effectively starting a job.
+     *
+     * @param crontab The {@link CronCrontab} to execute.
+     * @return The newly created {@link Executor}.
+     */
+    public Executor spawnExecutor(final CronCrontab crontab) {
+        final Executor executor = new Executor(this.scheduler, crontab);
         synchronized (this.executors) {
             this.executors.add(executor);
         }
@@ -91,16 +107,42 @@ public class Manager implements Serializable {
     }
 
     /**
-     * 执行器执行完毕调用此方法，将执行器从执行器列表移除，此方法由{@link Executor}对象调用，用于通知管理器自身已完成执行
+     * Spawns a TaskLauncher.
      *
-     * @param executor 执行器 {@link Executor}
-     * @return this
+     * @param millis The timestamp in milliseconds for the trigger event.
+     * @return The newly created {@link Launcher}.
      */
-    public Manager notifyExecutorCompleted(final Executor executor) {
+    protected Launcher spawnLauncher(final long millis) {
+        final Launcher launcher = new Launcher(this.scheduler, millis);
+        synchronized (this.launchers) {
+            this.launchers.add(launcher);
+        }
+        this.scheduler.threadExecutor.execute(launcher);
+        return launcher;
+    }
+
+    /**
+     * This method is called when an executor has finished its execution. It removes the executor from the list of
+     * running executors. This method is intended to be called by an {@link Executor} instance to notify the manager of
+     * its completion.
+     *
+     * @param executor The {@link Executor} that has completed.
+     */
+    public void notifyExecutorCompleted(final Executor executor) {
         synchronized (executors) {
             executors.remove(executor);
         }
-        return this;
+    }
+
+    /**
+     * Called when a launcher has completed its task, removing it from the list of launchers.
+     *
+     * @param launcher The {@link Launcher} that has completed.
+     */
+    protected void notifyLauncherCompleted(final Launcher launcher) {
+        synchronized (launchers) {
+            launchers.remove(launcher);
+        }
     }
 
 }

@@ -30,7 +30,7 @@ package org.miaixz.bus.office;
 import org.apache.poi.openxml4j.util.ZipSecureFile;
 
 /**
- * 所有office上下文接口的基本接口.
+ * Base interface for all office context interfaces.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,34 +38,40 @@ import org.apache.poi.openxml4j.util.ZipSecureFile;
 public class Context {
 
     /**
-     * 设置解压时的最小压缩比例 为了避免`Zip Bomb`，POI中设置了最小压缩比例，这个比例为：
+     * Sets the minimum inflation ratio during decompression. To avoid `Zip Bomb` attacks, POI sets a minimum
+     * compression ratio, which is:
      * 
      * <pre>
-     * 压缩后的大小 / 解压后的大小
+     * compressed size / uncompressed size
      * </pre>
      * 
-     * POI的默认值是0.01（即最小压缩到1%），如果文档中的文件压缩比例小于这个值，就会报错。 如果文件中确实存在高压缩比的文件，可以通过这个全局方法自定义比例，从而避免错误。
+     * The default value in POI is 0.01 (i.e., minimum compression to 1%). If the compression ratio of a file in the
+     * document is less than this value, an error will be reported. If there are indeed files with high compression
+     * ratios in the document, this global method can be used to customize the ratio to avoid errors.
      *
-     * @param ratio 解压后的文件大小与原始文件大小的最小比率，小于等于0表示不检查
+     * @param ratio The minimum ratio of the uncompressed file size to the original file size. A value less than or
+     *              equal to 0 disables the check.
      */
     public static void setMinInflateRatio(final double ratio) {
         ZipSecureFile.setMinInflateRatio(ratio);
     }
 
     /**
-     * 设置单个Zip文件中最大文件大小，默认为4GB，即32位zip格式的最大值。
+     * Sets the maximum file size for a single entry in a Zip file. The default is 4GB, which is the maximum for 32-bit
+     * zip format.
      *
-     * @param maxEntrySize 单个Zip文件中最大文件大小，必须大于0
+     * @param maxEntrySize The maximum file size for a single Zip entry. Must be greater than 0.
      */
     public static void setMaxEntrySize(final long maxEntrySize) {
         ZipSecureFile.setMaxEntrySize(maxEntrySize);
     }
 
     /**
-     * 设置解压前文本的最大字符数，超过抛出异常。
+     * Sets the maximum number of characters for text before decompression. An exception is thrown if this limit is
+     * exceeded.
      *
-     * @param maxTextSize 文本的最大字符数
-     * @throws IllegalArgumentException for negative maxTextSize
+     * @param maxTextSize The maximum number of characters for text.
+     * @throws IllegalArgumentException if {@code maxTextSize} is negative.
      */
     public static void setMaxTextSize(final long maxTextSize) {
         ZipSecureFile.setMaxTextSize(maxTextSize);

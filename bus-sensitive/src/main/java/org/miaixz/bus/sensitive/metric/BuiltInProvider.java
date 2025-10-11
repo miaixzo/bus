@@ -30,16 +30,25 @@ package org.miaixz.bus.sensitive.metric;
 import org.miaixz.bus.sensitive.Context;
 
 /**
- * 用于标识为系统内置的注解实现方式
+ * A marker class used to indicate that a built-in desensitization strategy should be used, based on the
+ * {@code Builder.Type} specified in the {@code @Shield} annotation.
  * <p>
- * 这个类的实现并不重要,只是为了尽可能降低 annotation 对于实现的依赖 注意：如果不是系统内置的注解,请勿使用这个标识,否则无法找到对应实现 在 hibernate-validator 中使用的是数组,然后默认指定
- * {},但是缺陷也很明显, 明明是数组,实现却只能是一个
+ * This class itself does not perform any desensitization; it acts as a placeholder to trigger the framework's internal
+ * logic for selecting a pre-defined strategy. Do not use this for custom strategies.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BuiltInProvider extends AbstractProvider {
 
+    /**
+     * This method is not intended to be called directly and returns null. The framework uses this class as a marker to
+     * select a built-in strategy.
+     *
+     * @param object  The object to be desensitized.
+     * @param context The desensitization context.
+     * @return Always returns null.
+     */
     @Override
     public Object build(Object object, Context context) {
         return null;

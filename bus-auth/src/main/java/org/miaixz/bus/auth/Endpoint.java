@@ -3,28 +3,35 @@ package org.miaixz.bus.auth;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Defines the standard endpoints for various authentication protocols. These endpoints are used to configure the URLs
+ * for authorization, token exchange, user information retrieval, token refreshing, and token revocation.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
 @Getter
 @AllArgsConstructor
 public enum Endpoint {
 
     /**
-     * 授权端点配置键
+     * Configuration key for the authorization endpoint.
      */
     AUTHORIZE,
     /**
-     * 访问令牌端点配置键
+     * Configuration key for the access token endpoint.
      */
     ACCESS_TOKEN,
     /**
-     * 用户信息端点配置键
+     * Configuration key for the user information endpoint.
      */
     USERINFO,
     /**
-     * 刷新令牌端点配置键
+     * Configuration key for the refresh token endpoint.
      */
     REFRESH,
     /**
-     * 撤销授权端点配置键
+     * Configuration key for the revoke token endpoint.
      */
     REVOKE
 }

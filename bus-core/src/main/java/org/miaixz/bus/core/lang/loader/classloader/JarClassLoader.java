@@ -43,7 +43,7 @@ import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 
 /**
- * 外部Jar的类加载器
+ * A {@link ClassLoader} for loading classes from external JAR files.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,49 +51,49 @@ import org.miaixz.bus.core.xyz.UrlKit;
 public class JarClassLoader extends URLClassLoader {
 
     /**
-     * 构造
+     * Constructs a new JarClassLoader with an empty URL array.
      */
     public JarClassLoader() {
         this(new URL[] {});
     }
 
     /**
-     * 构造
+     * Constructs a new JarClassLoader for the specified URLs.
      *
-     * @param urls 被加载的URL
+     * @param urls The URLs from which to load classes and resources.
      */
     public JarClassLoader(final URL[] urls) {
         super(urls, ClassKit.getClassLoader());
     }
 
     /**
-     * 构造
+     * Constructs a new JarClassLoader for the specified URLs and parent class loader.
      *
-     * @param urls        被加载的URL
-     * @param classLoader 类加载器
+     * @param urls        The URLs from which to load classes and resources.
+     * @param classLoader The parent class loader for delegation.
      */
     public JarClassLoader(final URL[] urls, final ClassLoader classLoader) {
         super(urls, classLoader);
     }
 
     /**
-     * 加载Jar到ClassPath
+     * Creates a {@link JarClassLoader} and loads all JAR files and classes from the specified directory.
      *
-     * @param dir jar文件或所在目录
-     * @return JarClassLoader
+     * @param dir The directory containing JAR files or class files.
+     * @return A new {@code JarClassLoader} instance.
      */
     public static JarClassLoader load(final File dir) {
         final JarClassLoader loader = new JarClassLoader();
-        loader.addJar(dir);// 查找加载所有jar
-        loader.addURL(dir);// 查找加载所有class
+        loader.addJar(dir); // Find and load all JARs
+        loader.addURL(dir); // Add the directory itself for class files
         return loader;
     }
 
     /**
-     * 加载Jar到ClassPath
+     * Creates a {@link JarClassLoader} and loads the specified JAR file or all JARs in the specified directory.
      *
-     * @param jarFile jar文件或所在目录
-     * @return JarClassLoader
+     * @param jarFile The JAR file or a directory containing JAR files.
+     * @return A new {@code JarClassLoader} instance.
      */
     public static JarClassLoader loadJar(final File jarFile) {
         final JarClassLoader loader = new JarClassLoader();
@@ -102,11 +102,11 @@ public class JarClassLoader extends URLClassLoader {
     }
 
     /**
-     * 加载Jar文件到指定loader中
+     * Loads a JAR file into the specified {@link URLClassLoader}.
      *
-     * @param loader  {@link URLClassLoader}
-     * @param jarFile 被加载的jar
-     * @throws InternalException IO异常包装和执行异常
+     * @param loader  The {@link URLClassLoader} to which the JAR will be added.
+     * @param jarFile The JAR file to load.
+     * @throws InternalException If an I/O error occurs or the addURL method cannot be invoked.
      */
     public static void loadJar(final URLClassLoader loader, final File jarFile) throws InternalException {
         try {
@@ -123,10 +123,10 @@ public class JarClassLoader extends URLClassLoader {
     }
 
     /**
-     * 加载Jar文件到System ClassLoader中
+     * Loads a JAR file into the system class loader.
      *
-     * @param jarFile 被加载的jar
-     * @return System ClassLoader
+     * @param jarFile The JAR file to load.
+     * @return The system {@link URLClassLoader}.
      */
     public static URLClassLoader loadJarToSystemClassLoader(final File jarFile) {
         final URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
@@ -135,33 +135,33 @@ public class JarClassLoader extends URLClassLoader {
     }
 
     /**
-     * 递归获得Jar文件
+     * Recursively finds all JAR files in a given file or directory.
      *
-     * @param file jar文件或者包含jar文件的目录
-     * @return jar文件列表
+     * @param file The file or directory to search.
+     * @return A list of JAR files.
      */
     private static List<File> loopJar(final File file) {
         return FileKit.loopFiles(file, JarClassLoader::isJarFile);
     }
 
     /**
-     * 是否为jar文件
+     * Checks if a file is a JAR file based on its extension.
      *
-     * @param file 文件
-     * @return 是否为jar文件
+     * @param file The file to check.
+     * @return {@code true} if the file is a JAR file, {@code false} otherwise.
      */
     private static boolean isJarFile(final File file) {
         return FileKit.isFile(file) && FileName.isType(file.getName(), Normal.URL_PROTOCOL_JAR);
     }
 
     /**
-     * 加载Jar文件，或者加载目录
+     * Adds a JAR file or a directory of JAR files to this classloader's classpath.
      *
-     * @param jarFileOrDir jar文件或者jar文件所在目录
-     * @return this
+     * @param jarFileOrDir The JAR file or the directory containing JAR files.
+     * @return this {@code JarClassLoader} instance.
      */
     public JarClassLoader addJar(final File jarFileOrDir) {
-        // loopJar方法中，如果传入的是jar文件，直接返回此文件
+        // The loopJar method returns the file itself if it's a single JAR file.
         final List<File> jars = loopJar(jarFileOrDir);
         for (final File jar : jars) {
             addURL(jar);
@@ -175,10 +175,11 @@ public class JarClassLoader extends URLClassLoader {
     }
 
     /**
-     * 增加class所在目录或文件 如果为目录，此目录用于搜索class文件，如果为文件，需为jar文件
+     * Adds a directory or a JAR file to the classpath. If it's a directory, it will be searched for class files. If
+     * it's a file, it must be a JAR.
      *
-     * @param dir 目录
-     * @return this
+     * @param dir The directory or JAR file to add.
+     * @return this {@code JarClassLoader} instance.
      */
     public JarClassLoader addURL(final File dir) {
         super.addURL(UrlKit.getURL(dir));

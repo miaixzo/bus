@@ -28,7 +28,10 @@
 package org.miaixz.bus.spring.annotation;
 
 /**
- * 接口已经被{@link AnnotationWrapper}包装的类
+ * Marker interface for annotations that have been wrapped by {@link AnnotationWrapper}.
+ * <p>
+ * This interface is used internally to identify annotation proxies created by {@link AnnotationWrapper}, allowing for
+ * consistent handling of environment-aware annotation attributes.
  *
  * @author Kimi Liu
  * @since Java 17+

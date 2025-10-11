@@ -31,31 +31,31 @@ import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
- * 网关错误码: 116xxx
- * 
+ * Gateway error codes: 116xxx
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * 服务未响应
+     * Service not responding.
      */
-    public static final Errors _116000 = ErrorRegistry.builder().key("116000").value("服务未响应").build();
+    public static final Errors _116000 = ErrorRegistry.builder().key("116000").value("Service not responding").build();
 
     /**
-     * 角色异常
+     * Role exception.
      */
-    public static final Errors _116001 = ErrorRegistry.builder().key("116001").value("角色异常").build();
+    public static final Errors _116001 = ErrorRegistry.builder().key("116001").value("Role exception").build();
 
     /**
-     * ApiKey无效
+     * Invalid ApiKey.
      */
-    public static final Errors _116002 = ErrorRegistry.builder().key("116002").value("ApiKey无效").build();
+    public static final Errors _116002 = ErrorRegistry.builder().key("116002").value("Invalid ApiKey").build();
 
     /**
-     * ApiKey已过期
+     * ApiKey expired.
      */
-    public static final Errors _116003 = ErrorRegistry.builder().key("116003").value("ApiKey已过期").build();
+    public static final Errors _116003 = ErrorRegistry.builder().key("116003").value("ApiKey expired").build();
 
 }

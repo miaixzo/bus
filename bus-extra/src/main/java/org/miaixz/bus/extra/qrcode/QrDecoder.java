@@ -121,7 +121,7 @@ public class QrDecoder implements Decoder<Image, String> {
         final MultiFormatReader formatReader = new MultiFormatReader();
         formatReader.setHints(hints);
 
-        final LuminanceSource source = new BufferedImageLuminanceSource(
+        final com.google.zxing.LuminanceSource source = new LuminanceSource(
                 ImageKit.castToBufferedImage(image, ImageKit.IMAGE_TYPE_JPG));
 
         Result result = _decode(formatReader, new HybridBinarizer(source));

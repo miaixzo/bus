@@ -36,27 +36,29 @@ import org.miaixz.bus.mapper.binding.BasicMapper;
 import org.miaixz.bus.mapper.provider.EntityProvider;
 
 /**
- * 自定义 Mapper 接口示例，基于主键自增重写了 insert 方法，主要用于展示用法。
+ * An example of a custom Mapper interface that overrides the {@code insert} method for auto-incrementing primary keys.
+ * This is primarily intended to demonstrate usage.
  * <p>
- * 在使用 Oracle 或其他数据库时，可通过 @SelectKey 注解自定义主键生成逻辑。
+ * When using databases like Oracle, you can customize the primary key generation logic using the {@code @SelectKey}
+ * annotation.
  * </p>
  *
- * @param <T> 实体类类型
- * @param <I> 主键类型
+ * @param <T> The type of the entity class.
+ * @param <I> The type of the primary key.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Mapper<T, I extends Serializable> extends BasicMapper<T, I>, Marker {
 
     /**
-     * 保存实体，假设主键自增且名称为 id。
+     * Saves an entity, assuming the primary key is auto-incrementing and named "id".
      * <p>
-     * 此方法为示例，可在自定义接口中以相同方式覆盖父接口配置。
+     * This method serves as an example of how to override parent interface configurations in a custom interface.
      * </p>
      *
-     * @param entity 实体对象
-     * @param <S>    实体类的子类型
-     * @return 1 表示成功，0 表示失败
+     * @param entity The entity object to save.
+     * @param <S>    A subtype of the entity class.
+     * @return The number of affected rows, typically 1 for success or 0 for failure.
      */
     @Override
     @Lang(Caching.class)
@@ -65,14 +67,14 @@ public interface Mapper<T, I extends Serializable> extends BasicMapper<T, I>, Ma
     <S extends T> int insert(S entity);
 
     /**
-     * 保存实体中非空字段，假设主键自增且名称为 id。
+     * Saves non-null fields of an entity, assuming the primary key is auto-incrementing and named "id".
      * <p>
-     * 此方法为示例，可在自定义接口中以相同方式覆盖父接口配置。
+     * This method serves as an example of how to override parent interface configurations in a custom interface.
      * </p>
      *
-     * @param entity 实体对象
-     * @param <S>    实体类的子类型
-     * @return 1 表示成功，0 表示失败
+     * @param entity The entity object to save.
+     * @param <S>    A subtype of the entity class.
+     * @return The number of affected rows, typically 1 for success or 0 for failure.
      */
     @Override
     @Lang(Caching.class)

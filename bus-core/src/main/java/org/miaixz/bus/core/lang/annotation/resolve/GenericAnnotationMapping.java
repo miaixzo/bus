@@ -38,22 +38,32 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
- * {@link AnnotationMapping}的基本实现，仅仅是简单包装了注解对象
+ * A basic implementation of {@link AnnotationMapping} that simply wraps an annotation object. This class does not
+ * perform any advanced attribute resolution like aliasing or overriding.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
 
+    /**
+     * The wrapped annotation object.
+     */
     private final Annotation annotation;
+    /**
+     * Indicates whether this is a root annotation.
+     */
     private final boolean isRoot;
+    /**
+     * The attributes (methods) of the annotation.
+     */
     private final Method[] attributes;
 
     /**
-     * 创建一个通用注解包装类
+     * Constructs a new {@code GenericAnnotationMapping} with the given annotation and root status.
      *
-     * @param annotation 注解对象
-     * @param isRoot     是否根注解
+     * @param annotation The annotation object to wrap.
+     * @param isRoot     {@code true} if this is a root annotation, {@code false} otherwise.
      */
     public GenericAnnotationMapping(final Annotation annotation, final boolean isRoot) {
         this.annotation = Objects.requireNonNull(annotation);
@@ -62,20 +72,20 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
     }
 
     /**
-     * 创建一个通用注解包装类
+     * Creates a new {@code GenericAnnotationMapping} instance.
      *
-     * @param annotation 注解对象
-     * @param isRoot     是否根注解
-     * @return {@code GenericAnnotationMapping}实例
+     * @param annotation The annotation object to wrap.
+     * @param isRoot     {@code true} if this is a root annotation, {@code false} otherwise.
+     * @return A new {@code GenericAnnotationMapping} instance.
      */
     public static GenericAnnotationMapping create(final Annotation annotation, final boolean isRoot) {
         return new GenericAnnotationMapping(annotation, isRoot);
     }
 
     /**
-     * 当前注解是否为根注解
+     * Checks whether the current annotation is a root annotation.
      *
-     * @return 是否
+     * @return {@code true} if the annotation is a root annotation, {@code false} otherwise.
      */
     @Override
     public boolean isRoot() {
@@ -83,9 +93,9 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
     }
 
     /**
-     * 获取注解对象
+     * Retrieves the original annotation object.
      *
-     * @return 注解对象
+     * @return The original annotation object.
      */
     @Override
     public Annotation getAnnotation() {
@@ -93,9 +103,10 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
     }
 
     /**
-     * 同{@link #getAnnotation()}
+     * Returns the original annotation object, as this mapping does not perform resolution. This method is equivalent to
+     * {@link #getAnnotation()}.
      *
-     * @return 注解对象
+     * @return The original annotation object.
      */
     @Override
     public Annotation getResolvedAnnotation() {
@@ -103,9 +114,9 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
     }
 
     /**
-     * 总是返回{@code false}
+     * Always returns {@code false} as this mapping does not perform attribute resolution.
      *
-     * @return {@code false}
+     * @return {@code false}.
      */
     @Override
     public boolean isResolved() {
@@ -113,9 +124,9 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
     }
 
     /**
-     * 获取注解原始属性
+     * Retrieves the original attributes (methods) of the annotation.
      *
-     * @return 注解属性
+     * @return An array of {@link Method} objects representing the annotation's attributes.
      */
     @Override
     public Method[] getAttributes() {
@@ -123,12 +134,12 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
     }
 
     /**
-     * 获取属性值
+     * Retrieves the value of a specific attribute from the original annotation.
      *
-     * @param attributeName 属性名称
-     * @param attributeType 属性类型
-     * @param <R>           返回值类型
-     * @return 属性值
+     * @param attributeName The name of the attribute.
+     * @param attributeType The expected type of the attribute's value.
+     * @param <R>           The return type of the attribute value.
+     * @return The attribute value, or {@code null} if the attribute is not found or its type is incompatible.
      */
     @Override
     public <R> R getAttributeValue(final String attributeName, final Class<R> attributeType) {
@@ -138,12 +149,13 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
     }
 
     /**
-     * 获取解析后的属性值
+     * Retrieves the resolved attribute value. For {@code GenericAnnotationMapping}, this is the same as
+     * {@link #getAttributeValue(String, Class)} as no resolution is performed.
      *
-     * @param attributeName 属性名称
-     * @param attributeType 属性类型
-     * @param <R>           返回值类型
-     * @return 属性值
+     * @param attributeName The name of the attribute.
+     * @param attributeType The expected type of the attribute's value.
+     * @param <R>           The return type of the attribute value.
+     * @return The attribute value, or {@code null} if the attribute is not found or its type is incompatible.
      */
     @Override
     public <R> R getResolvedAttributeValue(final String attributeName, final Class<R> attributeType) {
@@ -151,10 +163,11 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
     }
 
     /**
-     * 比较两个实例是否相等
+     * Compares this instance with the specified object for equality. Two {@code GenericAnnotationMapping} instances are
+     * considered equal if their wrapped annotations and root status are equal.
      *
-     * @param o 对象
-     * @return 是否
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object o) {
@@ -169,9 +182,9 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
     }
 
     /**
-     * 获取实例哈希值
+     * Returns a hash code value for the object.
      *
-     * @return 哈希值
+     * @return A hash code value for this object.
      */
     @Override
     public int hashCode() {

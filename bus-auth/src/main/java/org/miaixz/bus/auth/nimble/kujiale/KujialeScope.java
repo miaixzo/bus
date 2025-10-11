@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * 酷家乐 授权范围
+ * Kujiale authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,13 +42,29 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum KujialeScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Retrieves the user's basic information. The meaning of {@code scope} is subject to {@code description}.
      */
-    GET_USER_INFO("get_user_info", "获取用户的基本信息", true), GET_DESIGN("get_design", "获取指定方案详情", false),
-    GET_BUDGET_LIST("get_budget_list", "获取清单预算概览数据", false);
+    GET_USER_INFO("get_user_info", "Retrieves the user's basic information", true),
+    /**
+     * Retrieves details of a specified design plan.
+     */
+    GET_DESIGN("get_design", "Retrieves details of a specified design plan", false),
+    /**
+     * Retrieves an overview of the bill budget data.
+     */
+    GET_BUDGET_LIST("get_budget_list", "Retrieves an overview of the bill budget data", false);
 
+    /**
+     * The scope string as defined by Kujiale.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

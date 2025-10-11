@@ -35,7 +35,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 授权配置类的校验器
+ * Validator for authorization configuration classes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,11 +43,11 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Checker {
 
     /**
-     * 是否支持第三方登录
+     * Checks if third-party login is supported for the given context and complex type.
      *
-     * @param context context
-     * @param complex complex
-     * @return true or false
+     * @param context the authentication context
+     * @param complex the complex type of the third-party platform
+     * @return true if third-party login is supported, false otherwise
      */
     public static boolean isSupportedAuth(Context context, Complex complex) {
         boolean isSupported = StringKit.isNotEmpty(context.getAppKey()) && StringKit.isNotEmpty(context.getAppSecret());
@@ -70,10 +70,13 @@ public class Checker {
     }
 
     /**
-     * 检查配置合法性。针对部分平台， 对redirect uri有特定要求。一般来说redirect uri都是http://，而对于facebook平台， redirect uri 必须是https的链接
+     * Checks the validity of the configuration. For some platforms, there are specific requirements for the redirect
+     * URI. Generally, redirect URIs are http://, but for platforms like Facebook, the redirect URI must be an https
+     * link.
      *
-     * @param context context
-     * @param complex complex
+     * @param context the authentication context
+     * @param complex the complex type of the third-party platform
+     * @throws AuthorizedException if the redirect URI is invalid or missing
      */
     public static void check(Context context, Complex complex) {
         String redirectUri = context.getRedirectUri();
@@ -89,13 +92,16 @@ public class Checker {
     }
 
     /**
-     * 校验回调传回的code {@code v1.10.0}版本中改为传入{@code complex}和{@code callback}，对于不同平台使用不同参数接受code的情况统一做处理
+     * Validates the code returned by the callback. In version {@code v1.10.0}, this method was changed to accept
+     * {@code complex} and {@code callback} to uniformly handle different platforms that use different parameters to
+     * receive the code.
      *
-     * @param complex  当前授权平台
-     * @param callback 从第三方授权回调回来时传入的参数集合
+     * @param complex  the current authorization platform
+     * @param callback the collection of parameters passed back from the third-party authorization callback
+     * @throws AuthorizedException if the code is missing or invalid
      */
     public static void check(Complex complex, Callback callback) {
-        // 推特平台不支持回调 code 和 state
+        // Twitter platform does not support callback code and state
         if (complex == Registry.TWITTER) {
             return;
         }
@@ -109,14 +115,17 @@ public class Checker {
     }
 
     /**
-     * 校验回调传回的{@code state}，为空或者不存在 {@code state}不存在的情况只有两种： 1. {@code state}已使用，被正常清除 2. {@code state}为前端伪造，本身就不存在
+     * Validates the {@code state} returned by the callback. The {@code state} being absent or empty can only occur in
+     * two scenarios: 1. The {@code state} has been used and normally cleared. 2. The {@code state} was forged by the
+     * frontend and never existed.
      *
-     * @param state   {@code state}一定不为空
-     * @param complex {@code complex}当前授权平台
-     * @param cache   {@code cache} state缓存实现
+     * @param state   the {@code state} parameter, which must not be empty
+     * @param complex the current authorization platform
+     * @param cache   the {@code cache} implementation for state storage
+     * @throws AuthorizedException if the state is empty or does not exist in the cache
      */
     public static void check(String state, Complex complex, CacheX cache) {
-        // 推特平台不支持回调 code 和 state
+        // Twitter platform does not support callback code and state
         if (complex == Registry.TWITTER) {
             return;
         }

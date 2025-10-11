@@ -41,9 +41,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 查询条件类，用于构建复杂的 SQL 查询条件
+ * A query criteria class for building complex SQL query conditions.
  *
- * @param <T> 实体类类型
+ * @param <T> The type of the entity class.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -53,17 +53,17 @@ import lombok.experimental.SuperBuilder;
 public class Criteria<T> {
 
     /**
-     * 条件列表，存储所有的查询条件
+     * A list of all query conditions.
      */
     protected List<Criterion> criteria;
 
     /**
-     * 是否启用选择性条件，true 表示只使用非空值条件，false 表示使用所有条件
+     * If true, only non-null value conditions are used; otherwise, all conditions are used.
      */
     private boolean useSelective = false;
 
     /**
-     * 默认构造函数，初始化条件列表
+     * Default constructor, initializes the criteria list.
      */
     public Criteria() {
         super();
@@ -71,9 +71,9 @@ public class Criteria<T> {
     }
 
     /**
-     * 带选择性条件的构造函数
+     * Constructor with selective condition option.
      *
-     * @param useSelective 是否启用选择性条件（非空校验）
+     * @param useSelective Whether to enable selective conditions (non-null checks).
      */
     public Criteria(boolean useSelective) {
         super();
@@ -82,39 +82,40 @@ public class Criteria<T> {
     }
 
     /**
-     * 获取方法引用对应的列名
+     * Gets the column name corresponding to a method reference.
      *
-     * @param fn 方法引用
-     * @return 列名
+     * @param fn The method reference.
+     * @return The column name.
      */
     public String column(Fn<T, Object> fn) {
         return fn.toColumn();
     }
 
     /**
-     * 获取方法引用对应的类型处理器
+     * Gets the type handler corresponding to a method reference.
      *
-     * @param fn 方法引用
-     * @return 类型处理器类
+     * @param fn The method reference.
+     * @return The type handler class.
      */
     public Class<? extends TypeHandler> typehandler(Fn<T, Object> fn) {
         return fn.toEntityColumn().typeHandler();
     }
 
     /**
-     * 判断是否使用该条件 如果 useSelective=false 则不开启条件值判空，使用该条件 如果 useSelective=true 且 条件值不为空，使用该条件
+     * Determines whether to use a criterion based on the selective setting. If `useSelective` is false, the criterion
+     * is always used. If `useSelective` is true, the criterion is used only if the value is not empty.
      *
-     * @param obj 条件值
-     * @return true 表示使用，false 表示不使用
+     * @param obj The value of the criterion.
+     * @return {@code true} to use the criterion, {@code false} otherwise.
      */
     public boolean useCriterion(Object obj) {
         return !useSelective || !ObjectKit.isEmpty(obj);
     }
 
     /**
-     * 添加简单条件
+     * Adds a simple criterion.
      *
-     * @param condition 条件表达式
+     * @param condition The condition expression.
      */
     public void addCriterion(String condition) {
         if (condition == null) {
@@ -124,10 +125,10 @@ public class Criteria<T> {
     }
 
     /**
-     * 添加带单个值的条件
+     * Adds a criterion with a single value.
      *
-     * @param condition 条件表达式
-     * @param value     条件值
+     * @param condition The condition expression.
+     * @param value     The value for the condition.
      */
     public void addCriterion(String condition, Object value) {
         if (value == null) {
@@ -137,11 +138,11 @@ public class Criteria<T> {
     }
 
     /**
-     * 添加带单个值和列信息的条件
+     * Adds a criterion with a single value and column information.
      *
-     * @param condition 条件表达式
-     * @param value     条件值
-     * @param column    列信息
+     * @param condition The condition expression.
+     * @param value     The value for the condition.
+     * @param column    The column metadata.
      */
     public void addCriterion(String condition, Object value, ColumnMeta column) {
         if (value == null) {
@@ -151,11 +152,11 @@ public class Criteria<T> {
     }
 
     /**
-     * 添加范围条件
+     * Adds a range criterion.
      *
-     * @param condition 条件表达式
-     * @param value1    起始值
-     * @param value2    结束值
+     * @param condition The condition expression.
+     * @param value1    The starting value.
+     * @param value2    The ending value.
      */
     public void addCriterion(String condition, Object value1, Object value2) {
         if (value1 == null || value2 == null) {
@@ -165,12 +166,12 @@ public class Criteria<T> {
     }
 
     /**
-     * 添加带列信息的范围条件
+     * Adds a range criterion with column information.
      *
-     * @param condition 条件表达式
-     * @param value1    起始值
-     * @param value2    结束值
-     * @param column    列信息
+     * @param condition The condition expression.
+     * @param value1    The starting value.
+     * @param value2    The ending value.
+     * @param column    The column metadata.
      */
     public void addCriterion(String condition, Object value1, Object value2, ColumnMeta column) {
         if (value1 == null || value2 == null) {
@@ -180,21 +181,21 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段为空的判断
+     * Conditionally adds an "IS NULL" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andIsNull(boolean useCondition, Fn<T, Object> fn) {
         return useCondition ? andIsNull(fn) : this;
     }
 
     /**
-     * 添加字段为空的判断
+     * Adds an "IS NULL" condition for a field.
      *
-     * @param fn 方法引用
-     * @return 当前条件对象
+     * @param fn The method reference to the field.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andIsNull(Fn<T, Object> fn) {
         addCriterion(column(fn) + " IS NULL");
@@ -202,21 +203,21 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段非空的判断
+     * Conditionally adds an "IS NOT NULL" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andIsNotNull(boolean useCondition, Fn<T, Object> fn) {
         return useCondition ? andIsNotNull(fn) : this;
     }
 
     /**
-     * 添加字段非空的判断
+     * Adds an "IS NOT NULL" condition for a field.
      *
-     * @param fn 方法引用
-     * @return 当前条件对象
+     * @param fn The method reference to the field.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andIsNotNull(Fn<T, Object> fn) {
         addCriterion(column(fn) + " IS NOT NULL");
@@ -224,23 +225,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段等于值的判断
+     * Conditionally adds an "equal to" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param value        值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param value        The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andEqualTo(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? andEqualTo(fn, value) : this;
     }
 
     /**
-     * 添加字段等于值的判断
+     * Adds an "equal to" condition for a field.
      *
-     * @param fn    方法引用
-     * @param value 值
-     * @return 当前条件对象
+     * @param fn    The method reference to the field.
+     * @param value The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andEqualTo(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
@@ -250,23 +251,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段不等于值的判断
+     * Conditionally adds a "not equal to" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param value        值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param value        The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andNotEqualTo(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? andNotEqualTo(fn, value) : this;
     }
 
     /**
-     * 添加字段不等于值的判断
+     * Adds a "not equal to" condition for a field.
      *
-     * @param fn    方法引用
-     * @param value 值
-     * @return 当前条件对象
+     * @param fn    The method reference to the field.
+     * @param value The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andNotEqualTo(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
@@ -276,23 +277,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段大于值的判断
+     * Conditionally adds a "greater than" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param value        值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param value        The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andGreaterThan(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? andGreaterThan(fn, value) : this;
     }
 
     /**
-     * 添加字段大于值的判断
+     * Adds a "greater than" condition for a field.
      *
-     * @param fn    方法引用
-     * @param value 值
-     * @return 当前条件对象
+     * @param fn    The method reference to the field.
+     * @param value The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andGreaterThan(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
@@ -302,23 +303,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段大于等于值的判断
+     * Conditionally adds a "greater than or equal to" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param value        值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param value        The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andGreaterThanOrEqualTo(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? andGreaterThanOrEqualTo(fn, value) : this;
     }
 
     /**
-     * 添加字段大于等于值的判断
+     * Adds a "greater than or equal to" condition for a field.
      *
-     * @param fn    方法引用
-     * @param value 值
-     * @return 当前条件对象
+     * @param fn    The method reference to the field.
+     * @param value The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andGreaterThanOrEqualTo(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
@@ -328,23 +329,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段小于值的判断
+     * Conditionally adds a "less than" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param value        值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param value        The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andLessThan(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? andLessThan(fn, value) : this;
     }
 
     /**
-     * 添加字段小于值的判断
+     * Adds a "less than" condition for a field.
      *
-     * @param fn    方法引用
-     * @param value 值
-     * @return 当前条件对象
+     * @param fn    The method reference to the field.
+     * @param value The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andLessThan(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
@@ -354,23 +355,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段小于等于值的判断
+     * Conditionally adds a "less than or equal to" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param value        值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param value        The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andLessThanOrEqualTo(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? andLessThanOrEqualTo(fn, value) : this;
     }
 
     /**
-     * 添加字段小于等于值的判断
+     * Adds a "less than or equal to" condition for a field.
      *
-     * @param fn    方法引用
-     * @param value 值
-     * @return 当前条件对象
+     * @param fn    The method reference to the field.
+     * @param value The value to compare.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andLessThanOrEqualTo(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
@@ -380,23 +381,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段在值集合中的判断
+     * Conditionally adds an "IN" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param values       值集合
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param values       A collection of values.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andIn(boolean useCondition, Fn<T, Object> fn, Iterable values) {
         return useCondition ? andIn(fn, values) : this;
     }
 
     /**
-     * 添加字段在值集合中的判断
+     * Adds an "IN" condition for a field.
      *
-     * @param fn     方法引用
-     * @param values 值集合
-     * @return 当前条件对象
+     * @param fn     The method reference to the field.
+     * @param values A collection of values.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andIn(Fn<T, Object> fn, Iterable values) {
         if (useCriterion(values)) {
@@ -406,23 +407,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段不在值集合中的判断
+     * Conditionally adds a "NOT IN" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param values       值集合
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param values       A collection of values.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andNotIn(boolean useCondition, Fn<T, Object> fn, Iterable values) {
         return useCondition ? andNotIn(fn, values) : this;
     }
 
     /**
-     * 添加字段不在值集合中的判断
+     * Adds a "NOT IN" condition for a field.
      *
-     * @param fn     方法引用
-     * @param values 值集合
-     * @return 当前条件对象
+     * @param fn     The method reference to the field.
+     * @param values A collection of values.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andNotIn(Fn<T, Object> fn, Iterable values) {
         if (useCriterion(values)) {
@@ -432,25 +433,25 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段在值区间内的判断
+     * Conditionally adds a "BETWEEN" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param value1       起始值
-     * @param value2       结束值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param value1       The starting value of the range.
+     * @param value2       The ending value of the range.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andBetween(boolean useCondition, Fn<T, Object> fn, Object value1, Object value2) {
         return useCondition ? andBetween(fn, value1, value2) : this;
     }
 
     /**
-     * 添加字段在值区间内的判断
+     * Adds a "BETWEEN" condition for a field.
      *
-     * @param fn     方法引用
-     * @param value1 起始值
-     * @param value2 结束值
-     * @return 当前条件对象
+     * @param fn     The method reference to the field.
+     * @param value1 The starting value of the range.
+     * @param value2 The ending value of the range.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andBetween(Fn<T, Object> fn, Object value1, Object value2) {
         if (useCriterion(value1) && useCriterion(value2)) {
@@ -460,25 +461,25 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段不在值区间内的判断
+     * Conditionally adds a "NOT BETWEEN" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param value1       起始值
-     * @param value2       结束值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param value1       The starting value of the range.
+     * @param value2       The ending value of the range.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andNotBetween(boolean useCondition, Fn<T, Object> fn, Object value1, Object value2) {
         return useCondition ? andNotBetween(fn, value1, value2) : this;
     }
 
     /**
-     * 添加字段不在值区间内的判断
+     * Adds a "NOT BETWEEN" condition for a field.
      *
-     * @param fn     方法引用
-     * @param value1 起始值
-     * @param value2 结束值
-     * @return 当前条件对象
+     * @param fn     The method reference to the field.
+     * @param value1 The starting value of the range.
+     * @param value2 The ending value of the range.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andNotBetween(Fn<T, Object> fn, Object value1, Object value2) {
         if (useCriterion(value1) && useCriterion(value2)) {
@@ -488,23 +489,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段模糊匹配的判断
+     * Conditionally adds a "LIKE" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param value        值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param value        The value to match.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andLike(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? andLike(fn, value) : this;
     }
 
     /**
-     * 添加字段模糊匹配的判断
+     * Adds a "LIKE" condition for a field.
      *
-     * @param fn    方法引用
-     * @param value 值
-     * @return 当前条件对象
+     * @param fn    The method reference to the field.
+     * @param value The value to match.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andLike(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
@@ -514,23 +515,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加字段非模糊匹配的判断
+     * Conditionally adds a "NOT LIKE" condition for a field.
      *
-     * @param useCondition 是否启用条件
-     * @param fn           方法引用
-     * @param value        值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param fn           The method reference to the field.
+     * @param value        The value to match.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andNotLike(boolean useCondition, Fn<T, Object> fn, Object value) {
         return useCondition ? andNotLike(fn, value) : this;
     }
 
     /**
-     * 添加字段非模糊匹配的判断
+     * Adds a "NOT LIKE" condition for a field.
      *
-     * @param fn    方法引用
-     * @param value 值
-     * @return 当前条件对象
+     * @param fn    The method reference to the field.
+     * @param value The value to match.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andNotLike(Fn<T, Object> fn, Object value) {
         if (useCriterion(value)) {
@@ -540,12 +541,12 @@ public class Criteria<T> {
     }
 
     /**
-     * 添加多个 OR 条件
+     * Adds multiple OR conditions.
      *
-     * @param orCriteria1 第一个 OR 条件
-     * @param orCriteria2 第二个 OR 条件
-     * @param orCriterias 其他 OR 条件
-     * @return 当前条件对象
+     * @param orCriteria1 The first OR criterion.
+     * @param orCriteria2 The second OR criterion.
+     * @param orCriterias Other OR criteria.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andOr(OrCriteria<T> orCriteria1, OrCriteria<T> orCriteria2, OrCriteria<T>... orCriterias) {
         List<OrCriteria<T>> orCriteriaList = new ArrayList<>(orCriterias != null ? orCriterias.length + 2 : 2);
@@ -558,10 +559,10 @@ public class Criteria<T> {
     }
 
     /**
-     * 添加 OR 条件列表
+     * Adds a list of OR conditions.
      *
-     * @param orCriteriaList OR 条件列表
-     * @return 当前条件对象
+     * @param orCriteriaList The list of OR criteria.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andOr(List<OrCriteria<T>> orCriteriaList) {
         criteria.add(new Criterion(null, orCriteriaList));
@@ -569,21 +570,21 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加自定义条件
+     * Conditionally adds a custom condition.
      *
-     * @param useCondition 是否启用条件
-     * @param condition    自定义条件，如 length(name) &lt; 5
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param condition    The custom condition, e.g., "length(name) &lt; 5".
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andCondition(boolean useCondition, String condition) {
         return useCondition ? andCondition(condition) : this;
     }
 
     /**
-     * 添加自定义条件
+     * Adds a custom condition.
      *
-     * @param condition 自定义条件，如 length(name) &lt; 5
-     * @return 当前条件对象
+     * @param condition The custom condition, e.g., "length(name) &lt; 5".
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andCondition(String condition) {
         addCriterion(condition);
@@ -591,23 +592,23 @@ public class Criteria<T> {
     }
 
     /**
-     * 条件添加自定义条件和值
+     * Conditionally adds a custom condition with a value.
      *
-     * @param useCondition 是否启用条件
-     * @param condition    自定义条件，如 length(name)=
-     * @param value        值
-     * @return 当前条件对象
+     * @param useCondition Whether to apply the condition.
+     * @param condition    The custom condition, e.g., "length(name)=".
+     * @param value        The value.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andCondition(boolean useCondition, String condition, Object value) {
         return useCondition ? andCondition(condition, value) : this;
     }
 
     /**
-     * 添加自定义条件和值
+     * Adds a custom condition with a value.
      *
-     * @param condition 自定义条件，如 length(name)=
-     * @param value     值，如 5
-     * @return 当前条件对象
+     * @param condition The custom condition, e.g., "length(name)=".
+     * @param value     The value, e.g., 5.
+     * @return This {@code Criteria} object.
      */
     public Criteria<T> andCondition(String condition, Object value) {
         criteria.add(new Criterion(condition, value));
@@ -615,18 +616,18 @@ public class Criteria<T> {
     }
 
     /**
-     * 获取条件列表
+     * Gets the list of criteria.
      *
-     * @return 条件列表
+     * @return The list of criteria.
      */
     public List<Criterion> getCriteria() {
         return criteria;
     }
 
     /**
-     * 判断条件是否有效
+     * Checks if the criteria are valid (i.e., not empty).
      *
-     * @return true 表示有效，false 表示无效
+     * @return {@code true} if valid, {@code false} otherwise.
      */
     public boolean isValid() {
         return criteria.size() > 0;

@@ -36,8 +36,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Gif编码压缩
- * 
+ * Encodes a sequence of images into an animated GIF.
+ *
  * <pre>
  * AnimatedGifEncoder e = new AnimatedGifEncoder();
  * e.start(outputFileName);
@@ -50,39 +50,93 @@ import java.io.OutputStream;
 public class AnimatedGifEncoder {
 
     /**
-     * 图片帧的宽度
+     * The width of the image frames.
      */
     protected int width;
     /**
-     * 图片帧的高度
+     * The height of the image frames.
      */
     protected int height;
+    /**
+     * The transparent color, if specified.
+     */
     protected Color transparent = null; // transparent color if given
+    /**
+     * Determines if the transparent color match should be exact.
+     */
     protected boolean transparentExactMatch = false; // transparent color will be found by looking for the closest color
     // or for the exact color if transparentExactMatch == true
+    /**
+     * The background color, if specified.
+     */
     protected Color background = null; // background color if given
+    /**
+     * The index of the transparent color in the color table.
+     */
     protected int transIndex; // transparent index in color table
     /**
-     * 重复设置，0表示无限重复
+     * The repeat setting, where 0 means infinite loop.
      */
     protected int repeat = -1;
+    /**
+     * Frame delay in hundredths of a second.
+     */
     protected int delay = 0; // frame delay (hundredths)
+    /**
+     * Flag indicating if the encoder is ready to output frames.
+     */
     protected boolean started = false; // ready to output frames
+    /**
+     * The output stream to write the GIF to.
+     */
     protected OutputStream out;
     /**
-     * 当前帧
+     * The current frame image.
      */
     protected BufferedImage image; // current frame
+    /**
+     * BGR byte array from the current frame.
+     */
     protected byte[] pixels; // BGR byte array from frame
+    /**
+     * The frame's pixels indexed to the palette.
+     */
     protected byte[] indexedPixels; // converted frame indexed to palette
+    /**
+     * The number of bit planes.
+     */
     protected int colorDepth; // number of bit planes
+    /**
+     * The RGB color palette.
+     */
     protected byte[] colorTab; // RGB palette
+    /**
+     * A boolean array indicating which palette entries are active.
+     */
     protected boolean[] usedEntry = new boolean[256]; // active palette entries
+    /**
+     * The color table size (in bits - 1).
+     */
     protected int palSize = 7; // color table size (bits-1)
+    /**
+     * The disposal code (-1 means use default).
+     */
     protected int dispose = -1; // disposal code (-1 = use default)
+    /**
+     * Flag to close the stream when finished.
+     */
     protected boolean closeStream = false; // close stream when finished
+    /**
+     * Flag for the first frame.
+     */
     protected boolean firstFrame = true;
+    /**
+     * Flag indicating if the size has been set. If false, size is taken from the first frame.
+     */
     protected boolean sizeSet = false; // if false, get size from first frame
+    /**
+     * The default sample interval for the quantizer.
+     */
     protected int sample = 10; // default sample interval for quantizer
 
     /**
@@ -136,7 +190,8 @@ public class AnimatedGifEncoder {
      * search with exact match, and not looking for the closest one. May be set to null to indicate no transparent
      * color.
      *
-     * @param c Color to be treated as transparent on display.
+     * @param c          Color to be treated as transparent on display.
+     * @param exactMatch whether to look for an exact match or the closest color.
      */
     public void setTransparent(Color c, boolean exactMatch) {
         transparent = c;
@@ -200,6 +255,8 @@ public class AnimatedGifEncoder {
 
     /**
      * Flushes any pending data and closes output file. If writing to an OutputStream, the stream is not closed.
+     *
+     * @return true if successful.
      */
     public boolean finish() {
         if (!started)
@@ -310,6 +367,11 @@ public class AnimatedGifEncoder {
         return started = ok;
     }
 
+    /**
+     * Returns whether the encoding process has started.
+     *
+     * @return true if the encoding has started, false otherwise.
+     */
     public boolean isStarted() {
         return started;
     }
@@ -349,6 +411,9 @@ public class AnimatedGifEncoder {
 
     /**
      * Returns index of palette color closest to c
+     *
+     * @param c The color to find the closest match for.
+     * @return The index of the closest color in the palette.
      */
     protected int findClosest(Color c) {
         if (colorTab == null)
@@ -374,10 +439,13 @@ public class AnimatedGifEncoder {
         return minpos;
     }
 
-    /*
+    /**
      * Returns true if the exact matching color is existing, and used in the color palette, otherwise, return false.
      * This method has to be called before finishing the image, because after finished the palette is destroyed and it
      * will always return false.
+     *
+     * @param c The color to check.
+     * @return true if the color is used in the palette.
      */
     boolean isColorUsed(Color c) {
         return findExact(c) != -1;
@@ -385,6 +453,9 @@ public class AnimatedGifEncoder {
 
     /**
      * Returns index of palette exactly matching to color c or -1 if there is no exact matching.
+     *
+     * @param c The color to find an exact match for.
+     * @return The index of the exact color in the palette, or -1 if not found.
      */
     protected int findExact(Color c) {
         if (colorTab == null) {
@@ -427,6 +498,8 @@ public class AnimatedGifEncoder {
 
     /**
      * Writes Graphic Control Extension
+     *
+     * @throws IOException if an I/O error occurs.
      */
     protected void writeGraphicCtrlExt() throws IOException {
         out.write(0x21); // extension introducer
@@ -458,6 +531,8 @@ public class AnimatedGifEncoder {
 
     /**
      * Writes Image Descriptor
+     *
+     * @throws IOException if an I/O error occurs.
      */
     protected void writeImageDesc() throws IOException {
         out.write(0x2c); // image separator
@@ -481,6 +556,8 @@ public class AnimatedGifEncoder {
 
     /**
      * Writes Logical Screen Descriptor
+     *
+     * @throws IOException if an I/O error occurs.
      */
     protected void writeLSD() throws IOException {
         // logical screen size
@@ -498,6 +575,8 @@ public class AnimatedGifEncoder {
 
     /**
      * Writes Netscape application extension to define repeat count.
+     *
+     * @throws IOException if an I/O error occurs.
      */
     protected void writeNetscapeExt() throws IOException {
         out.write(0x21); // extension introducer
@@ -512,6 +591,8 @@ public class AnimatedGifEncoder {
 
     /**
      * Writes color table
+     *
+     * @throws IOException if an I/O error occurs.
      */
     protected void writePalette() throws IOException {
         out.write(colorTab, 0, colorTab.length);
@@ -523,6 +604,8 @@ public class AnimatedGifEncoder {
 
     /**
      * Encodes and writes pixel data
+     *
+     * @throws IOException if an I/O error occurs.
      */
     protected void writePixels() throws IOException {
         LZWEncoder encoder = new LZWEncoder(width, height, indexedPixels, colorDepth);
@@ -531,6 +614,9 @@ public class AnimatedGifEncoder {
 
     /**
      * Write 16-bit value to output stream, LSB first
+     *
+     * @param value The integer value to write.
+     * @throws IOException if an I/O error occurs.
      */
     protected void writeShort(int value) throws IOException {
         out.write(value & 0xff);
@@ -539,6 +625,9 @@ public class AnimatedGifEncoder {
 
     /**
      * Writes string to output stream
+     *
+     * @param s The string to write.
+     * @throws IOException if an I/O error occurs.
      */
     protected void writeString(String s) throws IOException {
         for (int i = 0; i < s.length(); i++) {

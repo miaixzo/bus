@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 代理工厂 简化动态代理
+ * Provides a simplified API for creating dynamic proxies using aspects.
  *
  * @author Kimi Liu
  * @since Java 17+

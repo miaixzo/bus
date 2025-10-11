@@ -30,7 +30,8 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 /**
- * 校验组注解,标记当前位置被激活的校验组
+ * A validation group annotation that marks the currently activated validation groups at a specific location. When this
+ * annotation is present, only validation constraints belonging to one of the specified groups will be processed.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,9 +42,9 @@ import java.lang.annotation.*;
 public @interface Group {
 
     /**
-     * 表示被激活的校验组
+     * Represents the activated validation groups.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] value() default {};
 

@@ -51,9 +51,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 通用的条件查询对象，用于构建复杂的查询条件
+ * A generic condition query object for building complex query criteria.
  *
- * @param <T> 实体类类型
+ * @param <T> The type of the entity class.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -63,40 +63,40 @@ import lombok.experimental.SuperBuilder;
 public class Condition<T> {
 
     /**
-     * 排序字段
+     * The ORDER BY clause for the query.
      */
     protected String orderByClause;
     /**
-     * 是否使用 DISTINCT 关键字
+     * Whether to use the DISTINCT keyword in the query.
      */
     protected boolean distinct;
     /**
-     * 指定查询的列
+     * The specific columns to be selected in the query.
      */
     protected String selectColumns;
     /**
-     * 指定查询的列，不带 column AS alias 别名
+     * The specific columns to be selected, without "column AS alias" aliases.
      */
     protected String simpleSelectColumns;
     /**
-     * 起始 SQL，添加到查询 SQL 前
+     * SQL to be prepended to the main query.
      */
     protected String startSql;
     /**
-     * 结尾 SQL，添加到查询 SQL 后
+     * SQL to be appended to the main query.
      */
     protected String endSql;
     /**
-     * 多组条件通过 OR 连接
+     * A list of criteria groups connected by OR.
      */
     protected List<Criteria<T>> oredCriteria;
     /**
-     * 设置 UPDATE 语句的 SET 字段
+     * A list of fields to be set in an UPDATE statement.
      */
     protected List<Criterion> setValues;
 
     /**
-     * 默认构造方法，初始化条件列表和 SET 值列表，禁止空条件操作全库
+     * Default constructor. Initializes the criteria list and set-values list.
      */
     public Condition() {
         oredCriteria = new ArrayList<>();
@@ -104,18 +104,18 @@ public class Condition<T> {
     }
 
     /**
-     * 添加 OR 条件
+     * Adds a criteria group with an OR condition.
      *
-     * @param criteria 条件对象
+     * @param criteria The criteria object to add.
      */
     public void or(Criteria<T> criteria) {
         oredCriteria.add(criteria);
     }
 
     /**
-     * 创建并添加一组 OR 条件
+     * Creates and adds a new criteria group with an OR condition.
      *
-     * @return 新创建的条件对象
+     * @return The newly created criteria object.
      */
     public Criteria<T> or() {
         Criteria<T> criteria = createCriteriaInternal();
@@ -124,18 +124,18 @@ public class Condition<T> {
     }
 
     /**
-     * 创建独立的 OR 条件片段，不追加到当前条件
+     * Creates a standalone OR criteria fragment, which is not appended to the current condition.
      *
-     * @return OR 条件对象
+     * @return An {@link OrCriteria} object.
      */
     public OrCriteria<T> orPart() {
         return new OrCriteria<>();
     }
 
     /**
-     * 创建一组条件，首次调用时作为默认条件
+     * Creates a criteria group. If it is the first one, it becomes the default criteria.
      *
-     * @return 新创建的条件对象
+     * @return The newly created criteria object.
      */
     public Criteria<T> createCriteria() {
         Criteria<T> criteria = createCriteriaInternal();
@@ -146,9 +146,9 @@ public class Condition<T> {
     }
 
     /**
-     * 创建一组选择性条件，首次调用时作为默认条件
+     * Creates a selective criteria group. If it is the first one, it becomes the default criteria.
      *
-     * @return 新创建的选择性条件对象
+     * @return The newly created selective criteria object.
      */
     public Criteria<T> createCriteriaSelective() {
         Criteria<T> criteria = new Criteria<>(true);
@@ -159,16 +159,16 @@ public class Condition<T> {
     }
 
     /**
-     * 内部创建条件对象
+     * Internal method to create a new criteria object.
      *
-     * @return 新创建的条件对象
+     * @return The newly created criteria object.
      */
     protected Criteria<T> createCriteriaInternal() {
         return new Criteria<>();
     }
 
     /**
-     * 清除所有条件和设置
+     * Clears all conditions, settings, and clauses.
      */
     public void clear() {
         oredCriteria.clear();
@@ -182,10 +182,11 @@ public class Condition<T> {
     }
 
     /**
-     * 指定查询列，多次调用覆盖，清除排除列设置
+     * Specifies the columns to be selected. Subsequent calls will overwrite previous selections and clear any excluded
+     * column settings.
      *
-     * @param fns 方法引用数组
-     * @return 当前条件对象
+     * @param fns An array of method references representing the columns to select.
+     * @return The current {@link Condition} object.
      */
     @SafeVarargs
     public final Condition<T> selectColumns(Fn<T, Object>... fns) {
@@ -199,9 +200,9 @@ public class Condition<T> {
     }
 
     /**
-     * 内部设置查询列
+     * Internal method to set the select columns from a list of {@link ColumnMeta}.
      *
-     * @param columns 查询列列表
+     * @param columns The list of columns to select.
      */
     private void selectColumns(List<ColumnMeta> columns) {
         StringBuilder sb = new StringBuilder(columns.size() * 16);
@@ -231,10 +232,10 @@ public class Condition<T> {
     }
 
     /**
-     * 排除指定查询列，清除已选列设置
+     * Excludes specified columns from the selection. This will clear any previously selected columns.
      *
-     * @param fns 方法引用数组
-     * @return 当前条件对象
+     * @param fns An array of method references representing the columns to exclude.
+     * @return The current {@link Condition} object.
      */
     @SafeVarargs
     public final Condition<T> excludeColumns(Fn<T, Object>... fns) {
@@ -252,19 +253,19 @@ public class Condition<T> {
     }
 
     /**
-     * 获取查询列
+     * Gets the string of selected columns.
      *
-     * @return 查询列字符串
+     * @return The selected columns string.
      */
     public String getSelectColumns() {
         return selectColumns;
     }
 
     /**
-     * 设置查询列
+     * Sets the string of selected columns.
      *
-     * @param selectColumns 查询列字符串
-     * @return 当前条件对象
+     * @param selectColumns The string of columns to select.
+     * @return The current {@link Condition} object.
      */
     public Condition<T> setSelectColumns(String selectColumns) {
         this.selectColumns = selectColumns;
@@ -272,19 +273,19 @@ public class Condition<T> {
     }
 
     /**
-     * 获取不带别名的查询列
+     * Gets the string of selected columns without aliases.
      *
-     * @return 简单查询列字符串
+     * @return The simple selected columns string.
      */
     public String getSimpleSelectColumns() {
         return simpleSelectColumns;
     }
 
     /**
-     * 设置不带别名的查询列
+     * Sets the string of selected columns without aliases.
      *
-     * @param simpleSelectColumns 简单查询列字符串
-     * @return 当前条件对象
+     * @param simpleSelectColumns The string of simple columns to select.
+     * @return The current {@link Condition} object.
      */
     public Condition<T> setSimpleSelectColumns(String simpleSelectColumns) {
         this.simpleSelectColumns = simpleSelectColumns;
@@ -292,19 +293,19 @@ public class Condition<T> {
     }
 
     /**
-     * 获取起始 SQL
+     * Gets the starting SQL fragment.
      *
-     * @return 起始 SQL 字符串
+     * @return The starting SQL string.
      */
     public String getStartSql() {
         return startSql;
     }
 
     /**
-     * 设置起始 SQL
+     * Sets the starting SQL fragment.
      *
-     * @param startSql 起始 SQL 字符串
-     * @return 当前条件对象
+     * @param startSql The starting SQL string.
+     * @return The current {@link Condition} object.
      */
     public Condition<T> setStartSql(String startSql) {
         this.startSql = startSql;
@@ -312,19 +313,19 @@ public class Condition<T> {
     }
 
     /**
-     * 获取结尾 SQL
+     * Gets the ending SQL fragment.
      *
-     * @return 结尾 SQL 字符串
+     * @return The ending SQL string.
      */
     public String getEndSql() {
         return endSql;
     }
 
     /**
-     * 设置结尾 SQL
+     * Sets the ending SQL fragment.
      *
-     * @param endSql 结尾 SQL 字符串
-     * @return 当前条件对象
+     * @param endSql The ending SQL string.
+     * @return The current {@link Condition} object.
      */
     public Condition<T> setEndSql(String endSql) {
         this.endSql = endSql;
@@ -332,11 +333,11 @@ public class Condition<T> {
     }
 
     /**
-     * 通过方法引用设置排序字段
+     * Adds an ORDER BY clause using a method reference.
      *
-     * @param fn    排序列方法引用
-     * @param order 排序方式（ASC/DESC）
-     * @return 当前条件对象
+     * @param fn    A method reference to the column to order by.
+     * @param order The sort order ("ASC" or "DESC").
+     * @return The current {@link Condition} object.
      */
     public Condition<T> orderBy(Fn<T, Object> fn, String order) {
         if (orderByClause == null) {
@@ -349,10 +350,10 @@ public class Condition<T> {
     }
 
     /**
-     * 设置非常规或字符串形式的排序，不覆盖已有排序
+     * Adds a raw string ORDER BY clause. This does not overwrite existing clauses.
      *
-     * @param orderByCondition 排序表达式，如 "status = 5 DESC"
-     * @return 当前条件对象
+     * @param orderByCondition The sorting expression (e.g., "status = 5 DESC").
+     * @return The current {@link Condition} object.
      */
     public Condition<T> orderBy(String orderByCondition) {
         if (orderByCondition != null && !orderByCondition.isEmpty()) {
@@ -367,20 +368,20 @@ public class Condition<T> {
     }
 
     /**
-     * 设置动态构造的非常规排序
+     * Adds a dynamically constructed, unconventional ORDER BY clause.
      *
-     * @param orderByCondition 排序表达式提供者，如 FIELD(id,3,1,2)
-     * @return 当前条件对象
+     * @param orderByCondition A supplier for the sorting expression (e.g., FIELD(id,3,1,2)).
+     * @return The current {@link Condition} object.
      */
     public Condition<T> orderBy(Supplier<String> orderByCondition) {
         return orderBy(orderByCondition.get());
     }
 
     /**
-     * 通过方法引用设置升序排序
+     * Adds an ascending ORDER BY clause for the specified columns using method references.
      *
-     * @param fns 排序列方法引用数组
-     * @return 当前条件对象
+     * @param fns An array of method references to the columns.
+     * @return The current {@link Condition} object.
      */
     @SafeVarargs
     public final Condition<T> orderByAsc(Fn<T, Object>... fns) {
@@ -393,10 +394,10 @@ public class Condition<T> {
     }
 
     /**
-     * 通过方法引用设置降序排序
+     * Adds a descending ORDER BY clause for the specified columns using method references.
      *
-     * @param fns 排序列方法引用数组
-     * @return 当前条件对象
+     * @param fns An array of method references to the columns.
+     * @return The current {@link Condition} object.
      */
     @SafeVarargs
     public final Condition<T> orderByDesc(Fn<T, Object>... fns) {
@@ -409,19 +410,19 @@ public class Condition<T> {
     }
 
     /**
-     * 获取排序字段
+     * Gets the ORDER BY clause.
      *
-     * @return 排序字段字符串
+     * @return The ORDER BY clause string.
      */
     public String getOrderByClause() {
         return orderByClause;
     }
 
     /**
-     * 设置排序字段
+     * Sets the ORDER BY clause.
      *
-     * @param orderByClause 排序字段字符串
-     * @return 当前条件对象
+     * @param orderByClause The ORDER BY clause string.
+     * @return The current {@link Condition} object.
      */
     public Condition<T> setOrderByClause(String orderByClause) {
         this.orderByClause = orderByClause;
@@ -429,27 +430,27 @@ public class Condition<T> {
     }
 
     /**
-     * 获取所有 OR 条件
+     * Gets the list of all OR criteria groups.
      *
-     * @return OR 条件列表
+     * @return A list of {@link Criteria} objects.
      */
     public List<Criteria<T>> getOredCriteria() {
         return oredCriteria;
     }
 
     /**
-     * 获取 SET 值列表
+     * Gets the list of values to be set in an UPDATE statement.
      *
-     * @return SET 值列表
+     * @return A list of {@link Criterion} objects for the SET clause.
      */
     public List<Criterion> getSetValues() {
         return setValues;
     }
 
     /**
-     * 判断查询条件是否为空
+     * Checks if the query condition is empty.
      *
-     * @return true 表示为空，false 表示非空
+     * @return {@code true} if empty, {@code false} otherwise.
      */
     public boolean isEmpty() {
         if (oredCriteria.isEmpty()) {
@@ -459,19 +460,19 @@ public class Condition<T> {
     }
 
     /**
-     * 获取 DISTINCT 设置
+     * Checks if the DISTINCT keyword is enabled.
      *
-     * @return true 表示启用 DISTINCT，false 表示未启用
+     * @return {@code true} if DISTINCT is enabled, {@code false} otherwise.
      */
     public boolean isDistinct() {
         return distinct;
     }
 
     /**
-     * 设置 DISTINCT
+     * Enables or disables the DISTINCT keyword.
      *
-     * @param distinct true 启用 DISTINCT，false 不启用
-     * @return 当前条件对象
+     * @param distinct {@code true} to enable DISTINCT, {@code false} to disable.
+     * @return The current {@link Condition} object.
      */
     public Condition<T> setDistinct(boolean distinct) {
         this.distinct = distinct;
@@ -479,10 +480,10 @@ public class Condition<T> {
     }
 
     /**
-     * 设置更新字段和值
+     * Adds a field and value to be updated in a SET clause.
      *
-     * @param setSql SET 子句，如 "column = value"
-     * @return 当前条件对象
+     * @param setSql The SET clause, e.g., "column = value".
+     * @return The current {@link Condition} object.
      */
     public Condition<T> set(String setSql) {
         this.setValues.add(new Criterion(setSql));
@@ -490,11 +491,11 @@ public class Condition<T> {
     }
 
     /**
-     * 设置更新字段和值
+     * Adds a field and value to be updated in a SET clause using a method reference.
      *
-     * @param fn    字段方法引用
-     * @param value 值
-     * @return 当前条件对象
+     * @param fn    A method reference to the field.
+     * @param value The value to set.
+     * @return The current {@link Condition} object.
      */
     public Condition<T> set(Fn<T, Object> fn, Object value) {
         ColumnMeta column = fn.toEntityColumn();

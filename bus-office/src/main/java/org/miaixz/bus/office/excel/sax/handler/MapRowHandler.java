@@ -35,7 +35,8 @@ import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * Map形式的行处理器 将一行数据转换为Map，key为指定行，value为当前行对应位置的值
+ * A row handler that converts a row of data into a Map, where the key is from a specified header row and the value is
+ * the corresponding cell content.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,20 +44,21 @@ import org.miaixz.bus.core.xyz.ListKit;
 public abstract class MapRowHandler extends AbstractRowHandler<Map<String, Object>> {
 
     /**
-     * 标题所在行（从0开始计数）
+     * The 0-based index of the header row.
      */
     private final int headerRowIndex;
     /**
-     * 标题行
+     * The list of header names.
      */
     List<String> headerList;
 
     /**
-     * 构造
+     * Constructs a new {@code MapRowHandler}.
      *
-     * @param headerRowIndex 标题所在行（从0开始计数）
-     * @param startRowIndex  读取起始行（包含，从0开始计数）
-     * @param endRowIndex    读取结束行（包含，从0开始计数）
+     * @param headerRowIndex The 0-based index of the header row. If the header row is in the middle of the content rows
+     *                       to be read, this row will be ignored as data.
+     * @param startRowIndex  The starting row index (inclusive, 0-based) for reading.
+     * @param endRowIndex    The ending row index (inclusive, 0-based) for reading.
      */
     public MapRowHandler(final int headerRowIndex, final int startRowIndex, final int endRowIndex) {
         super(startRowIndex, endRowIndex);

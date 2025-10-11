@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Spring-Boot JAR包加解密工具类,在不提供过滤器的情况下会加密BOOT-INF/下的所有资源,及包括项目本身的资源和依赖jar资源
+ * Provides utilities for encrypting and decrypting Spring Boot JAR packages. When no specific filter is provided, it
+ * encrypts all resources under {@code BOOT-INF/}, including project-specific resources and dependent JARs.
  *
  * @author Kimi Liu
  * @since Java 17+

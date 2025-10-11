@@ -31,39 +31,65 @@ import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * Bas32编码器
+ * Encodes a byte array into a Base32 string.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Base32Encoder implements Encoder<byte[], String> {
 
+    /**
+     * The default Base32 alphabet.
+     */
     public static final String DEFAULT_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+
+    /**
+     * The Base32 alphabet used in hexadecimal contexts.
+     */
     public static final String HEX_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 
     /**
-     * 编码器
+     * The default Base32 encoder.
      */
     public static final Base32Encoder ENCODER = new Base32Encoder(DEFAULT_ALPHABET, Symbol.C_EQUAL);
+
     /**
-     * 16进制编码器
+     * The Base32 encoder for the hexadecimal alphabet.
      */
     public static final Base32Encoder HEX_ENCODER = new Base32Encoder(HEX_ALPHABET, Symbol.C_EQUAL);
+
+    /**
+     * Padding values for Base32 encoding.
+     */
     private static final int[] BASE32_FILL = { -1, 4, 1, 6, 3 };
+
+    /**
+     * The alphabet used for encoding.
+     */
     private final char[] alphabet;
+
+    /**
+     * The character used for padding.
+     */
     private final Character pad;
 
     /**
-     * 构造
+     * Constructs a new Base32Encoder with a custom alphabet and padding character.
      *
-     * @param alphabet 自定义编码字母表，见 {@link #DEFAULT_ALPHABET}和 {@link #HEX_ALPHABET}
-     * @param pad      补位字符
+     * @param alphabet The alphabet to use for encoding (e.g., {@link #DEFAULT_ALPHABET} or {@link #HEX_ALPHABET}).
+     * @param pad      The character to use for padding.
      */
     public Base32Encoder(final String alphabet, final Character pad) {
         this.alphabet = alphabet.toCharArray();
         this.pad = pad;
     }
 
+    /**
+     * Encodes a byte array into a Base32 string.
+     *
+     * @param data The byte array to encode.
+     * @return The Base32 encoded string.
+     */
     @Override
     public String encode(final byte[] data) {
         int i = 0;
@@ -107,7 +133,7 @@ public class Base32Encoder implements Encoder<byte[], String> {
         }
 
         if (null != pad) {
-            // 末尾补充不足长度的
+            // Pad the output to the correct length
             while (base32.length() < encodeLen) {
                 base32.append(pad.charValue());
             }

@@ -33,48 +33,53 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 /**
- * 多文件组合资源 此资源为一个利用游标自循环资源，只有调用{@link #next()} 方法才会获取下一个资源，使用完毕后调用{@link #reset()}方法重置游标
+ * A composite resource that combines multiple file resources. This resource acts as a self-cycling cursor, where
+ * calling {@link #next()} retrieves the subsequent resource. After all resources are consumed, {@link #reset()} can be
+ * called to reset the cursor for reuse.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MultiFileResource extends MultiResource {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852232069651L;
 
     /**
-     * 构造
+     * Constructs a {@code MultiFileResource} with a collection of {@link File} objects.
      *
-     * @param files 文件资源列表
+     * @param files A collection of {@link File} objects.
      */
     public MultiFileResource(final Collection<File> files) {
         add(files);
     }
 
     /**
-     * 构造
+     * Constructs a {@code MultiFileResource} with an array of {@link File} objects.
      *
-     * @param files 文件资源列表
+     * @param files An array of {@link File} objects.
      */
     public MultiFileResource(final File... files) {
         add(files);
     }
 
     /**
-     * 构造
+     * Constructs a {@code MultiFileResource} with an array of {@link Path} objects.
      *
-     * @param files 文件资源列表
+     * @param files An array of {@link Path} objects.
      */
     public MultiFileResource(final Path... files) {
         add(files);
     }
 
     /**
-     * 增加文件资源
+     * Adds one or more {@link File} resources to this composite resource.
      *
-     * @param files 文件资源
-     * @return this
+     * @param files An array of {@link File} objects to add.
+     * @return This {@code MultiFileResource} instance for method chaining.
      */
     public MultiFileResource add(final File... files) {
         for (final File file : files) {
@@ -84,10 +89,10 @@ public class MultiFileResource extends MultiResource {
     }
 
     /**
-     * 增加文件资源
+     * Adds one or more {@link Path} resources to this composite resource.
      *
-     * @param files 文件资源
-     * @return this
+     * @param files An array of {@link Path} objects to add.
+     * @return This {@code MultiFileResource} instance for method chaining.
      */
     public MultiFileResource add(final Path... files) {
         for (final Path file : files) {
@@ -97,10 +102,10 @@ public class MultiFileResource extends MultiResource {
     }
 
     /**
-     * 增加文件资源
+     * Adds a collection of {@link File} resources to this composite resource.
      *
-     * @param files 文件资源
-     * @return this
+     * @param files A collection of {@link File} objects to add.
+     * @return This {@code MultiFileResource} instance for method chaining.
      */
     public MultiFileResource add(final Collection<File> files) {
         for (final File file : files) {

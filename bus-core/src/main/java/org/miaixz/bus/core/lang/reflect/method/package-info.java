@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供 {@link java.lang.reflect.Method} 相关封装
+ * Provides encapsulation related to {@link java.lang.reflect.Method}. This package contains utilities for working with
+ * methods, including method invocation and reflection.
  *
  * @author Kimi Liu
  * @since Java 17+

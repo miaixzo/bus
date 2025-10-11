@@ -31,36 +31,37 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 
 /**
- * 表示连接到源服务器的具体路由。
+ * Represents a specific route to an origin server chosen by the HTTP client when making a connection.
  * <p>
- * 路由封装了 HTTP 客户端连接时选择的特定配置，包括目标地址、代理和套接字地址。 每个路由是客户端连接选项（如代理选择、TLS 配置）的具体实例，实例是不可变的。
- * </p>
+ * A route encapsulates the specific configuration for a connection, including the target address, the proxy to use, and
+ * the socket address. Each route is an immutable instance representing a concrete choice of the client's connection
+ * options (like proxy selection, TLS configuration).
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Route {
+public final class Route {
 
     /**
-     * 目标服务器的地址配置
+     * The address configuration for the target server.
      */
     final Address address;
     /**
-     * 使用的代理
+     * The proxy used for the connection.
      */
     final Proxy proxy;
     /**
-     * 目标套接字地址（IP 和端口）
+     * The target socket address (IP and port).
      */
     final InetSocketAddress inetSocketAddress;
 
     /**
-     * 构造函数，初始化 Route 实例。
+     * Constructs a new {@code Route} instance.
      *
-     * @param address           目标服务器的地址配置
-     * @param proxy             使用的代理
-     * @param inetSocketAddress 目标套接字地址
-     * @throws NullPointerException 如果 address、proxy 或 inetSocketAddress 为 null
+     * @param address           The address configuration for the target server.
+     * @param proxy             The proxy to use for the connection.
+     * @param inetSocketAddress The target socket address.
+     * @throws NullPointerException if address, proxy, or inetSocketAddress is null.
      */
     public Route(Address address, Proxy proxy, InetSocketAddress inetSocketAddress) {
         if (null == address) {
@@ -78,55 +79,56 @@ public class Route {
     }
 
     /**
-     * 获取目标服务器的地址配置。
+     * Returns the address configuration for the target server.
      *
-     * @return Address 对象
+     * @return The {@link Address} object.
      */
     public Address address() {
         return address;
     }
 
     /**
-     * 获取使用的代理。
+     * Returns the proxy used for this route.
      * <p>
-     * <strong>警告：</strong> 如果 {@link Address#proxy} 为 null，此代理可能与地址配置中的代理不同， 因为地址未指定代理时会使用代理选择器。
+     * <strong>Warning:</strong> This may be different from the proxy in the address configuration if a proxy selector
+     * is used and the address does not specify a proxy.
      * </p>
      *
-     * @return Proxy 对象
+     * @return The {@link Proxy} object.
      */
     public Proxy proxy() {
         return proxy;
     }
 
     /**
-     * 获取目标套接字地址。
+     * Returns the target socket address.
      *
-     * @return InetSocketAddress 对象，表示目标 IP 和端口
+     * @return The {@link InetSocketAddress} object, representing the target IP and port.
      */
     public InetSocketAddress socketAddress() {
         return inetSocketAddress;
     }
 
     /**
-     * 检查路由是否需要通过 HTTP 代理进行 HTTPS 隧道传输。
+     * Returns whether this route requires an HTTPS tunnel through an HTTP proxy.
      * <p>
-     * 参见 <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817, Section 5.2</a>。
+     * See <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817, Section 5.2</a>.
      * </p>
      *
-     * @return true 如果路由使用 HTTP 代理进行 HTTPS 隧道传输
+     * @return {@code true} if this route requires an HTTPS tunnel.
      */
     public boolean requiresTunnel() {
         return address.sslSocketFactory != null && proxy.type() == Proxy.Type.HTTP;
     }
 
     /**
-     * 比较两个 Route 对象是否相等。
+     * Compares this route to another object for equality.
      * <p>
-     * 两个路由相等需满足：地址、代理和套接字地址均相同。
+     * Two routes are equal if their address, proxy, and socket address are all equal.
      * </p>
      *
-     * @param other 另一个对象
-     * @return true 如果两个 Route 对象相等
+     * @param other The other object to compare against.
+     * @return {@code true} if the two routes are equal.
      */
     @Override
     public boolean equals(Object other) {
@@ -135,9 +137,9 @@ public class Route {
     }
 
     /**
-     * 计算 Route 对象的哈希码。
+     * Computes the hash code for this route.
      *
-     * @return 哈希码值
+     * @return The hash code value.
      */
     @Override
     public int hashCode() {
@@ -149,9 +151,9 @@ public class Route {
     }
 
     /**
-     * 返回路由的字符串表示。
+     * Returns a string representation of this route.
      *
-     * @return 包含套接字地址的字符串
+     * @return A string containing the socket address.
      */
     @Override
     public String toString() {

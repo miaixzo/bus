@@ -42,7 +42,8 @@ import jakarta.mail.Authenticator;
 import jakarta.mail.Session;
 
 /**
- * 邮件工具类，基于jakarta.mail封装
+ * A utility class for sending emails, built on top of the Jakarta Mail API. This class provides a set of static methods
+ * for conveniently sending plain text and HTML emails.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,40 +51,43 @@ import jakarta.mail.Session;
 public class MailKit {
 
     /**
-     * 使用配置文件中设置的账户发送文本邮件，发送给单个或多个收件人 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * Sends a plain text email to one or more recipients using the default account from the configuration. Multiple
+     * recipients can be separated by commas (,) or semicolons (;).
      *
-     * @param to      收件人
-     * @param subject 标题
-     * @param content 正文
-     * @param files   附件列表
-     * @return message-data
+     * @param to      The recipient(s).
+     * @param subject The email subject.
+     * @param content The email body.
+     * @param files   An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String sendText(final String to, final String subject, final String content, final File... files) {
         return send(to, subject, content, false, files);
     }
 
     /**
-     * 使用配置文件中设置的账户发送HTML邮件，发送给单个或多个收件人 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * Sends an HTML email to one or more recipients using the default account from the configuration. Multiple
+     * recipients can be separated by commas (,) or semicolons (;).
      *
-     * @param to      收件人
-     * @param subject 标题
-     * @param content 正文
-     * @param files   附件列表
-     * @return message-data
+     * @param to      The recipient(s).
+     * @param subject The email subject.
+     * @param content The HTML email body.
+     * @param files   An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String sendHtml(final String to, final String subject, final String content, final File... files) {
         return send(to, subject, content, true, files);
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * Sends an email to one or more recipients using the default account from the configuration. Multiple recipients
+     * can be separated by commas (,) or semicolons (;).
      *
-     * @param to      收件人
-     * @param subject 标题
-     * @param content 正文
-     * @param isHtml  是否为HTML
-     * @param files   附件列表
-     * @return message-data
+     * @param to      The recipient(s).
+     * @param subject The email subject.
+     * @param content The email body.
+     * @param isHtml  {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files   An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final String to,
@@ -95,16 +99,17 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人 多个收件人、抄送人、密送人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * Sends an email to multiple recipients, including CC and BCC, using the default account from the configuration.
+     * Recipients, CCs, and BCCs can be separated by commas (,) or semicolons (;).
      *
-     * @param to      收件人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param cc      抄送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param bcc     密送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param subject 标题
-     * @param content 正文
-     * @param isHtml  是否为HTML
-     * @param files   附件列表
-     * @return message-data
+     * @param to      The recipient(s).
+     * @param cc      The CC recipient(s).
+     * @param bcc     The BCC recipient(s).
+     * @param subject The email subject.
+     * @param content The email body.
+     * @param isHtml  {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files   An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final String to,
@@ -118,13 +123,13 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送文本邮件，发送给多人
+     * Sends a plain text email to a collection of recipients using the default account from the configuration.
      *
-     * @param tos     收件人列表
-     * @param subject 标题
-     * @param content 正文
-     * @param files   附件列表
-     * @return message-data
+     * @param tos     A collection of recipient email addresses.
+     * @param subject The email subject.
+     * @param content The email body.
+     * @param files   An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String sendText(
             final Collection<String> tos,
@@ -135,13 +140,13 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送HTML邮件，发送给多人
+     * Sends an HTML email to a collection of recipients using the default account from the configuration.
      *
-     * @param tos     收件人列表
-     * @param subject 标题
-     * @param content 正文
-     * @param files   附件列表
-     * @return message-data
+     * @param tos     A collection of recipient email addresses.
+     * @param subject The email subject.
+     * @param content The HTML email body.
+     * @param files   An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String sendHtml(
             final Collection<String> tos,
@@ -152,14 +157,14 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送给多人
+     * Sends an email to a collection of recipients using the default account from the configuration.
      *
-     * @param tos     收件人列表
-     * @param subject 标题
-     * @param content 正文
-     * @param isHtml  是否为HTML
-     * @param files   附件列表
-     * @return message-data
+     * @param tos     A collection of recipient email addresses.
+     * @param subject The email subject.
+     * @param content The email body.
+     * @param isHtml  {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files   An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final Collection<String> tos,
@@ -171,16 +176,16 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送给多人
+     * Sends an email to multiple recipients, including CC and BCC, using the default account from the configuration.
      *
-     * @param tos     收件人列表
-     * @param ccs     抄送人列表，可以为null或空
-     * @param bccs    密送人列表，可以为null或空
-     * @param subject 标题
-     * @param content 正文
-     * @param isHtml  是否为HTML
-     * @param files   附件列表
-     * @return message-data
+     * @param tos     A collection of recipient email addresses.
+     * @param ccs     A collection of CC recipient email addresses (can be null or empty).
+     * @param bccs    A collection of BCC recipient email addresses (can be null or empty).
+     * @param subject The email subject.
+     * @param content The email body.
+     * @param isHtml  {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files   An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final Collection<String> tos,
@@ -204,15 +209,15 @@ public class MailKit {
     }
 
     /**
-     * 发送邮件给多人
+     * Sends an email to one or more recipients using a specified mail account.
      *
-     * @param mailAccount 邮件认证对象
-     * @param to          收件人，多个收件人逗号或者分号隔开
-     * @param subject     标题
-     * @param content     正文
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
-     * @return message-data
+     * @param mailAccount The mail account configuration.
+     * @param to          The recipient(s), separated by commas or semicolons.
+     * @param subject     The email subject.
+     * @param content     The email body.
+     * @param isHtml      {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files       An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final MailAccount mailAccount,
@@ -225,15 +230,15 @@ public class MailKit {
     }
 
     /**
-     * 发送邮件给多人
+     * Sends an email to a collection of recipients using a specified mail account.
      *
-     * @param mailAccount 邮件帐户信息
-     * @param tos         收件人列表
-     * @param subject     标题
-     * @param content     正文
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
-     * @return message-data
+     * @param mailAccount The mail account configuration.
+     * @param tos         A collection of recipient email addresses.
+     * @param subject     The email subject.
+     * @param content     The email body.
+     * @param isHtml      {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files       An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final MailAccount mailAccount,
@@ -246,17 +251,17 @@ public class MailKit {
     }
 
     /**
-     * 发送邮件给多人
+     * Sends an email to multiple recipients, including CC and BCC, using a specified mail account.
      *
-     * @param mailAccount 邮件帐户信息
-     * @param tos         收件人列表
-     * @param ccs         抄送人列表，可以为null或空
-     * @param bccs        密送人列表，可以为null或空
-     * @param subject     标题
-     * @param content     正文
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
-     * @return message-data
+     * @param mailAccount The mail account configuration.
+     * @param tos         A collection of recipient email addresses.
+     * @param ccs         A collection of CC recipient email addresses (can be null or empty).
+     * @param bccs        A collection of BCC recipient email addresses (can be null or empty).
+     * @param subject     The email subject.
+     * @param content     The email body.
+     * @param isHtml      {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files       An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final MailAccount mailAccount,
@@ -271,14 +276,14 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送HTML邮件，发送给单个或多个收件人 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * Sends an HTML email with embedded images to one or more recipients using the default account.
      *
-     * @param to       收件人
-     * @param subject  标题
-     * @param content  正文
-     * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param files    附件列表
-     * @return message-data
+     * @param to       The recipient(s), separated by commas or semicolons.
+     * @param subject  The email subject.
+     * @param content  The HTML email body.
+     * @param imageMap A map of Content-IDs to {@link InputStream}s for embedded images.
+     * @param files    An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String sendHtml(
             final String to,
@@ -290,15 +295,15 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * Sends an email with embedded images to one or more recipients using the default account.
      *
-     * @param to       收件人
-     * @param subject  标题
-     * @param content  正文
-     * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml   是否为HTML
-     * @param files    附件列表
-     * @return message-data
+     * @param to       The recipient(s), separated by commas or semicolons.
+     * @param subject  The email subject.
+     * @param content  The email body.
+     * @param imageMap A map of Content-IDs to {@link InputStream}s for embedded images.
+     * @param isHtml   {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files    An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final String to,
@@ -311,17 +316,17 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人 多个收件人、抄送人、密送人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * Sends an email with embedded images to multiple recipients, including CC and BCC, using the default account.
      *
-     * @param to       收件人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param cc       抄送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param bcc      密送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
-     * @param subject  标题
-     * @param content  正文
-     * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml   是否为HTML
-     * @param files    附件列表
-     * @return message-data
+     * @param to       The recipient(s), separated by commas or semicolons.
+     * @param cc       The CC recipient(s), separated by commas or semicolons.
+     * @param bcc      The BCC recipient(s), separated by commas or semicolons.
+     * @param subject  The email subject.
+     * @param content  The email body.
+     * @param imageMap A map of Content-IDs to {@link InputStream}s for embedded images.
+     * @param isHtml   {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files    An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final String to,
@@ -336,14 +341,14 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送HTML邮件，发送给多人
+     * Sends an HTML email with embedded images to a collection of recipients using the default account.
      *
-     * @param tos      收件人列表
-     * @param subject  标题
-     * @param content  正文
-     * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param files    附件列表
-     * @return message-data
+     * @param tos      A collection of recipient email addresses.
+     * @param subject  The email subject.
+     * @param content  The HTML email body.
+     * @param imageMap A map of Content-IDs to {@link InputStream}s for embedded images.
+     * @param files    An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String sendHtml(
             final Collection<String> tos,
@@ -355,15 +360,15 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送给多人
+     * Sends an email with embedded images to a collection of recipients using the default account.
      *
-     * @param tos      收件人列表
-     * @param subject  标题
-     * @param content  正文
-     * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml   是否为HTML
-     * @param files    附件列表
-     * @return message-data
+     * @param tos      A collection of recipient email addresses.
+     * @param subject  The email subject.
+     * @param content  The email body.
+     * @param imageMap A map of Content-IDs to {@link InputStream}s for embedded images.
+     * @param isHtml   {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files    An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final Collection<String> tos,
@@ -376,17 +381,17 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送给多人
+     * Sends an email with embedded images to multiple recipients, including CC and BCC, using the default account.
      *
-     * @param tos      收件人列表
-     * @param ccs      抄送人列表，可以为null或空
-     * @param bccs     密送人列表，可以为null或空
-     * @param subject  标题
-     * @param content  正文
-     * @param imageMap 图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml   是否为HTML
-     * @param files    附件列表
-     * @return message-data
+     * @param tos      A collection of recipient email addresses.
+     * @param ccs      A collection of CC recipient email addresses (can be null or empty).
+     * @param bccs     A collection of BCC recipient email addresses (can be null or empty).
+     * @param subject  The email subject.
+     * @param content  The email body.
+     * @param imageMap A map of Content-IDs to {@link InputStream}s for embedded images.
+     * @param isHtml   {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files    An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final Collection<String> tos,
@@ -411,16 +416,16 @@ public class MailKit {
     }
 
     /**
-     * 发送邮件给多人
+     * Sends an email with embedded images to one or more recipients using a specified mail account.
      *
-     * @param mailAccount 邮件认证对象
-     * @param to          收件人，多个收件人逗号或者分号隔开
-     * @param subject     标题
-     * @param content     正文
-     * @param imageMap    图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
-     * @return message-data
+     * @param mailAccount The mail account configuration.
+     * @param to          The recipient(s), separated by commas or semicolons.
+     * @param subject     The email subject.
+     * @param content     The email body.
+     * @param imageMap    A map of Content-IDs to {@link InputStream}s for embedded images.
+     * @param isHtml      {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files       An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final MailAccount mailAccount,
@@ -434,16 +439,16 @@ public class MailKit {
     }
 
     /**
-     * 发送邮件给多人
+     * Sends an email with embedded images to a collection of recipients using a specified mail account.
      *
-     * @param mailAccount 邮件帐户信息
-     * @param tos         收件人列表
-     * @param subject     标题
-     * @param content     正文
-     * @param imageMap    图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
-     * @return message-data
+     * @param mailAccount The mail account configuration.
+     * @param tos         A collection of recipient email addresses.
+     * @param subject     The email subject.
+     * @param content     The email body.
+     * @param imageMap    A map of Content-IDs to {@link InputStream}s for embedded images.
+     * @param isHtml      {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files       An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final MailAccount mailAccount,
@@ -457,18 +462,18 @@ public class MailKit {
     }
 
     /**
-     * 发送邮件给多人
+     * Sends an email with embedded images to multiple recipients, including CC and BCC, using a specified mail account.
      *
-     * @param mailAccount 邮件帐户信息
-     * @param tos         收件人列表
-     * @param ccs         抄送人列表，可以为null或空
-     * @param bccs        密送人列表，可以为null或空
-     * @param subject     标题
-     * @param content     正文
-     * @param imageMap    图片与占位符，占位符格式为cid:$IMAGE_PLACEHOLDER
-     * @param isHtml      是否为HTML格式
-     * @param files       附件列表
-     * @return message-data
+     * @param mailAccount The mail account configuration.
+     * @param tos         A collection of recipient email addresses.
+     * @param ccs         A collection of CC recipient email addresses (can be null or empty).
+     * @param bccs        A collection of BCC recipient email addresses (can be null or empty).
+     * @param subject     The email subject.
+     * @param content     The email body.
+     * @param imageMap    A map of Content-IDs to {@link InputStream}s for embedded images.
+     * @param isHtml      {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files       An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     public static String send(
             final MailAccount mailAccount,
@@ -484,11 +489,11 @@ public class MailKit {
     }
 
     /**
-     * 根据配置文件，获取邮件客户端会话
+     * Retrieves a mail {@link Session} based on the provided mail account configuration.
      *
-     * @param mailAccount 邮件账户配置
-     * @param isSingleton 是否单例（全局共享会话）
-     * @return {@link Session}
+     * @param mailAccount The mail account configuration.
+     * @param isSingleton If {@code true}, returns a globally shared session; otherwise, creates a new session.
+     * @return A {@link Session} instance.
      */
     public static Session getSession(final MailAccount mailAccount, final boolean isSingleton) {
         Authenticator authenticator = null;
@@ -496,24 +501,24 @@ public class MailKit {
             authenticator = new MailAuthenticator(mailAccount);
         }
 
-        return isSingleton ? Session.getDefaultInstance(mailAccount.getSmtpProps(), authenticator) //
+        return isSingleton ? Session.getDefaultInstance(mailAccount.getSmtpProps(), authenticator)
                 : Session.getInstance(mailAccount.getSmtpProps(), authenticator);
     }
 
     /**
-     * 发送邮件给多人
+     * Sends an email to multiple recipients with full options.
      *
-     * @param mailAccount      邮件帐户信息
-     * @param useGlobalSession 是否全局共享Session
-     * @param tos              收件人列表
-     * @param ccs              抄送人列表，可以为null或空
-     * @param bccs             密送人列表，可以为null或空
-     * @param subject          标题
-     * @param content          正文
-     * @param imageMap         图片与占位符，占位符格式为cid:${cid}
-     * @param isHtml           是否为HTML格式
-     * @param files            附件列表
-     * @return message-data
+     * @param mailAccount      The mail account configuration.
+     * @param useGlobalSession If {@code true}, uses a globally shared session.
+     * @param tos              A collection of recipient email addresses.
+     * @param ccs              A collection of CC recipient email addresses.
+     * @param bccs             A collection of BCC recipient email addresses.
+     * @param subject          The email subject.
+     * @param content          The email body.
+     * @param imageMap         A map of Content-IDs to {@link InputStream}s for embedded images.
+     * @param isHtml           {@code true} if the content is HTML, {@code false} for plain text.
+     * @param files            An array of files to be attached.
+     * @return The message-id of the sent email.
      */
     private static String send(
             final MailAccount mailAccount,
@@ -528,11 +533,9 @@ public class MailKit {
             final File... files) {
         final Mail mail = Mail.of(mailAccount).setUseGlobalSession(useGlobalSession);
 
-        // 可选抄送人
         if (CollKit.isNotEmpty(ccs)) {
             mail.setCcs(ccs.toArray(new String[0]));
         }
-        // 可选密送人
         if (CollKit.isNotEmpty(bccs)) {
             mail.setBccs(bccs.toArray(new String[0]));
         }
@@ -543,11 +546,9 @@ public class MailKit {
         mail.setHtml(isHtml);
         mail.addFiles(files);
 
-        // 图片
         if (MapKit.isNotEmpty(imageMap)) {
             for (final Entry<String, InputStream> entry : imageMap.entrySet()) {
                 mail.addImage(entry.getKey(), entry.getValue());
-                // 关闭流
                 IoKit.closeQuietly(entry.getValue());
             }
         }
@@ -556,10 +557,10 @@ public class MailKit {
     }
 
     /**
-     * 将多个联系人转为列表，分隔符为逗号或者分号
+     * Splits a string of email addresses into a list. Delimiters can be commas (,) or semicolons (;).
      *
-     * @param addresses 多个联系人，如果为空返回null
-     * @return 联系人列表
+     * @param addresses A string of email addresses.
+     * @return A list of email addresses, or null if the input is blank.
      */
     private static List<String> splitAddress(final String addresses) {
         if (StringKit.isBlank(addresses)) {

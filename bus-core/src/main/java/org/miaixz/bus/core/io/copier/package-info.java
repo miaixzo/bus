@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * IO流拷贝相关封装相关封装
+ * Provides classes for copying data between various I/O sources and targets, including streams, readers, writers, and
+ * channels. This package offers flexible and customizable copying mechanisms with options for buffer size, progress
+ * tracking, and total byte limits.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -32,13 +32,20 @@ import org.miaixz.bus.pager.dialect.AbstractAutoDialect;
 import com.alibaba.druid.pool.DruidDataSource;
 
 /**
- * Druid
+ * Auto-dialect implementation for Druid data sources. This class extends {@link AbstractAutoDialect} to provide
+ * specific handling for {@link DruidDataSource}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Druid extends AbstractAutoDialect<DruidDataSource> {
 
+    /**
+     * Retrieves the JDBC URL from the given {@link DruidDataSource}.
+     *
+     * @param druidDataSource the DruidDataSource instance
+     * @return the JDBC URL string
+     */
     @Override
     public String getJdbcUrl(DruidDataSource druidDataSource) {
         return druidDataSource.getUrl();

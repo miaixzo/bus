@@ -36,7 +36,7 @@ import org.miaixz.bus.mapper.parsing.SqlScript;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 提供基于条件的动态SQL生成，用于基本的增删改查操作。
+ * Provides dynamic SQL generation based on conditions for basic CRUD operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,17 +44,18 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class ConditionProvider {
 
     /**
-     * 根据Condition对象删除记录。
+     * Deletes records based on a Condition object.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 生成的SQL缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The generated SQL cache key.
      */
     public static String deleteByCondition(ProviderContext providerContext) {
         return SqlScript.caching(
                 providerContext,
                 (entity, util) -> util.ifTest("startSql != null and startSql != ''", () -> "${startSql}")
                         + "DELETE FROM " + entity.tableName() + util.parameterNotNull("Condition cannot be null")
-                        // 是否允许空条件，默认允许，允许时不检查查询条件
+                        // Whether to allow empty conditions; defaults to true, allowing deletion without a WHERE
+                        // clause.
                         + (entity.getBoolean("deleteByCondition.allowEmpty", true) ? ""
                                 : util.variableIsFalse("_parameter.isEmpty()", "Condition Criteria cannot be empty"))
                         + Args.CONDITION_WHERE_CLAUSE
@@ -62,10 +63,10 @@ public class ConditionProvider {
     }
 
     /**
-     * 根据Condition对象批量更新实体信息，更新所有字段。
+     * Updates entity information in batch based on a Condition object, updating all fields.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 生成的SQL缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The generated SQL cache key.
      */
     public static String updateByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -79,7 +80,7 @@ public class ConditionProvider {
                                         .map(column -> column.columnEqualsProperty("entity."))
                                         .collect(Collectors.joining(Symbol.COMMA)))
                         + variableNotNull("condition", "Condition cannot be null")
-                // 是否允许空条件，默认允许，允许时不检查查询条件
+                // Whether to allow empty conditions; defaults to true.
                         + (entity.getBoolean("updateByCondition.allowEmpty", true) ? ""
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + Args.UPDATE_BY_CONDITION_WHERE_CLAUSE
@@ -89,10 +90,10 @@ public class ConditionProvider {
     }
 
     /**
-     * 根据Condition对象批量更新实体信息，使用指定的设置值。
+     * Updates entity information in batch based on a Condition object, using specified set values.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 生成的SQL缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The generated SQL cache key.
      */
     public static String updateByConditionSetValues(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -103,7 +104,7 @@ public class ConditionProvider {
                         + variableNotEmpty("condition.setValues", "Condition setValues cannot be empty") + "UPDATE "
                         + entity.tableName() + Args.CONDITION_SET_CLAUSE_INNER_WHEN
                         + variableNotNull("condition", "Condition cannot be null")
-                // 是否允许空条件，默认允许，允许时不检查查询条件
+                // Whether to allow empty conditions; defaults to true.
                         + (entity.getBoolean("updateByCondition.allowEmpty", true) ? ""
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + Args.UPDATE_BY_CONDITION_WHERE_CLAUSE
@@ -113,10 +114,10 @@ public class ConditionProvider {
     }
 
     /**
-     * 根据Condition对象批量更新实体非空字段。
+     * Updates non-null fields of an entity in batch based on a Condition object.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 生成的SQL缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The generated SQL cache key.
      */
     public static String updateByConditionSelective(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -133,7 +134,7 @@ public class ConditionProvider {
                                                         () -> column.columnEqualsProperty("entity.") + Symbol.COMMA))
                                         .collect(Collectors.joining(Symbol.LF)))
                         + variableNotNull("condition", "Condition cannot be null")
-                // 是否允许空条件，默认允许，允许时不检查查询条件
+                // Whether to allow empty conditions; defaults to true.
                         + (entity.getBoolean("updateByConditionSelective.allowEmpty", true) ? ""
                                 : variableIsFalse("condition.isEmpty()", "Condition Criteria cannot be empty"))
                         + Args.UPDATE_BY_CONDITION_WHERE_CLAUSE
@@ -143,10 +144,10 @@ public class ConditionProvider {
     }
 
     /**
-     * 根据Condition对象批量查询记录，结果数量由方法定义。
+     * Selects records in batch based on a Condition object. The number of results is defined by the method.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 生成的SQL缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The generated SQL cache key.
      */
     public static String selectByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {
@@ -166,10 +167,10 @@ public class ConditionProvider {
     }
 
     /**
-     * 根据Condition对象查询记录总数。
+     * Counts the total number of records based on a Condition object.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 生成的SQL缓存键
+     * @param providerContext The provider context, containing method and interface information.
+     * @return The generated SQL cache key.
      */
     public static String countByCondition(ProviderContext providerContext) {
         return SqlScript.caching(providerContext, new SqlScript() {

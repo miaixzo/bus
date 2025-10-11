@@ -47,39 +47,57 @@ import org.miaixz.bus.pay.metric.unionpay.api.UnionPayApi;
 import org.miaixz.bus.pay.metric.wechat.api.v2.*;
 
 /**
- * 微信支付相关接口
+ * Provider for WeChat Pay APIs.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WechatPayProvider extends AbstractProvider<Material, Context> {
 
+    /**
+     * Constructs a WechatPayProvider with the given context.
+     *
+     * @param context The context containing configuration information.
+     */
     public WechatPayProvider(Context context) {
         this(context, null);
     }
 
+    /**
+     * Constructs a WechatPayProvider with the given context and API complex.
+     *
+     * @param context The context containing configuration information.
+     * @param complex The API complex to be used.
+     */
     public WechatPayProvider(Context context, Complex complex) {
         this(context, complex, null);
     }
 
+    /**
+     * Constructs a WechatPayProvider with the given context, API complex, and cache.
+     *
+     * @param context The context containing configuration information.
+     * @param complex The API complex to be used.
+     * @param cache   The cache to be used.
+     */
     public WechatPayProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the request URL for the API.
      *
-     * @return {@link String} 返回完整的接口请求URL
+     * @return The complete API request URL.
      */
     public String getUrl() {
         return getUrl(this.complex);
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the request URL for the API.
      *
-     * @param complex {@link UnionPayApi} 支付 API 接口枚举
-     * @return {@link String} 返回完整的接口请求URL
+     * @param complex The {@link UnionPayApi} payment API enum.
+     * @return The complete API request URL.
      */
     public String getUrl(Complex complex) {
         return (complex.isSandbox() ? Registry.UNIONPAY.sandbox() : Registry.UNIONPAY.service())
@@ -87,49 +105,49 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 发起请求
+     * Executes a request.
      *
-     * @param complex 接口 URL
-     * @param params  接口请求参数
-     * @return {@link String} 请求返回的结果
+     * @param complex The API URL.
+     * @param params  The request parameters.
+     * @return The result of the request.
      */
     public String execution(Complex complex, Map<String, String> params) {
         return doPost(getUrl(complex), params);
     }
 
     /**
-     * 发起请求
+     * Executes a GET request.
      *
-     * @param complex 接口 URL 通过 {@link #getUrl()} 或者 {@link #getUrl(Complex)} 来获取
-     * @param params  接口请求参数
-     * @return {@link String} 请求返回的结果
+     * @param complex The API URL obtained via {@link #getUrl()} or {@link #getUrl(Complex)}.
+     * @param params  The request parameters.
+     * @return The result of the request.
      */
     public String executionByGet(Complex complex, Map<String, String> params) {
         return doGet(getUrl(complex), params);
     }
 
     /**
-     * 发起请求
+     * Executes a request with SSL.
      *
-     * @param complex  接口 URL
-     * @param params   接口请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param complex  The API URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String execution(Complex complex, Map<String, String> params, String certPath, String certPass) {
         return doPostSsl(getUrl(complex), params, certPath, certPass);
     }
 
     /**
-     * 发起请求
+     * Executes a request with SSL and a specific protocol.
      *
-     * @param complex  接口 URL
-     * @param params   接口请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param complex  The API URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String executionByProtocol(
             Complex complex,
@@ -141,52 +159,52 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 发起请求
+     * Executes a request with SSL.
      *
-     * @param complex  接口 URL 通过 {@link #getUrl()} 或者 {@link #getUrl(Complex)} 来获取
-     * @param params   接口请求参数
-     * @param certPath 证书文件路径
-     * @return {@link String} 请求返回的结果
+     * @param complex  The API URL obtained via {@link #getUrl()} or {@link #getUrl(Complex)}.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @return The result of the request.
      */
     public String execution(Complex complex, Map<String, String> params, String certPath) {
         return doPostSsl(getUrl(complex), params, certPath);
     }
 
     /**
-     * 发起请求
+     * Executes a request with SSL and a specific protocol.
      *
-     * @param complex  接口 URL
-     * @param params   接口请求参数
-     * @param certPath 证书文件路径
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param complex  The API URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String executionByProtocol(Complex complex, Map<String, String> params, String certPath, String protocol) {
         return doPostSslByProtocol(getUrl(complex), params, certPath, protocol);
     }
 
     /**
-     * 发起请求
+     * Executes a request with SSL.
      *
-     * @param complex  接口 URL
-     * @param params   接口请求参数
-     * @param certFile 证书文件输入流
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param complex  The API URL.
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String execution(Complex complex, Map<String, String> params, InputStream certFile, String certPass) {
         return doPostSsl(getUrl(complex), params, certFile, certPass);
     }
 
     /**
-     * 发起请求
+     * Executes a request with SSL and a specific protocol.
      *
-     * @param complex  接口 URL
-     * @param params   接口请求参数
-     * @param certFile 证书文件输入流
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param complex  The API URL.
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String executionByProtocol(
             Complex complex,
@@ -217,25 +235,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 发起请求
+     * Executes a request with SSL.
      *
-     * @param complex  接口 URL
-     * @param params   接口请求参数
-     * @param certFile 证书文件输入流
-     * @return {@link String} 请求返回的结果
+     * @param complex  The API URL.
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @return The result of the request.
      */
     public String execution(Complex complex, Map<String, String> params, InputStream certFile) {
         return doPostSsl(getUrl(complex), params, certFile);
     }
 
     /**
-     * 发起请求
+     * Executes a request with SSL and a specific protocol.
      *
-     * @param complex  接口 URL
-     * @param params   接口请求参数
-     * @param certFile 证书文件输入流
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param complex  The API URL.
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String executionByProtocol(
             Complex complex,
@@ -246,22 +264,22 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * V3 接口统一执行入口
+     * Unified execution entry for V3 APIs.
      *
-     * @param method       接口方法
-     * @param prefix       可通过 {@link Registry}来获取
-     * @param suffix       可通过 {@link Complex} 来获取，URL挂载参数需要自行拼接
-     * @param mchId        商户Id
-     * @param serialNo     商户 API 证书序列号
-     * @param platSerialNo 平台序列号，接口中包含敏感信息时必传
-     * @param keyPath      apiclient_key.pem 证书路径
-     * @param body         接口请求参数
-     * @param nonceStr     随机字符库
-     * @param timestamp    时间戳
-     * @param authType     认证类型
-     * @param file         文件
-     * @return {@link Message} 请求返回的结果
-     * @throws Exception 接口执行异常
+     * @param method       The HTTP method.
+     * @param prefix       The URL prefix, obtainable via {@link Registry}.
+     * @param suffix       The URL suffix, obtainable via {@link Complex}; URL parameters need to be appended manually.
+     * @param mchId        The merchant ID.
+     * @param serialNo     The merchant API certificate serial number.
+     * @param platSerialNo The platform serial number, required for APIs containing sensitive information.
+     * @param keyPath      The path to the apiclient_key.pem certificate.
+     * @param body         The request body.
+     * @param nonceStr     The random string.
+     * @param timestamp    The timestamp.
+     * @param authType     The authentication type.
+     * @param file         The file to upload.
+     * @return A {@link Message} with the result of the request.
+     * @throws Exception if an error occurs during execution.
      */
     public Message v3(
             String method,
@@ -298,22 +316,22 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * V3 接口统一执行入口
+     * Unified execution entry for V3 APIs.
      *
-     * @param method       接口方法
-     * @param prefix       可通过 {@link Registry}来获取
-     * @param suffix       可通过 {@link Complex} 来获取，URL挂载参数需要自行拼接
-     * @param mchId        商户Id
-     * @param serialNo     商户 API 证书序列号
-     * @param platSerialNo 平台序列号，接口中包含敏感信息时必传
-     * @param privateKey   商户私钥
-     * @param body         接口请求参数
-     * @param nonceStr     随机字符库
-     * @param timestamp    时间戳
-     * @param authType     认证类型
-     * @param file         文件
-     * @return {@link Message} 请求返回的结果
-     * @throws Exception 接口执行异常
+     * @param method       The HTTP method.
+     * @param prefix       The URL prefix, obtainable via {@link Registry}.
+     * @param suffix       The URL suffix, obtainable via {@link Complex}; URL parameters need to be appended manually.
+     * @param mchId        The merchant ID.
+     * @param serialNo     The merchant API certificate serial number.
+     * @param platSerialNo The platform serial number, required for APIs containing sensitive information.
+     * @param privateKey   The merchant's private key.
+     * @param body         The request body.
+     * @param nonceStr     The random string.
+     * @param timestamp    The timestamp.
+     * @param authType     The authentication type.
+     * @param file         The file to upload.
+     * @return A {@link Message} with the result of the request.
+     * @throws Exception if an error occurs during execution.
      */
     public Message v3(
             String method,
@@ -350,19 +368,19 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * V3 接口统一执行入口
+     * Unified execution entry for V3 APIs.
      *
-     * @param method       接口方法
-     * @param prefix       可通过 {@link Registry}来获取
-     * @param suffix       可通过 {@link Complex} 来获取，URL挂载参数需要自行拼接
-     * @param mchId        商户Id
-     * @param serialNo     商户 API 证书序列号
-     * @param platSerialNo 平台序列号
-     * @param keyPath      apiclient_key.pem 证书路径
-     * @param body         接口请求参数
-     * @param authType     认证类型
-     * @return {@link Message} 请求返回的结果
-     * @throws Exception 接口执行异常
+     * @param method       The HTTP method.
+     * @param prefix       The URL prefix, obtainable via {@link Registry}.
+     * @param suffix       The URL suffix, obtainable via {@link Complex}; URL parameters need to be appended manually.
+     * @param mchId        The merchant ID.
+     * @param serialNo     The merchant API certificate serial number.
+     * @param platSerialNo The platform serial number.
+     * @param keyPath      The path to the apiclient_key.pem certificate.
+     * @param body         The request body.
+     * @param authType     The authentication type.
+     * @return A {@link Message} with the result of the request.
+     * @throws Exception if an error occurs during execution.
      */
     public Message v3(
             String method,
@@ -392,18 +410,18 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * V3 接口统一执行入口
+     * Unified execution entry for V3 APIs.
      *
-     * @param method       接口方法
-     * @param prefix       可通过 {@link Registry}来获取
-     * @param suffix       可通过 {@link Complex} 来获取，URL挂载参数需要自行拼接
-     * @param mchId        商户Id
-     * @param serialNo     商户 API 证书序列号
-     * @param platSerialNo 平台序列号
-     * @param keyPath      apiclient_key.pem 证书路径
-     * @param body         接口请求参数
-     * @return {@link Message} 请求返回的结果
-     * @throws Exception 接口执行异常
+     * @param method       The HTTP method.
+     * @param prefix       The URL prefix, obtainable via {@link Registry}.
+     * @param suffix       The URL suffix, obtainable via {@link Complex}; URL parameters need to be appended manually.
+     * @param mchId        The merchant ID.
+     * @param serialNo     The merchant API certificate serial number.
+     * @param platSerialNo The platform serial number.
+     * @param keyPath      The path to the apiclient_key.pem certificate.
+     * @param body         The request body.
+     * @return A {@link Message} with the result of the request.
+     * @throws Exception if an error occurs during execution.
      */
     public Message v3(
             String method,
@@ -419,18 +437,18 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * V3 接口统一执行入口
+     * Unified execution entry for V3 APIs.
      *
-     * @param method       接口方法
-     * @param prefix       可通过 {@link Registry}来获取
-     * @param suffix       可通过 {@link Complex} 来获取，URL挂载参数需要自行拼接
-     * @param mchId        商户Id
-     * @param serialNo     商户 API 证书序列号
-     * @param platSerialNo 平台序列号
-     * @param privateKey   商户私钥
-     * @param body         接口请求参数
-     * @return {@link Message} 请求返回的结果
-     * @throws Exception 接口执行异常
+     * @param method       The HTTP method.
+     * @param prefix       The URL prefix, obtainable via {@link Registry}.
+     * @param suffix       The URL suffix, obtainable via {@link Complex}; URL parameters need to be appended manually.
+     * @param mchId        The merchant ID.
+     * @param serialNo     The merchant API certificate serial number.
+     * @param platSerialNo The platform serial number.
+     * @param privateKey   The merchant's private key.
+     * @param body         The request body.
+     * @return A {@link Message} with the result of the request.
+     * @throws Exception if an error occurs during execution.
      */
     public Message v3(
             String method,
@@ -460,18 +478,18 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * V3 接口统一执行入口
+     * Unified execution entry for V3 APIs.
      *
-     * @param method       接口方法
-     * @param prefix       可通过 {@link Registry}来获取
-     * @param suffix       可通过 {@link Complex} 来获取，URL挂载参数需要自行拼接
-     * @param mchId        商户Id
-     * @param serialNo     商户 API 证书序列号
-     * @param platSerialNo 平台序列号
-     * @param keyPath      apiclient_key.pem 证书路径
-     * @param params       Get 接口请求参数
-     * @return {@link Message} 请求返回的结果
-     * @throws Exception 接口执行异常
+     * @param method       The HTTP method.
+     * @param prefix       The URL prefix, obtainable via {@link Registry}.
+     * @param suffix       The URL suffix, obtainable via {@link Complex}; URL parameters need to be appended manually.
+     * @param mchId        The merchant ID.
+     * @param serialNo     The merchant API certificate serial number.
+     * @param platSerialNo The platform serial number.
+     * @param keyPath      The path to the apiclient_key.pem certificate.
+     * @param params       The request parameters for a GET request.
+     * @return A {@link Message} with the result of the request.
+     * @throws Exception if an error occurs during execution.
      */
     public Message v3(
             String method,
@@ -487,19 +505,19 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * V3 接口统一执行入口
+     * Unified execution entry for V3 APIs.
      *
-     * @param method       接口方法
-     * @param prefix       可通过 {@link Registry}来获取
-     * @param suffix       可通过 {@link Complex} 来获取，URL挂载参数需要自行拼接
-     * @param mchId        商户Id
-     * @param serialNo     商户 API 证书序列号
-     * @param platSerialNo 平台序列号
-     * @param keyPath      apiclient_key.pem 证书路径
-     * @param params       Get 接口请求参数
-     * @param authType     {@link AuthType} 授权类型
-     * @return {@link Message} 请求返回的结果
-     * @throws Exception 接口执行异常
+     * @param method       The HTTP method.
+     * @param prefix       The URL prefix, obtainable via {@link Registry}.
+     * @param suffix       The URL suffix, obtainable via {@link Complex}; URL parameters need to be appended manually.
+     * @param mchId        The merchant ID.
+     * @param serialNo     The merchant API certificate serial number.
+     * @param platSerialNo The platform serial number.
+     * @param keyPath      The path to the apiclient_key.pem certificate.
+     * @param params       The request parameters for a GET request.
+     * @param authType     The {@link AuthType} authorization type.
+     * @return A {@link Message} with the result of the request.
+     * @throws Exception if an error occurs during execution.
      */
     public Message v3(
             String method,
@@ -532,18 +550,18 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * V3 接口统一执行入口
+     * Unified execution entry for V3 APIs.
      *
-     * @param method       接口方法
-     * @param prefix       可通过 {@link Registry}来获取
-     * @param suffix       可通过 {@link Complex} 来获取，URL挂载参数需要自行拼接
-     * @param mchId        商户Id
-     * @param serialNo     商户 API 证书序列号
-     * @param platSerialNo 平台序列号
-     * @param privateKey   商户私钥
-     * @param params       Get 接口请求参数
-     * @return {@link Message} 请求返回的结果
-     * @throws Exception 接口执行异常
+     * @param method       The HTTP method.
+     * @param prefix       The URL prefix, obtainable via {@link Registry}.
+     * @param suffix       The URL suffix, obtainable via {@link Complex}; URL parameters need to be appended manually.
+     * @param mchId        The merchant ID.
+     * @param serialNo     The merchant API certificate serial number.
+     * @param platSerialNo The platform serial number.
+     * @param privateKey   The merchant's private key.
+     * @param params       The request parameters for a GET request.
+     * @return A {@link Message} with the result of the request.
+     * @throws Exception if an error occurs during execution.
      */
     public Message v3(
             String method,
@@ -576,18 +594,18 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * V3 接口统一执行入口
+     * Unified execution entry for V3 APIs.
      *
-     * @param prefix       可通过 {@link Registry}来获取
-     * @param suffix       可通过 {@link Complex} 来获取，URL挂载参数需要自行拼接
-     * @param mchId        商户Id
-     * @param serialNo     商户 API 证书序列号
-     * @param platSerialNo 平台序列号
-     * @param keyPath      apiclient_key.pem 证书路径
-     * @param body         接口请求参数
-     * @param file         文件
-     * @return {@link Message} 请求返回的结果
-     * @throws Exception 接口执行异常
+     * @param prefix       The URL prefix, obtainable via {@link Registry}.
+     * @param suffix       The URL suffix, obtainable via {@link Complex}; URL parameters need to be appended manually.
+     * @param mchId        The merchant ID.
+     * @param serialNo     The merchant API certificate serial number.
+     * @param platSerialNo The platform serial number.
+     * @param keyPath      The path to the apiclient_key.pem certificate.
+     * @param body         The request body.
+     * @param file         The file to upload.
+     * @return A {@link Message} with the result of the request.
+     * @throws Exception if an error occurs during execution.
      */
     public Message v3(
             String prefix,
@@ -617,18 +635,18 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * V3 接口统一执行入口
+     * Unified execution entry for V3 APIs.
      *
-     * @param prefix       可通过 {@link Registry}来获取
-     * @param suffix       可通过 {@link Complex} 来获取，URL挂载参数需要自行拼接
-     * @param mchId        商户Id
-     * @param serialNo     商户 API 证书序列号
-     * @param platSerialNo 平台序列号
-     * @param privateKey   商户私钥
-     * @param body         接口请求参数
-     * @param file         文件
-     * @return {@link Message} 请求返回的结果
-     * @throws Exception 接口执行异常
+     * @param prefix       The URL prefix, obtainable via {@link Registry}.
+     * @param suffix       The URL suffix, obtainable via {@link Complex}; URL parameters need to be appended manually.
+     * @param mchId        The merchant ID.
+     * @param serialNo     The merchant API certificate serial number.
+     * @param platSerialNo The platform serial number.
+     * @param privateKey   The merchant's private key.
+     * @param body         The request body.
+     * @param file         The file to upload.
+     * @return A {@link Message} with the result of the request.
+     * @throws Exception if an error occurs during execution.
      */
     public Message v3(
             String prefix,
@@ -658,12 +676,12 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 获取验签秘钥API
+     * Gets the signing key from the API.
      *
-     * @param mchId      商户号
-     * @param partnerKey API 密钥
-     * @param algorithm  签名方式
-     * @return {@link String} 请求返回的结果
+     * @param mchId      The merchant ID.
+     * @param partnerKey The API key.
+     * @param algorithm  The signing algorithm.
+     * @return The result of the request.
      */
     public String getSignKey(String mchId, String partnerKey, Algorithm algorithm) {
         Map<String, String> map = new HashMap<>(3);
@@ -675,80 +693,80 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 统一下单
+     * Creates a unified order.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String pushOrder(Map<String, String> params) {
         return execution(PayApi.UNIFIED_ORDER, params);
     }
 
     /**
-     * 订单查询
+     * Queries an order.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String orderQuery(Map<String, String> params) {
         return execution(PayApi.ORDER_QUERY, params);
     }
 
     /**
-     * 关闭订单
+     * Closes an order.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String closeOrder(Map<String, String> params) {
         return execution(PayApi.CLOSE_ORDER, params);
     }
 
     /**
-     * 撤销订单
+     * Reverses an order.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String orderReverse(Map<String, String> params, String certPath, String certPass) {
         return execution(PayApi.REVERSE, params, certPath, certPass);
     }
 
     /**
-     * 撤销订单
+     * Reverses an order.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String orderReverse(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(PayApi.REVERSE, params, certFile, certPass);
     }
 
     /**
-     * 申请退款
+     * Applies for a refund.
      *
-     * @param isSandbox 是否是沙盒环境
-     * @param params    请求参数
-     * @param certPath  证书文件路径
-     * @param certPass  证书密码
-     * @return {@link String} 请求返回的结果
+     * @param isSandbox Whether it is a sandbox environment.
+     * @param params    The request parameters.
+     * @param certPath  The path to the certificate file.
+     * @param certPass  The certificate password.
+     * @return The result of the request.
      */
     public String orderRefund(boolean isSandbox, Map<String, String> params, String certPath, String certPass) {
         return execution(PayApi.REFUND, params, certPath, certPass);
     }
 
     /**
-     * 申请退款
+     * Applies for a refund with a specific protocol.
      *
-     * @param isSandbox 是否是沙盒环境
-     * @param params    请求参数
-     * @param certPath  证书文件路径
-     * @param certPass  证书密码
-     * @return {@link String} 请求返回的结果
+     * @param isSandbox Whether it is a sandbox environment.
+     * @param params    The request parameters.
+     * @param certPath  The path to the certificate file.
+     * @param certPass  The certificate password.
+     * @return The result of the request.
      */
     public String orderRefundByProtocol(
             boolean isSandbox,
@@ -760,27 +778,27 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 申请退款
+     * Applies for a refund.
      *
-     * @param isSandbox 是否是沙盒环境
-     * @param params    请求参数
-     * @param certFile  证书文件的 InputStream
-     * @param certPass  证书密码
-     * @return {@link String} 请求返回的结果
+     * @param isSandbox Whether it is a sandbox environment.
+     * @param params    The request parameters.
+     * @param certFile  The input stream of the certificate file.
+     * @param certPass  The certificate password.
+     * @return The result of the request.
      */
     public String orderRefund(boolean isSandbox, Map<String, String> params, InputStream certFile, String certPass) {
         return execution(PayApi.REFUND, params, certFile, certPass);
     }
 
     /**
-     * 申请退款
+     * Applies for a refund with a specific protocol.
      *
-     * @param isSandbox 是否是沙盒环境
-     * @param params    请求参数
-     * @param certFile  证书文件的 InputStream
-     * @param certPass  证书密码
-     * @param protocol  协议
-     * @return {@link String} 请求返回的结果
+     * @param isSandbox Whether it is a sandbox environment.
+     * @param params    The request parameters.
+     * @param certFile  The input stream of the certificate file.
+     * @param certPass  The certificate password.
+     * @param protocol  The protocol.
+     * @return The result of the request.
      */
     public String orderRefundByProtocol(
             boolean isSandbox,
@@ -792,113 +810,113 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询退款
+     * Queries a refund.
      *
-     * @param isSandbox 是否是沙盒环境
-     * @param params    请求参数
-     * @return {@link String} 请求返回的结果
+     * @param isSandbox Whether it is a sandbox environment.
+     * @param params    The request parameters.
+     * @return The result of the request.
      */
     public String orderRefundQuery(boolean isSandbox, Map<String, String> params) {
         return execution(PayApi.REFUND_QUERY, params);
     }
 
     /**
-     * 下载对账单
+     * Downloads a bill.
      *
-     * @param isSandbox 是否是沙盒环境
-     * @param params    请求参数
-     * @return {@link String} 请求返回的结果
+     * @param isSandbox Whether it is a sandbox environment.
+     * @param params    The request parameters.
+     * @return The result of the request.
      */
     public String downloadBill(boolean isSandbox, Map<String, String> params) {
         return execution(PayApi.DOWNLOAD_BILL, params);
     }
 
     /**
-     * 交易保障
+     * Reports a transaction.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String orderReport(Map<String, String> params) {
         return execution(PayApi.REPORT, params);
     }
 
     /**
-     * 转换短链接
+     * Converts a URL to a short URL.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String toShortUrl(Map<String, String> params) {
         return execution(PayApi.SHORT_URL, params);
     }
 
     /**
-     * 授权码查询 openId
+     * Queries an OpenID from an authorization code.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String authCodeToOpenid(Map<String, String> params) {
         return execution(PayApi.AUTH_CODE_TO_OPENID, params);
     }
 
     /**
-     * 刷卡支付
+     * Performs a micropay.
      *
-     * @param isSandbox 是否是沙盒环境
-     * @param params    请求参数
-     * @return {@link String} 请求返回的结果
+     * @param isSandbox Whether it is a sandbox environment.
+     * @param params    The request parameters.
+     * @return The result of the request.
      */
     public String microPay(boolean isSandbox, Map<String, String> params) {
         return execution(PayApi.MICRO_PAY, params);
     }
 
     /**
-     * 企业付款到零钱
+     * Transfers funds to a user's wallet.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String transfers(Map<String, String> params, String certPath, String certPass) {
         return execution(TransferApi.TRANSFER, params, certPath, certPass);
     }
 
     /**
-     * 企业付款到零钱
+     * Transfers funds to a user's wallet with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String transfersByProtocol(Map<String, String> params, String certPath, String certPass, String protocol) {
         return executionByProtocol(TransferApi.TRANSFER, params, certPath, certPass, protocol);
     }
 
     /**
-     * 企业付款到零钱
+     * Transfers funds to a user's wallet.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String transfers(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(TransferApi.TRANSFER, params, certFile, certPass);
     }
 
     /**
-     * 企业付款到零钱
+     * Transfers funds to a user's wallet with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String transfersByProtocol(
             Map<String, String> params,
@@ -909,74 +927,74 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询企业付款到零钱
+     * Queries a transfer to a user's wallet.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String getTransferInfo(Map<String, String> params, String certPath, String certPass) {
         return execution(TransferApi.GET_TRANSFER_INFO, params, certPath, certPass);
     }
 
     /**
-     * 查询企业付款到零钱
+     * Queries a transfer to a user's wallet.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String getTransferInfo(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(TransferApi.GET_TRANSFER_INFO, params, certFile, certPass);
     }
 
     /**
-     * 企业付款到银行
+     * Pays to a bank.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String payBank(Map<String, String> params, String certPath, String certPass) {
         return execution(TransferApi.TRANSFER_BANK, params, certPath, certPass);
     }
 
     /**
-     * 企业付款到银行
+     * Pays to a bank with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String payBankByProtocol(Map<String, String> params, String certPath, String certPass, String protocol) {
         return executionByProtocol(TransferApi.TRANSFER_BANK, params, certPath, certPass, protocol);
     }
 
     /**
-     * 企业付款到银行
+     * Pays to a bank.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String payBank(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(TransferApi.TRANSFER_BANK, params, certFile, certPass);
     }
 
     /**
-     * 企业付款到银行
+     * Pays to a bank with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String payBankByProtocol(
             Map<String, String> params,
@@ -987,49 +1005,49 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询企业付款到银行
+     * Queries a payment to a bank.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String queryBank(Map<String, String> params, String certPath, String certPass) {
         return execution(TransferApi.GET_TRANSFER_BANK_INFO, params, certPath, certPass);
     }
 
     /**
-     * 查询企业付款到银行
+     * Queries a payment to a bank.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String queryBank(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(TransferApi.GET_TRANSFER_BANK_INFO, params, certFile, certPass);
     }
 
     /**
-     * 获取 RSA 加密公钥
+     * Gets the RSA public key.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String getPublicKey(Map<String, String> params, String certPath, String certPass) {
         return execution(TransferApi.GET_PUBLIC_KEY, params, certPath, certPass);
     }
 
     /**
-     * 获取 RSA 加密公钥
+     * Gets the RSA public key with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String getPublicKeyByProtocol(
             Map<String, String> params,
@@ -1040,25 +1058,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 获取 RSA 加密公钥
+     * Gets the RSA public key.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String getPublicKey(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(TransferApi.GET_PUBLIC_KEY, params, certFile, certPass);
     }
 
     /**
-     * 获取 RSA 加密公钥
+     * Gets the RSA public key with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String getPublicKeyByProtocol(
             Map<String, String> params,
@@ -1069,11 +1087,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 公众号纯签约
+     * Official Account pure contract signing.
      *
-     * @param params   请求参数
-     * @param payModel 商户平台模式
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param payModel The merchant platform mode.
+     * @return The result of the request.
      */
     public String entrustWeb(Map<String, String> params, Mode payModel) {
         if (payModel == Mode.SELLER) {
@@ -1084,11 +1102,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * APP 纯签约
+     * APP pure contract signing.
      *
-     * @param params   请求参数
-     * @param payModel 商户平台模式
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param payModel The merchant platform mode.
+     * @return The result of the request.
      */
     public String preEntrustWeb(Map<String, String> params, Mode payModel) {
         if (payModel == Mode.SELLER) {
@@ -1099,11 +1117,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * H5 纯签约
+     * H5 pure contract signing.
      *
-     * @param params   请求参数
-     * @param payModel 商户平台模式
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param payModel The merchant platform mode.
+     * @return The result of the request.
      */
     public String h5EntrustWeb(Map<String, String> params, Mode payModel) {
         if (payModel == Mode.SELLER) {
@@ -1114,21 +1132,21 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 支付中签约
+     * Contract signing during payment.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String contractOrder(Map<String, String> params) {
         return execution(EntrustPayApi.PAY_CONTRACT_ORDER, params);
     }
 
     /**
-     * 查询签约关系
+     * Queries a contract relationship.
      *
-     * @param params   请求参数
-     * @param payModel 商户平台模式
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param payModel The merchant platform mode.
+     * @return The result of the request.
      */
     public String queryContract(Map<String, String> params, Mode payModel) {
         if (payModel == Mode.SELLER) {
@@ -1139,11 +1157,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 申请扣款
+     * Applies for a deduction.
      *
-     * @param params   请求参数
-     * @param payModel 商户平台模式
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param payModel The merchant platform mode.
+     * @return The result of the request.
      */
     public String papPayApply(Map<String, String> params, Mode payModel) {
         if (payModel == Mode.SELLER) {
@@ -1154,11 +1172,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 申请解约
+     * Applies to terminate a contract.
      *
-     * @param params   请求参数
-     * @param payModel 商户平台模式
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param payModel The merchant platform mode.
+     * @return The result of the request.
      */
     public String deleteContract(Map<String, String> params, Mode payModel) {
         if (payModel == Mode.SELLER) {
@@ -1169,11 +1187,11 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询签约关系对账单
+     * Queries a contract bill.
      *
-     * @param params   请求参数
-     * @param payModel 商户平台模式
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param payModel The merchant platform mode.
+     * @return The result of the request.
      */
     public String contractBill(Map<String, String> params, Mode payModel) {
         if (payModel == Mode.SELLER) {
@@ -1184,408 +1202,408 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 请求单次分账
+     * Requests a single profit sharing.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String profitSharing(Map<String, String> params, String certPath, String certPass) {
         return execution(ProfitSharingApi.PROFIT_SHARING, params, certPath, certPass);
     }
 
     /**
-     * 请求单次分账
+     * Requests a single profit sharing.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String profitSharing(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(ProfitSharingApi.PROFIT_SHARING, params, certFile, certPass);
     }
 
     /**
-     * 请求多次分账
+     * Requests multiple profit sharings.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String multiProfitSharing(Map<String, String> params, String certPath, String certPass) {
         return execution(ProfitSharingApi.MULTI_PROFIT_SHARING, params, certPath, certPass);
     }
 
     /**
-     * 请求多次分账
+     * Requests multiple profit sharings.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String multiProfitSharing(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(ProfitSharingApi.MULTI_PROFIT_SHARING, params, certFile, certPass);
     }
 
     /**
-     * 查询分账结果
+     * Queries a profit sharing result.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String profitSharingQuery(Map<String, String> params) {
         return execution(ProfitSharingApi.PROFIT_SHARING_QUERY, params);
     }
 
     /**
-     * 添加分账接收方
+     * Adds a profit sharing receiver.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String profitSharingAddReceiver(Map<String, String> params) {
         return execution(ProfitSharingApi.PROFIT_SHARING_ADD_RECEIVER, params);
     }
 
     /**
-     * 删除分账接收方
+     * Removes a profit sharing receiver.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String profitSharingRemoveReceiver(Map<String, String> params) {
         return execution(ProfitSharingApi.PROFIT_SHARING_REMOVE_RECEIVER, params);
     }
 
     /**
-     * 完结分账
+     * Finishes a profit sharing.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String profitSharingFinish(Map<String, String> params, String certPath, String certPass) {
         return execution(ProfitSharingApi.PROFIT_SHARING_FINISH, params, certPath, certPass);
     }
 
     /**
-     * 完结分账
+     * Finishes a profit sharing.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String profitSharingFinish(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(ProfitSharingApi.PROFIT_SHARING_FINISH, params, certFile, certPass);
     }
 
     /**
-     * 分账回退
+     * Returns a profit sharing.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String profitSharingReturn(Map<String, String> params, String certPath, String certPass) {
         return execution(ProfitSharingApi.PROFIT_SHARING_RETURN, params, certPath, certPass);
     }
 
     /**
-     * 分账回退
+     * Returns a profit sharing.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String profitSharingReturn(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(ProfitSharingApi.PROFIT_SHARING_RETURN, params, certFile, certPass);
     }
 
     /**
-     * 分账回退结果查询
+     * Queries a profit sharing return.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String profitSharingReturnQuery(Map<String, String> params) {
         return execution(ProfitSharingApi.PROFIT_SHARING_RETURN_QUERY, params);
     }
 
     /**
-     * 发放代金券
+     * Sends a coupon.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String sendCoupon(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(CouponApi.SEND_COUPON, params, certFile, certPass);
     }
 
     /**
-     * 查询代金券批次
+     * Queries a coupon stock.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String queryCouponStock(Map<String, String> params) {
         return execution(CouponApi.QUERY_COUPON_STOCK, params);
     }
 
     /**
-     * 查询代金券信息
+     * Queries coupon information.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String queryCouponsInfo(Map<String, String> params) {
         return execution(CouponApi.QUERY_COUPONS_INFO, params);
     }
 
     /**
-     * 支付押金（人脸支付）
+     * Face payment deposit.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String depositFacePay(Map<String, String> params) {
         return execution(DepositApi.FACE_PAY, params);
     }
 
     /**
-     * 支付押金（付款码支付）
+     * Micropay deposit.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String depositMicroPay(Map<String, String> params) {
         return execution(DepositApi.MICRO_PAY, params);
     }
 
     /**
-     * 查询订单
+     * Queries an order.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String depositOrderQuery(Map<String, String> params) {
         return execution(DepositApi.ORDER_QUERY, params);
     }
 
     /**
-     * 撤销订单
+     * Reverses an order.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String depositReverse(Map<String, String> params, String certPath, String certPass) {
         return execution(DepositApi.REVERSE, params, certPath, certPass);
     }
 
     /**
-     * 撤销订单
+     * Reverses an order.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String depositReverse(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(DepositApi.REVERSE, params, certFile, certPass);
     }
 
     /**
-     * 消费押金
+     * Consumes a deposit.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件的目录
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The directory of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String depositConsume(Map<String, String> params, String certPath, String certPass) {
         return execution(DepositApi.CONSUME, params, certPath, certPass);
     }
 
     /**
-     * 消费押金
+     * Consumes a deposit.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String depositConsume(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(DepositApi.CONSUME, params, certFile, certPass);
     }
 
     /**
-     * 申请退款（押金）
+     * Applies for a refund (deposit).
      *
-     * @param params   请求参数
-     * @param certPath 证书文件的目录
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The directory of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String depositRefund(Map<String, String> params, String certPath, String certPass) {
         return execution(DepositApi.REFUND, params, certPath, certPass);
     }
 
     /**
-     * 申请退款（押金）
+     * Applies for a refund (deposit).
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String depositRefund(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(DepositApi.REFUND, params, certFile, certPass);
     }
 
     /**
-     * 查询退款（押金）
+     * Queries a refund (deposit).
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String depositRefundQuery(Map<String, String> params) {
         return execution(DepositApi.REFUND_QUERY, params);
     }
 
     /**
-     * 下载资金账单
+     * Downloads a fund flow bill.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String downloadFundFlow(Map<String, String> params, String certPath, String certPass) {
         return execution(PayApi.DOWNLOAD_FUND_FLOW, params, certPath, certPass);
     }
 
     /**
-     * 下载资金账单
+     * Downloads a fund flow bill.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String downloadFundFlow(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(PayApi.DOWNLOAD_FUND_FLOW, params, certFile, certPass);
     }
 
     /**
-     * 刷脸设备获取设备调用凭证
+     * Gets the device invocation credentials for face payment.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String getAuthInfo(Map<String, String> params) {
         return execution(FacePayApi.GET_AUTH_INFO, params);
     }
 
     /**
-     * 刷脸支付
+     * Performs a face payment.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String facePay(Map<String, String> params) {
         return execution(FacePayApi.FACE_PAY, params);
     }
 
     /**
-     * 查询刷脸支付订单
+     * Queries a face payment order.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String facePayQuery(Map<String, String> params) {
         return execution(FacePayApi.FACE_PAY_QUERY, params);
     }
 
     /**
-     * 刷脸支付撤销订单
+     * Reverses a face payment order.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String facePayReverse(Map<String, String> params, String certPath, String certPass) {
         return execution(FacePayApi.FACE_PAY_REVERSE, params, certPath, certPass);
     }
 
     /**
-     * 刷脸支付撤销订单
+     * Reverses a face payment order.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String facePayReverse(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(FacePayApi.FACE_PAY_REVERSE, params, certFile, certPass);
     }
 
     /**
-     * 发放普通红包
+     * Sends a normal red packet.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String sendRedPack(Map<String, String> params, String certPath, String certPass) {
         return execution(RedPackApi.SEND_RED_PACK, params, certPath, certPass);
     }
 
     /**
-     * 发放普通红包
+     * Sends a normal red packet with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String sendRedPackByProtocol(Map<String, String> params, String certPath, String certPass, String protocol) {
         return executionByProtocol(RedPackApi.SEND_RED_PACK, params, certPath, certPass, protocol);
     }
 
     /**
-     * 发放普通红包
+     * Sends a normal red packet.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String sendRedPack(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(RedPackApi.SEND_RED_PACK, params, certFile, certPass);
     }
 
     /**
-     * 发放普通红包
+     * Sends a normal red packet with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String sendRedPackByProtocol(
             Map<String, String> params,
@@ -1596,25 +1614,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 发放裂变红包
+     * Sends a fission red packet.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String sendGroupRedPack(Map<String, String> params, String certPath, String certPass) {
         return execution(RedPackApi.SEND_GROUP_RED_PACK, params, certPath, certPass);
     }
 
     /**
-     * 发放裂变红包
+     * Sends a fission red packet with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String sendGroupRedPackByProtocol(
             Map<String, String> params,
@@ -1625,25 +1643,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 发放裂变红包
+     * Sends a fission red packet.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String sendGroupRedPack(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(RedPackApi.SEND_GROUP_RED_PACK, params, certFile, certPass);
     }
 
     /**
-     * 发放裂变红包
+     * Sends a fission red packet with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String sendGroupRedPackByProtocol(
             Map<String, String> params,
@@ -1654,49 +1672,49 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询红包记录
+     * Queries a red packet record.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String getHbInfo(Map<String, String> params, String certPath, String certPass) {
         return execution(RedPackApi.GET_HB_INFO, params, certPath, certPass);
     }
 
     /**
-     * 查询红包记录
+     * Queries a red packet record.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String getHbInfo(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(RedPackApi.GET_HB_INFO, params, certFile, certPass);
     }
 
     /**
-     * 小程序发放红包接口
+     * Sends a Mini Program red packet.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String sendMiniProgramRedPack(Map<String, String> params, String certPath, String certPass) {
         return execution(RedPackApi.SEND_MINI_PROGRAM_HB, params, certPath, certPass);
     }
 
     /**
-     * 小程序发放红包接口
+     * Sends a Mini Program red packet with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String sendMiniProgramRedPackByProtocol(
             Map<String, String> params,
@@ -1707,25 +1725,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 小程序发放红包接口
+     * Sends a Mini Program red packet.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String sendMiniProgramRedPack(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(RedPackApi.SEND_MINI_PROGRAM_HB, params, certFile, certPass);
     }
 
     /**
-     * 小程序发放红包接口
+     * Sends a Mini Program red packet with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String sendMiniProgramRedPackByProtocol(
             Map<String, String> params,
@@ -1736,25 +1754,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 发放企业红包
+     * Sends a corporate red packet.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String sendWorkWxRedPack(Map<String, String> params, String certPath, String certPass) {
         return execution(RedPackApi.SEND_WORK_WX_RED_PACK, params, certPath, certPass);
     }
 
     /**
-     * 发放企业红包
+     * Sends a corporate red packet with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String sendWorkWxRedPackByProtocol(
             Map<String, String> params,
@@ -1765,25 +1783,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 发放企业红包
+     * Sends a corporate red packet.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String sendWorkWxRedPack(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(RedPackApi.SEND_WORK_WX_RED_PACK, params, certFile, certPass);
     }
 
     /**
-     * 发放企业红包
+     * Sends a corporate red packet with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String sendWorkWxRedPackByProtocol(
             Map<String, String> params,
@@ -1794,25 +1812,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询向员工付款记录
+     * Queries a payment record to an employee.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String queryWorkWxRedPack(Map<String, String> params, String certPath, String certPass) {
         return execution(RedPackApi.QUERY_WORK_WX_RED_PACK, params, certPath, certPass);
     }
 
     /**
-     * 查询向员工付款记录
+     * Queries a payment record to an employee with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String queryWorkWxRedPackByProtocol(
             Map<String, String> params,
@@ -1823,25 +1841,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询向员工付款记录
+     * Queries a payment record to an employee.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String queryWorkWxRedPack(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(RedPackApi.QUERY_WORK_WX_RED_PACK, params, certFile, certPass);
     }
 
     /**
-     * 查询向员工付款记录
+     * Queries a payment record to an employee with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String queryWorkWxRedPackByProtocol(
             Map<String, String> params,
@@ -1852,25 +1870,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 向员工付款
+     * Pays an employee.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String trans2pocket(Map<String, String> params, String certPath, String certPass) {
         return execution(TransferApi.PAY_WWS_TRANS_2_POCKET, params, certPath, certPass);
     }
 
     /**
-     * 向员工付款
+     * Pays an employee with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String trans2pocketByProtocol(
             Map<String, String> params,
@@ -1881,25 +1899,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 向员工付款
+     * Pays an employee.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String trans2pocket(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(TransferApi.PAY_WWS_TRANS_2_POCKET, params, certFile, certPass);
     }
 
     /**
-     * 向员工付款
+     * Pays an employee with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String trans2pocketByProtocol(
             Map<String, String> params,
@@ -1910,25 +1928,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询向员工付款记录
+     * Queries a payment record to an employee.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String queryTrans2pocket(Map<String, String> params, String certPath, String certPass) {
         return execution(TransferApi.QUERY_WWS_TRANS_2_POCKET, params, certPath, certPass);
     }
 
     /**
-     * 查询向员工付款记录
+     * Queries a payment record to an employee with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certPath 证书文件路径
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String queryTrans2pocketByProtocol(
             Map<String, String> params,
@@ -1939,25 +1957,25 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询向员工付款记录
+     * Queries a payment record to an employee.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String queryTrans2pocket(Map<String, String> params, InputStream certFile, String certPass) {
         return execution(TransferApi.QUERY_WWS_TRANS_2_POCKET, params, certFile, certPass);
     }
 
     /**
-     * 查询向员工付款记录
+     * Queries a payment record to an employee with a specific protocol.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @param protocol 协议
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
      */
     public String queryTrans2pocket(
             Map<String, String> params,
@@ -1968,13 +1986,13 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 小程序虚拟支付接口
+     * Mini Program virtual payment API.
      *
-     * @param apiEnum     接口枚举
-     * @param appKey      应用秘钥
-     * @param accessToken 小程序Token
-     * @param postBody    POST的数据包体
-     * @return {@link Message} 请求返回的结果
+     * @param apiEnum     The API enum.
+     * @param appKey      The application secret.
+     * @param accessToken The Mini Program token.
+     * @param postBody    The POST data body.
+     * @return A {@link Message} with the result of the request.
      */
     public Message xPay(Complex apiEnum, String appKey, String accessToken, String postBody) {
         String url = apiEnum.service();
@@ -1985,74 +2003,76 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * @param url    请求url
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * Sends a GET request.
+     *
+     * @param url    The request URL.
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String doGet(String url, Map<String, String> params) {
         return get(url, params);
     }
 
     /**
-     * get 请求
+     * Sends a GET request.
      *
-     * @param url           请求url
-     * @param authorization 授权信息
-     * @param serialNumber  公钥证书序列号
-     * @param params        请求参数
-     * @return {@link Message} 请求返回的结果
+     * @param url           The request URL.
+     * @param authorization The authorization information.
+     * @param serialNumber  The public key certificate serial number.
+     * @param params        The request parameters.
+     * @return A {@link Message} with the result of the request.
      */
     public Message get(String url, String authorization, String serialNumber, Map<String, String> params) {
         return get(url, params, WechatPayBuilder.getHeaders(authorization, serialNumber));
     }
 
     /**
-     * post 请求
+     * Sends a POST request.
      *
-     * @param url           请求url
-     * @param authorization 授权信息
-     * @param serialNumber  公钥证书序列号
-     * @param data          请求参数
-     * @return {@link Message} 请求返回的结果
+     * @param url           The request URL.
+     * @param authorization The authorization information.
+     * @param serialNumber  The public key certificate serial number.
+     * @param data          The request data.
+     * @return A {@link Message} with the result of the request.
      */
     public Message post(String url, String authorization, String serialNumber, String data) {
         return post(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
     }
 
     /**
-     * delete 请求
+     * Sends a DELETE request.
      *
-     * @param url           请求url
-     * @param authorization 授权信息
-     * @param serialNumber  公钥证书序列号
-     * @param data          请求参数
-     * @return {@link Message} 请求返回的结果
+     * @param url           The request URL.
+     * @param authorization The authorization information.
+     * @param serialNumber  The public key certificate serial number.
+     * @param data          The request data.
+     * @return A {@link Message} with the result of the request.
      */
     public Message delete(String url, String authorization, String serialNumber, String data) {
         return post(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
     }
 
     /**
-     * upload 请求
+     * Sends an upload request.
      *
-     * @param url     请求url
-     * @param params  请求参数
-     * @param headers 请求头
-     * @return {@link Message} 请求返回的结果
+     * @param url     The request URL.
+     * @param params  The request parameters.
+     * @param headers The request headers.
+     * @return A {@link Message} with the result of the request.
      */
     public Message upload(String url, Map<String, String> params, Map<String, String> headers) {
         return post(url, params, headers);
     }
 
     /**
-     * upload 请求
+     * Sends an upload request.
      *
-     * @param url           请求url
-     * @param authorization 授权信息
-     * @param serialNumber  公钥证书序列号
-     * @param data          请求参数
-     * @param file          上传文件
-     * @return {@link Message} 请求返回的结果
+     * @param url           The request URL.
+     * @param authorization The authorization information.
+     * @param serialNumber  The public key certificate serial number.
+     * @param data          The request data.
+     * @param file          The file to upload.
+     * @return A {@link Message} with the result of the request.
      */
     public Message upload(String url, String authorization, String serialNumber, String data, File file) {
         Map<String, String> paramMap = new HashMap<>();
@@ -2061,39 +2081,65 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * patch 请求
+     * Sends a PATCH request.
      *
-     * @param url           请求url
-     * @param authorization 授权信息
-     * @param serialNumber  公钥证书序列号
-     * @param data          请求参数
-     * @return {@link Message} 请求返回的结果
+     * @param url           The request URL.
+     * @param authorization The authorization information.
+     * @param serialNumber  The public key certificate serial number.
+     * @param data          The request data.
+     * @return A {@link Message} with the result of the request.
      */
     public Message patch(String url, String authorization, String serialNumber, String data) {
         return post(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
     }
 
     /**
-     * put 请求
+     * Sends a PUT request.
      *
-     * @param url           请求url
-     * @param authorization 授权信息
-     * @param serialNumber  公钥证书序列号
-     * @param data          请求参数
-     * @return {@link Message} 请求返回的结果
+     * @param url           The request URL.
+     * @param authorization The authorization information.
+     * @param serialNumber  The public key certificate serial number.
+     * @param data          The request data.
+     * @return A {@link Message} with the result of the request.
      */
     public Message put(String url, String authorization, String serialNumber, String data) {
         return put(url, data, WechatPayBuilder.getHeaders(authorization, serialNumber));
     }
 
+    /**
+     * Sends a POST request with parameters converted to XML.
+     *
+     * @param url    The request URL.
+     * @param params The request parameters.
+     * @return The result of the request.
+     */
     public String doPost(String url, Map<String, String> params) {
         return post(url, XmlKit.mapToXmlString(params));
     }
 
+    /**
+     * Sends a POST request with SSL.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
+     */
     public String doPostSsl(String url, Map<String, String> params, String certPath, String certPass) {
         return post(url, XmlKit.mapToXmlString(params), certPath, certPass, null);
     }
 
+    /**
+     * Sends a POST request with SSL and a specific protocol.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
+     */
     public String doPostSslByProtocol(
             String url,
             Map<String, String> params,
@@ -2103,42 +2149,99 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
         return post(url, XmlKit.mapToXmlString(params), certPath, certPass, protocol);
     }
 
+    /**
+     * Sends a POST request with SSL.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @return The result of the request.
+     */
     public String doPostSsl(String url, Map<String, String> params, String certPath) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
-            throw new RuntimeException("请求参数中必须包含 mch_id，如接口参考中不包 mch_id， 请使用其他同名构造方法。");
+            throw new RuntimeException(
+                    "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
         String certPass = params.get("mch_id");
         return doPostSsl(url, params, certPath, certPass);
     }
 
+    /**
+     * Sends a POST request with SSL and a specific protocol.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param protocol The protocol.
+     * @return The result of the request.
+     */
     public String doPostSslByProtocol(String url, Map<String, String> params, String certPath, String protocol) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
-            throw new RuntimeException("请求参数中必须包含 mch_id，如接口参考中不包 mch_id， 请使用其他同名构造方法。");
+            throw new RuntimeException(
+                    "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
         String certPass = params.get("mch_id");
         return doPostSslByProtocol(url, params, certPath, certPass, protocol);
     }
 
+    /**
+     * Sends a POST request with SSL.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @return The result of the request.
+     */
     public String doPostSsl(String url, Map<String, String> params, InputStream certFile) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
-            throw new RuntimeException("请求参数中必须包含 mch_id，如接口参考中不包 mch_id， 请使用其他同名构造方法。");
+            throw new RuntimeException(
+                    "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
         String certPass = params.get("mch_id");
         return doPostSsl(url, params, certFile, certPass);
     }
 
+    /**
+     * Sends a POST request with SSL and a specific protocol.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param protocol The protocol.
+     * @return The result of the request.
+     */
     public String doPostSslByProtocol(String url, Map<String, String> params, InputStream certFile, String protocol) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
-            throw new RuntimeException("请求参数中必须包含 mch_id，如接口参考中不包 mch_id， 请使用其他同名构造方法。");
+            throw new RuntimeException(
+                    "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
         String certPass = params.get("mch_id");
         return doPostSslByProtocol(url, params, certFile, certPass, protocol);
     }
 
+    /**
+     * Sends a POST request with SSL.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
+     */
     public String doPostSsl(String url, Map<String, String> params, InputStream certFile, String certPass) {
         return post(url, XmlKit.mapToXmlString(params), certFile, certPass, null);
     }
 
+    /**
+     * Sends a POST request with SSL and a specific protocol.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certFile The input stream of the certificate file.
+     * @param certPass The certificate password.
+     * @param protocol The protocol.
+     * @return The result of the request.
+     */
     public String doPostSslByProtocol(
             String url,
             Map<String, String> params,
@@ -2148,14 +2251,34 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
         return post(url, XmlKit.mapToXmlString(params), certFile, certPass, protocol);
     }
 
+    /**
+     * Sends an upload request with SSL.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param filePath The path to the file to upload.
+     * @return The result of the request.
+     */
     public String doUploadSsl(String url, Map<String, String> params, String certPath, String filePath) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
-            throw new RuntimeException("请求参数中必须包含 mch_id，如接口参考中不包 mch_id， 请使用其他同名构造方法。");
+            throw new RuntimeException(
+                    "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
         String certPass = params.get("mch_id");
         return doUploadSsl(url, params, certPath, certPass, filePath);
     }
 
+    /**
+     * Sends an upload request with SSL and a specific protocol.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param filePath The path to the file to upload.
+     * @param protocol The protocol.
+     * @return The result of the request.
+     */
     public String doUploadSslByProtocol(
             String url,
             Map<String, String> params,
@@ -2163,12 +2286,23 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
             String filePath,
             String protocol) {
         if (params.isEmpty() || !params.containsKey("mch_id")) {
-            throw new RuntimeException("请求参数中必须包含 mch_id，如接口参考中不包 mch_id， 请使用其他同名构造方法。");
+            throw new RuntimeException(
+                    "Request parameters must contain mch_id. If the API does not include mch_id, please use another constructor.");
         }
         String certPass = params.get("mch_id");
         return doUploadSslByProtocol(url, params, certPath, certPass, filePath, protocol);
     }
 
+    /**
+     * Sends an upload request with SSL.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param filePath The path to the file to upload.
+     * @return The result of the request.
+     */
     public String doUploadSsl(
             String url,
             Map<String, String> params,
@@ -2178,6 +2312,17 @@ public class WechatPayProvider extends AbstractProvider<Material, Context> {
         return upload(url, XmlKit.mapToXmlString(params), certPath, certPass, filePath);
     }
 
+    /**
+     * Sends an upload request with SSL and a specific protocol.
+     *
+     * @param url      The request URL.
+     * @param params   The request parameters.
+     * @param certPath The path to the certificate file.
+     * @param certPass The certificate password.
+     * @param filePath The path to the file to upload.
+     * @param protocol The protocol.
+     * @return The result of the request.
+     */
     public String doUploadSslByProtocol(
             String url,
             Map<String, String> params,

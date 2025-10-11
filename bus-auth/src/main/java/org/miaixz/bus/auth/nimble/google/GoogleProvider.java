@@ -45,21 +45,39 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * Google 登录
+ * Google login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GoogleProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code GoogleProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public GoogleProvider(Context context) {
         super(context, Registry.GOOGLE);
     }
 
+    /**
+     * Constructs a {@code GoogleProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public GoogleProvider(Context context, CacheX cache) {
         super(context, Registry.GOOGLE, cache);
     }
 
+    /**
+     * Retrieves the access token from Google's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
@@ -91,6 +109,13 @@ public class GoogleProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Google's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
@@ -121,10 +146,11 @@ public class GoogleProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -134,10 +160,10 @@ public class GoogleProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权后的token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
@@ -145,9 +171,10 @@ public class GoogleProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error") || object.containsKey("error_description")) {

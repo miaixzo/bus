@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v2;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v2 版本-小微商户相关接口
+ * WeChat Pay V2 API interfaces related to micro merchants.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,79 +38,86 @@ import org.miaixz.bus.pay.Matcher;
 public enum MicroMchApi implements Matcher {
 
     /**
-     * 申请入驻
+     * Apply for entry.
      */
-    SUBMIT("/applyment/micro/submit", "申请入驻"),
+    SUBMIT("/applyment/micro/submit", "Apply for entry"),
 
     /**
-     * 查询申请状态
+     * Query application status.
      */
-    GET_SUBMIT_STATE("/applyment/micro/getstate", "查询申请状态"),
+    GET_SUBMIT_STATE("/applyment/micro/getstate", "Query application status"),
 
     /**
-     * 查询提现状态
+     * Query withdrawal status.
      */
-    QUERY_AUTO_WITH_DRAW_BY_DATE("/fund/queryautowithdrawbydate", "查询提现状态"),
+    QUERY_AUTO_WITH_DRAW_BY_DATE("/fund/queryautowithdrawbydate", "Query withdrawal status"),
 
     /**
-     * 修改结算银行卡
+     * Modify settlement bank card.
      */
-    MODIFY_ARCHIVES("/applyment/micro/modifyarchives", "修改结算银行卡"),
+    MODIFY_ARCHIVES("/applyment/micro/modifyarchives", "Modify settlement bank card"),
 
     /**
-     * 修改联系信息
+     * Modify contact information.
      */
-    MODIFY_CONTACT_INFO("/applyment/micro/modifycontactinfo", "修改联系信息"),
+    MODIFY_CONTACT_INFO("/applyment/micro/modifycontactinfo", "Modify contact information"),
 
     /**
-     * 关注配置
+     * Follow configuration.
      */
-    ADD_RECOMMEND_CONF("/secapi/mkt/addrecommendconf", "关注配置"),
+    ADD_RECOMMEND_CONF("/secapi/mkt/addrecommendconf", "Follow configuration"),
 
     /**
-     * 添加开发配置
+     * Add development configuration.
      */
-    ADD_SUB_DEV_CONFIG("/secapi/mch/addsubdevconfig", "开发配置"),
+    ADD_SUB_DEV_CONFIG("/secapi/mch/addsubdevconfig", "Add development configuration"),
 
     /**
-     * 开发配置查询
+     * Query development configuration.
      */
-    QUERY_SUB_DEV_CONFIG("/secapi/mch/querysubdevconfig", "开发配置查询"),
+    QUERY_SUB_DEV_CONFIG("/secapi/mch/querysubdevconfig", "Query development configuration"),
 
     /**
-     * 提交升级申请
+     * Submit upgrade application.
      */
-    SUBMIT_UPGRADE("/applyment/micro/submitupgrade", "提交升级申请"),
+    SUBMIT_UPGRADE("/applyment/micro/submitupgrade", "Submit upgrade application"),
 
     /**
-     * 查询升级申请单状态
+     * Query upgrade application status.
      */
-    GET_UPGRADE_STATE("/applyment/micro/getupgradestate", "查询升级申请单状态"),
+    GET_UPGRADE_STATE("/applyment/micro/getupgradestate", "Query upgrade application status"),
 
     /**
-     * 服务商帮小微商户重新发起自动提现
+     * Service provider helps micro merchants re-initiate automatic withdrawal.
      */
-    RE_AUTO_WITH_DRAW_BY_DATE("/fund/reautowithdrawbydate", "服务商帮小微商户重新发起自动提现");
+    RE_AUTO_WITH_DRAW_BY_DATE("/fund/reautowithdrawbydate",
+            "Service provider helps micro merchants re-initiate automatic withdrawal");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new MicroMchApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     MicroMchApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -118,9 +125,9 @@ public enum MicroMchApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -128,9 +135,9 @@ public enum MicroMchApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

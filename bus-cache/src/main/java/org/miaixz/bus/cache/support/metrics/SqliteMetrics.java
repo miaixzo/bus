@@ -36,9 +36,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 /**
- * SQLite数据库缓存命中率统计实现
+ * SQLite database implementation for cache hit rate statistics.
  * <p>
- * 基于SQLite数据库实现的缓存命中率统计，使用单连接数据源和JdbcTemplate进行数据库操作。 自动创建缓存统计表，支持并发更新和乐观锁机制。 SQLite是一种轻量级的嵌入式数据库，适用于单机环境或测试环境。
+ * This class provides a metrics solution using a lightweight, embedded SQLite database. It is suitable for single-node
+ * or testing environments. It uses a {@link SingleConnectionDataSource} and {@link JdbcTemplate} for database
+ * operations and automatically creates the necessary table for storing statistics.
  * </p>
  *
  * @author Kimi Liu
@@ -47,33 +49,35 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 public class SqliteMetrics extends AbstractMetrics {
 
     /**
-     * 构造方法
+     * Constructs an {@code SqliteMetrics} instance using a context map for database configuration.
      *
-     * @param context 上下文参数
+     * @param context A map containing the database JDBC URL (e.g., "url").
      */
     public SqliteMetrics(Map<String, Object> context) {
         super(context);
     }
 
     /**
-     * 构造方法
+     * Constructs an {@code SqliteMetrics} instance with explicit database connection details.
      *
-     * @param url      数据库URL
-     * @param username 用户名
-     * @param password 密码
+     * @param url      The JDBC URL for the SQLite database.
+     * @param username The username (typically ignored by SQLite).
+     * @param password The password (typically ignored by SQLite).
      */
     public SqliteMetrics(String url, String username, String password) {
         super(url, username, password);
     }
 
     /**
-     * 创建JdbcOperations并初始化数据库
+     * Provides a {@link Supplier} for {@link JdbcOperations} configured for an SQLite database.
      * <p>
-     * 创建SQLite数据库连接，初始化JdbcTemplate，并创建缓存统计表
+     * This method sets up a {@link SingleConnectionDataSource} and a {@link JdbcTemplate}. It then ensures that the
+     * {@code t_cache_rate} table exists, creating it if necessary. Note: The DDL uses `IDENTITY`, which may not be
+     * standard for all SQLite versions; `INTEGER PRIMARY KEY AUTOINCREMENT` is more common.
      * </p>
      *
-     * @param context 上下文参数
-     * @return 初始化完成的JdbcOperations对象
+     * @param context A map containing the database JDBC URL under the "url" key.
+     * @return A supplier that provides an initialized {@link JdbcOperations} object.
      */
     @Override
     protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
@@ -83,7 +87,7 @@ public class SqliteMetrics extends AbstractMetrics {
             dataSource.setUrl((String) context.get("url"));
             JdbcTemplate template = new JdbcTemplate(dataSource);
             template.execute(
-                    "CREATE TABLE IF NOT EXISTS t_cache_rate(" + "id BIGINT     IDENTITY PRIMARY KEY,"
+                    "CREATE TABLE IF NOT EXISTS t_cache_rate(" + "id INTEGER     PRIMARY KEY AUTOINCREMENT,"
                             + "pattern       VARCHAR(64) NOT NULL UNIQUE,"
                             + "hit_count     BIGINT      NOT NULL     DEFAULT 0,"
                             + "require_count BIGINT      NOT NULL     DEFAULT 0,"
@@ -93,22 +97,23 @@ public class SqliteMetrics extends AbstractMetrics {
     }
 
     /**
-     * 将数据库查询结果转换为DataDO流
+     * Transforms a list of database query results (maps) into a stream of {@link DataDO} objects.
      * <p>
-     * 将查询结果Map转换为DataDO对象流，便于后续处理 注意：SQLite中BIGINT类型在查询结果中可能返回Integer类型
+     * Note: This implementation casts the numeric types from the result map to {@link Integer}, which is a common
+     * behavior for the SQLite JDBC driver when dealing with BIGINT columns.
      * </p>
      *
-     * @param mapResults 数据库查询结果
-     * @return DataDO流
+     * @param mapResults A list of maps, where each map represents a row from the database query.
+     * @return A {@link Stream} of {@link DataDO} objects, populated from the query results.
      */
     @Override
     protected Stream<DataDO> transferResults(List<Map<String, Object>> mapResults) {
         return mapResults.stream().map(result -> {
             DataDO dataDO = new DataDO();
-            dataDO.setHitCount((Integer) result.get("hit_count"));
+            dataDO.setHitCount(((Number) result.get("hit_count")).longValue());
             dataDO.setPattern((String) result.get("pattern"));
-            dataDO.setRequireCount((Integer) result.get("require_count"));
-            dataDO.setVersion((Integer) result.get("version"));
+            dataDO.setRequireCount(((Number) result.get("require_count")).longValue());
+            dataDO.setVersion(((Number) result.get("version")).longValue());
             return dataDO;
         });
     }

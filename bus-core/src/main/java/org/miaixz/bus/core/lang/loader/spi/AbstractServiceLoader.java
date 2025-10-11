@@ -33,38 +33,39 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 抽象服务加载器，提供包括路径前缀、服务类、类加载器、编码、安全相关持有
+ * Abstract base class for service loaders, providing common properties such as path prefix, service class, class
+ * loader, and character set.
  *
- * @param <S> 服务类型
+ * @param <S> The type of the service.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractServiceLoader<S> implements ServiceLoader<S> {
 
     /**
-     * 路径前缀
+     * The path prefix for the service files.
      */
     protected final String pathPrefix;
     /**
-     * 服务类
+     * The service interface class.
      */
     protected final Class<S> serviceClass;
     /**
-     * 类加载器
+     * The class loader to use.
      */
     protected final ClassLoader classLoader;
     /**
-     * 编码
+     * The character set for reading service files.
      */
     protected final Charset charset;
 
     /**
-     * 构造
+     * Constructs a new abstract service loader.
      *
-     * @param pathPrefix   路径前缀
-     * @param serviceClass 服务类
-     * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
-     * @param charset      编码，默认UTF-8
+     * @param pathPrefix   The path prefix for the service files.
+     * @param serviceClass The service interface class.
+     * @param classLoader  A custom class loader, or {@code null} to use the current default class loader.
+     * @param charset      The character set to use for reading the service files, defaults to UTF-8.
      */
     public AbstractServiceLoader(final String pathPrefix, final Class<S> serviceClass, final ClassLoader classLoader,
             final Charset charset) {

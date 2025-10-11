@@ -28,7 +28,7 @@
 package org.miaixz.bus.shade.screw.metadata;
 
 /**
- * 表接口
+ * Interface for table metadata.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,16 +36,16 @@ package org.miaixz.bus.shade.screw.metadata;
 public interface Table {
 
     /**
-     * 表名
+     * Gets the table name.
      *
-     * @return {@link String}
+     * @return {@link String} The table name.
      */
     String getTableName();
 
     /**
-     * 获取说明
+     * Gets the explanatory comment on the table.
      *
-     * @return {@link String}
+     * @return {@link String} The remarks.
      */
     String getRemarks();
 

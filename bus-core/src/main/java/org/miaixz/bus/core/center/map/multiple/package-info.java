@@ -26,12 +26,19 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 多参数类型的Map实现，包括集合类型值的MultiValueMap和Table
+ * This package provides specialized {@link java.util.Map} implementations that handle multiple values per key or use
+ * multiple keys to map to a single value, extending the standard map functionalities. It includes implementations for:
  * <ul>
- * <li>MultiValueMap：一个键对应多个值的集合的实现，类似于树的结构。</li>
- * <li>Table：使用两个键映射到一个值，类似于表格结构。</li>
+ * <li>{@code MultiValueMap}: A map where a single key can be associated with multiple values, typically stored in a
+ * collection.</li>
+ * <li>{@code Table}: A data structure that uses two keys (row and column) to map to a single value, similar to a
+ * spreadsheet.</li>
  * </ul>
  *
+ * <p>
+ * The hierarchy for multi-value maps is as follows:
+ * 
+ * 
  * <pre>
  *                   MultiValueMap
  *                         |
@@ -39,6 +46,10 @@
  *                         ||
  *   [CollectionValueMap, SetValueMap, ListValueMap]
  * </pre>
+ * 
+ * <p>
+ * The hierarchy for table-like maps is as follows:
+ * 
  * 
  * <pre>
  *                       Table

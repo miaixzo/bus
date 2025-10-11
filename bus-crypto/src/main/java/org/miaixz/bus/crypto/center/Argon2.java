@@ -31,7 +31,7 @@ import org.bouncycastle.crypto.generators.Argon2BytesGenerator;
 import org.bouncycastle.crypto.params.Argon2Parameters;
 
 /**
- * Argon2加密实现
+ * Argon2 hashing implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,7 +39,7 @@ import org.bouncycastle.crypto.params.Argon2Parameters;
 public class Argon2 {
 
     /**
-     * 默认hash长度
+     * Default hash length.
      */
     public static final int DEFAULT_HASH_LENGTH = 32;
 
@@ -47,34 +47,35 @@ public class Argon2 {
     private final Argon2Parameters.Builder paramsBuilder;
 
     /**
-     * 构造，默认使用{@link Argon2Parameters#ARGON2_id}类型
+     * Constructor, uses {@link Argon2Parameters#ARGON2_id} type by default.
      */
     public Argon2() {
         this(Argon2Parameters.ARGON2_id);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param type {@link Argon2Parameters#ARGON2_d}、{@link Argon2Parameters#ARGON2_i}、{@link Argon2Parameters#ARGON2_id}
+     * @param type The Argon2 type, e.g., {@link Argon2Parameters#ARGON2_d}, {@link Argon2Parameters#ARGON2_i},
+     *             {@link Argon2Parameters#ARGON2_id}.
      */
     public Argon2(final int type) {
         this(new Argon2Parameters.Builder(type));
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param paramsBuilder 参数构造器
+     * @param paramsBuilder The parameter builder.
      */
     public Argon2(final Argon2Parameters.Builder paramsBuilder) {
         this.paramsBuilder = paramsBuilder;
     }
 
     /**
-     * 设置hash长度
+     * Sets the hash length.
      *
-     * @param hashLength hash长度
+     * @param hashLength The hash length.
      * @return this
      */
     public Argon2 setHashLength(final int hashLength) {
@@ -83,9 +84,9 @@ public class Argon2 {
     }
 
     /**
-     * 设置版本
+     * Sets the version.
      *
-     * @param version 版本
+     * @param version The version.
      * @return this
      * @see Argon2Parameters#ARGON2_VERSION_10
      * @see Argon2Parameters#ARGON2_VERSION_13
@@ -96,9 +97,9 @@ public class Argon2 {
     }
 
     /**
-     * 设置盐
+     * Sets the salt.
      *
-     * @param salt 盐
+     * @param salt The salt.
      * @return this
      */
     public Argon2 setSalt(final byte[] salt) {
@@ -107,9 +108,9 @@ public class Argon2 {
     }
 
     /**
-     * 设置可选的密钥数据，用于增加哈希的复杂性
+     * Sets optional secret data to increase hash complexity.
      *
-     * @param secret 密钥
+     * @param secret The secret key.
      * @return this
      */
     public Argon2 setSecret(final byte[] secret) {
@@ -118,7 +119,9 @@ public class Argon2 {
     }
 
     /**
-     * @param additional 附加数据
+     * Sets additional data.
+     *
+     * @param additional The additional data.
      * @return this
      */
     public Argon2 setAdditional(final byte[] additional) {
@@ -127,9 +130,10 @@ public class Argon2 {
     }
 
     /**
-     * 设置迭代次数 迭代次数越多，生成哈希的时间就越长，破解哈希就越困难
+     * Sets the number of iterations. The more iterations, the longer it takes to generate the hash, and the harder it
+     * is to crack.
      *
-     * @param iterations 迭代次数
+     * @param iterations The number of iterations.
      * @return this
      */
     public Argon2 setIterations(final int iterations) {
@@ -138,9 +142,10 @@ public class Argon2 {
     }
 
     /**
-     * 设置内存，单位KB 内存越大，生成哈希的时间就越长，破解哈希就越困难
+     * Sets the memory cost in KB. The more memory, the longer it takes to generate the hash, and the harder it is to
+     * crack.
      *
-     * @param memoryAsKB 内存，单位KB
+     * @param memoryAsKB The memory cost in kilobytes.
      * @return this
      */
     public Argon2 setMemoryAsKB(final int memoryAsKB) {
@@ -149,9 +154,10 @@ public class Argon2 {
     }
 
     /**
-     * 设置并行度，即同时使用的核心数 值越高，生成哈希的时间就越长，破解哈希就越困难
+     * Sets the degree of parallelism (number of cores to use). The higher the value, the longer it takes to generate
+     * the hash, and the harder it is to crack.
      *
-     * @param parallelism 并行度
+     * @param parallelism The degree of parallelism.
      * @return this
      */
     public Argon2 setParallelism(final int parallelism) {
@@ -160,10 +166,10 @@ public class Argon2 {
     }
 
     /**
-     * 生成hash值
+     * Generates the hash value.
      *
-     * @param password 密码
-     * @return hash值
+     * @param password The password.
+     * @return The hash value.
      */
     public byte[] digest(final char[] password) {
         final Argon2BytesGenerator generator = new Argon2BytesGenerator();

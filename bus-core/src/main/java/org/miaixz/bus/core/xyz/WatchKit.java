@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 监听工具类 主要负责文件监听器的快捷创建
+ * Watch service utility class, mainly for the convenient creation of file watchers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,359 +49,359 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class WatchKit {
 
     /**
-     * 创建并初始化监听
+     * Creates and initializes a file watcher.
      *
-     * @param url    URL
-     * @param events 监听的事件列表
-     * @return 监听对象
+     * @param url    The URL of the file or directory to watch.
+     * @param events The events to watch for.
+     * @return A `WatchMonitor` instance.
      */
     public static WatchMonitor of(final URL url, final WatchEvent.Kind<?>... events) {
         return of(url, 0, events);
     }
 
     /**
-     * 创建并初始化监听
+     * Creates and initializes a file watcher.
      *
-     * @param url      URL
-     * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @return 监听对象
+     * @param url    The URL.
+     * @param max    The maximum depth to watch recursively (1 or less means no recursion).
+     * @param events The events to watch for.
+     * @return A `WatchMonitor` instance.
      */
-    public static WatchMonitor of(final URL url, final int maxDepth, final WatchEvent.Kind<?>... events) {
-        return of(UrlKit.toURI(url), maxDepth, events);
+    public static WatchMonitor of(final URL url, final int max, final WatchEvent.Kind<?>... events) {
+        return of(UrlKit.toURI(url), max, events);
     }
 
     /**
-     * 创建并初始化监听
+     * Creates and initializes a file watcher.
      *
-     * @param uri    URI
-     * @param events 监听的事件列表
-     * @return 监听对象
+     * @param uri    The URI.
+     * @param events The events to watch for.
+     * @return A `WatchMonitor` instance.
      */
     public static WatchMonitor of(final URI uri, final WatchEvent.Kind<?>... events) {
         return of(uri, 0, events);
     }
 
     /**
-     * 创建并初始化监听
+     * Creates and initializes a file watcher.
      *
-     * @param uri      URI
-     * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @return 监听对象
+     * @param uri    The URI.
+     * @param max    The maximum depth to watch recursively.
+     * @param events The events to watch for.
+     * @return A `WatchMonitor` instance.
      */
-    public static WatchMonitor of(final URI uri, final int maxDepth, final WatchEvent.Kind<?>... events) {
-        return of(Paths.get(uri), maxDepth, events);
+    public static WatchMonitor of(final URI uri, final int max, final WatchEvent.Kind<?>... events) {
+        return of(Paths.get(uri), max, events);
     }
 
     /**
-     * 创建并初始化监听
+     * Creates and initializes a file watcher.
      *
-     * @param file   文件
-     * @param events 监听的事件列表
-     * @return 监听对象
+     * @param file   The file or directory.
+     * @param events The events to watch for.
+     * @return A `WatchMonitor` instance.
      */
     public static WatchMonitor of(final File file, final WatchEvent.Kind<?>... events) {
         return of(file, 0, events);
     }
 
     /**
-     * 创建并初始化监听
+     * Creates and initializes a file watcher.
      *
-     * @param file     文件
-     * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @return 监听对象
+     * @param file   The file or directory.
+     * @param max    The maximum depth to watch recursively.
+     * @param events The events to watch for.
+     * @return A `WatchMonitor` instance.
      */
-    public static WatchMonitor of(final File file, final int maxDepth, final WatchEvent.Kind<?>... events) {
-        return of(file.toPath(), maxDepth, events);
+    public static WatchMonitor of(final File file, final int max, final WatchEvent.Kind<?>... events) {
+        return of(file.toPath(), max, events);
     }
 
     /**
-     * 创建并初始化监听
+     * Creates and initializes a file watcher.
      *
-     * @param path   路径
-     * @param events 监听的事件列表
-     * @return 监听对象
+     * @param path   The file or directory path.
+     * @param events The events to watch for.
+     * @return A `WatchMonitor` instance.
      */
     public static WatchMonitor of(final String path, final WatchEvent.Kind<?>... events) {
         return of(path, 0, events);
     }
 
     /**
-     * 创建并初始化监听
+     * Creates and initializes a file watcher.
      *
-     * @param path     路径
-     * @param events   监听的事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @return 监听对象
+     * @param path   The file or directory path.
+     * @param max    The maximum depth to watch recursively.
+     * @param events The events to watch for.
+     * @return A `WatchMonitor` instance.
      */
-    public static WatchMonitor of(final String path, final int maxDepth, final WatchEvent.Kind<?>... events) {
-        return of(Paths.get(path), maxDepth, events);
+    public static WatchMonitor of(final String path, final int max, final WatchEvent.Kind<?>... events) {
+        return of(Paths.get(path), max, events);
     }
 
     /**
-     * 创建并初始化监听
+     * Creates and initializes a file watcher.
      *
-     * @param path   路径
-     * @param events 监听事件列表
-     * @return 监听对象
+     * @param path   The `Path` to watch.
+     * @param events The events to watch for.
+     * @return A `WatchMonitor` instance.
      */
     public static WatchMonitor of(final Path path, final WatchEvent.Kind<?>... events) {
         return of(path, 0, events);
     }
 
     /**
-     * 创建并初始化监听
+     * Creates and initializes a file watcher.
      *
-     * @param path     路径
-     * @param events   监听事件列表
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @return 监听对象
+     * @param path   The `Path` to watch.
+     * @param max    The maximum depth to watch recursively.
+     * @param events The events to watch for.
+     * @return A `WatchMonitor` instance.
      */
-    public static WatchMonitor of(final Path path, final int maxDepth, final WatchEvent.Kind<?>... events) {
-        return new WatchMonitor(path, maxDepth, events);
+    public static WatchMonitor of(final Path path, final int max, final WatchEvent.Kind<?>... events) {
+        return new WatchMonitor(path, max, events);
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * Creates a watcher for all event types.
      *
-     * @param url     URL
-     * @param watcher {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param url     The URL to watch.
+     * @param watcher The {@link Watcher} to handle events.
+     * @return A {@link WatchMonitor} instance.
      */
     public static WatchMonitor ofAll(final URL url, final Watcher watcher) {
         return ofAll(url, 0, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * Creates a watcher for all event types.
      *
-     * @param url      URL
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @param watcher  {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param url     The URL to watch.
+     * @param max     The maximum depth to watch recursively.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
-    public static WatchMonitor ofAll(final URL url, final int maxDepth, final Watcher watcher) {
-        return ofAll(UrlKit.toURI(url), maxDepth, watcher);
+    public static WatchMonitor ofAll(final URL url, final int max, final Watcher watcher) {
+        return ofAll(UrlKit.toURI(url), max, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * Creates a watcher for all event types.
      *
-     * @param uri     URI
-     * @param watcher {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param uri     The URI to watch.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
     public static WatchMonitor ofAll(final URI uri, final Watcher watcher) {
         return ofAll(uri, 0, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * Creates a watcher for all event types.
      *
-     * @param uri      URI
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @param watcher  {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param uri     The URI to watch.
+     * @param max     The maximum depth to watch recursively.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
-    public static WatchMonitor ofAll(final URI uri, final int maxDepth, final Watcher watcher) {
-        return ofAll(Paths.get(uri), maxDepth, watcher);
+    public static WatchMonitor ofAll(final URI uri, final int max, final Watcher watcher) {
+        return ofAll(Paths.get(uri), max, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * Creates a watcher for all event types.
      *
-     * @param file    被监听文件
-     * @param watcher {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param file    The file or directory to watch.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
     public static WatchMonitor ofAll(final File file, final Watcher watcher) {
         return ofAll(file, 0, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * Creates a watcher for all event types.
      *
-     * @param file     被监听文件
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @param watcher  {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param file    The file or directory to watch.
+     * @param max     The maximum depth to watch recursively.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
-    public static WatchMonitor ofAll(final File file, final int maxDepth, final Watcher watcher) {
-        return ofAll(file.toPath(), maxDepth, watcher);
+    public static WatchMonitor ofAll(final File file, final int max, final Watcher watcher) {
+        return ofAll(file.toPath(), max, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * Creates a watcher for all event types.
      *
-     * @param path    路径
-     * @param watcher {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param path    The path to watch.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
     public static WatchMonitor ofAll(final String path, final Watcher watcher) {
         return ofAll(path, 0, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * Creates a watcher for all event types.
      *
-     * @param path     路径
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @param watcher  {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param path    The path to watch.
+     * @param max     The maximum depth to watch recursively.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
-    public static WatchMonitor ofAll(final String path, final int maxDepth, final Watcher watcher) {
-        return ofAll(Paths.get(path), maxDepth, watcher);
+    public static WatchMonitor ofAll(final String path, final int max, final Watcher watcher) {
+        return ofAll(Paths.get(path), max, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * Creates a watcher for all event types.
      *
-     * @param path    路径
-     * @param watcher {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param path    The `Path` to watch.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
     public static WatchMonitor ofAll(final Path path, final Watcher watcher) {
         return ofAll(path, 0, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听所有事件
+     * Creates a watcher for all event types.
      *
-     * @param path     路径
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @param watcher  {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param path    The `Path` to watch.
+     * @param max     The maximum depth to watch recursively.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
-    public static WatchMonitor ofAll(final Path path, final int maxDepth, final Watcher watcher) {
-        return of(path, maxDepth, WatchKind.ALL).setWatcher(watcher);
+    public static WatchMonitor ofAll(final Path path, final int max, final Watcher watcher) {
+        return of(path, max, WatchKind.ALL).setWatcher(watcher);
     }
 
     /**
-     * 创建并初始化监听，监听修改事件
+     * Creates a watcher for modification events.
      *
-     * @param url     URL
-     * @param watcher {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param url     The URL to watch.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
     public static WatchMonitor ofModify(final URL url, final Watcher watcher) {
         return ofModify(url, 0, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听修改事件
+     * Creates a watcher for modification events.
      *
-     * @param url      URL
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @param watcher  {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param url     The URL to watch.
+     * @param max     The maximum depth to watch recursively.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
-    public static WatchMonitor ofModify(final URL url, final int maxDepth, final Watcher watcher) {
-        return ofModify(UrlKit.toURI(url), maxDepth, watcher);
+    public static WatchMonitor ofModify(final URL url, final int max, final Watcher watcher) {
+        return ofModify(UrlKit.toURI(url), max, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听修改事件
+     * Creates a watcher for modification events.
      *
-     * @param uri     URI
-     * @param watcher {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param uri     The URI to watch.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
     public static WatchMonitor ofModify(final URI uri, final Watcher watcher) {
         return ofModify(uri, 0, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听修改事件
+     * Creates a watcher for modification events.
      *
-     * @param uri      URI
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @param watcher  {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param uri     The URI to watch.
+     * @param max     The maximum depth to watch recursively.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
-    public static WatchMonitor ofModify(final URI uri, final int maxDepth, final Watcher watcher) {
-        return ofModify(Paths.get(uri), maxDepth, watcher);
+    public static WatchMonitor ofModify(final URI uri, final int max, final Watcher watcher) {
+        return ofModify(Paths.get(uri), max, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听修改事件
+     * Creates a watcher for modification events.
      *
-     * @param file    被监听文件
-     * @param watcher {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param file    The file to watch.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
     public static WatchMonitor ofModify(final File file, final Watcher watcher) {
         return ofModify(file, 0, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听修改事件
+     * Creates a watcher for modification events.
      *
-     * @param file     被监听文件
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @param watcher  {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param file    The file to watch.
+     * @param max     The maximum depth to watch recursively.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
-    public static WatchMonitor ofModify(final File file, final int maxDepth, final Watcher watcher) {
-        return ofModify(file.toPath(), maxDepth, watcher);
+    public static WatchMonitor ofModify(final File file, final int max, final Watcher watcher) {
+        return ofModify(file.toPath(), max, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听修改事件
+     * Creates a watcher for modification events.
      *
-     * @param path    路径
-     * @param watcher {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param path    The path to watch.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
     public static WatchMonitor ofModify(final String path, final Watcher watcher) {
         return ofModify(path, 0, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听修改事件
+     * Creates a watcher for modification events.
      *
-     * @param path     路径
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @param watcher  {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param path    The path to watch.
+     * @param max     The maximum depth to watch recursively.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
-    public static WatchMonitor ofModify(final String path, final int maxDepth, final Watcher watcher) {
-        return ofModify(Paths.get(path), maxDepth, watcher);
+    public static WatchMonitor ofModify(final String path, final int max, final Watcher watcher) {
+        return ofModify(Paths.get(path), max, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听修改事件
+     * Creates a watcher for modification events.
      *
-     * @param path    路径
-     * @param watcher {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param path    The `Path` to watch.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
     public static WatchMonitor ofModify(final Path path, final Watcher watcher) {
         return ofModify(path, 0, watcher);
     }
 
     /**
-     * 创建并初始化监听，监听修改事件
+     * Creates a watcher for modification events.
      *
-     * @param path     路径
-     * @param maxDepth 当监听目录时，监听目录的最大深度，当设置值为1（或小于1）时，表示不递归监听子目录
-     * @param watcher  {@link Watcher}
-     * @return {@link WatchMonitor}
+     * @param path    The `Path` to watch.
+     * @param max     The maximum depth to watch recursively.
+     * @param watcher The {@link Watcher}.
+     * @return A {@link WatchMonitor} instance.
      */
-    public static WatchMonitor ofModify(final Path path, final int maxDepth, final Watcher watcher) {
-        final WatchMonitor watchMonitor = of(path, maxDepth, WatchKind.MODIFY.getValue());
+    public static WatchMonitor ofModify(final Path path, final int max, final Watcher watcher) {
+        final WatchMonitor watchMonitor = of(path, max, WatchKind.MODIFY.getValue());
         watchMonitor.setWatcher(watcher);
         return watchMonitor;
     }
 
     /**
-     * 注册Watchable对象到WatchService服务
+     * Registers a `Watchable` object with a `WatchService`.
      *
-     * @param watchable 可注册对象
-     * @param watcher   WatchService对象
-     * @param events    监听事件
-     * @return {@link WatchKey}
+     * @param watchable The object to register.
+     * @param watcher   The `WatchService`.
+     * @param events    The events to watch for.
+     * @return The {@link WatchKey}.
      */
     public static WatchKey register(
             final Watchable watchable,
@@ -415,15 +415,15 @@ public class WatchKit {
     }
 
     /**
-     * 获取触发事件中相对监听Path的完整路径
+     * Resolves the full path of a file from a `WatchEvent`.
      *
-     * @param event 事件
-     * @param key   {@link WatchKey}
-     * @return 完整路径
+     * @param event The event.
+     * @param key   The {@link WatchKey}.
+     * @return The full `Path`.
      */
     public static Path resolvePath(final WatchEvent<?> event, final WatchKey key) {
         Assert.notNull(event, "WatchEvent must be not null!");
-        Assert.notNull(event, "WatchKey must be not null!");
+        Assert.notNull(key, "WatchKey must be not null!");
 
         return PathResolve.of((Path) key.watchable(), (Path) event.context());
     }

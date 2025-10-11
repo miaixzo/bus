@@ -38,27 +38,48 @@ import org.miaixz.bus.limiter.Provider;
 import org.miaixz.bus.limiter.magic.StrategyMode;
 
 /**
- * FALLBACK 模式处理
+ * Implements the {@link Provider} interface for handling the FALLBACK strategy mode. This provider is responsible for
+ * invoking a fallback method when the primary method execution is blocked or fails due to limiting rules.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FallbackProvider implements Provider {
 
+    /**
+     * A concurrent hash map to cache fallback methods for performance. The key is the generated fallback method name
+     * (e.g., "originalMethodNameFallback"), and the value is the {@link Method} object for the fallback method.
+     */
     private final Map<String, Method> map = new ConcurrentHashMap<>();
 
+    /**
+     * Returns the strategy mode supported by this provider, which is {@link StrategyMode#FALLBACK}.
+     *
+     * @return The {@link StrategyMode#FALLBACK} enum value.
+     */
     @Override
     public StrategyMode get() {
         return StrategyMode.FALLBACK;
     }
 
+    /**
+     * Processes the method invocation by attempting to find and invoke a fallback method. The fallback method is
+     * expected to have the same parameters as the original method and its name should be the original method name
+     * appended with "Fallback".
+     *
+     * @param bean   The target object on which the original method was invoked.
+     * @param method The original {@link Method} that was attempted to be executed.
+     * @param args   The arguments passed to the original method invocation.
+     * @return The result of the fallback method invocation.
+     * @throws RuntimeException if a suitable fallback method cannot be found for the given bean and method.
+     */
     @Override
     public Object process(Object bean, Method method, Object[] args) {
-        // 合成方法名称
+        // Synthesize the fallback method name
         String fallbackMethodName = StringKit.format("{}Fallback", method.getName());
 
         Method fallbackMethod;
-        // 缓存操作
+        // Cache operation
         if (map.containsKey(fallbackMethodName)) {
             fallbackMethod = map.get(fallbackMethodName);
         } else {

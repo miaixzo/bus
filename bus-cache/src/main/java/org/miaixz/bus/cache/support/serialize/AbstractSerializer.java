@@ -30,9 +30,11 @@ package org.miaixz.bus.cache.support.serialize;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 抽象序列化器
+ * An abstract base class for serializers.
  * <p>
- * 提供序列化和反序列化的基本框架，包含异常处理和日志记录功能。 子类需要实现具体的序列化和反序列化逻辑。
+ * This class provides a template for serialization and deserialization, including common logic for handling nulls and
+ * logging exceptions. Subclasses must implement the actual serialization and deserialization logic in the `doSerialize`
+ * and `doDeserialize` methods.
  * </p>
  *
  * @author Kimi Liu
@@ -41,29 +43,33 @@ import org.miaixz.bus.logger.Logger;
 public abstract class AbstractSerializer implements BaseSerializer {
 
     /**
-     * 执行序列化操作
+     * Performs the actual serialization of the object.
      *
-     * @param object 要序列化的对象
-     * @return 序列化后的字节数组
-     * @throws Throwable 可能抛出的异常
+     * @param object The object to be serialized.
+     * @return The resulting byte array.
+     * @throws Throwable if an error occurs during serialization.
      */
     protected abstract byte[] doSerialize(Object object) throws Throwable;
 
     /**
-     * 执行反序列化操作
+     * Performs the actual deserialization of the byte array.
      *
-     * @param bytes 要反序列化的字节数组
-     * @return 反序列化后的对象
-     * @throws Throwable 可能抛出的异常
+     * @param bytes The byte array to be deserialized.
+     * @return The deserialized object.
+     * @throws Throwable if an error occurs during deserialization.
      */
     protected abstract Object doDeserialize(byte[] bytes) throws Throwable;
 
     /**
-     * 序列化对象
+     * Serializes an object into a byte array.
+     * <p>
+     * This method handles null input and wraps the serialization logic with a try-catch block to log any errors that
+     * occur.
+     * </p>
      *
-     * @param <T>    对象类型
-     * @param object 要序列化的对象
-     * @return 序列化后的字节数组，如果对象为null或序列化失败则返回null
+     * @param <T>    The type of the object.
+     * @param object The object to be serialized.
+     * @return The resulting byte array, or {@code null} if the input is null or serialization fails.
      */
     @Override
     public <T> byte[] serialize(T object) {
@@ -79,11 +85,15 @@ public abstract class AbstractSerializer implements BaseSerializer {
     }
 
     /**
-     * 反序列化字节数组
+     * Deserializes a byte array back into an object.
+     * <p>
+     * This method handles null input and wraps the deserialization logic with a try-catch block to log any errors that
+     * occur.
+     * </p>
      *
-     * @param <T>   对象类型
-     * @param bytes 要反序列化的字节数组
-     * @return 反序列化后的对象，如果字节数组为null或反序列化失败则返回null
+     * @param <T>   The expected type of the deserialized object.
+     * @param bytes The byte array to be deserialized.
+     * @return The deserialized object, or {@code null} if the input is null or deserialization fails.
      */
     @Override
     public <T> T deserialize(byte[] bytes) {

@@ -34,13 +34,14 @@ import org.miaixz.bus.core.data.CIN;
 import org.miaixz.bus.core.data.CIN10;
 
 /**
- * 身份证相关工具类，参考标准：GB 11643-1999 标准描述见：<a href=
+ * Utility class for Chinese Citizen ID numbers, referencing the GB 11643-1999 standard. Standard description can be
+ * found at: <a href=
  * "http://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=080D6FBF2BB468F9007657F26D60013E">http://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=080D6FBF2BB468F9007657F26D60013E</a>
  *
  * <p>
- * 本工具并没有对行政区划代码做校验，如有需求，请参阅（2020年12月）： <a href=
+ * This utility does not validate the administrative division codes. If needed, please refer to (as of Dec 2020):
+ * <a href=
  * "http://www.mca.gov.cn/article/sj/xzqh/2020/20201201.html">http://www.mca.gov.cn/article/sj/xzqh/2020/20201201.html</a>
- * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,51 +49,50 @@ import org.miaixz.bus.core.data.CIN10;
 public class CitizenIdKit {
 
     /**
-     * 将15位身份证号码转换为18位 15位身份证号码遵循GB 11643-1989标准。
+     * Converts a 15-digit ID card number to an 18-digit one. The 15-digit format follows the GB 11643-1989 standard.
      *
-     * @param idCard 15位身份编码
-     * @return 18位身份编码
+     * @param idCard The 15-digit ID card number.
+     * @return The 18-digit ID card number.
      */
     public static String convert15To18(final String idCard) {
         return CIN.convert15To18(idCard);
     }
 
     /**
-     * 将18位身份证号码转换为15位
+     * Converts an 18-digit ID card number to a 15-digit one.
      *
-     * @param idCard 18位身份编码
-     * @return 15位身份编码
+     * @param idCard The 18-digit ID card number.
+     * @return The 15-digit ID card number.
      */
     public static String convert18To15(final String idCard) {
         return CIN.convert18To15(idCard);
     }
 
     /**
-     * 是否有效身份证号，忽略X的大小写 如果身份证号码中含有空格始终返回{@code false}
+     * Checks if the given ID card number is valid, ignoring the case of 'X'. Returns {@code false} if the ID card
+     * number contains any whitespace.
      *
-     * @param idCard 身份证号，支持18位、15位和港澳台的10位
-     * @return 是否有效
+     * @param idCard The ID card number, supports 18-digit, 15-digit, and 10-digit (for HK/Macau/Taiwan).
+     * @return {@code true} if the ID card number is valid.
      */
     public static boolean isValidCard(final String idCard) {
         if (StringKit.isBlank(idCard)) {
             return false;
         }
 
-        // idCard = idCard.trim();
         final int length = idCard.length();
         switch (length) {
-            case 18:// 18位身份证
+            case 18: // 18-digit ID
                 return isValidCard18(idCard);
 
-            case 15:// 15位身份证
+            case 15: // 15-digit ID
                 try {
                     return isValidCard18(CIN.convert15To18(idCard));
                 } catch (final Exception ignore) {
                     return false;
                 }
-            case 10: {// 10位身份证，港澳台地区
+            case 10: // 10-digit ID, for Hong Kong, Macau, Taiwan
                 return isValidCard10(idCard);
-            }
 
             default:
                 return false;
@@ -100,88 +100,53 @@ public class CitizenIdKit {
     }
 
     /**
-     * 判断18位身份证的合法性 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定，公民身份号码是特征组合码，由十七位数字本体码和一位数字校验码组成。
-     * 排列顺序从左至右依次为：六位数字地址码，八位数字出生日期码，三位数字顺序码和一位数字校验码。 顺序码: 表示在同一地址码所标识的区域范围内，对同年、同月、同 日出生的人编定的顺序号，顺序码的奇数分配给男性，偶数分配 给女性。
+     * Validates an 18-digit ID card number. According to the national standard GB11643-1999, the ID number is a feature
+     * combination code, consisting of a 17-digit body code and a 1-digit checksum. The structure from left to right is:
+     * 6-digit address code, 8-digit date of birth code, 3-digit sequence code, and 1-digit checksum. Sequence code: An
+     * odd number is assigned to males, and an even number to females.
+     *
      * <ol>
-     * <li>第1、2位数字表示：所在省份的代码</li>
-     * <li>第3、4位数字表示：所在城市的代码</li>
-     * <li>第5、6位数字表示：所在区县的代码</li>
-     * <li>第7~14位数字表示：出生年、月、日</li>
-     * <li>第15、16位数字表示：所在地的派出所的代码</li>
-     * <li>第17位数字表示性别：奇数表示男性，偶数表示女性</li>
-     * <li>第18位数字是校检码，用来检验身份证的正确性。校检码可以是0~9的数字，有时也用x表示</li>
+     * <li>Digits 1-2: Province code.</li>
+     * <li>Digits 3-4: City code.</li>
+     * <li>Digits 5-6: District/County code.</li>
+     * <li>Digits 7-14: Year, month, and day of birth.</li>
+     * <li>Digits 15-16: Code of the local police station.</li>
+     * <li>Digit 17: Gender (odd for male, even for female).</li>
+     * <li>Digit 18: Checksum, can be 0-9 or 'X'.</li>
      * </ol>
-     * 第十八位数字(校验码)的计算方法为：
+     * The checksum calculation is as follows:
      * <ol>
-     * <li>将前面的身份证号码17位数分别乘以不同的系数。从第一位到第十七位的系数分别为：7 9 10 5 8 4 2 1 6 3 7 9 10 5 8 4 2</li>
-     * <li>将这17位数字和系数相乘的结果相加</li>
-     * <li>用加出来和除以11，看余数是多少</li>
-     * <li>余数只可能有0 1 2 3 4 5 6 7 8 9 10这11个数字。其分别对应的最后一位身份证的号码为1 0 X 9 8 7 6 5 4 3 2</li>
-     * <li>通过上面得知如果余数是2，就会在身份证的第18位数字上出现罗马数字的Ⅹ。如果余数是10，身份证的最后一位号码就是2</li>
-     * </ol>
-     * <ol>
-     * <li>香港人在大陆的身份证，【810000】开头；同样可以直接获取到 性别、出生日期</li>
-     * <li>81000019980902013X: 文绎循 男 1998-09-02</li>
-     * <li>810000201011210153: 辛烨 男 2010-11-21</li>
-     * </ol>
-     * <ol>
-     * <li>澳门人在大陆的身份证，【820000】开头；同样可以直接获取到 性别、出生日期</li>
-     * <li>820000200009100032: 黄敬杰 男 2000-09-10</li>
-     * </ol>
-     * <ol>
-     * <li>台湾人在大陆的身份证，【830000】开头；同样可以直接获取到 性别、出生日期</li>
-     * <li>830000200209060065: 王宜妃 女 2002-09-06</li>
-     * <li>830000194609150010: 苏建文 男 1946-09-14</li>
-     * <li>83000019810715006X: 刁婉琇 女 1981-07-15</li>
+     * <li>Multiply the first 17 digits by their respective weights: 7 9 10 5 8 4 2 1 6 3 7 9 10 5 8 4 2</li>
+     * <li>Sum the results of these multiplications.</li>
+     * <li>Calculate the remainder of the sum divided by 11.</li>
+     * <li>The remainder corresponds to the checksum digit: 1 0 X 9 8 7 6 5 4 3 2 for remainders 0-10 respectively.</li>
      * </ol>
      *
-     * @param idcard 待验证的身份证
-     * @return 是否有效的18位身份证，忽略x的大小写
+     * @param idcard The ID card number to validate.
+     * @return {@code true} if the 18-digit ID is valid, ignoring the case of 'x'.
      */
     public static boolean isValidCard18(final String idcard) {
         return isValidCard18(idcard, true);
     }
 
     /**
-     * 判断18位身份证的合法性 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定，公民身份号码是特征组合码，由十七位数字本体码和一位数字校验码组成。
-     * 排列顺序从左至右依次为：六位数字地址码，八位数字出生日期码，三位数字顺序码和一位数字校验码。 顺序码: 表示在同一地址码所标识的区域范围内，对同年、同月、同 日出生的人编定的顺序号，顺序码的奇数分配给男性，偶数分配 给女性。
-     * <ol>
-     * <li>第1、2位数字表示：所在省份的代码</li>
-     * <li>第3、4位数字表示：所在城市的代码</li>
-     * <li>第5、6位数字表示：所在区县的代码</li>
-     * <li>第7~14位数字表示：出生年、月、日</li>
-     * <li>第15、16位数字表示：所在地的派出所的代码</li>
-     * <li>第17位数字表示性别：奇数表示男性，偶数表示女性</li>
-     * <li>第18位数字是校检码，用来检验身份证的正确性。校检码可以是0~9的数字，有时也用x表示</li>
-     * </ol>
-     * 第十八位数字(校验码)的计算方法为：
-     * <ol>
-     * <li>将前面的身份证号码17位数分别乘以不同的系数。从第一位到第十七位的系数分别为：7 9 10 5 8 4 2 1 6 3 7 9 10 5 8 4 2</li>
-     * <li>将这17位数字和系数相乘的结果相加</li>
-     * <li>用加出来和除以11，看余数是多少</li>
-     * <li>余数只可能有0 1 2 3 4 5 6 7 8 9 10这11个数字。其分别对应的最后一位身份证的号码为1 0 X 9 8 7 6 5 4 3 2</li>
-     * <li>通过上面得知如果余数是2，就会在身份证的第18位数字上出现罗马数字的Ⅹ。如果余数是10，身份证的最后一位号码就是2</li>
-     * </ol>
+     * Validates an 18-digit ID card number.
      *
-     * @param idcard     待验证的身份证
-     * @param ignoreCase 是否忽略大小写。{@code true}则忽略X大小写，否则严格匹配大写。
-     * @return 是否有效的18位身份证
+     * @param idcard     The ID card number to validate.
+     * @param ignoreCase Whether to ignore case. If {@code true}, the case of 'X' is ignored; otherwise, it must be
+     *                   uppercase.
+     * @return {@code true} if the 18-digit ID is valid.
      */
     public static boolean isValidCard18(final String idcard, final boolean ignoreCase) {
         return CIN.verify(idcard, ignoreCase);
     }
 
     /**
-     * 验证10位身份编码是否合法
+     * Checks if the 10-digit ID card number is valid. This is generally used for ID cards from Taiwan, Macau, and Hong
+     * Kong.
      *
-     * @param idcard 身份编码
-     * @return 身份证信息数组 [0] - 台湾、澳门、香港 [1] - 性别(男M,女F,未知N) [2] - 是否合法(合法true,不合法false) 若不是身份证件号码则返回null
-     */
-    /**
-     * 是否有效的10位身份证号码，一般用于判断和验证台湾、澳门、香港身份证
-     * 
-     * @param idcard 台湾、澳门、香港身份证号码
-     * @return 是否有效的10位身份证号码
+     * @param idcard The 10-digit ID card number.
+     * @return {@code true} if the ID card number is valid.
      */
     public static boolean isValidCard10(final String idcard) {
         try {
@@ -192,133 +157,135 @@ public class CitizenIdKit {
     }
 
     /**
-     * 根据身份编号获取生日，只支持15或18位身份证号码
+     * Gets the birthday string (yyyyMMdd) from the ID card number. Only supports 15 or 18-digit ID numbers.
      *
-     * @param idCard 身份编号
-     * @return 生日(yyyyMMdd)
+     * @param idCard The ID card number.
+     * @return The birthday string (yyyyMMdd).
      */
     public static String getBirth(final String idCard) {
         return getCIN(idCard).getBirth();
     }
 
     /**
-     * 从身份证号码中获取生日日期，只支持15或18位身份证号码
+     * Gets the birth date as a DateTime object from the ID card number. Only supports 15 or 18-digit ID numbers.
      *
-     * @param idCard 身份证号码
-     * @return 日期
+     * @param idCard The ID card number.
+     * @return The birth date.
      */
     public static DateTime getBirthDate(final String idCard) {
         return getCIN(idCard).getBirthDate();
     }
 
     /**
-     * 根据身份编号获取年龄，只支持15或18位身份证号码
+     * Gets the age from the ID card number based on the current date. Only supports 15 or 18-digit ID numbers.
      *
-     * @param idcard 身份编号
-     * @return 年龄
+     * @param idcard The ID card number.
+     * @return The age.
      */
     public static int getAge(final String idcard) {
         return getAge(idcard, DateKit.now());
     }
 
     /**
-     * 根据身份编号获取指定日期当时的年龄年龄，只支持15或18位身份证号码
+     * Gets the age from the ID card number as of a specified date. Only supports 15 or 18-digit ID numbers.
      *
-     * @param idcard        身份编号
-     * @param dateToCompare 以此日期为界，计算年龄。
-     * @return 年龄
+     * @param idcard        The ID card number.
+     * @param dateToCompare The date to compare against to calculate age.
+     * @return The age.
      */
     public static int getAge(final String idcard, final Date dateToCompare) {
         return DateKit.age(getBirthDate(idcard), dateToCompare);
     }
 
     /**
-     * 根据身份编号获取生日年，只支持15或18位身份证号码
+     * Gets the birth year from the ID card number. Only supports 15 or 18-digit ID numbers.
      *
-     * @param idcard 身份编号
-     * @return 生日(yyyy)
+     * @param idcard The ID card number.
+     * @return The birth year (yyyy).
      */
     public static Short getBirthYear(final String idcard) {
         return getCIN(idcard).getBirthYear();
     }
 
     /**
-     * 根据身份编号获取生日月，只支持15或18位身份证号码
+     * Gets the birth month from the ID card number. Only supports 15 or 18-digit ID numbers.
      *
-     * @param idcard 身份编号
-     * @return 生日(MM)
+     * @param idcard The ID card number.
+     * @return The birth month (MM).
      */
     public static Short getBirthMonth(final String idcard) {
         return getCIN(idcard).getBirthMonth();
     }
 
     /**
-     * 根据身份编号获取生日天，只支持15或18位身份证号码
+     * Gets the birth day from the ID card number. Only supports 15 or 18-digit ID numbers.
      *
-     * @param idcard 身份编号
-     * @return 生日(dd)
+     * @param idcard The ID card number.
+     * @return The birth day (dd).
      */
     public static Short getBirthDay(final String idcard) {
         return getCIN(idcard).getBirthDay();
     }
 
     /**
-     * 根据身份编号获取性别，只支持15或18位身份证号码
+     * Gets the gender from the ID card number. Only supports 15 or 18-digit ID numbers.
      *
-     * @param idcard 身份编号
-     * @return 性别(1 : 男 ， 0 : 女)
+     * @param idcard The ID card number.
+     * @return Gender (1 for male, 0 for female).
      */
     public static int getGender(final String idcard) {
         return getCIN(idcard).getGender();
     }
 
     /**
-     * 根据身份编号获取户籍省份编码，只支持15或18位身份证号码
+     * Gets the province code from the ID card number. Only supports 15 or 18-digit ID numbers.
      *
-     * @param idcard 身份编码
-     * @return 省份编码
+     * @param idcard The ID card number.
+     * @return The province code.
      */
     public static String getProvinceCode(final String idcard) {
         return getCIN(idcard).getProvinceCode();
     }
 
     /**
-     * 根据身份编号获取户籍省份，只支持15或18位身份证号码
+     * Gets the province name from the ID card number. Only supports 15 or 18-digit ID numbers.
      *
-     * @param idcard 身份编码
-     * @return 省份名称。
+     * @param idcard The ID card number.
+     * @return The province name.
      */
     public static String getProvince(final String idcard) {
         return getCIN(idcard).getProvince();
     }
 
     /**
-     * 根据身份编号获取地市级编码，只支持15或18位身份证号码 获取编码为4位
+     * Gets the city-level code from the ID card number. Only supports 15 or 18-digit ID numbers. The code is 4 digits
+     * long.
      *
-     * @param idcard 身份编码
-     * @return 地市级编码
+     * @param idcard The ID card number.
+     * @return The city-level code.
      */
     public static String getCityCode(final String idcard) {
         return getCIN(idcard).getCityCode();
     }
 
     /**
-     * 根据身份编号获取区县级编码，只支持15或18位身份证号码 获取编码为6位
+     * Gets the district/county-level code from the ID card number. Only supports 15 or 18-digit ID numbers. The code is
+     * 6 digits long.
      *
-     * @param idcard 身份编码
-     * @return 地市级编码
+     * @param idcard The ID card number.
+     * @return The district/county-level code.
      */
     public static String getDistrictCode(final String idcard) {
         return getCIN(idcard).getDistrictCode();
     }
 
     /**
-     * 隐藏指定位置的几个身份证号数字为“*”
+     * Hides a portion of the ID card number with asterisks (*).
      *
-     * @param idcard       身份证号
-     * @param startInclude 开始位置（包含）
-     * @param endExclude   结束位置（不包含）
-     * @return 隐藏后的身份证号码
+     * @param idcard       The ID card number.
+     * @param startInclude The starting index (inclusive).
+     * @param endExclude   The ending index (exclusive).
+     * @return The hidden ID card number.
      * @see StringKit#hide(CharSequence, int, int)
      */
     public static String hide(final String idcard, final int startInclude, final int endExclude) {
@@ -326,37 +293,39 @@ public class CitizenIdKit {
     }
 
     /**
-     * 获取公民身份证（CIN）信息，包括身份、城市代码、生日、性别等
+     * Gets the Citizen ID (CIN) information object, which includes province, city code, birthday, gender, etc.
      *
-     * @param idcard 15或18位身份证
-     * @return {@link CIN}
+     * @param idcard The 15 or 18-digit ID card number.
+     * @return A {@link CIN} object.
      */
     public static CIN getCIN(final String idcard) {
         return CIN.of(idcard);
     }
 
     /**
-     * 港澳居民来往内地通行证，俗称：回乡证，通行证号码组成规则：
+     * Validates a Mainland Travel Permit for Hong Kong and Macao Residents (also known as Home Return Permit). The
+     * permit number has the following format:
      * <ul>
-     * <li>通行证证件号码共11位。第1位为字母，“H”字头签发给香港居民，“M”字头签发给澳门居民。</li>
-     * <li>第2位至第11位为数字，前8位数字为通行证持有人的终身号，后2位数字表示换证次数，首次发证为00，此后依次递增。</li>
+     * <li>The permit number is 11 digits long.</li>
+     * <li>The first character is a letter: 'H' for Hong Kong residents, 'M' for Macao residents.</li>
+     * <li>The next 10 digits are numbers. The first 8 are a lifelong ID number, and the last 2 indicate the renewal
+     * count (00 for the first issue).</li>
      * </ul>
-     * 示例：H12345678、M1234567801
+     * Example: H1234567800, M1234567801
      *
      * <p>
-     * 参考文档《港澳居民来往内地通行证号码规则》： <a href=
+     * Reference: <a href=
      * "https://www.hmo.gov.cn/fwga_new/wldjnd/201711/t20171120_1333.html">https://www.hmo.gov.cn/fwga_new/wldjnd/201711/t20171120_1333.html</a>
-     * </p>
      *
-     * @param idCard 身份证号码
-     * @return 是否有效
+     * @param idCard The permit number.
+     * @return {@code true} if the permit number is valid.
      */
     public static boolean isValidHkMoHomeReturn(final String idCard) {
         if (StringKit.isEmpty(idCard)) {
             return false;
         }
-        // 规则： H/M + 8位或10位数字
-        // 样本： H1234567890
+        // Rule: H/M + 8 or 10 digits
+        // Sample: H1234567890
         final String reg = "^[HhMm](\\d{8}|\\d{10})$";
         return idCard.matches(reg);
     }

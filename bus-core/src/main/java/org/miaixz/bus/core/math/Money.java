@@ -38,19 +38,30 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 单币种货币类，处理货币算术、币种和取整。 货币类中封装了货币金额和币种。目前金额在内部是long类型表示， 单位是所属币种的最小货币单位（对人民币是分）。 目前，货币实现了以下主要功能：
+ * A class for handling monetary calculations, currency, and rounding for a single currency. The Money class
+ * encapsulates the monetary amount and currency. The amount is internally represented as a long, in the smallest unit
+ * of the currency (e.g., cents for USD).
+ *
+ * <p>
+ * Currently, the Money class provides the following main features:
  * <ul>
- * <li>支持货币对象与double(float)/long(int)/String/BigDecimal之间相互转换。
- * <li>货币类在运算中提供与JDK中的BigDecimal类似的运算接口， BigDecimal的运算接口支持任意指定精度的运算功能，能够支持各种 可能的财务规则。
- * <li>货币类在运算中也提供一组简单运算接口，使用这组运算接口，则在 精度处理上使用缺省的处理规则。
- * <li>推荐使用Money，不建议直接使用BigDecimal的原因之一在于， 使用BigDecimal，同样金额和币种的货币使用BigDecimal存在多种可能 的表示，例如：new BigDecimal("10.5")与new
- * BigDecimal("10.50") 不相等，因为scale不等。使得Money类，同样金额和币种的货币只有 一种表示方式，new Money("10.5")和new Money("10.50")应该是相等的。
- * <li>不推荐直接使用BigDecimal的另一原因在于， BigDecimal是Immutable， 一旦创建就不可更改，对BigDecimal进行任意运算都会生成一个新的
- * BigDecimal对象，因此对于大批量统计的性能不够满意。Money类是 mutable的，对大批量统计提供较好的支持。
- * <li>提供基本的格式化功能。
- * <li>Money类中不包含与业务相关的统计功能和格式化功能。业务相关的功能 建议使用utility类来实现。
- * <li>Money类实现了Serializable接口，支持作为远程调用的参数和返回值。
- * <li>Money类实现了equals和hashCode方法。
+ * <li>Supports conversion between Money objects and double(float)/long(int)/String/BigDecimal.</li>
+ * <li>Provides arithmetic operations similar to JDK's BigDecimal, supporting arbitrary precision to accommodate various
+ * financial rules.</li>
+ * <li>Offers a set of simple arithmetic operations that use default precision handling rules.</li>
+ * <li>It is recommended to use Money instead of BigDecimal directly because, with BigDecimal, the same amount and
+ * currency can have multiple representations (e.g., new BigDecimal("10.5") is not equal to new BigDecimal("10.50") due
+ * to different scales). The Money class ensures that the same amount and currency have a single representation (e.g.,
+ * new Money("10.5") and new Money("10.50") are equal).</li>
+ * <li>Another reason not to use BigDecimal directly is that it is immutable. Any operation on a BigDecimal object
+ * creates a new object, which can be inefficient for large-scale statistical calculations. The Money class is mutable,
+ * providing better performance for bulk statistics.</li>
+ * <li>Provides basic formatting functionality.</li>
+ * <li>The Money class does not include business-related statistical and formatting functions. It is recommended to
+ * implement business-related functions using utility classes.</li>
+ * <li>The Money class implements the Serializable interface, allowing it to be used as a parameter and return value in
+ * remote calls.</li>
+ * <li>The Money class implements the equals and hashCode methods.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -62,45 +73,47 @@ public class Money implements Serializable, Comparable<Money> {
     private static final long serialVersionUID = 2852229719218L;
 
     /**
-     * 一组可能的元/分换算比例。
+     * A set of possible conversion factors between major and minor currency units.
      *
      * <p>
-     * 此处，“分”是指货币的最小单位，“元”是货币的最常用单位， 不同的币种有不同的元/分换算比例，如人民币是100，而日元为1。
+     * Here, "minor unit" refers to the smallest unit of the currency, and "major unit" is the most commonly used unit.
+     * Different currencies have different conversion factors, such as 100 for USD (dollar to cent) and 1 for JPY (yen).
      */
     private static final int[] CENT_FACTORS = new int[] { 1, 10, 100, 1000 };
 
     /**
-     * 币种。
+     * The currency.
      */
     private final Currency currency;
+
     /**
-     * 金额，以分为单位。
+     * The amount in the smallest currency unit (cents).
      */
     private long cent;
 
     /**
-     * 缺省构造器 创建一个具有缺省金额（0）和缺省币种的货币对象
+     * Default constructor. Creates a Money object with a default amount (0) and default currency.
      */
     public Money() {
         this(0);
     }
 
     /**
-     * 构造器 创建一个具有金额{@code yuan}元{@code cent}分和缺省币种的货币对象。
+     * Constructor. Creates a Money object with the specified major and minor units and the default currency.
      *
-     * @param yuan 金额元数，0的情况下表示元的部分从分中截取
-     * @param cent 金额分数。
+     * @param yuan The major unit of the amount. If 0, the major part is extracted from the minor unit.
+     * @param cent The minor unit of the amount.
      */
     public Money(final long yuan, final int cent) {
         this(yuan, cent, Currency.getInstance(Normal.CNY));
     }
 
     /**
-     * 构造器 创建一个具有金额{@code yuan}元{@code cent}分和指定币种的货币对象。
+     * Constructor. Creates a Money object with the specified major and minor units and the specified currency.
      *
-     * @param yuan     金额元数，0的情况下表示元的部分从分中截取
-     * @param cent     金额分数。
-     * @param currency 货币单位
+     * @param yuan     The major unit of the amount. If 0, the major part is extracted from the minor unit.
+     * @param cent     The minor unit of the amount.
+     * @param currency The currency unit.
      */
     public Money(final long yuan, final int cent, final Currency currency) {
         this.currency = currency;
@@ -113,67 +126,73 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 构造器 创建一个具有金额{@code amount}元和缺省币种的货币对象。
+     * Constructor. Creates a Money object with the specified amount in major units and the default currency.
      *
-     * @param amount 金额，以元为单位。
+     * @param amount The amount in major units.
      */
     public Money(final String amount) {
         this(amount, Currency.getInstance(Normal.CNY));
     }
 
     /**
-     * 构造器 创建一个具有金额{@code amount}元和指定币种{@code currency}的货币对象。
+     * Constructor. Creates a Money object with the specified amount in major units and the specified currency.
      *
-     * @param amount   金额，以元为单位。
-     * @param currency 币种。
+     * @param amount   The amount in major units.
+     * @param currency The currency.
      */
     public Money(final String amount, final Currency currency) {
         this(new BigDecimal(amount), currency);
     }
 
     /**
-     * 构造器 创建一个具有金额{@code amount}元和指定币种{@code currency}的货币对象。 如果金额不能转换为整数分，则使用指定的取整模式{@code roundingMode}取整。
+     * Constructor. Creates a Money object with the specified amount in major units and the specified currency. If the
+     * amount cannot be converted to an integer minor unit, it is rounded using the specified rounding mode.
      *
-     * @param amount       金额，以元为单位。
-     * @param currency     币种。
-     * @param roundingMode 取整模式。
+     * @param amount       The amount in major units.
+     * @param currency     The currency.
+     * @param roundingMode The rounding mode.
      */
     public Money(final String amount, final Currency currency, final RoundingMode roundingMode) {
         this(new BigDecimal(amount), currency, roundingMode);
     }
 
     /**
-     * 构造器 创建一个具有参数{@code amount}指定金额和缺省币种的货币对象。 如果金额不能转换为整数分，则使用四舍五入方式取整。
+     * Constructor. Creates a Money object with the specified amount in major units and the default currency. If the
+     * amount cannot be converted to an integer minor unit, it is rounded half-up.
      *
      * <p>
-     * 注意：由于double类型运算中存在误差，使用四舍五入方式取整的 结果并不确定，因此，应尽量避免使用double类型创建货币类型。 例： {@code
+     * Note: Due to potential errors in double-precision floating-point arithmetic, the result of rounding half-up is
+     * not always deterministic. Therefore, it is recommended to avoid creating Money objects from double types.
+     * Example: {@code
      * assertEquals(999, Math.round(9.995 * 100));
      * assertEquals(1000, Math.round(999.5));
-     * money = new Money((9.995));
+     * money = new Money(9.995);
      * assertEquals(999, money.getCent());
      * money = new Money(10.005);
      * assertEquals(1001, money.getCent());
      * }
      *
-     * @param amount 金额，以元为单位。
+     * @param amount The amount in major units.
      */
     public Money(final double amount) {
         this(amount, Currency.getInstance(Normal.CNY));
     }
 
     /**
-     * 构造器 创建一个具有金额{@code amount}和指定币种的货币对象。 如果金额不能转换为整数分，则使用四舍五入方式取整。 注意：由于double类型运算中存在误差，使用四舍五入方式取整的
-     * 结果并不确定，因此，应尽量避免使用double类型创建货币类型。 例： {@code
+     * Constructor. Creates a Money object with the specified amount and currency. If the amount cannot be converted to
+     * an integer minor unit, it is rounded half-up. Note: Due to potential errors in double-precision floating-point
+     * arithmetic, the result of rounding half-up is not always deterministic. Therefore, it is recommended to avoid
+     * creating Money objects from double types. Example: {@code
      * assertEquals(999, Math.round(9.995 * 100));
      * assertEquals(1000, Math.round(999.5));
-     * money = new Money((9.995));
+     * money = new Money(9.995);
      * assertEquals(999, money.getCent());
      * money = new Money(10.005);
      * assertEquals(1001, money.getCent());
      * }
      *
-     * @param amount   金额，以元为单位。
-     * @param currency 币种。
+     * @param amount   The amount in major units.
+     * @param currency The currency.
      */
     public Money(final double amount, final Currency currency) {
         this.currency = currency;
@@ -181,40 +200,44 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 构造器 创建一个具有金额{@code amount}和缺省币种的货币对象。 如果金额不能转换为整数分，则使用缺省取整模式{@code DEFAULT_ROUNDING_MODE}取整。
+     * Constructor. Creates a Money object with the specified amount and the default currency. If the amount cannot be
+     * converted to an integer minor unit, it is rounded using the default rounding mode.
      *
-     * @param amount 金额，以元为单位。
+     * @param amount The amount in major units.
      */
     public Money(final BigDecimal amount) {
         this(amount, Currency.getInstance(Normal.CNY));
     }
 
     /**
-     * 构造器 创建一个具有参数{@code amount}指定金额和缺省币种的货币对象。 如果金额不能转换为整数分，则使用指定的取整模式{@code roundingMode}取整。
+     * Constructor. Creates a Money object with the specified amount and the default currency. If the amount cannot be
+     * converted to an integer minor unit, it is rounded using the specified rounding mode.
      *
-     * @param amount       金额，以元为单位。
-     * @param roundingMode 取整模式
+     * @param amount       The amount in major units.
+     * @param roundingMode The rounding mode.
      */
     public Money(final BigDecimal amount, final RoundingMode roundingMode) {
         this(amount, Currency.getInstance(Normal.CNY), roundingMode);
     }
 
     /**
-     * 构造器 创建一个具有金额{@code amount}和指定币种的货币对象。 如果金额不能转换为整数分，则使用缺省的取整模式{@code DEFAULT_ROUNDING_MODE}进行取整。
+     * Constructor. Creates a Money object with the specified amount and currency. If the amount cannot be converted to
+     * an integer minor unit, it is rounded using the default rounding mode.
      *
-     * @param amount   金额，以元为单位。
-     * @param currency 币种
+     * @param amount   The amount in major units.
+     * @param currency The currency.
      */
     public Money(final BigDecimal amount, final Currency currency) {
         this(amount, currency, RoundingMode.HALF_EVEN);
     }
 
     /**
-     * 构造器 创建一个具有金额{@code amount}和指定币种的货币对象。 如果金额不能转换为整数分，则使用指定的取整模式{@code roundingMode}取整。
+     * Constructor. Creates a Money object with the specified amount and currency. If the amount cannot be converted to
+     * an integer minor unit, it is rounded using the specified rounding mode.
      *
-     * @param amount       金额，以元为单位。
-     * @param currency     币种。
-     * @param roundingMode 取整模式。
+     * @param amount       The amount in major units.
+     * @param currency     The currency.
+     * @param roundingMode The rounding mode.
      */
     public Money(final BigDecimal amount, final Currency currency, final RoundingMode roundingMode) {
         this.currency = currency;
@@ -222,18 +245,18 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 获取本货币对象代表的金额数
+     * Gets the amount represented by this Money object.
      *
-     * @return 金额数，以元为单位
+     * @return The amount in major units.
      */
     public BigDecimal getAmount() {
         return BigDecimal.valueOf(cent, currency.getDefaultFractionDigits());
     }
 
     /**
-     * 设置本货币对象代表的金额数。
+     * Sets the amount represented by this Money object.
      *
-     * @param amount 金额数，以元为单位。
+     * @param amount The amount in major units.
      */
     public void setAmount(final BigDecimal amount) {
         if (amount != null) {
@@ -242,53 +265,53 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 获取本货币对象代表的金额数。
+     * Gets the amount represented by this Money object in minor units.
      *
-     * @return 金额数，以分为单位。
+     * @return The amount in minor units (cents).
      */
     public long getCent() {
         return cent;
     }
 
     /**
-     * 设置货币的分值。
+     * Sets the minor unit value of the currency.
      *
-     * @param cent 分值
+     * @param cent The minor unit value.
      */
     public void setCent(final long cent) {
         this.cent = cent;
     }
 
     /**
-     * 获取本货币对象代表的币种。
+     * Gets the currency of this Money object.
      *
-     * @return 本货币对象所代表的币种。
+     * @return The currency of this Money object.
      */
     public Currency getCurrency() {
         return currency;
     }
 
     /**
-     * 获取本货币币种的元/分换算比率。
+     * Gets the conversion factor between the major and minor units of this currency.
      *
-     * @return 本货币币种的元/分换算比率。
+     * @return The conversion factor.
      */
     public int getCentFactor() {
         return CENT_FACTORS[currency.getDefaultFractionDigits()];
     }
 
     /**
-     * 判断本货币对象与另一对象是否相等。
+     * Checks if this Money object is equal to another object.
      * <p>
-     * 货币对象与另一对象相等的充分必要条件是：
+     * A Money object is equal to another object if and only if:
      * <ul>
-     * <li>另一对象也属货币对象类。
-     * <li>金额相同。
-     * <li>币种相同。
+     * <li>The other object is also a Money object.</li>
+     * <li>The amounts are the same.</li>
+     * <li>The currencies are the same.</li>
      * </ul>
      *
-     * @param other 待比较的另一对象。
-     * @return {@code true}表示相等，{@code false}表示不相等。
+     * @param other The object to compare with.
+     * @return {@code true} if equal, {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object other) {
@@ -296,25 +319,25 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 判断本货币对象与另一货币对象是否相等。
+     * Checks if this Money object is equal to another Money object.
      * <p>
-     * 货币对象与另一货币对象相等的充分必要条件是：
+     * A Money object is equal to another Money object if and only if:
      * <ul>
-     * <li>金额相同。
-     * <li>币种相同。
+     * <li>The amounts are the same.</li>
+     * <li>The currencies are the same.</li>
      * </ul>
      *
-     * @param other 待比较的另一货币对象。
-     * @return {@code true}表示相等，{@code false}表示不相等。
+     * @param other The other Money object to compare with.
+     * @return {@code true} if equal, {@code false} otherwise.
      */
     public boolean equals(final Money other) {
         return currency.equals(other.currency) && (cent == other.cent);
     }
 
     /**
-     * 计算本货币对象的杂凑值。
+     * Computes the hash code for this Money object.
      *
-     * @return 本货币对象的杂凑值。
+     * @return The hash code.
      */
     @Override
     public int hashCode() {
@@ -322,12 +345,13 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 货币比较 比较本货币对象与另一货币对象的大小 如果待比较的两个货币对象的币种不同，则抛出{@code java.lang.IllegalArgumentException}。
-     * 如果本货币对象的金额少于待比较货币对象，则返回-1。 如果本货币对象的金额等于待比较货币对象，则返回0。 如果本货币对象的金额大于待比较货币对象，则返回1。
+     * Compares this Money object with another Money object. Throws an {@code IllegalArgumentException} if the
+     * currencies are different. Returns -1 if this amount is less than the other's, 0 if they are equal, and 1 if it is
+     * greater.
      *
-     * @param other 另一对象。
-     * @return -1表示小于，0表示等于，1表示大于。
-     * @throws IllegalArgumentException 待比较货币对象与本货币对象的币种不同。
+     * @param other The other Money object.
+     * @return -1, 0, or 1 as this amount is less than, equal to, or greater than the other's.
+     * @throws IllegalArgumentException if the currencies are different.
      */
     @Override
     public int compareTo(final Money other) {
@@ -336,244 +360,255 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 货币比较 判断本货币对象是否大于另一货币对象。 如果待比较的两个货币对象的币种不同，则抛出{@code java.lang.IllegalArgumentException}。
-     * 如果本货币对象的金额大于待比较货币对象，则返回true，否则返回false。
+     * Checks if this Money object is greater than another Money object. Throws an {@code IllegalArgumentException} if
+     * the currencies are different.
      *
-     * @param other 另一对象。
-     * @return true表示大于，false表示不大于（小于等于）。
-     * @throws IllegalArgumentException 待比较货币对象与本货币对象的币种不同。
+     * @param other The other Money object.
+     * @return {@code true} if this amount is greater, {@code false} otherwise.
+     * @throws IllegalArgumentException if the currencies are different.
      */
     public boolean greaterThan(final Money other) {
         return compareTo(other) > 0;
     }
 
     /**
-     * 货币加法 如果两货币币种相同，则返回一个新的相同币种的货币对象，其金额为 两货币对象金额之和，本货币对象的值不变。
-     * 如果两货币对象币种不同，抛出{@code java.lang.IllegalArgumentException}。
+     * Adds another Money object to this one. If the currencies are the same, returns a new Money object with the sum of
+     * the amounts. This object's value remains unchanged. Throws an {@code IllegalArgumentException} if the currencies
+     * are different.
      *
-     * @param other 作为加数的货币对象。
-     * @return 相加后的结果。
-     * @throws IllegalArgumentException 如果本货币对象与另一货币对象币种不同。
+     * @param other The Money object to add.
+     * @return The result of the addition.
+     * @throws IllegalArgumentException if the currencies are different.
      */
     public Money add(final Money other) {
         assertSameCurrencyAs(other);
-
         return newMoneyWithSameCurrency(cent + other.cent);
     }
 
     /**
-     * 货币累加 如果两货币币种相同，则本货币对象的金额等于两货币对象金额之和，并返回本货币对象的引用。 如果两货币对象币种不同，抛出{@code java.lang.IllegalArgumentException}。
+     * Adds another Money object to this one, modifying this object. If the currencies are the same, this object's
+     * amount becomes the sum of the two amounts. Throws an {@code IllegalArgumentException} if the currencies are
+     * different.
      *
-     * @param other 作为加数的货币对象。
-     * @return 累加后的本货币对象。
-     * @throws IllegalArgumentException 如果本货币对象与另一货币对象币种不同。
+     * @param other The Money object to add.
+     * @return This Money object after addition.
+     * @throws IllegalArgumentException if the currencies are different.
      */
     public Money addTo(final Money other) {
         assertSameCurrencyAs(other);
-
         this.cent += other.cent;
-
         return this;
     }
 
     /**
-     * 货币减法 如果两货币币种相同，则返回一个新的相同币种的货币对象，其金额为 本货币对象的金额减去参数货币对象的金额。本货币对象的值不变。
-     * 如果两货币币种不同，抛出{@code java.lang.IllegalArgumentException}。
+     * Subtracts another Money object from this one. If the currencies are the same, returns a new Money object with the
+     * difference of the amounts. This object's value remains unchanged. Throws an {@code IllegalArgumentException} if
+     * the currencies are different.
      *
-     * @param other 作为减数的货币对象。
-     * @return 相减后的结果。
-     * @throws IllegalArgumentException 如果本货币对象与另一货币对象币种不同。
+     * @param other The Money object to subtract.
+     * @return The result of the subtraction.
+     * @throws IllegalArgumentException if the currencies are different.
      */
     public Money subtract(final Money other) {
         assertSameCurrencyAs(other);
-
         return newMoneyWithSameCurrency(cent - other.cent);
     }
 
     /**
-     * 货币累减 如果两货币币种相同，则本货币对象的金额等于两货币对象金额之差，并返回本货币对象的引用。 如果两货币币种不同，抛出{@code java.lang.IllegalArgumentException}。
+     * Subtracts another Money object from this one, modifying this object. If the currencies are the same, this
+     * object's amount becomes the difference of the two amounts. Throws an {@code IllegalArgumentException} if the
+     * currencies are different.
      *
-     * @param other 作为减数的货币对象。
-     * @return 累减后的本货币对象。
-     * @throws IllegalArgumentException 如果本货币对象与另一货币对象币种不同。
+     * @param other The Money object to subtract.
+     * @return This Money object after subtraction.
+     * @throws IllegalArgumentException if the currencies are different.
      */
     public Money subtractFrom(final Money other) {
         assertSameCurrencyAs(other);
-
         this.cent -= other.cent;
-
         return this;
     }
 
     /**
-     * 货币乘法 返回一个新的货币对象，币种与本货币对象相同，金额为本货币对象的金额乘以乘数。 本货币对象的值不变。
+     * Multiplies this Money object by a factor. Returns a new Money object with the same currency and the multiplied
+     * amount. This object's value remains unchanged.
      *
-     * @param val 乘数
-     * @return 乘法后的结果。
+     * @param val The multiplier.
+     * @return The result of the multiplication.
      */
     public Money multiply(final long val) {
         return newMoneyWithSameCurrency(cent * val);
     }
 
     /**
-     * 货币累乘 本货币对象金额乘以乘数，并返回本货币对象。
+     * Multiplies this Money object by a factor, modifying this object.
      *
-     * @param val 乘数
-     * @return 累乘后的本货币对象。
+     * @param val The multiplier.
+     * @return This Money object after multiplication.
      */
     public Money multiplyBy(final long val) {
         this.cent *= val;
-
         return this;
     }
 
     /**
-     * 货币乘法 返回一个新的货币对象，币种与本货币对象相同，金额为本货币对象的金额乘以乘数。 本货币对象的值不变。如果相乘后的金额不能转换为整数分，则四舍五入。
+     * Multiplies this Money object by a factor. Returns a new Money object with the same currency and the multiplied
+     * amount. This object's value remains unchanged. If the result cannot be converted to an integer minor unit, it is
+     * rounded half-up.
      *
-     * @param val 乘数
-     * @return 相乘后的结果
+     * @param val The multiplier.
+     * @return The result of the multiplication.
      */
     public Money multiply(final double val) {
         return newMoneyWithSameCurrency(Math.round(cent * val));
     }
 
     /**
-     * 货币累乘 本货币对象金额乘以乘数，并返回本货币对象。 如果相乘后的金额不能转换为整数分，则使用四舍五入。
+     * Multiplies this Money object by a factor, modifying this object. If the result cannot be converted to an integer
+     * minor unit, it is rounded half-up.
      *
-     * @param val 乘数
-     * @return 累乘后的本货币对象。
+     * @param val The multiplier.
+     * @return This Money object after multiplication.
      */
     public Money multiplyBy(final double val) {
         this.cent = Math.round(this.cent * val);
-
         return this;
     }
 
     /**
-     * 货币乘法 返回一个新的货币对象，币种与本货币对象相同，金额为本货币对象的金额乘以乘数。 本货币对象的值不变。如果相乘后的金额不能转换为整数分，使用缺省的取整模式
-     * {@code DEFUALT_ROUNDING_MODE}进行取整。
+     * Multiplies this Money object by a factor. Returns a new Money object with the same currency and the multiplied
+     * amount. This object's value remains unchanged. If the result cannot be converted to an integer minor unit, the
+     * default rounding mode is used.
      *
-     * @param val 乘数
-     * @return 相乘后的结果。
+     * @param val The multiplier.
+     * @return The result of the multiplication.
      */
     public Money multiply(final BigDecimal val) {
         return multiply(val, RoundingMode.HALF_EVEN);
     }
 
     /**
-     * 货币累乘 本货币对象金额乘以乘数，并返回本货币对象。 如果相乘后的金额不能转换为整数分，使用缺省的取整方式 {@code DEFUALT_ROUNDING_MODE}进行取整。
+     * Multiplies this Money object by a factor, modifying this object. If the result cannot be converted to an integer
+     * minor unit, the default rounding mode is used.
      *
-     * @param val 乘数
-     * @return 累乘后的结果
+     * @param val The multiplier.
+     * @return This Money object after multiplication.
      */
     public Money multiplyBy(final BigDecimal val) {
         return multiplyBy(val, RoundingMode.HALF_EVEN);
     }
 
     /**
-     * 货币乘法 返回一个新的货币对象，币种与本货币对象相同，金额为本货币对象的金额乘以乘数。 本货币对象的值不变。如果相乘后的金额不能转换为整数分，使用指定的取整方式 {@code roundingMode}进行取整。
+     * Multiplies this Money object by a factor. Returns a new Money object with the same currency and the multiplied
+     * amount. This object's value remains unchanged. If the result cannot be converted to an integer minor unit, the
+     * specified rounding mode is used.
      *
-     * @param val          乘数
-     * @param roundingMode 取整方式
-     * @return 相乘后的结果。
+     * @param val          The multiplier.
+     * @param roundingMode The rounding mode.
+     * @return The result of the multiplication.
      */
     public Money multiply(final BigDecimal val, final RoundingMode roundingMode) {
         final BigDecimal newCent = BigDecimal.valueOf(cent).multiply(val);
-
         return newMoneyWithSameCurrency(rounding(newCent, roundingMode));
     }
 
     /**
-     * 货币累乘 本货币对象金额乘以乘数，并返回本货币对象。 如果相乘后的金额不能转换为整数分，使用指定的取整方式 {@code roundingMode}进行取整。
+     * Multiplies this Money object by a factor, modifying this object. If the result cannot be converted to an integer
+     * minor unit, the specified rounding mode is used.
      *
-     * @param val          乘数
-     * @param roundingMode 取整方式
-     * @return 累乘后的结果。
+     * @param val          The multiplier.
+     * @param roundingMode The rounding mode.
+     * @return This Money object after multiplication.
      */
     public Money multiplyBy(final BigDecimal val, final RoundingMode roundingMode) {
         final BigDecimal newCent = BigDecimal.valueOf(cent).multiply(val);
-
         this.cent = rounding(newCent, roundingMode);
-
         return this;
     }
 
     /**
-     * 货币除法 返回一个新的货币对象，币种与本货币对象相同，金额为本货币对象的金额除以除数。 本货币对象的值不变。如果相除后的金额不能转换为整数分，使用四舍五入方式取整。
+     * Divides this Money object by a divisor. Returns a new Money object with the same currency and the divided amount.
+     * This object's value remains unchanged. If the result cannot be converted to an integer minor unit, it is rounded
+     * half-up.
      *
-     * @param val 除数
-     * @return 相除后的结果。
+     * @param val The divisor.
+     * @return The result of the division.
      */
     public Money divide(final double val) {
         return newMoneyWithSameCurrency(Math.round(cent / val));
     }
 
     /**
-     * 货币累除 本货币对象金额除以除数，并返回本货币对象。 如果相除后的金额不能转换为整数分，使用四舍五入方式取整。
+     * Divides this Money object by a divisor, modifying this object. If the result cannot be converted to an integer
+     * minor unit, it is rounded half-up.
      *
-     * @param val 除数
-     * @return 累除后的结果。
+     * @param val The divisor.
+     * @return This Money object after division.
      */
     public Money divideBy(final double val) {
         this.cent = Math.round(this.cent / val);
-
         return this;
     }
 
     /**
-     * 货币除法 返回一个新的货币对象，币种与本货币对象相同，金额为本货币对象的金额除以除数。 本货币对象的值不变。如果相除后的金额不能转换为整数分，使用缺省的取整模式
-     * {@code DEFAULT_ROUNDING_MODE}进行取整。
+     * Divides this Money object by a divisor. Returns a new Money object with the same currency and the divided amount.
+     * This object's value remains unchanged. If the result cannot be converted to an integer minor unit, the default
+     * rounding mode is used.
      *
-     * @param val 除数
-     * @return 相除后的结果。
+     * @param val The divisor.
+     * @return The result of the division.
      */
     public Money divide(final BigDecimal val) {
         return divide(val, RoundingMode.HALF_EVEN);
     }
 
     /**
-     * 货币除法 返回一个新的货币对象，币种与本货币对象相同，金额为本货币对象的金额除以除数。 本货币对象的值不变。如果相除后的金额不能转换为整数分，使用指定的取整模式 {@code roundingMode}进行取整。
+     * Divides this Money object by a divisor. Returns a new Money object with the same currency and the divided amount.
+     * This object's value remains unchanged. If the result cannot be converted to an integer minor unit, the specified
+     * rounding mode is used.
      *
-     * @param val          除数
-     * @param roundingMode 取整
-     * @return 相除后的结果。
+     * @param val          The divisor.
+     * @param roundingMode The rounding mode.
+     * @return The result of the division.
      */
     public Money divide(final BigDecimal val, final RoundingMode roundingMode) {
         final BigDecimal newCent = BigDecimal.valueOf(cent).divide(val, roundingMode);
-
         return newMoneyWithSameCurrency(newCent.longValue());
     }
 
     /**
-     * 货币累除 本货币对象金额除以除数，并返回本货币对象。 如果相除后的金额不能转换为整数分，使用缺省的取整模式 {@code DEFAULT_ROUNDING_MODE}进行取整。
+     * Divides this Money object by a divisor, modifying this object. If the result cannot be converted to an integer
+     * minor unit, the default rounding mode is used.
      *
-     * @param val 除数
-     * @return 累除后的结果。
+     * @param val The divisor.
+     * @return This Money object after division.
      */
     public Money divideBy(final BigDecimal val) {
         return divideBy(val, RoundingMode.HALF_EVEN);
     }
 
     /**
-     * 货币累除 本货币对象金额除以除数，并返回本货币对象。 如果相除后的金额不能转换为整数分，使用指定的取整模式 {@code roundingMode}进行取整。
+     * Divides this Money object by a divisor, modifying this object. If the result cannot be converted to an integer
+     * minor unit, the specified rounding mode is used.
      *
-     * @param val          除数
-     * @param roundingMode 保留小数方式
-     * @return 累除后的结果。
+     * @param val          The divisor.
+     * @param roundingMode The rounding mode for decimal places.
+     * @return This Money object after division.
      */
     public Money divideBy(final BigDecimal val, final RoundingMode roundingMode) {
         final BigDecimal newCent = BigDecimal.valueOf(cent).divide(val, roundingMode);
-
         this.cent = newCent.longValue();
-
         return this;
     }
 
     /**
-     * 货币分配 将本货币对象尽可能平均分配成{@code targets}份。 如果不能平均分配尽，则将零头放到开始的若干份中。分配 运算能够确保不会丢失金额零头。
+     * Allocates this Money object into a specified number of targets as evenly as possible. If the amount cannot be
+     * divided evenly, the remainder is distributed among the first few targets. This operation ensures that no amount
+     * is lost.
      *
-     * @param targets 待分配的份数
-     * @return 货币对象数组，数组的长度与分配份数相同，数组元素 从大到小排列，所有货币对象的金额最多只相差1分。
+     * @param targets The number of targets to allocate to.
+     * @return An array of Money objects, with a length equal to the number of targets. The elements are sorted in
+     *         descending order, and the difference between any two amounts is at most 1 minor unit.
      */
     public Money[] allocate(final int targets) {
         final Money[] results = new Money[targets];
@@ -595,10 +630,11 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 货币分配 将本货币对象按照规定的比例分配成若干份。分配所剩的零头 从第一份开始顺序分配。分配运算确保不会丢失金额零头。
+     * Allocates this Money object into several parts according to the given ratios. The remainder is distributed
+     * sequentially from the first part. This operation ensures that no amount is lost.
      *
-     * @param ratios 分配比例数组，每一个比例是一个长整型，代表 相对于总数的相对数。
-     * @return 货币对象数组，数组的长度与分配比例数组的长度相同。
+     * @param ratios An array of allocation ratios. Each ratio is a long representing a relative part of the total.
+     * @return An array of Money objects, with a length equal to the length of the ratios array.
      */
     public Money[] allocate(final long[] ratios) {
         final Money[] results = new Money[ratios.length];
@@ -624,7 +660,7 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 生成本对象的缺省字符串表示
+     * Generates the default string representation of this object.
      */
     @Override
     public String toString() {
@@ -632,10 +668,11 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 断言本货币对象与另一货币对象是否具有相同的币种 如果本货币对象与另一货币对象具有相同的币种，则方法返回。 否则抛出运行时异常{@code java.lang.IllegalArgumentException}。
+     * Asserts that this Money object has the same currency as another Money object. If they have the same currency, the
+     * method returns. Otherwise, it throws an {@code IllegalArgumentException}.
      *
-     * @param other 另一货币对象
-     * @throws IllegalArgumentException 如果本货币对象与另一货币对象币种不同。
+     * @param other The other Money object.
+     * @throws IllegalArgumentException if the currencies are different.
      */
     protected void assertSameCurrencyAs(final Money other) {
         if (!currency.equals(other.currency)) {
@@ -644,34 +681,32 @@ public class Money implements Serializable, Comparable<Money> {
     }
 
     /**
-     * 对BigDecimal型的值按指定取整方式取整。
+     * Rounds a BigDecimal value using the specified rounding mode.
      *
-     * @param val          待取整的BigDecimal值
-     * @param roundingMode 取整方式
-     * @return 取整后的long型值
+     * @param val          The BigDecimal value to round.
+     * @param roundingMode The rounding mode.
+     * @return The rounded long value.
      */
     protected long rounding(final BigDecimal val, final RoundingMode roundingMode) {
         return val.setScale(0, roundingMode).longValue();
     }
 
     /**
-     * 创建一个币种相同，具有指定金额的货币对象。
+     * Creates a new Money object with the same currency and the specified amount.
      *
-     * @param cent 金额，以分为单位
-     * @return 一个新建的币种相同，具有指定金额的货币对象
+     * @param cent The amount in minor units.
+     * @return A new Money object with the same currency and the specified amount.
      */
     protected Money newMoneyWithSameCurrency(final long cent) {
         final Money money = new Money(0, currency);
-
         money.cent = cent;
-
         return money;
     }
 
     /**
-     * 生成本对象内部变量的字符串表示，用于调试。
+     * Generates a string representation of the internal variables of this object, for debugging purposes.
      *
-     * @return 本对象内部变量的字符串表示。
+     * @return A string representation of the internal variables.
      */
     public String dump() {
         return StringKit.builder().append("cent = ").append(this.cent).append(File.separatorChar).append("currency = ")

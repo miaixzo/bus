@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Ansj分词实现 项目地址：https://github.com/NLPchina/ansj_seg
+ * Provides the Ansj word segmentation engine implementation. This package contains classes that integrate with the Ansj
+ * NLP library for Chinese word segmentation, adapting its functionalities to the common NLP interfaces. Project
+ * homepage: <a href="https://github.com/NLPchina/ansj_seg">https://github.com/NLPchina/ansj_seg</a>
  *
  * @author Kimi Liu
  * @since Java 17+

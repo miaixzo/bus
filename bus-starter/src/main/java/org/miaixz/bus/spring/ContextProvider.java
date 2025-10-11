@@ -30,7 +30,7 @@ package org.miaixz.bus.spring;
 import org.miaixz.bus.core.basic.entity.Authorize;
 
 /**
- * 请求上下文封装类。
+ * An interface for providing custom logic to retrieve request context information, such as user authorization.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,20 +38,11 @@ import org.miaixz.bus.core.basic.entity.Authorize;
 public interface ContextProvider {
 
     /**
-     * 获取当前用户信息。
+     * Gets the authorization information for the current user.
      *
-     * @return Authorize 对象，如果无法获取则返回 null
+     * @return An {@link Authorize} object, or null if not available.
      */
     default Authorize getAuthorize() {
-        return null;
-    }
-
-    /**
-     * 获取租户 ID。
-     *
-     * @return 租户 ID 字符串，如果未找到则返回 null
-     */
-    default String getTenantId() {
         return null;
     }
 

@@ -35,25 +35,30 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.BeanKit;
 
 /**
- * CSV中一行的表示
+ * Represents a single row in a CSV file.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public final class CsvRow extends ListWrapper<String> {
 
+    /**
+     * Header map, mapping header names to their column indices.
+     */
     final Map<String, Integer> headerMap;
     /**
-     * 原始行号
+     * The original line number in the CSV file. For multi-line rows, this is the line number of the first line. Comment
+     * lines are ignored.
      */
     private final long originalLineNumber;
 
     /**
-     * 构造
+     * Constructs a new {@code CsvRow}.
      *
-     * @param originalLineNumber 对应文件中的第几行
-     * @param headerMap          标题Map
-     * @param fields             数据列表
+     * @param originalLineNumber The original line number in the file (first line for multi-line rows).
+     * @param headerMap          The map of header names to column indices.
+     * @param fields             The list of field values for this row.
+     * @throws NullPointerException if {@code fields} is {@code null}.
      */
     public CsvRow(final long originalLineNumber, final Map<String, Integer> headerMap, final List<String> fields) {
         super(Assert.notNull(fields, "fields must be not null!"));
@@ -62,20 +67,21 @@ public final class CsvRow extends ListWrapper<String> {
     }
 
     /**
-     * 获取原始行号，多行情况下为首行行号。忽略注释行
+     * Gets the original line number of this row in the CSV file. For multi-line rows, this is the line number of the
+     * first line. Comment lines are ignored.
      *
-     * @return the original line number 行号
+     * @return The original line number.
      */
     public long getOriginalLineNumber() {
         return originalLineNumber;
     }
 
     /**
-     * 获取标题对应的字段内容
+     * Gets the field content by header name.
      *
-     * @param name 标题名
-     * @return 字段值，null表示无此字段值
-     * @throws IllegalStateException CSV文件无标题行抛出此异常
+     * @param name The header name.
+     * @return The field value, or {@code null} if the field does not exist.
+     * @throws IllegalStateException if the CSV file has no header row.
      */
     public String getByName(final String name) {
         Assert.notNull(this.headerMap, "No header available!");
@@ -88,10 +94,10 @@ public final class CsvRow extends ListWrapper<String> {
     }
 
     /**
-     * 获取标题与字段值对应的Map
+     * Gets a map of header names to their corresponding field values for this row.
      *
-     * @return 标题与字段值对应的Map
-     * @throws IllegalStateException CSV文件无标题行抛出此异常
+     * @return A {@link Map} where keys are header names and values are field values.
+     * @throws IllegalStateException if the CSV file has no header row.
      */
     public Map<String, String> getFieldMap() {
         if (headerMap == null) {
@@ -113,11 +119,11 @@ public final class CsvRow extends ListWrapper<String> {
     }
 
     /**
-     * 一行数据转换为Bean对象，忽略转换错误
+     * Converts this row's data into a Bean object, ignoring conversion errors.
      *
-     * @param <T>   Bean类型
-     * @param clazz bean类
-     * @return the object
+     * @param <T>   The type of the Bean.
+     * @param clazz The class of the Bean.
+     * @return The populated Bean object.
      */
     public <T> T toBean(final Class<T> clazz) {
         return BeanKit.toBean(getFieldMap(), clazz, CopyOptions.of().setIgnoreError(true));

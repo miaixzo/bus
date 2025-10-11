@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 第三方分词引擎实现
+ * Provides implementations for various third-party Natural Language Processing (NLP) word segmentation engines. This
+ * package contains concrete {@link org.miaixz.bus.extra.nlp.NLPProvider} implementations that integrate with different
+ * NLP libraries, offering diverse options for text analysis.
  *
  * @author Kimi Liu
  * @since Java 17+

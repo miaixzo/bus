@@ -35,7 +35,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
 
 /**
- * JDK的{@link Proxy}相关工具类封装
+ * Utility class for JDK's {@link Proxy} related operations. This class provides methods for creating dynamic proxy
+ * objects and checking if an object or class is a proxy.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,16 +44,25 @@ import org.miaixz.bus.core.xyz.ClassKit;
 public class JdkProxy {
 
     /**
-     * 创建动态代理对象 动态代理对象的创建原理是： 假设创建的代理对象名为 $Proxy0 1、根据传入的interfaces动态生成一个类，实现interfaces中的接口
-     * 2、通过传入的classloder将刚生成的类加载到jvm中。即将$Proxy0类load 3、调用$Proxy0的$Proxy0(InvocationHandler)构造函数
-     * 创建$Proxy0的对象，并且用interfaces参数遍历其所有接口的方法，这些实现方法的实现本质上是通过反射调用被代理对象的方法 4、将$Proxy0的实例返回给客户端。 5、当调用代理类的相应方法时，相当于调用
-     * {@link InvocationHandler#invoke(Object, java.lang.reflect.Method, Object[])} 方法
+     * Creates a dynamic proxy object. The creation principle of a dynamic proxy object is as follows: Assuming the
+     * created proxy object is named $Proxy0:
+     * <ol>
+     * <li>A class is dynamically generated based on the provided interfaces, implementing the interfaces.</li>
+     * <li>The generated class is loaded into the JVM via the provided classloader.</li>
+     * <li>The constructor $Proxy0(InvocationHandler) of $Proxy0 is called to create an instance of $Proxy0. It iterates
+     * through all interface methods, and their implementations essentially invoke the methods of the proxied object via
+     * reflection.</li>
+     * <li>The instance of $Proxy0 is returned to the client.</li>
+     * <li>When a corresponding method of the proxy class is called, it is equivalent to calling the
+     * {@link InvocationHandler#invoke(Object, java.lang.reflect.Method, Object[])} method.</li>
+     * </ol>
      *
-     * @param <T>               被代理对象类型
-     * @param classloader       被代理类对应的ClassLoader
-     * @param invocationHandler {@link InvocationHandler} ，被代理类通过实现此接口提供动态代理功能
-     * @param interfaces        代理类中需要实现的被代理类的接口方法
-     * @return 代理类
+     * @param <T>               The type of the proxied object.
+     * @param classloader       The ClassLoader corresponding to the proxied class.
+     * @param invocationHandler The {@link InvocationHandler} that provides dynamic proxy functionality by implementing
+     *                          this interface.
+     * @param interfaces        The interfaces that the proxy class needs to implement.
+     * @return The proxy class instance.
      */
     public static <T> T newProxyInstance(
             final ClassLoader classloader,
@@ -62,22 +72,23 @@ public class JdkProxy {
     }
 
     /**
-     * 创建动态代理对象
+     * Creates a dynamic proxy object using the default class loader.
      *
-     * @param <T>               被代理对象类型
-     * @param invocationHandler {@link InvocationHandler} ，被代理类通过实现此接口提供动态代理功能
-     * @param interfaces        代理类中需要实现的被代理类的接口方法
-     * @return 代理类
+     * @param <T>               The type of the proxied object.
+     * @param invocationHandler The {@link InvocationHandler} that provides dynamic proxy functionality.
+     * @param interfaces        The interfaces that the proxy class needs to implement.
+     * @return The proxy class instance.
      */
     public static <T> T newProxyInstance(final InvocationHandler invocationHandler, final Class<?>... interfaces) {
         return newProxyInstance(ClassKit.getClassLoader(), invocationHandler, interfaces);
     }
 
     /**
-     * 是否为代理对象，判断JDK代理或Cglib代理
+     * Checks if the given object is a proxy object, including JDK proxy or Cglib proxy.
      *
-     * @param object 被检查的对象
-     * @return 是否为代理对象
+     * @param object The object to be checked. Must not be {@code null}.
+     * @return {@code true} if the object is a proxy object, {@code false} otherwise.
+     * @throws IllegalArgumentException if the object is {@code null}.
      */
     public static boolean isProxy(final Object object) {
         Assert.notNull(object);
@@ -85,10 +96,11 @@ public class JdkProxy {
     }
 
     /**
-     * 是否为JDK代理对象
+     * Checks if the given object is a JDK proxy object.
      *
-     * @param object 被检查的对象
-     * @return 是否为JDK代理对象
+     * @param object The object to be checked. Must not be {@code null}.
+     * @return {@code true} if the object is a JDK proxy object, {@code false} otherwise.
+     * @throws IllegalArgumentException if the object is {@code null}.
      */
     public static boolean isJdkProxy(final Object object) {
         Assert.notNull(object);
@@ -96,10 +108,11 @@ public class JdkProxy {
     }
 
     /**
-     * 是否Cglib代理对象
+     * Checks if the given object is a Cglib proxy object.
      *
-     * @param object 被检查的对象
-     * @return 是否Cglib代理对象
+     * @param object The object to be checked. Must not be {@code null}.
+     * @return {@code true} if the object is a Cglib proxy object, {@code false} otherwise.
+     * @throws IllegalArgumentException if the object is {@code null}.
      */
     public static boolean isCglibProxy(final Object object) {
         Assert.notNull(object);
@@ -107,40 +120,46 @@ public class JdkProxy {
     }
 
     /**
-     * 是否为代理类，判断JDK代理或Cglib代理
+     * Checks if the given class is a proxy class, including JDK proxy or Cglib proxy.
      *
-     * @param clazz 被检查的类
-     * @return 是否为代理类
+     * @param clazz The class to be checked. Must not be {@code null}.
+     * @return {@code true} if the class is a proxy class, {@code false} otherwise.
+     * @throws IllegalArgumentException if the class is {@code null}.
      */
     public static boolean isProxyClass(final Class<?> clazz) {
         return isJdkProxyClass(clazz) || isCglibProxyClass(clazz);
     }
 
     /**
-     * 是否为JDK代理类
+     * Checks if the given class is a JDK proxy class.
      *
-     * @param clazz 被检查的类
-     * @return 是否为JDK代理类
+     * @param clazz The class to be checked. Must not be {@code null}.
+     * @return {@code true} if the class is a JDK proxy class, {@code false} otherwise.
+     * @throws IllegalArgumentException if the class is {@code null}.
      */
     public static boolean isJdkProxyClass(final Class<?> clazz) {
         return Proxy.isProxyClass(Assert.notNull(clazz));
     }
 
     /**
-     * 是否Cglib代理对象
+     * Checks if the given class is a Cglib proxy class. Cglib proxy classes typically contain "$$" in their names.
      *
-     * @param clazz 被检查的对象
-     * @return 是否Cglib代理对象
+     * @param clazz The class to be checked. Must not be {@code null}.
+     * @return {@code true} if the class is a Cglib proxy class, {@code false} otherwise.
+     * @throws IllegalArgumentException if the class is {@code null}.
      */
     public static boolean isCglibProxyClass(final Class<?> clazz) {
         return Assert.notNull(clazz).getName().contains(Symbol.DOLLAR + Symbol.DOLLAR);
     }
 
     /**
-     * 获取cglib代理的真实类
+     * Retrieves the actual class of a Cglib proxy. If the provided class is a Cglib proxy, this method traverses the
+     * superclass hierarchy until the non-proxy superclass is found.
      *
-     * @param clazz 代理类
-     * @return 类
+     * @param clazz The proxy class. Must not be {@code null}.
+     * @return The actual class, which is the non-proxy superclass if {@code clazz} was a Cglib proxy, or {@code clazz}
+     *         itself if it was not a Cglib proxy.
+     * @throws IllegalArgumentException if the class is {@code null}.
      */
     public static Class<?> getCglibActualClass(Class<?> clazz) {
         Class<?> actualClass = clazz;

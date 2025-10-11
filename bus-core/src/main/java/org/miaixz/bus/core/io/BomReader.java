@@ -36,8 +36,11 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 读取带BOM头的流内容的Reader，如果非bom的流或无法识别的编码，则默认UTF-8 BOM定义：http://www.unicode.org/unicode/faq/utf_bom.html
+ * A Reader that handles streams with a Byte Order Mark (BOM). If the stream does not have a BOM or the encoding is
+ * unrecognized, it defaults to UTF-8.
  *
+ * <p>
+ * BOM definitions:
  * <ul>
  * <li>00 00 FE FF = UTF-32, big-endian</li>
  * <li>FF FE 00 00 = UTF-32, little-endian</li>
@@ -45,10 +48,15 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * <li>FE FF = UTF-16, big-endian</li>
  * <li>FF FE = UTF-16, little-endian</li>
  * </ul>
- * 使用： <code>
+ *
+ * <p>
+ * Usage example:
+ * 
+ * <pre>
+ * 
  * FileInputStream fis = new FileInputStream(file);
  * BomReader uin = new BomReader(fis);
- * </code>
+ * </pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,19 +64,20 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class BomReader extends ReaderWrapper {
 
     /**
-     * 构造
+     * Constructs a new {@code BomReader} with the given {@link InputStream}.
      *
-     * @param in 流
+     * @param in The input stream.
      */
     public BomReader(final InputStream in) {
         super(initReader(in));
     }
 
     /**
-     * 初始化为{@link InputStreamReader}，将给定流转换为{@link BOMInputStream}
+     * Initializes an {@link InputStreamReader} by converting the given {@link InputStream} to a {@link BOMInputStream}.
      *
-     * @param in {@link InputStream}
-     * @return {@link InputStreamReader}
+     * @param in The {@link InputStream} to initialize.
+     * @return An initialized {@link InputStreamReader}.
+     * @throws InternalException if the encoding is not supported.
      */
     private static InputStreamReader initReader(final InputStream in) {
         Assert.notNull(in, "InputStream must be not null!");

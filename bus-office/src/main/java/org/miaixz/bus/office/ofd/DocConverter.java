@@ -37,13 +37,15 @@ import org.ofdrw.converter.ofdconverter.PDFConverter;
 import org.ofdrw.converter.ofdconverter.TextConverter;
 
 /**
- * 基于{@code ofdrw-converter}文档转换，提供：
+ * Document converter based on {@code ofdrw-converter}, providing:
  * <ul>
- * <li>OFD PDF 相互转换</li>
- * <li>OFD TEXT 相互转换</li>
- * <li>OFD 图片 相互转换</li>
+ * <li>OFD and PDF mutual conversion</li>
+ * <li>OFD and TEXT mutual conversion</li>
+ * <li>OFD and Image mutual conversion</li>
  * </ul>
- * 具体见:https://toscode.gitee.com/ofdrw/ofdrw/blob/master/ofdrw-converter/doc/CONVERTER.md
+ * For more details, see:
+ * <a href="https://toscode.gitee.com/ofdrw/ofdrw/blob/master/ofdrw-converter/doc/CONVERTER.md">OFDRW Converter
+ * Documentation</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,11 +53,12 @@ import org.ofdrw.converter.ofdconverter.TextConverter;
 public class DocConverter {
 
     /**
-     * PDF转为ODF
+     * Converts a PDF file to an OFD file.
      *
-     * @param src    PDF文件路径
-     * @param target OFD文件路径
-     * @param pages  页码,（从0起）
+     * @param src    The path to the source PDF file.
+     * @param target The path to the target OFD file.
+     * @param pages  Optional page numbers (0-indexed) to convert. If not provided, all pages are converted.
+     * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void pdfToOfd(final Path src, final Path target, final int... pages) {
         try (final org.ofdrw.converter.ofdconverter.DocConverter converter = new PDFConverter(target)) {
@@ -66,11 +69,12 @@ public class DocConverter {
     }
 
     /**
-     * 纯文本转为ODF
+     * Converts a plain text file to an OFD file.
      *
-     * @param src      纯文件路径
-     * @param target   OFD文件路径
-     * @param fontSize 字体大小
+     * @param src      The path to the source text file.
+     * @param target   The path to the target OFD file.
+     * @param fontSize The font size to use for the text in the OFD document.
+     * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void textToOfd(final Path src, final Path target, final double fontSize) {
         try (final TextConverter converter = new TextConverter(target)) {
@@ -82,10 +86,11 @@ public class DocConverter {
     }
 
     /**
-     * 多个图片转为ODF
+     * Converts multiple image files to a single OFD file.
      *
-     * @param target OFD文件路径
-     * @param images 图片列表
+     * @param target The path to the target OFD file.
+     * @param images An array of paths to the source image files.
+     * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void imgToOfd(final Path target, final Path... images) {
         try (final org.ofdrw.converter.ofdconverter.DocConverter converter = new ImageConverter(target)) {
@@ -98,12 +103,13 @@ public class DocConverter {
     }
 
     /**
-     * OFD转图片
+     * Converts an OFD file to image files.
      *
-     * @param src       ODF路径
-     * @param targetDir 生成图片存放目录
-     * @param imgType   生成图片的格式，如 JPG、PNG、GIF、BMP、SVG
-     * @param ppm       转换图片质量，每毫米像素数量(Pixels per millimeter)
+     * @param src       The path to the source OFD file.
+     * @param targetDir The directory where the generated image files will be stored.
+     * @param imgType   The format of the generated images, e.g., JPG, PNG, GIF, BMP, SVG.
+     * @param ppm       The quality of the converted images, pixels per millimeter.
+     * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void odfToImage(final Path src, final Path targetDir, final String imgType, final double ppm) {
         if ("svg".equalsIgnoreCase(imgType)) {
@@ -117,10 +123,11 @@ public class DocConverter {
     }
 
     /**
-     * OFD转HTML
+     * Converts an OFD file to an HTML file.
      *
-     * @param src        ODF路径
-     * @param targetPath 生成HTML路径
+     * @param src        The path to the source OFD file.
+     * @param targetPath The path to the target HTML file.
+     * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void odfToHtml(final Path src, final Path targetPath) {
         try (final HTMLExporter exporter = new HTMLExporter(src, targetPath)) {
@@ -131,10 +138,11 @@ public class DocConverter {
     }
 
     /**
-     * OFD转文本
+     * Converts an OFD file to a plain text file.
      *
-     * @param src        ODF路径
-     * @param targetPath 生成文本路径
+     * @param src        The path to the source OFD file.
+     * @param targetPath The path to the target text file.
+     * @throws InternalException if an I/O error occurs during conversion.
      */
     public static void odfToText(final Path src, final Path targetPath) {
         try (final TextExporter exporter = new TextExporter(src, targetPath)) {
@@ -145,10 +153,11 @@ public class DocConverter {
     }
 
     /**
-     * OFD转PDF
+     * Converts an OFD file to a PDF file.
      *
-     * @param src        ODF路径
-     * @param targetPath 生成PDF路径
+     * @param src        The path to the source OFD file.
+     * @param targetPath The path to the target PDF file.
+     * @throws InternalException if an I/O error occurs during conversion, or if required PDF libraries are missing.
      */
     public static void odfToPdf(final Path src, final Path targetPath) {
         try (final OFDExporter exporter = new PDFExporterPDFBox(src, targetPath)) {
@@ -156,7 +165,7 @@ public class DocConverter {
         } catch (final IOException e) {
             throw new InternalException(e);
         } catch (final Exception e) {
-            // 当用户未引入PDF-BOX时,尝试iText
+            // If PDF-BOX is not introduced by the user, try iText.
             try (final OFDExporter exporter = new PDFExporterIText(src, targetPath)) {
                 exporter.export();
             } catch (final IOException e2) {
@@ -166,11 +175,12 @@ public class DocConverter {
     }
 
     /**
-     * OFD转SVG
+     * Converts an OFD file to SVG images.
      *
-     * @param src       ODF路径
-     * @param targetDir 生成SVG存放目录
-     * @param ppm       转换图片质量，每毫米像素数量(Pixels per millimeter)
+     * @param src       The path to the source OFD file.
+     * @param targetDir The directory where the generated SVG files will be stored.
+     * @param ppm       The quality of the converted images, pixels per millimeter.
+     * @throws InternalException if an I/O error occurs during conversion.
      */
     private static void odfToSvg(final Path src, final Path targetDir, final double ppm) {
         try (final SVGExporter exporter = new SVGExporter(src, targetDir, ppm)) {

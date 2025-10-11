@@ -30,7 +30,7 @@ package org.miaixz.bus.cron.pattern.matcher;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 所有值匹配，始终返回{@code true}
+ * A matcher that always returns {@code true}, representing the wildcard ('*') character in a cron expression.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,15 +38,27 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AlwaysTrueMatcher implements PartMatcher {
 
     /**
-     * 单例
+     * Singleton instance.
      */
-    public static AlwaysTrueMatcher INSTANCE = new AlwaysTrueMatcher();
+    public static final AlwaysTrueMatcher INSTANCE = new AlwaysTrueMatcher();
 
+    /**
+     * Always returns {@code true}, indicating that any value matches.
+     *
+     * @param value The value to test (ignored).
+     * @return Always {@code true}.
+     */
     @Override
-    public boolean test(final Integer t) {
+    public boolean test(final Integer value) {
         return true;
     }
 
+    /**
+     * Returns the input value itself, as every value is considered a match.
+     *
+     * @param value The value to find the next match after.
+     * @return The input {@code value}.
+     */
     @Override
     public int nextAfter(final int value) {
         return value;

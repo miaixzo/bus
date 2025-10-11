@@ -28,13 +28,25 @@
 package org.miaixz.bus.limiter.magic;
 
 /**
- * 规则模式
+ * Enumeration representing different strategy modes for the limiter. These modes define how limiting rules are applied
+ * and what actions are taken when limits are exceeded.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum StrategyMode {
 
-    FALLBACK, HOT_METHOD, REQUEST_LIMIT
+    /**
+     * Represents a fallback strategy, typically used for graceful degradation when a service is overloaded.
+     */
+    FALLBACK,
+    /**
+     * Represents a hotspot method strategy, focusing on limiting access to frequently accessed methods or resources.
+     */
+    HOT_METHOD,
+    /**
+     * Represents a request limiting strategy, controlling the rate of incoming requests.
+     */
+    REQUEST_LIMIT
 
 }

@@ -46,7 +46,7 @@ import org.miaixz.bus.mapper.parsing.SqlSourceEnhancer;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 缓存 XML 形式的 SqlSource，避免重复解析。
+ * A custom MyBatis {@link XMLLanguageDriver} that caches XML-based SqlSource to avoid redundant parsing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,43 +54,46 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class Caching extends XMLLanguageDriver {
 
     /**
-     * 缓存 SqlCache 对象的映射，初始容量约为 1024（假设约 30 个实体，每个实体 25 个方法）。
+     * A map to cache {@link SqlMetaCache} objects. The initial capacity is set based on an estimate (e.g., 30 entities
+     * with 25 methods each).
      * <p>
-     * 对于单一数据源，缓存最终可被清除；对于多数据源，必须保留缓存，因为无法确定清理时机。
+     * For a single data source, this cache can eventually be cleared. For multiple data sources, the cache must be
+     * retained because the cleanup timing is indeterminate.
      * </p>
      */
     private static final Map<String, SqlMetaCache> CACHE_SQL = new ConcurrentHashMap<>(
             Context.INSTANCE.getInt(Args.INITSIZE_KEY, 1024));
 
     /**
-     * 按 Configuration 缓存 SqlSource，处理多数据源或多配置场景（如单元测试），确保一致性。
+     * Caches {@link SqlSource} per {@link Configuration} to handle multi-datasource or multi-configuration scenarios
+     * (e.g., in unit tests), ensuring consistency.
      */
     private static final Map<Configuration, Map<String, SqlSource>> CONFIGURATION_CACHE_KEY_MAP = new ConcurrentHashMap<>(
             4);
 
     /**
-     * 是否仅使用一次缓存，默认为 false。若为 true，首次使用后清除缓存，允许 GC 清理。
-     * <p>
-     * 当使用 SqlSessionFactory 配置多数据源时，必须设为 false，避免 GC 清理影响新数据源。 对于单一 SqlSessionFactory 的多数据源场景，可设为 true。
-     * </p>
+     * If true, the cache is cleared after its first use, allowing for garbage collection. This should be set to
+     * {@code false} when using multiple data sources with a single SqlSessionFactory to prevent premature cache
+     * eviction. It can be set to {@code true} for a single SqlSessionFactory with multiple data sources. Defaults to
+     * {@code false}.
      */
     private static final boolean USE_ONCE = Context.INSTANCE.getBoolean(Args.USEONCE_KEY, false);
 
     /**
-     * 根据接口和方法生成缓存键。
+     * Generates a cache key based on the mapper interface and method.
      *
-     * @param providerContext 提供者上下文，包含方法和接口信息
-     * @return 经过 String.intern 处理的缓存键，可作为锁对象
+     * @param providerContext The provider context containing mapper interface and method information.
+     * @return A cache key, which is interned to be used as a lock object.
      */
     private static String cacheKey(ProviderContext providerContext) {
         return (providerContext.getMapperType().getName() + "." + providerContext.getMapperMethod().getName()).intern();
     }
 
     /**
-     * 检查方法是否标注了 @Lang(Caching.class) 注解。
+     * Checks if the mapper method is annotated with {@code @Lang(Caching.class)}.
      *
-     * @param providerContext 提供者上下文，包含方法信息
-     * @throws RuntimeException 如果未配置 @Lang(Caching.class) 注解
+     * @param providerContext The provider context containing method information.
+     * @throws RuntimeException if the method is not annotated with {@code @Lang(Caching.class)}.
      */
     private static void isAnnotationPresentLang(ProviderContext providerContext) {
         Method mapperMethod = providerContext.getMapperMethod();
@@ -105,12 +108,12 @@ public class Caching extends XMLLanguageDriver {
     }
 
     /**
-     * 缓存 sqlScript 对应的 SQL 和配置。
+     * Caches the SQL script and its associated metadata.
      *
-     * @param providerContext   提供者上下文，包含方法和接口信息
-     * @param entity            实体类信息
-     * @param sqlScriptSupplier SQL 脚本提供者
-     * @return 缓存键
+     * @param providerContext   The provider context, containing mapper interface and method information.
+     * @param entity            The entity metadata.
+     * @param sqlScriptSupplier A supplier for the SQL script string.
+     * @return The generated cache key.
      */
     public static String cache(ProviderContext providerContext, TableMeta entity, Supplier<String> sqlScriptSupplier) {
         String cacheKey = cacheKey(providerContext);
@@ -129,12 +132,13 @@ public class Caching extends XMLLanguageDriver {
     }
 
     /**
-     * 创建 SqlSource，若缓存中存在则重用，否则生成新实例。
+     * Creates an {@link SqlSource}. If a cached version exists, it is reused; otherwise, a new instance is created and
+     * cached. This method uses the script parameter as a key to look up pre-parsed SQL metadata.
      *
-     * @param configuration MyBatis 配置
-     * @param script        脚本或缓存键
-     * @param parameterType 参数类型
-     * @return SqlSource 对象
+     * @param configuration The MyBatis configuration.
+     * @param script        The script content or a cache key.
+     * @param parameterType The parameter type class.
+     * @return The created or cached {@link SqlSource}.
      */
     @Override
     public SqlSource createSqlSource(Configuration configuration, String script, Class<?> parameterType) {

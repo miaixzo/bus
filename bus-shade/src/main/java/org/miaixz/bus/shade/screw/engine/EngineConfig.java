@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 文件生成配置
+ * Configuration for the documentation generation engine.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,28 +44,31 @@ import lombok.Setter;
 @Builder
 public class EngineConfig implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     /**
-     * 是否打开输出目录
+     * Whether to automatically open the output directory after generation is complete.
      */
     private boolean openOutputDir;
     /**
-     * 文件产生位置
+     * The directory where the generated file will be saved.
      */
     private String fileOutputDir;
     /**
-     * 生成文件类型
+     * The type of file to generate (e.g., HTML, WORD, MD).
      */
     private EngineFileType fileType;
     /**
-     * 生成实现
+     * The template engine to use for generation.
      */
     private TemplateType produceType;
     /**
-     * 自定义模板，模板需要和文件类型和使用模板的语法进行编写和处理，否则将会生成错误
+     * The path to a custom template file. The template must be compatible with the chosen file type and template engine
+     * syntax, otherwise, the generation may fail or produce incorrect output.
      */
     private String customTemplate;
     /**
-     * 文件名称
+     * The name of the generated file.
      */
     private String fileName;
 

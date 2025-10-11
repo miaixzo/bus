@@ -28,13 +28,23 @@
 package org.miaixz.bus.socket.buffer;
 
 /**
- * 虚拟缓冲工厂
+ * A factory for creating {@link VirtualBuffer} instances.
+ * <p>
+ * This interface defines a method for creating new virtual buffers, which can be used to abstract the buffer allocation
+ * logic.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface VirtualBufferFactory {
 
+    /**
+     * Creates a new {@link VirtualBuffer} from the given {@link BufferPage}.
+     *
+     * @param bufferPage the buffer page from which to create the virtual buffer
+     * @return a new {@link VirtualBuffer} instance
+     */
     VirtualBuffer newBuffer(BufferPage bufferPage);
 
 }

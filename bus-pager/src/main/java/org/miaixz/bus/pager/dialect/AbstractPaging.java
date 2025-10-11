@@ -42,7 +42,9 @@ import org.miaixz.bus.pager.binding.CountExecutor;
 import org.miaixz.bus.pager.binding.MetaObject;
 
 /**
- * 针对 PageContext 的实现
+ * Abstract base class for pagination dialect implementations, specifically for {@link PageContext}. This class provides
+ * common logic for handling pagination, including SQL generation, parameter processing, and result handling, while
+ * delegating database-specific SQL generation to subclasses.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,41 +52,59 @@ import org.miaixz.bus.pager.binding.MetaObject;
 public abstract class AbstractPaging extends AbstractDialect {
 
     /**
-     * 分页的id后缀
+     * Suffix for the page ID, used to identify paginated MappedStatements.
      */
     public static String SUFFIX_PAGE = "_PageContext";
     /**
-     * count查询的id后缀
+     * Suffix for the count query ID, used to identify count MappedStatements.
      */
     public static String SUFFIX_COUNT = SUFFIX_PAGE + "_Count";
     /**
-     * 第一个分页参数
+     * Key for the first pagination parameter in the parameter map.
      */
     public static String PAGEPARAMETER_FIRST = "First" + SUFFIX_PAGE;
     /**
-     * 第二个分页参数
+     * Key for the second pagination parameter in the parameter map.
      */
     public static String PAGEPARAMETER_SECOND = "Second" + SUFFIX_PAGE;
 
     /**
-     * 获取分页参数
+     * Retrieves the {@link Page} object associated with the current thread.
      *
-     * @param <T> 对象
-     * @return 结果
+     * @param <T> the type of elements in the paginated data
+     * @return the current Page object
      */
     public <T> Page<T> getLocalPage() {
         return PageContext.getLocalPage();
     }
 
+    /**
+     * This method is not intended to be called directly in this implementation. Always returns true to indicate that
+     * the skip logic is handled elsewhere.
+     *
+     * @param ms              the MappedStatement object
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @return always true
+     */
     @Override
     public final boolean skip(
             MappedStatement ms,
             Object parameterObject,
             org.apache.ibatis.session.RowBounds rowBounds) {
-        // 该方法不会被调用
+        // This method will not be called
         return true;
     }
 
+    /**
+     * Determines whether a count query should be executed before the main pagination query. A count query is executed
+     * if the current {@link Page} is not set to {@code orderByOnly} and {@code count} is enabled.
+     *
+     * @param ms              the MappedStatement object
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @return true if a count query should be executed, false otherwise
+     */
     @Override
     public boolean beforeCount(
             MappedStatement ms,
@@ -94,6 +114,17 @@ public abstract class AbstractPaging extends AbstractDialect {
         return !page.isOrderByOnly() && page.isCount();
     }
 
+    /**
+     * Generates the SQL for the count query. It uses {@link org.miaixz.bus.pager.parsing.CountSqlParser} to get a smart
+     * count SQL.
+     *
+     * @param ms              the MappedStatement object
+     * @param boundSql        the BoundSql object containing the original SQL and parameters
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @param countKey        the CacheKey for the count query
+     * @return the generated count SQL string
+     */
     @Override
     public String getCountSql(
             MappedStatement ms,
@@ -109,6 +140,15 @@ public abstract class AbstractPaging extends AbstractDialect {
         return countSqlParser.getSmartCountSql(boundSql.getSql());
     }
 
+    /**
+     * Called after the count query has been executed to process the count result. It sets the total count in the
+     * {@link Page} object and determines if the main pagination query should proceed.
+     *
+     * @param count           the total number of records found by the count query
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @return true to continue with the pagination query, false to return immediately
+     */
     @Override
     public boolean afterCount(long count, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
@@ -116,31 +156,42 @@ public abstract class AbstractPaging extends AbstractDialect {
         if (rowBounds instanceof RowBounds) {
             ((RowBounds) rowBounds).setTotal(count);
         }
-        // pageSize < 0 的时候，不执行分页查询
-        // pageSize = 0 的时候，还需要执行后续查询，但是不会分页
+        // If pageSize < 0, do not execute pagination query.
+        // If pageSize = 0, still execute the subsequent query, but without pagination.
         if (page.getPageSizeZero() != null) {
-            // PageSizeZero=false&&pageSize<=0
+            // PageSizeZero=false && pageSize<=0
             if (!page.getPageSizeZero() && page.getPageSize() <= 0) {
                 return false;
             }
-            // PageSizeZero=true&&pageSize<0 返回 false，只有>=0才需要执行后续的
+            // PageSizeZero=true && pageSize<0 returns false, only >=0 needs to execute subsequent queries
             else if (page.getPageSizeZero() && page.getPageSize() < 0) {
                 return false;
             }
         }
-        // 页码>0 && 开始行数<总行数即可，不需要考虑 pageSize（上面的 if 已经处理不符合要求的值了）
+        // pageNo > 0 && startRow < total is sufficient, no need to consider pageSize (the above if already handles
+        // invalid values)
         return page.getPageNo() > 0 && count > page.getStartRow();
     }
 
+    /**
+     * Processes the parameter object for pagination. This method handles various parameter types and injects
+     * pagination-specific parameters into the parameter map.
+     *
+     * @param ms              the MappedStatement object
+     * @param parameterObject the original parameter object for the query
+     * @param boundSql        the BoundSql object containing the original SQL and parameters
+     * @param pageKey         the CacheKey for the paginated query
+     * @return the processed parameter object, typically a Map containing all necessary parameters
+     */
     @Override
     public Object processParameterObject(
             MappedStatement ms,
             Object parameterObject,
             BoundSql boundSql,
             CacheKey pageKey) {
-        // 处理参数
+        // Process parameters
         Page page = getLocalPage();
-        // 如果只是 order by 就不必处理参数
+        // If it's only an order by query, no need to process parameters
         if (page.isOrderByOnly()) {
             return parameterObject;
         }
@@ -148,12 +199,12 @@ public abstract class AbstractPaging extends AbstractDialect {
         if (parameterObject == null) {
             paramMap = new HashMap<>();
         } else if (parameterObject instanceof Map) {
-            // 解决不可变Map的情况
+            // Handle immutable Map cases
             paramMap = new HashMap<>();
             paramMap.putAll((Map) parameterObject);
         } else {
             paramMap = new HashMap<>();
-            // sqlSource为ProviderSqlSource时，处理只有1个参数的情况
+            // When sqlSource is ProviderSqlSource, handle the case with only 1 parameter
             if (ms.getSqlSource() instanceof ProviderSqlSource) {
                 String[] providerMethodArgumentNames = CountExecutor
                         .getProviderMethodArgumentNames((ProviderSqlSource) ms.getSqlSource());
@@ -162,18 +213,19 @@ public abstract class AbstractPaging extends AbstractDialect {
                     paramMap.put("param1", parameterObject);
                 }
             }
-            // 动态sql时的判断条件不会出现在ParameterMapping中，但是必须有，所以这里需要收集所有的getter属性
-            // TypeHandlerRegistry可以直接处理的会作为一个直接使用的对象进行处理
+            // Dynamic SQL conditions may not appear in ParameterMapping, but must exist, so all getter properties need
+            // to be collected here.
+            // TypeHandlerRegistry can directly process objects as direct use objects.
             boolean hasTypeHandler = ms.getConfiguration().getTypeHandlerRegistry()
                     .hasTypeHandler(parameterObject.getClass());
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(parameterObject);
-            // 需要针对注解形式的MyProviderSqlSource保存原值
+            // For annotated MyProviderSqlSource, save the original value
             if (!hasTypeHandler) {
                 for (String name : metaObject.getGetterNames()) {
                     paramMap.put(name, metaObject.getValue(name));
                 }
             }
-            // 下面这段方法，主要解决一个常见类型的参数时的问题
+            // The following section primarily addresses issues with a common type of parameter
             if (boundSql.getParameterMappings() != null && boundSql.getParameterMappings().size() > 0) {
                 for (ParameterMapping parameterMapping : boundSql.getParameterMappings()) {
                     String name = parameterMapping.getProperty();
@@ -191,14 +243,14 @@ public abstract class AbstractPaging extends AbstractDialect {
     }
 
     /**
-     * 处理分页参数
+     * Abstract method to process pagination parameters, to be implemented by concrete dialect classes.
      *
-     * @param ms       MappedStatement
-     * @param paramMap Map
-     * @param page     Page
-     * @param boundSql BoundSql
-     * @param pageKey  CacheKey
-     * @return 结果
+     * @param ms       the MappedStatement object
+     * @param paramMap a map containing the query parameters
+     * @param page     the {@link Page} object containing pagination details
+     * @param boundSql the BoundSql object for the query
+     * @param pageKey  the CacheKey for the paginated query
+     * @return the processed parameter object
      */
     public abstract Object processPageParameter(
             MappedStatement ms,
@@ -207,6 +259,15 @@ public abstract class AbstractPaging extends AbstractDialect {
             BoundSql boundSql,
             CacheKey pageKey);
 
+    /**
+     * Determines whether the main pagination query should be executed. It proceeds if the page is set to
+     * {@code orderByOnly} or if {@code pageSize} is greater than 0.
+     *
+     * @param ms              the MappedStatement object
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @return true if the pagination query should be executed, false otherwise
+     */
     @Override
     public boolean beforePage(
             MappedStatement ms,
@@ -219,6 +280,17 @@ public abstract class AbstractPaging extends AbstractDialect {
         return false;
     }
 
+    /**
+     * Generates the SQL for the paginated query. It applies the order by clause if specified in the {@link Page}
+     * object, and then delegates to an abstract method for database-specific pagination SQL generation.
+     *
+     * @param ms              the MappedStatement object
+     * @param boundSql        the BoundSql object containing the original SQL and parameters
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @param pageKey         the CacheKey for the paginated query
+     * @return the generated paginated SQL string
+     */
     @Override
     public String getPageSql(
             MappedStatement ms,
@@ -228,7 +300,7 @@ public abstract class AbstractPaging extends AbstractDialect {
             CacheKey pageKey) {
         String sql = boundSql.getSql();
         Page page = getLocalPage();
-        // 支持 order by
+        // Support order by
         String orderBy = page.getOrderBy();
         if (StringKit.isNotEmpty(orderBy)) {
             pageKey.update(orderBy);
@@ -241,15 +313,24 @@ public abstract class AbstractPaging extends AbstractDialect {
     }
 
     /**
-     * 单独处理分页部分
+     * Abstract method to generate the database-specific pagination SQL. To be implemented by concrete dialect classes.
      *
-     * @param sql     sql
-     * @param page    Page
-     * @param pageKey CacheKey
-     * @return the string
+     * @param sql     the original SQL string
+     * @param page    the {@link Page} object containing pagination details
+     * @param pageKey the CacheKey for the paginated query
+     * @return the database-specific paginated SQL string
      */
     public abstract String getPageSql(String sql, Page page, CacheKey pageKey);
 
+    /**
+     * Called after the pagination query has been executed to process the results. It adds the results to the
+     * {@link Page} object and sets the total count if applicable.
+     *
+     * @param pageList        the list of results from the paginated query
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @return the processed paginated results, typically the {@link Page} object itself
+     */
     @Override
     public Object afterPage(List pageList, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
@@ -257,7 +338,8 @@ public abstract class AbstractPaging extends AbstractDialect {
             return pageList;
         }
         page.addAll(pageList);
-        // 调整判断顺序，如果查全部，total就是size，如果只排序，也是全部，其他情况下如果不查询count就是-1
+        // Adjust judgment order: if querying all, total is size; if only ordering, it's also all; otherwise, if count
+        // is not queried, it's -1.
         if ((page.getPageSizeZero() != null && page.getPageSizeZero()) && page.getPageSize() == 0) {
             page.setTotal(pageList.size());
         } else if (page.isOrderByOnly()) {
@@ -268,21 +350,32 @@ public abstract class AbstractPaging extends AbstractDialect {
         return page;
     }
 
+    /**
+     * Called after all pagination tasks are completed. This implementation does nothing.
+     */
     @Override
     public void afterAll() {
 
     }
 
+    /**
+     * Sets the properties for this dialect. Delegates to the superclass to set common properties.
+     *
+     * @param properties the properties to set
+     */
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);
     }
 
     /**
-     * @param boundSql    boundSql
-     * @param ms          MappedStatement
-     * @param firstClass  第一个分页参数
-     * @param secondClass 第二个分页参数
+     * Handles the injection of pagination parameters into the {@link BoundSql} by adding new {@link ParameterMapping}
+     * entries for the first and second pagination parameters.
+     *
+     * @param boundSql    the BoundSql object to modify
+     * @param ms          the MappedStatement object
+     * @param firstClass  the class type for the first pagination parameter
+     * @param secondClass the class type for the second pagination parameter
      */
     protected void handleParameter(BoundSql boundSql, MappedStatement ms, Class<?> firstClass, Class<?> secondClass) {
         if (boundSql.getParameterMappings() != null) {

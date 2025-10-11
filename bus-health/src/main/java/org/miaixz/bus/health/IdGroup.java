@@ -40,7 +40,8 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import com.sun.jna.Platform;
 
 /**
- * 工具类，用于在 *nix 系统中临时缓存用户 ID 和组映射，以便解析进程所有权。缓存在一分钟后过期。
+ * Utility class for temporarily caching user ID and group mappings in *nix systems to resolve process ownership. The
+ * cache expires after one minute.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,93 +50,94 @@ import com.sun.jna.Platform;
 public final class IdGroup {
 
     /**
-     * 用户 ID 到用户名的映射供应商，缓存 5 分钟后完全刷新
+     * Supplier for a map of user IDs to usernames, with the cache fully refreshed after 5 minutes.
      */
     private static final Supplier<Map<String, String>> USERS_ID_MAP = Memoizer
             .memoize(IdGroup::getUserMap, TimeUnit.MINUTES.toNanos(5));
 
     /**
-     * 组 ID 到组名的映射供应商，缓存 5 分钟后完全刷新
+     * Supplier for a map of group IDs to group names, with the cache fully refreshed after 5 minutes.
      */
     private static final Supplier<Map<String, String>> GROUPS_ID_MAP = Memoizer
             .memoize(IdGroup::getGroupMap, TimeUnit.MINUTES.toNanos(5));
 
     /**
-     * 标志当前进程是否具有提升的权限（如 sudo / Administrator），通过检查 "id -u" 输出是否为 0
+     * Flag indicating whether the current process has elevated privileges (e.g., sudo / Administrator), determined by
+     * checking if the output of "id -u" is 0.
      */
     private static final boolean ELEVATED = 0 == Parsing.parseIntOrDefault(Executor.getFirstAnswer("id -u"), -1);
 
     /**
-     * 判断当前进程是否具有提升的权限，如 sudo / Administrator。
+     * Checks if the current process has elevated privileges, such as sudo or Administrator.
      *
-     * @return 如果当前进程具有提升的权限，返回 true
+     * @return {@code true} if the current process has elevated privileges, {@code false} otherwise.
      */
     public static boolean isElevated() {
         return ELEVATED;
     }
 
     /**
-     * 根据用户 ID 获取用户名。
+     * Retrieves the username associated with the given user ID.
      *
-     * @param userId 用户 ID
-     * @return 包含用户 ID 作为第一个元素和用户名作为第二个元素的字符串
+     * @param userId The user ID.
+     * @return The username corresponding to the user ID, or {@link Normal#UNKNOWN} if not found.
      */
     public static String getUser(String userId) {
-        // 如果值在缓存的 /etc/passwd 中，则返回；否则执行 getent passwd uid
+        // If the value is in the cached /etc/passwd, return it; otherwise, execute getent passwd uid.
         return USERS_ID_MAP.get().getOrDefault(userId, getentPasswd(userId));
     }
 
     /**
-     * 根据组 ID 获取组名。
+     * Retrieves the group name associated with the given group ID.
      *
-     * @param groupId 组 ID
-     * @return 对应的组名
+     * @param groupId The group ID.
+     * @return The group name corresponding to the group ID, or {@link Normal#UNKNOWN} if not found.
      */
     public static String getGroupName(String groupId) {
-        // 如果值在缓存的 /etc/group 中，则返回；否则执行 getent group gid
+        // If the value is in the cached /etc/group, return it; otherwise, execute getent group gid.
         return GROUPS_ID_MAP.get().getOrDefault(groupId, getentGroup(groupId));
     }
 
     /**
-     * 获取用户 ID 到用户名的映射。
+     * Retrieves a map of user IDs to usernames.
      *
-     * @return 从 /etc/passwd 文件解析出的用户 ID 到用户名的映射
+     * @return A map of user IDs to usernames parsed from the {@code /etc/passwd} file.
      */
     private static Map<String, String> getUserMap() {
         return parsePasswd(Builder.readFile("/etc/passwd"));
     }
 
     /**
-     * 通过 getent passwd 命令获取用户 ID 对应的用户名。
+     * Retrieves the username for a given user ID using the {@code getent passwd} command.
      *
-     * @param userId 用户 ID
-     * @return 用户名，如果无法获取则返回 Normal.UNKNOWN
+     * @param userId The user ID.
+     * @return The username, or {@link Normal#UNKNOWN} if it cannot be retrieved.
      */
     private static String getentPasswd(String userId) {
         if (Platform.isAIX()) {
             return Normal.UNKNOWN;
         }
         Map<String, String> newUsers = parsePasswd(Executor.runNative("getent passwd " + userId));
-        // 将新用户添加到用户映射以供后续查询
+        // Add new users to the user map for subsequent queries
         USERS_ID_MAP.get().putAll(newUsers);
         return newUsers.getOrDefault(userId, Normal.UNKNOWN);
     }
 
     /**
-     * 解析 passwd 文件内容，生成用户 ID 到用户名的映射。
+     * Parses the content of a passwd file to generate a map of user IDs to usernames.
      *
-     * @param passwd passwd 文件内容的行列表
-     * @return 用户 ID 到用户名的映射
+     * @param passwd A list of lines from the passwd file content.
+     * @return A map of user IDs to usernames.
      */
     private static Map<String, String> parsePasswd(List<String> passwd) {
         Map<String, String> userMap = new ConcurrentHashMap<>();
-        // 参见 man 5 passwd 获取字段信息
+        // See man 5 passwd for field information
         for (String entry : passwd) {
             String[] split = entry.split(Symbol.COLON);
             if (split.length > 2) {
                 String userName = split[0];
                 String uid = split[2];
-                // 允许同一用户 ID 有多个条目，使用第一个
+                // Allow multiple entries for the same user ID, use the first one
                 userMap.putIfAbsent(uid, userName);
             }
         }
@@ -143,39 +145,39 @@ public final class IdGroup {
     }
 
     /**
-     * 获取组 ID 到组名的映射。
+     * Retrieves a map of group IDs to group names.
      *
-     * @return 从 /etc/group 文件解析出的组 ID 到组名的映射
+     * @return A map of group IDs to group names parsed from the {@code /etc/group} file.
      */
     private static Map<String, String> getGroupMap() {
         return parseGroup(Builder.readFile("/etc/group"));
     }
 
     /**
-     * 通过 getent group 命令获取组 ID 对应的组名。
+     * Retrieves the group name for a given group ID using the {@code getent group} command.
      *
-     * @param groupId 组 ID
-     * @return 组名，如果无法获取则返回 Normal.UNKNOWN
+     * @param groupId The group ID.
+     * @return The group name, or {@link Normal#UNKNOWN} if it cannot be retrieved.
      */
     private static String getentGroup(String groupId) {
         if (Platform.isAIX()) {
             return Normal.UNKNOWN;
         }
         Map<String, String> newGroups = parseGroup(Executor.runNative("getent group " + groupId));
-        // 将新组添加到组映射以供后续查询
+        // Add new groups to the group map for subsequent queries
         GROUPS_ID_MAP.get().putAll(newGroups);
         return newGroups.getOrDefault(groupId, Normal.UNKNOWN);
     }
 
     /**
-     * 解析 group 文件内容，生成组 ID 到组名的映射。
+     * Parses the content of a group file to generate a map of group IDs to group names.
      *
-     * @param group group 文件内容的行列表
-     * @return 组 ID 到组名的映射
+     * @param group A list of lines from the group file content.
+     * @return A map of group IDs to group names.
      */
     private static Map<String, String> parseGroup(List<String> group) {
         Map<String, String> groupMap = new ConcurrentHashMap<>();
-        // 参见 man 5 group 获取字段信息
+        // See man 5 group for field information
         for (String entry : group) {
             String[] split = entry.split(Symbol.COLON);
             if (split.length > 2) {

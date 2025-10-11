@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.http.bodys;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.Source;
@@ -38,11 +35,15 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
- * HTTP 请求体
+ * The body of an HTTP request.
  * <p>
- * 表示 HTTP 请求的内容，支持从字符串、字节数组、文件等创建请求体。 提供媒体类型、内容长度和写入功能，支持双工和一次性传输的特殊场景。
- * </p>
+ * This class represents the content of an HTTP request and supports creating request bodies from strings, byte arrays,
+ * files, and other sources. It provides functionality for specifying the media type, content length, and writing the
+ * content. It also supports special cases for duplex and one-shot transmission.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,14 +51,14 @@ import org.miaixz.bus.http.Builder;
 public abstract class RequestBody {
 
     /**
-     * 从字符串创建请求体
+     * Creates a new request body from a string.
      * <p>
-     * 如果 <code>contentType</code> 非空且缺少字符集，则使用 UTF-8。
+     * If {@code contentType} is non-null and lacks a charset, UTF-8 will be used.
      * </p>
      *
-     * @param contentType 媒体类型（可能为 null）
-     * @param content     内容字符串
-     * @return 请求体实例
+     * @param contentType The media type of the content, which may be null.
+     * @param content     The content string.
+     * @return A new {@link RequestBody} instance.
      */
     public static RequestBody create(MediaType contentType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
@@ -73,11 +74,11 @@ public abstract class RequestBody {
     }
 
     /**
-     * 从 ByteString 创建请求体
+     * Creates a new request body from a {@link ByteString}.
      *
-     * @param contentType 媒体类型（可能为 null）
-     * @param content     内容 ByteString
-     * @return 请求体实例
+     * @param contentType The media type of the content, which may be null.
+     * @param content     The content as a {@link ByteString}.
+     * @return A new {@link RequestBody} instance.
      */
     public static RequestBody create(final MediaType contentType, final ByteString content) {
         return new RequestBody() {
@@ -88,7 +89,7 @@ public abstract class RequestBody {
             }
 
             @Override
-            public long length() {
+            public long contentLength() {
                 return content.size();
             }
 
@@ -100,27 +101,27 @@ public abstract class RequestBody {
     }
 
     /**
-     * 从字节数组创建请求体
+     * Creates a new request body from a byte array.
      *
-     * @param contentType 媒体类型（可能为 null）
-     * @param content     内容字节数组
-     * @return 请求体实例
-     * @throws NullPointerException 如果 content 为 null
+     * @param contentType The media type of the content, which may be null.
+     * @param content     The content as a byte array.
+     * @return A new {@link RequestBody} instance.
+     * @throws NullPointerException if content is null.
      */
     public static RequestBody create(final MediaType contentType, final byte[] content) {
         return create(contentType, content, 0, content.length);
     }
 
     /**
-     * 从字节数组部分创建请求体
+     * Creates a new request body from a portion of a byte array.
      *
-     * @param contentType 媒体类型（可能为 null）
-     * @param content     内容字节数组
-     * @param offset      偏移量
-     * @param byteCount   字节数
-     * @return 请求体实例
-     * @throws NullPointerException           如果 content 为 null
-     * @throws ArrayIndexOutOfBoundsException 如果 offset 或 byteCount 无效
+     * @param contentType The media type of the content, which may be null.
+     * @param content     The content as a byte array.
+     * @param offset      The starting offset in the byte array.
+     * @param byteCount   The number of bytes to use.
+     * @return A new {@link RequestBody} instance.
+     * @throws NullPointerException           if content is null.
+     * @throws ArrayIndexOutOfBoundsException if the offset or byteCount are invalid.
      */
     public static RequestBody create(
             final MediaType contentType,
@@ -139,7 +140,7 @@ public abstract class RequestBody {
             }
 
             @Override
-            public long length() {
+            public long contentLength() {
                 return byteCount;
             }
 
@@ -151,12 +152,12 @@ public abstract class RequestBody {
     }
 
     /**
-     * 从文件创建请求体
+     * Creates a new request body from a file.
      *
-     * @param contentType 媒体类型（可能为 null）
-     * @param file        文件
-     * @return 请求体实例
-     * @throws NullPointerException 如果 file 为 null
+     * @param contentType The media type of the content, which may be null.
+     * @param file        The file to use as the content.
+     * @return A new {@link RequestBody} instance.
+     * @throws NullPointerException if file is null.
      */
     public static RequestBody create(final MediaType contentType, final File file) {
         if (null == file) {
@@ -171,7 +172,7 @@ public abstract class RequestBody {
             }
 
             @Override
-            public long length() {
+            public long contentLength() {
                 return file.length();
             }
 
@@ -185,52 +186,52 @@ public abstract class RequestBody {
     }
 
     /**
-     * 获取媒体类型
+     * Returns the media type of this request body.
      *
-     * @return 媒体类型（可能为 null）
+     * @return The media type, which may be null.
      */
     public abstract MediaType contentType();
 
     /**
-     * 获取内容长度
-     * <p>
-     * 返回写入 <code>sink</code> 的字节数，如果未知则返回 -1。
-     * </p>
+     * Returns the number of bytes that will be written to {@code sink} when this request body is transmitted, or -1 if
+     * that count is unknown.
      *
-     * @return 内容长度
-     * @throws IOException 如果无法确定长度
+     * @return The content length.
+     * @throws IOException if the length cannot be determined.
      */
-    public long length() throws IOException {
+    public long contentLength() throws IOException {
         return -1;
     }
 
     /**
-     * 将请求体内容写入输出流
+     * Writes the content of this request body to the given sink.
      *
-     * @param sink 输出流
-     * @throws IOException 如果写入失败
+     * @param sink The sink to write to.
+     * @throws IOException if an I/O error occurs during writing.
      */
     public abstract void writeTo(BufferSink sink) throws IOException;
 
     /**
-     * 检查是否为双工请求体
+     * Returns whether this request body is a duplex body.
      * <p>
-     * 双工请求体允许请求和响应数据交错传输，仅支持 HTTP/2。 默认返回 false，除非子类重写。
+     * A duplex request body allows for interleaved transmission of request and response data, which is only supported
+     * for HTTP/2. This returns false by default unless overridden by a subclass.
      * </p>
      *
-     * @return true 如果是双工请求体
+     * @return {@code true} if this is a duplex request body.
      */
     public boolean isDuplex() {
         return false;
     }
 
     /**
-     * 检查是否为一次性请求体
+     * Returns whether this request body is a one-shot body.
      * <p>
-     * 一次性请求体只能传输一次，通常用于破坏性写入场景。 默认返回 false，除非子类重写。
+     * A one-shot request body can only be transmitted once, typically used for destructively-written scenarios. This
+     * returns false by default unless overridden by a subclass.
      * </p>
      *
-     * @return true 如果是一次性请求体
+     * @return {@code true} if this is a one-shot request body.
      */
     public boolean isOneShot() {
         return false;

@@ -33,14 +33,13 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 数组转换器，包括原始类型数组
+ * Converts an object to an array, including arrays of primitive types.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,26 +50,26 @@ public class ArrayConverter extends AbstractConverter implements MatcherConverte
     private static final long serialVersionUID = 2852263350173L;
 
     /**
-     * 单例
+     * Singleton instance.
      */
     public static final ArrayConverter INSTANCE = new ArrayConverter();
 
     /**
-     * 是否忽略元素转换错误
+     * Whether to ignore errors during the conversion of array elements.
      */
     private boolean ignoreElementError;
 
     /**
-     * 构造
+     * Constructs a new {@code ArrayConverter} with default settings.
      */
     public ArrayConverter() {
         this(false);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code ArrayConverter}.
      *
-     * @param ignoreElementError 是否忽略元素转换错误
+     * @param ignoreElementError If {@code true}, errors encountered during element conversion will be ignored.
      */
     public ArrayConverter(final boolean ignoreElementError) {
         this.ignoreElementError = ignoreElementError;
@@ -78,43 +77,45 @@ public class ArrayConverter extends AbstractConverter implements MatcherConverte
 
     @Override
     protected Object convertInternal(final Class<?> targetClass, final Object value) {
-        final Class<?> targetComponentType;
-        if (targetClass.isArray()) {
-            targetComponentType = targetClass.getComponentType();
-        } else {
-            // 用户传入类为非数组时，按照数组元素类型对待
-            targetComponentType = targetClass;
-        }
-
+        final Class<?> targetComponentType = targetClass.isArray() ? targetClass.getComponentType() : targetClass;
         return value.getClass().isArray() ? convertArrayToArray(targetComponentType, value)
                 : convertObjectToArray(targetComponentType, value);
     }
 
+    /**
+     * Checks if this converter can handle the conversion to the specified target type.
+     *
+     * @param targetType The target type.
+     * @param rawType    The raw class of the target type.
+     * @param value      The value to be converted.
+     * @return {@code true} if the target type is an array, {@code false} otherwise.
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return rawType.isArray();
     }
 
     /**
-     * 设置是否忽略元素转换错误
+     * Sets whether to ignore errors that occur during the conversion of array elements.
      *
-     * @param ignoreElementError 是否忽略元素转换错误
+     * @param ignoreElementError {@code true} to ignore element conversion errors.
      */
     public void setIgnoreElementError(final boolean ignoreElementError) {
         this.ignoreElementError = ignoreElementError;
     }
 
     /**
-     * 数组对数组转换
+     * Converts an array to another type of array.
      *
-     * @param array 被转换的数组值
-     * @return 转换后的数组
+     * @param targetComponentType The component type of the target array.
+     * @param array               The source array to convert.
+     * @return The converted array.
      */
     private Object convertArrayToArray(final Class<?> targetComponentType, final Object array) {
         final Class<?> valueComponentType = ArrayKit.getComponentType(array);
 
         if (valueComponentType == targetComponentType) {
-            return array;
+            return array; // No conversion needed if component types are the same.
         }
 
         final int len = ArrayKit.length(array);
@@ -127,11 +128,11 @@ public class ArrayConverter extends AbstractConverter implements MatcherConverte
     }
 
     /**
-     * 非数组对数组转换
+     * Converts a non-array object to an array.
      *
-     * @param targetComponentType 目标单个节点类型
-     * @param value               被转换值
-     * @return 转换后的数组
+     * @param targetComponentType The component type of the target array.
+     * @param value               The object to convert.
+     * @return The resulting array.
      */
     private Object convertObjectToArray(final Class<?> targetComponentType, Object value) {
         if (value instanceof CharSequence) {
@@ -139,16 +140,13 @@ public class ArrayConverter extends AbstractConverter implements MatcherConverte
                 return convertArrayToArray(targetComponentType, value.toString().toCharArray());
             }
 
-            // 字符串转bytes，首先判断是否为Base64，是则转换，否则按照默认getBytes方法。
+            // Handle byte array conversion from Base64 or plain string.
             if (targetComponentType == byte.class) {
                 final String text = value.toString();
-                if (Base64.isTypeBase64(text)) {
-                    return Base64.decode(value.toString());
-                }
-                return text.getBytes();
+                return Base64.isTypeBase64(text) ? Base64.decode(text) : text.getBytes();
             }
 
-            // 单纯字符串情况下按照逗号分隔后劈开
+            // Split comma-separated string into an array.
             final String[] strings = StringKit.splitToArray(value.toString(), Symbol.COMMA);
             return convertArrayToArray(targetComponentType, strings);
         }
@@ -157,67 +155,41 @@ public class ArrayConverter extends AbstractConverter implements MatcherConverte
             value = IteratorKit.asIterable((Iterator<?>) value);
         }
 
-        final Object result;
         if (value instanceof Iterable) {
-            result = convertIterableToArray(targetComponentType, (Iterable<?>) value);
+            return convertIterableToArray(targetComponentType, (Iterable<?>) value);
         } else if (value instanceof Number && byte.class == targetComponentType) {
-            // 用户可能想序列化指定对象
-            result = ByteKit.toBytes((Number) value);
+            return ByteKit.toBytes((Number) value);
         } else if (value instanceof Serializable && byte.class == targetComponentType) {
-            // 用户可能想序列化指定对象
-            result = SerializeKit.serialize(value);
+            return SerializeKit.serialize(value);
         } else {
-            // everything else:
-            result = convertToSingleElementArray(targetComponentType, value);
+            return convertToSingleElementArray(targetComponentType, value);
         }
-
-        return result;
     }
 
     /**
-     * 迭代器转数组
+     * Converts an {@link Iterable} to an array.
      *
-     * @param targetComponentType 目标单个节点类型
-     * @param value               迭代器实现值
-     * @return 数组
+     * @param targetComponentType The component type of the target array.
+     * @param iterable            The iterable to convert.
+     * @return The converted array.
      */
-    private Object convertIterableToArray(final Class<?> targetComponentType, final Iterable<?> value) {
-        final Object result;
-        if (value instanceof List) {
-            // List转数组
-            final List<?> list = (List<?>) value;
-            final int size = list.size();
-            result = Array.newInstance(targetComponentType, size);
-            for (int i = 0; i < size; i++) {
-                Array.set(result, i, convertComponentType(targetComponentType, list.get(i)));
-            }
-        } else if (value instanceof Collection) {
-            // 集合转数组
-            final Collection<?> collection = (Collection<?>) value;
-            result = Array.newInstance(targetComponentType, collection.size());
+    private Object convertIterableToArray(final Class<?> targetComponentType, final Iterable<?> iterable) {
+        Collection<?> collection = (iterable instanceof Collection) ? (Collection<?>) iterable : ListKit.of(iterable);
+        final Object result = Array.newInstance(targetComponentType, collection.size());
 
-            int i = 0;
-            for (final Object element : collection) {
-                Array.set(result, i, convertComponentType(targetComponentType, element));
-                i++;
-            }
-        } else {
-            // 可循环对象转数组，可循环对象无法获取长度，因此先转为List后转为数组
-            final List<?> list = ListKit.of(value);
-            final int size = list.size();
-            result = Array.newInstance(targetComponentType, size);
-            for (int i = 0; i < size; i++) {
-                Array.set(result, i, convertComponentType(targetComponentType, list.get(i)));
-            }
+        int i = 0;
+        for (final Object element : collection) {
+            Array.set(result, i++, convertComponentType(targetComponentType, element));
         }
         return result;
     }
 
     /**
-     * 单元素数组
+     * Creates a new array containing a single element.
      *
-     * @param value 被转换的值
-     * @return 数组，只包含一个元素
+     * @param targetComponentType The component type of the array.
+     * @param value               The value to be placed in the array.
+     * @return A new array with the specified component type and containing the given value.
      */
     private Object[] convertToSingleElementArray(final Class<?> targetComponentType, final Object value) {
         final Object[] singleElementArray = ArrayKit.newArray(targetComponentType, 1);
@@ -226,10 +198,11 @@ public class ArrayConverter extends AbstractConverter implements MatcherConverte
     }
 
     /**
-     * 转换元素类型
+     * Converts a single value to the target component type.
      *
-     * @param value 值
-     * @return 转换后的值，转换失败若{@link #ignoreElementError}为true，返回null，否则抛出异常
+     * @param targetComponentType The target component type.
+     * @param value               The value to convert.
+     * @return The converted value. Returns {@code null} if conversion fails and {@code ignoreElementError} is true.
      */
     private Object convertComponentType(final Class<?> targetComponentType, final Object value) {
         return Convert.convertWithCheck(targetComponentType, value, null, this.ignoreElementError);

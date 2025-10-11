@@ -28,7 +28,7 @@
 package org.miaixz.bus.shade.beans;
 
 /**
- * 该类的功能描述
+ * Interface for converting database field types to Java {@link ColumnType}s.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,11 +36,11 @@ package org.miaixz.bus.shade.beans;
 public interface TypeConvert {
 
     /**
-     * 执行类型转换
+     * Executes the type conversion from a database field type to a {@link ColumnType}.
      *
-     * @param dateType  时间类型
-     * @param fieldType 字段类型
-     * @return ignore
+     * @param dateType  The strategy for converting date types.
+     * @param fieldType The database field type string.
+     * @return The corresponding {@link ColumnType}.
      */
     ColumnType processTypeConvert(DateType dateType, String fieldType);
 

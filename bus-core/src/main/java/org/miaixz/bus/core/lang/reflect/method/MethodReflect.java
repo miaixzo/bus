@@ -40,46 +40,60 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ModifierKit;
 
 /**
- * 方法反射相关操作类。
+ * Utility class for method reflection operations. This class provides functionalities to retrieve and filter methods
+ * from a class, including declared methods, public methods, and all methods in the class hierarchy.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MethodReflect {
 
+    /**
+     * The class for which methods are being reflected.
+     */
     private final Class<?> clazz;
+    /**
+     * Cached array of public methods for the current class and its superclasses/interfaces. This cache is volatile to
+     * ensure visibility across threads.
+     */
     private volatile Method[] publicMethods;
+    /**
+     * Cached array of declared methods for the current class (excluding inherited methods). This cache is volatile to
+     * ensure visibility across threads.
+     */
     private volatile Method[] declaredMethods;
+    /**
+     * Cached array of all methods (declared and inherited) for the current class. This cache is volatile to ensure
+     * visibility across threads.
+     */
     private volatile Method[] allMethods;
 
     /**
-     * 构造
+     * Constructs a new {@code MethodReflect} instance for the given class.
      *
-     * @param clazz 类
+     * @param clazz The class to reflect. Must not be {@code null}.
+     * @throws IllegalArgumentException if {@code clazz} is {@code null}.
      */
     public MethodReflect(final Class<?> clazz) {
         this.clazz = Assert.notNull(clazz);
     }
 
     /**
-     * 获取反射对象
+     * Creates a new {@code MethodReflect} instance for the given class.
      *
-     * @param clazz 类
-     * @return MethodReflect
+     * @param clazz The class to reflect.
+     * @return A new {@code MethodReflect} instance.
      */
     public static MethodReflect of(final Class<?> clazz) {
         return new MethodReflect(clazz);
     }
 
     /**
-     * 获取方法的唯一键，结构为:
-     * 
-     * <pre>
-     *     返回类型#方法名:参数1类型,参数2类型...
-     * </pre>
+     * Generates a unique key for a given method. The key format is:
+     * {@code ReturnType#MethodName:Param1Type,Param2Type...}
      *
-     * @param method 方法
-     * @return 方法唯一键
+     * @param method The method for which to generate the unique key.
+     * @return A unique string key for the method.
      */
     private static String getUniqueKey(final Method method) {
         final StringBuilder sb = new StringBuilder();
@@ -98,10 +112,10 @@ public class MethodReflect {
     }
 
     /**
-     * 获取类对应接口中的非抽象方法（default方法）
+     * Retrieves all non-abstract (default) methods from the interfaces implemented by the given class.
      *
-     * @param clazz 类
-     * @return 方法列表
+     * @param clazz The class whose interfaces are to be scanned.
+     * @return A {@link List} of non-abstract methods from the implemented interfaces.
      */
     private static List<Method> getDefaultMethodsFromInterface(final Class<?> clazz) {
         final List<Method> result = new ArrayList<>();
@@ -116,16 +130,17 @@ public class MethodReflect {
     }
 
     /**
-     * 获取当前类
+     * Retrieves the class associated with this {@code MethodReflect} instance.
      *
-     * @return 当前类
+     * @return The reflected class.
      */
     public Class<?> getClazz() {
         return clazz;
     }
 
     /**
-     * 清空缓存
+     * Clears all cached method arrays. This method should be called if the class structure (methods) changes
+     * dynamically.
      */
     synchronized public void clearCaches() {
         publicMethods = null;
@@ -134,10 +149,11 @@ public class MethodReflect {
     }
 
     /**
-     * 获取当前类及父类的所有公共方法，等同于{@link Class#getMethods()}
+     * Retrieves all public methods of the current class and its superclasses/interfaces, equivalent to
+     * {@link Class#getMethods()}. The result is cached after the first call.
      *
-     * @param predicate 方法过滤器，{@code null}表示无过滤
-     * @return 当前类及父类的所有公共方法
+     * @param predicate A method filter. If {@code null}, no filtering is applied.
+     * @return An array of public methods that satisfy the predicate.
      */
     public Method[] getPublicMethods(final Predicate<Method> predicate) {
         if (null == publicMethods) {
@@ -151,10 +167,11 @@ public class MethodReflect {
     }
 
     /**
-     * 获取当前类直接声明的所有方法，等同于{@link Class#getDeclaredMethods()}
+     * Retrieves all methods declared directly by the current class, equivalent to {@link Class#getDeclaredMethods()}.
+     * The result is cached after the first call.
      *
-     * @param predicate 方法过滤器，{@code null}表示无过滤
-     * @return 当前类及父类的所有公共方法
+     * @param predicate A method filter. If {@code null}, no filtering is applied.
+     * @return An array of declared methods that satisfy the predicate.
      */
     public Method[] getDeclaredMethods(final Predicate<Method> predicate) {
         if (null == declaredMethods) {
@@ -168,15 +185,20 @@ public class MethodReflect {
     }
 
     /**
-     * 获取当前类层级结构中的所有方法。 等同于按广度优先遍历类及其所有父类与接口，并依次调用{@link Class#getDeclaredMethods()}。 返回的方法排序规则如下：
+     * Retrieves all methods in the current class's hierarchy. This is equivalent to traversing the class and all its
+     * superclasses and interfaces in a breadth-first manner, and calling {@link Class#getDeclaredMethods()} on each.
+     * The methods are ordered as follows:
      * <ul>
-     * <li>离{@code type}距离越近，则顺序越靠前；</li>
-     * <li>与{@code type}距离相同，直接实现的接口方法优先于父类方法；</li>
-     * <li>与{@code type}距离相同的接口，则顺序遵循接口在{@link Class#getInterfaces()}的顺序；</li>
+     * <li>Methods closer to the {@code type} (current class) appear earlier.</li>
+     * <li>For methods at the same distance from {@code type}, methods from directly implemented interfaces take
+     * precedence over methods from superclasses.</li>
+     * <li>For interfaces at the same distance from {@code type}, the order follows the declaration order in
+     * {@link Class#getInterfaces()}.</li>
      * </ul>
+     * The result is cached after the first call.
      *
-     * @param predicate 方法过滤器，{@code null}表示无过滤
-     * @return 当前类及父类的所有公共方法
+     * @param predicate A method filter. If {@code null}, no filtering is applied.
+     * @return An array of all methods in the class hierarchy that satisfy the predicate.
      */
     public Method[] getAllMethods(final Predicate<Method> predicate) {
         if (null == allMethods) {
@@ -190,24 +212,26 @@ public class MethodReflect {
     }
 
     /**
-     * 获得一个类中所有方法列表，直接反射获取，无缓存 接口获取方法和默认方法，获取的方法包括：
+     * Retrieves a list of all methods in a class, directly using reflection without caching. The methods retrieved
+     * include:
      * <ul>
-     * <li>本类中的所有方法（包括static方法）</li>
-     * <li>父类中的所有方法（包括static方法）</li>
-     * <li>Object中（包括static方法）</li>
+     * <li>All methods (including static methods) in the current class.</li>
+     * <li>All methods (including static methods) in superclasses.</li>
+     * <li>All methods (including static methods) in {@code Object.class}.</li>
      * </ul>
      *
-     * @param withSupers           是否包括父类或接口的方法列表
-     * @param withMethodFromObject 是否包括Object中的方法
-     * @return 方法列表
-     * @throws SecurityException 安全检查异常
+     * @param withSupers           Whether to include methods from superclasses or interfaces.
+     * @param withMethodFromObject Whether to include methods from {@code Object.class}.
+     * @return An array of methods.
+     * @throws SecurityException If a security manager exists and its {@code checkMemberAccess} method denies access.
      */
     public Method[] getMethodsDirectly(final boolean withSupers, final boolean withMethodFromObject)
             throws SecurityException {
         final Class<?> clazz = this.clazz;
 
         if (clazz.isInterface()) {
-            // 对于接口，直接调用Class.getMethods方法获取所有方法，因为接口都是public方法
+            // For interfaces, directly call Class.getMethods to get all methods, as interface methods are always
+            // public.
             return withSupers ? clazz.getMethods() : clazz.getDeclaredMethods();
         }
 
@@ -217,9 +241,9 @@ public class MethodReflect {
             if (!withMethodFromObject && Object.class == searchType) {
                 break;
             }
-            // 本类所有方法
+            // All methods declared in the current class
             result.addAllIfAbsent(Arrays.asList(searchType.getDeclaredMethods()));
-            // 实现接口的所有默认方法
+            // All default methods from implemented interfaces
             result.addAllIfAbsent(getDefaultMethodsFromInterface(searchType));
 
             searchType = (withSupers && !searchType.isInterface()) ? searchType.getSuperclass() : null;

@@ -32,17 +32,29 @@ import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 微信-客服消息
+ * WeChat Customer Service message provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WechatKfProvider extends AbstractProvider<WechatMaterial, Context> {
 
+    /**
+     * Constructs a {@code WechatKfProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public WechatKfProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends a WeChat Customer Service message. Implementations should override this method to provide specific sending
+     * logic.
+     *
+     * @param entity The {@link WechatMaterial} containing message details.
+     * @return A {@link Message} indicating the result of the sending operation, or {@code null} if not implemented.
+     */
     @Override
     public Message send(WechatMaterial entity) {
         return null;

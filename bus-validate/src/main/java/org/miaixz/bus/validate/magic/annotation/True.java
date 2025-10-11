@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.TrueMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * boolean校验, 当校验值为true时通过校验
+ * Validates that the annotated boolean value is {@code true}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,37 +45,38 @@ import org.miaixz.bus.validate.metric.TrueMatcher;
 public @interface True {
 
     /**
-     * 当参数为null时,是否允许通过校验 true：校验通过, false:校验不通过
+     * Specifies whether the validation should pass if the parameter is null. If {@code true}, null values are
+     * considered valid; if {@code false}, they are not.
      *
-     * @return the string
+     * @return {@code true} to allow nulls, {@code false} otherwise.
      */
     boolean nullable() default false;
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}只能为true";
+    String errmsg() default "${field} must be true";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

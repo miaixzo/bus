@@ -37,7 +37,12 @@ import org.miaixz.bus.crypto.builtin.symmetric.Decryptor;
 import org.miaixz.bus.crypto.builtin.symmetric.Encryptor;
 
 /**
- * TEA（Corrected Block Tiny Encryption Algorithm）算法实现 来自：https://github.com/xxtea/xxtea-java
+ * TEA (Corrected Block Tiny Encryption Algorithm) implementation. This implementation is adapted from:
+ * <a href="https://github.com/xxtea/xxtea-java">https://github.com/xxtea/xxtea-java</a>
+ * <p>
+ * TEA is a block cipher notable for its simplicity and small code footprint. It operates on 64-bit blocks of plaintext
+ * using a 128-bit key.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,24 +53,31 @@ public class TEA implements Encryptor, Decryptor, Serializable {
     private static final long serialVersionUID = 2852291067505L;
 
     /**
-     * 密钥调度常数
+     * Key scheduling constant used in the TEA algorithm.
      */
     private static final int DELTA = 0x9E3779B9;
 
     /**
-     * 密钥
+     * The encryption key.
      */
     private final byte[] key;
 
     /**
-     * 构造
+     * Constructs a TEA encryptor/decryptor with the specified key.
      *
-     * @param key 密钥，16位
+     * @param key The encryption key, expected to be 16 bytes long.
      */
     public TEA(final byte[] key) {
         this.key = key;
     }
 
+    /**
+     * Encrypts a block of data using the TEA algorithm.
+     *
+     * @param v The data block to encrypt, represented as an array of integers.
+     * @param k The key, represented as an array of integers.
+     * @return The encrypted data block.
+     */
     private static int[] encrypt(final int[] v, final int[] k) {
         final int n = v.length - 1;
 
@@ -88,6 +100,13 @@ public class TEA implements Encryptor, Decryptor, Serializable {
         return v;
     }
 
+    /**
+     * Decrypts a block of data using the TEA algorithm.
+     *
+     * @param v The data block to decrypt, represented as an array of integers.
+     * @param k The key, represented as an array of integers.
+     * @return The decrypted data block.
+     */
     private static int[] decrypt(final int[] v, final int[] k) {
         final int n = v.length - 1;
 
@@ -111,10 +130,28 @@ public class TEA implements Encryptor, Decryptor, Serializable {
         return v;
     }
 
+    /**
+     * The mixing function used in the TEA algorithm.
+     *
+     * @param sum The current sum in the TEA round.
+     * @param y   The previous word.
+     * @param z   The current word.
+     * @param p   The current block index.
+     * @param e   A derived value from the sum.
+     * @param k   The key array.
+     * @return The result of the mixing operation.
+     */
     private static int mx(final int sum, final int y, final int z, final int p, final int e, final int[] k) {
         return (z >>> 5 ^ y << 2) + (y >>> 3 ^ z << 4) ^ (sum ^ y) + (k[p & 3 ^ e] ^ z);
     }
 
+    /**
+     * Fixes the key length to 16 bytes. If the provided key is shorter, it's padded with zeros. If longer, it's
+     * truncated.
+     *
+     * @param key The original key byte array.
+     * @return A 16-byte fixed-length key.
+     */
     private static byte[] fixKey(final byte[] key) {
         if (key.length == 16) {
             return key;
@@ -124,6 +161,14 @@ public class TEA implements Encryptor, Decryptor, Serializable {
         return fixedkey;
     }
 
+    /**
+     * Converts a byte array to an integer array for TEA processing.
+     *
+     * @param data          The byte array to convert.
+     * @param includeLength If {@code true}, the last element of the integer array will store the original byte array
+     *                      length.
+     * @return The converted integer array.
+     */
     private static int[] toIntArray(final byte[] data, final boolean includeLength) {
         int n = (((data.length & 3) == 0) ? (data.length >>> 2) : ((data.length >>> 2) + 1));
         final int[] result;
@@ -141,6 +186,14 @@ public class TEA implements Encryptor, Decryptor, Serializable {
         return result;
     }
 
+    /**
+     * Converts an integer array (processed by TEA) back to a byte array.
+     *
+     * @param data          The integer array to convert.
+     * @param includeLength If {@code true}, the last element of the integer array is assumed to store the original byte
+     *                      array length.
+     * @return The converted byte array, or {@code null} if the length information is invalid.
+     */
     private static byte[] toByteArray(final int[] data, final boolean includeLength) {
         int n = data.length << 2;
 

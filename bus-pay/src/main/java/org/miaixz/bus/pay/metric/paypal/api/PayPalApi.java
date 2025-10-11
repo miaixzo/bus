@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.paypal.api;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * PayPal 支付接口
+ * PayPal Payment APIs.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,48 +38,54 @@ import org.miaixz.bus.pay.Matcher;
 public enum PayPalApi implements Matcher {
 
     /**
-     * 获取 Access Token
+     * Get Access Token.
      */
-    GET_TOKEN("/v1/oauth2/token", "获取 Access Token"),
+    GET_TOKEN("/v1/oauth2/token", "Get Access Token"),
     /**
-     * 订单
+     * Checkout Orders.
      */
-    CHECKOUT_ORDERS("/v2/checkout/orders", "订单"),
+    CHECKOUT_ORDERS("/v2/checkout/orders", "Checkout Orders"),
     /**
-     * 确认订单
+     * Capture an order.
      */
-    CAPTURE_ORDER("/v2/checkout/orders/%s/capture", "确认订单"),
+    CAPTURE_ORDER("/v2/checkout/orders/%s/capture", "Capture an order"),
     /**
-     * 查询已确认订单
+     * Query a captured order.
      */
-    CAPTURE_QUERY("/v2/payments/captures/%s", "查询已确认订单"),
+    CAPTURE_QUERY("/v2/payments/captures/%s", "Query a captured order"),
     /**
-     * 退款
+     * Refund a captured payment.
      */
-    REFUND("/v2/payments/captures/%s/refund", "退款"),
+    REFUND("/v2/payments/captures/%s/refund", "Refund a captured payment"),
     /**
-     * 退款查询
+     * Query a refund.
      */
-    REFUND_QUERY("/v2/payments/refunds/%s", "退款查询");
+    REFUND_QUERY("/v2/payments/refunds/%s", "Query a refund");
 
     /**
-     * 接口方法
+     * The API endpoint.
      */
     private final String method;
     /**
-     * 描述
+     * The description of the API.
      */
     private final String desc;
 
+    /**
+     * Constructs a new PayPalApi.
+     *
+     * @param method The API endpoint.
+     * @param desc   The description of the API.
+     */
     PayPalApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -87,9 +93,9 @@ public enum PayPalApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the description of the transaction type.
      *
-     * @return the string
+     * @return The description of the transaction type.
      */
     @Override
     public String desc() {
@@ -97,9 +103,9 @@ public enum PayPalApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API endpoint.
      *
-     * @return the string
+     * @return The API endpoint.
      */
     @Override
     public String method() {

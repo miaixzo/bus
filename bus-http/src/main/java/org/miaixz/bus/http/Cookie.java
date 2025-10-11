@@ -27,91 +27,91 @@
 */
 package org.miaixz.bus.http;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-
 /**
- * HTTP Cookie 处理工具
+ * An RFC 6265-compliant HTTP cookie.
  * <p>
- * 支持 Cookie 的创建、解析和匹配，遵循 RFC 6265 标准。 不支持附加属性（如 Chromium 的 Priority=HIGH 扩展）。
- * </p>
+ * This class supports cookie creation, parsing, and matching. It does not support additional attributes like Chromium's
+ * Priority=HIGH extension.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Cookie {
+public final class Cookie {
 
     /**
-     * 年份正则表达式
+     * Regular expression for parsing the year part of a date.
      */
     private static final Pattern YEAR_PATTERN = Pattern.compile("(\\d{2,4})[^\\d]*");
     /**
-     * 月份正则表达式
+     * Regular expression for parsing the month part of a date.
      */
     private static final Pattern MONTH_PATTERN = Pattern
             .compile("(?i)(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec).*");
     /**
-     * 日期正则表达式
+     * Regular expression for parsing the day of the month part of a date.
      */
     private static final Pattern DAY_OF_MONTH_PATTERN = Pattern.compile("(\\d{1,2})[^\\d]*");
     /**
-     * 时间正则表达式
+     * Regular expression for parsing the time part of a date.
      */
     private static final Pattern TIME_PATTERN = Pattern.compile("(\\d{1,2}):(\\d{1,2}):(\\d{1,2})[^\\d]*");
 
     /**
-     * Cookie 名称
+     * The name of the cookie.
      */
     private final String name;
     /**
-     * Cookie 值
+     * The value of the cookie.
      */
     private final String value;
     /**
-     * 过期时间
+     * The expiration time of the cookie.
      */
     private final long expiresAt;
     /**
-     * 域名
+     * The domain of the cookie.
      */
     private final String domain;
     /**
-     * 路径
+     * The path of the cookie.
      */
     private final String path;
     /**
-     * 是否仅限 HTTPS
+     * Whether the cookie is secure (HTTPS only).
      */
     private final boolean secure;
     /**
-     * 是否仅限 HTTP API
+     * Whether the cookie is HTTP only.
      */
     private final boolean httpOnly;
     /**
-     * 是否为持久化 Cookie
+     * Whether the cookie is persistent.
      */
     private final boolean persistent;
     /**
-     * 是否仅限主机
+     * Whether the cookie is host only.
      */
     private final boolean hostOnly;
 
     /**
-     * 构造函数，初始化 Cookie 实例
+     * Constructs a new {@code Cookie} instance.
      *
-     * @param name       Cookie 名称
-     * @param value      Cookie 值
-     * @param expiresAt  过期时间
-     * @param domain     域名
-     * @param path       路径
-     * @param secure     是否仅限 HTTPS
-     * @param httpOnly   是否仅限 HTTP API
-     * @param hostOnly   是否仅限主机
-     * @param persistent 是否为持久化 Cookie
+     * @param name       The name of the cookie.
+     * @param value      The value of the cookie.
+     * @param expiresAt  The expiration time in milliseconds.
+     * @param domain     The domain of the cookie.
+     * @param path       The path of the cookie.
+     * @param secure     Whether the cookie is secure.
+     * @param httpOnly   Whether the cookie is HTTP only.
+     * @param hostOnly   Whether the cookie is host only.
+     * @param persistent Whether the cookie is persistent.
      */
     private Cookie(String name, String value, long expiresAt, String domain, String path, boolean secure,
             boolean httpOnly, boolean hostOnly, boolean persistent) {
@@ -127,10 +127,10 @@ public class Cookie {
     }
 
     /**
-     * 构造函数，基于 Builder 初始化 Cookie 实例
+     * Constructs a new {@code Cookie} instance from a builder.
      *
-     * @param builder Builder 实例
-     * @throws NullPointerException 如果名称、值或域为空
+     * @param builder The builder instance.
+     * @throws NullPointerException if name, value, or domain is null.
      */
     Cookie(Builder builder) {
         if (null == builder.name)
@@ -152,67 +152,64 @@ public class Cookie {
     }
 
     /**
-     * 检查域名是否匹配
+     * Checks if a domain matches the cookie's domain.
      *
-     * @param urlHost URL 主机名
-     * @param domain  Cookie 域名
-     * @return true 如果域名匹配
+     * @param urlHost The host from the URL.
+     * @param domain  The domain from the cookie.
+     * @return {@code true} if the domain matches.
      */
     private static boolean domainMatch(String urlHost, String domain) {
         if (urlHost.equals(domain)) {
-            return true;
+            return true; // The domain is an exact match.
         }
 
-        if (urlHost.endsWith(domain) && urlHost.charAt(urlHost.length() - domain.length() - 1) == Symbol.C_DOT
-                && !org.miaixz.bus.http.Builder.verifyAsIpAddress(urlHost)) {
-            return true;
-        }
-
-        return false;
+        // The domain is a suffix of the URL host.
+        return urlHost.endsWith(domain) && urlHost.charAt(urlHost.length() - domain.length() - 1) == Symbol.C_DOT
+                && !org.miaixz.bus.http.Builder.verifyAsIpAddress(urlHost);
     }
 
     /**
-     * 检查路径是否匹配
+     * Checks if a path matches the cookie's path.
      *
-     * @param url  URL
-     * @param path Cookie 路径
-     * @return true 如果路径匹配
+     * @param url  The URL.
+     * @param path The path from the cookie.
+     * @return {@code true} if the path matches.
      */
     private static boolean pathMatch(UnoUrl url, String path) {
         String urlPath = url.encodedPath();
 
         if (urlPath.equals(path)) {
-            return true;
+            return true; // The path is an exact match.
         }
 
         if (urlPath.startsWith(path)) {
             if (path.endsWith(Symbol.SLASH))
-                return true;
+                return true; // The path is a prefix of the URL path.
             if (urlPath.charAt(path.length()) == Symbol.C_SLASH)
-                return true;
+                return true; // The path is a directory of the URL path.
         }
 
         return false;
     }
 
     /**
-     * 解析 Set-Cookie 头部
+     * Parses a {@code Set-Cookie} header into a {@code Cookie}.
      *
-     * @param url       URL
-     * @param setCookie Set-Cookie 头部值
-     * @return Cookie 实例（无效时为 null）
+     * @param url       The URL that sent this cookie.
+     * @param setCookie The {@code Set-Cookie} header value.
+     * @return The parsed cookie, or null if the cookie is invalid.
      */
     public static Cookie parse(UnoUrl url, String setCookie) {
         return parse(System.currentTimeMillis(), url, setCookie);
     }
 
     /**
-     * 解析 Set-Cookie 头部（指定时间）
+     * Parses a {@code Set-Cookie} header into a {@code Cookie} at a specific time.
      *
-     * @param currentTimeMillis 当前时间
-     * @param url               URL
-     * @param setCookie         Set-Cookie 头部值
-     * @return Cookie 实例（无效时为 null）
+     * @param currentTimeMillis The current time in milliseconds.
+     * @param url               The URL that sent this cookie.
+     * @param setCookie         The {@code Set-Cookie} header value.
+     * @return The parsed cookie, or null if the cookie is invalid.
      */
     static Cookie parse(long currentTimeMillis, UnoUrl url, String setCookie) {
         int pos = 0;
@@ -224,8 +221,9 @@ public class Cookie {
             return null;
 
         String cookieName = org.miaixz.bus.http.Builder.trimSubstring(setCookie, pos, pairEqualsSign);
-        if (cookieName.isEmpty() || org.miaixz.bus.http.Builder.indexOfControlOrNonAscii(cookieName) != -1)
+        if (cookieName.isEmpty() || org.miaixz.bus.http.Builder.indexOfControlOrNonAscii(cookieName) != -1) {
             return null;
+        }
 
         String cookieValue = org.miaixz.bus.http.Builder.trimSubstring(setCookie, pairEqualsSign + 1, cookiePairEnd);
         if (org.miaixz.bus.http.Builder.indexOfControlOrNonAscii(cookieValue) != -1)
@@ -257,21 +255,21 @@ public class Cookie {
                     expiresAt = parseExpires(attributeValue, 0, attributeValue.length());
                     persistent = true;
                 } catch (IllegalArgumentException e) {
-                    // 忽略此属性，它无法识别为日期
+                    // Ignore this attribute, it is not a valid date.
                 }
             } else if (attributeName.equalsIgnoreCase("max-age")) {
                 try {
                     deltaSeconds = parseMaxAge(attributeValue);
                     persistent = true;
                 } catch (NumberFormatException e) {
-                    // 忽略此属性，它无法识别为最大值.
+                    // Ignore this attribute, it is not a valid max-age.
                 }
             } else if (attributeName.equalsIgnoreCase("domain")) {
                 try {
                     domain = parseDomain(attributeValue);
                     hostOnly = false;
                 } catch (IllegalArgumentException e) {
-                    // 忽略此属性，它无法识别为域名.
+                    // Ignore this attribute, it is not a valid domain.
                 }
             } else if (attributeName.equalsIgnoreCase("path")) {
                 path = attributeValue;
@@ -284,30 +282,31 @@ public class Cookie {
             pos = attributePairEnd + 1;
         }
 
-        // 如果“Max-Age”出现，它将优先于“Expires”，而不管这两个属性在cookie字符串中声明的顺序如何.
+        // If "Max-Age" is present, it takes precedence over "Expires", regardless of the order of attributes.
         if (deltaSeconds == Long.MIN_VALUE) {
             expiresAt = Long.MIN_VALUE;
         } else if (deltaSeconds != -1L) {
             long deltaMilliseconds = deltaSeconds <= (Long.MAX_VALUE / 1000) ? deltaSeconds * 1000 : Long.MAX_VALUE;
             expiresAt = currentTimeMillis + deltaMilliseconds;
             if (expiresAt < currentTimeMillis || expiresAt > org.miaixz.bus.http.Builder.MAX_DATE) {
-                expiresAt = org.miaixz.bus.http.Builder.MAX_DATE;
+                expiresAt = org.miaixz.bus.http.Builder.MAX_DATE; // Handle overflow.
             }
         }
 
-        // 如果存在域，则必须匹配域。否则我们只有一个主机cookie.
+        // If a domain is present, it must domain-match. Otherwise, we have a host-only cookie.
         String urlHost = url.host();
         if (null == domain) {
             domain = urlHost;
         } else if (!domainMatch(urlHost, domain)) {
-            return null;
+            return null; // The cookie's domain is not a suffix of the URL's host.
         }
 
-        // 如果域名是url主机的后缀，则它不能是公共后缀
+        // If the domain is a suffix of the URL host, it must not be a public suffix.
         if (urlHost.length() != domain.length()) {
             return null;
         }
 
+        // If the path is not present, use the default path.
         if (null == path || !path.startsWith(Symbol.SLASH)) {
             String encodedPath = url.encodedPath();
             int lastSlash = encodedPath.lastIndexOf(Symbol.C_SLASH);
@@ -318,13 +317,13 @@ public class Cookie {
     }
 
     /**
-     * 解析过期时间（RFC 6265, Section 5.1.1）
+     * Parses the {@code Expires} attribute value (RFC 6265, Section 5.1.1).
      *
-     * @param s     时间字符串
-     * @param pos   起始位置
-     * @param limit 结束位置
-     * @return 过期时间（毫秒）
-     * @throws IllegalArgumentException 如果时间格式无效
+     * @param s     The date string.
+     * @param pos   The starting position.
+     * @param limit The ending position.
+     * @return The expiration time in milliseconds.
+     * @throws IllegalArgumentException if the date format is invalid.
      */
     private static long parseExpires(String s, int pos, int limit) {
         pos = dateCharacterOffset(s, pos, limit, false);
@@ -357,13 +356,13 @@ public class Cookie {
             pos = dateCharacterOffset(s, end + 1, limit, false);
         }
 
-        // 将两位数的年份转换为四位数的年份。99变成1999,15变成2015.
+        // Convert two-digit years to four-digit years. 99 becomes 1999, 15 becomes 2015.
         if (year >= 70 && year <= 99)
             year += 1900;
         if (year >= 0 && year <= 69)
             year += 2000;
 
-        // 如果任何部分被省略或超出范围，则返回-1。这个日期是不可能的。注意，该语法不支持闰秒.
+        // If any part is omitted or out of range, return -1. This date is impossible.
         if (year < 1601)
             throw new IllegalArgumentException();
         if (month == -1)
@@ -390,13 +389,13 @@ public class Cookie {
     }
 
     /**
-     * 查找日期字符位置
+     * Finds the offset of a date character.
      *
-     * @param input  输入字符串
-     * @param pos    起始位置
-     * @param limit  结束位置
-     * @param invert 是否反向查找
-     * @return 日期字符位置
+     * @param input  The input string.
+     * @param pos    The starting position.
+     * @param limit  The ending position.
+     * @param invert Whether to invert the search.
+     * @return The offset of the date character.
      */
     private static int dateCharacterOffset(String input, int pos, int limit, boolean invert) {
         for (int i = pos; i < limit; i++) {
@@ -411,17 +410,18 @@ public class Cookie {
     }
 
     /**
-     * 解析 Max-Age 属性
+     * Parses the {@code Max-Age} attribute.
      *
-     * @param s Max-Age 字符串
-     * @return Max-Age 值
-     * @throws NumberFormatException 如果值无效
+     * @param s The {@code Max-Age} string.
+     * @return The {@code Max-Age} value.
+     * @throws NumberFormatException if the value is invalid.
      */
     private static long parseMaxAge(String s) {
         try {
             long parsed = Long.parseLong(s);
             return parsed <= 0L ? Long.MIN_VALUE : parsed;
         } catch (NumberFormatException e) {
+            // If the value is not a valid long, check if it's a large number that can be clamped.
             if (s.matches("-?\\d+")) {
                 return s.startsWith(Symbol.MINUS) ? Long.MIN_VALUE : Long.MAX_VALUE;
             }
@@ -430,11 +430,11 @@ public class Cookie {
     }
 
     /**
-     * 解析域名
+     * Parses the domain attribute.
      *
-     * @param s 域名字符串
-     * @return 规范化域名
-     * @throws IllegalArgumentException 如果域名无效
+     * @param s The domain string.
+     * @return The canonicalized domain.
+     * @throws IllegalArgumentException if the domain is invalid.
      */
     private static String parseDomain(String s) {
         if (s.endsWith(Symbol.DOT)) {
@@ -451,11 +451,11 @@ public class Cookie {
     }
 
     /**
-     * 解析所有 Set-Cookie 头部
+     * Parses all {@code Set-Cookie} headers from an HTTP response.
      *
-     * @param url     URL
-     * @param headers 响应头部
-     * @return Cookie 列表
+     * @param url     The URL that sent these cookies.
+     * @param headers The response headers.
+     * @return A list of parsed cookies.
      */
     public static List<Cookie> parseAll(UnoUrl url, Headers headers) {
         List<String> cookieStrings = headers.values("Set-Cookie");
@@ -474,91 +474,91 @@ public class Cookie {
     }
 
     /**
-     * 获取 Cookie 名称
+     * Returns the name of this cookie.
      *
-     * @return Cookie 名称
+     * @return The cookie name.
      */
     public String name() {
         return name;
     }
 
     /**
-     * 获取 Cookie 值
+     * Returns the value of this cookie.
      *
-     * @return Cookie 值
+     * @return The cookie value.
      */
     public String value() {
         return value;
     }
 
     /**
-     * 检查是否为持久化 Cookie
+     * Returns {@code true} if this cookie is persistent.
      *
-     * @return true 如果为持久化 Cookie
+     * @return {@code true} if this cookie is persistent.
      */
     public boolean persistent() {
         return persistent;
     }
 
     /**
-     * 获取过期时间
+     * Returns the expiration time of this cookie.
      *
-     * @return 过期时间（毫秒）
+     * @return The expiration time in milliseconds.
      */
     public long expiresAt() {
         return expiresAt;
     }
 
     /**
-     * 检查是否仅限主机
+     * Returns {@code true} if this cookie is host-only.
      *
-     * @return true 如果仅限主机
+     * @return {@code true} if this cookie is host-only.
      */
     public boolean hostOnly() {
         return hostOnly;
     }
 
     /**
-     * 获取域名
+     * Returns the domain of this cookie.
      *
-     * @return 域名
+     * @return The domain.
      */
     public String domain() {
         return domain;
     }
 
     /**
-     * 获取路径
+     * Returns the path of this cookie.
      *
-     * @return 路径
+     * @return The path.
      */
     public String path() {
         return path;
     }
 
     /**
-     * 检查是否仅限 HTTP API
+     * Returns {@code true} if this cookie should only be sent over HTTP APIs.
      *
-     * @return true 如果仅限 HTTP API
+     * @return {@code true} if this cookie is HTTP-only.
      */
     public boolean httpOnly() {
         return httpOnly;
     }
 
     /**
-     * 检查是否仅限 HTTPS
+     * Returns {@code true} if this cookie should only be sent over HTTPS.
      *
-     * @return true 如果仅限 HTTPS
+     * @return {@code true} if this cookie is secure.
      */
     public boolean secure() {
         return secure;
     }
 
     /**
-     * 检查 Cookie 是否匹配 URL
+     * Returns {@code true} if this cookie matches the given URL.
      *
-     * @param url URL
-     * @return true 如果 Cookie 匹配 URL
+     * @param url The URL to check.
+     * @return {@code true} if this cookie matches the URL.
      */
     public boolean matches(UnoUrl url) {
         boolean domainMatch = hostOnly ? url.host().equals(domain) : domainMatch(url.host(), domain);
@@ -568,16 +568,13 @@ public class Cookie {
         if (!pathMatch(url, path))
             return false;
 
-        if (secure && !url.isHttps())
-            return false;
-
-        return true;
+        return !secure || url.isHttps();
     }
 
     /**
-     * 返回 Cookie 的字符串表示
+     * Returns the string representation of this cookie.
      *
-     * @return Cookie 字符串
+     * @return The cookie string.
      */
     @Override
     public String toString() {
@@ -585,10 +582,10 @@ public class Cookie {
     }
 
     /**
-     * 返回 Cookie 的字符串表示
+     * Returns the string representation of this cookie.
      *
-     * @param forObsoleteRfc2965 是否为 RFC 2965 格式
-     * @return Cookie 字符串
+     * @param forObsoleteRfc2965 Whether to format for RFC 2965.
+     * @return The cookie string.
      */
     String toString(boolean forObsoleteRfc2965) {
         StringBuilder result = new StringBuilder();
@@ -626,10 +623,10 @@ public class Cookie {
     }
 
     /**
-     * 比较两个 Cookie 是否相等
+     * Compares this cookie to another object for equality.
      *
-     * @param other 另一个对象
-     * @return true 如果两个 Cookie 相等
+     * @param other The other object to compare against.
+     * @return {@code true} if the two cookies are equal.
      */
     @Override
     public boolean equals(Object other) {
@@ -642,9 +639,9 @@ public class Cookie {
     }
 
     /**
-     * 计算 Cookie 的哈希码
+     * Computes the hash code for this cookie.
      *
-     * @return 哈希码值
+     * @return The hash code value.
      */
     @Override
     public int hashCode() {
@@ -662,54 +659,54 @@ public class Cookie {
     }
 
     /**
-     * Cookie 构建器
+     * A builder for creating {@link Cookie} instances.
      */
     public static class Builder {
 
         /**
-         * Cookie 名称
+         * The name of the cookie.
          */
         String name;
         /**
-         * Cookie 值
+         * The value of the cookie.
          */
         String value;
         /**
-         * 过期时间
+         * The expiration time of the cookie.
          */
         long expiresAt = org.miaixz.bus.http.Builder.MAX_DATE;
         /**
-         * 域名
+         * The domain of the cookie.
          */
         String domain;
         /**
-         * 路径
+         * The path of the cookie.
          */
         String path = Symbol.SLASH;
         /**
-         * 是否仅限 HTTPS
+         * Whether the cookie is secure.
          */
         boolean secure;
         /**
-         * 是否仅限 HTTP API
+         * Whether the cookie is HTTP only.
          */
         boolean httpOnly;
         /**
-         * 是否为持久化 Cookie
+         * Whether the cookie is persistent.
          */
         boolean persistent;
         /**
-         * 是否仅限主机
+         * Whether the cookie is host only.
          */
         boolean hostOnly;
 
         /**
-         * 设置 Cookie 名称
+         * Sets the name of the cookie.
          *
-         * @param name Cookie 名称
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 name 为 null
-         * @throws IllegalArgumentException 如果名称包含空白
+         * @param name The cookie name.
+         * @return this builder instance.
+         * @throws NullPointerException     if name is null.
+         * @throws IllegalArgumentException if name contains whitespace.
          */
         public Builder name(String name) {
             if (null == name)
@@ -721,12 +718,12 @@ public class Cookie {
         }
 
         /**
-         * 设置 Cookie 值
+         * Sets the value of the cookie.
          *
-         * @param value Cookie 值
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 value 为 null
-         * @throws IllegalArgumentException 如果值包含空白
+         * @param value The cookie value.
+         * @return this builder instance.
+         * @throws NullPointerException     if value is null.
+         * @throws IllegalArgumentException if value contains whitespace.
          */
         public Builder value(String value) {
             if (null == value)
@@ -738,10 +735,10 @@ public class Cookie {
         }
 
         /**
-         * 设置过期时间
+         * Sets the expiration time of the cookie.
          *
-         * @param expiresAt 过期时间（毫秒）
-         * @return 当前 Builder 实例
+         * @param expiresAt The expiration time in milliseconds.
+         * @return this builder instance.
          */
         public Builder expiresAt(long expiresAt) {
             if (expiresAt <= 0)
@@ -754,37 +751,37 @@ public class Cookie {
         }
 
         /**
-         * 设置域名（匹配域名及其子域）
+         * Sets the domain of the cookie, which will match the domain and its subdomains.
          *
-         * @param domain 域名
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 domain 为 null
-         * @throws IllegalArgumentException 如果域名无效
+         * @param domain The domain.
+         * @return this builder instance.
+         * @throws NullPointerException     if domain is null.
+         * @throws IllegalArgumentException if the domain is invalid.
          */
         public Builder domain(String domain) {
             return domain(domain, false);
         }
 
         /**
-         * 设置仅限主机的域名
+         * Sets the domain of the cookie to be host-only.
          *
-         * @param domain 域名
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 domain 为 null
-         * @throws IllegalArgumentException 如果域名无效
+         * @param domain The domain.
+         * @return this builder instance.
+         * @throws NullPointerException     if domain is null.
+         * @throws IllegalArgumentException if the domain is invalid.
          */
         public Builder hostOnlyDomain(String domain) {
             return domain(domain, true);
         }
 
         /**
-         * 设置域名（内部实现）
+         * Internal implementation for setting the domain.
          *
-         * @param domain   域名
-         * @param hostOnly 是否仅限主机
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 domain 为 null
-         * @throws IllegalArgumentException 如果域名无效
+         * @param domain   The domain.
+         * @param hostOnly Whether the domain is host-only.
+         * @return this builder instance.
+         * @throws NullPointerException     if domain is null.
+         * @throws IllegalArgumentException if the domain is invalid.
          */
         private Builder domain(String domain, boolean hostOnly) {
             if (null == domain)
@@ -799,23 +796,23 @@ public class Cookie {
         }
 
         /**
-         * 设置路径
+         * Sets the path of the cookie.
          *
-         * @param path 路径
-         * @return 当前 Builder 实例
-         * @throws IllegalArgumentException 如果路径不以 / 开头
+         * @param path The path.
+         * @return this builder instance.
+         * @throws IllegalArgumentException if the path does not start with "/".
          */
         public Builder path(String path) {
             if (!path.startsWith(Symbol.SLASH))
-                throw new IllegalArgumentException("path must start with /");
+                throw new IllegalArgumentException("path must start with '/'");
             this.path = path;
             return this;
         }
 
         /**
-         * 设置仅限 HTTPS
+         * Sets the cookie to be secure (HTTPS only).
          *
-         * @return 当前 Builder 实例
+         * @return this builder instance.
          */
         public Builder secure() {
             this.secure = true;
@@ -823,9 +820,9 @@ public class Cookie {
         }
 
         /**
-         * 设置仅限 HTTP API
+         * Sets the cookie to be HTTP-only.
          *
-         * @return 当前 Builder 实例
+         * @return this builder instance.
          */
         public Builder httpOnly() {
             this.httpOnly = true;
@@ -833,10 +830,10 @@ public class Cookie {
         }
 
         /**
-         * 构建 Cookie 实例
+         * Builds a new {@link Cookie} instance.
          *
-         * @return Cookie 实例
-         * @throws NullPointerException 如果 name、value 或 domain 未设置
+         * @return a new {@link Cookie} instance.
+         * @throws NullPointerException if name, value, or domain is not set.
          */
         public Cookie build() {
             return new Cookie(this);

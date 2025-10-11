@@ -48,7 +48,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.tree.HierarchyIterator;
 
 /**
- * {@link Stream} 工具类
+ * Utility class for {@link Stream}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,9 +56,11 @@ import org.miaixz.bus.core.tree.HierarchyIterator;
 public class StreamKit {
 
     /**
-     * @param array 数组
-     * @param <T>   元素类型
-     * @return {@link Stream}，如果提供的array为{@code null}，返回{@link Stream#empty()}
+     * Creates a {@link Stream} from an array.
+     *
+     * @param array The array.
+     * @param <T>   The element type.
+     * @return A {@link Stream}, or {@link Stream#empty()} if the array is `null`.
      */
     @SafeVarargs
     public static <T> Stream<T> of(final T... array) {
@@ -66,23 +68,23 @@ public class StreamKit {
     }
 
     /**
-     * {@link Iterable}转换为{@link Stream}，默认非并行
+     * Converts an {@link Iterable} to a sequential {@link Stream}.
      *
-     * @param iterable 集合
-     * @param <T>      集合元素类型
-     * @return {@link Stream}，如果提供的iterator为{@code null}，返回{@link Stream#empty()}
+     * @param iterable The iterable.
+     * @param <T>      The element type.
+     * @return A {@link Stream}, or {@link Stream#empty()} if the iterable is `null`.
      */
     public static <T> Stream<T> of(final Iterable<T> iterable) {
         return of(iterable, false);
     }
 
     /**
-     * {@link Iterable}转换为{@link Stream}
+     * Converts an {@link Iterable} to a {@link Stream}.
      *
-     * @param iterable 集合
-     * @param parallel 是否并行
-     * @param <T>      集合元素类型
-     * @return {@link Stream}，如果提供的iterator为{@code null}，返回{@link Stream#empty()}
+     * @param iterable The iterable.
+     * @param parallel If `true`, creates a parallel stream.
+     * @param <T>      The element type.
+     * @return A {@link Stream}, or {@link Stream#empty()} if the iterable is `null`.
      */
     public static <T> Stream<T> of(final Iterable<T> iterable, final boolean parallel) {
         if (null == iterable) {
@@ -94,23 +96,23 @@ public class StreamKit {
     }
 
     /**
-     * {@link Iterator} 转换为 {@link Stream}
+     * Converts an {@link Iterator} to a sequential {@link Stream}.
      *
-     * @param iterator 迭代器
-     * @param <T>      集合元素类型
-     * @return {@link Stream}，如果提供的iterator为{@code null}，返回{@link Stream#empty()}
+     * @param iterator The iterator.
+     * @param <T>      The element type.
+     * @return A {@link Stream}, or {@link Stream#empty()} if the iterator is `null`.
      */
     public static <T> Stream<T> ofIter(final Iterator<T> iterator) {
         return ofIter(iterator, false);
     }
 
     /**
-     * {@link Iterator} 转换为 {@link Stream}
+     * Converts an {@link Iterator} to a {@link Stream}.
      *
-     * @param iterator 迭代器
-     * @param parallel 是否并行
-     * @param <T>      集合元素类型
-     * @return {@link Stream}，如果提供的iterator为{@code null}，返回{@link Stream#empty()}
+     * @param iterator The iterator.
+     * @param parallel If `true`, creates a parallel stream.
+     * @param <T>      The element type.
+     * @return A {@link Stream}, or {@link Stream#empty()} if the iterator is `null`.
      */
     public static <T> Stream<T> ofIter(final Iterator<T> iterator, final boolean parallel) {
         if (null == iterator) {
@@ -120,31 +122,31 @@ public class StreamKit {
     }
 
     /**
-     * 按行读取文件为{@link Stream}
+     * Reads a file line by line into a {@link Stream}.
      *
-     * @param file 文件
-     * @return {@link Stream}，如果提供的file为{@code null}，返回{@link Stream#empty()}
+     * @param file The file.
+     * @return A {@link Stream} of lines, or {@link Stream#empty()} if the file is `null`.
      */
     public static Stream<String> of(final File file) {
         return of(file, Charset.UTF_8);
     }
 
     /**
-     * 按行读取文件为{@link Stream}
+     * Reads a file line by line into a {@link Stream}.
      *
-     * @param path 路径
-     * @return {@link Stream}，如果提供的file为{@code null}，返回{@link Stream#empty()}
+     * @param path The file path.
+     * @return A {@link Stream} of lines, or {@link Stream#empty()} if the path is `null`.
      */
     public static Stream<String> of(final Path path) {
         return of(path, Charset.UTF_8);
     }
 
     /**
-     * 按行读取文件为{@link Stream}
+     * Reads a file line by line into a {@link Stream} with a specified charset.
      *
-     * @param file    文件
-     * @param charset 编码
-     * @return {@link Stream}，如果提供的file为{@code null}，返回{@link Stream#empty()}
+     * @param file    The file.
+     * @param charset The character set.
+     * @return A {@link Stream} of lines.
      */
     public static Stream<String> of(final File file, final java.nio.charset.Charset charset) {
         if (null == file) {
@@ -154,11 +156,11 @@ public class StreamKit {
     }
 
     /**
-     * 按行读取文件为{@link Stream}
+     * Reads a file line by line into a {@link Stream} with a specified charset.
      *
-     * @param path    路径
-     * @param charset 编码
-     * @return {@link Stream}，如果提供的path为{@code null}，返回{@link Stream#empty()}
+     * @param path    The file path.
+     * @param charset The character set.
+     * @return A {@link Stream} of lines.
      */
     public static Stream<String> of(final Path path, final java.nio.charset.Charset charset) {
         if (null == path) {
@@ -172,25 +174,25 @@ public class StreamKit {
     }
 
     /**
-     * 通过函数创建Stream
+     * Creates a {@link Stream} using an initial value and a generation function.
      *
-     * @param seed           初始值
-     * @param elementCreator 递进函数，每次调用此函数获取下一个值
-     * @param limit          限制个数
-     * @param <T>            创建元素类型
-     * @return {@link Stream}
+     * @param seed           The initial value.
+     * @param elementCreator The function to generate the next element.
+     * @param limit          The maximum number of elements.
+     * @param <T>            The element type.
+     * @return A {@link Stream}.
      */
     public static <T> Stream<T> of(final T seed, final UnaryOperator<T> elementCreator, final int limit) {
         return Stream.iterate(seed, elementCreator).limit(limit);
     }
 
     /**
-     * 将Stream中所有元素以指定分隔符，合并为一个字符串，对象默认调用toString方法
+     * Joins all elements in a stream into a single string with a specified separator.
      *
-     * @param stream    {@link Stream}
-     * @param delimiter 分隔符
-     * @param <T>       元素类型
-     * @return 字符串，如果stream为{@code null}，返回{@code null}
+     * @param stream    The {@link Stream}.
+     * @param delimiter The separator.
+     * @param <T>       The element type.
+     * @return The joined string, or `null` if the stream is `null`.
      */
     public static <T> String join(final Stream<T> stream, final CharSequence delimiter) {
         if (null == stream) {
@@ -200,13 +202,13 @@ public class StreamKit {
     }
 
     /**
-     * 将Stream中所有元素以指定分隔符，合并为一个字符串
+     * Joins all elements in a stream into a single string with a specified separator and a custom toString function.
      *
-     * @param stream       {@link Stream}
-     * @param delimiter    分隔符
-     * @param toStringFunc 元素转换为字符串的函数
-     * @param <T>          元素类型
-     * @return 字符串，如果stream为{@code null}，返回{@code null}
+     * @param stream       The {@link Stream}.
+     * @param delimiter    The separator.
+     * @param toStringFunc The function to convert elements to strings.
+     * @param <T>          The element type.
+     * @return The joined string, or `null` if the stream is `null`.
      */
     public static <T> String join(
             final Stream<T> stream,
@@ -219,13 +221,14 @@ public class StreamKit {
     }
 
     /**
-     * 返回无限有序流 该流由 初始值 然后判断条件 以及执行 迭代函数 进行迭代获取到元素
+     * Returns an infinite ordered stream produced by iterative application of a function `next` to an initial element
+     * `seed`.
      *
-     * @param <T>     元素类型
-     * @param seed    初始值
-     * @param hasNext 条件值
-     * @param next    用上一个元素作为参数执行并返回一个新的元素
-     * @return 无限有序流
+     * @param <T>     The element type.
+     * @param seed    The initial value.
+     * @param hasNext A predicate to apply to elements to determine if the stream should continue.
+     * @param next    A function to be applied to the previous element to produce a new element.
+     * @return An infinite ordered stream.
      */
     public static <T> Stream<T> iterate(final T seed, final Predicate<? super T> hasNext, final UnaryOperator<T> next) {
         Objects.requireNonNull(next);
@@ -234,25 +237,14 @@ public class StreamKit {
     }
 
     /**
-     * 指定一个层级结构的根节点（通常是树或图）， 然后获取包含根节点在内，根节点所有层级结构中的节点组成的流。 该方法用于以平铺的方式按广度优先对图或树节点进行访问，可以使用并行流提高效率。
+     * Given a root node of a hierarchical structure (e.g., a tree or graph), returns a stream of all nodes in the
+     * hierarchy, including the root, in breadth-first order.
      *
-     * <p>
-     * eg:
-     * 
-     * <pre>{@code
-     * Tree root = // 构建树结构
-     * // 搜索树结构中所有级别为3的节点，并按权重排序
-     * List<Tree> thirdLevelNodes = StreamKit.iterateHierarchies(root, Tree:getChildren)
-     * 	.filter(node -> node.getLevel() == 3)
-     * 	.sorted(Comparator.comparing(Tree::getWeight))
-     * 	.toList();
-     * }</pre>
-     *
-     * @param root       根节点，根节点不允许被{@code filter}过滤
-     * @param discoverer 下一层级节点的获取方法
-     * @param filter     节点过滤器，不匹配的节点与以其作为根节点的子树将将会被忽略
-     * @param <T>        元素类型
-     * @return 包含根节点在内，根节点所有层级结构中的节点组成的流
+     * @param root       The root node.
+     * @param discoverer A function to get the children of a node.
+     * @param filter     A filter for nodes; non-matching nodes and their subtrees will be ignored.
+     * @param <T>        The element type.
+     * @return A stream of all nodes in the hierarchy.
      * @see HierarchyIterator
      */
     public static <T> Stream<T> iterateHierarchies(
@@ -263,24 +255,13 @@ public class StreamKit {
     }
 
     /**
-     * 指定一个层级结构的根节点（通常是树或图）， 然后获取包含根节点在内，根节点所有层级结构中的节点组成的流。 该方法用于以平铺的方式按广度优先对图或树节点进行访问，可以使用并行流提高效率。
+     * Given a root node of a hierarchical structure, returns a stream of all nodes in the hierarchy in breadth-first
+     * order.
      *
-     * <p>
-     * eg:
-     * 
-     * <pre>{@code
-     * Tree root = // 构建树结构
-     * // 搜索树结构中所有级别为3的节点，并按权重排序
-     * List<Tree> thirdLevelNodes = StreamKit.iterateHierarchies(root, Tree:getChildren)
-     * 	.filter(node -> node.getLevel() == 3)
-     * 	.sorted(Comparator.comparing(Tree::getWeight))
-     * 	.toList();
-     * }</pre>
-     *
-     * @param root       根节点，根节点不允许被{@code filter}过滤
-     * @param discoverer 下一层级节点的获取方法
-     * @param <T>        元素类型
-     * @return 包含根节点在内，根节点所有层级结构中的节点组成的流
+     * @param root       The root node.
+     * @param discoverer A function to get the children of a node.
+     * @param <T>        The element type.
+     * @return A stream of all nodes in the hierarchy.
      * @see HierarchyIterator
      */
     public static <T> Stream<T> iterateHierarchies(final T root, final Function<T, Collection<T>> discoverer) {
@@ -288,21 +269,13 @@ public class StreamKit {
     }
 
     /**
-     * 保留 与指定断言 匹配时的元素, 在第一次不匹配时终止, 抛弃当前(第一个不匹配元素)及后续所有元素
-     * <p>
-     * 与 jdk9 中的 takeWhile 方法不太一样, 这里的实现是个 顺序的、有状态的中间操作
-     * </p>
-     * <p>
-     * 本环节中是顺序执行的, 但是后续操作可以支持并行流
-     * </p>
-     * <p>
-     * 但是不建议在并行流中使用, 除非你确定 takeWhile 之后的操作能在并行流中受益很多
-     * </p>
+     * Returns a stream consisting of the longest prefix of elements taken from this stream that match the given
+     * predicate.
      *
-     * @param source    源流
-     * @param <T>       元素类型
-     * @param predicate 断言
-     * @return 与指定断言匹配的元素组成的流
+     * @param source    The source stream.
+     * @param <T>       The element type.
+     * @param predicate The predicate.
+     * @return The new stream.
      */
     public static <T> Stream<T> takeWhile(final Stream<T> source, final Predicate<? super T> predicate) {
         if (null == source) {
@@ -313,21 +286,13 @@ public class StreamKit {
     }
 
     /**
-     * 删除 与指定断言 匹配的元素, 在第一次不匹配时终止, 返回当前(第一个不匹配元素)及剩余元素组成的新流
-     * <p>
-     * 与 jdk9 中的 dropWhile 方法不太一样, 这里的实现是个 顺序的、有状态的中间操作
-     * </p>
-     * <p>
-     * 本环节中是顺序执行的, 但是后续操作可以支持并行流
-     * </p>
-     * <p>
-     * 但是不建议在并行流中使用, 除非你确定 dropWhile 之后的操作能在并行流中受益很多
-     * </p>
+     * Returns a stream consisting of the remaining elements of this stream after dropping the longest prefix of
+     * elements that match the given predicate.
      *
-     * @param source    源流
-     * @param <T>       元素类型
-     * @param predicate 断言
-     * @return 剩余元素组成的流
+     * @param source    The source stream.
+     * @param <T>       The element type.
+     * @param predicate The predicate.
+     * @return The new stream.
      */
     public static <T> Stream<T> dropWhile(final Stream<T> source, final Predicate<? super T> predicate) {
         if (null == source) {
@@ -337,11 +302,27 @@ public class StreamKit {
         return createStatefulNewStream(source, DropWhileSpliterator.of(source.spliterator(), predicate));
     }
 
+    /**
+     * Reads exactly `len` bytes from an input stream into a byte array.
+     *
+     * @param in  The input stream.
+     * @param b   The buffer to read into.
+     * @param off The offset in the buffer.
+     * @param len The number of bytes to read.
+     * @throws IOException if an I/O error occurs or the end of the stream is reached.
+     */
     public static void readFully(InputStream in, byte[] b, int off, int len) throws IOException {
         if (readAvailable(in, b, off, len) < len)
             throw new EOFException();
     }
 
+    /**
+     * Skips exactly `n` bytes of input from an input stream.
+     *
+     * @param in The input stream.
+     * @param n  The number of bytes to skip.
+     * @throws IOException if an I/O error occurs or the end of the stream is reached.
+     */
     public static void skipFully(InputStream in, long n) throws IOException {
         while (n > 0) {
             long count = in.skip(n);
@@ -355,6 +336,16 @@ public class StreamKit {
         }
     }
 
+    /**
+     * Reads up to `len` bytes from an input stream into a byte array.
+     *
+     * @param in  The input stream.
+     * @param b   The buffer.
+     * @param off The offset.
+     * @param len The maximum number of bytes to read.
+     * @return The total number of bytes read.
+     * @throws IOException if an I/O error occurs.
+     */
     public static int readAvailable(InputStream in, byte[] b, int off, int len) throws IOException {
         if (off < 0 || len < 0 || off + len > b.length)
             throw new IndexOutOfBoundsException();
@@ -370,30 +361,21 @@ public class StreamKit {
     }
 
     /**
-     * 根据 源流 和 新的Spliterator 生成新的流
-     * <p>
-     * 这是一个 顺序的、有状态的流
-     * </p>
-     * <p>
-     * 在新流的第一个节点是顺序执行的, 但是后续操作可以支持并行流
-     * </p>
+     * Creates a new stateful stream from a source stream and a new Spliterator.
      *
-     * @param source         源流
-     * @param newSpliterator 新流的Spliterator
-     * @param <T>            旧流的元素类型
-     * @param <R>            新流的元素类型
-     * @return 新流
+     * @param source         The source stream.
+     * @param newSpliterator The new Spliterator.
+     * @param <T>            The element type of the old stream.
+     * @param <R>            The element type of the new stream.
+     * @return The new stream.
      */
     private static <T, R> Stream<R> createStatefulNewStream(
             final Stream<T> source,
             final Spliterator<R> newSpliterator) {
-        // 创建新流
         Stream<R> newStream = StreamSupport.stream(newSpliterator, source.isParallel());
-        // 如果旧流是并行流, 新流主动调用一个有状态的操作, 虽然没有意义, 但是可以让后续的无状态节点正常并发
         if (source.isParallel()) {
             newStream = newStream.limit(Long.MAX_VALUE);
         }
-        // 由于新流不与旧流的节点关联, 所以需要主动设置旧流的close方法, 哪怕几乎不可能有人在旧流上设置onClose操作
         return newStream.onClose(source::close);
     }
 

@@ -40,7 +40,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 数据库查询工厂
+ * A factory for creating {@link DatabaseQuery} instances based on the database type.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,41 +49,45 @@ import lombok.Setter;
 @Setter
 public class DatabaseQueryFactory implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     /**
-     * DataSource
+     * The JDBC data source used to determine the database type and create the query instance.
      */
     private DataSource dataSource;
 
     /**
-     * 构造函数私有化 禁止通过new方式实例化对象
+     * Private constructor to prevent instantiation via the 'new' keyword.
      */
     private DatabaseQueryFactory() {
 
     }
 
     /**
-     * 构造函数
+     * Constructs a new {@code DatabaseQueryFactory} with the specified data source.
      *
-     * @param source {@link DataSource}
+     * @param source The {@link DataSource} to be used.
      */
     public DatabaseQueryFactory(DataSource source) {
         dataSource = source;
     }
 
     /**
-     * 获取配置的数据库类型实例
+     * Creates a new instance of a {@link DatabaseQuery} implementation suitable for the configured database type. It
+     * determines the database type from the connection URL and instantiates the corresponding query class.
      *
-     * @return {@link DatabaseQuery} 数据库查询对象
+     * @return A new {@link DatabaseQuery} object for the specific database dialect.
+     * @throws InternalException if the query class cannot be instantiated or if a database access error occurs.
      */
     public DatabaseQuery newInstance() {
         try {
-            // 获取数据库URL 用于判断数据库类型
+            // Get the database URL to determine the database type
             String url = this.getDataSource().getConnection().getMetaData().getURL();
-            // 获取实现类
+            // Get the implementation class for the database type
             Class<? extends DatabaseQuery> query = DatabaseType.getDbType(url).getImplClass();
-            // 获取有参构造
+            // Get the constructor that accepts a DataSource
             Constructor<? extends DatabaseQuery> constructor = query.getConstructor(DataSource.class);
-            // 实例化
+            // Instantiate the query class
             return constructor.newInstance(dataSource);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException
                 | SQLException e) {

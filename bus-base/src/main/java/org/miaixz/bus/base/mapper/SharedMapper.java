@@ -30,8 +30,10 @@ package org.miaixz.bus.base.mapper;
 import java.io.Serializable;
 
 /**
- * 通用：实体类的基本增删改查接口
+ * Generic interface for basic CRUD (Create, Retrieve, Update, Delete) operations on entities.
  *
+ * @param <T> the entity type
+ * @param <I> the type of the primary key, which must implement {@link Serializable}
  * @author Kimi Liu
  * @since Java 17+
  */

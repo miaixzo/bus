@@ -34,33 +34,42 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 正则查找器 通过传入正则表达式，查找指定字符串中匹配正则的开始和结束位置
+ * Regular expression finder. Finds the start and end positions of a regular expression match within a specified string.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PatternFinder extends TextFinder {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852237367830L;
 
+    /**
+     * The compiled regular expression pattern.
+     */
     private final java.util.regex.Pattern pattern;
+    /**
+     * The matcher object used for performing match operations.
+     */
     private Matcher matcher;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param regex           被查找的正则表达式
-     * @param caseInsensitive 是否忽略大小写
+     * @param regex           The regular expression to be searched.
+     * @param caseInsensitive Whether to ignore case.
      */
     public PatternFinder(final String regex, final boolean caseInsensitive) {
         this(Pattern.get(regex, caseInsensitive ? java.util.regex.Pattern.CASE_INSENSITIVE : 0));
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param pattern 被查找的正则{@link java.util.regex.Pattern}
+     * @param pattern The compiled regular expression {@link java.util.regex.Pattern} to be searched.
      */
     public PatternFinder(final java.util.regex.Pattern pattern) {
         this.pattern = pattern;
@@ -81,11 +90,11 @@ public class PatternFinder extends TextFinder {
     public int start(final int from) {
         if (matcher.find(from)) {
             final int end = matcher.end();
-            // 只有匹配到的字符串结尾在limit范围内，才算找到
+            // Only if the end of the matched string is within the limit, it is considered found.
             if (end <= getValidEndIndex()) {
                 final int start = matcher.start();
                 if (start == end) {
-                    // 如果匹配空串，按照未匹配对待，避免死循环
+                    // If an empty string is matched, treat it as not matched to avoid an infinite loop.
                     return Normal.__1;
                 }
 
@@ -97,6 +106,9 @@ public class PatternFinder extends TextFinder {
 
     @Override
     public int end(final int start) {
+        if (start < 0) {
+            return -1;
+        }
         final int end = matcher.end();
         final int limit;
         if (endIndex < 0) {

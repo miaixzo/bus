@@ -31,7 +31,7 @@ import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * 利用 System.out.println 打印彩色日志
+ * A factory for creating console loggers that print colorful messages using {@code System.out.println}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,7 +39,8 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
 public class ColorLoggingFactory extends AbstractFactory {
 
     /**
-     * 构造
+     * Constructs a new {@code ColorLoggingFactory}. This factory creates loggers that output to the console with
+     * colored text.
      */
     public ColorLoggingFactory() {
         super("System.out.println");

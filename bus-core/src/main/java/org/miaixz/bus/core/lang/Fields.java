@@ -28,29 +28,34 @@
 package org.miaixz.bus.core.lang;
 
 /**
- * 日期场景属性 工具类，提供格式化字符串很多，但是对于具体什么含义，不够清晰，这里进行说明： 常见日期格式模式字符串：
+ * Utility class for common date and time format patterns. Provides clear explanations for various formatting strings.
+ * Common date format patterns:
  * <ul>
- * <li>yyyy-MM-dd 示例：2022-08-05</li>
- * <li>yyyy年MM月dd日 示例：2022年08月05日</li>
- * <li>yyyy-MM-dd HH:mm:ss 示例：2022-08-05 12:59:59</li>
- * <li>yyyy-MM-dd HH:mm:ss.SSS 示例：2022-08-05 12:59:59.559</li>
- * <li>yyyy-MM-dd HH:mm:ss.SSSZ 示例：2022-08-05 12:59:59.559+0800【东八区中国时区】、2022-08-05 04:59:59.559+0000【冰岛0时区】, 年月日 时分秒 毫秒
- * 时区</li>
- * <li>yyyy-MM-dd HH:mm:ss.SSSz 示例：2022-08-05
- * 12:59:59.559UTC【世界标准时间=0时区】、2022-08-05T12:59:59.599GMT【冰岛0时区】、2022-08-05T12:59:59.599CST【东八区中国时区】、2022-08-23T03:45:00.599EDT【美国东北纽约时间，-0400】
- * ,年月日 时分秒 毫秒 时区</li>
- * <li>yyyy-MM-dd'T'HH:mm:ss.SSS'Z' 示例：2022-08-05T12:59:59.559Z, 其中：''单引号表示转义字符，T:分隔符，Z:一般指UTC,0时区的时间含义</li>
- * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ 示例：2022-08-05T11:59:59.559+0800, 其中：Z,表示时区</li>
- * <li>yyyy-MM-dd'T'HH:mm:ss.SSSX 示例：2022-08-05T12:59:59.559+08, 其中：X:两位时区，+08表示：东8区，中国时区</li>
- * <li>yyyy-MM-dd'T'HH:mm:ss.SSSXX 示例：2022-08-05T12:59:59.559+0800, 其中：XX:四位时区</li>
- * <li>yyyy-MM-dd'T'HH:mm:ss.SSSXXX 示例：2022-08-05T12:59:59.559+08:00, 其中：XX:五位时区</li>
- * <li>yyyy-MM-dd'T'HH:mm:ss 示例：2022-08-05T12:59:59+08</li>
- * <li>yyyy-MM-dd'T'HH:mm:ssXXX 示例：2022-08-05T12:59:59+08:00</li>
- * <li>yyyy-MM-dd'T'HH:mm:ssZ 示例：2022-08-05T12:59:59+0800</li>
- * <li>yyyy-MM-dd'T'HH:mm:ss'Z' 示例：2022-08-05T12:59:59Z</li>
- * <li>EEE MMM dd HH:mm:ss z yyyy 示例：周五 8月 05 12:59:00 UTC+08:00 2022</li>
- * <li>EEE MMM dd HH:mm:ss zzz yyyy 示例：周五 8月 05 12:59:00 UTC+08:00 2022,其中z表示UTC时区，但：1~3个z没有任何区别</li>
- * <li>EEE, dd MMM yyyy HH:mm:ss z 示例：周五, 05 8月 2022 12:59:59 UTC+08:00</li>
+ * <li>yyyy-MM-dd Example: 2022-08-05</li>
+ * <li>yyyy年MM月dd日 Example: 2022年08月05日 (Chinese format)</li>
+ * <li>yyyy-MM-dd HH:mm:ss Example: 2022-08-05 12:59:59</li>
+ * <li>yyyy-MM-dd HH:mm:ss.SSS Example: 2022-08-05 12:59:59.559</li>
+ * <li>yyyy-MM-dd HH:mm:ss.SSSZ Example: 2022-08-05 12:59:59.559+0800 (East Eight Zone China Time), 2022-08-05
+ * 04:59:59.559+0000 (Iceland 0 Time Zone), Year Month Day Hour Minute Second Millisecond Time Zone</li>
+ * <li>yyyy-MM-dd HH:mm:ss.SSSz Example: 2022-08-05 12:59:59.559UTC (Coordinated Universal Time = 0 Time Zone),
+ * 2022-08-05T12:59:59.599GMT (Iceland 0 Time Zone), 2022-08-05T12:59:59.599CST (East Eight Zone China Time),
+ * 2022-08-23T03:45:00.599EDT (US Northeast New York Time, -0400), Year Month Day Hour Minute Second Millisecond Time
+ * Zone</li>
+ * <li>yyyy-MM-dd'T'HH:mm:ss.SSS'Z' Example: 2022-08-05T12:59:59.559Z, where: `''` single quotes indicate escape
+ * characters, `T`: separator, `Z`: generally refers to UTC, meaning 0 time zone time</li>
+ * <li>yyyy-MM-dd'T'HH:mm:ss.SSSZ Example: 2022-08-05T11:59:59.559+0800, where: `Z` indicates time zone</li>
+ * <li>yyyy-MM-dd'T'HH:mm:ss.SSSX Example: 2022-08-05T12:59:59.559+08, where: `X`: two-digit time zone, `+08` means:
+ * East 8 Zone, China Time Zone</li>
+ * <li>yyyy-MM-dd'T'HH:mm:ss.SSSXX Example: 2022-08-05T12:59:59.559+0800, where: `XX`: four-digit time zone</li>
+ * <li>yyyy-MM-dd'T'HH:mm:ss.SSSXXX Example: 2022-08-05T12:59:59.559+08:00, where: `XXX`: five-digit time zone</li>
+ * <li>yyyy-MM-dd'T'HH:mm:ss Example: 2022-08-05T12:59:59+08</li>
+ * <li>yyyy-MM-dd'T'HH:mm:ssXXX Example: 2022-08-05T12:59:59+08:00</li>
+ * <li>yyyy-MM-dd'T'HH:mm:ssZ Example: 2022-08-05T12:59:59+0800</li>
+ * <li>yyyy-MM-dd'T'HH:mm:ss'Z' Example: 2022-08-05T12:59:59Z</li>
+ * <li>EEE MMM dd HH:mm:ss z yyyy Example: Fri Aug 05 12:59:00 UTC+08:00 2022</li>
+ * <li>EEE MMM dd HH:mm:ss zzz yyyy Example: Fri Aug 05 12:59:00 UTC+08:00 2022, where `z` indicates UTC time zone, but:
+ * 1 to 3 `z`s make no difference</li>
+ * <li>EEE, dd MMM yyyy HH:mm:ss z Example: Fri, 05 Aug 2022 12:59:59 UTC+08:00</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -59,159 +64,160 @@ package org.miaixz.bus.core.lang;
 public class Fields {
 
     /**
-     * 年格式：yyyy
+     * Year format: yyyy
      */
     public static final String NORM_YEAR = "yyyy";
     /**
-     * 年月格式：yyyy-MM
+     * Year and month format: yyyy-MM
      */
     public static final String NORM_MONTH = "yyyy-MM";
 
     /**
-     * 简单年月格式：yyyyMM
+     * Simple year and month format: yyyyMM
      */
     public static final String SIMPLE_MONTH = "yyyyMM";
 
     /**
-     * 标准日期格式：yyyy-MM-dd
+     * Standard date format: yyyy-MM-dd
      */
     public static final String NORM_DATE = "yyyy-MM-dd";
 
     /**
-     * 格式化通配符: HH:mm
+     * Format wildcard: HH:mm
      */
     public static final String NORM_HOUR_MINUTE = "HH:mm";
 
     /**
-     * 标准时间格式：HH:mm:ss
+     * Standard time format: HH:mm:ss
      */
     public static final String NORM_TIME = "HH:mm:ss";
 
     /**
-     * 标准日期时间格式，精确到分：yyyy-MM-dd HH:mm
+     * Standard date and time format, accurate to minute: yyyy-MM-dd HH:mm
      */
     public static final String NORM_DATETIME_MINUTE = "yyyy-MM-dd HH:mm";
 
     /**
-     * 标准日期时间格式，精确到秒：yyyy-MM-dd HH:mm:ss
+     * Standard date and time format, accurate to second: yyyy-MM-dd HH:mm:ss
      */
     public static final String NORM_DATETIME = "yyyy-MM-dd HH:mm:ss";
 
     /**
-     * 标准日期时间格式，精确到毫秒：yyyy-MM-dd HH:mm:ss.SSS
+     * Standard date and time format, accurate to millisecond: yyyy-MM-dd HH:mm:ss.SSS
      */
     public static final String NORM_DATETIME_MS = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
-     * ISO8601日期时间格式，精确到毫秒：yyyy-MM-dd HH:mm:ss,SSS
+     * ISO8601 date and time format, accurate to millisecond: yyyy-MM-dd HH:mm:ss,SSS
      */
     public static final String NORM_DATETIME_COMMA_MS = "yyyy-MM-dd HH:mm:ss,SSS";
 
     /**
-     * 中文日期格式: M月d日
+     * Chinese date format: M月d日
      */
     public static final String CN_MONTH = "M月d日";
 
     /**
-     * 标准日期格式：yyyy年MM月dd日
+     * Standard Chinese date format: yyyy年MM月dd日
      */
     public static final String CN_DATE = "yyyy年MM月dd日";
 
     /**
-     * 标准日期格式：yyyy年MM月dd日HH时mm分ss秒
+     * Standard Chinese date and time format: yyyy年MM月dd日HH时mm分ss秒
      */
     public static final String CN_DATE_TIME = "yyyy年MM月dd日HH时mm分ss秒";
 
     /**
-     * 标准日期格式：yyyyMMdd
+     * Pure date format: yyyyMMdd
      */
     public static final String PURE_DATE = "yyyyMMdd";
 
     /**
-     * 标准日期格式: HHmm
+     * Pure hour and minute format: HHmm
      */
     public static final String PURE_HOUR_MINUTE = "HHmm";
     /**
-     * 标准日期格式：HHmmss
+     * Pure time format: HHmmss
      */
     public static final String PURE_TIME = "HHmmss";
 
     /**
-     * 标准日期格式：yyyyMMddHHmmss
+     * Pure date and time format: yyyyMMddHHmmss
      */
     public static final String PURE_DATETIME = "yyyyMMddHHmmss";
 
     /**
-     * 标准日期格式：yyyyMMddHHmmssSSS
+     * Pure date and time format, accurate to millisecond: yyyyMMddHHmmssSSS
      */
     public static final String PURE_DATETIME_MS = "yyyyMMddHHmmssSSS";
 
     /**
-     * 格式化通配符: yyyyMMddHHmmss.SSS
+     * Format wildcard: yyyyMMddHHmmss.SSS
      */
     public static final String PURE_DATETIME_TIP_PATTERN = "yyyyMMddHHmmss.SSS";
 
     /**
-     * HTTP头中日期时间格式：EEE, dd MMM yyyy HH:mm:ss z
+     * HTTP header date and time format: EEE, dd MMM yyyy HH:mm:ss z
      */
     public static final String HTTP_DATETIME = "EEE, dd MMM yyyy HH:mm:ss z";
 
     /**
-     * JDK中日期时间格式：EEE MMM dd HH:mm:ss zzz yyyy
+     * JDK date and time format: EEE MMM dd HH:mm:ss zzz yyyy
      */
     public static final String JDK_DATETIME = "EEE MMM dd HH:mm:ss zzz yyyy";
 
     /**
-     * ISO8601日期时间：yyyy-MM-dd'T'HH:mm:ss 按照ISO8601规范，默认使用T分隔日期和时间，末尾不加Z表示当地时区
+     * ISO8601 date and time: yyyy-MM-dd'T'HH:mm:ss. According to ISO8601 standard, 'T' separates date and time by
+     * default, and no 'Z' at the end indicates local time zone.
      */
     public static final String ISO8601 = "yyyy-MM-dd'T'HH:mm:ss";
 
     /**
-     * UTC时间：yyyy-MM-dd'T'HH:mm:ss.SSS
+     * UTC time: yyyy-MM-dd'T'HH:mm:ss.SSS
      */
     public static final String ISO8601_MS = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
     /**
-     * UTC时间：yyyy-MM-dd'T'HH:mm:ss'Z' 按照ISO8601规范，后缀加Z表示UTC时间
+     * UTC time: yyyy-MM-dd'T'HH:mm:ss'Z'. According to ISO8601 standard, 'Z' suffix indicates UTC time.
      */
     public static final String UTC = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
     /**
-     * ISO8601时间：yyyy-MM-dd'T'HH:mm:ssZ，Z表示一个时间偏移，如+0800
+     * ISO8601 time: yyyy-MM-dd'T'HH:mm:ssZ, where Z indicates a time offset, such as +0800.
      */
     public static final String ISO8601_WITH_ZONE_OFFSET = "yyyy-MM-dd'T'HH:mm:ssZ";
 
     /**
-     * ISO8601时间：yyyy-MM-dd'T'HH:mm:ssXXX
+     * ISO8601 time: yyyy-MM-dd'T'HH:mm:ssXXX
      */
     public static final String ISO8601_WITH_XXX_OFFSET = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
     /**
-     * ISO8601时间：yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+     * ISO8601 time: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
      */
     public static final String UTC_MS = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     /**
-     * ISO8601时间：yyyy-MM-dd'T'HH:mm:ss.SSSZ
+     * ISO8601 time: yyyy-MM-dd'T'HH:mm:ss.SSSZ
      */
     public static final String ISO8601_MS_WITH_ZONE_OFFSET = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
     /**
-     * ISO8601时间：yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+     * ISO8601 time: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
      */
     public static final String ISO8601_MS_WITH_XXX_OFFSET = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
     /**
-     * ISO8601时间：yyyy-MM-dd HH:mm:ss 'UTC'
+     * ISO8601 time: yyyy-MM-dd HH:mm:ss 'UTC'
      */
     public static final String ISO8601_MS_WITH_UTC = "yyyy-MM-dd HH:mm:ss 'UTC'";
 
     /**
-     * 格式：秒时间戳（Unix时间戳）
+     * Format: seconds timestamp (Unix timestamp)
      */
     public static final String FORMAT_SECONDS = "#sss";
     /**
-     * 格式：毫秒时间戳
+     * Format: milliseconds timestamp
      */
     public static final String FORMAT_MILLISECONDS = "#SSS";
 

@@ -37,14 +37,16 @@ import java.util.Objects;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 分批迭代工具，可以分批处理数据
+ * A utility for iterating over data in batches (partitions). This is useful in scenarios such as:
  * <ol>
- * <li>比如调用其他客户的接口，传入的入参有限，需要分批</li>
- * <li>比如mysql/oracle用in语句查询，超过1000可以分批</li>
- * <li>比如数据库取出游标，可以把游标里的数据一批一批处理</li>
+ * <li>Calling external client APIs that have limitations on the number of input parameters, requiring batch
+ * processing.</li>
+ * <li>Querying databases (e.g., MySQL/Oracle) with 'IN' clauses, where the number of items exceeds a certain limit
+ * (e.g., 1000), necessitating batching.</li>
+ * <li>Processing data from database cursors, where data can be handled in chunks.</li>
  * </ol>
  *
- * @param <T> 字段类型
+ * @param <T> the type of elements being iterated over
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -54,20 +56,22 @@ public class PartitionIterator<T> implements IterableIterator<List<T>>, Serializ
     private static final long serialVersionUID = 2852267311619L;
 
     /**
-     * 被分批的迭代器
+     * The underlying iterator whose elements are to be partitioned.
      */
     protected final Iterator<T> iterator;
     /**
-     * 实际每批大小
+     * The size of each partition (batch). The last batch may contain fewer elements than this size.
      */
     protected final int partitionSize;
 
     /**
-     * 创建分组对象
+     * Constructs a {@code PartitionIterator} with the given iterator and partition size.
      *
-     * @param iterator      迭代器
-     * @param partitionSize 每批大小，最后一批不满一批算一批
-     * @throws IllegalArgumentException 当{@code partitionSize}小于等于0，或{@code iterator}为{@code null}时抛出
+     * @param iterator      the iterator to partition, must not be {@code null}
+     * @param partitionSize the maximum number of elements in each partition. Must be greater than 0. The last partition
+     *                      may contain fewer elements.
+     * @throws IllegalArgumentException if {@code partitionSize} is less than or equal to 0, or if {@code iterator} is
+     *                                  {@code null}
      */
     public PartitionIterator(final Iterator<T> iterator, final int partitionSize) {
         Assert.isTrue(partitionSize > 0, "partition size must greater than 0");
@@ -75,11 +79,24 @@ public class PartitionIterator<T> implements IterableIterator<List<T>>, Serializ
         this.partitionSize = partitionSize;
     }
 
+    /**
+     * Returns {@code true} if the iteration has more partitions. (In other words, returns {@code true} if {@link #next}
+     * would return a list of elements rather than throwing an exception.)
+     *
+     * @return {@code true} if the iteration has more partitions
+     */
     @Override
     public boolean hasNext() {
         return this.iterator.hasNext();
     }
 
+    /**
+     * Returns the next partition (a list of elements) in the iteration. The size of the returned list will be at most
+     * {@code partitionSize}. The last list returned may be smaller than {@code partitionSize}.
+     *
+     * @return the next partition as a {@link List} of elements
+     * @throws java.util.NoSuchElementException if the iteration has no more partitions
+     */
     @Override
     public List<T> next() {
         final List<T> list = new ArrayList<>(this.partitionSize);

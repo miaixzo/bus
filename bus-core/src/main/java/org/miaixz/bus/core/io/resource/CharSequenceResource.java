@@ -33,46 +33,54 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.ByteKit;
 
 /**
- * {@link CharSequence}资源，字符串做为资源
+ * {@link CharSequence} resource, treating a character sequence as a resource. This class provides an implementation of
+ * the {@link Resource} interface for resources represented by a {@link CharSequence}, such as a {@link String} or
+ * {@link StringBuilder}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CharSequenceResource extends BytesResource {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852230576091L;
 
     /**
-     * 由于{@link java.nio.charset.Charset} 无法序列化，此处使用编码名称
+     * The name of the character set used for encoding. Since {@link java.nio.charset.Charset} is not serializable, its
+     * name is stored instead.
      */
     private final String charsetName;
 
     /**
-     * 构造，使用UTF8编码
+     * Constructs a {@code CharSequenceResource} with the given character sequence data, using UTF-8 encoding.
      *
-     * @param data 资源数据
+     * @param data The character sequence data to be used as the resource.
      */
     public CharSequenceResource(final CharSequence data) {
         this(data, null);
     }
 
     /**
-     * 构造，使用UTF8编码
+     * Constructs a {@code CharSequenceResource} with the given character sequence data and resource name, using UTF-8
+     * encoding.
      *
-     * @param data 资源数据
-     * @param name 资源名称
+     * @param data The character sequence data to be used as the resource.
+     * @param name The name of the resource.
      */
     public CharSequenceResource(final CharSequence data, final String name) {
         this(data, name, Charset.UTF_8);
     }
 
     /**
-     * 构造
+     * Constructs a {@code CharSequenceResource} with the given character sequence data, resource name, and character
+     * set.
      *
-     * @param data    资源数据
-     * @param name    资源名称
-     * @param charset 编码
+     * @param data    The character sequence data to be used as the resource.
+     * @param name    The name of the resource.
+     * @param charset The {@link java.nio.charset.Charset} to use for encoding the character sequence data.
      */
     public CharSequenceResource(final CharSequence data, final String name, final java.nio.charset.Charset charset) {
         super(ByteKit.toBytes(data, charset), name);
@@ -80,27 +88,27 @@ public class CharSequenceResource extends BytesResource {
     }
 
     /**
-     * 读取为字符串
+     * Reads the content of the resource as a string using the character set specified during construction.
      *
-     * @return 字符串
+     * @return The content of the resource as a string.
      */
     public String readString() {
         return readString(getCharset());
     }
 
     /**
-     * 获取编码名
+     * Retrieves the name of the character set used for this resource.
      *
-     * @return 编码名
+     * @return The name of the character set.
      */
     public String getCharsetName() {
         return this.charsetName;
     }
 
     /**
-     * 获取编码
+     * Retrieves the {@link java.nio.charset.Charset} object used for this resource.
      *
-     * @return 编码
+     * @return The {@link java.nio.charset.Charset} object.
      */
     public java.nio.charset.Charset getCharset() {
         return Charset.charset(this.charsetName);

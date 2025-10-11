@@ -30,7 +30,8 @@ package org.miaixz.bus.cron.crontab;
 import org.miaixz.bus.cron.timings.TimerTaskList;
 
 /**
- * 延迟任务
+ * Represents a delayed task to be executed by a timer. This class is a node in a doubly linked list, used within a
+ * {@link TimerTaskList}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,36 +39,36 @@ import org.miaixz.bus.cron.timings.TimerTaskList;
 public class TimerCrontab {
 
     /**
-     * 延迟时间
+     * The expiration time in milliseconds. The task will be executed at or after this time.
      */
     private final long delayMs;
 
     /**
-     * 任务
+     * The task to be executed.
      */
     private final Runnable task;
     /**
-     * 任务描述
+     * A description of the task.
      */
     public String desc;
     /**
-     * 时间槽
+     * The time slot (bucket) this task belongs to.
      */
     public TimerTaskList timerTaskList;
     /**
-     * 下一个节点
+     * The next task in the linked list.
      */
     public TimerCrontab next;
     /**
-     * 上一个节点
+     * The previous task in the linked list.
      */
     public TimerCrontab prev;
 
     /**
-     * 构造
+     * Constructs a new delayed task.
      *
-     * @param task    任务
-     * @param delayMs 延迟毫秒数（以当前时间为准）
+     * @param task    The {@link Runnable} to execute.
+     * @param delayMs The delay in milliseconds from the current time.
      */
     public TimerCrontab(final Runnable task, final long delayMs) {
         this.delayMs = System.currentTimeMillis() + delayMs;
@@ -75,18 +76,19 @@ public class TimerCrontab {
     }
 
     /**
-     * 获取任务
+     * Gets the task to be executed.
      *
-     * @return 任务
+     * @return The {@link Runnable} task.
      */
     public Runnable getTask() {
         return task;
     }
 
     /**
-     * 获取延迟时间点，即创建时间+延迟时长（单位毫秒）
+     * Gets the absolute expiration time in milliseconds. This is calculated as the creation time plus the delay
+     * duration.
      *
-     * @return 延迟时间点
+     * @return The expiration time in milliseconds.
      */
     public long getDelayMs() {
         return delayMs;

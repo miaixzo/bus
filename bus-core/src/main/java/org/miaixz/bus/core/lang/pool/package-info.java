@@ -26,10 +26,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 对象池封装实现 整体参考了：
+ * Provides a robust and flexible object pooling mechanism. This package offers an encapsulated implementation of object
+ * pooling, drawing inspiration from established projects. The overall design and concepts are referenced from:
  * <ul>
- * <li>https://github.com/DanielYWoo/fast-object-pool/</li>
- * <li>https://github.com/apache/commons-pool</li>
+ * <li><a href=
+ * "https://github.com/DanielYWoo/fast-object-pool/">https://github.com/DanielYWoo/fast-object-pool/</a></li>
+ * <li><a href="https://github.com/apache/commons-pool">https://github.com/apache/commons-pool</a></li>
  * </ul>
  *
  * @author Kimi Liu

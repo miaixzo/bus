@@ -31,7 +31,9 @@ import java.net.URL;
 import java.util.Collection;
 
 /**
- * ALL逻辑复合过滤器,即所有过滤器都满足的时候才满足, 只要有一个过滤器不满足就立刻返回不满足, 如果没有过滤器的时候则认为所有过滤器都满足
+ * A composite filter that implements an 'AND' logic. All contained filters must return {@code true} for this filter to
+ * return {@code true}. If any filter returns {@code false}, this filter immediately returns {@code false}. If no
+ * filters are present, it is considered to satisfy all conditions (returns {@code true}).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,28 +41,32 @@ import java.util.Collection;
 public class AllFilter extends MixFilter implements Filter {
 
     /**
-     * 构造
+     * Constructs an {@code AllFilter} with the given array of filters.
      *
-     * @param filters 过滤器
+     * @param filters An array of {@link Filter} instances.
      */
     public AllFilter(Filter... filters) {
         super(filters);
     }
 
     /**
-     * 构造
+     * Constructs an {@code AllFilter} with the given collection of filters.
      *
-     * @param filters 过滤器
+     * @param filters A collection of {@link Filter} instances.
      */
     public AllFilter(Collection<? extends Filter> filters) {
         super(filters);
     }
 
     /**
-     * @param name 资源名称,即相对路径
-     * @param url  资源URL地址
-     * @return the boolean
+     * Filters a resource. Returns {@code true} if all contained filters return {@code true}, otherwise returns
+     * {@code false}.
+     *
+     * @param name The name of the resource (relative path).
+     * @param url  The URL of the resource.
+     * @return {@code true} if all filters accept the resource, {@code false} otherwise.
      */
+    @Override
     public boolean filtrate(String name, URL url) {
         Filter[] filters = this.filters.toArray(new Filter[0]);
         for (Filter filter : filters) {
@@ -72,8 +78,10 @@ public class AllFilter extends MixFilter implements Filter {
     }
 
     /**
-     * @param filter 过滤器
-     * @return the object
+     * Adds a filter to this composite filter.
+     *
+     * @param filter The {@link Filter} to add.
+     * @return This {@code AllFilter} instance, for method chaining.
      */
     public AllFilter mix(Filter filter) {
         add(filter);

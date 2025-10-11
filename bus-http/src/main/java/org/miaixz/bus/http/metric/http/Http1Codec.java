@@ -47,30 +47,59 @@ import org.miaixz.bus.http.accord.RealConnection;
 import org.miaixz.bus.http.metric.Internal;
 
 /**
- * 可以用来发送HTTP/1.1消息的套接字连接。这个类严格执行以下生命周期: 没有请求主体的交换器可以跳过创建和关闭请求主体。没有响应体的交换器可以 调用{@link #newFixedLengthSource(long)
- * newFixedLengthSource(0)} 并可以跳过读取和关闭该源
+ * A socket connection that can be used to send HTTP/1.1 messages. This class strictly enforces the following lifecycle:
+ *
+ * <p>
+ * Exchanges that do not have a request body can skip creating and closing the request body. Exchanges that do not have
+ * a response body can call {@link #newFixedLengthSource(long) newFixedLengthSource(0)} and may skip reading and closing
+ * that source.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Http1Codec implements HttpCodec {
 
+    /**
+     * 
+     * The initial state. Waiting to write the request headers.
+     */
     private static final int STATE_IDLE = 0;
+    /**
+     * The state after writing request headers and before writing the request body.
+     */
     private static final int STATE_OPEN_REQUEST_BODY = 1;
+    /**
+     * The state while writing the request body.
+     */
     private static final int STATE_WRITING_REQUEST_BODY = 2;
+    /**
+     * The state after writing the request body and before reading response headers.
+     */
     private static final int STATE_READ_RESPONSE_HEADERS = 3;
+    /**
+     * The state after reading response headers and before reading the response body.
+     */
     private static final int STATE_OPEN_RESPONSE_BODY = 4;
+    /**
+     * The state while reading the response body.
+     */
     private static final int STATE_READING_RESPONSE_BODY = 5;
+    /**
+     * The terminal state.
+     */
     private static final int STATE_CLOSED = 6;
+    /**
+     * The maximum size of the HTTP header.
+     */
     private static final int HEADER_LIMIT = Normal._256 * Normal._1024;
 
     /**
-     * 配置此流的客户端。可能是空的HTTPS代理隧道.
+     * The client that configures this stream. May be null for HTTPS proxy tunnels.
      */
     private final Httpd httpd;
 
     /**
-     * 拥有该流的分配。对于HTTPS代理隧道可能为空
+     * The connection that owns this stream. May be null for HTTPS proxy tunnels.
      */
     private final RealConnection realConnection;
 
@@ -126,9 +155,11 @@ public class Http1Codec implements HttpCodec {
     /**
      * Prepares the HTTP headers and sends them to the server. For streaming requests with a body, headers must be
      * prepared <strong>before</strong> the output stream has been written to. Otherwise the body would need to be
-     * buffered! For non-streaming requests with a body, headers must be prepared <strong>after</strong> the output
-     * stream has been written to and closed. This ensures that the {@code Content-Length} header field receives the
-     * proper value.
+     * buffered!
+     *
+     * <p>
+     * For non-streaming requests with a body, headers must be prepared <strong>after</strong> the output stream has
+     * been written to and closed. This ensures that the {@code Content-Length} header field receives the proper value.
      */
     @Override
     public void writeRequestHeaders(Request request) throws IOException {
@@ -177,6 +208,8 @@ public class Http1Codec implements HttpCodec {
 
     /**
      * Returns true if this connection is closed.
+     * 
+     * @return true if this connection is closed.
      */
     public boolean isClosed() {
         return state == STATE_CLOSED;
@@ -194,6 +227,10 @@ public class Http1Codec implements HttpCodec {
 
     /**
      * Returns bytes of a request header for sending on an HTTP transport.
+     * 
+     * @param headers     The headers to write.
+     * @param requestLine The request line to write.
+     * @throws IOException if an I/O error occurs.
      */
     public void writeRequest(Headers headers, String requestLine) throws IOException {
         if (state != STATE_IDLE)
@@ -245,6 +282,9 @@ public class Http1Codec implements HttpCodec {
 
     /**
      * Reads headers or trailers.
+     * 
+     * @return The headers.
+     * @throws IOException if an I/O error occurs.
      */
     private Headers readHeaders() throws IOException {
         Headers.Builder headers = new Headers.Builder();
@@ -294,6 +334,8 @@ public class Http1Codec implements HttpCodec {
     /**
      * Sets the delegate of {@code timeout} to {@link Timeout#NONE} and resets its underlying timeout to the default
      * configuration. Use this to avoid unexpected sharing of timeouts between pooled connections.
+     * 
+     * @param timeout The timeout to detach.
      */
     private void detachTimeout(AssignTimeout timeout) {
         Timeout oldDelegate = timeout.delegate();
@@ -304,6 +346,9 @@ public class Http1Codec implements HttpCodec {
 
     /**
      * The response body from a CONNECT should be empty, but if it is not then we should consume it before proceeding.
+     * 
+     * @param response The response from the CONNECT request.
+     * @throws IOException if an I/O error occurs.
      */
     public void skipConnectBody(Response response) throws IOException {
         long contentLength = Headers.contentLength(response);
@@ -343,7 +388,7 @@ public class Http1Codec implements HttpCodec {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             if (closed)
                 return;
             closed = true;
@@ -476,7 +521,7 @@ public class Http1Codec implements HttpCodec {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             if (closed)
                 return;
 
@@ -494,6 +539,9 @@ public class Http1Codec implements HttpCodec {
      */
     private class ChunkedSource extends AbstractSource {
 
+        /**
+         * Sentinel value: the size of the next chunk has not yet been read.
+         */
         private static final long NO_CHUNK_YET = -1L;
         private final UnoUrl url;
         private long bytesRemainingInChunk = NO_CHUNK_YET;
@@ -553,7 +601,7 @@ public class Http1Codec implements HttpCodec {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             if (closed)
                 return;
             if (hasMoreChunks && !Builder.discard(this, DISCARD_STREAM_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
@@ -590,7 +638,7 @@ public class Http1Codec implements HttpCodec {
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             if (closed)
                 return;
             if (!inputExhausted) {

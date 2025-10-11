@@ -43,16 +43,34 @@ import org.miaixz.bus.pager.parsing.SqlServerSqlParser;
 import org.miaixz.bus.pager.parsing.DefaultSqlServerSqlParser;
 
 /**
- * sqlserver 基于 RowBounds 的分页
+ * SQL Server dialect for pagination based on {@link RowBounds}. This class provides SQL Server-specific SQL generation
+ * for pagination using offset and limit.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SqlServerRowBounds extends AbstractRowBounds {
 
+    /**
+     * SQL Server specific SQL parser for pagination.
+     */
     protected SqlServerSqlParser sqlServerSqlParser;
+    /**
+     * Utility for replacing and restoring SQL parts, especially for `with(nolock)`.
+     */
     protected ReplaceSql replaceSql;
 
+    /**
+     * Generates the SQL for the count query for SQL Server. It applies SQL replacement rules before and after
+     * generating the count SQL.
+     *
+     * @param ms              the MappedStatement object
+     * @param boundSql        the BoundSql object containing the original SQL and parameters
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @param countKey        the CacheKey for the count query
+     * @return the generated count SQL string
+     */
     @Override
     public String getCountSql(
             MappedStatement ms,
@@ -67,9 +85,18 @@ public class SqlServerRowBounds extends AbstractRowBounds {
         return sql;
     }
 
+    /**
+     * Generates the SQL Server-specific pagination SQL using {@link RowBounds}. It applies SQL replacement rules,
+     * converts the SQL to a paginated form, and substitutes pagination parameters.
+     *
+     * @param sql       the original SQL string
+     * @param rowBounds the {@link RowBounds} object containing offset and limit
+     * @param pageKey   the CacheKey for the paginated query
+     * @return the SQL Server-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
-        // 处理pageKey
+        // Process pageKey
         pageKey.update(rowBounds.getOffset());
         pageKey.update(rowBounds.getLimit());
         sql = replaceSql.replace(sql);
@@ -80,6 +107,12 @@ public class SqlServerRowBounds extends AbstractRowBounds {
         return sql;
     }
 
+    /**
+     * Sets the properties for this SQL Server RowBounds dialect. It initializes the {@link SqlServerSqlParser} and
+     * {@link ReplaceSql} implementation.
+     *
+     * @param properties the properties to set
+     */
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);

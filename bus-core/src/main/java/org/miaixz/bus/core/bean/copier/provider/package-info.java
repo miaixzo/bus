@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Bean值提供者方式封装
+ * Provides implementations of value providers for Bean copying, encapsulating how values are retrieved from different
+ * sources.
  *
  * @author Kimi Liu
  * @since Java 17+

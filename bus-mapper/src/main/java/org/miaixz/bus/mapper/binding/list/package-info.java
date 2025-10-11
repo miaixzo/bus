@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 查询列表
+ * Provides interfaces for performing batch (list-based) database operations, such as inserting or updating multiple
+ * records at once.
  *
  * @author Kimi Liu
  * @since Java 17+

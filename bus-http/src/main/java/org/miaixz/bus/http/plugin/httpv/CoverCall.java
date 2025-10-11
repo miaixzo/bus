@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.http.plugin.httpv;
 
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.HTTP;
@@ -42,25 +36,72 @@ import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.socket.WebSocket;
 import org.miaixz.bus.http.socket.WebSocketListener;
 
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Represents an active or pending WebSocket call. This class provides methods to send messages, cancel the connection,
+ * and close it gracefully. It also queues messages sent before the WebSocket is fully open.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
 public class CoverCall implements Cancelable {
 
+    /**
+     * A queue for messages sent before the WebSocket connection is established.
+     */
     private final List<Object> queues = new ArrayList<>();
+    /**
+     * The executor for handling message serialization.
+     */
     private final CoverTasks.Executor executor;
+    /**
+     * A flag indicating if the call has been canceled or the socket has been closed.
+     */
     private boolean cancelOrClosed;
+    /**
+     * The underlying WebSocket instance. It is null until the connection is opened.
+     */
     private WebSocket webSocket;
+    /**
+     * The character set for message encoding and decoding.
+     */
     private Charset charset;
-
+    /**
+     * The default message type for serialization (e.g., "json", "xml").
+     */
     private String msgType;
 
+    /**
+     * Constructs a new CoverCall.
+     *
+     * @param executor The task executor.
+     * @param msgType  The default message type for serialization.
+     */
     public CoverCall(CoverTasks.Executor executor, String msgType) {
         this.executor = executor;
         this.msgType = msgType;
     }
 
+    /**
+     * Sets the character set to be used for message serialization.
+     *
+     * @param charset The character set.
+     */
     public void setCharset(Charset charset) {
         this.charset = charset;
     }
 
+    /**
+     * Cancels the WebSocket connection immediately. Any queued messages that have not been transmitted will be
+     * discarded.
+     *
+     * @return {@code true} if the cancellation was initiated.
+     */
     @Override
     public synchronized boolean cancel() {
         if (null != webSocket) {
@@ -70,6 +111,13 @@ public class CoverCall implements Cancelable {
         return true;
     }
 
+    /**
+     * Attempts to close the WebSocket connection gracefully.
+     *
+     * @param code   The closing status code (e.g., 1000 for normal closure).
+     * @param reason A descriptive reason for closing.
+     * @return {@code true} if the closure was initiated.
+     */
     public synchronized boolean close(int code, String reason) {
         if (null != webSocket) {
             webSocket.close(code, reason);
@@ -78,13 +126,24 @@ public class CoverCall implements Cancelable {
         return true;
     }
 
+    /**
+     * Sets the default message type for object serialization.
+     *
+     * @param type The message type (e.g., "json"). Cannot be "form".
+     * @throws IllegalArgumentException if the type is null or "form".
+     */
     public void msgType(String type) {
         if (null == type || type.equalsIgnoreCase(HTTP.FORM)) {
-            throw new IllegalArgumentException("msgType 不可为空 或 form");
+            throw new IllegalArgumentException("msgType cannot be null or form");
         }
         this.msgType = type;
     }
 
+    /**
+     * Returns the number of messages queued to be sent.
+     *
+     * @return The queue size.
+     */
     public long queueSize() {
         if (null != webSocket) {
             return webSocket.queueSize();
@@ -92,6 +151,13 @@ public class CoverCall implements Cancelable {
         return queues.size();
     }
 
+    /**
+     * Enqueues a message to be sent over the WebSocket. If the connection is not yet open, the message is queued
+     * internally.
+     *
+     * @param msg The message to send (can be String, ByteString, byte[], or a serializable object).
+     * @return {@code true} if the message was accepted for sending.
+     */
     public boolean send(Object msg) {
         if (null == msg) {
             return false;
@@ -106,6 +172,12 @@ public class CoverCall implements Cancelable {
         return true;
     }
 
+    /**
+     * Associates this call with an opened WebSocket and flushes any queued messages. This method is intended for
+     * internal use.
+     *
+     * @param webSocket The opened WebSocket instance.
+     */
     void setWebSocket(WebSocket webSocket) {
         synchronized (queues) {
             for (Object msg : queues) {
@@ -116,6 +188,13 @@ public class CoverCall implements Cancelable {
         }
     }
 
+    /**
+     * Sends a message over the given WebSocket, handling different message types.
+     *
+     * @param webSocket The WebSocket to send the message on.
+     * @param msg       The message object.
+     * @return {@code true} if the message was sent successfully.
+     */
     boolean send(WebSocket webSocket, Object msg) {
         if (null == msg) {
             return false;
@@ -133,64 +212,102 @@ public class CoverCall implements Cancelable {
         return webSocket.send(new String(bytes, charset));
     }
 
+    /**
+     * A functional interface for handling WebSocket events.
+     *
+     * @param <T> The type of data associated with the event.
+     */
     public interface Register<T> {
 
+        /**
+         * Called when a WebSocket event occurs.
+         *
+         * @param ws   The CoverCall instance.
+         * @param data The data associated with the event.
+         */
         void on(CoverCall ws, T data);
 
     }
 
+    /**
+     * Encapsulates information about a WebSocket closure.
+     */
     public static class Close {
 
-        public static int CANCELED = 0;
-        public static int EXCEPTION = -1;
-        public static int NETWORK_ERROR = -2;
-        public static int TIMEOUT = -3;
+        /**
+         * Custom status code indicating the WebSocket was canceled by the client.
+         */
+        public static final int CANCELED = 0;
+        /**
+         * Custom status code indicating the WebSocket was closed due to an unexpected exception.
+         */
+        public static final int EXCEPTION = -1;
+        /**
+         * Custom status code indicating the WebSocket was closed due to a network error.
+         */
+        public static final int NETWORK_ERROR = -2;
+        /**
+         * Custom status code indicating the WebSocket was closed due to a timeout.
+         */
+        public static final int TIMEOUT = -3;
 
+        /**
+         * The WebSocket closing status code.
+         */
         private final int code;
+        /**
+         * The human-readable reason for closing.
+         */
         private final String reason;
 
+        /**
+         * Constructs a new Close event object.
+         *
+         * @param code   The closing status code.
+         * @param reason The reason for closing.
+         */
         public Close(int code, String reason) {
             this.code = code;
             this.reason = reason;
         }
 
         /**
-         * @return 关闭状态码
+         * @return The closing status code.
          */
         public int getCode() {
             return code;
         }
 
         /**
-         * @return 关闭原因
+         * @return The reason for closing.
          */
         public String getReason() {
             return reason;
         }
 
         /**
-         * @return 是否因 WebSocket 连接被取消而关闭
+         * @return True if the WebSocket was closed due to cancellation.
          */
         public boolean isCanceled() {
             return code == CANCELED;
         }
 
         /**
-         * @return 是否因 WebSocket 连接发生异常而关闭
+         * @return True if the WebSocket was closed due to an exception.
          */
         public boolean isException() {
             return code == EXCEPTION;
         }
 
         /**
-         * @return 是否因 网络错误 而关闭
+         * @return True if the WebSocket was closed due to a network error.
          */
         public boolean isNetworkError() {
             return code == NETWORK_ERROR;
         }
 
         /**
-         * @return 是否因 网络超时 而关闭
+         * @return True if the WebSocket was closed due to a network timeout.
          */
         public boolean isTimeout() {
             return code == TIMEOUT;
@@ -202,13 +319,31 @@ public class CoverCall implements Cancelable {
         }
     }
 
+    /**
+     * A WebSocket listener that bridges Httpd's WebSocket events to the CoverCall's event system.
+     */
     public static class Listener extends WebSocketListener {
 
+        /**
+         * The client that initiated the WebSocket connection.
+         */
         private final Client client;
+        /**
+         * The CoverCall associated with this listener.
+         */
         CoverCall webSocket;
 
+        /**
+         * The character set inferred from the server's response.
+         */
         Charset charset;
 
+        /**
+         * Constructs a new listener.
+         *
+         * @param client    The initiating client.
+         * @param webSocket The CoverCall wrapper.
+         */
         public Listener(Client client, CoverCall webSocket) {
             this.client = client;
             this.webSocket = webSocket;
@@ -256,6 +391,13 @@ public class CoverCall implements Cancelable {
             doOnClose(CoverResult.State.RESPONSED, code, reason);
         }
 
+        /**
+         * Handles the logic for triggering the 'onClosed' callback.
+         *
+         * @param state  The final state of the connection.
+         * @param code   The closing status code.
+         * @param reason The closing reason.
+         */
         private void doOnClose(CoverResult.State state, int code, String reason) {
             CoverTasks.Listener<CoverResult.State> listener = client.httpv.executor().getCompleteListener();
             if (null != listener) {
@@ -271,12 +413,20 @@ public class CoverCall implements Cancelable {
             }
         }
 
+        /**
+         * Converts an internal state and reason into a public {@link Close} object.
+         *
+         * @param state  The final state of the connection.
+         * @param code   The original close code.
+         * @param reason The original reason.
+         * @return A {@link Close} object representing the closure.
+         */
         private Close toClose(CoverResult.State state, int code, String reason) {
             if (state == CoverResult.State.CANCELED) {
                 return new Close(Close.CANCELED, "Canceled");
             }
             if (state == CoverResult.State.EXCEPTION) {
-                return new Close(Close.CANCELED, reason);
+                return new Close(Close.EXCEPTION, reason);
             }
             if (state == CoverResult.State.NETWORK_ERROR) {
                 return new Close(Close.NETWORK_ERROR, reason);
@@ -306,42 +456,88 @@ public class CoverCall implements Cancelable {
     }
 
     /**
+     * A client for creating and configuring WebSocket connections.
+     *
      * @author Kimi Liu
      * @since Java 17+
      */
     public static class Client extends CoverHttp<Client> {
 
+        /**
+         * Listener for when the WebSocket connection is successfully opened.
+         */
         private Register<CoverResult> onOpen;
+        /**
+         * Listener for when a connection failure occurs.
+         */
         private Register<Throwable> onException;
+        /**
+         * Listener for incoming messages.
+         */
         private Register<Message> onMessage;
+        /**
+         * Listener for when the server initiates a graceful close.
+         */
         private Register<Close> onClosing;
+        /**
+         * Listener for when the connection is fully closed (also called on failure or cancellation).
+         */
         private Register<Close> onClosed;
 
+        /**
+         * Flag to execute the onOpen callback on an I/O thread.
+         */
         private boolean openOnIO;
+        /**
+         * Flag to execute the onException callback on an I/O thread.
+         */
         private boolean exceptionOnIO;
+        /**
+         * Flag to execute the onMessage callback on an I/O thread.
+         */
         private boolean messageOnIO;
+        /**
+         * Flag to execute the onClosing callback on an I/O thread.
+         */
         private boolean closingOnIO;
+        /**
+         * Flag to execute the onClosed callback on an I/O thread.
+         */
         private boolean closedOnIO;
 
+        /**
+         * Client-to-server ping interval in seconds.
+         */
         private int pingSeconds = -1;
+        /**
+         * Expected server-to-client pong interval in seconds.
+         */
         private int pongSeconds = -1;
 
+        /**
+         * Constructs a new WebSocket client.
+         *
+         * @param client The HTTP client instance.
+         * @param url    The WebSocket URL.
+         */
         public Client(Httpv client, String url) {
             super(client, url);
         }
 
         /**
-         * 设置心跳间隔 覆盖原有的心跳模式，主要区别如下：
+         * Sets the heartbeat interval, overriding the default heartbeat mode.
          * <p>
-         * 1、客户端发送的任何消息都具有一次心跳作用 2、服务器发送的任何消息都具有一次心跳作用 3、若服务器超过 3 * pongSeconds 秒没有回复心跳，才判断心跳超时 4、可指定心跳的具体内容（默认为空）
+         * Key differences: 1. Any message sent by the client acts as a heartbeat. 2. Any message sent by the server
+         * acts as a heartbeat. 3. A timeout is only triggered if the server does not reply within 3 * pongSeconds. 4.
+         * The specific content of the heartbeat can be specified (defaults to empty).
          *
-         * @param pingSeconds 客户端心跳间隔秒数（0 表示不需要心跳）
-         * @param pongSeconds 服务器心跳间隔秒数（0 表示不需要心跳）
-         * @return this
+         * @param pingSeconds The client's heartbeat interval in seconds (0 means no heartbeat).
+         * @param pongSeconds The server's heartbeat interval in seconds (0 means no heartbeat).
+         * @return this client instance for chaining.
          */
         public Client heatbeat(int pingSeconds, int pongSeconds) {
             if (pingSeconds < 0 || pongSeconds < 0) {
-                throw new IllegalArgumentException("pingSeconds and pongSeconds must greater equal than 0!");
+                throw new IllegalArgumentException("pingSeconds and pongSeconds must be greater than or equal to 0!");
             }
             this.pingSeconds = pingSeconds;
             this.pongSeconds = pongSeconds;
@@ -349,9 +545,9 @@ public class CoverCall implements Cancelable {
         }
 
         /**
-         * 启动 WebSocket 监听
+         * Starts the WebSocket connection and returns a {@link CoverCall} to interact with it.
          *
-         * @return WebSocket
+         * @return The CoverCall representing the connection.
          */
         public CoverCall listen() {
             String bodyType = getBodyType();
@@ -371,15 +567,21 @@ public class CoverCall implements Cancelable {
             return socket;
         }
 
+        /**
+         * Executes a command on the appropriate thread pool.
+         *
+         * @param command The command to run.
+         * @param onIo    If true, execute on the I/O thread pool; otherwise, use the main pool.
+         */
         private void execute(Runnable command, boolean onIo) {
             httpv.executor().execute(command, onIo);
         }
 
         /**
-         * 连接打开监听
+         * Sets the open connection listener.
          *
-         * @param onOpen 监听器
-         * @return WebSocketCover
+         * @param onOpen The listener.
+         * @return this client instance for chaining.
          */
         public Client setOnOpen(Register<CoverResult> onOpen) {
             this.onOpen = onOpen;
@@ -389,10 +591,10 @@ public class CoverCall implements Cancelable {
         }
 
         /**
-         * 连接异常监听
+         * Sets the connection exception listener.
          *
-         * @param onException 监听器
-         * @return WebSocketCover
+         * @param onException The listener.
+         * @return this client instance for chaining.
          */
         public Client setOnException(Register<Throwable> onException) {
             this.onException = onException;
@@ -402,10 +604,10 @@ public class CoverCall implements Cancelable {
         }
 
         /**
-         * 消息监听
+         * Sets the message listener.
          *
-         * @param onMessage 监听器
-         * @return WebSocketCover
+         * @param onMessage The listener.
+         * @return this client instance for chaining.
          */
         public Client setOnMessage(Register<Message> onMessage) {
             this.onMessage = onMessage;
@@ -415,10 +617,10 @@ public class CoverCall implements Cancelable {
         }
 
         /**
-         * 正在关闭监听
+         * Sets the closing listener.
          *
-         * @param onClosing 监听器
-         * @return WebSocketCover
+         * @param onClosing The listener.
+         * @return this client instance for chaining.
          */
         public Client setOnClosing(Register<Close> onClosing) {
             this.onClosing = onClosing;
@@ -428,10 +630,10 @@ public class CoverCall implements Cancelable {
         }
 
         /**
-         * 已关闭监听（当连接被取消或发生异常时，也会走该回调）
+         * Sets the closed listener (also called on cancellation or exception).
          *
-         * @param onClosed 监听器
-         * @return WebSocketCover
+         * @param onClosed The listener.
+         * @return this client instance for chaining.
          */
         public Client setOnClosed(Register<Close> onClosed) {
             this.onClosed = onClosed;
@@ -440,10 +642,16 @@ public class CoverCall implements Cancelable {
             return this;
         }
 
+        /**
+         * @return The configured client-to-server ping interval in seconds.
+         */
         public int pingSeconds() {
             return pingSeconds;
         }
 
+        /**
+         * @return The configured expected server-to-client pong interval in seconds.
+         */
         public int pongSeconds() {
             return pongSeconds;
         }
@@ -451,28 +659,53 @@ public class CoverCall implements Cancelable {
     }
 
     /**
+     * Represents an incoming WebSocket message, which can be either text or binary. Provides convenient methods for
+     * data conversion.
+     *
      * @author Kimi Liu
      * @since Java 17+
      */
     public static class Message {
 
+        /**
+         * The text content of the message, if it is a text message.
+         */
         private String text;
+        /**
+         * The binary content of the message, if it is a binary message.
+         */
         private ByteString bytes;
 
+        /**
+         * Constructs a message from a text string.
+         *
+         * @param text The text content.
+         */
         public Message(String text) {
-
             this.text = text;
         }
 
+        /**
+         * Constructs a message from a ByteString.
+         *
+         * @param bytes The binary content.
+         */
         public Message(ByteString bytes) {
-
             this.bytes = bytes;
         }
 
+        /**
+         * @return {@code true} if this is a text message, {@code false} otherwise.
+         */
         public boolean isText() {
             return null != text;
         }
 
+        /**
+         * Converts the message content to a byte array. Text messages are encoded using UTF-8.
+         *
+         * @return The message content as a byte array, or {@code null} if the message is empty.
+         */
         public byte[] toBytes() {
             if (null != text) {
                 return text.getBytes(org.miaixz.bus.core.lang.Charset.UTF_8);
@@ -483,6 +716,12 @@ public class CoverCall implements Cancelable {
             return null;
         }
 
+        /**
+         * Returns the string representation of the message. For binary messages, this decodes the bytes as a UTF-8
+         * string.
+         *
+         * @return The message content as a string, or {@code null} if the message is empty.
+         */
         @Override
         public String toString() {
             if (null != text) {
@@ -494,6 +733,11 @@ public class CoverCall implements Cancelable {
             return null;
         }
 
+        /**
+         * Converts the message content to a {@link ByteString}. Text messages are encoded using UTF-8.
+         *
+         * @return The message content as a {@link ByteString}.
+         */
         public ByteString toByteString() {
             if (null != text) {
                 return ByteString.encodeUtf8(text);
@@ -501,10 +745,20 @@ public class CoverCall implements Cancelable {
             return bytes;
         }
 
+        /**
+         * Returns a {@link Reader} for the message content.
+         *
+         * @return A character stream reader.
+         */
         public Reader toCharStream() {
             return new InputStreamReader(toByteStream());
         }
 
+        /**
+         * Returns an {@link InputStream} for the message content.
+         *
+         * @return A byte stream.
+         */
         public InputStream toByteStream() {
             if (null != text) {
                 return new ByteArrayInputStream(text.getBytes(org.miaixz.bus.core.lang.Charset.UTF_8));

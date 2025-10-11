@@ -35,13 +35,21 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.CitizenId;
 
 /**
- * 身份证号码校验
+ * Validator for Chinese citizen ID numbers.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CitizenIdMatcher implements Matcher<Object, CitizenId> {
 
+    /**
+     * Checks if the given object, when converted to a string, is a valid Chinese citizen ID number.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link CitizenId} annotation instance (ignored).
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is a valid citizen ID number, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, CitizenId annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {

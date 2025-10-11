@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.net.ip.IPv4;
 
 /**
- * 掩码位和掩码之间的Map对应
+ * A map that provides a bidirectional mapping between mask bits and subnet masks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,7 +42,7 @@ import org.miaixz.bus.core.net.ip.IPv4;
 public class MaskBit {
 
     /**
-     * 掩码位与掩码的点分十进制的双向对应关系
+     * A bidirectional map between mask bits and their corresponding dotted-decimal subnet masks.
      */
     private static final BiMap<Integer, String> MASK_BIT_MAP;
 
@@ -83,33 +83,34 @@ public class MaskBit {
     }
 
     /**
-     * 根据掩码位获取掩码
+     * Gets the dotted-decimal subnet mask for a given number of mask bits.
      *
-     * @param maskBit 掩码位
-     * @return 掩码
+     * @param maskBit The number of mask bits (e.g., 24).
+     * @return The corresponding subnet mask (e.g., "255.255.255.0").
      */
     public static String get(final int maskBit) {
         return MASK_BIT_MAP.get(maskBit);
     }
 
     /**
-     * 根据掩码获取掩码位
+     * Gets the number of mask bits for a given dotted-decimal subnet mask.
      *
-     * @param mask 掩码的点分十进制表示，如 255.255.255.0
-     * @return 掩码位，如 24；如果掩码不合法，则返回null
+     * @param mask The dotted-decimal subnet mask (e.g., "255.255.255.0").
+     * @return The corresponding number of mask bits (e.g., 24), or {@code null} if the mask is invalid.
      */
     public static Integer getMaskBit(final String mask) {
         return MASK_BIT_MAP.getKey(mask);
     }
 
     /**
-     * 根据掩码位获取掩码IP(Long型)
+     * Gets the subnet mask as a long integer from the number of mask bits.
      *
-     * @param maskBit 掩码位
-     * @return 掩码IP(Long型)
+     * @param maskBit The number of mask bits.
+     * @return The subnet mask as a long integer.
+     * @throws IllegalArgumentException if the mask bit is invalid.
      */
     public static long getMaskIpLong(final int maskBit) {
-        Assert.isTrue(MASK_BIT_MAP.containsKey(maskBit), "非法的掩码位数：{}", maskBit);
+        Assert.isTrue(MASK_BIT_MAP.containsKey(maskBit), "Invalid mask bit: {}", maskBit);
         return (Protocol.IPV4_NUM_MAX << (IPv4.IPV4_MASK_BIT_MAX - maskBit)) & Protocol.IPV4_NUM_MAX;
     }
 

@@ -39,9 +39,10 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 通过转换器将你的实体转化为TreeNodeMap节点实体 属性都存在此处,属性有序，可支持排序
+ * A tree node implementation that uses a {@link LinkedHashMap} to store its properties. This allows for ordered
+ * properties and supports sorting.
  *
- * @param <T> ID类型
+ * @param <T> The type of the node's identifier.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -50,31 +51,37 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     @Serial
     private static final long serialVersionUID = 2852250137281L;
 
+    /**
+     * Configuration for the tree node.
+     */
     private final NodeConfig nodeConfig;
+    /**
+     * The parent node of this node.
+     */
     private MapTree<T> parent;
 
     /**
-     * 构造
+     * Default constructor. Initializes with default {@link NodeConfig}.
      */
     public MapTree() {
         this(null);
     }
 
     /**
-     * 构造
+     * Constructor with specified node configuration.
      *
-     * @param nodeConfig TreeNode配置
+     * @param nodeConfig The configuration for the tree node.
      */
     public MapTree(final NodeConfig nodeConfig) {
         this.nodeConfig = ObjectKit.defaultIfNull(nodeConfig, NodeConfig.DEFAULT_CONFIG);
     }
 
     /**
-     * 打印
+     * Recursively prints the tree structure to a {@link PrintWriter}.
      *
-     * @param tree   树
-     * @param writer Writer
-     * @param intent 缩进量
+     * @param tree   The tree node to print.
+     * @param writer The writer to print to.
+     * @param intent The indentation level.
      */
     private static void printTree(final MapTree<?> tree, final PrintWriter writer, final int intent) {
         writer.println(
@@ -90,27 +97,27 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 获取节点配置
+     * Gets the node configuration.
      *
-     * @return 节点配置
+     * @return The node configuration.
      */
     public NodeConfig getConfig() {
         return this.nodeConfig;
     }
 
     /**
-     * 获取父节点
+     * Gets the parent node.
      *
-     * @return 父节点
+     * @return The parent node.
      */
     public MapTree<T> getParent() {
         return parent;
     }
 
     /**
-     * 设置父节点
+     * Sets the parent node. Also sets the parent ID.
      *
-     * @param parent 父节点
+     * @param parent The parent node.
      * @return this
      */
     public MapTree<T> setParent(final MapTree<T> parent) {
@@ -122,37 +129,34 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个。 此方法只查找此节点及子节点，采用广度优先遍历。
+     * Gets the node with the specified ID. This method searches this node and its children using a breadth-first
+     * search. If multiple nodes have the same ID, the first one found is returned.
      *
-     * @param id ID
-     * @return 节点
+     * @param id The ID of the node to find.
+     * @return The found node, or {@code null} if not found.
      */
     public MapTree<T> getNode(final T id) {
         return TreeKit.getNode(this, id);
     }
 
     /**
-     * 获取所有父节点名称列表
+     * Gets the names of all parent nodes for a given node ID. For example, if an employee is in "Dept 1", which is
+     * under "R &amp; D", which is under "Tech Center", the result would be: ["Dept 1", "R &amp; D", "Tech Center"].
      *
-     * <p>
-     * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心 返回结果就是：[研发一部, 研发中心, 技术中心]
-     *
-     * @param id                 节点ID
-     * @param includeCurrentNode 是否包含当前节点的名称
-     * @return 所有父节点名称列表
+     * @param id                 The ID of the starting node.
+     * @param includeCurrentNode Whether to include the name of the current node in the list.
+     * @return A list of parent node names.
      */
     public List<CharSequence> getParentsName(final T id, final boolean includeCurrentNode) {
         return TreeKit.getParentsName(getNode(id), includeCurrentNode);
     }
 
     /**
-     * 获取所有父节点名称列表
+     * Gets the names of all parent nodes for the current node. For example, if an employee is in "Dept 1", which is
+     * under "R &amp; D", which is under "Tech Center", the result would be: ["Dept 1", "R &amp; D", "Tech Center"].
      *
-     * <p>
-     * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心 返回结果就是：[研发一部, 研发中心, 技术中心]
-     *
-     * @param includeCurrentNode 是否包含当前节点的名称
-     * @return 所有父节点名称列表
+     * @param includeCurrentNode Whether to include the name of the current node in the list.
+     * @return A list of parent node names.
      */
     public List<CharSequence> getParentsName(final boolean includeCurrentNode) {
         return TreeKit.getParentsName(this, includeCurrentNode);
@@ -203,18 +207,18 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 获取所有子节点
+     * Gets the list of all child nodes.
      *
-     * @return 所有子节点
+     * @return The list of child nodes.
      */
     public List<MapTree<T>> getChildren() {
         return (List<MapTree<T>>) this.get(nodeConfig.getChildrenKey());
     }
 
     /**
-     * 设置子节点，设置后会覆盖所有原有子节点
+     * Sets the child nodes, replacing any existing children.
      *
-     * @param children 子节点列表，如果为{@code null}表示移除子节点
+     * @param children The list of child nodes. If {@code null}, existing children are removed.
      * @return this
      */
     public MapTree<T> setChildren(final List<MapTree<T>> children) {
@@ -226,32 +230,31 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 是否有子节点，无子节点则此为叶子节点
+     * Checks if this node has any children. A node with no children is a leaf node.
      *
-     * @return 是否有子节点
+     * @return {@code true} if the node has children, {@code false} otherwise.
      */
     public boolean hasChild() {
         return CollKit.isNotEmpty(getChildren());
     }
 
     /**
-     * 递归树并处理子树下的节点，采用深度优先遍历方式。
+     * Recursively traverses the tree and processes each node using a depth-first strategy.
      *
-     * @param consumer 节点处理器
+     * @param consumer The consumer to process each node.
      */
     public void walk(final Consumer<MapTree<T>> consumer) {
         walk(consumer, false);
     }
 
     /**
-     * 递归树并处理子树下的节点
+     * Recursively traverses the tree and processes each node.
      *
-     * @param consumer   节点处理器
-     * @param broadFirst 是否广度优先遍历
+     * @param consumer   The consumer to process each node.
+     * @param broadFirst If {@code true}, uses breadth-first traversal; otherwise, uses depth-first traversal.
      */
     public void walk(final Consumer<MapTree<T>> consumer, final boolean broadFirst) {
-        if (broadFirst) { // 广度优先遍历
-            // 加入FIFO队列
+        if (broadFirst) { // Breadth-first traversal
             final Queue<MapTree<T>> queue = new LinkedList<>();
             queue.offer(this);
             while (!queue.isEmpty()) {
@@ -262,8 +265,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
                     children.forEach(queue::offer);
                 }
             }
-        } else { // 深度优先遍历
-            // 入栈,FILO
+        } else { // Depth-first traversal
             final Stack<MapTree<T>> stack = new Stack<>();
             stack.add(this);
             while (!stack.isEmpty()) {
@@ -278,10 +280,11 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 递归过滤并生成新的树 通过{@link Predicate}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点，否则抛弃节点及其子节点
+     * Recursively filters the tree and creates a new tree. If a node or any of its children satisfy the predicate, the
+     * node is kept. Otherwise, the node and its children are discarded.
      *
-     * @param predicate 节点过滤规则函数，只需处理本级节点本身即可，{@link Predicate#test(Object)}为{@code true}保留，null表示全部保留
-     * @return 过滤后的节点，{@code null} 表示不满足过滤要求，丢弃之
+     * @param predicate The filtering logic. A node is kept if {@link Predicate#test(Object)} returns {@code true}.
+     * @return The filtered new tree, or {@code null} if the root node does not match.
      * @see #filter(Predicate)
      */
     public MapTree<T> filterNew(final Predicate<MapTree<T>> predicate) {
@@ -289,21 +292,22 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 递归过滤当前树，注意此方法会修改当前树 通过{@link Predicate}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点及其所有子节点，否则抛弃节点及其子节点
+     * Recursively filters this tree in-place. If a node or any of its children satisfy the predicate, the node is kept.
+     * Otherwise, the node and its children are discarded. This method modifies the current tree.
      *
-     * @param predicate 节点过滤规则函数，只需处理本级节点本身即可，{@link Predicate#test(Object)}为{@code true}保留，null表示保留全部
-     * @return 过滤后的节点，{@code null} 表示不满足过滤要求，丢弃之
+     * @param predicate The filtering logic. A node is kept if {@link Predicate#test(Object)} returns {@code true}.
+     * @return The filtered node, or {@code null} if the node does not match.
      * @see #filterNew(Predicate)
      */
     public MapTree<T> filter(final Predicate<MapTree<T>> predicate) {
         if (null == predicate || predicate.test(this)) {
-            // 本节点满足，则包括所有子节点都保留
+            // If this node matches, all its children are kept.
             return this;
         }
 
         final List<MapTree<T>> children = getChildren();
         if (CollKit.isNotEmpty(children)) {
-            // 递归过滤子节点
+            // Recursively filter children
             final List<MapTree<T>> filteredChildren = new ArrayList<>(children.size());
             MapTree<T> filteredChild;
             for (final MapTree<T> child : children) {
@@ -313,21 +317,21 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
                 }
             }
             if (CollKit.isNotEmpty(filteredChildren)) {
-                // 子节点有符合过滤条件的节点，则本节点保留
+                // If any child matches, this node is kept.
                 return this.setChildren(filteredChildren);
             } else {
                 this.setChildren(null);
             }
         }
 
-        // 子节点都不符合过滤条件，检查本节点
+        // If this node and all its children do not match, discard it.
         return null;
     }
 
     /**
-     * 增加子节点，同时关联子节点的父节点为当前节点
+     * Adds child nodes and sets this node as their parent.
      *
-     * @param children 子节点列表
+     * @param children The child nodes to add.
      * @return this
      */
     @SafeVarargs
@@ -347,10 +351,10 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 扩展属性
+     * Adds an extra property to the node.
      *
-     * @param key   键
-     * @param value 扩展值
+     * @param key   The property key.
+     * @param value The property value.
      */
     public void putExtra(final String key, final Object value) {
         Assert.notEmpty(key, "Key must be not empty !");
@@ -365,9 +369,10 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 递归克隆当前节点（即克隆整个树，保留字段值） 注意，此方法只会克隆节点，节点属性如果是引用类型，不会克隆
+     * Recursively clones this node and its entire subtree. Note that this is a shallow clone of the node's properties;
+     * reference-type properties are not cloned.
      *
-     * @return 新的节点
+     * @return A new node representing the cloned tree.
      */
     public MapTree<T> cloneTree() {
         final MapTree<T> result = ObjectKit.clone(this);
@@ -376,11 +381,10 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 递归复制子节点
+     * Recursively clones the child nodes.
      *
-     * @param parent 新的父节点
-     *
-     * @return 新的子节点列表
+     * @param parent The new parent for the cloned children.
+     * @return A new list of cloned child nodes.
      */
     private List<MapTree<T>> cloneChildren(final MapTree<T> parent) {
         final List<MapTree<T>> children = getChildren();
@@ -388,9 +392,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
             return null;
         }
         final List<MapTree<T>> newChildren = new ArrayList<>(children.size());
-        children.forEach((t) -> {
-            newChildren.add(t.cloneTree().setParent(parent));
-        });
+        children.forEach((t) -> newChildren.add(t.cloneTree().setParent(parent)));
         return newChildren;
     }
 

@@ -45,7 +45,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Entity 基本信息
+ * Base entity class, containing common fields such as data status, creator, creation time, modifier, modification time,
+ * nonce, search parameters, and pagination information. Provides methods for setting access information and operator
+ * property values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,75 +59,79 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class BaseEntity extends Tracer {
 
+    /**
+     * Serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852287773629L;
 
     /**
-     * 数据状态:-1删除,0无效,1正常
+     * Data status: -1 for deleted, 0 for invalid, 1 for normal.
      */
     @Logical
     @NotBlank
     protected Integer status;
 
     /**
-     * 创建者
+     * The creator of the entity.
      */
     protected String creator;
 
     /**
-     * 创建时间
+     * The creation timestamp of the entity.
      */
     protected Long created;
 
     /**
-     * 修改者
+     * The modifier of the entity.
      */
     protected String modifier;
 
     /**
-     * 修改时间
+     * The modification timestamp of the entity.
      */
     protected Long modified;
 
     /**
-     * 随机数
+     * A random number, used to prevent duplicate submissions or as a unique identifier.
      */
     @Transient
     protected transient String nonce;
 
     /**
-     * 搜索参数
+     * Search parameters, used to store query conditions.
      */
     @Transient
     protected transient String params;
 
     /**
-     * 分页页码
+     * Page number for pagination.
      */
     @Transient
     @NotBlank
     protected transient Integer pageNo;
 
     /**
-     * 分页大小
+     * Page size for pagination.
      */
     @Transient
     @NotBlank
     protected transient Integer pageSize;
 
     /**
-     * 排序方式,asc desc
+     * Sorting order, can be "asc" (ascending) or "desc" (descending).
      */
     @Transient
     protected transient String orderBy;
 
     /**
-     * 重置数字型字符串为null，防止插入数据库表异常
+     * Resets numeric string fields to null to prevent database insertion errors. If a numeric string property's value
+     * is an empty string, it will be set to null.
      *
-     * @param <T>    对象泛型
-     * @param entity 实体对象
-     * @param fields 数字型字符串属性数组
-     * @param values 值数据
+     * @param <T>    the entity type
+     * @param entity the entity object
+     * @param fields an array of numeric string property names
+     * @param values an array of values corresponding to the fields
      */
     public static <T extends BaseEntity> void resetIntField(T entity, String[] fields, String[] values) {
         for (int i = 0; i < fields.length; i++) {
@@ -137,11 +143,11 @@ public class BaseEntity extends Tracer {
     }
 
     /**
-     * 设置访问信息
+     * Sets access information, transferring tenant ID and user ID from a source entity to a target entity.
      *
-     * @param <T>    对象泛型
-     * @param source 源始实体
-     * @param target 目标实体
+     * @param <T>    the target entity type
+     * @param source the source entity containing access information
+     * @param target the target entity to which access information will be set
      */
     public <T extends BaseEntity> void setAccess(T source, T target) {
         if (ObjectKit.isNull(source) || ObjectKit.isNull(target)) {
@@ -152,13 +158,14 @@ public class BaseEntity extends Tracer {
     }
 
     /**
-     * 设置访问信息
+     * Sets access information, transferring tenant ID and user ID from a source entity to multiple target entities.
      *
-     * @param <T>    对象泛型
-     * @param source 源始实体
-     * @param target 目标实体
+     * @param <T>    the target entity type
+     * @param source the source entity containing access information
+     * @param target an array of target entities to which access information will be set
      */
-    public <T extends BaseEntity> void setAccess(T source, T... target) {
+    @SafeVarargs
+    public final <T extends BaseEntity> void setAccess(T source, T... target) {
         if (ObjectKit.isNull(source) || ArrayKit.isEmpty(target)) {
             return;
         }
@@ -168,12 +175,12 @@ public class BaseEntity extends Tracer {
     }
 
     /**
-     * 设置访问信息
+     * Sets access information, transferring tenant ID and user ID from a source entity to a list of target entities.
      *
-     * @param <S>    源对象泛型
-     * @param <E>    集合元素对象泛型
-     * @param source 源始实体
-     * @param target 目标实体
+     * @param <S>    the source entity type
+     * @param <E>    the element type of the target entity list
+     * @param source the source entity containing access information
+     * @param target the list of target entities to which access information will be set
      */
     public <S extends BaseEntity, E extends BaseEntity> void setAccess(S source, List<E> target) {
         if (ObjectKit.isNull(source) || CollKit.isEmpty(target)) {
@@ -183,10 +190,11 @@ public class BaseEntity extends Tracer {
     }
 
     /**
-     * 快速设置操作者属性值
+     * Quickly sets creator property values, including ID, creator, and creation time. If the ID is empty, a new
+     * ObjectId is generated. If the creator is empty, the x_user_id is used as the creator.
      *
-     * @param <T>    对象
-     * @param entity 反射对象
+     * @param <T>    the entity type
+     * @param entity the reflective object for which creator properties will be set
      */
     public <T> void setInsert(T entity) {
         String id = ObjectKit.isEmpty(getValue(entity, "id")) ? ID.objectId() : (String) getValue(entity, "id");
@@ -203,10 +211,11 @@ public class BaseEntity extends Tracer {
     }
 
     /**
-     * 快速设置操作者属性值
+     * Quickly sets updater property values, including modifier and modification time. If the modifier is empty, the
+     * x_user_id is used as the modifier.
      *
-     * @param <T>    泛型对象
-     * @param entity 反射对象
+     * @param <T>    the entity type
+     * @param entity the reflective object for which updater properties will be set
      */
     public <T> void setUpdate(T entity) {
         String timestamp = StringKit.toString(DateKit.current());
@@ -223,10 +232,10 @@ public class BaseEntity extends Tracer {
     }
 
     /**
-     * 快速设置操作者属性值
+     * Quickly sets operator property values, including both creation and update properties.
      *
-     * @param entity 反射对象
-     * @param <T>    泛型对象
+     * @param entity the reflective object for which operator properties will be set
+     * @param <T>    the entity type
      */
     public <T> void setValue(T entity) {
         this.setInsert(entity);

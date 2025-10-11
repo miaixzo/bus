@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 夏季三伏
+ * Provides classes related to the "Sanfu" (三伏) or Dog Days, which are three periods of hot weather in the Chinese
+ * calendar.
  *
  * @author Kimi Liu
  * @since Java 17+

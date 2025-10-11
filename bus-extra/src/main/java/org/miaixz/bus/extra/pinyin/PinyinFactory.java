@@ -35,7 +35,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 简单拼音引擎工厂，用于根据用户引入的拼音库jar，自动创建对应的拼音引擎对象 使用简单工厂（Simple Factory）模式
+ * Simple Pinyin engine factory that automatically creates the corresponding Pinyin engine object based on the Pinyin
+ * library JARs introduced by the user. It uses the Simple Factory pattern.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,9 +44,10 @@ import org.miaixz.bus.logger.Logger;
 public class PinyinFactory {
 
     /**
-     * 获得单例
+     * Retrieves a singleton instance of {@link PinyinProvider}. The first available Pinyin provider found via SPI will
+     * be used.
      *
-     * @return 单例
+     * @return A singleton instance of {@link PinyinProvider}.
      */
     public static PinyinProvider get() {
         final PinyinProvider engine = Instances.get(PinyinProvider.class.getName(), PinyinFactory::create);
@@ -56,20 +58,21 @@ public class PinyinFactory {
     }
 
     /**
-     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * Creates a new {@link PinyinProvider} instance. This method returns a new engine instance each time it is called.
      *
-     * @return {@link PinyinProvider}
+     * @return A new {@link PinyinProvider} instance.
      */
     public static PinyinProvider create() {
         return doCreate();
     }
 
     /**
-     * 创建自定义引擎
+     * Creates a custom Pinyin engine by name.
      *
-     * @param name 引擎名称，忽略大小写，如`Bopomofo4j`、`Houbb`、`JPinyin`、`Pinyin4j`、`TinyPinyin`
-     * @return 引擎
-     * @throws InternalException 无对应名称的引擎
+     * @param name The name of the engine (case-insensitive), e.g., `Bopomofo4j`, `Houbb`, `JPinyin`, `Pinyin4j`,
+     *             `TinyPinyin`.
+     * @return The {@link PinyinProvider} instance corresponding to the given name.
+     * @throws InternalException if no engine with the specified name is found.
      */
     public static PinyinProvider create(String name) throws InternalException {
         if (!StringKit.endWithIgnoreCase(name, "Provider")) {
@@ -85,9 +88,11 @@ public class PinyinFactory {
     }
 
     /**
-     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * Creates a new {@link PinyinProvider} instance based on the available Pinyin engine JARs. This method returns a
+     * new engine instance each time it is called.
      *
-     * @return {@link PinyinProvider}
+     * @return A new {@link PinyinProvider} instance.
+     * @throws InternalException if no Pinyin library is found or available.
      */
     private static PinyinProvider doCreate() {
         final PinyinProvider engine = NormalSpiLoader.loadFirstAvailable(PinyinProvider.class);

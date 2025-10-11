@@ -28,7 +28,10 @@
 package org.miaixz.bus.starter.bridge;
 
 /**
- * 服务端-信息处理
+ * Defines the contract for services that resolve and retrieve configuration information.
+ * <p>
+ * Implementations of this interface are responsible for fetching configuration data based on the provided properties.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,18 +39,18 @@ package org.miaixz.bus.starter.bridge;
 public interface Resolvable {
 
     /**
-     * 获取配置信息
+     * Finds and retrieves a single piece of configuration information.
      *
-     * @param entity 请求参数
-     * @return the string
+     * @param entity The properties entity containing the request parameters.
+     * @return The resolved configuration object, or {@code null} if not found.
      */
     Object find(BridgeProperties entity);
 
     /**
-     * 批量获取配置信息
+     * Finds and retrieves a collection of configuration information.
      *
-     * @param entity 请求参数
-     * @return the string
+     * @param entity The properties entity containing the request parameters for the batch operation.
+     * @return A collection of resolved configuration objects.
      */
     Object findAll(BridgeProperties entity);
 

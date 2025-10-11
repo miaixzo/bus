@@ -42,32 +42,43 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * 多资源组合资源 此资源为一个利用游标自循环资源，只有调用{@link #next()} 方法才会获取下一个资源，使用完毕后调用{@link #reset()}方法重置游标
+ * A composite resource that combines multiple resources. This resource acts as a self-cycling cursor, where calling
+ * {@link #next()} retrieves the subsequent resource. After all resources are consumed, {@link #reset()} can be called
+ * to reset the cursor for reuse.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MultiResource implements Resource, Iterable<Resource>, Iterator<Resource>, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852232202695L;
 
+    /**
+     * The list of resources managed by this composite resource.
+     */
     private final List<Resource> resources;
+    /**
+     * The current cursor position within the list of resources.
+     */
     private int cursor;
 
     /**
-     * 构造
+     * Constructs a {@code MultiResource} with an array of resources.
      *
-     * @param resources 资源数组
+     * @param resources An array of {@link Resource} objects.
      */
     public MultiResource(final Resource... resources) {
         this(ListKit.of(resources));
     }
 
     /**
-     * 构造
+     * Constructs a {@code MultiResource} with a collection of resources.
      *
-     * @param resources 资源列表
+     * @param resources A {@link Collection} of {@link Resource} objects.
      */
     public MultiResource(final Collection<Resource> resources) {
         if (resources instanceof List) {
@@ -147,17 +158,17 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
     }
 
     /**
-     * 重置游标
+     * Resets the cursor to the beginning of the resource list, allowing for re-iteration.
      */
     public synchronized void reset() {
         this.cursor = 0;
     }
 
     /**
-     * 增加资源
+     * Adds a single resource to the end of the resource list.
      *
-     * @param resource 资源
-     * @return this
+     * @param resource The {@link Resource} to add.
+     * @return This {@code MultiResource} instance for method chaining.
      */
     public MultiResource add(final Resource resource) {
         this.resources.add(resource);
@@ -165,10 +176,10 @@ public class MultiResource implements Resource, Iterable<Resource>, Iterator<Res
     }
 
     /**
-     * 增加多个资源
+     * Adds multiple resources from an iterable collection to the end of the resource list.
      *
-     * @param iterable 资源列表
-     * @return this
+     * @param iterable An {@link Iterable} collection of {@link Resource} objects to add.
+     * @return This {@code MultiResource} instance for method chaining.
      */
     public MultiResource addAll(final Iterable<? extends Resource> iterable) {
         iterable.forEach((this::add));

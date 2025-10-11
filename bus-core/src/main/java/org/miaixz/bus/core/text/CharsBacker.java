@@ -53,30 +53,33 @@ import org.miaixz.bus.core.text.replacer.StringRangeReplacer;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * {@link CharSequence} 相关类封装，包括但不限于：
+ * Utility class for {@link CharSequence} operations, including but not limited to:
  * <ul>
- * <li>字符串补充前缀或后缀：addXXX</li>
- * <li>字符串补充长度：padXXX</li>
- * <li>字符串包含关系：containsXXX</li>
- * <li>字符串默认值：defaultIfXXX</li>
- * <li>字符串查找：indexOf</li>
- * <li>字符串判断以什么结尾：endWith</li>
- * <li>字符串判断以什么开始：startWith</li>
- * <li>字符串匹配：equals</li>
- * <li>字符串格式化：format</li>
- * <li>字符串去除：removeXXX</li>
- * <li>字符串重复：repeat</li>
- * <li>获取子串：sub</li>
- * <li>去除两边的指定字符串（只去除一次）：strip</li>
- * <li>去除两边的指定所有字符：trim</li>
- * <li>去除两边的指定所有字符包装和去除包装：wrap</li>
+ * <li>Adding prefixes or suffixes to strings: {@code addXXX}</li>
+ * <li>Padding strings to a specific length: {@code padXXX}</li>
+ * <li>Checking string containment: {@code containsXXX}</li>
+ * <li>Providing default values for strings: {@code defaultIfXXX}</li>
+ * <li>Finding substrings: {@code indexOf}</li>
+ * <li>Checking if a string ends with a specific sequence: {@code endWith}</li>
+ * <li>Checking if a string starts with a specific sequence: {@code startWith}</li>
+ * <li>Comparing strings: {@code equals}</li>
+ * <li>Formatting strings: {@code format}</li>
+ * <li>Removing parts of strings: {@code removeXXX}</li>
+ * <li>Repeating strings: {@code repeat}</li>
+ * <li>Extracting substrings: {@code sub}</li>
+ * <li>Stripping specified strings from both ends (once): {@code strip}</li>
+ * <li>Trimming all specified characters from both ends: {@code trim}</li>
+ * <li>Wrapping and unwrapping strings with specified characters: {@code wrap}, {@code unWrap}</li>
  * </ul>
  * <p>
- * 需要注意的是，strip、trim、wrap（unWrap）的策略不同：
+ * Note the different strategies for {@code strip}, {@code trim}, and {@code wrap} ({@code unWrap}):
  * <ul>
- * <li>strip： 强调去除两边或某一边的指定字符串，这个字符串不会重复去除，如果一边不存在，另一边不影响去除</li>
- * <li>trim： 强调去除两边指定字符，如果这个字符有多个，全部去除，例如去除两边所有的空白符。</li>
- * <li>unWrap：强调去包装，要求包装的前后字符都要存在，只有一个则不做处理，如去掉双引号包装。</li>
+ * <li>{@code strip}: Emphasizes removing a *specific string* from one or both ends. It will not repeatedly remove the
+ * string. If one side does not exist, the other side's removal is unaffected.</li>
+ * <li>{@code trim}: Emphasizes removing *specified characters* from both ends. If there are multiple occurrences of the
+ * character, all are removed (e.g., trimming all whitespace characters).</li>
+ * <li>{@code unWrap}: Emphasizes unwrapping, requiring both the prefix and suffix characters to be present. If only one
+ * is present, no action is taken (e.g., removing double quotes).</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -85,10 +88,10 @@ import org.miaixz.bus.core.xyz.*;
 public class CharsBacker extends CharsValidator {
 
     /**
-     * 调用对象的toString方法，null会返回“null”
+     * Calls the {@code toString()} method of an object. If the object is {@code null}, it returns the string "null".
      *
-     * @param object 对象
-     * @return 字符串
+     * @param object The object to convert to a string.
+     * @return The string representation of the object, or "null" if the object is {@code null}.
      * @see String#valueOf(Object)
      */
     public static String toString(final Object object) {
@@ -96,20 +99,21 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 调用对象的toString方法，{@code null}会返回{@code null}
+     * Calls the {@code toString()} method of an object. If the object is {@code null}, it returns {@code null}.
      *
-     * @param object 对象
-     * @return 字符串 or {@code null}
+     * @param object The object to convert to a string.
+     * @return The string representation of the object, or {@code null} if the object is {@code null}.
      */
     public static String toStringOrNull(final Object object) {
         return null == object ? null : object.toString();
     }
 
     /**
-     * 调用对象的toString方法，{@code null}会返回空字符串 "" 如果仅仅是对{@link CharSequence}处理，请使用{@link #emptyIfNull(CharSequence)}
+     * Calls the {@code toString()} method of an object. If the object is {@code null}, it returns an empty string "".
+     * If only processing {@link CharSequence}, please use {@link #emptyIfNull(CharSequence)}.
      *
-     * @param object 对象
-     * @return {@link String }
+     * @param object The object to convert to a string.
+     * @return The string representation of the object, or an empty string "" if the object is {@code null}.
      * @see #emptyIfNull(CharSequence)
      */
     public static String toStringOrEmpty(final Object object) {
@@ -117,10 +121,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 当给定字符串为空字符串时，转换为"" 此方法与{@link #toStringOrEmpty(Object)}不同的是，如果提供的{@link CharSequence}非String，则保持原状
+     * Converts the given {@link CharSequence} to an empty string "" if it is {@code null}. This method differs from
+     * {@link #toStringOrEmpty(Object)} in that if the provided {@link CharSequence} is not a {@link String}, it remains
+     * unchanged.
      *
-     * @param text 被转换的字符串
-     * @return 转换后的字符串
+     * @param text The {@link CharSequence} to convert.
+     * @return The converted {@link CharSequence}, or an empty string "" if the input is {@code null}.
      * @see #toStringOrEmpty(Object)
      */
     public static CharSequence emptyIfNull(final CharSequence text) {
@@ -128,30 +134,30 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 当给定字符串为空字符串时，转换为{@code null}
+     * Returns {@code null} if the given {@link CharSequence} is empty.
      *
-     * @param <T>  字符串类型
-     * @param text 被转换的字符串
-     * @return 转换后的字符串
+     * @param <T>  The type of the {@link CharSequence}.
+     * @param text The {@link CharSequence} to check.
+     * @return {@code null} if the input {@link CharSequence} is empty, otherwise the original {@link CharSequence}.
      */
     public static <T extends CharSequence> T nullIfEmpty(final T text) {
         return isEmpty(text) ? null : text;
     }
 
     /**
-     * 当给定字符串为空字符串时，转换为{@code null}
+     * Returns {@code null} if the given {@link CharSequence} is blank (contains only whitespace).
      *
-     * @param <T>  字符串类型
-     * @param text 被转换的字符串
-     * @return 转换后的字符串
+     * @param <T>  The type of the {@link CharSequence}.
+     * @param text The {@link CharSequence} to check.
+     * @return {@code null} if the input {@link CharSequence} is blank, otherwise the original {@link CharSequence}.
      */
     public static <T extends CharSequence> T nullIfBlank(final T text) {
         return isBlank(text) ? null : text;
     }
 
     /**
-     * 如果给定字符串为{@code null}返回默认值
-     * 
+     * Returns a default value if the given {@link CharSequence} is {@code null}.
+     *
      * <pre>{@code
      *   defaultIfNull(null, null);       = null
      *   defaultIfNull(null, "");         = ""
@@ -159,10 +165,10 @@ public class CharsBacker extends CharsValidator {
      *   defaultIfNull("abc", *);         = "abc"
      * }</pre>
      *
-     * @param <T>          字符串类型
-     * @param text         被检查字符串，可能为{@code null}
-     * @param defaultValue 被检查字符串为{@code null}返回的默认值，可以为{@code null}
-     * @return 被检查字符串不为 {@code null} 返回原值，否则返回默认值
+     * @param <T>          The type of the {@link CharSequence}.
+     * @param text         The {@link CharSequence} to check, may be {@code null}.
+     * @param defaultValue The default value to return if the {@link CharSequence} is {@code null}, may be {@code null}.
+     * @return The original {@link CharSequence} if it is not {@code null}, otherwise the default value.
      * @see ObjectKit#defaultIfNull(Object, Object)
      */
     public static <T extends CharSequence> T defaultIfNull(final T text, final T defaultValue) {
@@ -170,12 +176,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定字符串不为{@code null} 返回原值, 否则返回 {@link Supplier#get()} 提供的默认值
+     * Returns the original value if the given {@link CharSequence} is not {@code null}, otherwise returns the default
+     * value provided by the {@link Supplier}.
      *
-     * @param <T>             被检查字符串类型
-     * @param source          被检查字符串，可能为{@code null}
-     * @param defaultSupplier 为空时的默认值提供者
-     * @return 被检查字符串不为 {@code null} 返回原值，否则返回 {@link Supplier#get()} 提供的默认值
+     * @param <T>             The type of the {@link CharSequence}.
+     * @param source          The {@link CharSequence} to check, may be {@code null}.
+     * @param defaultSupplier The supplier for the default value when the source is {@code null}.
+     * @return The original {@link CharSequence} if it is not {@code null}, otherwise the default value from the
+     *         supplier.
      * @see ObjectKit#defaultIfNull(Object, Supplier)
      */
     public static <T extends CharSequence> T defaultIfNull(
@@ -185,14 +193,16 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定字符串不为{@code null} 返回自定义handler处理后的结果，否则返回 {@link Supplier#get()} 提供的默认值
+     * Returns the result of a custom handler if the given {@link CharSequence} is not {@code null}, otherwise returns
+     * the default value provided by the {@link Supplier}.
      *
-     * @param <R>             返回值类型
-     * @param <T>             被检查对象类型
-     * @param source          被检查对象，可能为{@code null}
-     * @param handler         非空时自定义的处理方法
-     * @param defaultSupplier 为空时的默认值提供者
-     * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回 {@link Supplier#get()} 提供的默认值
+     * @param <R>             The return type.
+     * @param <T>             The type of the {@link CharSequence}.
+     * @param source          The {@link CharSequence} to check, may be {@code null}.
+     * @param handler         The custom function to apply if the source is not {@code null}.
+     * @param defaultSupplier The supplier for the default value when the source is {@code null}.
+     * @return The result of the handler if the source is not {@code null}, otherwise the default value from the
+     *         supplier.
      * @see ObjectKit#defaultIfNull(Object, Function, Supplier)
      */
     public static <T extends CharSequence, R> R defaultIfNull(
@@ -203,7 +213,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定对象为{@code null}或者 "" 返回默认值
+     * Returns a default value if the given {@link CharSequence} is {@code null} or empty.
      *
      * <pre>
      *   defaultIfEmpty(null, null)      = null
@@ -213,36 +223,39 @@ public class CharsBacker extends CharsValidator {
      *   defaultIfEmpty("abc", *)        = "abc"
      * </pre>
      *
-     * @param <T>          对象类型（必须实现CharSequence接口）
-     * @param text         被检查对象，可能为{@code null}
-     * @param defaultValue 被检查对象为{@code null}或者 ""返回的默认值，可以为{@code null}或者 ""
-     * @return 被检查对象为{@code null}或者 ""返回默认值，否则返回原值
+     * @param <T>          The type of the {@link CharSequence}.
+     * @param text         The {@link CharSequence} to check, may be {@code null}.
+     * @param defaultValue The default value to return if the {@link CharSequence} is {@code null} or empty, may be
+     *                     {@code null} or "".
+     * @return The default value if the {@link CharSequence} is {@code null} or empty, otherwise the original value.
      */
     public static <T extends CharSequence> T defaultIfEmpty(final T text, final T defaultValue) {
         return isEmpty(text) ? defaultValue : text;
     }
 
     /**
-     * 如果给定对象为{@code null}或者{@code ""}返回原值, 否则返回自定义handler处理后的返回值
+     * Returns the original value if the given {@link CharSequence} is not {@code null} or empty, otherwise returns the
+     * default value provided by the {@link Supplier}.
      *
-     * @param <T>             被检查对象类型
-     * @param text            String 类型
-     * @param defaultSupplier empty时的处理方法
-     * @return 处理后的返回值
+     * @param <T>             The type of the {@link CharSequence}.
+     * @param text            The {@link CharSequence} to check.
+     * @param defaultSupplier The supplier for the default value when the text is empty.
+     * @return The original {@link CharSequence} if it is not empty, otherwise the default value from the supplier.
      */
     public static <T extends CharSequence> T defaultIfEmpty(final T text, final Supplier<? extends T> defaultSupplier) {
         return isEmpty(text) ? defaultSupplier.get() : text;
     }
 
     /**
-     * 如果给定对象为{@code null}或者{@code ""}返回defaultHandler处理的结果, 否则返回自定义handler处理后的返回值
+     * Returns the result of a custom handler if the given {@link CharSequence} is not {@code null} or empty, otherwise
+     * returns the default value provided by the {@link Supplier}.
      *
-     * @param <T>             被检查对象类型
-     * @param <V>             结果类型
-     * @param text            String 类型
-     * @param handler         非empty的处理方法
-     * @param defaultSupplier empty时的处理方法
-     * @return 处理后的返回值
+     * @param <T>             The type of the {@link CharSequence}.
+     * @param <V>             The result type.
+     * @param text            The {@link CharSequence} to check.
+     * @param handler         The custom function to apply if the text is not empty.
+     * @param defaultSupplier The supplier for the default value when the text is empty.
+     * @return The result of the handler if the text is not empty, otherwise the default value from the supplier.
      */
     public static <T extends CharSequence, V> V defaultIfEmpty(
             final T text,
@@ -252,7 +265,8 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定对象为{@code null}或者""或者空白符返回默认值
+     * Returns a default value if the given {@link CharSequence} is {@code null}, empty, or blank (contains only
+     * whitespace).
      *
      * <pre>
      *   defaultIfBlank(null, null)      = null
@@ -262,25 +276,28 @@ public class CharsBacker extends CharsValidator {
      *   defaultIfBlank("abc", *)        = "abc"
      * </pre>
      *
-     * @param <T>          对象类型（必须实现CharSequence接口）
-     * @param text         被检查对象，可能为{@code null}
-     * @param defaultValue 被检查对象为{@code null}或者 ""或者空白符返回的默认值，可以为{@code null}或者 ""或者空白符
-     * @return 被检查对象为{@code null}或者 ""或者空白符返回默认值，否则返回原值
+     * @param <T>          The type of the {@link CharSequence}.
+     * @param text         The {@link CharSequence} to check, may be {@code null}.
+     * @param defaultValue The default value to return if the {@link CharSequence} is {@code null} or empty, or blank,
+     *                     may be {@code null} or "" or blank.
+     * @return The default value if the {@link CharSequence} is {@code null}, empty, or blank, otherwise the original
+     *         value.
      */
     public static <T extends CharSequence> T defaultIfBlank(final T text, final T defaultValue) {
         return isBlank(text) ? defaultValue : text;
     }
 
     /**
-     * 如果被检查对象为 {@code null} 或 "" 或 空白字符串时，返回默认值（由 defaultValueSupplier 提供）；否则直接返回
+     * Returns the result of a custom handler if the given {@link CharSequence} is not {@code null}, empty, or blank,
+     * otherwise returns the default value provided by the {@link Supplier}.
      *
-     * @param text            被检查对象
-     * @param handler         非blank的处理方法
-     * @param defaultSupplier 默认值提供者
-     * @param <T>             对象类型（必须实现CharSequence接口）
-     * @param <V>             结果类型
-     * @return 被检查对象为{@code null}返回默认值，否则返回自定义handle处理后的返回值
-     * @throws NullPointerException {@code defaultValueSupplier == null} 时，抛出
+     * @param text            The {@link CharSequence} to check.
+     * @param handler         The custom function to apply if the text is not blank.
+     * @param defaultSupplier The supplier for the default value when the text is blank.
+     * @param <T>             The type of the {@link CharSequence}.
+     * @param <V>             The result type.
+     * @return The result of the handler if the text is not blank, otherwise the default value from the supplier.
+     * @throws NullPointerException if {@code defaultValueSupplier} is {@code null}.
      */
     public static <T extends CharSequence, V> V defaultIfBlank(
             final T text,
@@ -293,34 +310,38 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 除去字符串头尾部的空白，如果字符串是{@code null}，依然返回{@code null}。
+     * Removes leading and trailing whitespace from a string. If the string is {@code null}, {@code null} is returned.
      *
      * <p>
-     * 注意，和{@link String#trim()}不同，此方法使用{@link CharKit#isBlankChar(char)} 来判定空白， 因而可以除去英文字符集之外的其它空白，如中文空格。
+     * Note that unlike {@link String#trim()}, this method uses {@link CharKit#isBlankChar(char)} to determine what
+     * constitutes whitespace, thus it can remove other whitespace characters beyond the English character set, such as
+     * Chinese spaces.
      * <ul>
-     * <li>去除字符串空格罗列相关如下：</li>
-     * <li>{@link #trimPrefix(CharSequence)}去除头部空格</li>
-     * <li>{@link #trimSuffix(CharSequence)}去除尾部空格</li>
-     * <li>{@link #cleanBlank(CharSequence)}去除头部、尾部、中间空格</li>
+     * <li>Related whitespace removal methods:</li>
+     * <li>{@link #trimPrefix(CharSequence)} removes leading whitespace.</li>
+     * <li>{@link #trimSuffix(CharSequence)} removes trailing whitespace.</li>
+     * <li>{@link #cleanBlank(CharSequence)} removes leading, trailing, and internal whitespace.</li>
      * </ul>
      *
      * <pre>
      * trim(null)                         = null
-     * trim(&quot;&quot;)                 = &quot;&quot;
-     * trim(&quot;     &quot;)            = &quot;&quot;
-     * trim(&quot;abc&quot;)              = &quot;abc&quot;
-     * trim(&quot;    abc    &quot;)      = &quot;abc&quot;
+     * trim("")                           = ""
+     * trim("     ")                      = ""
+     * trim("abc")                        = "abc"
+     * trim("    abc    ")                = "abc"
      * </pre>
      *
-     * @param text 要处理的字符串
-     * @return 除去头尾空白的字符串，如果原字串为{@code null}，则返回{@code null}
+     * @param text The string to process.
+     * @return The string with leading and trailing whitespace removed, or {@code null} if the original string was
+     *         {@code null}.
      */
     public static String trim(final CharSequence text) {
         return StringTrimer.TRIM_BLANK.apply(text);
     }
 
     /**
-     * 除去字符串头尾部的空白，如果字符串是{@code null}，返回{@code ""}。
+     * Removes leading and trailing whitespace from a string. If the string is {@code null}, an empty string "" is
+     * returned.
      *
      * <pre>
      * trimToEmpty(null)                  = ""
@@ -330,15 +351,17 @@ public class CharsBacker extends CharsValidator {
      * trimToEmpty("    abc    ")         = "abc"
      * </pre>
      *
-     * @param text 字符串
-     * @return 去除两边空白符后的字符串, 如果为null返回""
+     * @param text The string to process.
+     * @return The string with leading and trailing whitespace removed, or an empty string "" if the input is
+     *         {@code null}.
      */
     public static String trimToEmpty(final CharSequence text) {
         return text == null ? Normal.EMPTY : trim(text);
     }
 
     /**
-     * 除去字符串头尾部的空白，如果字符串是{@code null}或者""，返回{@code null}。
+     * Removes leading and trailing whitespace from a string. If the string is {@code null} or empty, {@code null} is
+     * returned.
      *
      * <pre>
      * trimToNull(null)                   = null
@@ -348,8 +371,9 @@ public class CharsBacker extends CharsValidator {
      * trimToEmpty("    abc    ")         = "abc"
      * </pre>
      *
-     * @param text 字符串
-     * @return 去除两边空白符后的字符串, 如果为空返回null
+     * @param text The string to process.
+     * @return The string with leading and trailing whitespace removed, or {@code null} if the input is empty or
+     *         {@code null}.
      */
     public static String trimToNull(final CharSequence text) {
         final String trim = trim(text);
@@ -357,67 +381,76 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 除去字符串头部的空白，如果字符串是{@code null}，则返回{@code null}。
+     * Removes leading whitespace from a string. If the string is {@code null}, {@code null} is returned.
      *
      * <p>
-     * 注意，和{@link String#trim()}不同，此方法使用{@link CharKit#isBlankChar(char)} 来判定空白， 因而可以除去英文字符集之外的其它空白，如中文空格。
+     * Note that unlike {@link String#trim()}, this method uses {@link CharKit#isBlankChar(char)} to determine what
+     * constitutes whitespace, thus it can remove other whitespace characters beyond the English character set, such as
+     * Chinese spaces.
      *
      * <pre>
      * trimPrefix(null)                   = null
-     * trimPrefix(&quot;&quot;)           = &quot;&quot;
-     * trimPrefix(&quot;abc&quot;)        = &quot;abc&quot;
-     * trimPrefix(&quot;  abc&quot;)      = &quot;abc&quot;
-     * trimPrefix(&quot;abc  &quot;)      = &quot;abc  &quot;
-     * trimPrefix(&quot; abc &quot;)      = &quot;abc &quot;
+     * trimPrefix("")                     = ""
+     * trimPrefix("abc")                  = "abc"
+     * trimPrefix("  abc")                = "abc"
+     * trimPrefix("abc  ")                = "abc  "
+     * trimPrefix(" abc ")                = "abc "
      * </pre>
      *
-     * @param text 要处理的字符串
-     * @return 除去空白的字符串，如果原字串为{@code null}或结果字符串为{@code ""}，则返回 {@code null}
+     * @param text The string to process.
+     * @return The string with leading whitespace removed, or {@code null} if the original string was {@code null} or
+     *         the result is an empty string.
      */
     public static String trimPrefix(final CharSequence text) {
         return StringTrimer.TRIM_PREFIX_BLANK.apply(text);
     }
 
     /**
-     * 除去字符串尾部的空白，如果字符串是{@code null}，则返回{@code null}。
+     * Removes trailing whitespace from a string. If the string is {@code null}, {@code null} is returned.
      *
      * <p>
-     * 注意，和{@link String#trim()}不同，此方法使用{@link CharKit#isBlankChar(char)} 来判定空白， 因而可以除去英文字符集之外的其它空白，如中文空格。
+     * Note that unlike {@link String#trim()}, this method uses {@link CharKit#isBlankChar(char)} to determine what
+     * constitutes whitespace, thus it can remove other whitespace characters beyond the English character set, such as
+     * Chinese spaces.
      *
      * <pre>
-     * trimSuffix(null)                  = null
-     * trimSuffix(&quot;&quot;)          = &quot;&quot;
-     * trimSuffix(&quot;abc&quot;)       = &quot;abc&quot;
-     * trimSuffix(&quot;  abc&quot;)     = &quot;  abc&quot;
-     * trimSuffix(&quot;abc  &quot;)     = &quot;abc&quot;
-     * trimSuffix(&quot; abc &quot;)     = &quot; abc&quot;
+     * trimSuffix(null)                   = null
+     * trimSuffix("")                     = ""
+     * trimSuffix("abc")                  = "abc"
+     * trimSuffix("  abc")                = "  abc"
+     * trimSuffix("abc  ")                = "abc"
+     * trimSuffix(" abc ")                = " abc"
      * </pre>
      *
-     * @param text 要处理的字符串
-     * @return 除去空白的字符串，如果原字串为{@code null}或结果字符串为{@code ""}，则返回 {@code null}
+     * @param text The string to process.
+     * @return The string with trailing whitespace removed, or {@code null} if the original string was {@code null} or
+     *         the result is an empty string.
      */
     public static String trimSuffix(final CharSequence text) {
         return StringTrimer.TRIM_SUFFIX_BLANK.apply(text);
     }
 
     /**
-     * 除去字符串头尾部的空白符，如果字符串是{@code null}，依然返回{@code null}。
+     * Removes leading and trailing whitespace characters from a string based on the specified trim mode. If the string
+     * is {@code null}, {@code null} is returned.
      *
-     * @param text 要处理的字符串
-     * @param mode 去除模式，可选去除头部、尾部、两边
-     * @return 除去指定字符后的的字符串，如果原字串为{@code null}，则返回{@code null}
+     * @param text The string to process.
+     * @param mode The trim mode, specifying whether to trim leading, trailing, or both.
+     * @return The string with specified characters removed, or {@code null} if the original string was {@code null}.
      */
     public static String trim(final CharSequence text, final StringTrimer.TrimMode mode) {
         return new StringTrimer(mode, CharKit::isBlankChar).apply(text);
     }
 
     /**
-     * 按照断言，除去字符串头尾部的断言为真的字符，如果字符串是{@code null}，依然返回{@code null}。
+     * Removes leading and trailing characters from a string based on a given predicate. If the string is {@code null},
+     * {@code null} is returned.
      *
-     * @param text      要处理的字符串
-     * @param mode      去除模式，可选去除头部、尾部、两边
-     * @param predicate 断言是否过掉字符，返回{@code true}表述过滤掉，{@code false}表示不过滤
-     * @return 除去指定字符后的的字符串，如果原字串为{@code null}，则返回{@code null}
+     * @param text      The string to process.
+     * @param mode      The trim mode, specifying whether to trim leading, trailing, or both.
+     * @param predicate A predicate to determine if a character should be trimmed. Returns {@code true} to trim,
+     *                  {@code false} to keep.
+     * @return The string with specified characters removed, or {@code null} if the original string was {@code null}.
      */
     public static String trim(
             final CharSequence text,
@@ -427,11 +460,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 字符串是否以给定字符开始
+     * Checks if a string starts with a given character.
      *
-     * @param text 字符串
-     * @param c    字符
-     * @return 是否开始
+     * @param text The string to check.
+     * @param c    The character to check for.
+     * @return {@code true} if the string starts with the character, {@code false} otherwise.
      */
     public static boolean startWith(final CharSequence text, final char c) {
         if (isEmpty(text)) {
@@ -441,44 +474,45 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 是否以指定字符串开头
+     * Checks if a string starts with a specified prefix.
      *
-     * @param text   被监测字符串
-     * @param prefix 开头字符串
-     * @return 是否以指定字符串开头
+     * @param text   The string to check.
+     * @param prefix The prefix to check for.
+     * @return {@code true} if the string starts with the prefix, {@code false} otherwise.
      */
     public static boolean startWith(final CharSequence text, final CharSequence prefix) {
         return startWith(text, prefix, false);
     }
 
     /**
-     * 是否以指定字符串开头，忽略相等字符串的情况
+     * Checks if a string starts with a specified prefix, ignoring the case where the string and prefix are equal.
      *
-     * @param text   被监测字符串
-     * @param prefix 开头字符串
-     * @return 是否以指定字符串开头并且两个字符串不相等
+     * @param text   The string to check.
+     * @param prefix The prefix to check for.
+     * @return {@code true} if the string starts with the prefix and they are not equal, {@code false} otherwise.
      */
     public static boolean startWithIgnoreEquals(final CharSequence text, final CharSequence prefix) {
         return startWith(text, prefix, false, true);
     }
 
     /**
-     * 是否以指定字符串开头，忽略大小写
+     * Checks if a string starts with a specified prefix, ignoring case.
      *
-     * @param text   被监测字符串
-     * @param prefix 开头字符串
-     * @return 是否以指定字符串开头
+     * @param text   The string to check.
+     * @param prefix The prefix to check for.
+     * @return {@code true} if the string starts with the prefix (case-insensitive), {@code false} otherwise.
      */
     public static boolean startWithIgnoreCase(final CharSequence text, final CharSequence prefix) {
         return startWith(text, prefix, true);
     }
 
     /**
-     * 给定字符串是否以任何一个字符串开始 给定字符串和数组为空都返回false
+     * Checks if a given string starts with any of the specified prefixes. Returns {@code false} if the given string or
+     * the array of prefixes is empty.
      *
-     * @param text     给定字符串
-     * @param prefixes 需要检测的开始字符串
-     * @return 给定字符串是否以任何一个字符串开始
+     * @param text     The string to check.
+     * @param prefixes An array of prefixes to check against.
+     * @return {@code true} if the string starts with any of the prefixes, {@code false} otherwise.
      */
     public static boolean startWithAny(final CharSequence text, final CharSequence... prefixes) {
         if (isEmpty(text) || ArrayKit.isEmpty(prefixes)) {
@@ -494,11 +528,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 给定字符串是否以任何一个字符串开始（忽略大小写） 给定字符串和数组为空都返回false
+     * Checks if a given string starts with any of the specified prefixes, ignoring case. Returns {@code false} if the
+     * given string or the array of prefixes is empty.
      *
-     * @param text     给定字符串
-     * @param prefixes 需要检测的开始字符串
-     * @return 给定字符串是否以任何一个字符串开始
+     * @param text     The string to check.
+     * @param prefixes An array of prefixes to check against.
+     * @return {@code true} if the string starts with any of the prefixes (case-insensitive), {@code false} otherwise.
      */
     public static boolean startWithAnyIgnoreCase(final CharSequence text, final CharSequence... prefixes) {
         if (isEmpty(text) || ArrayKit.isEmpty(prefixes)) {
@@ -514,31 +549,33 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 是否以指定字符串开头 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
+     * Checks if a string starts with a specified prefix. If both the given string and prefix are {@code null}, returns
+     * {@code true}. If either is {@code null} (but not both), returns {@code false}.
      *
-     * @param text       被监测字符串
-     * @param prefix     开头字符串
-     * @param ignoreCase 是否忽略大小写
-     * @return 是否以指定字符串开头
+     * @param text       The string to check.
+     * @param prefix     The prefix to check for.
+     * @param ignoreCase Whether to ignore case during comparison.
+     * @return {@code true} if the string starts with the prefix, {@code false} otherwise.
      */
     public static boolean startWith(final CharSequence text, final CharSequence prefix, final boolean ignoreCase) {
         return startWith(text, prefix, ignoreCase, false);
     }
 
     /**
-     * 是否以指定字符串开头 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
-     * 
+     * Checks if a string starts with a specified prefix. If both the given string and prefix are {@code null}, returns
+     * {@code true}. If either is {@code null} (but not both), returns {@code false}.
+     *
      * <pre>
      *     CharsBacker.startWith("123", "123", false, true);   -- false
      *     CharsBacker.startWith("ABCDEF", "abc", true, true); -- true
      *     CharsBacker.startWith("abc", "abc", true, true);    -- false
      * </pre>
      *
-     * @param text         被监测字符串
-     * @param prefix       开头字符串
-     * @param ignoreCase   是否忽略大小写
-     * @param ignoreEquals 是否忽略字符串相等的情况
-     * @return 是否以指定字符串开头
+     * @param text         The string to check.
+     * @param prefix       The prefix to check for.
+     * @param ignoreCase   Whether to ignore case during comparison.
+     * @param ignoreEquals Whether to ignore the case where the string and prefix are equal.
+     * @return {@code true} if the string starts with the prefix (and optionally not equal), {@code false} otherwise.
      */
     public static boolean startWith(
             final CharSequence text,
@@ -549,11 +586,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 字符串是否以给定字符结尾
+     * Checks if a string ends with a given character.
      *
-     * @param text 字符串
-     * @param c    字符
-     * @return 是否结尾
+     * @param text The string to check.
+     * @param c    The character to check for.
+     * @return {@code true} if the string ends with the character, {@code false} otherwise.
      */
     public static boolean endWith(final CharSequence text, final char c) {
         if (isEmpty(text)) {
@@ -563,33 +600,34 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 是否以指定字符串结尾
+     * Checks if a string ends with a specified suffix.
      *
-     * @param text   被监测字符串
-     * @param suffix 结尾字符串
-     * @return 是否以指定字符串结尾
+     * @param text   The string to check.
+     * @param suffix The suffix to check for.
+     * @return {@code true} if the string ends with the suffix, {@code false} otherwise.
      */
     public static boolean endWith(final CharSequence text, final CharSequence suffix) {
         return endWith(text, suffix, false);
     }
 
     /**
-     * 是否以指定字符串结尾，忽略大小写
+     * Checks if a string ends with a specified suffix, ignoring case.
      *
-     * @param text   被监测字符串
-     * @param suffix 结尾字符串
-     * @return 是否以指定字符串结尾
+     * @param text   The string to check.
+     * @param suffix The suffix to check for.
+     * @return {@code true} if the string ends with the suffix (case-insensitive), {@code false} otherwise.
      */
     public static boolean endWithIgnoreCase(final CharSequence text, final CharSequence suffix) {
         return endWith(text, suffix, true);
     }
 
     /**
-     * 给定字符串是否以任何一个字符串结尾 给定字符串和数组为空都返回false
+     * Checks if a given string ends with any of the specified suffixes. Returns {@code false} if the given string or
+     * the array of suffixes is empty.
      *
-     * @param text     给定字符串
-     * @param suffixes 需要检测的结尾字符串
-     * @return 给定字符串是否以任何一个字符串结尾
+     * @param text     The string to check.
+     * @param suffixes An array of suffixes to check against.
+     * @return {@code true} if the string ends with any of the suffixes, {@code false} otherwise.
      */
     public static boolean endWithAny(final CharSequence text, final CharSequence... suffixes) {
         if (isEmpty(text) || ArrayKit.isEmpty(suffixes)) {
@@ -605,11 +643,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 给定字符串是否以任何一个字符串结尾（忽略大小写） 给定字符串和数组为空都返回false
+     * Checks if a given string ends with any of the specified suffixes, ignoring case. Returns {@code false} if the
+     * given string or the array of suffixes is empty.
      *
-     * @param text     给定字符串
-     * @param suffixes 需要检测的结尾字符串
-     * @return 给定字符串是否以任何一个字符串结尾
+     * @param text     The string to check.
+     * @param suffixes An array of suffixes to check against.
+     * @return {@code true} if the string ends with any of the suffixes (case-insensitive), {@code false} otherwise.
      */
     public static boolean endWithAnyIgnoreCase(final CharSequence text, final CharSequence... suffixes) {
         if (isEmpty(text) || ArrayKit.isEmpty(suffixes)) {
@@ -625,25 +664,27 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 是否以指定字符串结尾 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
+     * Checks if a string ends with a specified suffix. If both the given string and suffix are {@code null}, returns
+     * {@code true}. If either is {@code null} (but not both), returns {@code false}.
      *
-     * @param text       被监测字符串
-     * @param suffix     结尾字符串
-     * @param ignoreCase 是否忽略大小写
-     * @return 是否以指定字符串结尾
+     * @param text       The string to check.
+     * @param suffix     The suffix to check for.
+     * @param ignoreCase Whether to ignore case during comparison.
+     * @return {@code true} if the string ends with the suffix, {@code false} otherwise.
      */
     public static boolean endWith(final CharSequence text, final CharSequence suffix, final boolean ignoreCase) {
         return endWith(text, suffix, ignoreCase, false);
     }
 
     /**
-     * 是否以指定字符串结尾 如果给定的字符串和开头字符串都为null则返回true，否则任意一个值为null返回false
+     * Checks if a string ends with a specified suffix. If both the given string and suffix are {@code null}, returns
+     * {@code true}. If either is {@code null} (but not both), returns {@code false}.
      *
-     * @param text         被监测字符串
-     * @param suffix       结尾字符串
-     * @param ignoreCase   是否忽略大小写
-     * @param ignoreEquals 是否忽略字符串相等的情况
-     * @return 是否以指定字符串结尾
+     * @param text         The string to check.
+     * @param suffix       The suffix to check for.
+     * @param ignoreCase   Whether to ignore case during comparison.
+     * @param ignoreEquals Whether to ignore the case where the string and suffix are equal.
+     * @return {@code true} if the string ends with the suffix (and optionally not equal), {@code false} otherwise.
      */
     public static boolean endWith(
             final CharSequence text,
@@ -654,22 +695,22 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 指定字符是否在字符串中出现过
+     * Checks if a specified character appears in a string.
      *
-     * @param text 字符串
-     * @param args 被查找的字符
-     * @return 是否包含
+     * @param text The string to search within.
+     * @param args The character to search for.
+     * @return {@code true} if the character is found, {@code false} otherwise.
      */
     public static boolean contains(final CharSequence text, final char args) {
         return indexOf(text, args) > -1;
     }
 
     /**
-     * 指定字符串是否在字符串中出现过
+     * Checks if a specified string appears in another string.
      *
-     * @param text 字符串
-     * @param args 被查找的字符串
-     * @return 是否包含
+     * @param text The string to search within.
+     * @param args The string to search for.
+     * @return {@code true} if the string is found, {@code false} otherwise.
      */
     public static boolean contains(final CharSequence text, final CharSequence args) {
         if (null == text || null == args) {
@@ -679,22 +720,22 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串
+     * Finds if the specified string contains any of the strings in a given list.
      *
-     * @param text 指定字符串
-     * @param args 需要检查的字符串数组
-     * @return 是否包含任意一个字符串
+     * @param text The string to check.
+     * @param args An array of strings to check for.
+     * @return {@code true} if the string contains any of the specified strings, {@code false} otherwise.
      */
     public static boolean containsAny(final CharSequence text, final CharSequence... args) {
         return null != getContainsString(text, args);
     }
 
     /**
-     * 查找指定字符串是否包含指定字符列表中的任意一个字符
+     * Finds if the specified string contains any of the characters in a given list.
      *
-     * @param text 指定字符串
-     * @param args 需要检查的字符数组
-     * @return 是否包含任意一个字符
+     * @param text The string to check.
+     * @param args An array of characters to check for.
+     * @return {@code true} if the string contains any of the specified characters, {@code false} otherwise.
      */
     public static boolean containsAny(final CharSequence text, final char... args) {
         if (isNotEmpty(text)) {
@@ -709,16 +750,18 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 检查指定字符串中是否只包含给定的字符 这里的containsOnly并不是必须全部给定的args都需要有，而是一个子集。 args是个限定集合，检查字符串中的字符是否在这个限定集合中。
+     * Checks if the specified string contains only the given characters. This means that all characters in the string
+     * must be present in the {@code args} set. {@code args} acts as a limiting set; characters in the string must be
+     * within this set.
      * <ul>
-     * <li>text 是 null，args 也是 null，直接返回 true</li>
-     * <li>text 是 null，args 不是 null，直接返回 true</li>
-     * <li>text 不是 null，args 是 null，直接返回 false</li>
+     * <li>If {@code text} is {@code null} and {@code args} is {@code null}, returns {@code true}.</li>
+     * <li>If {@code text} is {@code null} and {@code args} is not {@code null}, returns {@code true}.</li>
+     * <li>If {@code text} is not {@code null} and {@code args} is {@code null}, returns {@code false}.</li>
      * </ul>
      *
-     * @param text 字符串
-     * @param args 检查的字符
-     * @return 字符串含有非检查的字符，返回false
+     * @param text The string to check.
+     * @param args The characters allowed in the string.
+     * @return {@code true} if the string contains only the specified characters, {@code false} otherwise.
      */
     public static boolean containsOnly(final CharSequence text, final char... args) {
         if (isNotEmpty(text)) {
@@ -733,10 +776,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 给定字符串是否包含空白符（空白符包括空格、制表符、全角空格和不间断空格） 如果给定字符串为null或者""，则返回false
+     * Checks if the given string contains any whitespace characters (including space, tab, full-width space, and
+     * non-breaking space). Returns {@code false} if the given string is {@code null} or empty.
      *
-     * @param text 字符串
-     * @return 是否包含空白符
+     * @param text The string to check.
+     * @return {@code true} if the string contains whitespace, {@code false} otherwise.
      */
     public static boolean containsBlank(final CharSequence text) {
         if (null == text) {
@@ -756,11 +800,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串，如果包含返回找到的第一个字符串
+     * Finds if the specified string contains any of the strings in a given list. If found, returns the first matching
+     * string.
      *
-     * @param text 指定字符串
-     * @param args 需要检查的字符串数组
-     * @return 被包含的第一个字符串
+     * @param text The string to check.
+     * @param args An array of strings to check for.
+     * @return The first string from {@code args} found within {@code text}, or {@code null} if none are found.
      */
     public static String getContainsString(final CharSequence text, final CharSequence... args) {
         if (isEmpty(text) || ArrayKit.isEmpty(args)) {
@@ -775,37 +820,41 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 是否包含特定字符，忽略大小写，如果给定两个参数都为{@code null}，返回true
+     * Checks if a string contains another string, ignoring case. If both parameters are {@code null}, returns
+     * {@code true}.
      *
-     * @param text 被检测字符串
-     * @param args 被测试是否包含的字符串
-     * @return 是否包含
+     * @param text The string to search within.
+     * @param args The string to search for.
+     * @return {@code true} if the string contains the other string (case-insensitive), {@code false} otherwise.
      */
     public static boolean containsIgnoreCase(final CharSequence text, final CharSequence args) {
         if (null == text) {
-            // 如果被监测字符串和
+            // If the monitored string and
             return null == args;
         }
         return indexOfIgnoreCase(text, args) > -1;
     }
 
     /**
-     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串 忽略大小写
+     * Finds if the specified string contains any of the strings in a given list, ignoring case.
      *
-     * @param text 指定字符串
-     * @param args 需要检查的字符串数组
-     * @return 是否包含任意一个字符串
+     * @param text The string to check.
+     * @param args An array of strings to check for.
+     * @return {@code true} if the string contains any of the specified strings (case-insensitive), {@code false}
+     *         otherwise.
      */
     public static boolean containsAnyIgnoreCase(final CharSequence text, final CharSequence... args) {
         return null != getContainsStrIgnoreCase(text, args);
     }
 
     /**
-     * 查找指定字符串是否包含指定字符串列表中的任意一个字符串，如果包含返回找到的第一个字符串 忽略大小写
+     * Finds if the specified string contains any of the strings in a given list, ignoring case. If found, returns the
+     * first matching string.
      *
-     * @param text 指定字符串
-     * @param args 需要检查的字符串数组
-     * @return 被包含的第一个字符串
+     * @param text The string to check.
+     * @param args An array of strings to check for.
+     * @return The first string from {@code args} found within {@code text} (case-insensitive), or {@code null} if none
+     *         are found.
      */
     public static String getContainsStrIgnoreCase(final CharSequence text, final CharSequence... args) {
         if (isEmpty(text) || ArrayKit.isEmpty(args)) {
@@ -820,11 +869,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 检查指定字符串中是否含给定的所有字符串
+     * Checks if the specified string contains all of the given strings.
      *
-     * @param text 字符串
-     * @param args 检查的字符
-     * @return 字符串含有非检查的字符，返回false
+     * @param text The string to check.
+     * @param args An array of strings to check for.
+     * @return {@code true} if the string contains all of the specified strings, {@code false} otherwise.
      */
     public static boolean containsAll(final CharSequence text, final CharSequence... args) {
         if (isBlank(text) || ArrayKit.isEmpty(args)) {
@@ -839,23 +888,23 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 指定范围内查找指定字符
+     * Finds the first occurrence of a specified character in a string.
      *
-     * @param text 字符串
-     * @param args 被查找的字符
-     * @return 位置
+     * @param text The string to search within.
+     * @param args The character to search for.
+     * @return The index of the first occurrence of the character, or -1 if not found.
      */
     public static int indexOf(final CharSequence text, final char args) {
         return indexOf(text, args, 0);
     }
 
     /**
-     * 指定范围内查找指定字符
+     * Finds the first occurrence of a specified character in a string, starting from a given index.
      *
-     * @param text  字符串
-     * @param args  被查找的字符
-     * @param start 起始位置，如果小于0，从0开始查找
-     * @return 位置
+     * @param text  The string to search within.
+     * @param args  The character to search for.
+     * @param start The starting index for the search. If less than 0, the search starts from index 0.
+     * @return The index of the first occurrence of the character, or -1 if not found.
      */
     public static int indexOf(final CharSequence text, final char args, final int start) {
         if (text instanceof String) {
@@ -866,13 +915,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 指定范围内查找指定字符
+     * Finds the first occurrence of a specified character in a string within a given range.
      *
-     * @param text  字符串
-     * @param args  被查找的字符
-     * @param start 起始位置，如果小于0，从0开始查找
-     * @param end   终止位置，如果超过str.length()则默认查找到字符串末尾
-     * @return 位置
+     * @param text  The string to search within.
+     * @param args  The character to search for.
+     * @param start The starting index for the search. If less than 0, the search starts from index 0.
+     * @param end   The ending index for the search. If greater than {@code text.length()}, it defaults to
+     *              {@code text.length()}.
+     * @return The index of the first occurrence of the character, or -1 if not found.
      */
     public static int indexOf(final CharSequence text, final char args, final int start, final int end) {
         if (isEmpty(text)) {
@@ -882,13 +932,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 指定范围内查找指定字符
+     * Finds the first occurrence of a character matching a predicate in a string within a given range.
      *
-     * @param text    字符串
-     * @param matcher 被查找的字符匹配器
-     * @param start   起始位置，如果小于0，从0开始查找
-     * @param end     终止位置，如果超过str.length()则默认查找到字符串末尾
-     * @return 位置
+     * @param text    The string to search within.
+     * @param matcher The character predicate to match.
+     * @param start   The starting index for the search. If less than 0, the search starts from index 0.
+     * @param end     The ending index for the search. If greater than {@code text.length()}, it defaults to
+     *                {@code text.length()}.
+     * @return The index of the first matching character, or -1 if not found.
      */
     public static int indexOf(
             final CharSequence text,
@@ -902,7 +953,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 指定范围内查找字符串，忽略大小写
+     * Finds the first occurrence of a specified string in another string, ignoring case.
      *
      * <pre>
      * indexOfIgnoreCase(null, *, *)          = -1
@@ -918,16 +969,16 @@ public class CharsBacker extends CharsValidator {
      * indexOfIgnoreCase("abc", "", 9)        = -1
      * </pre>
      *
-     * @param text 字符串
-     * @param args 需要查找位置的字符串
-     * @return 位置
+     * @param text The string to search within.
+     * @param args The string to search for.
+     * @return The index of the first occurrence of the string (case-insensitive), or -1 if not found.
      */
     public static int indexOfIgnoreCase(final CharSequence text, final CharSequence args) {
         return indexOfIgnoreCase(text, args, 0);
     }
 
     /**
-     * 指定范围内查找字符串
+     * Finds the first occurrence of a specified string in another string, ignoring case, starting from a given index.
      *
      * <pre>
      * indexOfIgnoreCase(null, *, *)          = -1
@@ -943,23 +994,23 @@ public class CharsBacker extends CharsValidator {
      * indexOfIgnoreCase("abc", "", 9)        = -1
      * </pre>
      *
-     * @param text      字符串
-     * @param args      需要查找位置的字符串
-     * @param fromIndex 起始位置
-     * @return 位置
+     * @param text      The string to search within.
+     * @param args      The string to search for.
+     * @param fromIndex The starting index for the search.
+     * @return The index of the first occurrence of the string (case-insensitive), or -1 if not found.
      */
     public static int indexOfIgnoreCase(final CharSequence text, final CharSequence args, final int fromIndex) {
         return indexOf(text, args, fromIndex, true);
     }
 
     /**
-     * 指定范围内查找字符串
+     * Finds the first occurrence of a specified string in another string, with optional case-insensitivity.
      *
-     * @param text       字符串，空则返回-1
-     * @param args       需要查找位置的字符串，空则返回-1
-     * @param from       起始位置（包含）
-     * @param ignoreCase 是否忽略大小写
-     * @return 位置
+     * @param text       The string to search within. Returns -1 if empty.
+     * @param args       The string to search for. Returns -1 if empty.
+     * @param from       The starting index (inclusive).
+     * @param ignoreCase Whether to ignore case during comparison.
+     * @return The index of the first occurrence of the string, or -1 if not found.
      */
     public static int indexOf(
             final CharSequence text,
@@ -977,36 +1028,38 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 指定范围内查找字符串，忽略大小写
+     * Finds the last occurrence of a specified string in another string, ignoring case.
      *
-     * @param text 字符串
-     * @param args 需要查找位置的字符串
-     * @return 位置
+     * @param text The string to search within.
+     * @param args The string to search for.
+     * @return The index of the last occurrence of the string (case-insensitive), or -1 if not found.
      */
     public static int lastIndexOfIgnoreCase(final CharSequence text, final CharSequence args) {
         return lastIndexOfIgnoreCase(text, args, text.length());
     }
 
     /**
-     * 指定范围内查找字符串，忽略大小写 fromIndex 为搜索起始位置，从后往前计数
+     * Finds the last occurrence of a specified string in another string, ignoring case, searching backwards from a
+     * given index.
      *
-     * @param text      字符串
-     * @param args      需要查找位置的字符串
-     * @param fromIndex 起始位置，从后往前计数
-     * @return 位置
+     * @param text      The string to search within.
+     * @param args      The string to search for.
+     * @param fromIndex The starting index for the backward search.
+     * @return The index of the last occurrence of the string (case-insensitive), or -1 if not found.
      */
     public static int lastIndexOfIgnoreCase(final CharSequence text, final CharSequence args, final int fromIndex) {
         return lastIndexOf(text, args, fromIndex, true);
     }
 
     /**
-     * 指定范围内查找字符串 fromIndex 为搜索起始位置，从后往前计数
+     * Finds the last occurrence of a specified string in another string, with optional case-insensitivity, searching
+     * backwards from a given index.
      *
-     * @param text       字符串
-     * @param args       需要查找位置的字符串
-     * @param from       起始位置，从后往前计数
-     * @param ignoreCase 是否忽略大小写
-     * @return 位置
+     * @param text       The string to search within.
+     * @param args       The string to search for.
+     * @param from       The starting index for the backward search.
+     * @param ignoreCase Whether to ignore case during comparison.
+     * @return The index of the last occurrence of the string, or -1 if not found.
      */
     public static int lastIndexOf(
             final CharSequence text,
@@ -1024,12 +1077,13 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 返回字符串 args 在字符串 text1 中第 ordinal 次出现的位置。
+     * Returns the index of the {@code ordinal}-th occurrence of the string {@code args} in the string {@code text}.
      *
      * <p>
-     * 如果 text1=null 或 args=null 或 ordinal&le;0 则返回-1 此方法来自：Apache-Commons-Lang
+     * If {@code text} is {@code null}, {@code args} is {@code null}, or {@code ordinal <= 0}, returns -1. This method
+     * is inspired by Apache-Commons-Lang.
      * <p>
-     * 示例（*代表任意字符）：
+     * Examples (* represents any character):
      *
      * <pre>
      * ordinalIndexOf(null, *, *)          = -1
@@ -1045,10 +1099,10 @@ public class CharsBacker extends CharsValidator {
      * ordinalIndexOf("aabaabaa", "", 2)   = 0
      * </pre>
      *
-     * @param text    被检查的字符串，可以为null
-     * @param args    被查找的字符串，可以为null
-     * @param ordinal 第几次出现的位置
-     * @return 查找到的位置
+     * @param text    The string to search within, may be {@code null}.
+     * @param args    The string to search for, may be {@code null}.
+     * @param ordinal The occurrence number (e.g., 1st, 2nd).
+     * @return The index of the {@code ordinal}-th occurrence, or -1 if not found or invalid input.
      */
     public static int ordinalIndexOf(final CharSequence text, final CharSequence args, final int ordinal) {
         if (text == null || args == null || ordinal <= 0) {
@@ -1070,14 +1124,15 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 移除字符串中所有给定字符串 例：removeAll("aa-bb-cc-dd", "-") = aabbccdd
+     * Removes all occurrences of a specified string from another string. Example: {@code removeAll("aa-bb-cc-dd", "-")}
+     * returns {@code "aabbccdd"}.
      *
-     * @param text 字符串
-     * @param args 被移除的字符串
-     * @return 移除后的字符串
+     * @param text The string to modify.
+     * @param args The string to remove.
+     * @return The string with all occurrences of {@code args} removed.
      */
     public static String removeAll(final CharSequence text, final CharSequence args) {
-        // args如果为空， 也不用继续后面的逻辑
+        // If args is empty, no need to proceed.
         if (isEmpty(text) || isEmpty(args)) {
             return toStringOrNull(text);
         }
@@ -1085,11 +1140,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 移除字符串中所有给定字符串，当某个字符串出现多次，则全部移除 例：removeAny("aa-bb-cc-dd", "a", "b") = --cc-dd
+     * Removes all occurrences of multiple specified strings from another string. Example:
+     * {@code removeAll("aa-bb-cc-dd", "a", "b")} returns {@code "--cc-dd"}.
      *
-     * @param text 字符串
-     * @param args 被移除的字符串
-     * @return 移除后的字符串
+     * @param text The string to modify.
+     * @param args An array of strings to remove.
+     * @return The string with all occurrences of the specified strings removed.
      */
     public static String removeAll(final CharSequence text, final CharSequence... args) {
         String result = toStringOrNull(text);
@@ -1102,11 +1158,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 去除字符串中指定的多个字符，如有多个则全部去除
+     * Removes all occurrences of specified characters from a string.
      *
-     * @param text  字符串
-     * @param chars 字符列表
-     * @return 去除后的字符
+     * @param text  The string to modify.
+     * @param chars An array of characters to remove.
+     * @return The string with all occurrences of the specified characters removed.
      */
     public static String removeAll(final CharSequence text, final char... chars) {
         if (isEmpty(text) || ArrayKit.isEmpty(chars)) {
@@ -1116,26 +1172,27 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 去除所有换行符，包括：
+     * Removes all line breaks from a string, including:
      *
      * <pre>
-     * 1. \r
-     * 1. \n
+     * 1. \r (carriage return)
+     * 2. \n (newline)
      * </pre>
      *
-     * @param text 字符串
-     * @return 处理后的字符串
+     * @param text The string to process.
+     * @return The string with all line breaks removed.
      */
     public static String removeAllLineBreaks(final CharSequence text) {
         return removeAll(text, Symbol.C_CR, Symbol.C_LF);
     }
 
     /**
-     * 去掉首部指定长度的字符串并将剩余字符串首字母小写 例如：text1=setName, preLength=3 = return name
+     * Removes a specified length from the beginning of a string and converts the first character of the remaining
+     * string to lowercase. Example: {@code text="setName", preLength=3} returns {@code "name"}.
      *
-     * @param text      被处理的字符串
-     * @param preLength 去掉的长度
-     * @return 处理后的字符串，不符合规范返回null
+     * @param text      The string to process.
+     * @param preLength The length to remove from the beginning.
+     * @return The processed string, or {@code null} if the input is {@code null}.
      */
     public static String removePreAndLowerFirst(final CharSequence text, final int preLength) {
         if (text == null) {
@@ -1153,45 +1210,49 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 去掉首部指定长度的字符串并将剩余字符串首字母小写 例如：text1=setName, prefix=set = return name
+     * Removes a specified prefix from a string and converts the first character of the remaining string to lowercase.
+     * Example: {@code text="setName", prefix="set"} returns {@code "name"}.
      *
-     * @param text   被处理的字符串
-     * @param prefix 前缀
-     * @return 处理后的字符串，不符合规范返回null
+     * @param text   The string to process.
+     * @param prefix The prefix to remove.
+     * @return The processed string, or {@code null} if the input is {@code null}.
      */
     public static String removePreAndLowerFirst(final CharSequence text, final CharSequence prefix) {
         return lowerFirst(removePrefix(text, prefix));
     }
 
     /**
-     * 去掉指定前缀
+     * Removes a specified prefix from a string.
      *
-     * @param text   字符串
-     * @param prefix 前缀
-     * @return 切掉后的字符串，若前缀不是 prefix， 返回原字符串
+     * @param text   The string to modify.
+     * @param prefix The prefix to remove.
+     * @return The string with the prefix removed. If the string does not start with the prefix, the original string is
+     *         returned.
      */
     public static String removePrefix(final CharSequence text, final CharSequence prefix) {
         return removePrefix(text, prefix, false);
     }
 
     /**
-     * 忽略大小写去掉指定前缀
+     * Removes a specified prefix from a string, ignoring case.
      *
-     * @param text   字符串
-     * @param prefix 前缀
-     * @return 切掉后的字符串，若前缀不是 prefix， 返回原字符串
+     * @param text   The string to modify.
+     * @param prefix The prefix to remove.
+     * @return The string with the prefix removed. If the string does not start with the prefix (case-insensitive), the
+     *         original string is returned.
      */
     public static String removePrefixIgnoreCase(final CharSequence text, final CharSequence prefix) {
         return removePrefix(text, prefix, true);
     }
 
     /**
-     * 去掉指定前缀
+     * Removes a specified prefix from a string, with optional case-insensitivity.
      *
-     * @param text       字符串
-     * @param prefix     前缀
-     * @param ignoreCase 是否忽略大小写
-     * @return 切掉后的字符串，若前缀不是 prefix， 返回原字符串
+     * @param text       The string to modify.
+     * @param prefix     The prefix to remove.
+     * @param ignoreCase Whether to ignore case during comparison.
+     * @return The string with the prefix removed. If the string does not start with the prefix, the original string is
+     *         returned.
      */
     public static String removePrefix(final CharSequence text, final CharSequence prefix, final boolean ignoreCase) {
         if (isEmpty(text) || isEmpty(prefix)) {
@@ -1200,14 +1261,14 @@ public class CharsBacker extends CharsValidator {
 
         final String text2 = text.toString();
         if (startWith(text, prefix, ignoreCase)) {
-            return subSuf(text2, prefix.length());// 截取后半段
+            return subSuf(text2, prefix.length());// Extract the latter part
         }
         return text2;
     }
 
     /**
-     * 去掉指定所有后缀，如：
-     * 
+     * Removes all occurrences of a specified suffix from a string.
+     *
      * <pre>{@code
      *     str=11abab, suffix=ab => return 11
      *     str=11ab, suffix=ab => return 11
@@ -1215,9 +1276,10 @@ public class CharsBacker extends CharsValidator {
      *     str=11ab, suffix=null => return 11ab
      * }</pre>
      *
-     * @param text   字符串，空返回原字符串
-     * @param suffix 后缀字符串，空返回原字符串
-     * @return 去掉所有后缀的字符串，若后缀不是 suffix， 返回原字符串
+     * @param text   The string to modify. Returns the original string if empty.
+     * @param suffix The suffix to remove. Returns the original string if empty.
+     * @return The string with all occurrences of the suffix removed. If the string does not end with the suffix, the
+     *         original string is returned.
      */
     public static String removeAllSuffix(final CharSequence text, final CharSequence suffix) {
         if (isEmpty(text) || isEmpty(suffix)) {
@@ -1236,11 +1298,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 去掉指定后缀
+     * Removes a specified suffix from a string.
      *
-     * @param text   字符串
-     * @param suffix 后缀
-     * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
+     * @param text   The string to modify.
+     * @param suffix The suffix to remove.
+     * @return The string with the suffix removed. If the string does not end with the suffix, the original string is
+     *         returned.
      */
     public static String removeSuffix(final CharSequence text, final CharSequence suffix) {
         if (isEmpty(text) || isEmpty(suffix)) {
@@ -1249,29 +1312,30 @@ public class CharsBacker extends CharsValidator {
 
         final String text2 = text.toString();
         if (text2.endsWith(suffix.toString())) {
-            // 截取前半段
+            // Extract the former part
             return subPre(text2, text2.length() - suffix.length());
         }
         return text2;
     }
 
     /**
-     * 去掉指定后缀，并小写首字母
+     * Removes a specified suffix from a string and converts the first character of the remaining string to lowercase.
      *
-     * @param text   字符串
-     * @param suffix 后缀
-     * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
+     * @param text   The string to process.
+     * @param suffix The suffix to remove.
+     * @return The processed string. If the string does not end with the suffix, the original string is returned.
      */
     public static String removeSufAndLowerFirst(final CharSequence text, final CharSequence suffix) {
         return lowerFirst(removeSuffix(text, suffix));
     }
 
     /**
-     * 忽略大小写去掉指定后缀
+     * Removes a specified suffix from a string, ignoring case.
      *
-     * @param text   字符串
-     * @param suffix 后缀
-     * @return 切掉后的字符串，若后缀不是 suffix， 返回原字符串
+     * @param text   The string to modify.
+     * @param suffix The suffix to remove.
+     * @return The string with the suffix removed. If the string does not end with the suffix (case-insensitive), the
+     *         original string is returned.
      */
     public static String removeSuffixIgnoreCase(final CharSequence text, final CharSequence suffix) {
         if (isEmpty(text) || isEmpty(suffix)) {
@@ -1286,45 +1350,47 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 清理空白字符
+     * Cleans blank characters from a string.
      *
-     * @param text 被清理的字符串
-     * @return 清理后的字符串
+     * @param text The string to clean.
+     * @return The string with blank characters removed.
      */
     public static String cleanBlank(final CharSequence text) {
         return filter(text, c -> !CharKit.isBlankChar(c));
     }
 
     /**
-     * 去除两边的指定字符串
+     * Strips a specified prefix or suffix string from both ends of a string.
      *
-     * @param text           被处理的字符串
-     * @param prefixOrSuffix 前缀或后缀
-     * @return 处理后的字符串
+     * @param text           The string to process.
+     * @param prefixOrSuffix The prefix or suffix to strip.
+     * @return The processed string.
      */
     public static String strip(final CharSequence text, final CharSequence prefixOrSuffix) {
         if (equals(text, prefixOrSuffix)) {
-            // 对于去除相同字符的情况单独处理
+            // Special handling for stripping identical strings
             return Normal.EMPTY;
         }
         return strip(text, prefixOrSuffix, prefixOrSuffix);
     }
 
     /**
-     * 去除两边的指定字符串 两边字符如果存在，则去除，不存在不做处理
+     * Strips a specified prefix and suffix string from both ends of a string. If the characters exist on both sides,
+     * they are removed; otherwise, no action is taken.
      *
-     * @param text   被处理的字符串，{@code null}忽略
-     * @param prefix 前缀，{@code null}忽略
-     * @param suffix 后缀，{@code null}忽略
-     * @return 处理后的字符串
+     * @param text   The string to process. {@code null} is ignored.
+     * @param prefix The prefix to strip. {@code null} is ignored.
+     * @param suffix The suffix to strip. {@code null} is ignored.
+     * @return The processed string.
      */
     public static String strip(final CharSequence text, final CharSequence prefix, final CharSequence suffix) {
         return strip(text, prefix, suffix, false);
     }
 
     /**
-     * 去除两边的指定字符串 两边字符如果存在，则去除，不存在不做处理
-     * 
+     * Strips a specified prefix and suffix string from both ends of a string. If the characters exist on both sides,
+     * they are removed; otherwise, no action is taken.
+     *
      * <pre>{@code
      *  "aaa_STRIPPED_bbb", "a", "b"       -> "aa_STRIPPED_bb"
      *  "aaa_STRIPPED_bbb", null, null     -> "aaa_STRIPPED_bbb"
@@ -1335,14 +1401,13 @@ public class CharsBacker extends CharsValidator {
      *  "aaa_STRIPPED_bbb", "a", null      -> "aa_STRIPPED_bbb"
      *
      *  "a", "a", "a"  -> ""
-     * }
-     * </pre>
+     * }</pre>
      *
-     * @param text       被处理的字符串
-     * @param prefix     前缀，{@code null}忽略
-     * @param suffix     后缀，{@code null}忽略
-     * @param ignoreCase 是否忽略大小写
-     * @return 处理后的字符串
+     * @param text       The string to process.
+     * @param prefix     The prefix to strip. {@code null} is ignored.
+     * @param suffix     The suffix to strip. {@code null} is ignored.
+     * @param ignoreCase Whether to ignore case during comparison.
+     * @return The processed string.
      */
     public static String strip(
             final CharSequence text,
@@ -1368,23 +1433,23 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 去除两边的指定字符串，忽略大小写
+     * Strips a specified prefix or suffix string from both ends of a string, ignoring case.
      *
-     * @param text           被处理的字符串
-     * @param prefixOrSuffix 前缀或后缀
-     * @return 处理后的字符串
+     * @param text           The string to process.
+     * @param prefixOrSuffix The prefix or suffix to strip.
+     * @return The processed string.
      */
     public static String stripIgnoreCase(final CharSequence text, final CharSequence prefixOrSuffix) {
         return stripIgnoreCase(text, prefixOrSuffix, prefixOrSuffix);
     }
 
     /**
-     * 去除两边的指定字符串，忽略大小写
+     * Strips a specified prefix and suffix string from both ends of a string, ignoring case.
      *
-     * @param text   被处理的字符串
-     * @param prefix 前缀
-     * @param suffix 后缀
-     * @return 处理后的字符串
+     * @param text   The string to process.
+     * @param prefix The prefix to strip.
+     * @param suffix The suffix to strip.
+     * @return The processed string.
      */
     public static String stripIgnoreCase(
             final CharSequence text,
@@ -1394,11 +1459,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定字符串不是以prefix开头的，在开头补充 prefix
+     * Adds a prefix to a string if it doesn't already start with that prefix.
      *
-     * @param text   字符串
-     * @param prefix 前缀
-     * @return 补充后的字符串
+     * @param text   The string to modify.
+     * @param prefix The prefix to add.
+     * @return The string with the prefix added if missing.
      * @see #prependIfMissing(CharSequence, CharSequence, CharSequence...)
      */
     public static String addPrefixIfNot(final CharSequence text, final CharSequence prefix) {
@@ -1406,11 +1471,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定字符串不是以suffix结尾的，在尾部补充 suffix
+     * Adds a suffix to a string if it doesn't already end with that suffix.
      *
-     * @param text   字符串
-     * @param suffix 后缀
-     * @return 补充后的字符串
+     * @param text   The string to modify.
+     * @param suffix The suffix to add.
+     * @return The string with the suffix added if missing.
      * @see #appendIfMissing(CharSequence, CharSequence, CharSequence...)
      */
     public static String addSuffixIfNot(final CharSequence text, final CharSequence suffix) {
@@ -1418,29 +1483,32 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 将字符串切分为N等份
+     * Cuts a string into N equal parts.
      *
-     * @param text       字符串
-     * @param partLength 每等份的长度
-     * @return 切分后的数组
+     * @param text       The string to cut.
+     * @param partLength The length of each part.
+     * @return An array of strings representing the cut parts.
      */
     public static String[] cut(final CharSequence text, final int partLength) {
         return CharsBacker.splitByLength(text, partLength);
     }
 
     /**
-     * 改进JDK subString
+     * Improved JDK substring method.
      * <ul>
-     * <li>index从0开始计算，最后一个字符为-1，即sub("miaixz", 0, -1)得到"miaixz"</li>
-     * <li>如果from和to位置一样，返回 ""</li>
-     * <li>如果from或to为负数，则按照length从后向前数位置，如果绝对值大于字符串长度，则from归到0，to归到length</li>
-     * <li>如果经过修正的index中from大于to，则互换from和to，如abcdefgh 2 3 =》 c，abcdefgh 2 -3 =》 cde</li>
+     * <li>Index starts from 0, the last character is -1, e.g., {@code sub("miaixz", 0, -1)} returns "miaixz".</li>
+     * <li>If {@code fromIndexInclude} and {@code toIndexExclude} are the same, returns "".</li>
+     * <li>If {@code fromIndexInclude} or {@code toIndexExclude} is negative, the position is counted from the end of
+     * the string. If the absolute value is greater than the string length, {@code fromIndexInclude} defaults to 0, and
+     * {@code toIndexExclude} defaults to length.</li>
+     * <li>If the adjusted {@code fromIndexInclude} is greater than {@code toIndexExclude}, they are swapped. E.g.,
+     * {@code "abcdefgh", 2, 3} returns "c", {@code "abcdefgh", 2, -3} returns "cde".</li>
      * </ul>
      *
-     * @param text             String
-     * @param fromIndexInclude 开始的index（包括）
-     * @param toIndexExclude   结束的index（不包括）
-     * @return 字串
+     * @param text             The string to extract from.
+     * @param fromIndexInclude The starting index (inclusive).
+     * @param toIndexExclude   The ending index (exclusive).
+     * @return The extracted substring.
      */
     public static String sub(final CharSequence text, int fromIndexInclude, int toIndexExclude) {
         if (isEmpty(text)) {
@@ -1480,12 +1548,13 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 通过CodePoint截取字符串，可以截断Emoji
+     * Extracts a substring based on CodePoints, which can handle Emoji characters.
      *
-     * @param text      String
-     * @param fromIndex 开始的index（包括）
-     * @param toIndex   结束的index（不包括）
-     * @return 字串
+     * @param text      The string to extract from.
+     * @param fromIndex The starting CodePoint index (inclusive).
+     * @param toIndex   The ending CodePoint index (exclusive).
+     * @return The extracted substring.
+     * @throws IllegalArgumentException if {@code fromIndex} is negative or {@code fromIndex > toIndex}.
      */
     public static String subByCodePoint(final CharSequence text, final int fromIndex, final int toIndex) {
         if (isEmpty(text)) {
@@ -1507,24 +1576,26 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取部分字符串，这里一个汉字的长度认为是2
+     * Extracts a substring, treating each Chinese character as having a length of 2 bytes (GBK encoding).
      *
-     * @param text   字符串
-     * @param len    bytes切割到的位置（包含）
-     * @param suffix 切割后加上后缀
-     * @return 切割后的字符串
+     * @param text   The string to extract from.
+     * @param len    The byte length to cut to (inclusive).
+     * @param suffix The suffix to append after cutting.
+     * @return The extracted substring with the suffix appended.
      */
     public static String subPreGbk(final CharSequence text, final int len, final CharSequence suffix) {
         return subPreGbk(text, len, true) + suffix;
     }
 
     /**
-     * 截取部分字符串，这里一个汉字的长度认为是2 可以自定义halfUp，如len为10，如果截取后最后一个字符是半个字符，{@code true}表示保留，则长度是11，否则长度9
+     * Extracts a substring, treating each Chinese character as having a length of 2 bytes (GBK encoding). Customizes
+     * {@code halfUp}: if {@code len} is 10 and the last character is a half-character after cutting, {@code true} means
+     * keep it (length becomes 11), otherwise discard it (length becomes 9).
      *
-     * @param text   字符串
-     * @param len    bytes切割到的位置（包含）
-     * @param halfUp 遇到截取一半的GBK字符，是否保留。
-     * @return 切割后的字符串
+     * @param text   The string to extract from.
+     * @param len    The byte length to cut to (inclusive).
+     * @param halfUp Whether to keep a half-cut GBK character.
+     * @return The extracted substring.
      */
     public static String subPreGbk(final CharSequence text, int len, final boolean halfUp) {
         if (isEmpty(text)) {
@@ -1553,8 +1624,9 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切割指定位置之前部分的字符串 安全的subString,允许：string为null，允许string长度小于toIndexExclude长度
-     * 
+     * Extracts the substring before a specified index. Safe substring method, allowing {@code null} string and string
+     * length less than {@code toIndexExclude}.
+     *
      * <pre>{@code
      * Assert.assertEquals(subPre(null, 3), null);
      * Assert.assertEquals(subPre("ab", 3), "ab");
@@ -1564,9 +1636,9 @@ public class CharsBacker extends CharsValidator {
      * Assert.assertEquals(subPre("ab", 3), "ab");
      * }</pre>
      *
-     * @param text           字符串
-     * @param toIndexExclude 切割到的位置（不包括）
-     * @return 切割后的剩余的前半部分字符串
+     * @param text           The string to extract from.
+     * @param toIndexExclude The ending index (exclusive).
+     * @return The substring before the specified index.
      */
     public static String subPre(final CharSequence text, final int toIndexExclude) {
         if (isEmpty(text) || text.length() == toIndexExclude) {
@@ -1576,16 +1648,16 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切割指定位置之后部分的字符串
+     * Extracts the substring after a specified index.
      * <ul>
-     * <li>fromIndex为0或字符串为空，返回原字符串</li>
-     * <li>fromIndex大于字符串本身的长度，返回""</li>
-     * <li>fromIndex支持负数，-1表示length-1</li>
+     * <li>If {@code fromIndex} is 0 or the string is empty, returns the original string.</li>
+     * <li>If {@code fromIndex} is greater than the string's length, returns "".</li>
+     * <li>{@code fromIndex} supports negative values, where -1 means {@code length - 1}.</li>
      * </ul>
      *
-     * @param text      字符串
-     * @param fromIndex 切割开始的位置（包括）
-     * @return 切割后后剩余的后半部分字符串
+     * @param text      The string to extract from.
+     * @param fromIndex The starting index (inclusive).
+     * @return The substring after the specified index.
      */
     public static String subSuf(final CharSequence text, final int fromIndex) {
         if (0 == fromIndex || isEmpty(text)) {
@@ -1595,7 +1667,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切割指定长度的后部分的字符串
+     * Extracts a substring of a specified length from the end of a string.
      *
      * <pre>
      * subSufByLength("abcde", 3)      =    "cde"
@@ -1607,9 +1679,9 @@ public class CharsBacker extends CharsValidator {
      * subSufByLength(null, 3)               =    null
      * </pre>
      *
-     * @param text   字符串
-     * @param length 切割长度
-     * @return 切割后后剩余的后半部分字符串
+     * @param text   The string to extract from.
+     * @param length The length of the substring to extract from the end.
+     * @return The extracted substring from the end.
      */
     public static String subSufByLength(final CharSequence text, final int length) {
         if (isEmpty(text)) {
@@ -1622,24 +1694,26 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取字符串,从指定位置开始,截取指定长度的字符串 当fromIndex为正数时，这个index指的是插空位置，如下：
-     * 
+     * Extracts a substring of a specified length from a given starting position. When {@code fromIndex} is positive, it
+     * refers to an insertion point, as follows:
+     *
      * <pre>
      *     0   1   2   3   4
      *       A   B   C   D
      * </pre>
-     * 
-     * 当fromIndex为负数时，为反向插空位置，其中-1表示最后一个字符之前的位置：
-     * 
+     *
+     * When {@code fromIndex} is negative, it refers to a reverse insertion point, where -1 is the position before the
+     * last character:
+     *
      * <pre>
      *       -3   -2   -1   length
      *     A    B    C    D
      * </pre>
      *
-     * @param input     原始字符串
-     * @param fromIndex 开始的index,包括，可以为负数
-     * @param length    要截取的长度
-     * @return 截取后的字符串
+     * @param input     The original string.
+     * @param fromIndex The starting index (inclusive), can be negative.
+     * @param length    The length of the substring to extract.
+     * @return The extracted substring.
      */
     public static String subByLength(final String input, final int fromIndex, final int length) {
         if (isEmpty(input)) {
@@ -1659,7 +1733,10 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取分隔字符串之前的字符串，不包括分隔字符串 如果给定的字符串为空串（null或""）或者分隔字符串为null，返回原字符串 如果分隔字符串为空串""，则返回空串，如果分隔字符串未找到，返回原字符串，举例如下：
+     * Extracts the substring before the first or last occurrence of a separator. The separator itself is not included.
+     * If the given string is empty ({@code null} or ""), or the separator is {@code null}, the original string is
+     * returned. If the separator is an empty string "", an empty string is returned. If the separator is not found, the
+     * original string is returned. Examples:
      *
      * <pre>
      * subBefore(null, *, false)      = null
@@ -1672,10 +1749,10 @@ public class CharsBacker extends CharsValidator {
      * subBefore("abc", null, false)  = "abc"
      * </pre>
      *
-     * @param text            被查找的字符串
-     * @param separator       分隔字符串（不包括）
-     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
-     * @return 切割后的字符串
+     * @param text            The string to search within.
+     * @param separator       The separator string (exclusive).
+     * @param isLastSeparator Whether to find the last occurrence of the separator (if multiple exist).
+     * @return The substring before the separator.
      */
     public static String subBefore(
             final CharSequence text,
@@ -1701,7 +1778,9 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取分隔字符串之前的字符串，不包括分隔字符串 如果给定的字符串为空串（null或""）或者分隔字符串为null，返回原字符串 如果分隔字符串未找到，返回原字符串，举例如下：
+     * Extracts the substring before the first or last occurrence of a separator character. The separator itself is not
+     * included. If the given string is empty ({@code null} or ""), or the separator is {@code null}, the original
+     * string is returned. If the separator is not found, the original string is returned. Examples:
      *
      * <pre>
      * subBefore(null, *, false)      = null
@@ -1712,10 +1791,10 @@ public class CharsBacker extends CharsValidator {
      * subBefore("abc", 'd', false)   = "abc"
      * </pre>
      *
-     * @param text            被查找的字符串
-     * @param separator       分隔字符串（不包括）
-     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
-     * @return 切割后的字符串
+     * @param text            The string to search within.
+     * @param separator       The separator character (exclusive).
+     * @param isLastSeparator Whether to find the last occurrence of the separator (if multiple exist).
+     * @return The substring before the separator.
      */
     public static String subBefore(final CharSequence text, final char separator, final boolean isLastSeparator) {
         if (isEmpty(text)) {
@@ -1734,23 +1813,26 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取分隔字符串之后的字符串，不包括分隔字符串 如果给定的字符串为空串（null或""），返回原字符串 如果分隔字符串为空串（null或""），则返回空串，如果分隔字符串未找到，返回空串，举例如下：
+     * Extracts the substring after the first or last occurrence of a separator. The separator itself is not included.
+     * If the given string is empty ({@code null} or ""), the original string is returned. If the separator is
+     * {@code null} or "", an empty string is returned. If the separator is not found, an empty string is returned.
+     * Examples:
      *
      * <pre>
      * subAfter(null, *, false)      = null
      * subAfter("", *, false)        = ""
      * subAfter(*, null, false)      = ""
-     * subAfter("abc", "a", false)   = "ciphers"
+     * subAfter("abc", "a", false)   = "bc"
      * subAfter("abcba", "b", false) = "cba"
      * subAfter("abc", "c", false)   = ""
      * subAfter("abc", "d", false)   = ""
      * subAfter("abc", "", false)    = "abc"
      * </pre>
      *
-     * @param text            被查找的字符串
-     * @param separator       分隔字符串（不包括）
-     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
-     * @return 切割后的字符串
+     * @param text            The string to search within.
+     * @param separator       The separator string (exclusive).
+     * @param isLastSeparator Whether to find the last occurrence of the separator (if multiple exist).
+     * @return The substring after the separator.
      */
     public static String subAfter(
             final CharSequence text,
@@ -1772,21 +1854,23 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取分隔字符串之后的字符串，不包括分隔字符串 如果给定的字符串为空串（null或""），返回原字符串 如果分隔字符串为空串（null或""），则返回空串，如果分隔字符串未找到，返回空串，举例如下：
+     * Extracts the substring after the first or last occurrence of a separator character. The separator itself is not
+     * included. If the given string is empty ({@code null} or ""), the original string is returned. If the separator is
+     * not found, an empty string is returned. Examples:
      *
      * <pre>
      * subAfter(null, *, false)      = null
      * subAfter("", *, false)        = ""
-     * subAfter("abc", 'a', false)   = "ciphers"
+     * subAfter("abc", 'a', false)   = "bc"
      * subAfter("abcba", 'b', false) = "cba"
      * subAfter("abc", 'c', false)   = ""
      * subAfter("abc", 'd', false)   = ""
      * </pre>
      *
-     * @param text            被查找的字符串
-     * @param separator       分隔字符串（不包括）
-     * @param isLastSeparator 是否查找最后一个分隔字符串（多次出现分隔字符串时选取最后一个），true为选取最后一个
-     * @return 切割后的字符串
+     * @param text            The string to search within.
+     * @param separator       The separator character (exclusive).
+     * @param isLastSeparator Whether to find the last occurrence of the separator (if multiple exist).
+     * @return The substring after the separator.
      */
     public static String subAfter(final CharSequence text, final char separator, final boolean isLastSeparator) {
         if (isEmpty(text)) {
@@ -1801,8 +1885,8 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取指定字符串中间部分，不包括标识字符串
-     * 
+     * Extracts the substring between two specified marker strings. The markers themselves are not included.
+     *
      * <pre>
      * subBetween("wx[b]yz", "[", "]") = "b"
      * subBetween(null, *, *)          = null
@@ -1816,10 +1900,10 @@ public class CharsBacker extends CharsValidator {
      * subBetween("yabczyabcz", "y", "z")   = "abc"
      * </pre>
      *
-     * @param text   被切割的字符串
-     * @param before 截取开始的字符串标识
-     * @param after  截取到的字符串标识
-     * @return 截取后的字符串
+     * @param text   The string to extract from.
+     * @param before The starting marker string.
+     * @param after  The ending marker string.
+     * @return The substring between the markers, or {@code null} if not found or invalid input.
      */
     public static String subBetween(final CharSequence text, final CharSequence before, final CharSequence after) {
         if (text == null || before == null || after == null) {
@@ -1841,8 +1925,8 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取指定字符串中间部分，不包括标识字符串
-     * 
+     * Extracts the substring between two identical specified marker strings. The markers themselves are not included.
+     *
      * <pre>
      * subBetween(null, *)            = null
      * subBetween("", "")             = ""
@@ -1852,42 +1936,42 @@ public class CharsBacker extends CharsValidator {
      * subBetween("tagabctag", "tag") = "abc"
      * </pre>
      *
-     * @param text           被切割的字符串
-     * @param beforeAndAfter 截取开始和结束的字符串标识
-     * @return 截取后的字符串
+     * @param text           The string to extract from.
+     * @param beforeAndAfter The identical starting and ending marker string.
+     * @return The substring between the markers, or {@code null} if not found or invalid input.
      */
     public static String subBetween(final CharSequence text, final CharSequence beforeAndAfter) {
         return subBetween(text, beforeAndAfter, beforeAndAfter);
     }
 
     /**
-     * 截取指定字符串多段中间部分，不包括标识字符串
-     * 
+     * Extracts multiple substrings between specified marker strings. The markers themselves are not included.
+     *
      * <pre>
      * subBetweenAll("wx[b]y[z]", "[", "]") 		= ["b","z"]
-     * subBetweenAll(null, *, *)          			= []
-     * subBetweenAll(*, null, *)          			= []
-     * subBetweenAll(*, *, null)          			= []
-     * subBetweenAll("", "", "")          			= []
-     * subBetweenAll("", "", "]")         			= []
-     * subBetweenAll("", "[", "]")        			= []
-     * subBetweenAll("yabcz", "", "")     			= []
-     * subBetweenAll("yabcz", "y", "z")   			= ["abc"]
-     * subBetweenAll("yabczyabcz", "y", "z")   		= ["abc","abc"]
-     * subBetweenAll("[yabc[zy]abcz]", "[", "]");   = ["zy"]           重叠时只截取内部，
+     * subBetweenAll(null, *, *)          		= []
+     * subBetweenAll(*, null, *)          		= []
+     * subBetweenAll(*, *, null)          		= []
+     * subBetweenAll("", "", "")          		= []
+     * subBetweenAll("", "", "]")         		= []
+     * subBetweenAll("", "[", "]")        		= []
+     * subBetweenAll("yabcz", "", "")     		= []
+     * subBetweenAll("yabcz", "y", "z")   		= ["abc"]
+     * subBetweenAll("yabczyabcz", "y", "z")   	= ["abc","abc"]
+     * subBetweenAll("[yabc[zy]abcz]", "[", "]");   = ["zy"]           // Only extracts the innermost when overlapping
      * </pre>
      *
-     * @param text   被切割的字符串
-     * @param prefix 截取开始的字符串标识
-     * @param suffix 截取到的字符串标识
-     * @return 截取后的字符串
+     * @param text   The string to extract from.
+     * @param prefix The starting marker string.
+     * @param suffix The ending marker string.
+     * @return An array of extracted substrings. Returns an empty array if no matches or invalid input.
      */
     public static String[] subBetweenAll(
             final CharSequence text,
             final CharSequence prefix,
             final CharSequence suffix) {
         if (hasEmpty(text, prefix, suffix) ||
-        // 不包含起始字符串，则肯定没有子串
+        // If the starting string is not contained, there is certainly no substring.
                 !contains(text, prefix)) {
             return new String[0];
         }
@@ -1895,7 +1979,7 @@ public class CharsBacker extends CharsValidator {
         final List<String> result = new LinkedList<>();
         final String[] split = splitToArray(text, prefix);
         if (prefix.equals(suffix)) {
-            // 前后缀字符相同，单独处理
+            // Special handling for identical prefix and suffix
             for (int i = 1, length = split.length - 1; i < length; i += 2) {
                 result.add(split[i]);
             }
@@ -1915,30 +1999,30 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取指定字符串多段中间部分，不包括标识字符串
-     * 
+     * Extracts multiple substrings between identical specified marker strings. The markers themselves are not included.
+     *
      * <pre>
-     * subBetweenAll(null, *)          			= []
-     * subBetweenAll(*, null)          			= []
-     * subBetweenAll(*, *)          			= []
-     * subBetweenAll("", "")          			= []
-     * subBetweenAll("", "#")         			= []
+     * subBetweenAll(null, *)          		= []
+     * subBetweenAll(*, null)          		= []
+     * subBetweenAll(*, *)          		= []
+     * subBetweenAll("", "")          		= []
+     * subBetweenAll("", "#")         		= []
      * subBetweenAll("gotanks", "")     		= []
-     * subBetweenAll("#gotanks#", "#")   		= ["gotanks"]
+     * subBetweenAll("#gotanks#", "#")   	= ["gotanks"]
      * subBetweenAll("#hello# #world#!", "#")   = ["hello", "world"]
      * subBetweenAll("#hello# world#!", "#");   = ["hello"]
      * </pre>
      *
-     * @param text            被切割的字符串
-     * @param prefixAndSuffix 截取开始和结束的字符串标识
-     * @return 截取后的字符串
+     * @param text            The string to extract from.
+     * @param prefixAndSuffix The identical starting and ending marker string.
+     * @return An array of extracted substrings. Returns an empty array if no matches or invalid input.
      */
     public static String[] subBetweenAll(final CharSequence text, final CharSequence prefixAndSuffix) {
         return subBetweenAll(text, prefixAndSuffix, prefixAndSuffix);
     }
 
     /**
-     * 重复某个字符
+     * Repeats a character a specified number of times.
      *
      * <pre>
      * repeat('e', 0)  = ""
@@ -1946,9 +2030,9 @@ public class CharsBacker extends CharsValidator {
      * repeat('e', -2) = ""
      * </pre>
      *
-     * @param c     被重复的字符
-     * @param count 重复的数目，如果小于等于0则返回""
-     * @return 重复字符字符串
+     * @param c     The character to repeat.
+     * @param count The number of times to repeat. If less than or equal to 0, returns "".
+     * @return The string consisting of the repeated character.
      */
     public static String repeat(final char c, final int count) {
         if (count <= 0) {
@@ -1958,11 +2042,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 重复某个字符串
+     * Repeats a string a specified number of times.
      *
-     * @param text  被重复的字符
-     * @param count 重复的数目
-     * @return 重复字符字符串
+     * @param text  The string to repeat.
+     * @param count The number of times to repeat.
+     * @return The string consisting of the repeated string.
      */
     public static String repeat(final CharSequence text, final int count) {
         if (null == text) {
@@ -1972,15 +2056,16 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 重复某个字符串到指定长度
+     * Repeats a string to a specified total length.
      * <ul>
-     * <li>如果指定长度非指定字符串的整数倍，截断到固定长度</li>
-     * <li>如果指定长度小于字符串本身的长度，截断之</li>
+     * <li>If the specified length is not an integer multiple of the string's length, it is truncated to the fixed
+     * length.</li>
+     * <li>If the specified length is less than the string's own length, it is truncated.</li>
      * </ul>
      *
-     * @param text   被重复的字符
-     * @param padLen 指定长度
-     * @return 重复字符字符串
+     * @param text   The string to repeat.
+     * @param padLen The target total length.
+     * @return The string repeated to the specified length.
      */
     public static String repeatByLength(final CharSequence text, final int padLen) {
         if (null == text) {
@@ -1993,7 +2078,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 重复某个字符串并通过分界符连接
+     * Repeats a string and joins the repetitions with a delimiter.
      *
      * <pre>
      * repeatAndJoin("?", 5, ",")   = "?,?,?,?,?"
@@ -2001,10 +2086,10 @@ public class CharsBacker extends CharsValidator {
      * repeatAndJoin("?", 5, null) = "?????"
      * </pre>
      *
-     * @param text      被重复的字符串
-     * @param count     数量
-     * @param delimiter 分界符
-     * @return 连接后的字符串
+     * @param text      The string to repeat.
+     * @param count     The number of times to repeat.
+     * @param delimiter The delimiter to use between repetitions.
+     * @return The joined string.
      */
     public static String repeatAndJoin(final CharSequence text, final int count, final CharSequence delimiter) {
         if (count <= 0) {
@@ -2014,63 +2099,65 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 比较两个字符串（大小写敏感）。
+     * Compares two strings for equality (case-sensitive).
      *
      * <pre>
      * equals(null, null)   = true
-     * equals(null, &quot;abc&quot;)  = false
-     * equals(&quot;abc&quot;, null)  = false
-     * equals(&quot;abc&quot;, &quot;abc&quot;) = true
-     * equals(&quot;abc&quot;, &quot;ABC&quot;) = false
+     * equals(null, "abc")  = false
+     * equals("abc", null)  = false
+     * equals("abc", "abc") = true
+     * equals("abc", "ABC") = false
      * </pre>
      *
-     * @param text1 要比较的字符串1
-     * @param text2 要比较的字符串2
-     * @return 如果两个字符串相同，或者都是{@code null}，则返回{@code true}
+     * @param text1 The first string to compare.
+     * @param text2 The second string to compare.
+     * @return {@code true} if the strings are equal or both are {@code null}, {@code false} otherwise.
      */
     public static boolean equals(final CharSequence text1, final CharSequence text2) {
         return equals(text1, text2, false);
     }
 
     /**
-     * 比较两个字符串（大小写不敏感）。
+     * Compares two strings for equality (case-insensitive).
      *
      * <pre>
      * equalsIgnoreCase(null, null)   = true
-     * equalsIgnoreCase(null, &quot;abc&quot;)  = false
-     * equalsIgnoreCase(&quot;abc&quot;, null)  = false
-     * equalsIgnoreCase(&quot;abc&quot;, &quot;abc&quot;) = true
-     * equalsIgnoreCase(&quot;abc&quot;, &quot;ABC&quot;) = true
+     * equalsIgnoreCase(null, "abc")  = false
+     * equalsIgnoreCase("abc", null)  = false
+     * equalsIgnoreCase("abc", "abc") = true
+     * equalsIgnoreCase("abc", "ABC") = true
      * </pre>
      *
-     * @param text1 要比较的字符串1
-     * @param text2 要比较的字符串2
-     * @return 如果两个字符串相同，或者都是{@code null}，则返回{@code true}
+     * @param text1 The first string to compare.
+     * @param text2 The second string to compare.
+     * @return {@code true} if the strings are equal (case-insensitive) or both are {@code null}, {@code false}
+     *         otherwise.
      */
     public static boolean equalsIgnoreCase(final CharSequence text1, final CharSequence text2) {
         return equals(text1, text2, true);
     }
 
     /**
-     * 比较两个字符串是否相等，规则如下
+     * Compares two strings for equality based on the following rules:
      * <ul>
-     * <li>str1和str2都为{@code null}</li>
-     * <li>忽略大小写使用{@link String#equalsIgnoreCase(String)}判断相等</li>
-     * <li>不忽略大小写使用{@link String#contentEquals(CharSequence)}判断相等</li>
+     * <li>If both {@code text1} and {@code text2} are {@code null}, they are considered equal.</li>
+     * <li>If {@code ignoreCase} is {@code true}, uses {@link String#equalsIgnoreCase(String)}.</li>
+     * <li>If {@code ignoreCase} is {@code false}, uses {@link String#contentEquals(CharSequence)}.</li>
      * </ul>
      *
-     * @param text1      要比较的字符串1
-     * @param text2      要比较的字符串2
-     * @param ignoreCase 是否忽略大小写
-     * @return 如果两个字符串相同，或者都是{@code null}，则返回{@code true}
+     * @param text1      The first string to compare.
+     * @param text2      The second string to compare.
+     * @param ignoreCase Whether to ignore case during comparison.
+     * @return {@code true} if the strings are equal (optionally case-insensitive) or both are {@code null},
+     *         {@code false} otherwise.
      */
     public static boolean equals(final CharSequence text1, final CharSequence text2, final boolean ignoreCase) {
         if (null == text1) {
-            // 只有两个都为null才判断相等
+            // Only if both are null are they considered equal
             return text2 == null;
         }
         if (null == text2) {
-            // 字符串2空，字符串1非空，直接false
+            // If string2 is null and string1 is not null, return false
             return false;
         }
 
@@ -2082,34 +2169,40 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 给定字符串是否与提供的中任意一个字符串相同（忽略大小写），相同则返回{@code true}，没有相同的返回{@code false} 如果参与比对的字符串列表为空，返回{@code false}
+     * Checks if the given string is equal to any of the provided strings (case-insensitive). Returns {@code true} if a
+     * match is found, {@code false} otherwise. If the comparison list is empty, returns {@code false}.
      *
-     * @param text1 给定需要检查的字符串
-     * @param strs  需要参与比对的字符串列表
-     * @return 是否相同
+     * @param text1 The string to check.
+     * @param strs  The list of strings to compare against.
+     * @return {@code true} if {@code text1} is equal to any string in {@code strs} (case-insensitive), {@code false}
+     *         otherwise.
      */
     public static boolean equalsAnyIgnoreCase(final CharSequence text1, final CharSequence... strs) {
         return equalsAny(text1, true, strs);
     }
 
     /**
-     * 给定字符串是否与提供的中任一字符串相同，相同则返回{@code true}，没有相同的返回{@code false} 如果参与比对的字符串列表为空，返回{@code false}
+     * Checks if the given string is equal to any of the provided strings. Returns {@code true} if a match is found,
+     * {@code false} otherwise. If the comparison list is empty, returns {@code false}.
      *
-     * @param text1 给定需要检查的字符串
-     * @param strs  需要参与比对的字符串列表
-     * @return 是否相同
+     * @param text1 The string to check.
+     * @param strs  The list of strings to compare against.
+     * @return {@code true} if {@code text1} is equal to any string in {@code strs}, {@code false} otherwise.
      */
     public static boolean equalsAny(final CharSequence text1, final CharSequence... strs) {
         return equalsAny(text1, false, strs);
     }
 
     /**
-     * 给定字符串是否与提供的中任一字符串相同，相同则返回{@code true}，没有相同的返回{@code false} 如果参与比对的字符串列表为空，返回{@code false}
+     * Checks if the given string is equal to any of the provided strings, with optional case-insensitivity. Returns
+     * {@code true} if a match is found, {@code false} otherwise. If the comparison list is empty, returns
+     * {@code false}.
      *
-     * @param text       给定需要检查的字符串
-     * @param ignoreCase 是否忽略大小写
-     * @param args       需要参与比对的字符串列表
-     * @return 是否相同
+     * @param text       The string to check.
+     * @param ignoreCase Whether to ignore case during comparison.
+     * @param args       The list of strings to compare against.
+     * @return {@code true} if {@code text} is equal to any string in {@code args} (optionally case-insensitive),
+     *         {@code false} otherwise.
      */
     public static boolean equalsAny(final CharSequence text, final boolean ignoreCase, final CharSequence... args) {
         if (ArrayKit.isEmpty(args)) {
@@ -2125,12 +2218,13 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 字符串指定位置的字符是否与给定字符相同 如果字符串为null，返回false 如果给定的位置大于字符串长度，返回false 如果给定的位置小于0，返回false
+     * Checks if the character at a specified position in a string is equal to a given character. Returns {@code false}
+     * if the string is {@code null}, or the position is out of bounds.
      *
-     * @param text     字符串
-     * @param position 位置
-     * @param c        需要对比的字符
-     * @return 字符串指定位置的字符是否与给定字符相同
+     * @param text     The string to check.
+     * @param position The position to check.
+     * @param c        The character to compare against.
+     * @return {@code true} if the character at the position matches, {@code false} otherwise.
      */
     public static boolean equalsCharAt(final CharSequence text, final int position, final char c) {
         if (null == text || position < 0) {
@@ -2140,13 +2234,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取第一个字串的部分字符，与第二个字符串比较（长度一致），判断截取的子串是否相同 任意一个字符串为null返回false
+     * Compares a substring of the first string with the entire second string (length-matched), with optional
+     * case-insensitivity. Returns {@code false} if either string is {@code null}.
      *
-     * @param text1      第一个字符串
-     * @param offset1    第一个字符串开始的位置
-     * @param text2      第二个字符串
-     * @param ignoreCase 是否忽略大小写
-     * @return 子串是否相同
+     * @param text1      The first string.
+     * @param offset1    The starting offset in the first string.
+     * @param text2      The second string.
+     * @param ignoreCase Whether to ignore case during comparison.
+     * @return {@code true} if the substrings are equal, {@code false} otherwise.
      * @see String#regionMatches(boolean, int, String, int, int)
      */
     public static boolean isSubEquals(
@@ -2158,15 +2253,16 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截取两个字符串的不同部分（长度一致），判断截取的子串是否相同 任意一个字符串为null返回false
+     * Compares different parts of two strings (with equal length), with optional case-insensitivity. Returns
+     * {@code false} if either string is {@code null}.
      *
-     * @param text1      第一个字符串
-     * @param offset1    第一个字符串开始的位置
-     * @param text2      第二个字符串
-     * @param offset2    第二个字符串开始的位置
-     * @param length     截取长度
-     * @param ignoreCase 是否忽略大小写
-     * @return 子串是否相同
+     * @param text1      The first string.
+     * @param offset1    The starting offset in the first string.
+     * @param text2      The second string.
+     * @param offset2    The starting offset in the second string.
+     * @param length     The length of the substring to compare.
+     * @param ignoreCase Whether to ignore case during comparison.
+     * @return {@code true} if the substrings are equal, {@code false} otherwise.
      * @see String#regionMatches(boolean, int, String, int, int)
      */
     public static boolean isSubEquals(
@@ -2184,13 +2280,15 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 格式化文本, {} 表示占位符 此方法只是简单将占位符 {} 按照顺序替换为参数 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可 例： 通常使用：format("this
-     * is {} for {}", "a", "b") = this is a for b 转义{}： format("this is \\{} for {}", "a", "b") = this is {} for a 转义\：
-     * format("this is \\\\{} for {}", "a", "b") = this is \a for b
+     * Formats text using "{}" as placeholders. This method simply replaces placeholders "{}" in order with the provided
+     * arguments. To output "{}", use "\\{}" to escape. To output "\" before "{}", use "\\\\{}" to double escape.
+     * Example: Normal usage: {@code format("this is {} for {}", "a", "b")} returns "this is a for b". Escaping {}:
+     * {@code format("this is \\{} for {}", "a", "b")} returns "this is {} for a". Escaping \: {@code format("this is
+     * \\\\{} for {}", "a", "b")} returns "this is \a for b".
      *
-     * @param format 文本模板，被替换的部分用 {} 表示，如果模板为null，返回"null"
-     * @param args   参数值
-     * @return 格式化后的文本，如果模板为null，返回"null"
+     * @param format The text template, with "{}" representing placeholders. If {@code null}, returns "null".
+     * @param args   The argument values.
+     * @return The formatted text. If the template is {@code null}, returns "null".
      */
     public static String format(final CharSequence format, final Object... args) {
         if (null == format) {
@@ -2203,69 +2301,70 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 有序的格式化文本，使用{number}做为占位符 通常使用：format("this is {0} for {1}", "a", "b") = this is a for b
+     * Formats text using indexed placeholders, e.g., "{0}", "{1}". Normal usage: {@code indexedFormat("this is {0} for
+     * {1}", "a", "b")} returns "this is a for b".
      *
-     * @param pattern   文本格式
-     * @param arguments 参数
-     * @return 格式化后的文本
+     * @param pattern   The text pattern.
+     * @param arguments The arguments to fill the placeholders.
+     * @return The formatted text.
      */
     public static String indexedFormat(final CharSequence pattern, final Object... arguments) {
         return MessageFormat.format(pattern.toString(), arguments);
     }
 
     /**
-     * 包装指定字符串 当前缀和后缀一致时使用此方法
+     * Wraps a specified string with identical prefix and suffix.
      *
-     * @param text            被包装的字符串
-     * @param prefixAndSuffix 前缀和后缀
-     * @return 包装后的字符串
+     * @param text            The string to wrap.
+     * @param prefixAndSuffix The prefix and suffix string.
+     * @return The wrapped string.
      */
     public static String wrap(final CharSequence text, final CharSequence prefixAndSuffix) {
         return wrap(text, prefixAndSuffix, prefixAndSuffix);
     }
 
     /**
-     * 包装指定字符串
+     * Wraps a specified string with a prefix and a suffix.
      *
-     * @param text   被包装的字符串
-     * @param prefix 前缀
-     * @param suffix 后缀
-     * @return 包装后的字符串
+     * @param text   The string to wrap.
+     * @param prefix The prefix string.
+     * @param suffix The suffix string.
+     * @return The wrapped string.
      */
     public static String wrap(final CharSequence text, final CharSequence prefix, final CharSequence suffix) {
         return toStringOrEmpty(prefix).concat(toStringOrEmpty(text)).concat(toStringOrEmpty(suffix));
     }
 
     /**
-     * 包装指定字符串
+     * Wraps a specified string with a prefix character and a suffix character.
      *
-     * @param text   被包装的字符串
-     * @param prefix 前缀
-     * @param suffix 后缀
-     * @return 包装后的字符串
+     * @param text   The string to wrap.
+     * @param prefix The prefix character.
+     * @param suffix The suffix character.
+     * @return The wrapped string.
      */
     public static String wrap(final CharSequence text, final char prefix, final char suffix) {
         return prefix + toStringOrEmpty(text) + suffix;
     }
 
     /**
-     * 使用单个字符包装多个字符串
+     * Wraps multiple strings with a single pair of prefix and suffix characters.
      *
-     * @param prefixAndSuffix 前缀和后缀
-     * @param strs            多个字符串
-     * @return 包装的字符串数组
+     * @param prefixAndSuffix The prefix and suffix string.
+     * @param strs            Multiple strings to wrap.
+     * @return An array of wrapped strings.
      */
     public static String[] wrapAllWithPair(final CharSequence prefixAndSuffix, final CharSequence... strs) {
         return wrapAll(prefixAndSuffix, prefixAndSuffix, strs);
     }
 
     /**
-     * 包装多个字符串
+     * Wraps multiple strings with a specified prefix and suffix.
      *
-     * @param prefix 前缀
-     * @param suffix 后缀
-     * @param strs   多个字符串
-     * @return 包装的字符串数组
+     * @param prefix The prefix string.
+     * @param suffix The suffix string.
+     * @param strs   Multiple strings to wrap.
+     * @return An array of wrapped strings.
      */
     public static String[] wrapAll(final CharSequence prefix, final CharSequence suffix, final CharSequence... strs) {
         final String[] results = new String[strs.length];
@@ -2276,12 +2375,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 包装指定字符串，如果前缀或后缀已经包含对应的字符串，则不再包装
+     * Wraps a specified string with a prefix and suffix, but only if the string is not already wrapped.
      *
-     * @param text   被包装的字符串
-     * @param prefix 前缀
-     * @param suffix 后缀
-     * @return 包装后的字符串
+     * @param text   The string to wrap.
+     * @param prefix The prefix string.
+     * @param suffix The suffix string.
+     * @return The wrapped string, or the original string if already wrapped.
      */
     public static String wrapIfMissing(final CharSequence text, final CharSequence prefix, final CharSequence suffix) {
         int len = 0;
@@ -2308,23 +2407,24 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 使用成对的字符包装多个字符串，如果已经包装，则不再包装
+     * Wraps multiple strings with a single pair of prefix and suffix characters, but only if the strings are not
+     * already wrapped.
      *
-     * @param prefixAndSuffix 前缀和后缀
-     * @param strs            多个字符串
-     * @return 包装的字符串数组
+     * @param prefixAndSuffix The prefix and suffix string.
+     * @param strs            Multiple strings to wrap.
+     * @return An array of wrapped strings.
      */
     public static String[] wrapAllWithPairIfMissing(final CharSequence prefixAndSuffix, final CharSequence... strs) {
         return wrapAllIfMissing(prefixAndSuffix, prefixAndSuffix, strs);
     }
 
     /**
-     * 包装多个字符串，如果已经包装，则不再包装
+     * Wraps multiple strings with a specified prefix and suffix, but only if the strings are not already wrapped.
      *
-     * @param prefix 前缀
-     * @param suffix 后缀
-     * @param strs   多个字符串
-     * @return 包装的字符串数组
+     * @param prefix The prefix string.
+     * @param suffix The suffix string.
+     * @param strs   Multiple strings to wrap.
+     * @return An array of wrapped strings.
      */
     public static String[] wrapAllIfMissing(
             final CharSequence prefix,
@@ -2338,12 +2438,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 去掉字符包装，如果未被包装则返回原字符串 此方法要求prefix和suffix都存在，如果只有一个，不做去除。
+     * Unwraps a string by removing the specified prefix and suffix. If the string is not wrapped, the original string
+     * is returned. This method requires both the prefix and suffix to be present; if only one is found, no removal
+     * occurs.
      *
-     * @param text   字符串
-     * @param prefix 前置字符串
-     * @param suffix 后置字符串
-     * @return 去掉包装字符的字符串
+     * @param text   The string to unwrap.
+     * @param prefix The prefix string to remove.
+     * @param suffix The suffix string to remove.
+     * @return The unwrapped string.
      */
     public static String unWrap(final CharSequence text, final String prefix, final String suffix) {
         if (isWrap(text, prefix, suffix)) {
@@ -2353,12 +2455,13 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 去掉字符包装，如果未被包装则返回原字符串
+     * Unwraps a string by removing the specified prefix and suffix characters. If the string is not wrapped, the
+     * original string is returned.
      *
-     * @param text   字符串
-     * @param prefix 前置字符
-     * @param suffix 后置字符
-     * @return 去掉包装字符的字符串
+     * @param text   The string to unwrap.
+     * @param prefix The prefix character to remove.
+     * @param suffix The suffix character to remove.
+     * @return The unwrapped string.
      */
     public static String unWrap(final CharSequence text, final char prefix, final char suffix) {
         if (isEmpty(text)) {
@@ -2371,23 +2474,24 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 去掉字符包装，如果未被包装则返回原字符串
+     * Unwraps a string by removing identical prefix and suffix characters. If the string is not wrapped, the original
+     * string is returned.
      *
-     * @param text            字符串
-     * @param prefixAndSuffix 前置和后置字符
-     * @return 去掉包装字符的字符串
+     * @param text            The string to unwrap.
+     * @param prefixAndSuffix The identical prefix and suffix character to remove.
+     * @return The unwrapped string.
      */
     public static String unWrap(final CharSequence text, final char prefixAndSuffix) {
         return unWrap(text, prefixAndSuffix, prefixAndSuffix);
     }
 
     /**
-     * 指定字符串是否被包装
+     * Checks if a specified string is wrapped by a given prefix and suffix.
      *
-     * @param text   字符串
-     * @param prefix 前缀
-     * @param suffix 后缀
-     * @return 是否被包装
+     * @param text   The string to check.
+     * @param prefix The prefix string.
+     * @param suffix The suffix string.
+     * @return {@code true} if the string is wrapped, {@code false} otherwise.
      */
     public static boolean isWrap(final CharSequence text, final CharSequence prefix, final CharSequence suffix) {
         if (ArrayKit.hasNull(text, prefix, suffix)) {
@@ -2402,34 +2506,34 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 指定字符串是否被同一字符包装（前后都有这些字符串）
+     * Checks if a specified string is wrapped by an identical wrapper string (both prefix and suffix).
      *
-     * @param text    字符串
-     * @param wrapper 包装字符串
-     * @return 是否被包装
+     * @param text    The string to check.
+     * @param wrapper The wrapper string.
+     * @return {@code true} if the string is wrapped, {@code false} otherwise.
      */
     public static boolean isWrap(final CharSequence text, final String wrapper) {
         return isWrap(text, wrapper, wrapper);
     }
 
     /**
-     * 指定字符串是否被同一字符包装（前后都有这些字符串）
+     * Checks if a specified string is wrapped by an identical wrapper character (both prefix and suffix).
      *
-     * @param text    字符串
-     * @param wrapper 包装字符
-     * @return 是否被包装
+     * @param text    The string to check.
+     * @param wrapper The wrapper character.
+     * @return {@code true} if the string is wrapped, {@code false} otherwise.
      */
     public static boolean isWrap(final CharSequence text, final char wrapper) {
         return isWrap(text, wrapper, wrapper);
     }
 
     /**
-     * 指定字符串是否被包装
+     * Checks if a specified string is wrapped by a given prefix character and suffix character.
      *
-     * @param text       字符串
-     * @param prefixChar 前缀
-     * @param suffixChar 后缀
-     * @return 是否被包装
+     * @param text       The string to check.
+     * @param prefixChar The prefix character.
+     * @param suffixChar The suffix character.
+     * @return {@code true} if the string is wrapped, {@code false} otherwise.
      */
     public static boolean isWrap(final CharSequence text, final char prefixChar, final char suffixChar) {
         if (null == text || text.length() < 2) {
@@ -2440,7 +2544,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 获取字符串中最左边的{@code len}字符
+     * Gets the leftmost {@code len} characters from a string.
      *
      * <pre>
      *  left(null, *)    = null
@@ -2451,9 +2555,9 @@ public class CharsBacker extends CharsValidator {
      *  left("abc", 4)   = "abc"
      * </pre>
      *
-     * @param text 要从中获取字符的字符串可能为空
-     * @param len  所需字符串的长度
-     * @return 最左边的字符，{@code null}如果输入为空字符串
+     * @param text The string to extract from, may be {@code null}.
+     * @param len  The desired length of the string.
+     * @return The leftmost characters, or {@code null} if the input string is {@code null}.
      */
     public static String left(final String text, final int len) {
         if (null == text) {
@@ -2469,7 +2573,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 获取字符串中最右边的{@code len}字符
+     * Gets the rightmost {@code len} characters from a string.
      *
      * <pre>
      *  right(null, *)    = null
@@ -2480,9 +2584,9 @@ public class CharsBacker extends CharsValidator {
      *  right("abc", 4)   = "abc"
      * </pre>
      *
-     * @param text 要从中获取字符的字符串可能为空
-     * @param len  所需字符串的长度
-     * @return 最右边的字符，{@code null}如果输入为空字符串
+     * @param text The string to extract from, may be {@code null}.
+     * @param len  The desired length of the string.
+     * @return The rightmost characters, or {@code null} if the input string is {@code null}.
      */
     public static String right(final String text, final int len) {
         if (null == text) {
@@ -2498,7 +2602,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 从字符串中间获取{@code len}字符.
+     * Gets {@code len} characters from the middle of a string.
      *
      * <pre>
      *  mid(null, *, *)    = null
@@ -2511,10 +2615,10 @@ public class CharsBacker extends CharsValidator {
      *  mid("abc", -2, 2)  = "ab"
      * </pre>
      *
-     * @param text 要从中获取字符的字符串可能为空
-     * @param pos  开始时的位置，负为零
-     * @param len  所需字符串的长度
-     * @return 中间的字符，{@code null}如果输入为空字符串
+     * @param text The string to extract from, may be {@code null}.
+     * @param pos  The starting position. Negative values are treated as 0.
+     * @param len  The desired length of the string.
+     * @return The middle characters, or {@code null} if the input string is {@code null}.
      */
     public static String mid(final String text, int pos, final int len) {
         if (null == text) {
@@ -2533,7 +2637,8 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 补充字符串以满足指定长度，如果提供的字符串大于指定长度，截断之 同：leftPad (org.apache.commons.lang3.leftPad)
+     * Pads the beginning of a string with a specified padding string to reach a target length. If the string's length
+     * is greater than the target length, it is truncated. Similar to {@code leftPad} in Apache Commons Lang.
      *
      * <pre>
      * padPre(null, *, *);//null
@@ -2542,10 +2647,10 @@ public class CharsBacker extends CharsValidator {
      * padPre("1039", -1, "0");//"103"
      * </pre>
      *
-     * @param text   字符串
-     * @param length 长度
-     * @param padStr 补充的字符
-     * @return 补充后的字符串
+     * @param text   The string to pad.
+     * @param length The target total length.
+     * @param padStr The string to use for padding.
+     * @return The padded string.
      */
     public static String padPre(final CharSequence text, final int length, final CharSequence padStr) {
         if (null == text) {
@@ -2555,7 +2660,7 @@ public class CharsBacker extends CharsValidator {
         if (strLen == length) {
             return text.toString();
         } else if (strLen > length) {
-            // 如果提供的字符串大于指定长度，截断之
+            // If the provided string is longer than the specified length, truncate it.
             return subPre(text, length);
         }
 
@@ -2563,7 +2668,8 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 补充字符串以满足最小长度，如果提供的字符串大于指定长度，截断之 同：leftPad (org.apache.commons.lang3.leftPad)
+     * Pads the beginning of a string with a specified padding character to reach a target length. If the string's
+     * length is greater than the target length, it is truncated. Similar to {@code leftPad} in Apache Commons Lang.
      *
      * <pre>
      * padPre(null, *, *);//null
@@ -2571,10 +2677,10 @@ public class CharsBacker extends CharsValidator {
      * padPre("123", 2, '0');//"12"
      * </pre>
      *
-     * @param text    字符串
-     * @param length  长度
-     * @param padChar 补充的字符
-     * @return 补充后的字符串
+     * @param text    The string to pad.
+     * @param length  The target total length.
+     * @param padChar The character to use for padding.
+     * @return The padded string.
      */
     public static String padPre(final CharSequence text, final int length, final char padChar) {
         if (null == text) {
@@ -2584,7 +2690,7 @@ public class CharsBacker extends CharsValidator {
         if (strLen == length) {
             return text.toString();
         } else if (strLen > length) {
-            // 如果提供的字符串大于指定长度，截断之
+            // If the provided string is longer than the specified length, truncate it.
             return subPre(text, length);
         }
 
@@ -2592,19 +2698,20 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 补充字符串以满足最小长度，如果提供的字符串大于指定长度，截断之
+     * Pads the end of a string with a specified padding character to reach a target length. If the string's length is
+     * greater than the target length, it is truncated.
      *
      * <pre>
      * padAfter(null, *, *);//null
      * padAfter("1", 3, '0');//"100"
      * padAfter("123", 2, '0');//"23"
-     * padAfter("123", -1, '0')//"" 空串
+     * padAfter("123", -1, '0')//"" Empty string
      * </pre>
      *
-     * @param text    字符串，如果为{@code null}，直接返回null
-     * @param length  长度
-     * @param padChar 补充的字符
-     * @return 补充后的字符串
+     * @param text    The string to pad. If {@code null}, returns {@code null}.
+     * @param length  The target total length.
+     * @param padChar The character to use for padding.
+     * @return The padded string.
      */
     public static String padAfter(final CharSequence text, final int length, final char padChar) {
         if (null == text) {
@@ -2614,7 +2721,7 @@ public class CharsBacker extends CharsValidator {
         if (strLen == length) {
             return text.toString();
         } else if (strLen > length) {
-            // 如果提供的字符串大于指定长度，截断之
+            // If the provided string is longer than the specified length, truncate it.
             return sub(text, strLen - length, strLen);
         }
 
@@ -2622,7 +2729,8 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 补充字符串以满足最小长度
+     * Pads the end of a string with a specified padding string to reach a target length. If the string's length is
+     * greater than the target length, it is truncated.
      *
      * <pre>
      * padAfter(null, *, *);//null
@@ -2630,10 +2738,10 @@ public class CharsBacker extends CharsValidator {
      * padAfter("123", 2, "ABC");//"23"
      * </pre>
      *
-     * @param text   字符串，如果为{@code null}，直接返回null
-     * @param length 长度
-     * @param padStr 补充的字符
-     * @return 补充后的字符串
+     * @param text   The string to pad. If {@code null}, returns {@code null}.
+     * @param length The target total length.
+     * @param padStr The string to use for padding.
+     * @return The padded string.
      */
     public static String padAfter(final CharSequence text, final int length, final CharSequence padStr) {
         if (null == text) {
@@ -2643,7 +2751,7 @@ public class CharsBacker extends CharsValidator {
         if (strLen == length) {
             return text.toString();
         } else if (strLen > length) {
-            // 如果提供的字符串大于指定长度，截断之
+            // If the provided string is longer than the specified length, truncate it.
             return subSufByLength(text, length);
         }
 
@@ -2651,7 +2759,8 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 居中字符串，两边补充指定字符串，如果指定长度小于字符串，则返回原字符串
+     * Centers a string by padding both sides with spaces to reach a specified length. If the specified length is less
+     * than the string's length, the original string is returned.
      *
      * <pre>
      * center(null, *)   = null
@@ -2662,16 +2771,17 @@ public class CharsBacker extends CharsValidator {
      * center("a", 4)    = " a  "
      * </pre>
      *
-     * @param text 字符串
-     * @param size 指定长度
-     * @return 补充后的字符串
+     * @param text The string to center.
+     * @param size The target total length.
+     * @return The centered string.
      */
     public static String center(final CharSequence text, final int size) {
         return center(text, size, Symbol.C_SPACE);
     }
 
     /**
-     * 居中字符串，两边补充指定字符串，如果指定长度小于字符串，则返回原字符串
+     * Centers a string by padding both sides with a specified character to reach a specified length. If the specified
+     * length is less than the string's length, the original string is returned.
      *
      * <pre>
      * center(null, *, *)     = null
@@ -2680,14 +2790,14 @@ public class CharsBacker extends CharsValidator {
      * center("ab", 4, ' ')   = " ab "
      * center("abcd", 2, ' ') = "abcd"
      * center("a", 4, ' ')    = " a  "
-     * center("a", 4, 'y')   = "yayy"
-     * center("abc", 7, ' ')   = "  abc  "
+     * center("a", 4, 'y')    = "yayy"
+     * center("abc", 7, ' ')  = "  abc  "
      * </pre>
      *
-     * @param text    字符串
-     * @param size    指定长度
-     * @param padChar 两边补充的字符
-     * @return 补充后的字符串
+     * @param text    The string to center.
+     * @param size    The target total length.
+     * @param padChar The character to use for padding.
+     * @return The centered string.
      */
     public static String center(CharSequence text, final int size, final char padChar) {
         if (text == null || size <= 0) {
@@ -2704,7 +2814,8 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 居中字符串，两边补充指定字符串，如果指定长度小于字符串，则返回原字符串
+     * Centers a string by padding both sides with a specified padding string to reach a specified length. If the
+     * specified length is less than the string's length, the original string is returned.
      *
      * <pre>
      * center(null, *, *)     = null
@@ -2718,10 +2829,10 @@ public class CharsBacker extends CharsValidator {
      * center("abc", 7, "")   = "  abc  "
      * </pre>
      *
-     * @param text   字符串
-     * @param size   指定长度
-     * @param padStr 两边补充的字符串
-     * @return 补充后的字符串
+     * @param text   The string to center.
+     * @param size   The target total length.
+     * @param padStr The string to use for padding.
+     * @return The centered string.
      */
     public static String center(CharSequence text, final int size, CharSequence padStr) {
         if (text == null || size <= 0) {
@@ -2741,7 +2852,8 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 统计指定内容中包含指定字符串的数量 参数为 {@code null} 或者 "" 返回 {@code 0}.
+     * Counts the occurrences of a specified substring within a string. Returns {@code 0} if any parameter is
+     * {@code null} or empty.
      *
      * <pre>
      * count(null, *)       = 0
@@ -2753,9 +2865,9 @@ public class CharsBacker extends CharsValidator {
      * count("abba", "xxx") = 0
      * </pre>
      *
-     * @param content      被查找的字符串
-     * @param strForSearch 需要查找的字符串
-     * @return 查找到的个数
+     * @param content      The string to search within.
+     * @param strForSearch The substring to count.
+     * @return The number of occurrences of the substring.
      */
     public static int count(final CharSequence content, final CharSequence strForSearch) {
         if (hasEmpty(content, strForSearch) || strForSearch.length() > content.length()) {
@@ -2774,11 +2886,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 统计指定内容中包含指定字符的数量
+     * Counts the occurrences of a specified character within a string.
      *
-     * @param content       内容
-     * @param charForSearch 被统计的字符
-     * @return 包含数量
+     * @param content       The string to search within.
+     * @param charForSearch The character to count.
+     * @return The number of occurrences of the character.
      */
     public static int count(final CharSequence content, final char charForSearch) {
         int count = 0;
@@ -2795,7 +2907,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 比较两个字符串，用于排序
+     * Compares two strings for sorting purposes.
      *
      * <pre>
      * compare(null, null, *)     = 0
@@ -2810,10 +2922,11 @@ public class CharsBacker extends CharsValidator {
      * compare("ab", "abc", *)    &lt; 0
      * </pre>
      *
-     * @param text1      字符串1
-     * @param text2      字符串2
-     * @param nullIsLess {@code null} 值是否排在前（null是否小于非空值）
-     * @return 排序值。负数：text1 &lt; text2，正数：text1 &gt; text2, 0：text1 == text2
+     * @param text1      The first string.
+     * @param text2      The second string.
+     * @param nullIsLess If {@code true}, {@code null} values are considered smaller than non-null values.
+     * @return A negative integer, zero, or a positive integer as the first string is less than, equal to, or greater
+     *         than the second.
      */
     public static int compare(final CharSequence text1, final CharSequence text2, final boolean nullIsLess) {
         if (text1 == text2) {
@@ -2829,7 +2942,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 比较两个字符串，用于排序，大小写不敏感
+     * Compares two strings for sorting purposes, ignoring case.
      *
      * <pre>
      * compareIgnoreCase(null, null, *)     = 0
@@ -2846,10 +2959,11 @@ public class CharsBacker extends CharsValidator {
      * compareIgnoreCase("ab", "abc", *)    &lt; 0
      * </pre>
      *
-     * @param text1      字符串1
-     * @param text2      字符串2
-     * @param nullIsLess {@code null} 值是否排在前（null是否小于非空值）
-     * @return 排序值。负数：text1 &lt; text2，正数：text1 &gt; text2, 0：text1 == text2
+     * @param text1      The first string.
+     * @param text2      The second string.
+     * @param nullIsLess If {@code true}, {@code null} values are considered smaller than non-null values.
+     * @return A negative integer, zero, or a positive integer as the first string is less than, equal to, or greater
+     *         than the second (case-insensitive).
      */
     public static int compareIgnoreCase(final CharSequence text1, final CharSequence text2, final boolean nullIsLess) {
         if (text1 == text2) {
@@ -2865,7 +2979,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 比较两个版本 null版本排在最小：即：
+     * Compares two version strings. {@code null} versions are considered the smallest.
      *
      * <pre>
      * compareVersion(null, "v1") &lt; 0
@@ -2878,21 +2992,24 @@ public class CharsBacker extends CharsValidator {
      * compareVersion("V0.0.20170102", "V0.0.20170101") &gt; 0
      * </pre>
      *
-     * @param version1 版本1
-     * @param version2 版本2
-     * @return 排序值。负数：version1 &lt; version2，正数：version1 &gt; version2, 0：version1 == version2
+     * @param version1 The first version string.
+     * @param version2 The second version string.
+     * @return A negative integer, zero, or a positive integer as the first version is less than, equal to, or greater
+     *         than the second.
      */
     public static int compareVersion(final CharSequence version1, final CharSequence version2) {
         return VersionCompare.INSTANCE.compare(toStringOrNull(version1), toStringOrNull(version2));
     }
 
     /**
-     * 如果给定字符串不是以给定的一个或多个字符串为结尾，则在尾部添加结尾字符串 不忽略大小写
+     * Appends a suffix to a string if it does not already end with the specified suffix or any of the additional
+     * suffixes. Case-sensitive comparison.
      *
-     * @param text     被检查的字符串
-     * @param suffix   需要添加到结尾的字符串
-     * @param suffixes 需要额外检查的结尾字符串，如果以这些中的一个为结尾，则不再添加
-     * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
+     * @param text     The string to check.
+     * @param suffix   The suffix to append.
+     * @param suffixes Additional suffixes to check against. If the string ends with any of these, no suffix is
+     *                 appended.
+     * @return The string with the suffix appended if missing, otherwise the original string.
      */
     public static String appendIfMissing(
             final CharSequence text,
@@ -2902,12 +3019,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定字符串不是以给定的一个或多个字符串为结尾，则在尾部添加结尾字符串 忽略大小写
+     * Appends a suffix to a string if it does not already end with the specified suffix or any of the additional
+     * suffixes. Case-insensitive comparison.
      *
-     * @param text     被检查的字符串
-     * @param suffix   需要添加到结尾的字符串
-     * @param suffixes 需要额外检查的结尾字符串，如果以这些中的一个为结尾，则不再添加
-     * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
+     * @param text     The string to check.
+     * @param suffix   The suffix to append.
+     * @param suffixes Additional suffixes to check against. If the string ends with any of these, no suffix is
+     *                 appended.
+     * @return The string with the suffix appended if missing, otherwise the original string.
      */
     public static String appendIfMissingIgnoreCase(
             final CharSequence text,
@@ -2917,13 +3036,15 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定字符串不是以给定的一个或多个字符串为结尾，则在尾部添加结尾字符串
+     * Appends a suffix to a string if it does not already end with the specified suffix or any of the additional
+     * suffixes.
      *
-     * @param text         被检查的字符串
-     * @param suffix       需要添加到结尾的字符串，不参与检查匹配
-     * @param ignoreCase   检查结尾时是否忽略大小写
-     * @param testSuffixes 需要额外检查的结尾字符串，如果以这些中的一个为结尾，则不再添加
-     * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
+     * @param text         The string to check.
+     * @param suffix       The suffix to append. This suffix is not used for checking existing endings.
+     * @param ignoreCase   Whether to ignore case when checking for existing endings.
+     * @param testSuffixes Additional suffixes to check against. If the string ends with any of these, no suffix is
+     *                     appended.
+     * @return The string with the suffix appended if missing, otherwise the original string.
      */
     public static String appendIfMissing(
             final CharSequence text,
@@ -2944,12 +3065,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定字符串不是以给定的一个或多个字符串为开头，则在前面添加起始字符串 不忽略大小写
+     * Prepends a prefix to a string if it does not already start with the specified prefix or any of the additional
+     * prefixes. Case-sensitive comparison.
      *
-     * @param text     被检查的字符串
-     * @param prefix   需要添加到首部的字符串
-     * @param prefixes 需要额外检查的首部字符串，如果以这些中的一个为起始，则不再添加
-     * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
+     * @param text     The string to check.
+     * @param prefix   The prefix to prepend.
+     * @param prefixes Additional prefixes to check against. If the string starts with any of these, no prefix is
+     *                 prepended.
+     * @return The string with the prefix prepended if missing, otherwise the original string.
      */
     public static String prependIfMissing(
             final CharSequence text,
@@ -2959,12 +3082,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定字符串不是以给定的一个或多个字符串为开头，则在首部添加起始字符串 忽略大小写
+     * Prepends a prefix to a string if it does not already start with the specified prefix or any of the additional
+     * prefixes. Case-insensitive comparison.
      *
-     * @param text     被检查的字符串
-     * @param prefix   需要添加到首部的字符串
-     * @param prefixes 需要额外检查的首部字符串，如果以这些中的一个为起始，则不再添加
-     * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
+     * @param text     The string to check.
+     * @param prefix   The prefix to prepend.
+     * @param prefixes Additional prefixes to check against. If the string starts with any of these, no prefix is
+     *                 prepended.
+     * @return The string with the prefix prepended if missing, otherwise the original string.
      */
     public static String prependIfMissingIgnoreCase(
             final CharSequence text,
@@ -2974,13 +3099,15 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 如果给定字符串不是以给定的一个或多个字符串为开头，则在首部添加起始字符串
+     * Prepends a prefix to a string if it does not already start with the specified prefix or any of the additional
+     * prefixes.
      *
-     * @param text       被检查的字符串
-     * @param prefix     需要添加到首部的字符串
-     * @param ignoreCase 检查结尾时是否忽略大小写
-     * @param prefixes   需要额外检查的首部字符串，如果以这些中的一个为起始，则不再添加
-     * @return 如果已经结尾，返回原字符串，否则返回添加结尾的字符串
+     * @param text       The string to check.
+     * @param prefix     The prefix to prepend.
+     * @param ignoreCase Whether to ignore case when checking for existing beginnings.
+     * @param prefixes   Additional prefixes to check against. If the string starts with any of these, no prefix is
+     *                   prepended.
+     * @return The string with the prefix prepended if missing, otherwise the original string.
      */
     public static String prependIfMissing(
             final CharSequence text,
@@ -3001,13 +3128,13 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换字符串中第一个指定字符串
+     * Replaces the first occurrence of a specified substring in a string.
      *
-     * @param text        字符串
-     * @param searchStr   被查找的字符串
-     * @param replacedStr 被替换的字符串
-     * @param ignoreCase  是否忽略大小写
-     * @return 替换后的字符串
+     * @param text        The string to modify.
+     * @param searchStr   The substring to search for.
+     * @param replacedStr The replacement string.
+     * @param ignoreCase  Whether to ignore case during the search.
+     * @return The string with the first occurrence replaced.
      */
     public static String replaceFirst(
             final CharSequence text,
@@ -3025,13 +3152,13 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换字符串中最后一个指定字符串
+     * Replaces the last occurrence of a specified substring in a string.
      *
-     * @param text        字符串
-     * @param searchStr   被查找的字符串
-     * @param replacedStr 被替换的字符串
-     * @param ignoreCase  是否忽略大小写
-     * @return 替换后的字符串
+     * @param text        The string to modify.
+     * @param searchStr   The substring to search for.
+     * @param replacedStr The replacement string.
+     * @param ignoreCase  Whether to ignore case during the search.
+     * @return The string with the last occurrence replaced.
      */
     public static String replaceLast(
             final CharSequence text,
@@ -3049,12 +3176,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换字符串中的指定字符串，忽略大小写
+     * Replaces all occurrences of a specified substring in a string, ignoring case.
      *
-     * @param text        字符串
-     * @param searchStr   被查找的字符串
-     * @param replacement 被替换的字符串
-     * @return 替换后的字符串
+     * @param text        The string to modify.
+     * @param searchStr   The substring to search for.
+     * @param replacement The replacement string.
+     * @return The string with all occurrences replaced (case-insensitive).
      */
     public static String replaceIgnoreCase(
             final CharSequence text,
@@ -3064,12 +3191,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换字符串中的指定字符串
+     * Replaces all occurrences of a specified substring in a string.
      *
-     * @param text        字符串
-     * @param searchStr   被查找的字符串
-     * @param replacement 被替换的字符串
-     * @return 替换后的字符串
+     * @param text        The string to modify.
+     * @param searchStr   The substring to search for.
+     * @param replacement The replacement string.
+     * @return The string with all occurrences replaced.
      */
     public static String replace(
             final CharSequence text,
@@ -3079,13 +3206,13 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换字符串中的指定字符串
+     * Replaces all occurrences of a specified substring in a string, with optional case-insensitivity.
      *
-     * @param text        字符串
-     * @param searchStr   被查找的字符串
-     * @param replacement 被替换的字符串
-     * @param ignoreCase  是否忽略大小写
-     * @return 替换后的字符串
+     * @param text        The string to modify.
+     * @param searchStr   The substring to search for.
+     * @param replacement The replacement string.
+     * @param ignoreCase  Whether to ignore case during the search.
+     * @return The string with all occurrences replaced.
      */
     public static String replace(
             final CharSequence text,
@@ -3096,14 +3223,15 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换字符串中的指定字符串 如果指定字符串出现多次，则全部替换
+     * Replaces all occurrences of a specified substring in a string, starting from a given index, with optional
+     * case-insensitivity.
      *
-     * @param text        字符串
-     * @param fromIndex   开始位置（包括）
-     * @param searchStr   被查找的字符串
-     * @param replacement 被替换的字符串
-     * @param ignoreCase  是否忽略大小写
-     * @return 替换后的字符串
+     * @param text        The string to modify.
+     * @param fromIndex   The starting position (inclusive).
+     * @param searchStr   The substring to search for.
+     * @param replacement The replacement string.
+     * @param ignoreCase  Whether to ignore case during the search.
+     * @return The string with all occurrences replaced.
      */
     public static String replace(
             final CharSequence text,
@@ -3118,13 +3246,15 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换指定字符串的指定区间内字符为固定字符，替换后字符串长度不变 如替换的区间长度为10，则替换后的字符重复10次 此方法使用{@link String#codePoints()}完成拆分替换
+     * Replaces characters within a specified range of a string with a fixed character. The length of the replaced
+     * section remains the same; the replacement character is repeated. This method uses {@link String#codePoints()} for
+     * splitting and replacement.
      *
-     * @param text         字符串
-     * @param beginInclude 开始位置（包含）
-     * @param endExclude   结束位置（不包含）
-     * @param replacedChar 被替换的字符
-     * @return 替换后的字符串
+     * @param text         The string to modify.
+     * @param beginInclude The starting position (inclusive).
+     * @param endExclude   The ending position (exclusive).
+     * @param replacedChar The character to replace with.
+     * @return The string with the specified range replaced.
      */
     public static String replaceByCodePoint(
             final CharSequence text,
@@ -3135,13 +3265,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换指定字符串的指定区间内字符为指定字符串，字符串只重复一次 此方法使用{@link String#codePoints()}完成拆分替换
+     * Replaces characters within a specified range of a string with a specified string. The replacement string is used
+     * once. This method uses {@link String#codePoints()} for splitting and replacement.
      *
-     * @param text         字符串
-     * @param beginInclude 开始位置（包含）
-     * @param endExclude   结束位置（不包含）
-     * @param replacedStr  被替换的字符串
-     * @return 替换后的字符串
+     * @param text         The string to modify.
+     * @param beginInclude The starting position (inclusive).
+     * @param endExclude   The ending position (exclusive).
+     * @param replacedStr  The string to replace with.
+     * @return The string with the specified range replaced.
      */
     public static String replaceByCodePoint(
             final CharSequence text,
@@ -3152,17 +3283,19 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换所有正则匹配的文本，并使用自定义函数决定如何替换 replaceFun可以提取出匹配到的内容的不同部分，然后经过重新处理、组装变成新的内容放回原位。
-     * 
+     * Replaces all regex-matched text using a custom function to determine the replacement. The {@code replaceFun} can
+     * extract different parts of the matched content, then reprocess and assemble them into new content to be put back
+     * in place.
+     *
      * <pre class="code">
-     * replace(this.content, "(\\d+)", parameters -&gt; "-" + parameters.group(1) + "-")
-     * // 结果为："ZZZaaabbbccc中文-1234-"
+     * replace(this.content, "(\d+)", parameters -> "-" + parameters.group(1) + "-")
+     * // Result: "ZZZaaabbbccc中文-1234-"
      * </pre>
      *
-     * @param text       要替换的字符串
-     * @param pattern    用于匹配的正则式
-     * @param replaceFun 决定如何替换的函数
-     * @return 替换后的字符串
+     * @param text       The string to replace.
+     * @param pattern    The regular expression pattern for matching.
+     * @param replaceFun The function to determine how to replace.
+     * @return The string with replacements applied.
      * @see PatternKit#replaceAll(CharSequence, java.util.regex.Pattern, FunctionX)
      */
     public static String replace(
@@ -3173,12 +3306,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换所有正则匹配的文本，并使用自定义函数决定如何替换
+     * Replaces all regex-matched text using a custom function to determine the replacement.
      *
-     * @param text       要替换的字符串
-     * @param regex      用于匹配的正则式
-     * @param replaceFun 决定如何替换的函数
-     * @return 替换后的字符串
+     * @param text       The string to replace.
+     * @param regex      The regular expression string for matching.
+     * @param replaceFun The function to determine how to replace.
+     * @return The string with replacements applied.
      * @see PatternKit#replaceAll(CharSequence, String, FunctionX)
      */
     public static String replace(
@@ -3189,34 +3322,25 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换指定字符串的指定区间内字符为"*"
+     * Replaces characters within a specified range of a string with "*".
      *
-     * <pre>
-     * hide(null,*,*)=null
-     * hide("",0,*)=""
-     * hide("jackduan@163.com",-1,4)   ****duan@163.com
-     * hide("jackduan@163.com",2,3)    ja*kduan@163.com
-     * hide("jackduan@163.com",3,2)    jackduan@163.com
-     * hide("jackduan@163.com",16,16)  jackduan@163.com
-     * hide("jackduan@163.com",16,17)  jackduan@163.com
-     * </pre>
-     *
-     * @param text         字符串
-     * @param startInclude 开始位置（包含）
-     * @param endExclude   结束位置（不包含）
-     * @return 替换后的字符串
+     * @param text         The string to modify.
+     * @param startInclude The starting position (inclusive).
+     * @param endExclude   The ending position (exclusive).
+     * @return The string with the specified range hidden.
      */
     public static String hide(final CharSequence text, final int startInclude, final int endExclude) {
         return replaceByCodePoint(text, startInclude, endExclude, Symbol.C_STAR);
     }
 
     /**
-     * 替换字符字符数组中所有的字符为replacedStr 提供的chars为所有需要被替换的字符，例如："\r\n"，则"\r"和"\n"都会被替换，哪怕他们单独存在
+     * Replaces all characters specified in a string of characters with a replacement string. For example, if
+     * {@code chars} is "\\r\\n", then both "\\r" and "\\n" will be replaced, even if they appear individually.
      *
-     * @param text        被检查的字符串
-     * @param chars       需要替换的字符列表，用一个字符串表示这个字符列表
-     * @param replacedStr 替换成的字符串
-     * @return 新字符串
+     * @param text        The string to modify.
+     * @param chars       A string containing all characters to be replaced.
+     * @param replacedStr The replacement string.
+     * @return The new string with replacements.
      */
     public static String replaceChars(final CharSequence text, final String chars, final CharSequence replacedStr) {
         if (isEmpty(text) || isEmpty(chars)) {
@@ -3226,12 +3350,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 替换字符字符数组中所有的字符为replacedStr
+     * Replaces all characters specified in a character array with a replacement string.
      *
-     * @param text        被检查的字符串
-     * @param chars       需要替换的字符列表
-     * @param replacedStr 替换成的字符串
-     * @return 新字符串
+     * @param text        The string to modify.
+     * @param chars       An array of characters to be replaced.
+     * @param replacedStr The replacement string.
+     * @return The new string with replacements.
      */
     public static String replaceChars(final CharSequence text, final char[] chars, final CharSequence replacedStr) {
         if (isEmpty(text) || ArrayKit.isEmpty(chars)) {
@@ -3253,19 +3377,19 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 按照给定逻辑替换指定位置的字符，如字符大小写转换等
+     * Replaces the character at a specified position in a string using a custom operator. For example, to change case.
      *
-     * @param text     字符串
-     * @param index    位置，-1表示最后一个字符
-     * @param operator 替换逻辑，给定原字符，返回新字符
-     * @return 替换后的字符串
+     * @param text     The string to modify.
+     * @param index    The position to replace. Supports negative values, where -1 means the last character.
+     * @param operator The replacement logic, which takes the original character and returns the new character.
+     * @return The string with the character replaced.
      */
     public static String replaceAt(final CharSequence text, int index, final UnaryOperator<Character> operator) {
         if (text == null) {
             return null;
         }
 
-        // 支持负数
+        // Support negative indices
         final int length = text.length();
         if (index < 0) {
             index += length;
@@ -3276,56 +3400,57 @@ public class CharsBacker extends CharsValidator {
             return string;
         }
 
-        // 检查转换前后是否有编码，无变化则不转换，返回原字符串
+        // Check if there is any change before and after conversion. If no change, return the original string.
         final char c = string.charAt(index);
         final Character newC = operator.apply(c);
         if (c == newC) {
-            // 无变化，返回原字符串
+            // No change, return original string
             return string;
         }
 
-        // 此处不复用传入的CharSequence，防止修改原对象
+        // Do not reuse the incoming CharSequence to prevent modifying the original object.
         final char[] chars = string.toCharArray();
         chars[index] = newC;
         return new String(chars);
     }
 
     /**
-     * 获取字符串的长度，如果为null返回0
+     * Gets the length of a {@link CharSequence}. If {@code null}, returns 0.
      *
-     * @param cs a 字符串
-     * @return 字符串的长度，如果为null返回0
+     * @param cs The {@link CharSequence}.
+     * @return The length of the {@link CharSequence}, or 0 if {@code null}.
      */
     public static int length(final CharSequence cs) {
         return cs == null ? 0 : cs.length();
     }
 
     /**
-     * 获取字符串的Unicode字符长度，如果为{@code null}返回0 Unicode字符长度指实际Unicode字符个数，如emoji算一个字符
+     * Gets the Unicode character length of a {@link CharSequence}. If {@code null}, returns 0. Unicode character length
+     * refers to the actual number of Unicode characters, e.g., an emoji counts as one character.
      *
-     * @param cs a 字符串
-     * @return 字符串的长度，如果为{@code null}返回0
+     * @param cs The {@link CharSequence}.
+     * @return The Unicode character length of the {@link CharSequence}, or 0 if {@code null}.
      */
     public static int codeLength(final CharSequence cs) {
         return cs == null ? 0 : cs.toString().codePointCount(0, cs.length());
     }
 
     /**
-     * 给定字符串转为bytes后的byte数（byte长度）
+     * Gets the byte length of a {@link CharSequence} after encoding with a specified charset.
      *
-     * @param cs      字符串
-     * @param charset 编码
-     * @return byte长度
+     * @param cs      The {@link CharSequence}.
+     * @param charset The charset to use for encoding.
+     * @return The byte length.
      */
     public static int byteLength(final CharSequence cs, final java.nio.charset.Charset charset) {
         return cs == null ? 0 : cs.toString().getBytes(charset).length;
     }
 
     /**
-     * 给定字符串数组的总长度 null字符长度定义为0
+     * Gets the total length of an array of {@link CharSequence}s. The length of a {@code null} string is defined as 0.
      *
-     * @param args 字符串数组
-     * @return 总长度
+     * @param args An array of {@link CharSequence}s.
+     * @return The total length.
      */
     public static int totalLength(final CharSequence... args) {
         int totalLength = 0;
@@ -3336,11 +3461,13 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 限制字符串长度，如果超过指定长度，截取指定长度并在末尾加"..."
+     * Limits the length of a string. If it exceeds the specified maximum length, it is truncated to that length and
+     * "..." is appended to the end.
      *
-     * @param text   字符串
-     * @param length 最大长度
-     * @return 切割后的剩余的前半部分字符串+"..."
+     * @param text   The string to limit.
+     * @param length The maximum length.
+     * @return The truncated string with "..." appended if necessary.
+     * @throws IllegalArgumentException if {@code length} is not positive.
      */
     public static String limitLength(final CharSequence text, final int length) {
         Assert.isTrue(length > 0);
@@ -3354,12 +3481,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截断字符串，使用UTF8编码为字节后不超过maxBytes长度
+     * Truncates a string so that its UTF-8 encoded byte length does not exceed {@code maxBytesLength}.
      *
-     * @param text           原始字符串
-     * @param maxBytesLength 最大字节数
-     * @param appendDots     截断后是否追加省略号(...)
-     * @return 限制后的长度
+     * @param text           The original string.
+     * @param maxBytesLength The maximum byte length.
+     * @param appendDots     Whether to append an ellipsis ("...") after truncation.
+     * @return The truncated string.
      */
     public static String limitByteLengthUtf8(
             final CharSequence text,
@@ -3369,15 +3496,18 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 截断字符串，使用其按照指定编码为字节后不超过maxBytes长度 此方法用于截取总bytes数不超过指定长度，如果字符出没有超出原样输出，如果超出了，则截取掉超出部分，并可选添加...，
-     * 但是添加“...”后总长度也不超过限制长度。
+     * Truncates a string so that its encoded byte length (using a specified charset) does not exceed
+     * {@code maxBytesLength}. This method is used to truncate the total number of bytes to a specified length. If the
+     * string does not exceed the original length, it is output as is. If it exceeds, the excess part is truncated, and
+     * an optional ellipsis ("...") can be added, but the total length including "..." must also not exceed the limit.
      *
-     * @param text           原始字符串
-     * @param charset        指定编码
-     * @param maxBytesLength 最大字节数
-     * @param factor         速算因子，取该编码下单个字符的最大可能字节数
-     * @param appendDots     截断后是否追加省略号(...)
-     * @return 限制后的长度
+     * @param text           The original string.
+     * @param charset        The charset to use for encoding.
+     * @param maxBytesLength The maximum byte length.
+     * @param factor         A quick calculation factor, representing the maximum possible bytes for a single character
+     *                       in this encoding.
+     * @param appendDots     Whether to append an ellipsis ("...") after truncation.
+     * @return The truncated string.
      */
     public static String limitByteLength(
             final CharSequence text,
@@ -3385,7 +3515,7 @@ public class CharsBacker extends CharsValidator {
             final int maxBytesLength,
             final int factor,
             final boolean appendDots) {
-        // 字符数*速算因子<=最大字节数
+        // Character count * quick calculation factor <= maximum byte count
         if (text == null || text.length() * factor <= maxBytesLength) {
             return toStringOrNull(text);
         }
@@ -3393,7 +3523,7 @@ public class CharsBacker extends CharsValidator {
         if (sba.length <= maxBytesLength) {
             return toStringOrNull(text);
         }
-        // 限制字节数
+        // Limit byte count
         final int limitBytes;
         if (appendDots) {
             limitBytes = maxBytesLength - "...".getBytes(charset).length;
@@ -3403,7 +3533,7 @@ public class CharsBacker extends CharsValidator {
         final ByteBuffer bb = ByteBuffer.wrap(sba, 0, limitBytes);
         final CharBuffer cb = CharBuffer.allocate(limitBytes);
         final CharsetDecoder decoder = charset.newDecoder();
-        // 忽略被截断的字符
+        // Ignore truncated characters
         decoder.onMalformedInput(CodingErrorAction.IGNORE);
         decoder.decode(bb, cb, true);
         decoder.flush(cb);
@@ -3415,22 +3545,23 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 返回第一个非{@code null} 元素
+     * Returns the first non-{@code null} element from a variadic array of {@link CharSequence}s.
      *
-     * @param args 多个元素
-     * @param <T>  元素类型
-     * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
+     * @param args Multiple {@link CharSequence} elements.
+     * @param <T>  The type of the elements.
+     * @return The first non-{@code null} element, or {@code null} if the array is empty or all elements are
+     *         {@code null}.
      */
     public static <T extends CharSequence> T firstNonNull(final T... args) {
         return ArrayKit.firstNonNull(args);
     }
 
     /**
-     * 返回第一个非empty 元素
+     * Returns the first non-empty element from a variadic array of {@link CharSequence}s.
      *
-     * @param args 多个元素
-     * @param <T>  元素类型
-     * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
+     * @param args Multiple {@link CharSequence} elements.
+     * @param <T>  The type of the elements.
+     * @return The first non-empty element, or {@code null} if the array is empty or all elements are empty.
      * @see #isNotEmpty(CharSequence)
      */
     public static <T extends CharSequence> T firstNonEmpty(final T... args) {
@@ -3438,11 +3569,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 返回第一个非blank 元素
+     * Returns the first non-blank element from a variadic array of {@link CharSequence}s.
      *
-     * @param args 多个元素
-     * @param <T>  元素类型
-     * @return 第一个非空元素，如果给定的数组为空或者都为空，返回{@code null}
+     * @param args Multiple {@link CharSequence} elements.
+     * @param <T>  The type of the elements.
+     * @return The first non-blank element, or {@code null} if the array is empty or all elements are blank.
      * @see #isNotBlank(CharSequence)
      */
     public static <T extends CharSequence> T firstNonBlank(final T... args) {
@@ -3450,10 +3581,10 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 将字符串转为小写
+     * Converts a string to lowercase using the default locale.
      *
-     * @param text 被转的字符串
-     * @return 转换后的字符串
+     * @param text The string to convert.
+     * @return The converted string in lowercase.
      * @see String#toLowerCase()
      */
     public static String toLowerCase(final CharSequence text) {
@@ -3461,11 +3592,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 将字符串转为小写
+     * Converts a string to lowercase using the specified locale.
      *
-     * @param text   被转的字符串
-     * @param locale Locale
-     * @return 转换后的字符串
+     * @param text   The string to convert.
+     * @param locale The locale to use for conversion.
+     * @return The converted string in lowercase.
      * @see String#toLowerCase()
      */
     public static String toLowerCase(final CharSequence text, final Locale locale) {
@@ -3479,10 +3610,10 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 将字符串转为大写
+     * Converts a string to uppercase using the default locale.
      *
-     * @param text 被转的字符串
-     * @return 转换后的字符串
+     * @param text The string to convert.
+     * @return The converted string in uppercase.
      * @see String#toUpperCase()
      */
     public static String toUpperCase(final CharSequence text) {
@@ -3490,11 +3621,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 将字符串转为大写
+     * Converts a string to uppercase using the specified locale.
      *
-     * @param text   被转的字符串
-     * @param locale Locale
-     * @return 转换后的字符串
+     * @param text   The string to convert.
+     * @param locale The locale to use for conversion.
+     * @return The converted string in uppercase.
      * @see String#toUpperCase()
      */
     public static String toUpperCase(final CharSequence text, final Locale locale) {
@@ -3508,11 +3639,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 原字符串首字母大写并在其首部添加指定字符串 例如：text=name, preString=get = return getName
+     * Converts the first letter of a string to uppercase and prepends a specified string. Example:
+     * {@code text="name", preString="get"} returns {@code "getName"}.
      *
-     * @param text      被处理的字符串
-     * @param preString 添加的首部
-     * @return 处理后的字符串
+     * @param text      The string to process.
+     * @param preString The string to prepend.
+     * @return The processed string.
      */
     public static String upperFirstAndAddPre(final CharSequence text, final String preString) {
         if (text == null || preString == null) {
@@ -3522,57 +3654,61 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 大写首字母 例如：text = name, return Name
+     * Converts the first letter of a string to uppercase. Example: {@code text = "name"} returns {@code "Name"}.
      *
-     * @param text 字符串
-     * @return 字符串
+     * @param text The string to process.
+     * @return The string with its first letter capitalized.
      */
     public static String upperFirst(final CharSequence text) {
         return upperAt(text, 0);
     }
 
     /**
-     * 大写对应下标字母
+     * Converts the character at a specified index in a string to uppercase.
      *
      * <pre>
-     * 例如: text = name,index = 1, return nAme
+     * Example: text = "name", index = 1, returns "nAme"
      * </pre>
      *
-     * @param text  字符串
-     * @param index 下标，支持负数，-1表示最后一个字符
-     * @return 字符串
+     * @param text  The string to process.
+     * @param index The index of the character to capitalize. Supports negative values, where -1 means the last
+     *              character.
+     * @return The string with the character at the specified index capitalized.
      */
     public static String upperAt(final CharSequence text, final int index) {
         return replaceAt(text, index, Character::toUpperCase);
     }
 
     /**
-     * 小写首字母 例如：text = Name, return name
+     * Converts the first letter of a string to lowercase. Example: {@code text = "Name"} returns {@code "name"}.
      *
-     * @param text 字符串
-     * @return 字符串
+     * @param text The string to process.
+     * @return The string with its first letter lowercased.
      */
     public static String lowerFirst(final CharSequence text) {
         return lowerAt(text, 0);
     }
 
     /**
-     * 小写对应下标字母 例如: text = NAME,index = 1, return NaME
+     * Converts the character at a specified index in a string to lowercase. Example: {@code text = "NAME", index = 1},
+     * returns {@code "NaME"}.
      *
-     * @param text  字符串
-     * @param index 下标，支持负数，-1表示最后一个字符
-     * @return 字符串
+     * @param text  The string to process.
+     * @param index The index of the character to lowercase. Supports negative values, where -1 means the last
+     *              character.
+     * @return The string with the character at the specified index lowercased.
      */
     public static String lowerAt(final CharSequence text, final int index) {
         return replaceAt(text, index, Character::toLowerCase);
     }
 
     /**
-     * 过滤字符串
+     * Filters characters in a string based on a predicate.
      *
-     * @param text      字符串
-     * @param predicate 过滤器，{@link Predicate#test(Object)}为{@code true}保留字符
-     * @return 过滤后的字符串
+     * @param text      The string to filter.
+     * @param predicate The filter predicate. Characters for which {@link Predicate#test(Object)} returns {@code true}
+     *                  are retained.
+     * @return The filtered string.
      */
     public static String filter(final CharSequence text, final Predicate<Character> predicate) {
         if (text == null || predicate == null) {
@@ -3592,37 +3728,37 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 给定字符串中的字母是否全部为大写，判断依据如下：
-     *
+     * Checks if all letters in the given string are uppercase. The criteria are as follows:
+     * 
      * <pre>
-     * 1. 大写字母包括A-Z
-     * 2. 其它非字母的Unicode符都算作大写
+     * 1. Uppercase letters include A-Z.
+     * 2. Other non-letter Unicode characters are also considered uppercase.
      * </pre>
      *
-     * @param text 被检查的字符串
-     * @return 是否全部为大写
+     * @param text The string to check.
+     * @return {@code true} if all letters are uppercase, {@code false} otherwise.
      */
     public static boolean isUpperCase(final CharSequence text) {
         return NamingCase.isUpperCase(text);
     }
 
     /**
-     * 给定字符串中的字母是否全部为小写，判断依据如下：
-     *
+     * Checks if all letters in the given string are lowercase. The criteria are as follows:
+     * 
      * <pre>
-     * 1. 小写字母包括a-z
-     * 2. 其它非字母的Unicode符都算作小写
+     * 1. Lowercase letters include a-z.
+     * 2. Other non-letter Unicode characters are also considered lowercase.
      * </pre>
      *
-     * @param text 被检查的字符串
-     * @return 是否全部为小写
+     * @param text The string to check.
+     * @return {@code true} if all letters are lowercase, {@code false} otherwise.
      */
     public static boolean isLowerCase(final CharSequence text) {
         return NamingCase.isLowerCase(text);
     }
 
     /**
-     * 切换给定字符串中的大小写。大写转小写，小写转大写。
+     * Swaps the case of letters in the given string. Uppercase becomes lowercase, and lowercase becomes uppercase.
      *
      * <pre>
      * swapCase(null)                 = null
@@ -3630,15 +3766,16 @@ public class CharsBacker extends CharsValidator {
      * swapCase("The dog has a BONE") = "tHE DOG HAS A bone"
      * </pre>
      *
-     * @param text 字符串
-     * @return 交换后的字符串
+     * @param text The string to swap case.
+     * @return The string with swapped case.
      */
     public static String swapCase(final String text) {
         return NamingCase.swapCase(text);
     }
 
     /**
-     * 将驼峰式命名的字符串转换为下划线方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串。 例如：
+     * Converts a camel case string to an underscore case. If the input camel case string is empty, an empty string is
+     * returned. Example:
      *
      * <pre>
      * HelloWorld = hello_world
@@ -3646,8 +3783,8 @@ public class CharsBacker extends CharsValidator {
      * HelloWorld_test = hello_world_test
      * </pre>
      *
-     * @param text 转换前的驼峰式命名的字符串，也可以为下划线形式
-     * @return 转换后下划线方式命名的字符串
+     * @param text The camel case string to convert, can also be in underscore format.
+     * @return The converted string in underscore case.
      * @see NamingCase#toUnderlineCase(CharSequence)
      */
     public static String toUnderlineCase(final CharSequence text) {
@@ -3655,11 +3792,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 将驼峰式命名的字符串转换为使用符号连接方式。如果转换前的驼峰式命名的字符串为空，则返回空字符串。
+     * Converts a camel case string to a symbol-separated string. If the input camel case string is empty, an empty
+     * string is returned.
      *
-     * @param text   转换前的驼峰式命名的字符串，也可以为符号连接形式
-     * @param symbol 连接符
-     * @return 转换后符号连接方式命名的字符串
+     * @param text   The camel case string to convert, can also be in symbol-separated format.
+     * @param symbol The separator character.
+     * @return The converted string in symbol-separated format.
      * @see NamingCase#toSymbolCase(CharSequence, char)
      */
     public static String toSymbolCase(final CharSequence text, final char symbol) {
@@ -3667,10 +3805,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 例如：hello_world = helloWorld
+     * Converts an underscore-separated string to camel case. If the input underscore-separated string is empty, an
+     * empty string is returned. Example: {@code hello_world} returns {@code helloWorld}.
      *
-     * @param name 转换前的下划线大写方式命名的字符串
-     * @return 转换后的驼峰式命名的字符串
+     * @param name The underscore-separated string to convert.
+     * @return The converted string in camel case.
      * @see NamingCase#toCamelCase(CharSequence)
      */
     public static String toCamelCase(final CharSequence name) {
@@ -3678,11 +3817,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 将连接符方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 例如：hello_world = helloWorld; hello-world = helloWorld
+     * Converts a symbol-separated string to camel case. If the input string is empty, an empty string is returned.
+     * Example: {@code hello_world} returns {@code helloWorld}; {@code hello-world} returns {@code helloWorld}.
      *
-     * @param name   转换前的下划线大写方式命名的字符串
-     * @param symbol 连接符
-     * @return 转换后的驼峰式命名的字符串
+     * @param name   The symbol-separated string to convert.
+     * @param symbol The separator character.
+     * @return The converted string in camel case.
      * @see NamingCase#toCamelCase(CharSequence, char)
      */
     public static String toCamelCase(final CharSequence name, final char symbol) {
@@ -3690,20 +3830,21 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 创建StringBuilder对象 如果对象本身为{@link StringBuilder}，直接返回，否则新建
+     * Creates a {@link StringBuilder} object. If the object itself is already a {@link StringBuilder}, it is returned
+     * directly; otherwise, a new {@link StringBuilder} is created.
      *
-     * @param text {@link CharSequence}
-     * @return StringBuilder对象
+     * @param text The {@link CharSequence} to use for the {@link StringBuilder}.
+     * @return A {@link StringBuilder} object.
      */
     public static StringBuilder builder(final CharSequence text) {
         return text instanceof StringBuilder ? (StringBuilder) text : new StringBuilder(text);
     }
 
     /**
-     * 创建StringBuilder对象
+     * Creates a {@link StringBuilder} object from a list of initial strings.
      *
-     * @param args 初始字符串列表
-     * @return StringBuilder对象
+     * @param args An array of {@link CharSequence}s to append.
+     * @return A {@link StringBuilder} object.
      */
     public static StringBuilder builder(final CharSequence... args) {
         final StringBuilder sb = new StringBuilder();
@@ -3714,7 +3855,8 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 获得set或get或is方法对应的标准属性名 例如：setName 返回 name
+     * Gets the standard field name corresponding to a "set", "get", or "is" method name. Example: {@code setName}
+     * returns {@code name}.
      *
      * <pre>
      * getName = name
@@ -3722,8 +3864,8 @@ public class CharsBacker extends CharsValidator {
      * isName  = name
      * </pre>
      *
-     * @param getOrSetMethodName Get或Set方法名
-     * @return 如果是set或get方法名，返回field， 否则null
+     * @param getOrSetMethodName The "get", "set", or "is" method name.
+     * @return The field name if it's a standard getter/setter/isser, otherwise {@code null}.
      */
     public static String getGeneralField(final CharSequence getOrSetMethodName) {
         final String getOrSetMethodNameStr = getOrSetMethodName.toString();
@@ -3736,31 +3878,31 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 生成set方法名 例如：name 返回 setName
+     * Generates a setter method name from a field name. Example: {@code name} returns {@code setName}.
      *
-     * @param fieldName 属性名
-     * @return setXxx
+     * @param fieldName The field name.
+     * @return The setter method name (e.g., setXxx).
      */
     public static String genSetter(final CharSequence fieldName) {
         return upperFirstAndAddPre(fieldName, "set");
     }
 
     /**
-     * 生成get方法名
+     * Generates a getter method name from a field name.
      *
-     * @param fieldName 属性名
-     * @return getXxx
+     * @param fieldName The field name.
+     * @return The getter method name (e.g., getXxx).
      */
     public static String genGetter(final CharSequence fieldName) {
         return upperFirstAndAddPre(fieldName, "get");
     }
 
     /**
-     * 连接多个字符串为一个
+     * Concatenates multiple strings into one.
      *
-     * @param isNullToEmpty 是否null转为""
-     * @param args          字符串数组
-     * @return 连接后的字符串
+     * @param isNullToEmpty If {@code true}, {@code null} strings are converted to empty strings "".
+     * @param args          An array of strings to concatenate.
+     * @return The concatenated string.
      */
     public static String concat(final boolean isNullToEmpty, final CharSequence... args) {
         final StringBuilder sb = new StringBuilder();
@@ -3771,7 +3913,7 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 将给定字符串，变成 "xxx...xxx" 形式的字符串
+     * Converts a given string into a "xxx...xxx" format.
      *
      * <ul>
      * <li>abcdefgh 9 - abcdefgh</li>
@@ -3787,9 +3929,9 @@ public class CharsBacker extends CharsValidator {
      * <li>abcdefgh -1 - abcdefgh</li>
      * </ul>
      *
-     * @param text      字符串
-     * @param maxLength 结果的最大长度
-     * @return 截取后的字符串
+     * @param text      The string.
+     * @param maxLength The maximum length of the result.
+     * @return The truncated string.
      */
     public static String brief(final CharSequence text, final int maxLength) {
         if (null == text) {
@@ -3800,7 +3942,7 @@ public class CharsBacker extends CharsValidator {
             return text.toString();
         }
 
-        // 特殊长度
+        // Special lengths
         switch (maxLength) {
             case 1:
                 return String.valueOf(text.charAt(0));
@@ -3816,17 +3958,17 @@ public class CharsBacker extends CharsValidator {
         }
 
         final int suffixLength = (maxLength - 3) / 2;
-        final int preLength = suffixLength + (maxLength - 3) % 2; // suffixLength 或 suffixLength + 1
+        final int preLength = suffixLength + (maxLength - 3) % 2; // suffixLength or suffixLength + 1
         final String text2 = text.toString();
         return format("{}...{}", text2.substring(0, preLength), text2.substring(strLength - suffixLength));
     }
 
     /**
-     * 以 conjunction 为分隔符将多个对象转换为字符串
+     * Joins multiple objects into a string using a specified conjunction as a delimiter.
      *
-     * @param conjunction 分隔符 {@link Symbol#COMMA}
-     * @param objs        数组
-     * @return 连接后的字符串
+     * @param conjunction The delimiter, e.g., {@link Symbol#COMMA}.
+     * @param objs        An array of objects to join.
+     * @return The joined string.
      * @see ArrayKit#join(Object, CharSequence)
      */
     public static String join(final CharSequence conjunction, final Object... objs) {
@@ -3834,12 +3976,12 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 以 conjunction 为分隔符将多个对象转换为字符串
+     * Joins elements of an {@link Iterable} into a string using a specified conjunction as a delimiter.
      *
-     * @param <T>         元素类型
-     * @param conjunction 分隔符 {@link Symbol#COMMA}
-     * @param iterable    集合
-     * @return 连接后的字符串
+     * @param <T>         The type of the elements.
+     * @param conjunction The delimiter, e.g., {@link Symbol#COMMA}.
+     * @param iterable    The iterable collection.
+     * @return The joined string.
      * @see CollKit#join(Iterable, CharSequence)
      */
     public static <T> String join(final CharSequence conjunction, final Iterable<T> iterable) {
@@ -3847,13 +3989,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 使用指定的分隔符连接集合中的元素，并通过指定的函数将每个元素转换为字符串。
+     * Joins elements of a {@link Collection} into a string using a specified delimiter, and converts each element to a
+     * string using a provided function.
      *
-     * @param <T>       集合中元素的类型
-     * @param delimiter 用于连接元素的分隔符
-     * @param objs      要连接的元素集合
-     * @param function  用于将集合中的每个元素转换为字符串的函数
-     * @return 连接后的字符串，如果集合为空则返回空字符串
+     * @param <T>       The type of elements in the collection.
+     * @param delimiter The delimiter to use for joining elements.
+     * @param objs      The collection of elements to join.
+     * @param function  The function to convert each element to a string.
+     * @return The joined string. Returns an empty string if the collection is empty.
      */
     public static <T> String join(String delimiter, Collection<T> objs, Function<T, String> function) {
         if (CollKit.isEmpty(objs)) {
@@ -3872,23 +4015,26 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 检查字符串是否都为数字组成
+     * Checks if a string consists entirely of digits.
      *
-     * @param text 字符串
-     * @return 是否都为数字组成
+     * @param text The string to check.
+     * @return {@code true} if the string contains only digits, {@code false} otherwise.
      */
     public static boolean isNumeric(final CharSequence text) {
         return isAllCharMatch(text, Character::isDigit);
     }
 
     /**
-     * 循环位移指定位置的字符串为指定距离 当moveLength大于0向右位移，小于0向左位移，0不位移 当moveLength大于字符串长度时采取循环位移策略，即位移到头后从头（尾）位移，例如长度为10，位移13则表示位移3
+     * Cyclically shifts a substring within a string by a specified distance. If {@code moveLength} is positive, it
+     * shifts to the right; if negative, to the left; if 0, no shift. If {@code moveLength} is greater than the string
+     * length, it performs a cyclic shift, meaning it wraps around. For example, a length of 10 and a shift of 13 is
+     * equivalent to a shift of 3.
      *
-     * @param text         字符串
-     * @param startInclude 起始位置（包括）
-     * @param endExclude   结束位置（不包括）
-     * @param moveLength   移动距离，负数表示左移，正数为右移
-     * @return 位移后的字符串
+     * @param text         The string to modify.
+     * @param startInclude The starting position of the substring (inclusive).
+     * @param endExclude   The ending position of the substring (exclusive).
+     * @param moveLength   The distance to move. Negative for left shift, positive for right shift.
+     * @return The string with the substring shifted.
      */
     public static String move(final CharSequence text, final int startInclude, final int endExclude, int moveLength) {
         if (isEmpty(text)) {
@@ -3896,7 +4042,7 @@ public class CharsBacker extends CharsValidator {
         }
         final int len = text.length();
         if (Math.abs(moveLength) > len) {
-            // 循环位移，当越界时循环
+            // Cyclic shift: wrap around if out of bounds.
             moveLength = moveLength % len;
         }
         final StringBuilder strBuilder = new StringBuilder(len);
@@ -3917,10 +4063,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 检查给定字符串的所有字符是否都一样
+     * Checks if all characters in the given string are identical.
      *
-     * @param text 字符出啊
-     * @return 给定字符串的所有字符是否都一样
+     * @param text The string to check.
+     * @return {@code true} if all characters in the string are the same, {@code false} otherwise.
+     * @throws IllegalArgumentException if the text is empty.
      */
     public static boolean isCharEquals(final CharSequence text) {
         Assert.notEmpty(text, "Text to check must be not empty!");
@@ -3928,10 +4075,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 对字符串归一化处理，如 "Á" 可以使用 "u00C1"或 "u0041u0301"表示，实际测试中两个字符串并不equals 因此使用此方法归一为一种表示形式，默认按照W3C通常建议的，在NFC中交换文本。
+     * Normalizes a string. For example, "Á" can be represented as "u00C1" or "u0041u0301". This method normalizes to a
+     * single representation, typically NFC as recommended by W3C.
      *
-     * @param text 归一化的字符串
-     * @return 归一化后的字符串
+     * @param text The string to normalize.
+     * @return The normalized string.
      * @see Normalizer#normalize(CharSequence, Normalizer.Form)
      */
     public static String normalize(final CharSequence text) {
@@ -3939,12 +4087,13 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 在给定字符串末尾填充指定字符，以达到给定长度 如果字符串本身的长度大于等于length，返回原字符串
+     * Pads the end of a string with a specified character to reach a given length. If the string's length is already
+     * greater than or equal to the target length, the original string is returned.
      *
-     * @param text      字符串
-     * @param fixedChar 补充的字符
-     * @param length    补充到的长度
-     * @return 补充后的字符串
+     * @param text      The string to pad.
+     * @param fixedChar The character to use for padding.
+     * @param length    The target total length.
+     * @return The padded string.
      */
     public static String fixLength(final CharSequence text, final char fixedChar, final int length) {
         final int fixedLength = length - text.length();
@@ -3955,15 +4104,15 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 获取两个字符串的公共前缀
-     * 
+     * Gets the common prefix of two strings.
+     *
      * <pre>{@code
      * commonPrefix("abb", "acc") // "a"
      * }</pre>
      *
-     * @param text1 字符串1
-     * @param text2 字符串2
-     * @return 字符串1和字符串2的公共前缀
+     * @param text1 The first string.
+     * @param text2 The second string.
+     * @return The common prefix of the two strings.
      */
     public static CharSequence commonPrefix(final CharSequence text1, final CharSequence text2) {
         if (isEmpty(text1) || isEmpty(text2)) {
@@ -3980,15 +4129,15 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 获取两个字符串的公共后缀
-     * 
+     * Gets the common suffix of two strings.
+     *
      * <pre>{@code
      * commonSuffix("aba", "cba") // "ba"
      * }</pre>
      *
-     * @param text1 字符串1
-     * @param text2 字符串2
-     * @return 字符串1和字符串2的公共后缀
+     * @param text1 The first string.
+     * @param text2 The second string.
+     * @return The common suffix of the two strings.
      */
     public static CharSequence commonSuffix(final CharSequence text1, final CharSequence text2) {
         if (isEmpty(text1) || isEmpty(text2)) {
@@ -4007,35 +4156,38 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切分字符串，去除切分后每个元素两边的空白符，去除空白项，并转为结果类型
+     * Splits a string, trims whitespace from each resulting element, removes empty elements, and converts to a
+     * specified result type.
      *
-     * @param <T>        结果类型
-     * @param text       被切分的字符串
-     * @param separator  分隔符字符
-     * @param resultType 结果类型的类，可以是数组或集合
-     * @return long数组
+     * @param <T>        The result type.
+     * @param text       The string to split.
+     * @param separator  The separator string.
+     * @param resultType The class of the result type, can be an array or collection.
+     * @return The split and converted result.
      */
     public static <T> T splitTo(final CharSequence text, final CharSequence separator, final Class<T> resultType) {
         return Convert.convert(resultType, splitTrim(text, separator));
     }
 
     /**
-     * 切分字符串，去除切分后每个元素两边的空白符，去除空白项
+     * Splits a string, trims whitespace from each resulting element, and removes empty elements.
      *
-     * @param text      被切分的字符串
-     * @param separator 分隔符字符
-     * @return 切分后的集合
+     * @param text      The string to split.
+     * @param separator The separator string.
+     * @return A list of split strings.
      */
     public static List<String> splitTrim(final CharSequence text, final CharSequence separator) {
         return split(text, separator, true, true);
     }
 
     /**
-     * 切分字符串，如果分隔符不存在则返回原字符串 此方法不会去除切分字符串后每个元素两边的空格，不忽略空串
+     * Splits a string into an array of strings. If the separator is not found, the original string is returned as a
+     * single-element array. This method does not trim whitespace from elements after splitting and does not ignore
+     * empty strings.
      *
-     * @param text      被切分的字符串
-     * @param separator 分隔符
-     * @return 字符串
+     * @param text      The string to split.
+     * @param separator The separator string.
+     * @return An array of split strings. Returns an empty array if the input text is {@code null}.
      */
     public static String[] splitToArray(final CharSequence text, final CharSequence separator) {
         if (text == null) {
@@ -4045,22 +4197,22 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切分字符串
+     * Splits a string using {@link Symbol#COMMA} as the separator.
      *
-     * @param text 被切分的字符串
-     * @return 字符串
+     * @param text The string to split.
+     * @return The split string.
      */
     public static String split(String text) {
         return split(text, Symbol.COMMA, Symbol.COMMA);
     }
 
     /**
-     * 切分字符串
+     * Splits a string using a specified separator and replaces it with a reserve string.
      *
-     * @param text      被切分的字符串
-     * @param separator 分隔符
-     * @param reserve   替换后的分隔符
-     * @return 字符串
+     * @param text      The string to split.
+     * @param separator The separator string.
+     * @param reserve   The string to replace the separator with.
+     * @return The split and modified string.
      */
     public static String split(String text, String separator, String reserve) {
         StringBuffer sb = new StringBuffer();
@@ -4078,24 +4230,26 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切分字符串，如果分隔符不存在则返回原字符串 此方法不会去除切分字符串后每个元素两边的空格，不忽略空串
+     * Splits a string. If the separator is not found, the original string is returned as a single-element list. This
+     * method does not trim whitespace from elements after splitting and does not ignore empty strings.
      *
-     * @param text      被切分的字符串
-     * @param separator 分隔符
-     * @return 字符串
+     * @param text      The string to split.
+     * @param separator The separator string.
+     * @return A list of split strings.
      */
     public static List<String> split(final CharSequence text, final CharSequence separator) {
         return split(text, separator, false, false);
     }
 
     /**
-     * 切分字符串，不忽略大小写
+     * Splits a string, with optional trimming of whitespace from elements and optional ignoring of empty strings.
+     * Case-sensitive.
      *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符串
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
+     * @param text        The string to split.
+     * @param separator   The separator string.
+     * @param isTrim      Whether to trim whitespace from each split element.
+     * @param ignoreEmpty Whether to ignore empty strings after splitting.
+     * @return A list of split strings.
      */
     public static List<String> split(
             final CharSequence text,
@@ -4106,14 +4260,15 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切分字符串，不忽略大小写
+     * Splits a string, with a limit on the number of resulting parts, optional trimming of whitespace from elements,
+     * and optional ignoring of empty strings. Case-sensitive.
      *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符串
-     * @param limit       限制分片数，小于等于0表示无限制
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @return 切分后的集合
+     * @param text        The string to split.
+     * @param separator   The separator string.
+     * @param limit       The maximum number of parts to return. If less than or equal to 0, no limit.
+     * @param isTrim      Whether to trim whitespace from each split element.
+     * @param ignoreEmpty Whether to ignore empty strings after splitting.
+     * @return A list of split strings.
      */
     public static List<String> split(
             final CharSequence text,
@@ -4125,16 +4280,17 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切分字符串 如果提供的字符串为{@code null}，则返回一个空的{@link ArrayList}
-     * 如果提供的字符串为""，则当ignoreEmpty时返回空的{@link ArrayList}，否则返回只有一个""元素的{@link ArrayList}
+     * Splits a string. If the provided string is {@code null}, returns an empty {@link ArrayList}. If the provided
+     * string is "", and {@code ignoreEmpty} is {@code true}, returns an empty {@link ArrayList}; otherwise, returns an
+     * {@link ArrayList} containing only "".
      *
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符串
-     * @param limit       限制分片数，小于等于0表示无限制
-     * @param isTrim      是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty 是否忽略空串
-     * @param ignoreCase  是否忽略大小写
-     * @return 切分后的集合
+     * @param text        The string to split.
+     * @param separator   The separator string.
+     * @param limit       The maximum number of parts to return. If less than or equal to 0, no limit.
+     * @param isTrim      Whether to trim whitespace from each split element.
+     * @param ignoreEmpty Whether to ignore empty strings after splitting.
+     * @param ignoreCase  Whether to ignore case when searching for the separator.
+     * @return A list of split strings.
      */
     public static List<String> split(
             final CharSequence text,
@@ -4147,17 +4303,20 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切分字符串 如果提供的字符串为{@code null}，则返回一个空的{@link ArrayList}
-     * 如果提供的字符串为""，则当ignoreEmpty时返回空的{@link ArrayList}，否则返回只有一个""元素的{@link ArrayList}
+     * Splits a string and maps each resulting element using a provided function. If the provided string is
+     * {@code null}, returns an empty {@link ArrayList}. If the provided string is "", and {@code ignoreEmpty} is
+     * {@code true}, returns an empty {@link ArrayList}; otherwise, returns an {@link ArrayList} containing only ""
+     * (mapped).
      *
-     * @param <R>         元素类型
-     * @param text        被切分的字符串
-     * @param separator   分隔符字符串
-     * @param limit       限制分片数，小于等于0表示无限制
-     * @param ignoreEmpty 是否忽略空串
-     * @param ignoreCase  是否忽略大小写
-     * @param mapping     切分后字段映射函数
-     * @return 切分后的集合
+     * @param <R>         The type of the mapped elements.
+     * @param text        The string to split.
+     * @param separator   The separator string.
+     * @param limit       The maximum number of parts to return. If less than or equal to 0, no limit.
+     * @param ignoreEmpty Whether to ignore empty strings after splitting.
+     * @param ignoreCase  Whether to ignore case when searching for the separator.
+     * @param mapping     The function to map each split string element.
+     * @return A list of mapped objects.
+     * @throws IllegalArgumentException if the separator is empty.
      */
     public static <R> List<R> split(
             final CharSequence text,
@@ -4173,7 +4332,7 @@ public class CharsBacker extends CharsValidator {
         }
         Assert.notEmpty(separator, "Separator must be not empty!");
 
-        // 查找分隔符的方式
+        // Method to find separator
         final TextFinder finder = separator.length() == 1 ? new CharFinder(separator.charAt(0), ignoreCase)
                 : StringFinder.of(separator, ignoreCase);
 
@@ -4182,21 +4341,23 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切分路径字符串 如果为空字符串或者null 则返回空集合 空路径会被忽略
+     * Splits a path string. If the string is empty or {@code null}, returns an empty collection. Empty path segments
+     * are ignored.
      *
-     * @param text 被切分的字符串
-     * @return 切分后的集合
+     * @param text The path string to split.
+     * @return A list of path segments.
      */
     public static List<String> splitPath(final CharSequence text) {
         return splitPath(text, Normal.__1);
     }
 
     /**
-     * 切分路径字符串 如果为空字符串或者null 则返回空集合 空路径会被忽略
+     * Splits a path string with a limit on the number of resulting parts. If the string is empty or {@code null},
+     * returns an empty collection. Empty path segments are ignored.
      *
-     * @param text  被切分的字符串
-     * @param limit 限制分片数，小于等于0表示无限制
-     * @return 切分后的集合
+     * @param text  The path string to split.
+     * @param limit The maximum number of parts to return. If less than or equal to 0, no limit.
+     * @return A list of path segments.
      */
     public static List<String> splitPath(final CharSequence text, final int limit) {
         if (isBlank(text)) {
@@ -4205,27 +4366,30 @@ public class CharsBacker extends CharsValidator {
 
         final StringSplitter stringSplitter = new StringSplitter(text,
                 new MatcherFinder((c) -> c == Symbol.C_SLASH || c == Symbol.C_BACKSLASH),
-                // 路径中允许空格
+                // Spaces are allowed in paths
                 limit, true);
         return stringSplitter.toList(false);
     }
 
     /**
-     * 使用空白符切分字符串 切分后的字符串两边不包含空白符，空串或空白符串并不做为元素之一 如果为空字符串或者null 则返回空集合
+     * Splits a string by whitespace characters. Whitespace is trimmed from each resulting element, and empty or blank
+     * elements are not included. If the string is empty or {@code null}, returns an empty collection.
      *
-     * @param text 被切分的字符串
-     * @return 切分后的集合
+     * @param text The string to split.
+     * @return A list of split strings.
      */
     public static List<String> splitByBlank(final CharSequence text) {
         return splitByBlank(text, Normal.__1);
     }
 
     /**
-     * 使用空白符切分字符串 切分后的字符串两边不包含空白符，空串或空白符串并不做为元素之一 如果为空字符串或者null 则返回空集合
+     * Splits a string by whitespace characters, with a limit on the number of resulting parts. Whitespace is trimmed
+     * from each resulting element, and empty or blank elements are not included. If the string is empty or
+     * {@code null}, returns an empty collection.
      *
-     * @param text  被切分的字符串
-     * @param limit 限制分片数，小于等于0表示无限制
-     * @return 切分后的集合
+     * @param text  The string to split.
+     * @param limit The maximum number of parts to return. If less than or equal to 0, no limit.
+     * @return A list of split strings.
      */
     public static List<String> splitByBlank(final CharSequence text, final int limit) {
         if (isBlank(text)) {
@@ -4237,30 +4401,31 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 切分字符串为字符串数组
+     * Splits a string by whitespace characters into an array of strings.
      *
-     * @param text  被切分的字符串
-     * @param limit 限制分片数，小于等于0表示无限制
-     * @return 切分后的集合
+     * @param text  The string to split.
+     * @param limit The maximum number of parts to return. If less than or equal to 0, no limit.
+     * @return An array of split strings.
      */
     public static String[] splitByBlankToArray(final CharSequence text, final int limit) {
         return splitByBlank(text, limit).toArray(new String[0]);
     }
 
     /**
-     * 通过正则切分字符串，规则如下：
+     * Splits a string by a regular expression. Rules:
      * <ul>
-     * <li>当提供的str为{@code null}时，返回new ArrayList(0)</li>
-     * <li>当提供的str为{@code ""}时，返回[""]</li>
-     * <li>当提供的separatorRegex为empty(null or "")时，返回[text]，即只有原串一个元素的数组</li>
+     * <li>If {@code str} is {@code null}, returns {@code new ArrayList(0)}.</li>
+     * <li>If {@code str} is "", returns {@code [""]}.</li>
+     * <li>If {@code separatorRegex} is empty ({@code null} or ""), returns {@code [text]} (a single-element array
+     * containing the original string).</li>
      * </ul>
      *
-     * @param text           字符串
-     * @param separatorRegex 分隔符正则
-     * @param limit          限制分片数，小于等于0表示无限制
-     * @param isTrim         是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty    是否忽略空串
-     * @return 切分后的集合
+     * @param text           The string to split.
+     * @param separatorRegex The regular expression for the separator.
+     * @param limit          The maximum number of parts to return. If less than or equal to 0, no limit.
+     * @param isTrim         Whether to trim whitespace from each split element.
+     * @param ignoreEmpty    Whether to ignore empty strings after splitting.
+     * @return A list of split strings.
      */
     public static List<String> splitByRegex(
             final CharSequence text,
@@ -4270,7 +4435,7 @@ public class CharsBacker extends CharsValidator {
             final boolean ignoreEmpty) {
         return splitByRegex(
                 text,
-                // 给定字符串或正则为empty，就不再需要解析pattern
+                // If the given string or regex is empty, no need to parse the pattern.
                 (isEmpty(text) || isEmpty(separatorRegex)) ? null : Pattern.get(separatorRegex),
                 limit,
                 isTrim,
@@ -4278,19 +4443,20 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 通过正则切分字符串，规则如下：
+     * Splits a string by a regular expression pattern. Rules:
      * <ul>
-     * <li>当提供的str为{@code null}时，返回new ArrayList(0)</li>
-     * <li>当提供的str为{@code ""}时，返回[""]</li>
-     * <li>当提供的separatorRegex为empty(null or "")时，返回[text]，即只有原串一个元素的数组</li>
+     * <li>If {@code str} is {@code null}, returns {@code new ArrayList(0)}.</li>
+     * <li>If {@code str} is "", returns {@code [""]}.</li>
+     * <li>If {@code separatorPattern} is {@code null}, returns {@code [text]} (a single-element array containing the
+     * original string).</li>
      * </ul>
      *
-     * @param text             字符串
-     * @param separatorPattern 分隔符正则{@link java.util.regex.Pattern}
-     * @param limit            限制分片数，小于等于0表示无限制
-     * @param isTrim           是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty      是否忽略空串
-     * @return 切分后的集合
+     * @param text             The string to split.
+     * @param separatorPattern The regular expression pattern for the separator.
+     * @param limit            The maximum number of parts to return. If less than or equal to 0, no limit.
+     * @param isTrim           Whether to trim whitespace from each split element.
+     * @param ignoreEmpty      Whether to ignore empty strings after splitting.
+     * @return A list of split strings.
      */
     public static List<String> splitByRegex(
             final CharSequence text,
@@ -4317,14 +4483,14 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 通过正则切分字符串为字符串数组
+     * Splits a string by a regular expression pattern into an array of strings.
      *
-     * @param text             被切分的字符串
-     * @param separatorPattern 分隔符正则{@link java.util.regex.Pattern}
-     * @param limit            限制分片数，小于等于0表示无限制
-     * @param isTrim           是否去除切分字符串后每个元素两边的空格
-     * @param ignoreEmpty      是否忽略空串
-     * @return 切分后的集合
+     * @param text             The string to split.
+     * @param separatorPattern The regular expression pattern for the separator.
+     * @param limit            The maximum number of parts to return. If less than or equal to 0, no limit.
+     * @param isTrim           Whether to trim whitespace from each split element.
+     * @param ignoreEmpty      Whether to ignore empty strings after splitting.
+     * @return An array of split strings.
      */
     public static String[] splitByRegexToArray(
             final CharSequence text,
@@ -4336,11 +4502,11 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 根据给定长度，将给定字符串截取为多个部分
+     * Splits a string into multiple parts based on a given length.
      *
-     * @param text 字符串
-     * @param len  每一个小节的长度，必须大于0
-     * @return 截取后的字符串数组
+     * @param text The string to split.
+     * @param len  The length of each segment. Must be greater than 0.
+     * @return An array of split strings.
      */
     public static String[] splitByLength(final CharSequence text, final int len) {
         if (isEmpty(text)) {
@@ -4351,21 +4517,21 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * Trim函数
+     * Returns a function that either trims a string or returns it as is, based on the {@code isTrim} flag.
      *
-     * @param isTrim 是否trim
-     * @return {@link Function}
+     * @param isTrim Whether to trim the string.
+     * @return A {@link Function} that takes a string and returns a string.
      */
     public static Function<String, String> trimFunc(final boolean isTrim) {
         return isTrim ? CharsBacker::trim : Function.identity();
     }
 
     /**
-     * 将字符串转换为字符数组
+     * Converts a string to an array of characters (integers representing Unicode code points).
      *
-     * @param text        字符串
-     * @param isCodePoint 是否为Unicode码点（即支持emoji等多char字符）
-     * @return 字符数组
+     * @param text        The string to convert.
+     * @param isCodePoint If {@code true}, converts to Unicode code points (supports multi-char characters like emoji).
+     * @return An array of integers representing the characters.
      */
     public static int[] toChars(final CharSequence text, final boolean isCodePoint) {
         if (null == text) {
@@ -4375,21 +4541,22 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 遍历字符串的每个字符，并处理
+     * Iterates over each character of a string and applies a consumer.
      *
-     * @param str      字符串
-     * @param consumer 字符处理
+     * @param str      The string to iterate.
+     * @param consumer The consumer to apply to each character.
      */
     public static void forEach(final CharSequence str, final Consumer<Character> consumer) {
         forEach(str, false, (cInt) -> consumer.accept((char) cInt));
     }
 
     /**
-     * 遍历字符串的每个字符，并处理
+     * Iterates over each character (or Unicode code point) of a string and applies an {@link IntConsumer}.
      *
-     * @param str         字符串
-     * @param isCodePoint 是否为Unicode码点（即支持emoji等多char字符）
-     * @param consumer    字符处理
+     * @param str         The string to iterate.
+     * @param isCodePoint If {@code true}, iterates over Unicode code points (supports multi-char characters like
+     *                    emoji).
+     * @param consumer    The {@link IntConsumer} to apply to each character/code point.
      */
     public static void forEach(final CharSequence str, final boolean isCodePoint, final IntConsumer consumer) {
         if (null == str) {
@@ -4399,35 +4566,41 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * 格式化文本，使用 {varName} 占位 map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) ---=》 aValue and bValue
+     * Formats text using "{varName}" placeholders, where values are retrieved from a map. Example: {@code map = {a:
+     * "aValue", b: "bValue"}} {@code format("{a} and {b}", map)} returns {@code "aValue and bValue"}.
      *
-     * @param template 文本模板，被替换的部分用 {key} 表示
-     * @param map      参数值对
-     * @return 格式化后的文本
+     * @param template The text template, with "{key}" representing placeholders.
+     * @param map      The map containing parameter key-value pairs.
+     * @return The formatted text.
      */
     public static String formatByMap(final CharSequence template, final Map<?, ?> map) {
         return formatByMap(template, map, true);
     }
 
     /**
-     * 格式化文本，使用 {varName} 占位 map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) --- aValue and bValue
+     * Formats text using "{varName}" placeholders, where values are retrieved from a map. Example: {@code map = {a:
+     * "aValue", b: "bValue"}} {@code format("{a} and {b}", map)} returns {@code "aValue and bValue"}.
      *
-     * @param template   文本模板，被替换的部分用 {key} 表示
-     * @param map        参数值对
-     * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
-     * @return 格式化后的文本
+     * @param template   The text template, with "{key}" representing placeholders.
+     * @param map        The map containing parameter key-value pairs.
+     * @param ignoreNull Whether to ignore {@code null} values. If {@code true}, variables corresponding to {@code null}
+     *                   values are not replaced; otherwise, they are replaced with "".
+     * @return The formatted text.
      */
     public static String formatByMap(final CharSequence template, final Map<?, ?> map, final boolean ignoreNull) {
         return StringFormatter.formatByBean(template, map, ignoreNull);
     }
 
     /**
-     * 格式化文本，使用 {varName} 占位 bean = User:{a: "aValue", b: "bValue"} format("{a} and {b}", bean) --- aValue and bValue
+     * Formats text using "{varName}" placeholders, where values are retrieved from a bean's properties. Example:
+     * {@code bean = User:{a: "aValue", b: "bValue"}} {@code format("{a} and {b}", bean)} returns
+     * {@code "aValue and bValue"}.
      *
-     * @param template   文本模板，被替换的部分用 {key} 表示
-     * @param bean       参数Bean
-     * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
-     * @return 格式化后的文本
+     * @param template   The text template, with "{key}" representing placeholders.
+     * @param bean       The bean object containing parameter properties.
+     * @param ignoreNull Whether to ignore {@code null} values. If {@code true}, variables corresponding to {@code null}
+     *                   values are not replaced; otherwise, they are replaced with "".
+     * @return The formatted text.
      */
     public static String formatByBean(final CharSequence template, final Object bean, final boolean ignoreNull) {
         return StringFormatter.formatByBean(template, bean, ignoreNull);

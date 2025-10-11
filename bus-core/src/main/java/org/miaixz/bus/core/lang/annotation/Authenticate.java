@@ -30,7 +30,14 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 需要经过授权/许可的
+ * A marker annotation indicating that a method or parameter requires authentication and/or authorization.
+ * <p>
+ * This annotation is typically used in security-sensitive contexts, such as web application endpoints or service
+ * methods, to declare that access is restricted. Frameworks can then use this marker to trigger security checks,
+ * ensuring that the current user has the necessary credentials or permissions before allowing execution to proceed.
+ * <p>
+ * The actual enforcement logic is handled by an external mechanism, such as an AOP aspect or a framework-specific
+ * interceptor.
  *
  * @author Kimi Liu
  * @since Java 17+

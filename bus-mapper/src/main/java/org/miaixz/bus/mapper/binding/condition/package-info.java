@@ -26,7 +26,13 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 条件处理
+ * Provides classes for building and executing dynamic, criteria-based queries.
+ * <p>
+ * This package includes the {@link org.miaixz.bus.mapper.binding.condition.Condition} class for creating complex query
+ * conditions, the {@link org.miaixz.bus.mapper.binding.condition.ConditionMapper} interface for executing
+ * condition-based operations, and the {@link org.miaixz.bus.mapper.binding.condition.ConditionWrapper} for a fluent API
+ * experience.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+

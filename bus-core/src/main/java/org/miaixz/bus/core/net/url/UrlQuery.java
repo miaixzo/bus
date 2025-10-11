@@ -38,13 +38,14 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * URL中查询字符串部分的封装，类似于：
+ * Represents the query part of a URL, which is a collection of key-value pairs. For example:
  * 
  * <pre>
  *   key1=v1&amp;key2=&amp;key3=v3
  * </pre>
  * 
- * 查询封装分为解析查询字符串和构建查询字符串，解析可通过charset为null来自定义是否decode编码后的内容， 构建则通过charset是否为null是否encode参数键值对
+ * This class provides methods for parsing and building query strings. When parsing, you can specify a charset to decode
+ * the content. When building, you can specify a charset to encode the key-value pairs.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,22 +53,23 @@ import org.miaixz.bus.core.xyz.*;
 public class UrlQuery {
 
     /**
-     * query中的value，默认除"-", "_", ".", "*"外都编码 这个类似于JDK提供的{@link java.net.URLEncoder}
+     * A {@link PercentCodec} that encodes all characters except for unreserved characters ("-", "_", ".", "*"). This is
+     * similar to {@link java.net.URLEncoder}.
      */
     public static final PercentCodec ALL = PercentCodec.Builder.of(RFC3986.UNRESERVED).removeSafe(Symbol.C_TILDE)
             .addSafe(Symbol.C_STAR).setEncodeSpaceAsPlus(true).build();
 
     private final TableMap<CharSequence, CharSequence> query;
     /**
-     * 编码模式
+     * The encoding mode for the query parameters.
      */
     private EncodeMode encodeMode;
 
     /**
-     * 构造
+     * Constructs a new {@link UrlQuery} instance.
      *
-     * @param queryMap   初始化的查询键值对
-     * @param encodeMode 编码模式
+     * @param queryMap   The initial map of query parameters.
+     * @param encodeMode The encoding mode for the query parameters.
      */
     public UrlQuery(final Map<? extends CharSequence, ?> queryMap, final EncodeMode encodeMode) {
         if (MapKit.isNotEmpty(queryMap)) {
@@ -80,23 +82,23 @@ public class UrlQuery {
     }
 
     /**
-     * 构建UrlQuery
+     * Creates a new {@link UrlQuery} instance from a query string.
      *
-     * @param query   初始化的查询字符串
-     * @param charset decode用的编码，null表示不做decode
-     * @return UrlQuery
+     * @param query   The query string.
+     * @param charset The charset for decoding the query string; if {@code null}, no decoding is performed.
+     * @return A new {@link UrlQuery} instance.
      */
     public static UrlQuery of(final String query, final java.nio.charset.Charset charset) {
         return of(query, charset, true);
     }
 
     /**
-     * 构建UrlQuery
+     * Creates a new {@link UrlQuery} instance from a query string.
      *
-     * @param query          初始化的查询字符串
-     * @param charset        decode用的编码，null表示不做decode
-     * @param autoRemovePath 是否自动去除path部分，{@code true}则自动去除第一个?前的内容
-     * @return UrlQuery
+     * @param query          The query string.
+     * @param charset        The charset for decoding the query string; if {@code null}, no decoding is performed.
+     * @param autoRemovePath If {@code true}, automatically removes the path part before the first '?'.
+     * @return A new {@link UrlQuery} instance.
      */
     public static UrlQuery of(
             final String query,
@@ -106,13 +108,13 @@ public class UrlQuery {
     }
 
     /**
-     * 构建UrlQuery
+     * Creates a new {@link UrlQuery} instance from a query string.
      *
-     * @param query          初始化的查询字符串
-     * @param charset        decode用的编码，null表示不做decode
-     * @param autoRemovePath 是否自动去除path部分，{@code true}则自动去除第一个?前的内容
-     * @param encodeMode     编码模式。
-     * @return UrlQuery
+     * @param query          The query string.
+     * @param charset        The charset for decoding the query string; if {@code null}, no decoding is performed.
+     * @param autoRemovePath If {@code true}, automatically removes the path part before the first '?'.
+     * @param encodeMode     The encoding mode for the query parameters.
+     * @return A new {@link UrlQuery} instance.
      */
     public static UrlQuery of(
             final String query,
@@ -123,50 +125,50 @@ public class UrlQuery {
     }
 
     /**
-     * 构建UrlQuery
+     * Creates a new, empty {@link UrlQuery} instance.
      *
-     * @return UrlQuery
+     * @return A new {@link UrlQuery} instance.
      */
     public static UrlQuery of() {
         return of(EncodeMode.NORMAL);
     }
 
     /**
-     * 构建UrlQuery
+     * Creates a new, empty {@link UrlQuery} instance with a specified encoding mode.
      *
-     * @param encodeMode 编码模式
-     * @return UrlQuery
+     * @param encodeMode The encoding mode for the query parameters.
+     * @return A new {@link UrlQuery} instance.
      */
     public static UrlQuery of(final EncodeMode encodeMode) {
         return new UrlQuery(null, encodeMode);
     }
 
     /**
-     * 构建UrlQuery
+     * Creates a new {@link UrlQuery} instance from a map of query parameters.
      *
-     * @param queryMap 初始化的查询键值对
-     * @return UrlQuery
+     * @param queryMap The initial map of query parameters.
+     * @return A new {@link UrlQuery} instance.
      */
     public static UrlQuery of(final Map<? extends CharSequence, ?> queryMap) {
         return of(queryMap, null);
     }
 
     /**
-     * 构建UrlQuery
+     * Creates a new {@link UrlQuery} instance from a map of query parameters.
      *
-     * @param queryMap   初始化的查询键值对
-     * @param encodeMode 编码模式
-     * @return UrlQuery
+     * @param queryMap   The initial map of query parameters.
+     * @param encodeMode The encoding mode for the query parameters.
+     * @return A new {@link UrlQuery} instance.
      */
     public static UrlQuery of(final Map<? extends CharSequence, ?> queryMap, final EncodeMode encodeMode) {
         return new UrlQuery(queryMap, encodeMode);
     }
 
     /**
-     * 对象转换为字符串，用于URL的Query中
+     * Converts an object to its string representation for use in a URL query.
      *
-     * @param value 值
-     * @return 字符串
+     * @param value The object to convert.
+     * @return The string representation of the object.
      */
     private static String toString(final Object value) {
         final String result;
@@ -181,10 +183,10 @@ public class UrlQuery {
     }
 
     /**
-     * 设置编码模式 根据不同场景以及不同环境，对Query中的name和value采用不同的编码策略
+     * Sets the encoding mode for the query parameters.
      *
-     * @param encodeMode 编码模式
-     * @return this
+     * @param encodeMode The encoding mode.
+     * @return This {@link UrlQuery} instance for method chaining.
      */
     public UrlQuery setEncodeMode(final EncodeMode encodeMode) {
         this.encodeMode = encodeMode;
@@ -192,11 +194,11 @@ public class UrlQuery {
     }
 
     /**
-     * 增加键值对
+     * Adds a key-value pair to the query.
      *
-     * @param key   键
-     * @param value 值，集合和数组转换为逗号分隔形式
-     * @return this
+     * @param key   The key.
+     * @param value The value. Collections and arrays are converted to comma-separated strings.
+     * @return This {@link UrlQuery} instance for method chaining.
      */
     public UrlQuery add(final CharSequence key, final Object value) {
         this.query.put(key, toString(value));
@@ -204,10 +206,10 @@ public class UrlQuery {
     }
 
     /**
-     * 批量增加键值对
+     * Adds all key-value pairs from a map to the query.
      *
-     * @param queryMap query中的键值对
-     * @return this
+     * @param queryMap The map of query parameters to add.
+     * @return This {@link UrlQuery} instance for method chaining.
      */
     public UrlQuery addAll(final Map<? extends CharSequence, ?> queryMap) {
         if (MapKit.isNotEmpty(queryMap)) {
@@ -217,10 +219,10 @@ public class UrlQuery {
     }
 
     /**
-     * 移除键及对应所有的值
+     * Removes a key and all its corresponding values from the query.
      *
-     * @param key 键
-     * @return this
+     * @param key The key to remove.
+     * @return This {@link UrlQuery} instance for method chaining.
      */
     public UrlQuery remove(final CharSequence key) {
         this.query.remove(key);
@@ -228,23 +230,23 @@ public class UrlQuery {
     }
 
     /**
-     * 解析URL中的查询字符串
+     * Parses a query string.
      *
-     * @param query   查询字符串，类似于key1=v1&amp;key2=&amp;key3=v3
-     * @param charset decode编码，null表示不做decode
-     * @return this
+     * @param query   The query string, e.g., {@code key1=v1&key2=&key3=v3}.
+     * @param charset The charset for decoding; if {@code null}, no decoding is performed.
+     * @return This {@link UrlQuery} instance for method chaining.
      */
     public UrlQuery parse(final String query, final java.nio.charset.Charset charset) {
         return parse(query, charset, true);
     }
 
     /**
-     * 解析URL中的查询字符串
+     * Parses a query string.
      *
-     * @param query          查询字符串，类似于key1=v1&amp;key2=&amp;key3=v3
-     * @param charset        decode编码，null表示不做decode
-     * @param autoRemovePath 是否自动去除path部分，{@code true}则自动去除第一个?前的内容
-     * @return this
+     * @param query          The query string, e.g., {@code key1=v1&key2=&key3=v3}.
+     * @param charset        The charset for decoding; if {@code null}, no decoding is performed.
+     * @param autoRemovePath If {@code true}, automatically removes the path part before the first '?'.
+     * @return This {@link UrlQuery} instance for method chaining.
      */
     public UrlQuery parse(String query, final java.nio.charset.Charset charset, final boolean autoRemovePath) {
         if (StringKit.isBlank(query)) {
@@ -252,7 +254,6 @@ public class UrlQuery {
         }
 
         if (autoRemovePath) {
-            // 去掉Path部分
             final int pathEndPos = query.indexOf(Symbol.C_QUESTION_MARK);
             if (pathEndPos > -1) {
                 query = StringKit.subSuf(query, pathEndPos + 1);
@@ -260,7 +261,6 @@ public class UrlQuery {
                     return this;
                 }
             } else if (StringKit.startWith(query, "http://") || StringKit.startWith(query, "https://")) {
-                // 用户传入只有URL，没有param部分，返回空
                 return this;
             }
         }
@@ -269,19 +269,19 @@ public class UrlQuery {
     }
 
     /**
-     * 获得查询的Map
+     * Returns the map of query parameters.
      *
-     * @return 查询的Map，只读
+     * @return A read-only map of query parameters.
      */
     public Map<CharSequence, CharSequence> getQueryMap() {
         return MapKit.view(this.query);
     }
 
     /**
-     * 获取查询值
+     * Retrieves the value for a given key.
      *
-     * @param key 键
-     * @return 值
+     * @param key The key.
+     * @return The corresponding value, or {@code null} if the key is not found.
      */
     public CharSequence get(final CharSequence key) {
         if (MapKit.isEmpty(this.query)) {
@@ -291,14 +291,15 @@ public class UrlQuery {
     }
 
     /**
-     * 构建URL查询字符串，即将key-value键值对转换为{@code key1=v1&key2=v2&key3=v3}形式。 对于{@code null}处理规则如下：
+     * Builds the URL query string, converting key-value pairs to the format {@code key1=v1&key2=v2&key3=v3}. Rules for
+     * {@code null} values:
      * <ul>
-     * <li>如果key为{@code null}，则这个键值对忽略</li>
-     * <li>如果value为{@code null}，只保留key，如key1对应value为{@code null}生成类似于{@code key1&key2=v2}形式</li>
+     * <li>If a key is {@code null}, the key-value pair is ignored.</li>
+     * <li>If a value is {@code null}, only the key is included (e.g., {@code key1&key2=v2}).</li>
      * </ul>
      *
-     * @param charset encode编码，null表示不做encode编码
-     * @return URL查询字符串
+     * @param charset The charset for encoding; if {@code null}, no encoding is performed.
+     * @return The URL query string.
      */
     public String build(final java.nio.charset.Charset charset) {
         switch (this.encodeMode) {
@@ -314,16 +315,17 @@ public class UrlQuery {
     }
 
     /**
-     * 构建URL查询字符串，即将key-value键值对转换为{@code key1=v1&key2=v2&key3=v3}形式。 对于{@code null}处理规则如下：
+     * Builds the URL query string, converting key-value pairs to the format {@code key1=v1&key2=v2&key3=v3}. Rules for
+     * {@code null} values:
      * <ul>
-     * <li>如果key为{@code null}，则这个键值对忽略</li>
-     * <li>如果value为{@code null}，只保留key，如key1对应value为{@code null}生成类似于{@code key1&key2=v2}形式</li>
+     * <li>If a key is {@code null}, the key-value pair is ignored.</li>
+     * <li>If a value is {@code null}, only the key is included (e.g., {@code key1&key2=v2}).</li>
      * </ul>
      *
-     * @param keyCoder   键值对中键的编码器
-     * @param valueCoder 键值对中值的编码器
-     * @param charset    encode编码，null表示不做encode编码
-     * @return URL查询字符串
+     * @param keyCoder   The encoder for the keys.
+     * @param valueCoder The encoder for the values.
+     * @param charset    The charset for encoding; if {@code null}, no encoding is performed.
+     * @return The URL query string.
      */
     public String build(
             final PercentCodec keyCoder,
@@ -353,63 +355,59 @@ public class UrlQuery {
     }
 
     /**
-     * 解析URL中的查询字符串 规则见：https://url.spec.whatwg.org/#urlencoded-parsing
+     * Parses a URL query string according to the rules at https://url.spec.whatwg.org/#urlencoded-parsing.
      *
-     * @param query   查询字符串，类似于key1=v1&amp;key2=&amp;key3=v3
-     * @param charset decode编码，null表示不做decode
-     * @return this
+     * @param query   The query string, e.g., {@code key1=v1&key2=&key3=v3}.
+     * @param charset The charset for decoding; if {@code null}, no decoding is performed.
+     * @return This {@link UrlQuery} instance for method chaining.
      */
     private UrlQuery doParse(final String query, final java.nio.charset.Charset charset) {
         final int len = query.length();
         String name = null;
-        int pos = 0; // 未处理字符开始位置
-        int i; // 未处理字符结束位置
-        char c; // 当前字符
+        int pos = 0; // Start position of the unprocessed string
+        int i; // End position of the unprocessed string
+        char c; // Current character
         for (i = 0; i < len; i++) {
             c = query.charAt(i);
             switch (c) {
-                case Symbol.C_EQUAL:// 键和值的分界符
+                case Symbol.C_EQUAL: // Delimiter between key and value
                     if (null == name) {
-                        // name可以是""
                         name = query.substring(pos, i);
-                        // 开始位置从分节符后开始
                         pos = i + 1;
                     }
-                    // 当=不作为分界符时，按照普通字符对待
                     break;
 
-                case Symbol.C_AND: // 键值对之间的分界符
+                case Symbol.C_AND: // Delimiter between key-value pairs
                     addParam(name, query.substring(pos, i), charset);
                     name = null;
                     if (i + 4 < len && "amp;".equals(query.substring(i + 1, i + 5))) {
-                        // "&amp;"转义为"&"
+                        // Unescape "&amp;" to "&"
                         i += 4;
                     }
-                    // 开始位置从分节符后开始
                     pos = i + 1;
                     break;
             }
         }
 
-        // 处理结尾
+        // Process the last part
         addParam(name, query.substring(pos, i), charset);
 
         return this;
     }
 
     /**
-     * 将键值对加入到值为List类型的Map中,，情况如下：
+     * Adds a key-value pair to the map.
      * 
      * <pre>
-     *     1、key和value都不为null，类似于 "a=1"或者"=1"，直接put
-     *     2、key不为null，value为null，类似于 "a="，值传""
-     *     3、key为null，value不为null，类似于 "1"
-     *     4、key和value都为null，忽略之，比如&&
+     *     1. If key and value are not null (e.g., "a=1" or "=1"), put them directly.
+     *     2. If key is not null and value is null (e.g., "a="), the value is treated as an empty string.
+     *     3. If key is null and value is not null (e.g., "1"), the value is treated as the key.
+     *     4. If both key and value are null (e.g., &&), they are ignored.
      * </pre>
      *
-     * @param key     key，为null则value作为key
-     * @param value   value，为null且key不为null时传入""
-     * @param charset 编码
+     * @param key     The key; if null, the value is used as the key.
+     * @param value   The value; if null and the key is not null, it's treated as an empty string.
+     * @param charset The charset for decoding.
      */
     private void addParam(final String key, final String value, final java.nio.charset.Charset charset) {
         final boolean isFormUrlEncoded = EncodeMode.FORM_URL_ENCODED == this.encodeMode;
@@ -417,15 +415,15 @@ public class UrlQuery {
             final String actualKey = UrlDecoder.decode(key, charset, isFormUrlEncoded);
             this.query.put(actualKey, StringKit.toStringOrEmpty(UrlDecoder.decode(value, charset, isFormUrlEncoded)));
         } else if (null != value) {
-            // name为空，value作为name，value赋值null
             this.query.put(UrlDecoder.decode(value, charset, isFormUrlEncoded), null);
         }
     }
 
     /**
-     * 生成查询字符串，类似于aaa=111&amp;bbb=222 此方法不对任何特殊字符编码，仅用于输出显示
+     * Generates a query string for display purposes (e.g., {@code aaa=111&bbb=222}). This method does not encode any
+     * special characters.
      *
-     * @return 查询字符串
+     * @return The query string.
      */
     @Override
     public String toString() {
@@ -433,19 +431,19 @@ public class UrlQuery {
     }
 
     /**
-     * 编码模式 根据不同场景以及不同环境，对Query中的name和value采用不同的编码策略
+     * Defines the encoding mode for query parameters, which determines how names and values are encoded.
      */
     public enum EncodeMode {
         /**
-         * 正常模式（宽松模式），这种模式下，部分分隔符无需转义
+         * Normal (loose) mode, where some delimiters are not escaped.
          */
         NORMAL,
         /**
-         * x-www-form-urlencoded模式，此模式下空格会编码为'+'，"~"和"*"会被转义
+         * The x-www-form-urlencoded mode, where spaces are encoded as '+', and '~' and '*' are escaped.
          */
         FORM_URL_ENCODED,
         /**
-         * 严格模式，此模式下，非UNRESERVED的字符都会被转义
+         * Strict mode, where all characters except for unreserved characters are escaped.
          */
         STRICT
     }

@@ -32,7 +32,8 @@ import java.io.Closeable;
 import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
- * 消息消费者接口
+ * Represents a message consumer interface for Message Queue (MQ) systems. This interface defines methods for
+ * subscribing to messages, either individually or continuously, and handling them with a {@link MessageHandler}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,16 +41,19 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 public interface Consumer extends Closeable {
 
     /**
-     * 单次订阅消息
+     * Subscribes to a single message and processes it using the provided message handler. This method is typically
+     * blocking and waits for one message to arrive.
      *
-     * @param messageHandler 消息处理器
+     * @param messageHandler The {@link MessageHandler} to process the received message.
      */
     void subscribe(MessageHandler messageHandler);
 
     /**
-     * 持续订阅消息
+     * Continuously subscribes to messages in an asynchronous manner. This method starts a new thread that constantly
+     * listens for and processes messages using the given {@link MessageHandler}. The loop runs indefinitely until the
+     * consumer is closed.
      *
-     * @param messageHandler 消息处理器
+     * @param messageHandler The {@link MessageHandler} to process the received messages.
      */
     default void listen(final MessageHandler messageHandler) {
         ThreadKit.execAsync(() -> {

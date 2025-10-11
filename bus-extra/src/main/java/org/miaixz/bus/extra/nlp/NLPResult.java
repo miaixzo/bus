@@ -30,7 +30,10 @@ package org.miaixz.bus.extra.nlp;
 import org.miaixz.bus.core.center.iterator.IterableIterator;
 
 /**
- * 分词结果接口定义 实现此接口包装分词器的分词结果，通过实现Iterator相应方法获取分词中的单词
+ * Interface definition for Natural Language Processing (NLP) word segmentation results. Implementations of this
+ * interface wrap the output of a tokenizer and provide a way to iterate over the segmented words, each represented by
+ * an {@link NLPWord} object. This interface extends {@link IterableIterator} to allow for easy iteration over the
+ * words.
  *
  * @author Kimi Liu
  * @since Java 17+

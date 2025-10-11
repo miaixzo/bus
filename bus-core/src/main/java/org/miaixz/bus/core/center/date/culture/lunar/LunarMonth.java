@@ -45,52 +45,56 @@ import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 
 /**
- * 农历月
+ * Represents a month in the Lunar calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LunarMonth extends Loops {
 
+    /**
+     * Names of lunar months.
+     */
     public static final String[] NAMES = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "腊月" };
     /**
-     * 缓存
+     * Cache for lunar month data.
      */
     private static final Map<String, Object[]> cache = new HashMap<>();
     /**
-     * 农历年
+     * The lunar year this month belongs to.
      */
     protected LunarYear year;
 
     /**
-     * 月
+     * The month number (1-12).
      */
     protected int month;
 
     /**
-     * 是否闰月
+     * Indicates if this is a leap month.
      */
     protected boolean leap;
 
     /**
-     * 天数
+     * The number of days in this month.
      */
     protected int dayCount;
 
     /**
-     * 位于当年的索引，0-12
+     * The index of this month within the year (0-12).
      */
     protected int indexInYear;
 
     /**
-     * 初一的儒略日
+     * The Julian day of the first day of this month.
      */
     protected JulianDay firstJulianDay;
 
     /**
-     * 从缓存初始化
+     * Initializes a new LunarMonth instance from cached data.
      *
-     * @param cache 缓存[农历年(int)，农历月(int,闰月为负)，天数(int)，位于当年的索引(int)，初一的儒略日(double)]
+     * @param cache Cached data containing lunar year, month (negative for leap), day count, index in year, and Julian
+     *              day of the first day.
      */
     protected LunarMonth(Object[] cache) {
         int m = (int) cache[1];
@@ -103,10 +107,11 @@ public class LunarMonth extends Loops {
     }
 
     /**
-     * 从农历年月初始化
+     * Initializes a new LunarMonth instance from lunar year and month.
      *
-     * @param year  农历年
-     * @param month 农历月，闰月为负
+     * @param year  The lunar year.
+     * @param month The lunar month, negative for leap months.
+     * @throws IllegalArgumentException if the month is out of valid range or if a leap month is specified incorrectly.
      */
     public LunarMonth(int year, int month) {
         LunarYear currentYear = LunarYear.fromYear(year);
@@ -120,16 +125,17 @@ public class LunarMonth extends Loops {
             throw new IllegalArgumentException(String.format("illegal leap month %d in lunar year %d", m, year));
         }
 
-        // 冬至
+        // Winter Solstice
         double dongZhiJd = SolarTerms.fromIndex(year, 0).getCursoryJulianDay();
 
-        // 冬至前的初一，今年首朔的日月黄经差
+        // The difference in ecliptic longitude between the first new moon before the Winter Solstice and the current
+        // year's first new moon.
         double w = Galaxy.calcShuo(dongZhiJd);
         if (w > dongZhiJd) {
             w -= 29.53;
         }
 
-        // 正常情况正月初一为第3个朔日，但有些特殊的
+        // Normally, the first day of the first lunar month is the 3rd new moon, but there are special cases.
         int offset = 2;
         if (year > 8 && year < 24) {
             offset = 1;
@@ -137,18 +143,18 @@ public class LunarMonth extends Loops {
             offset = 3;
         }
 
-        // 位于当年的索引
+        // Index within the current year
         int index = m - 1;
         if (leap || (currentLeapMonth > 0 && m > currentLeapMonth)) {
             index += 1;
         }
         indexInYear = index;
 
-        // 本月初一
+        // First day of this month
         w += 29.5306 * (offset + index);
         double firstDay = Galaxy.calcShuo(w);
         firstJulianDay = JulianDay.fromJulianDay(JulianDay.J2000 + firstDay);
-        // 本月天数 = 下月初一 - 本月初一
+        // Number of days in this month = Julian day of next month's first day - Julian day of this month's first day
         dayCount = (int) (Galaxy.calcShuo(w + 29.5306) - firstDay);
         this.year = currentYear;
         this.month = m;
@@ -156,11 +162,11 @@ public class LunarMonth extends Loops {
     }
 
     /**
-     * 从农历年月初始化
+     * Creates a new LunarMonth instance from lunar year and month.
      *
-     * @param year  农历年
-     * @param month 农历月，闰月为负
-     * @return 农历月
+     * @param year  The lunar year.
+     * @param month The lunar month, negative for leap months.
+     * @return A new {@link LunarMonth} instance.
      */
     public static LunarMonth fromYm(int year, int month) {
         LunarMonth m;
@@ -179,100 +185,101 @@ public class LunarMonth extends Loops {
     }
 
     /**
-     * 农历年
+     * Gets the lunar year this month belongs to.
      *
-     * @return 农历年
+     * @return The {@link LunarYear}.
      */
     public LunarYear getLunarYear() {
         return year;
     }
 
     /**
-     * 年
+     * Gets the year number.
      *
-     * @return 年
+     * @return The year number.
      */
     public int getYear() {
         return year.getYear();
     }
 
     /**
-     * 月
+     * Gets the month number (1-12).
      *
-     * @return 月
+     * @return The month number.
      */
     public int getMonth() {
         return month;
     }
 
     /**
-     * 月
+     * Gets the month number, returning a negative value if it's a leap month.
      *
-     * @return 月，当月为闰月时，返回负数
+     * @return The month number, negative for leap months.
      */
     public int getMonthWithLeap() {
         return leap ? -month : month;
     }
 
     /**
-     * 天数(大月30天，小月29天)
+     * Gets the number of days in this lunar month (either 29 or 30).
      *
-     * @return 天数
+     * @return The number of days.
      */
     public int getDayCount() {
         return dayCount;
     }
 
     /**
-     * 位于当年的索引(0-12)
+     * Gets the index of this month within the year (0-12).
      *
-     * @return 索引
+     * @return The index.
      */
     public int getIndexInYear() {
         return indexInYear;
     }
 
     /**
-     * 农历季节
+     * Gets the lunar season this month belongs to.
      *
-     * @return 农历季节
+     * @return The {@link LunarSeason}.
      */
     public LunarSeason getSeason() {
         return LunarSeason.fromIndex(month - 1);
     }
 
     /**
-     * 初一的儒略日
+     * Gets the Julian day of the first day of this month.
      *
-     * @return 儒略日
+     * @return The {@link JulianDay} of the first day.
      */
     public JulianDay getFirstJulianDay() {
         return firstJulianDay;
     }
 
     /**
-     * 是否闰月
+     * Checks if this is a leap month.
      *
-     * @return true/false
+     * @return {@code true} if it's a leap month, {@code false} otherwise.
      */
     public boolean isLeap() {
         return leap;
     }
 
     /**
-     * 周数
+     * Gets the number of weeks in this month.
      *
-     * @param start 起始星期，1234560分别代表星期一至星期天
-     * @return 周数
+     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
+     * @return The number of weeks.
      */
     public int getWeekCount(int start) {
         return (int) Math.ceil((indexOf(firstJulianDay.getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
     }
 
     /**
-     * 依据国家标准《农历的编算和颁行》GB/T 33661-2017中农历月的命名方法。
+     * Gets the name of this lunar month, according to the national standard "Compilation and Promulgation of the Lunar
+     * Calendar" GB/T 33661-2017.
      *
-     * @return 名称
+     * @return The name of the lunar month.
      */
     public String getName() {
         return (leap ? "闰" : "") + NAMES[month - 1];
@@ -283,6 +290,12 @@ public class LunarMonth extends Loops {
         return year + getName();
     }
 
+    /**
+     * Gets the lunar month after a specified number of months.
+     *
+     * @param n The number of months to add.
+     * @return The {@link LunarMonth} after {@code n} months.
+     */
     public LunarMonth next(int n) {
         if (n == 0) {
             return fromYm(getYear(), getMonthWithLeap());
@@ -316,9 +329,9 @@ public class LunarMonth extends Loops {
     }
 
     /**
-     * 本月的公历日列表
+     * Gets a list of all lunar days in this month.
      *
-     * @return 农历日列表
+     * @return A list of {@link LunarDay} objects for this month.
      */
     public List<LunarDay> getDays() {
         int size = getDayCount();
@@ -332,10 +345,10 @@ public class LunarMonth extends Loops {
     }
 
     /**
-     * 本月的农历周列表
+     * Gets a list of all lunar weeks in this month.
      *
-     * @param start 星期几作为一周的开始，1234560分别代表星期一至星期天
-     * @return 周列表
+     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
+     * @return A list of {@link LunarWeek} objects for this month.
      */
     public List<LunarWeek> getWeeks(int start) {
         int size = getWeekCount(start);
@@ -349,9 +362,9 @@ public class LunarMonth extends Loops {
     }
 
     /**
-     * 干支
+     * Gets the Sixty Cycle (GanZhi) of this lunar month.
      *
-     * @return 干支
+     * @return The {@link SixtyCycle} of this month.
      */
     public SixtyCycle getSixtyCycle() {
         return SixtyCycle.fromName(
@@ -360,9 +373,9 @@ public class LunarMonth extends Loops {
     }
 
     /**
-     * 九星
+     * Gets the Nine Star (JiuXing) for this lunar month.
      *
-     * @return 九星
+     * @return The {@link NineStar} for this month.
      */
     public NineStar getNineStar() {
         int index = getSixtyCycle().getEarthBranch().getIndex();
@@ -373,9 +386,9 @@ public class LunarMonth extends Loops {
     }
 
     /**
-     * 太岁方位
+     * Gets the Jupiter Direction (TaiSui方位) for this lunar month.
      *
-     * @return 方位
+     * @return The {@link Direction} of Jupiter.
      */
     public Direction getJupiterDirection() {
         SixtyCycle sixtyCycle = getSixtyCycle();
@@ -384,18 +397,18 @@ public class LunarMonth extends Loops {
     }
 
     /**
-     * 逐月胎神
+     * Gets the Fetus Month (ZhuYueTaiShen) for this lunar month.
      *
-     * @return 逐月胎神
+     * @return The {@link FetusMonth} of this month.
      */
     public FetusMonth getFetus() {
         return FetusMonth.fromLunarMonth(this);
     }
 
     /**
-     * 小六壬
+     * Gets the Minor Ren (XiaoLiuRen) for this lunar month.
      *
-     * @return 小六壬
+     * @return The {@link MinorRen} for this month.
      */
     public MinorRen getMinorRen() {
         return MinorRen.fromIndex((month - 1) % 6);

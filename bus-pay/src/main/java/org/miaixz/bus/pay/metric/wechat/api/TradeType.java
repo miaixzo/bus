@@ -28,7 +28,7 @@
 package org.miaixz.bus.pay.metric.wechat.api;
 
 /**
- * 支付方式
+ * Payment methods for WeChat Pay.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,35 +36,45 @@ package org.miaixz.bus.pay.metric.wechat.api;
 public enum TradeType {
 
     /**
-     * 微信公众号支付或者小程序支付
+     * WeChat Official Account Payment or Mini Program Payment.
      */
     JSAPI("JSAPI"),
     /**
-     * 微信扫码支付
+     * WeChat Scan Code Payment.
      */
     NATIVE("NATIVE"),
     /**
-     * 微信APP支付
+     * WeChat APP Payment.
      */
     APP("APP"),
     /**
-     * 付款码支付
+     * Payment Code Payment.
      */
     MICROPAY("MICROPAY"),
     /**
-     * H5支付
+     * H5 Payment.
      */
     MWEB("MWEB");
 
     /**
-     * 交易类型
+     * The trade type string.
      */
     private final String tradeType;
 
+    /**
+     * Constructs a new TradeType.
+     *
+     * @param tradeType The trade type string.
+     */
     TradeType(String tradeType) {
         this.tradeType = tradeType;
     }
 
+    /**
+     * Gets the trade type string.
+     *
+     * @return The trade type string.
+     */
     public String getTradeType() {
         return tradeType;
     }

@@ -28,7 +28,7 @@
 package org.miaixz.bus.shade.screw.metadata;
 
 /**
- * 数据库接口
+ * Represents a database.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,9 +36,9 @@ package org.miaixz.bus.shade.screw.metadata;
 public interface Database {
 
     /**
-     * 获取数据库名称
+     * Retrieves the name of the database.
      *
-     * @return {@link String}
+     * @return The name of the database.
      */
     String getDatabase();
 

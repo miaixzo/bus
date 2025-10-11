@@ -32,7 +32,9 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 
 /**
- * BouncyCastle的MAC算法实现引擎，使用{@link org.bouncycastle.crypto.Mac} 实现摘要 当引入BouncyCastle库时自动使用其作为Provider
+ * BouncyCastle MAC algorithm implementation engine. This class wraps a BouncyCastle {@link org.bouncycastle.crypto.Mac}
+ * instance to provide MAC functionality. When the BouncyCastle library is included, it is automatically used as the
+ * provider.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,21 +42,21 @@ import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 public class BCMac extends SimpleWrapper<org.bouncycastle.crypto.Mac> implements Mac {
 
     /**
-     * 构造
+     * Constructs a {@code BCMac} instance with the specified BouncyCastle MAC and cipher parameters.
      *
-     * @param mac    {@link org.bouncycastle.crypto.Mac}
-     * @param params 参数，例如密钥可以用{@link KeyParameter}
+     * @param mac    The BouncyCastle {@link org.bouncycastle.crypto.Mac} instance.
+     * @param params The {@link CipherParameters} for initializing the MAC, e.g., a {@link KeyParameter} for the key.
      */
     public BCMac(final org.bouncycastle.crypto.Mac mac, final CipherParameters params) {
         super(initMac(mac, params));
     }
 
     /**
-     * 初始化
+     * Initializes the BouncyCastle MAC instance with the given parameters.
      *
-     * @param mac    摘要算法
-     * @param params 参数，例如密钥可以用{@link KeyParameter}
-     * @return this
+     * @param mac    The BouncyCastle {@link org.bouncycastle.crypto.Mac} instance.
+     * @param params The {@link CipherParameters} for initialization.
+     * @return The initialized BouncyCastle {@link org.bouncycastle.crypto.Mac} instance.
      */
     private static org.bouncycastle.crypto.Mac initMac(
             final org.bouncycastle.crypto.Mac mac,

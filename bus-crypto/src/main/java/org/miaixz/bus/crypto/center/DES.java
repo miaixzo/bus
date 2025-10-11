@@ -39,7 +39,8 @@ import org.miaixz.bus.crypto.Padding;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 
 /**
- * DES加密算法实现 DES全称为Data Encryption Standard，即数据加密标准，是一种使用密钥加密的块算法 Java中默认实现为：DES/ECB/PKCS5Padding
+ * DES (Data Encryption Standard) encryption algorithm implementation. DES is a block cipher that uses a secret key for
+ * encryption. The default implementation in Java is DES/ECB/PKCS5Padding.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,128 +51,130 @@ public class DES extends Crypto {
     private static final long serialVersionUID = 2852289795980L;
 
     /**
-     * 构造，默认DES/ECB/PKCS5Padding，使用随机密钥
+     * Constructs a DES encryptor/decryptor with default settings: DES/ECB/PKCS5Padding. A random key is generated.
      */
     public DES() {
         super(Algorithm.DES);
     }
 
     /**
-     * 构造，使用默认的DES/ECB/PKCS5Padding
+     * Constructs a DES encryptor/decryptor with the given key and default settings: DES/ECB/PKCS5Padding.
      *
-     * @param key 密钥
+     * @param key The DES key as a byte array.
      */
     public DES(final byte[] key) {
         super(Algorithm.DES, key);
     }
 
     /**
-     * 构造，使用随机密钥
+     * Constructs a DES encryptor/decryptor with the specified mode and padding. A random key is generated.
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
      */
     public DES(final Algorithm.Mode mode, final Padding padding) {
         this(mode.name(), padding.name());
     }
 
     /**
-     * 构造
+     * Constructs a DES encryptor/decryptor with the specified mode, padding, and key.
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度：8的倍数
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
+     * @param key     The DES key as a byte array. The length should be a multiple of 8.
      */
     public DES(final Algorithm.Mode mode, final Padding padding, final byte[] key) {
         this(mode, padding, key, null);
     }
 
     /**
-     * 构造
+     * Constructs a DES encryptor/decryptor with the specified mode, padding, key, and initialization vector (IV).
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度：8的倍数
-     * @param iv      偏移向量，加盐
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
+     * @param key     The DES key as a byte array. The length should be a multiple of 8.
+     * @param iv      The initialization vector (IV) as a byte array. Used for modes like CBC.
      */
     public DES(final Algorithm.Mode mode, final Padding padding, final byte[] key, final byte[] iv) {
         this(mode.name(), padding.name(), key, iv);
     }
 
     /**
-     * 构造
+     * Constructs a DES encryptor/decryptor with the specified mode, padding, and {@link SecretKey}.
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度：8的倍数
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
+     * @param key     The DES {@link SecretKey}. The key length should be a multiple of 8.
      */
     public DES(final Algorithm.Mode mode, final Padding padding, final SecretKey key) {
         this(mode, padding, key, null);
     }
 
     /**
-     * 构造
+     * Constructs a DES encryptor/decryptor with the specified mode, padding, {@link SecretKey}, and initialization
+     * vector (IV).
      *
-     * @param mode    模式{@link Algorithm.Mode}
-     * @param padding {@link Padding}补码方式
-     * @param key     密钥，长度：8的倍数
-     * @param iv      偏移向量，加盐
+     * @param mode    The encryption mode (e.g., CBC, CTR) as defined in {@link Algorithm.Mode}.
+     * @param padding The padding scheme (e.g., PKCS5Padding, NoPadding) as defined in {@link Padding}.
+     * @param key     The DES {@link SecretKey}. The key length should be a multiple of 8.
+     * @param iv      The initialization vector (IV) as an {@link IvParameterSpec}. Used for modes like CBC.
      */
     public DES(final Algorithm.Mode mode, final Padding padding, final SecretKey key, final IvParameterSpec iv) {
         this(mode.name(), padding.name(), key, iv);
     }
 
     /**
-     * 构造
+     * Constructs a DES encryptor/decryptor with the specified mode and padding names. A random key is generated.
      *
-     * @param mode    模式
-     * @param padding 补码方式
+     * @param mode    The name of the encryption mode (e.g., "CBC", "CTR").
+     * @param padding The name of the padding scheme (e.g., "PKCS5Padding", "NoPadding").
      */
     public DES(final String mode, final String padding) {
         this(mode, padding, (byte[]) null);
     }
 
     /**
-     * 构造
+     * Constructs a DES encryptor/decryptor with the specified mode, padding name, and key.
      *
-     * @param mode    模式
-     * @param padding 补码方式
-     * @param key     密钥，长度：8的倍数
+     * @param mode    The name of the encryption mode (e.g., "CBC", "CTR").
+     * @param padding The name of the padding scheme (e.g., "PKCS5Padding", "NoPadding").
+     * @param key     The DES key as a byte array. The length should be a multiple of 8.
      */
     public DES(final String mode, final String padding, final byte[] key) {
         this(mode, padding, Keeper.generateKey("DES", key), null);
     }
 
     /**
-     * 构造
+     * Constructs a DES encryptor/decryptor with the specified mode, padding name, key, and initialization vector (IV).
      *
-     * @param mode    模式
-     * @param padding 补码方式
-     * @param key     密钥，长度：8的倍数
-     * @param iv      加盐
+     * @param mode    The name of the encryption mode (e.g., "CBC", "CTR").
+     * @param padding The name of the padding scheme (e.g., "PKCS5Padding", "NoPadding").
+     * @param key     The DES key as a byte array. The length should be a multiple of 8.
+     * @param iv      The initialization vector (IV) as a byte array. If null, no IV is used.
      */
     public DES(final String mode, final String padding, final byte[] key, final byte[] iv) {
         this(mode, padding, Keeper.generateKey("DES", key), null == iv ? null : new IvParameterSpec(iv));
     }
 
     /**
-     * 构造
+     * Constructs a DES encryptor/decryptor with the specified mode, padding name, and {@link SecretKey}.
      *
-     * @param mode    模式
-     * @param padding 补码方式
-     * @param key     密钥，长度：8的倍数
+     * @param mode    The name of the encryption mode (e.g., "CBC", "CTR").
+     * @param padding The name of the padding scheme (e.g., "PKCS5Padding", "NoPadding").
+     * @param key     The DES {@link SecretKey}. The key length should be a multiple of 8.
      */
     public DES(final String mode, final String padding, final SecretKey key) {
         this(mode, padding, key, null);
     }
 
     /**
-     * 构造
+     * Constructs a DES encryptor/decryptor with the specified mode, padding name, {@link SecretKey}, and initialization
+     * vector (IV).
      *
-     * @param mode    模式
-     * @param padding 补码方式
-     * @param key     密钥，长度：8的倍数
-     * @param iv      加盐
+     * @param mode    The name of the encryption mode (e.g., "CBC", "CTR").
+     * @param padding The name of the padding scheme (e.g., "PKCS5Padding", "NoPadding").
+     * @param key     The DES {@link SecretKey}. The key length should be a multiple of 8.
+     * @param iv      The initialization vector (IV) as an {@link IvParameterSpec}. If null, no IV is used.
      */
     public DES(final String mode, final String padding, final SecretKey key, final IvParameterSpec iv) {
         super(StringKit.format("DES/{}/{}", mode, padding), key, iv);

@@ -38,21 +38,27 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * GZIP是用于Unix系统的文件压缩 gzip的基础是DEFLATE
+ * GZIP is a file compression format used in Unix systems. The basis of gzip is DEFLATE.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Gzip implements Closeable {
 
+    /**
+     * The source input stream.
+     */
     private InputStream source;
+    /**
+     * The target output stream.
+     */
     private OutputStream target;
 
     /**
-     * 构造
+     * Constructs a new Gzip instance.
      *
-     * @param source 源流
-     * @param target 目标流
+     * @param source The source input stream.
+     * @param target The target output stream.
      */
     public Gzip(final InputStream source, final OutputStream target) {
         this.source = source;
@@ -60,29 +66,29 @@ public class Gzip implements Closeable {
     }
 
     /**
-     * 创建Gzip
+     * Creates a new Gzip instance.
      *
-     * @param source 源流
-     * @param target 目标流
-     * @return Gzip
+     * @param source The source input stream.
+     * @param target The target output stream.
+     * @return A new Gzip instance.
      */
     public static Gzip of(final InputStream source, final OutputStream target) {
         return new Gzip(source, target);
     }
 
     /**
-     * 获取目标流
+     * Retrieves the target output stream.
      *
-     * @return 目标流
+     * @return The target output stream.
      */
     public OutputStream getTarget() {
         return this.target;
     }
 
     /**
-     * 将普通数据流压缩
+     * Compresses the normal data stream.
      *
-     * @return Gzip
+     * @return This Gzip instance.
      */
     public Gzip gzip() {
         try {
@@ -96,9 +102,9 @@ public class Gzip implements Closeable {
     }
 
     /**
-     * 将压缩流解压到target中
+     * Decompresses the compressed stream into the target.
      *
-     * @return Gzip
+     * @return This Gzip instance.
      */
     public Gzip unGzip() {
         try {

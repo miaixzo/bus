@@ -36,7 +36,8 @@ import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * Bean描述抽象类
+ * An abstract base class for bean descriptors, providing common properties and methods for describing a bean's class
+ * and its properties.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,65 +48,65 @@ public abstract class AbstractBeanDesc implements BeanDesc {
     private static final long serialVersionUID = 2852291999885L;
 
     /**
-     * Bean类
+     * The class of the bean being described.
      */
     protected final Class<?> beanClass;
 
     /**
-     * 属性Map
+     * A map of property names to their corresponding {@link PropDesc} descriptors.
      */
     protected final Map<String, PropDesc> propMap = new LinkedHashMap<>();
 
     /**
-     * 构造
+     * Constructs a new {@code AbstractBeanDesc}.
      *
-     * @param beanClass Bean类
+     * @param beanClass The class of the bean to describe.
      */
     public AbstractBeanDesc(final Class<?> beanClass) {
         this.beanClass = Assert.notNull(beanClass);
     }
 
     /**
-     * 获取Bean的全类名
+     * Gets the fully qualified name of the bean class.
      *
-     * @return Bean的类名
+     * @return The bean's class name.
      */
     public String getName() {
         return this.beanClass.getName();
     }
 
     /**
-     * 获取Bean的简单类名
+     * Gets the simple name of the bean class.
      *
-     * @return Bean的类名
+     * @return The bean's simple class name.
      */
     public String getSimpleName() {
         return this.beanClass.getSimpleName();
     }
 
     /**
-     * 获取Bean类
+     * Gets the {@link Class} object of the bean.
      *
-     * @return Bean类
+     * @return The bean's class.
      */
     public Class<?> getBeanClass() {
         return this.beanClass;
     }
 
-    @Override
-    public Map<String, PropDesc> getPropMap(final boolean ignoreCase) {
-        return ignoreCase ? new CaseInsensitiveMap<>(1, this.propMap) : this.propMap;
-    }
-
     /**
-     * 获得字段名对应的字段对象，如果不存在返回null
+     * Gets the {@link Field} object for a given property name.
      *
-     * @param fieldName 字段名
-     * @return 字段值
+     * @param fieldName The name of the property.
+     * @return The corresponding {@link Field} object, or null if not found.
      */
     public Field getField(final String fieldName) {
         final PropDesc desc = this.propMap.get(fieldName);
         return null == desc ? null : desc.getField();
+    }
+
+    @Override
+    public Map<String, PropDesc> getPropMap(final boolean ignoreCase) {
+        return ignoreCase ? new CaseInsensitiveMap<>(1, this.propMap) : this.propMap;
     }
 
 }

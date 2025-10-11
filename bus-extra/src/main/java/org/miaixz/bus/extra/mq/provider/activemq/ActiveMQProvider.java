@@ -35,7 +35,9 @@ import org.miaixz.bus.extra.mq.provider.jms.JmsProvider;
 import jakarta.jms.ConnectionFactory;
 
 /**
- * ActiveMQ引擎实现类 提供ActiveMQ的消息队列服务
+ * ActiveMQ message queue engine implementation class. This class extends {@link JmsProvider} to offer specific
+ * functionalities for connecting to and interacting with an ActiveMQ broker. It provides the necessary
+ * {@link ConnectionFactory} for ActiveMQ.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,18 +45,22 @@ import jakarta.jms.ConnectionFactory;
 public class ActiveMQProvider extends JmsProvider {
 
     /**
-     * 默认构造方法 用于SPI方式加载时检查库是否引入
+     * Default constructor for {@code ActiveMQProvider}. This constructor is primarily used when the provider is loaded
+     * via Java's Service Provider Interface (SPI). It includes an assertion to ensure that the ActiveMQ client library
+     * (specifically {@link ActiveMQConnectionFactory}) is present on the classpath, preventing runtime errors if the
+     * dependency is missing.
      */
     public ActiveMQProvider() {
-        // SPI方式加载时检查库是否引入
+        // Check if the library is introduced when loading via SPI
         Assert.notNull(org.apache.activemq.ActiveMQConnectionFactory.class);
     }
 
     /**
-     * 创建ActiveMQ连接工厂
+     * Creates an ActiveMQ-specific {@link ConnectionFactory} based on the provided {@link MQConfig}. This method uses
+     * the broker URL from the {@link MQConfig} to instantiate an {@link ActiveMQConnectionFactory}.
      *
-     * @param config ActiveMQ配置对象，包含连接所需信息
-     * @return ActiveMQ连接工厂
+     * @param config The {@link MQConfig} object, containing necessary connection information, including the broker URL.
+     * @return An initialized {@link ActiveMQConnectionFactory} instance.
      */
     @Override
     protected ConnectionFactory createConnectionFactory(final MQConfig config) {

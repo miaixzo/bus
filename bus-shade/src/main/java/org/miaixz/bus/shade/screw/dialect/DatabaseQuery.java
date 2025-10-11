@@ -36,7 +36,7 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 import org.miaixz.bus.shade.screw.metadata.Table;
 
 /**
- * 通用查询接口 查询数据库信息
+ * Common query interface for retrieving database metadata information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,52 +44,52 @@ import org.miaixz.bus.shade.screw.metadata.Table;
 public interface DatabaseQuery {
 
     /**
-     * 获取数据库
+     * Retrieves database information.
      *
-     * @return {@link Database} 数据库信息
-     * @throws InternalException 异常
+     * @return {@link Database} object containing database information.
+     * @throws InternalException if an error occurs during the query.
      */
     Database getDataBase() throws InternalException;
 
     /**
-     * 获取表信息
+     * Retrieves information for all tables in the database.
      *
-     * @return {@link List} 所有表信息
-     * @throws InternalException 异常
+     * @return A list of {@link Table} objects, each representing a table.
+     * @throws InternalException if an error occurs during the query.
      */
     List<? extends Table> getTables() throws InternalException;
 
     /**
-     * 获取列信息
+     * Retrieves column information for a specific table.
      *
-     * @param table {@link String} 表名
-     * @return {@link List} 表字段信息
-     * @throws InternalException 异常
+     * @param table The name of the table.
+     * @return A list of {@link Column} objects for the specified table.
+     * @throws InternalException if an error occurs during the query.
      */
     List<? extends Column> getTableColumns(String table) throws InternalException;
 
     /**
-     * 获取所有列信息
+     * Retrieves column information for all tables in the database.
      *
-     * @return {@link List} 表字段信息
-     * @throws InternalException 异常
+     * @return A list of {@link Column} objects for all tables.
+     * @throws InternalException if an error occurs during the query.
      */
     List<? extends Column> getTableColumns() throws InternalException;
 
     /**
-     * 根据表名获取主键
+     * Retrieves primary key information for a specific table.
      *
-     * @param table {@link String}
-     * @return {@link List}
-     * @throws InternalException 异常
+     * @param table The name of the table.
+     * @return A list of {@link PrimaryKey} objects for the specified table.
+     * @throws InternalException if an error occurs during the query.
      */
     List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException;
 
     /**
-     * 获取主键
+     * Retrieves primary key information for all tables in the database.
      *
-     * @return {@link List}
-     * @throws InternalException 异常
+     * @return A list of {@link PrimaryKey} objects for all tables.
+     * @throws InternalException if an error occurs during the query.
      */
     List<? extends PrimaryKey> getPrimaryKeys() throws InternalException;
 

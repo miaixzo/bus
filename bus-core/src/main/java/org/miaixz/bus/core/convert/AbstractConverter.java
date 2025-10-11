@@ -37,30 +37,44 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * 抽象转换器，提供通用的转换逻辑，同时通过convertInternal实现对应类型的专属逻辑 转换器不会抛出转换异常，转换失败时会返回{@code null}
- * 抽象转换器的默认逻辑不适用于有泛型参数的对象，如Map、Collection、Entry等。通用逻辑包括：
+ * An abstract converter that provides common conversion logic. Subclasses should implement the
+ * {@link #convertInternal(Class, Object)} method for type-specific conversion logic.
+ * <p>
+ * This converter handles common scenarios:
  * <ul>
- * <li>value为{@code null}时返回{@code null}</li>
- * <li>目标类型是{@code null}或者{@link java.lang.reflect.TypeVariable}时，抛出{@link ConvertException}异常</li>
- * <li>目标类型非class时，抛出{@link IllegalArgumentException}</li>
- * <li>目标类型为值的父类或同类，直接强转返回</li>
+ * <li>Returns {@code null} if the input value is {@code null}.</li>
+ * <li>Throws {@link ConvertException} for unknown or non-class target types.</li>
+ * <li>Performs a direct cast if the value is already an instance of the target type.</li>
  * </ul>
+ * Note: This abstract implementation is not suitable for types with generic parameters like Map, Collection, etc.,
+ * which require special handling.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractConverter implements Converter, Serializable {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852263159195L;
 
+    /**
+     * Converts the given value to the specified target type.
+     *
+     * @param targetType The target type to convert to.
+     * @param value      The value to convert.
+     * @return The converted value, or {@code null} if the input value is {@code null}.
+     * @throws ConvertException if the target type is unknown or not a class.
+     */
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {
         if (null == value) {
             return null;
         }
         if (TypeKit.isUnknown(targetType)) {
-            throw new ConvertException("Unsupported support to unKnown type: {}", targetType);
+            throw new ConvertException("Unsupported conversion to unknown type: {}", targetType);
         }
 
         final Class<?> targetClass = TypeKit.getClass(targetType);
@@ -68,41 +82,36 @@ public abstract class AbstractConverter implements Converter, Serializable {
             throw new ConvertException("Target type [{}] is not a class!", targetType);
         }
 
-        // 尝试强转
+        // If the value is already an instance of the target class, no conversion is needed.
         if (targetClass.isInstance(value)) {
-            // 除Map外，已经是目标类型，不需要转换（Map类型涉及参数类型，需要单独转换）
             return value;
         }
         return convertInternal(targetClass, value);
     }
 
     /**
-     * 内部转换器，被 {@link AbstractConverter#convert(Type, Object)} 调用，实现基本转换逻辑 内部转换器转换后如果转换失败可以做如下操作，处理结果都为返回默认值：
+     * Performs the internal conversion logic. This method is called by {@link #convert(Type, Object)} after basic
+     * checks have been performed.
+     * <p>
+     * If the conversion fails, implementations can either return {@code null} or throw a {@link RuntimeException}.
      *
-     * <pre>
-     * 1、返回{@code
-     * null
-     * }
-     * 2、抛出一个{@link RuntimeException}异常
-     * </pre>
-     *
-     * @param targetClass 目标类型
-     * @param value       值
-     * @return 转换后的类型
+     * @param targetClass The target class to convert to.
+     * @param value       The non-null value to be converted.
+     * @return The converted object.
      */
     protected abstract Object convertInternal(Class<?> targetClass, Object value);
 
     /**
-     * 值转为String，用于内部转换中需要使用String中转的情况 转换规则为：
+     * Converts an object to its string representation. This is a utility method for converters that require an
+     * intermediate string form.
+     * <ul>
+     * <li>{@link CharSequence} objects are converted using {@code toString()}.</li>
+     * <li>Arrays are converted to a comma-separated string.</li>
+     * <li>Other objects are converted using their default {@code toString()} method.</li>
+     * </ul>
      *
-     * <pre>
-     * 1、字符串类型将被强转
-     * 2、数组将被转换为逗号分隔的字符串
-     * 3、其它类型将调用默认的toString()方法
-     * </pre>
-     *
-     * @param value 值
-     * @return String
+     * @param value The object to convert.
+     * @return The string representation, or {@code null} if the input is {@code null}.
      */
     protected String convertToString(final Object value) {
         if (null == value) {
@@ -113,7 +122,7 @@ public abstract class AbstractConverter implements Converter, Serializable {
         } else if (ArrayKit.isArray(value)) {
             return ArrayKit.toString(value);
         } else if (CharKit.isChar(value)) {
-            // 对于ASCII字符使用缓存加速转换，减少空间创建
+            // For ASCII characters, use cache to speed up conversion and reduce space creation
             return CharKit.toString((char) value);
         }
         return value.toString();

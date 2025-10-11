@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import org.miaixz.bus.validate.Builder;
+import org.miaixz.bus.validate.metric.NotEmptyMatcher;
+
 import java.lang.annotation.*;
 
-import org.miaixz.bus.validate.Builder;
-import org.miaixz.bus.validate.metric.NotBlankMatcher;
-
 /**
- * 字符串不为空,不为null校验
+ * Validates that the annotated string, collection, map, or array is not null and not empty.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,34 +41,34 @@ import org.miaixz.bus.validate.metric.NotBlankMatcher;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
-@Complex(value = Builder._NOT_BLANK, clazz = NotBlankMatcher.class)
+@Complex(value = Builder._NOT_EMPTY, clazz = NotEmptyMatcher.class)
 public @interface NotEmpty {
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}不能为空";
+    String errmsg() default "${field} cannot be empty";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

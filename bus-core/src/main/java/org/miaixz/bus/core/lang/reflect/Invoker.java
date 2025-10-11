@@ -30,7 +30,9 @@ package org.miaixz.bus.core.lang.reflect;
 import java.lang.reflect.Type;
 
 /**
- * Invoker接口定义了调用目标对象的方法的规范。 它允许动态地调用方法，增强了代码的灵活性和扩展性。 参考：org.apache.ibatis.reflection.invoker.Invoker
+ * Defines the specification for invoking methods on a target object. This interface allows for dynamic method
+ * invocation, enhancing code flexibility and extensibility. Inspired by
+ * {@code org.apache.ibatis.reflection.invoker.Invoker}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,33 +40,34 @@ import java.lang.reflect.Type;
 public interface Invoker {
 
     /**
-     * 调用指定目标对象的方法。
+     * Invokes a method on the specified target object.
      *
-     * @param target 目标对象，调用的方法属于该对象。
-     * @param args   方法调用的参数数组。
-     * @return 方法的返回值，方法的返回类型可以是任意类型。
-     * @param <T> 返回类型
+     * @param target The target object on which the method is to be invoked.
+     * @param args   The array of arguments to be passed to the method.
+     * @return The return value of the method invocation. The return type can be any type.
+     * @param <T> The expected return type of the method.
      */
     <T> T invoke(Object target, Object... args);
 
     /**
-     * 获取调用方法的名称。
+     * Retrieves the name of the invoked method.
      *
-     * @return 调用方法的名称，作为字符串返回。
+     * @return The name of the method as a {@code String}.
      */
     String getName();
 
     /**
-     * 获取调用方法的返回类型或参数类型或字段类型。
+     * Retrieves the generic return type of the invoked method, or the type of a parameter or field.
      *
-     * @return 调用方法的返回类型，作为Class对象返回。
+     * @return The {@link Type} representing the return type, parameter type, or field type.
      */
     Type getType();
 
     /**
-     * 获取调用方法的返回类型或参数类型或字段类型。
+     * Retrieves the raw {@link Class} of the invoked method's return type, or the type of a parameter or field. This is
+     * the erased type, without generic information.
      *
-     * @return 调用方法的返回类型，作为Class对象返回。
+     * @return The {@link Class} object representing the raw type.
      */
     Class<?> getTypeClass();
 

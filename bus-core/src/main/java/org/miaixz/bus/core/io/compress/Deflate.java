@@ -40,23 +40,32 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * Deflate算法 Deflate是同时使用了LZ77算法与哈夫曼编码（Huffman Coding）的一个无损数据压缩算法。
+ * Deflate algorithm. Deflate is a lossless data compression algorithm that uses both LZ77 algorithm and Huffman coding.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Deflate implements Closeable {
 
+    /**
+     * The source input stream.
+     */
     private final InputStream source;
+    /**
+     * Flag indicating whether to use the 'nowrap' option for Deflater/Inflater, which is compatible with Gzip.
+     */
     private final boolean nowrap;
+    /**
+     * The target output stream.
+     */
     private OutputStream target;
 
     /**
-     * 构造
+     * Constructs a new Deflate instance.
      *
-     * @param source 源流
-     * @param target 目标流
-     * @param nowrap {@code true}表示兼容Gzip压缩
+     * @param source The source input stream.
+     * @param target The target output stream.
+     * @param nowrap {@code true} to be compatible with Gzip compression, {@code false} otherwise.
      */
     public Deflate(final InputStream source, final OutputStream target, final boolean nowrap) {
         this.source = source;
@@ -65,31 +74,32 @@ public class Deflate implements Closeable {
     }
 
     /**
-     * 创建Deflate
+     * Creates a new Deflate instance.
      *
-     * @param source 源流
-     * @param target 目标流
-     * @param nowrap {@code true}表示兼容Gzip压缩
-     * @return this
+     * @param source The source input stream.
+     * @param target The target output stream.
+     * @param nowrap {@code true} to be compatible with Gzip compression, {@code false} otherwise.
+     * @return A new Deflate instance.
      */
     public static Deflate of(final InputStream source, final OutputStream target, final boolean nowrap) {
         return new Deflate(source, target, nowrap);
     }
 
     /**
-     * 获取目标流
+     * Retrieves the target output stream.
      *
-     * @return 目标流
+     * @return The target output stream.
      */
     public OutputStream getTarget() {
         return this.target;
     }
 
     /**
-     * 将普通数据流压缩
+     * Compresses the normal data stream using Deflate algorithm.
      *
-     * @param level 压缩级别，0~9
-     * @return this
+     * @param level The compression level, from 0 (no compression) to 9 (best compression).
+     * @return This Deflate instance.
+     * @throws InternalException if an I/O error occurs during compression.
      */
     public Deflate deflater(final int level) {
         target = (target instanceof DeflaterOutputStream) ? (DeflaterOutputStream) target
@@ -104,9 +114,10 @@ public class Deflate implements Closeable {
     }
 
     /**
-     * 将压缩流解压到target中
+     * Decompresses the compressed stream into the target using Inflate algorithm.
      *
-     * @return this
+     * @return This Deflate instance.
+     * @throws InternalException if an I/O error occurs during decompression.
      */
     public Deflate inflater() {
         target = (target instanceof InflaterOutputStream) ? (InflaterOutputStream) target

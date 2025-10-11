@@ -40,8 +40,10 @@ import org.miaixz.bus.office.excel.xyz.SheetKit;
 import org.miaixz.bus.office.excel.xyz.WorkbookKit;
 
 /**
- * 大数据量Excel写出，只支持XLSX（Excel07版本） 通过封装{@link SXSSFWorkbook}，限制对滑动窗口中的行的访问来实现其低内存使用。
- * 注意如果写出数据大于滑动窗口大小，就会写出到临时文件，此时写出的数据无法访问和编辑。
+ * Excel writer for large datasets, supporting only XLSX (Excel 07+ version). By encapsulating {@link SXSSFWorkbook}, it
+ * limits access to rows in a sliding window to achieve low memory usage. Note that if the written data exceeds the
+ * sliding window size, it will be written to a temporary file, and the written data cannot be accessed or edited at
+ * that point.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,41 +51,46 @@ import org.miaixz.bus.office.excel.xyz.WorkbookKit;
 public class BigExcelWriter extends ExcelWriter {
 
     /**
-     * 默认内存中保存的行数，默认100
+     * Default number of rows to keep in memory, default is 100.
      */
     public static final int DEFAULT_WINDOW_SIZE = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
 
     /**
-     * BigExcelWriter只能flush一次，因此调用后不再重复写出
+     * BigExcelWriter can only be flushed once, so it will not write again after the first call.
      */
     private boolean isFlushed;
 
     /**
-     * 构造，默认生成xlsx格式的Excel文件 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link #setTargetFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
+     * Constructs a new {@code BigExcelWriter}, generating an XLSX format Excel file by default. This constructor does
+     * not take an Excel file path for writing; only the {@link #flush(OutputStream)} method can be called to write to a
+     * stream. To write to a file, you must first call {@link #setTargetFile(File)} to customize the output file, and
+     * then call {@link #flush()} to write to the file.
      */
     public BigExcelWriter() {
         this(DEFAULT_WINDOW_SIZE);
     }
 
     /**
-     * 构造 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流 若写出到文件，需要调用{@link #flush(File, boolean)}
-     * 写出到文件
+     * Constructs a new {@code BigExcelWriter}. This constructor does not take an Excel file path for writing; only the
+     * {@link #flush(OutputStream)} method can be called to write to a stream. To write to a file, you must call
+     * {@link #flush(File, boolean)} to write to a file.
      *
-     * @param rowAccessWindowSize 在内存中的行数
+     * @param rowAccessWindowSize The number of rows to keep in memory.
      */
     public BigExcelWriter(final int rowAccessWindowSize) {
         this(WorkbookKit.createSXSSFBook(rowAccessWindowSize), null);
     }
 
     /**
-     * 构造 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流 若写出到文件，需要调用{@link #flush(File, boolean)}
-     * 写出到文件
+     * Constructs a new {@code BigExcelWriter}. This constructor does not take an Excel file path for writing; only the
+     * {@link #flush(OutputStream)} method can be called to write to a stream. To write to a file, you must call
+     * {@link #flush(File, boolean)} to write to a file.
      *
-     * @param rowAccessWindowSize   在内存中的行数，-1表示不限制，此时需要手动刷出
-     * @param compressTmpFiles      是否使用Gzip压缩临时文件
-     * @param useSharedStringsTable 是否使用共享字符串表，一般大量重复字符串时开启可节省内存
-     * @param sheetName             写出的sheet名称
+     * @param rowAccessWindowSize   The number of rows to keep in memory. -1 means no limit, requiring manual flushing.
+     * @param compressTmpFiles      Whether to use Gzip compression for temporary files.
+     * @param useSharedStringsTable Whether to use a shared strings table. Generally, enabling this for a large number
+     *                              of duplicate strings can save memory.
+     * @param sheetName             The name of the sheet to write to.
      */
     public BigExcelWriter(final int rowAccessWindowSize, final boolean compressTmpFiles,
             final boolean useSharedStringsTable, final String sheetName) {
@@ -91,49 +98,50 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     /**
-     * 构造，默认写出到第一个sheet，第一个sheet名为sheet1
+     * Constructs a new {@code BigExcelWriter}. By default, it writes to the first sheet, named "sheet1".
      *
-     * @param destFilePath 目标文件路径，可以不存在
+     * @param destFilePath The path to the target file, which may not exist.
      */
     public BigExcelWriter(final String destFilePath) {
         this(destFilePath, null);
     }
 
     /**
-     * 构造 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流 若写出到文件，需要调用{@link #flush(File, boolean)}
-     * 写出到文件
+     * Constructs a new {@code BigExcelWriter}. This constructor does not take an Excel file path for writing; only the
+     * {@link #flush(OutputStream)} method can be called to write to a stream. To write to a file, you must call
+     * {@link #flush(File, boolean)} to write to a file.
      *
-     * @param rowAccessWindowSize 在内存中的行数
-     * @param sheetName           sheet名，第一个sheet名并写出到此sheet，例如sheet1
+     * @param rowAccessWindowSize The number of rows to keep in memory.
+     * @param sheetName           The name of the sheet. The first sheet is typically named "sheet1".
      */
     public BigExcelWriter(final int rowAccessWindowSize, final String sheetName) {
         this(WorkbookKit.createSXSSFBook(rowAccessWindowSize), sheetName);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code BigExcelWriter}.
      *
-     * @param destFilePath 目标文件路径，可以不存在
-     * @param sheetName    sheet名，第一个sheet名并写出到此sheet，例如sheet1
+     * @param destFilePath The path to the target file, which may not exist.
+     * @param sheetName    The name of the sheet. The first sheet is typically named "sheet1".
      */
     public BigExcelWriter(final String destFilePath, final String sheetName) {
         this(FileKit.file(destFilePath), sheetName);
     }
 
     /**
-     * 构造，默认写出到第一个sheet，第一个sheet名为sheet1
+     * Constructs a new {@code BigExcelWriter}. By default, it writes to the first sheet, named "sheet1".
      *
-     * @param destFile 目标文件，可以不存在
+     * @param destFile The target file, which may not exist.
      */
     public BigExcelWriter(final File destFile) {
         this(destFile, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code BigExcelWriter}.
      *
-     * @param destFile  目标文件，可以不存在
-     * @param sheetName sheet名，做为第一个sheet名并写出到此sheet，例如sheet1
+     * @param destFile  The target file, which may not exist.
+     * @param sheetName The name of the sheet. The first sheet is typically named "sheet1".
      */
     public BigExcelWriter(final File destFile, final String sheetName) {
         this(destFile.exists() ? WorkbookKit.createSXSSFBook(destFile) : WorkbookKit.createSXSSFBook(), sheetName);
@@ -141,21 +149,23 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     /**
-     * 构造 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link #setTargetFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
+     * Constructs a new {@code BigExcelWriter}. This constructor does not take an Excel file path for writing; only the
+     * {@link #flush(OutputStream)} method can be called to write to a stream. To write to a file, you must first call
+     * {@link #setTargetFile(File)} to customize the output file, and then call {@link #flush()} to write to the file.
      *
-     * @param workbook  {@link SXSSFWorkbook}
-     * @param sheetName sheet名，做为第一个sheet名并写出到此sheet，例如sheet1
+     * @param workbook  The {@link SXSSFWorkbook} instance.
+     * @param sheetName The name of the sheet. The first sheet is typically named "sheet1".
      */
     public BigExcelWriter(final SXSSFWorkbook workbook, final String sheetName) {
         this(SheetKit.getOrCreateSheet(workbook, sheetName));
     }
 
     /**
-     * 构造 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link #setTargetFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
+     * Constructs a new {@code BigExcelWriter}. This constructor does not take an Excel file path for writing; only the
+     * {@link #flush(OutputStream)} method can be called to write to a stream. To write to a file, you must first call
+     * {@link #setTargetFile(File)} to customize the output file, and then call {@link #flush()} to write to the file.
      *
-     * @param sheet {@link Sheet}
+     * @param sheet The {@link Sheet} to write to.
      */
     public BigExcelWriter(final Sheet sheet) {
         super(sheet);
@@ -194,7 +204,7 @@ public class BigExcelWriter extends ExcelWriter {
             flush();
         }
 
-        // 清理临时文件
+        // Clean up temporary files.
         IoKit.close(this.workbook);
         super.closeWithoutFlush();
     }

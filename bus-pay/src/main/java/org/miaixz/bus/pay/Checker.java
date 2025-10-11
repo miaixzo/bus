@@ -30,7 +30,7 @@ package org.miaixz.bus.pay;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 配置类的校验器
+ * Validator for configuration classes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,11 +38,11 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Checker {
 
     /**
-     * 是否支持
+     * Checks if payment is supported.
      *
-     * @param context context
-     * @param complex complex
-     * @return true or false
+     * @param context The payment context.
+     * @param complex The payment complex object.
+     * @return true if payment is supported, false otherwise.
      */
     public static boolean isSupportedPay(Context context, Complex complex) {
         boolean isSupported = StringKit.isNotEmpty(context.getAppKey()) && StringKit.isNotEmpty(context.getAppSecret());
@@ -51,10 +51,10 @@ public class Checker {
     }
 
     /**
-     * 检查配置合法性
+     * Checks the legitimacy of the configuration.
      *
-     * @param context context
-     * @param complex complex
+     * @param context The payment context.
+     * @param complex The payment complex object.
      */
     public static void checkConfig(Context context, Complex complex) {
 

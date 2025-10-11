@@ -31,7 +31,8 @@ import org.miaixz.bus.core.center.date.culture.Tradition;
 import org.miaixz.bus.core.center.date.culture.cn.HiddenStems;
 
 /**
- * 藏干（即人元，司令取天干，分野取天干的五行）
+ * Represents a Hidden Stem (藏干), also known as Ren Yuan (人元), which are Heavenly Stems hidden within Earthly Branches.
+ * This class associates a {@link HeavenStem} with a {@link HiddenStems} type.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,46 +40,69 @@ import org.miaixz.bus.core.center.date.culture.cn.HiddenStems;
 public class HiddenStem extends Tradition {
 
     /**
-     * 天干
+     * The Heavenly Stem itself.
      */
     protected HeavenStem heavenStem;
 
     /**
-     * 藏干类型
+     * The type of Hidden Stem (e.g., Residual Qi, Middle Qi, Principal Qi).
      */
     protected HiddenStems type;
 
+    /**
+     * Constructs a {@code HiddenStem} instance with the specified Heavenly Stem and Hidden Stem type.
+     *
+     * @param heavenStem The {@link HeavenStem} instance.
+     * @param type       The {@link HiddenStems} type.
+     */
     public HiddenStem(HeavenStem heavenStem, HiddenStems type) {
         this.heavenStem = heavenStem;
         this.type = type;
     }
 
+    /**
+     * Constructs a {@code HiddenStem} instance with the specified Heavenly Stem name and Hidden Stem type.
+     *
+     * @param heavenStemName The name of the Heavenly Stem.
+     * @param type           The {@link HiddenStems} type.
+     */
     public HiddenStem(String heavenStemName, HiddenStems type) {
         this(HeavenStem.fromName(heavenStemName), type);
     }
 
+    /**
+     * Constructs a {@code HiddenStem} instance with the specified Heavenly Stem index and Hidden Stem type.
+     *
+     * @param heavenStemIndex The index of the Heavenly Stem.
+     * @param type            The {@link HiddenStems} type.
+     */
     public HiddenStem(int heavenStemIndex, HiddenStems type) {
         this(HeavenStem.fromIndex(heavenStemIndex), type);
     }
 
     /**
-     * 天干
+     * Gets the Heavenly Stem associated with this Hidden Stem.
      *
-     * @return 天干
+     * @return The {@link HeavenStem} instance.
      */
     public HeavenStem getHeavenStem() {
         return heavenStem;
     }
 
     /**
-     * 藏干类型
+     * Gets the type of this Hidden Stem.
      *
-     * @return 藏干类型
+     * @return The {@link HiddenStems} type.
      */
     public HiddenStems getType() {
         return type;
     }
 
+    /**
+     * Gets the name of the Heavenly Stem.
+     *
+     * @return The name of the Heavenly Stem.
+     */
     @Override
     public String getName() {
         return heavenStem.getName();

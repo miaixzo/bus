@@ -49,18 +49,20 @@ import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.update.Update;
 
 /**
- * 操作：防止全表更新与删除
+ * Operation handler to prevent full table updates and deletes. This handler intercepts UPDATE and DELETE statements to
+ * ensure they have a valid WHERE clause, preventing accidental modification or deletion of all records in a table.
  *
- * @param <T> 泛型参数
+ * @param <T> the generic type parameter
  * @author Kimi Liu
  * @since Java 17+
  */
 public class OperationHandler<T> extends SqlParserHandler implements MapperHandler<T> {
 
     /**
-     * 准备 SQL 语句，检查 UPDATE 和 DELETE 语句是否包含 WHERE 条件，防止全表操作。
+     * Prepares the SQL statement, checking UPDATE and DELETE statements for a WHERE clause to prevent full table
+     * operations.
      *
-     * @param statementHandler MyBatis 语句处理器
+     * @param statementHandler the MyBatis StatementHandler
      */
     @Override
     public void prepare(StatementHandler statementHandler) {
@@ -74,12 +76,12 @@ public class OperationHandler<T> extends SqlParserHandler implements MapperHandl
     }
 
     /**
-     * 处理 DELETE 语句，检查是否包含 WHERE 条件。
+     * Processes a DELETE statement, checking if it includes a WHERE clause.
      *
-     * @param delete DELETE 语句对象
-     * @param index  索引
-     * @param sql    原始 SQL 语句
-     * @param obj    附加对象
+     * @param delete the DELETE statement object
+     * @param index  the index of the statement
+     * @param sql    the original SQL statement
+     * @param obj    additional object
      */
     @Override
     protected void processDelete(Delete delete, int index, String sql, Object obj) {
@@ -87,12 +89,12 @@ public class OperationHandler<T> extends SqlParserHandler implements MapperHandl
     }
 
     /**
-     * 处理 UPDATE 语句，检查是否包含 WHERE 条件。
+     * Processes an UPDATE statement, checking if it includes a WHERE clause.
      *
-     * @param update UPDATE 语句对象
-     * @param index  索引
-     * @param sql    原始 SQL 语句
-     * @param obj    附加对象
+     * @param update the UPDATE statement object
+     * @param index  the index of the statement
+     * @param sql    the original SQL statement
+     * @param obj    additional object
      */
     @Override
     protected void processUpdate(Update update, int index, String sql, Object obj) {
@@ -100,23 +102,23 @@ public class OperationHandler<T> extends SqlParserHandler implements MapperHandl
     }
 
     /**
-     * 检查 WHERE 条件是否有效，防止全表操作。
+     * Checks if the WHERE clause is valid to prevent full table operations.
      *
-     * @param tableName 表名
-     * @param where     WHERE 条件表达式
-     * @param ex        异常信息
-     * @throws IllegalArgumentException 如果 WHERE 条件无效
+     * @param tableName the name of the table
+     * @param where     the WHERE clause expression
+     * @param ex        the exception message to throw if the check fails
+     * @throws IllegalArgumentException if the WHERE clause is invalid
      */
     protected void checkWhere(String tableName, Expression where, String ex) {
         Assert.isFalse(this.fullMatch(where, EntityClassBuilder.getTableLogicColumn()), ex);
     }
 
     /**
-     * 检查 WHERE 条件是否为全表匹配。
+     * Checks if the WHERE clause constitutes a full table match.
      *
-     * @param where  WHERE 条件表达式
-     * @param column 逻辑删除字段
-     * @return 是否为全表匹配
+     * @param where  the WHERE clause expression
+     * @param column the logical delete column
+     * @return true if it is a full table match, false otherwise
      */
     private boolean fullMatch(Expression where, String column) {
         if (where == null) {

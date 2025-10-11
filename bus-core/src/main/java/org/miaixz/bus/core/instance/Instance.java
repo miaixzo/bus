@@ -30,7 +30,8 @@ package org.miaixz.bus.core.instance;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * 实例化对象的接口 1. 使用此类的 class 必须有无参构造器 2. 当前类出于测试阶段
+ * Interface for instantiating objects. 1. Classes that use this interface must have a no-argument constructor. 2. This
+ * class is currently in the testing phase.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,51 +39,56 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public interface Instance {
 
     /**
-     * 获取对象的单例对象 1. 需要保证对象的线程安全性 2. 只有在同一个分组返回的对象才会是单例,否则返回 newInstance()
+     * Gets the singleton object of a class. 1. The thread safety of the object needs to be guaranteed. 2. Only objects
+     * returned in the same group will be singletons; otherwise, a new instance is returned.
      *
-     * @param clazz     class 类型
-     * @param groupName 分组名称
-     * @param <T>       泛型
-     * @return 实例化对象
+     * @param <T>       The generic type.
+     * @param clazz     The class type.
+     * @param groupName The group name.
+     * @return The instantiated object.
      */
     <T> T singleton(final Class<T> clazz, final String groupName);
 
     /**
-     * 获取对象的单例对象 1. 需要保证对象的线程安全性
+     * Gets the singleton object of a class. 1. The thread safety of the object needs to be guaranteed.
      *
-     * @param clazz class 类型
-     * @param <T>   泛型
-     * @return 实例化对象
+     * @param <T>   The generic type.
+     * @param clazz The class type.
+     * @return The instantiated object.
      */
     <T> T singleton(final Class<T> clazz);
 
     /**
-     * 获取每个线程内唯一的实例化对象 注意：可能会内存泄漏的场景 (1) 只要这个线程对象被gc回收,就不会出现内存泄露,但在threadLocal设为null和线程结束这段时间不会被回收的,就发生了我们认为的内存泄露
-     * 最要命的是线程对象不被回收的情况,这就发生了真正意义上的内存泄露 比如使用线程池的时候,线程结束是不会销毁的,会再次使用的 就可能出现内存泄露
-     * 参考资料：https://www.cnblogs.com/onlywujun/p/3524675.html
+     * Gets a unique instantiated object within each thread. Note: Scenarios where memory leaks may occur: (1) As long
+     * as the thread object is garbage collected, there will be no memory leak. However, during the time between setting
+     * the ThreadLocal to null and the thread ending, it will not be collected, which is what we consider a memory leak.
+     * The most critical situation is when the thread object is not collected, which leads to a real memory leak. For
+     * example, when using a thread pool, threads are not destroyed when they finish but are reused, which can lead to
+     * memory leaks. Reference: https://www.cnblogs.com/onlywujun/p/3524675.html
      *
-     * @param clazz class 类型
-     * @param <T>   泛型
-     * @return 实例化对象
-     * @see java.lang.ref.WeakReference 弱引用
+     * @param <T>   The generic type.
+     * @param clazz The class type.
+     * @return The instantiated object.
+     * @see java.lang.ref.WeakReference
      */
     <T> T threadLocal(final Class<T> clazz);
 
     /**
-     * 多例对象,每次都是全新的创建
+     * Gets a new instance of the object every time.
      *
-     * @param clazz class 类型
-     * @param <T>   泛型
-     * @return 实例化对象
+     * @param <T>   The generic type.
+     * @param clazz The class type.
+     * @return The instantiated object.
      */
     <T> T multiple(final Class<T> clazz);
 
     /**
-     * 线程安全对象 1. 判断当前类是否拥有 {@link ThreadSafe} 注解, 如果有,则直接创建单例对象 如果不是,则创建多例对象
+     * Gets a thread-safe object. 1. It checks if the current class has the {@link ThreadSafe} annotation. If it does,
+     * it creates a singleton object directly. If not, it creates a new instance.
      *
-     * @param clazz class 类型
-     * @param <T>   泛型
-     * @return 实例化对象
+     * @param <T>   The generic type.
+     * @param clazz The class type.
+     * @return The instantiated object.
      */
     <T> T threadSafe(final Class<T> clazz);
 

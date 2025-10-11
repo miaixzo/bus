@@ -34,43 +34,57 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.lang.EnumValue;
 
 /**
- * 公历现代节日
+ * Represents modern Gregorian festivals.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SolarFestival extends Loops {
 
+    /**
+     * Names of solar festivals.
+     */
     public static final String[] NAMES = { "元旦", "三八妇女节", "植树节", "五一劳动节", "五四青年节", "六一儿童节", "建党节", "八一建军节", "教师节",
             "国庆节" };
 
+    /**
+     * Data string containing festival information, including type, month, day, and start year.
+     */
     public static String DATA = "@00001011950@01003081950@02003121979@03005011950@04005041950@05006011950@06007011941@07008011933@08009101985@09010011950";
 
     /**
-     * 类型
+     * The type of festival.
      */
     protected EnumValue.Festival type;
 
     /**
-     * 索引
+     * The index of the festival.
      */
     protected int index;
 
     /**
-     * 公历日
+     * The solar day of the festival.
      */
     protected SolarDay day;
 
     /**
-     * 名称
+     * The name of the festival.
      */
     protected String name;
 
     /**
-     * 起始年
+     * The start year from which this festival is observed.
      */
     protected int startYear;
 
+    /**
+     * Constructs a {@code SolarFestival} instance.
+     *
+     * @param type      The type of festival.
+     * @param day       The solar day of the festival.
+     * @param startYear The start year from which this festival is observed.
+     * @param data      The raw data string for the festival.
+     */
     public SolarFestival(EnumValue.Festival type, SolarDay day, int startYear, String data) {
         this.type = type;
         this.day = day;
@@ -79,6 +93,14 @@ public class SolarFestival extends Loops {
         name = NAMES[index];
     }
 
+    /**
+     * Creates a {@code SolarFestival} instance from the given year and festival index.
+     *
+     * @param year  The year.
+     * @param index The index of the festival.
+     * @return A new {@link SolarFestival} instance, or {@code null} if not found or not applicable for the year.
+     * @throws IllegalArgumentException if the index is out of valid range.
+     */
     public static SolarFestival fromIndex(int year, int index) {
         if (index < 0 || index >= NAMES.length) {
             throw new IllegalArgumentException(String.format("illegal index: %d", index));
@@ -102,6 +124,15 @@ public class SolarFestival extends Loops {
                         startYear, data);
     }
 
+    /**
+     * Creates a {@code SolarFestival} instance from the given year, month, and day.
+     *
+     * @param year  The year.
+     * @param month The month.
+     * @param day   The day.
+     * @return A new {@link SolarFestival} instance, or {@code null} if no festival matches or not applicable for the
+     *         year.
+     */
     public static SolarFestival fromYmd(int year, int month, int day) {
         Matcher matcher = Pattern.compile(String.format("@\\d{2}0%02d%02d\\d+", month, day)).matcher(DATA);
         if (!matcher.find()) {
@@ -113,6 +144,12 @@ public class SolarFestival extends Loops {
                 : new SolarFestival(EnumValue.Festival.DAY, SolarDay.fromYmd(year, month, day), startYear, data);
     }
 
+    /**
+     * Gets the next solar festival after a specified number of festivals.
+     *
+     * @param n The number of festivals to add.
+     * @return The {@link SolarFestival} after {@code n} festivals.
+     */
     public SolarFestival next(int n) {
         int size = NAMES.length;
         int i = index + n;
@@ -120,41 +157,46 @@ public class SolarFestival extends Loops {
     }
 
     /**
-     * 类型
+     * Gets the type of festival.
      *
-     * @return 节日类型
+     * @return The {@link EnumValue.Festival} type.
      */
     public EnumValue.Festival getType() {
         return type;
     }
 
     /**
-     * 索引
+     * Gets the index of the festival.
      *
-     * @return 索引
+     * @return The index.
      */
     public int getIndex() {
         return index;
     }
 
     /**
-     * 公历日
+     * Gets the solar day of the festival.
      *
-     * @return 公历日
+     * @return The {@link SolarDay} of the festival.
      */
     public SolarDay getDay() {
         return day;
     }
 
     /**
-     * 起始年
+     * Gets the start year from which this festival is observed.
      *
-     * @return 年
+     * @return The start year.
      */
     public int getStartYear() {
         return startYear;
     }
 
+    /**
+     * Gets the name of the festival.
+     *
+     * @return The name of the festival.
+     */
     public String getName() {
         return name;
     }

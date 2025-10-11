@@ -28,27 +28,34 @@
 package org.miaixz.bus.core.bean;
 
 /**
- * 为了解决反射过程中,需要传递null参数,但是会丢失参数类型而设立的包装类
+ * A wrapper class designed to address scenarios where a {@code null} parameter needs to be passed during reflection,
+ * but the parameter's type information would otherwise be lost. This wrapper explicitly retains the type of the
+ * {@code null} value.
  *
- * @param <T> Null值对应的类型
+ * @param <T> The type corresponding to the {@code null} value.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NullWrapper<T> {
 
+    /**
+     * The class type of the null value.
+     */
     private final Class<T> clazz;
 
     /**
-     * @param clazz null的类型
+     * Constructs a {@code NullWrapper} with the specified class type for the {@code null} value.
+     *
+     * @param clazz The class type that the {@code null} value represents.
      */
     public NullWrapper(final Class<T> clazz) {
         this.clazz = clazz;
     }
 
     /**
-     * 获取null值对应的类型
+     * Retrieves the class type that this {@code NullWrapper} represents.
      *
-     * @return 类型
+     * @return The class type of the wrapped {@code null} value.
      */
     public Class<T> getWrappedClass() {
         return clazz;

@@ -39,6 +39,7 @@ import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -46,26 +47,50 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * 抖音 登录
+ * Douyin (TikTok) login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DouyinProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code DouyinProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public DouyinProvider(Context context) {
         super(context, Registry.DOUYIN);
     }
 
+    /**
+     * Constructs a {@code DouyinProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public DouyinProvider(Context context, CacheX cache) {
         super(context, Registry.DOUYIN, cache);
     }
 
+    /**
+     * Retrieves the access token from Douyin's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
+    /**
+     * Retrieves user information from Douyin's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String response = doGetUserInfo(authToken);
@@ -76,7 +101,7 @@ public class DouyinProvider extends AbstractProvider {
             }
             this.checkResponse(userInfoObject);
 
-            Map<String, Object> data = (Map<String, Object>) userInfoObject.get("data");
+            Map<String, Object> data = (Map<String, Object>) userInfoObject.get(Consts.DATA);
             if (data == null) {
                 throw new AuthorizedException("Missing data field in user info response");
             }
@@ -104,6 +129,12 @@ public class DouyinProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey())
@@ -111,13 +142,14 @@ public class DouyinProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response indicates an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         String message = (String) object.get("message");
-        Map<String, Object> data = (Map<String, Object>) object.get("data");
+        Map<String, Object> data = (Map<String, Object>) object.get(Consts.DATA);
         if (data == null) {
             throw new AuthorizedException("Missing data field in response");
         }
@@ -130,10 +162,11 @@ public class DouyinProvider extends AbstractProvider {
     }
 
     /**
-     * 获取token，适用于获取access_token和刷新token
+     * Retrieves the token, applicable for both obtaining access tokens and refreshing tokens.
      *
-     * @param accessTokenUrl 实际请求token的地址
-     * @return token对象
+     * @param accessTokenUrl the actual URL to request the token from
+     * @return the {@link AuthToken} object
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     private AuthToken getToken(String accessTokenUrl) {
         String response = Httpx.post(accessTokenUrl);
@@ -144,7 +177,7 @@ public class DouyinProvider extends AbstractProvider {
             }
             this.checkResponse(object);
 
-            Map<String, Object> dataObj = (Map<String, Object>) object.get("data");
+            Map<String, Object> dataObj = (Map<String, Object>) object.get(Consts.DATA);
             if (dataObj == null) {
                 throw new AuthorizedException("Missing data field in token response");
             }
@@ -170,10 +203,11 @@ public class DouyinProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -184,23 +218,24 @@ public class DouyinProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取accessToken的url
+     * Returns the URL to obtain the access token.
      *
-     * @param code oauth的授权码
-     * @return 返回获取accessToken的url
+     * @param code the OAuth authorization code
+     * @return the URL to obtain the access token
      */
     @Override
     protected String accessTokenUrl(String code) {
         return Builder.fromUrl(this.complex.accessToken()).queryParam("code", code)
                 .queryParam("client_key", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
-                .queryParam("grant_type", "authorization_code").build();
+                .queryParam("grant_type", "authorization_code").queryParam("redirect_uri", context.getRedirectUri())
+                .build();
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken oauth返回的token
-     * @return 返回获取userInfo的url
+     * @param authToken the OAuth token returned
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
@@ -209,10 +244,10 @@ public class DouyinProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取accessToken的url
+     * Returns the URL to refresh the access token.
      *
-     * @param refreshToken oauth返回的refreshtoken
-     * @return 返回获取accessToken的url
+     * @param refreshToken the OAuth refresh token returned
+     * @return the URL to refresh the access token
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {

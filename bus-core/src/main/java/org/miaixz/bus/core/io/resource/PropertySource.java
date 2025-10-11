@@ -32,7 +32,7 @@ import java.util.Properties;
 import org.miaixz.bus.core.Binder;
 
 /**
- * 配置文件源
+ * Interface for property sources, providing methods to access and manage properties.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,17 +41,18 @@ import org.miaixz.bus.core.Binder;
 public interface PropertySource {
 
     /**
-     * 获取属性集合
+     * Retrieves the collection of properties.
      *
-     * @return 属性集合
+     * @return A {@link Properties} object containing all properties.
      */
     Properties props();
 
     /**
-     * 获取属性
+     * Retrieves the property value associated with the given key. If the value contains placeholders (e.g., ${key}),
+     * they will be resolved.
      *
-     * @param key 属性键值
-     * @return 属性值
+     * @param key The key of the property to retrieve.
+     * @return The resolved property value, or {@code null} if the key is not found.
      */
     default String getProperty(String key) {
         String value = props().getProperty(key);
@@ -62,11 +63,12 @@ public interface PropertySource {
     }
 
     /**
-     * 获取属性，可设置默认值
+     * Retrieves the property value associated with the given key, returning a default value if the key is not found. If
+     * the value contains placeholders (e.g., ${key}), they will be resolved.
      *
-     * @param key          属性键值
-     * @param defaultValue 默认值
-     * @return 属性值
+     * @param key          The key of the property to retrieve.
+     * @param defaultValue The default value to return if the property is not found.
+     * @return The resolved property value, or the {@code defaultValue} if the key is not found.
      */
     default String getProperty(String key, String defaultValue) {
         String value = getProperty(key);
@@ -77,20 +79,21 @@ public interface PropertySource {
     }
 
     /**
-     * 获取占位符属性
+     * Resolves placeholders within a given string using the properties in this source. Placeholders are expected in the
+     * format {@code ${key}}.
      *
-     * @param placeholder 占位 eg. ${a}
-     * @return 属性值
+     * @param placeholder The string potentially containing placeholders.
+     * @return The string with all placeholders resolved.
      */
     default String getPlaceholderProperty(String placeholder) {
         return Binder.DEFAULT_HELPER.replacePlaceholders(placeholder, props());
     }
 
     /**
-     * 是否包含该前缀属性
+     * Checks if any property in this source starts with the given prefix.
      *
-     * @param prefix 前缀
-     * @return true包含
+     * @param prefix The prefix to check for.
+     * @return {@code true} if at least one property key starts with the prefix, {@code false} otherwise.
      */
     default boolean containPrefix(String prefix) {
         Properties properties = props();

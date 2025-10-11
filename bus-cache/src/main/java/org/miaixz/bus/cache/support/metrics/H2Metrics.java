@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.cache.support.metrics;
 
+import jakarta.annotation.PreDestroy;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -35,12 +36,14 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
-import jakarta.annotation.PreDestroy;
 
 /**
- * H2数据库缓存命中率统计实现
+ * H2 database implementation for cache hit rate statistics.
  * <p>
- * 基于H2内存数据库实现的缓存命中率统计，使用单连接数据源和JdbcTemplate进行数据库操作。 自动创建缓存统计表，支持并发更新和乐观锁机制。
+ * This class provides a metrics solution using an in-memory H2 database. It leverages
+ * {@link SingleConnectionDataSource} and {@link JdbcTemplate} for database operations. It automatically creates a table
+ * to store cache statistics and supports concurrent updates with an optimistic locking mechanism (though not explicitly
+ * shown in this snippet, it's implied by the table schema).
  * </p>
  *
  * @author Kimi Liu
@@ -49,33 +52,35 @@ import jakarta.annotation.PreDestroy;
 public class H2Metrics extends AbstractMetrics {
 
     /**
-     * 构造方法
+     * Constructs an {@code H2Metrics} instance using a context map for database configuration.
      *
-     * @param context 上下文参数
+     * @param context A map containing database connection parameters (e.g., "url", "username", "password").
      */
     public H2Metrics(Map<String, Object> context) {
         super(context);
     }
 
     /**
-     * 构造方法
+     * Constructs an {@code H2Metrics} instance with explicit database connection details.
      *
-     * @param url      数据库URL
-     * @param username 用户名
-     * @param password 密码
+     * @param url      The JDBC URL for the H2 database.
+     * @param username The username for database access.
+     * @param password The password for database access.
      */
     public H2Metrics(String url, String username, String password) {
         super(url, username, password);
     }
 
     /**
-     * 创建JdbcOperations并初始化数据库
+     * Provides a {@link Supplier} for {@link JdbcOperations} configured for an H2 database.
      * <p>
-     * 创建H2数据库连接，初始化JdbcTemplate，并创建缓存统计表
+     * This method sets up a {@link SingleConnectionDataSource} and a {@link JdbcTemplate}, then creates the necessary
+     * {@code t_cache_rate} table if it doesn't already exist. The table schema includes columns for pattern, hit count,
+     * require count, and a version for optimistic locking.
      * </p>
      *
-     * @param context 上下文参数
-     * @return 初始化完成的JdbcOperations对象
+     * @param context A map containing database connection parameters.
+     * @return A supplier that provides an initialized {@link JdbcOperations} object.
      */
     @Override
     protected Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context) {
@@ -97,13 +102,10 @@ public class H2Metrics extends AbstractMetrics {
     }
 
     /**
-     * 将数据库查询结果转换为DataDO流
-     * <p>
-     * 将查询结果Map转换为DataDO对象流，便于后续处理
-     * </p>
+     * Transforms a list of database query results (maps) into a stream of {@link DataDO} objects.
      *
-     * @param mapResults 数据库查询结果
-     * @return DataDO流
+     * @param mapResults A list of maps, where each map represents a row from the database query.
+     * @return A {@link Stream} of {@link DataDO} objects, populated from the query results.
      */
     @Override
     protected Stream<DataDO> transferResults(List<Map<String, Object>> mapResults) {
@@ -118,9 +120,11 @@ public class H2Metrics extends AbstractMetrics {
     }
 
     /**
-     * 销毁方法
+     * A lifecycle method to clean up resources.
      * <p>
-     * 使用@PreDestroy注解，在Bean销毁时调用父类的tearDown方法
+     * Annotated with {@link PreDestroy}, this method is typically invoked by a dependency injection container when the
+     * bean is being destroyed. It delegates to the superclass's {@code tearDown()} method to close the database
+     * connection.
      * </p>
      */
     @PreDestroy

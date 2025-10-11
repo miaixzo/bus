@@ -47,9 +47,11 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 缓存信息容器
+ * A container that parses and caches method-level caching annotations.
  * <p>
- * 用于解析和缓存方法的缓存相关信息，将@Cached、@Invalid、@CachedGet以及@CacheKey注解信息融合在一起。 提供方法缓存配置的统一访问入口，并支持缓存配置的验证。
+ * This class acts as a central repository for the metadata derived from {@link Cached}, {@link Invalid},
+ * {@link CachedGet}, and {@link CacheKey} annotations. It provides a unified, cached access point to a method's
+ * complete cache configuration and performs static validation to ensure the annotation setup is valid.
  * </p>
  *
  * @author Kimi Liu
@@ -58,28 +60,28 @@ import org.miaixz.bus.logger.Logger;
 public class CacheInfoContainer {
 
     /**
-     * 方法缓存信息映射，键为方法对象，值为注解持有者和方法持有者的键值对
+     * An internal cache mapping a {@link Method} to its parsed caching information.
      */
     private static final ConcurrentMap<Method, CachePair<AnnoHolder, MethodHolder>> cacheMap = new ConcurrentHashMap<>();
 
     /**
-     * 获取方法缓存信息
+     * Retrieves the combined cache information for a given method.
      * <p>
-     * 从缓存中获取方法缓存信息，如果缓存中不存在，则计算并缓存
+     * This method uses an internal cache to avoid re-parsing annotations on subsequent calls for the same method.
      * </p>
      *
-     * @param method 方法对象
-     * @return 缓存信息键值对，包含注解持有者和方法持有者
+     * @param method The method to get cache information for.
+     * @return A {@link CachePair} containing the annotation and method metadata.
      */
     public static CachePair<AnnoHolder, MethodHolder> getCacheInfo(Method method) {
         return cacheMap.computeIfAbsent(method, CacheInfoContainer::doGetMethodInfo);
     }
 
     /**
-     * 获取方法缓存信息
+     * Performs the actual parsing of a method's caching annotations.
      *
-     * @param method 方法对象
-     * @return 缓存信息键值对，包含注解持有者和方法持有者
+     * @param method The method to parse.
+     * @return A {@link CachePair} containing the parsed metadata.
      */
     private static CachePair<AnnoHolder, MethodHolder> doGetMethodInfo(Method method) {
         AnnoHolder annoHolder = getAnnoHolder(method);
@@ -88,15 +90,16 @@ public class CacheInfoContainer {
     }
 
     /**
-     * 获取注解持有者
+     * Parses all caching-related annotations on a method and its parameters to build an {@link AnnoHolder}.
      *
-     * @param method 方法对象
-     * @return 注解持有者
+     * @param method The method to parse.
+     * @return A fully configured {@link AnnoHolder}.
      */
     private static AnnoHolder getAnnoHolder(Method method) {
         AnnoHolder.Builder builder = AnnoHolder.Builder.newBuilder(method);
         Annotation[][] pAnnotations = method.getParameterAnnotations();
         scanKeys(builder, pAnnotations);
+
         if (method.isAnnotationPresent(Cached.class)) {
             scanCached(builder, method.getAnnotation(Cached.class));
         } else if (method.isAnnotationPresent(CachedGet.class)) {
@@ -108,19 +111,18 @@ public class CacheInfoContainer {
     }
 
     /**
-     * 扫描参数键注解
+     * Scans the method's parameters for {@link CacheKey} annotations.
      *
-     * @param builder      注解持有者构建器
-     * @param pAnnotations 参数注解数组
-     * @return 注解持有者构建器
+     * @param builder      The {@link AnnoHolder.Builder} to populate.
+     * @param pAnnotations The array of parameter annotations.
+     * @return The same builder instance for chaining.
      */
     private static AnnoHolder.Builder scanKeys(AnnoHolder.Builder builder, Annotation[][] pAnnotations) {
         int multiIndex = -1;
         String id = Normal.EMPTY;
         Map<Integer, CacheKey> cacheKeyMap = new LinkedHashMap<>(pAnnotations.length);
         for (int pIndex = 0; pIndex < pAnnotations.length; ++pIndex) {
-            Annotation[] annotations = pAnnotations[pIndex];
-            for (Annotation annotation : annotations) {
+            for (Annotation annotation : pAnnotations[pIndex]) {
                 if (annotation instanceof CacheKey) {
                     CacheKey cacheKey = (CacheKey) annotation;
                     cacheKeyMap.put(pIndex, cacheKey);
@@ -135,44 +137,45 @@ public class CacheInfoContainer {
     }
 
     /**
-     * 扫描@Cached注解
+     * Extracts metadata from the {@link Cached} annotation.
      *
-     * @param builder 注解持有者构建器
-     * @param cached  @Cached注解
-     * @return 注解持有者构建器
+     * @param builder The builder to populate.
+     * @param cached  The annotation instance.
+     * @return The same builder instance for chaining.
      */
     private static AnnoHolder.Builder scanCached(AnnoHolder.Builder builder, Cached cached) {
         return builder.setCache(cached.value()).setPrefix(cached.prefix()).setExpire(cached.expire());
     }
 
     /**
-     * 扫描@CachedGet注解
+     * Extracts metadata from the {@link CachedGet} annotation.
      *
-     * @param builder   注解持有者构建器
-     * @param cachedGet @CachedGet注解
-     * @return 注解持有者构建器
+     * @param builder   The builder to populate.
+     * @param cachedGet The annotation instance.
+     * @return The same builder instance for chaining.
      */
     private static AnnoHolder.Builder scanCachedGet(AnnoHolder.Builder builder, CachedGet cachedGet) {
         return builder.setCache(cachedGet.value()).setPrefix(cachedGet.prefix()).setExpire(CacheExpire.NO);
     }
 
     /**
-     * 扫描@Invalid注解
+     * Extracts metadata from the {@link Invalid} annotation.
      *
-     * @param builder 注解持有者构建器
-     * @param invalid @Invalid注解
-     * @return 注解持有者构建器
+     * @param builder The builder to populate.
+     * @param invalid The annotation instance.
+     * @return The same builder instance for chaining.
      */
     private static AnnoHolder.Builder scanInvalid(AnnoHolder.Builder builder, Invalid invalid) {
         return builder.setCache(invalid.value()).setPrefix(invalid.prefix()).setExpire(CacheExpire.NO);
     }
 
     /**
-     * 获取方法持有者
+     * Creates a {@link MethodHolder} containing metadata about the method's return type and validates the annotation
+     * configuration.
      *
-     * @param method     方法对象
-     * @param annoHolder 注解持有者
-     * @return 方法持有者
+     * @param method     The method being analyzed.
+     * @param annoHolder The parsed annotation metadata.
+     * @return A new {@link MethodHolder} instance.
      */
     private static MethodHolder getMethodHolder(Method method, AnnoHolder annoHolder) {
         boolean isCollectionReturn = Collection.class.isAssignableFrom(method.getReturnType());
@@ -182,12 +185,13 @@ public class CacheInfoContainer {
     }
 
     /**
-     * 静态分析方法参数和返回类型
+     * Performs static analysis of the method's signature and annotation configuration to ensure validity.
      *
-     * @param pTypes             参数类型数组
-     * @param annoHolder         注解持有者
-     * @param isCollectionReturn 是否返回集合类型
-     * @param isMapReturn        是否返回Map类型
+     * @param pTypes             The method's parameter types.
+     * @param annoHolder         The parsed annotation metadata.
+     * @param isCollectionReturn Whether the method returns a Collection.
+     * @param isMapReturn        Whether the method returns a Map.
+     * @throws RuntimeException if the configuration is invalid.
      */
     private static void staticAnalyze(
             Class<?>[] pTypes,
@@ -217,28 +221,25 @@ public class CacheInfoContainer {
     }
 
     /**
-     * 判断是否为多键缓存
+     * Determines if a {@link CacheKey} annotation indicates a multi-key operation (i.e., its value contains '#i').
      *
-     * @param cacheKey 缓存键注解
-     * @return 如果是多键缓存则返回true，否则返回false
+     * @param cacheKey The annotation to check.
+     * @return {@code true} if it is a multi-key annotation, otherwise {@code false}.
      */
     private static boolean isMulti(CacheKey cacheKey) {
         if (null == cacheKey) {
             return false;
         }
         String value = cacheKey.value();
-        if (StringKit.isEmpty(value)) {
-            return false;
-        }
-        return value.contains("#i");
+        return StringKit.isNotEmpty(value) && value.contains("#i");
     }
 
     /**
-     * 判断参数是否无效
+     * Checks if the caching configuration is invalid because no key can be generated.
      *
-     * @param pTypes     参数类型数组
-     * @param annoHolder 注解持有者
-     * @return 如果参数无效则返回true，否则返回false
+     * @param pTypes     The method's parameter types.
+     * @param annoHolder The parsed annotation metadata.
+     * @return {@code true} if no key can be generated, otherwise {@code false}.
      */
     private static boolean isInvalidParam(Class<?>[] pTypes, AnnoHolder annoHolder) {
         Map<Integer, CacheKey> cacheKeyMap = annoHolder.getCacheKeyMap();
@@ -247,31 +248,30 @@ public class CacheInfoContainer {
     }
 
     /**
-     * 判断多键数量是否无效
+     * Checks if more than one parameter is designated as a multi-key source.
      *
-     * @param keyMap 缓存键映射
-     * @return 如果多键数量无效则返回true，否则返回false
+     * @param keyMap The map of parameter indices to {@link CacheKey} annotations.
+     * @return {@code true} if more than one multi-key is found, otherwise {@code false}.
      */
     private static boolean isInvalidMultiCount(Map<Integer, CacheKey> keyMap) {
         int multiCount = 0;
         for (CacheKey cacheKey : keyMap.values()) {
             if (isMulti(cacheKey)) {
-                ++multiCount;
-                if (multiCount > 1) {
-                    break;
+                if (++multiCount > 1) {
+                    return true;
                 }
             }
         }
-        return multiCount > 1;
+        return false;
     }
 
     /**
-     * 判断标识符是否无效
+     * Checks if the 'field' attribute of @CacheKey is used incorrectly.
      *
-     * @param isMapReturn        是否返回Map类型
-     * @param isCollectionReturn 是否返回集合类型
-     * @param field              字段名
-     * @return 如果标识符无效则返回true，否则返回false
+     * @param isMapReturn        Whether the method returns a Map.
+     * @param isCollectionReturn Whether the method returns a Collection.
+     * @param field              The value of the 'field' attribute.
+     * @return {@code true} if the usage is invalid, otherwise {@code false}.
      */
     private static boolean isInvalidIdentifier(boolean isMapReturn, boolean isCollectionReturn, String field) {
         if (isMapReturn && !StringKit.isEmpty(field)) {
@@ -282,21 +282,21 @@ public class CacheInfoContainer {
     }
 
     /**
-     * 判断结果是否无效
+     * Checks if a multi-key operation that returns a Collection has a 'field' specified for mapping results.
      *
-     * @param isCollectionReturn 是否返回集合类型
-     * @param id                 标识字段
-     * @return 如果结果无效则返回true，否则返回false
+     * @param isCollectionReturn Whether the method returns a Collection.
+     * @param id                 The value of the 'field' attribute.
+     * @return {@code true} if the configuration is invalid, otherwise {@code false}.
      */
     private static boolean isInvalidResult(boolean isCollectionReturn, String id) {
         return isCollectionReturn && StringKit.isEmpty(id);
     }
 
     /**
-     * 判断多键参数类型是否无效
+     * Checks if the parameter annotated as a multi-key source is a Collection or an array.
      *
-     * @param paramType 参数类型
-     * @return 如果多键参数类型无效则返回true，否则返回false
+     * @param paramType The type of the parameter.
+     * @return {@code true} if the type is invalid for a multi-key source, otherwise {@code false}.
      */
     private static boolean isInvalidMulti(Class<?> paramType) {
         return !Collection.class.isAssignableFrom(paramType) && !paramType.isArray();

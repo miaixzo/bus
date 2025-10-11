@@ -28,10 +28,9 @@
 package org.miaixz.bus.core.text.placeholder.segment;
 
 /**
- * 基字符串模板-基于下标的占位符 SectionBuffer
+ * Represents an indexed placeholder segment in a string template.
  * <p>
- * 例如，"{1}"
- * </p>
+ * For example, "{1}".
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,21 +38,26 @@ package org.miaixz.bus.core.text.placeholder.segment;
 public class IndexedSegment extends NamedSegment {
 
     /**
-     * 下标值
+     * The index value of the placeholder.
      */
     private final int index;
 
     /**
-     * 构造
+     * Constructs an {@code IndexedSegment} with the given index string and whole placeholder text.
      *
-     * @param idxStr           索引字符串变量
-     * @param wholePlaceholder 占位符完整文本
+     * @param idxStr           The string representation of the index variable.
+     * @param wholePlaceholder The complete text of the placeholder, including delimiters.
      */
     public IndexedSegment(final String idxStr, final String wholePlaceholder) {
         super(idxStr, wholePlaceholder);
         this.index = Integer.parseInt(idxStr);
     }
 
+    /**
+     * Retrieves the integer index of the placeholder.
+     *
+     * @return The integer index.
+     */
     public int getIndex() {
         return index;
     }

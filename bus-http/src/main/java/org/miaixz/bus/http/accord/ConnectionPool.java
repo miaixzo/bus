@@ -27,22 +27,29 @@
 */
 package org.miaixz.bus.http.accord;
 
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.http.Address;
 
+import java.util.concurrent.TimeUnit;
+
 /**
- * 管理HTTP和HTTP/2连接的重用，以减少网络延迟。 共享相同的 {@link Address}的HTTP请求可能共享一个{@link Connection} 该类实现了哪些连接保持开放以供将来使用的策略
+ * Manages reuse of HTTP and HTTP/2 connections for reduced network latency. HTTP requests that share the same
+ * {@link Address} may share a {@link Connection}. This class implements the policy of which connections to keep open
+ * for future use.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConnectionPool {
+public final class ConnectionPool {
 
+    /**
+     * The real connection pool implementation.
+     */
     public final RealConnectionPool delegate;
 
     /**
-     * 使用适合于单用户应用程序的调优参数创建新的连接池。 这个池中的调优参数可能在将来的Httpd版本中更改。 目前这个池最多可以容纳5个空闲连接，这些连接将在5分钟不活动后被清除
+     * Create a new connection pool with tuning parameters appropriate for a single-user application. The tuning
+     * parameters in this pool may change in future Httpd releases. Currently this pool holds up to 5 idle connections
+     * which will be evicted after 5 minutes of inactivity.
      */
     public ConnectionPool() {
         this(5, 5, TimeUnit.MINUTES);
@@ -53,26 +60,27 @@ public class ConnectionPool {
     }
 
     /**
-     * 返回池中空闲连接的数量
+     * Returns the number of idle connections in the pool.
      *
-     * @return 连接的数量
+     * @return The number of idle connections.
      */
     public int idleConnectionCount() {
         return delegate.idleConnectionCount();
     }
 
     /**
-     * 返回池中的连接总数。注意，在Httpd 2.7之前，这只包括空闲连接 和HTTP/2连接 因为Httpd 2.7包含了所有的连接，包括活动的和非活动的。
-     * 使用{@link #idleConnectionCount()}来计数当前未使用的连接
+     * Returns the total number of connections in the pool. Note that prior to Httpd 2.7 this included only idle
+     * connections and HTTP/2 connections. Since Httpd 2.7 this includes all connections, both active and inactive. Use
+     * {@link #idleConnectionCount()} to count connections that are currently unused.
      *
-     * @return 连接总数
+     * @return The total number of connections.
      */
     public int connectionCount() {
         return delegate.connectionCount();
     }
 
     /**
-     * 关闭并删除池中的所有空闲连接.
+     * Closes and removes all idle connections in the pool.
      */
     public void evictAll() {
         delegate.evictAll();

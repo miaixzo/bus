@@ -28,7 +28,7 @@
 package org.miaixz.bus.shade.beans;
 
 /**
- * 获取实体类字段属性类信息接口
+ * Interface for retrieving column type information for entity fields.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,16 +36,16 @@ package org.miaixz.bus.shade.beans;
 public interface ColumnType {
 
     /**
-     * 获取字段类型
+     * Retrieves the field type.
      *
-     * @return 字段类型
+     * @return The field type as a String.
      */
     String getType();
 
     /**
-     * 获取字段类型完整名
+     * Retrieves the fully qualified name of the field type.
      *
-     * @return 字段类型完整名
+     * @return The fully qualified name of the field type as a String.
      */
     String getPkg();
 

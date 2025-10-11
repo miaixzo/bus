@@ -36,9 +36,10 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
 
 /**
- * 单缓存读取器
+ * A cache reader for handling single-key cache operations.
  * <p>
- * 用于处理单键缓存操作，支持缓存命中、未命中和防击穿场景。 提供缓存命中率统计功能，并能够根据配置决定是否写入缓存。
+ * This class implements the logic for methods that map to a single cache key. It handles cache hits, misses, and cache
+ * penetration prevention scenarios. It also provides integration for hit rate statistics.
  * </p>
  *
  * @author Kimi Liu
@@ -48,14 +49,19 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
 public class SingleCacheReader extends AbstractReader {
 
     /**
-     * 执行缓存读取操作
+     * Executes the single-key cache read operation.
+     * <p>
+     * It first attempts to read from the cache. On a miss, it invokes the original method, writes the result to the
+     * cache (if configured to do so), and returns the result. It also handles cache penetration prevention by caching a
+     * special placeholder for null results.
+     * </p>
      *
-     * @param annoHolder   注解持有者，包含缓存相关的注解信息
-     * @param methodHolder 方法持有者，包含方法相关的信息
-     * @param baseInvoker  代理调用链，用于执行原始方法
-     * @param needWrite    是否需要写入缓存
-     * @return 缓存值或方法执行结果
-     * @throws Throwable 可能抛出的异常
+     * @param annoHolder   The holder for the caching annotations.
+     * @param methodHolder The holder for method metadata.
+     * @param baseInvoker  The proxy chain invoker.
+     * @param needWrite    If {@code true}, write the result to the cache on a miss.
+     * @return The value from the cache or the result of the original method invocation.
+     * @throws Throwable if the underlying method invocation throws an exception.
      */
     @Override
     public Object read(AnnoHolder annoHolder, MethodHolder methodHolder, ProxyChain baseInvoker, boolean needWrite)
@@ -63,38 +69,50 @@ public class SingleCacheReader extends AbstractReader {
         String key = Builder.generateSingleKey(annoHolder, baseInvoker.getArguments());
         Object readResult = this.manage.readSingle(annoHolder.getCache(), key);
         doRecord(readResult, key, annoHolder);
-        // 命中
+
+        // Cache Hit
         if (null != readResult) {
-            // 是防击穿对象
+            // Hit a penetration prevention placeholder
             if (PreventObjects.isPrevent(readResult)) {
                 return null;
             }
             return readResult;
         }
+
+        // Cache Miss
         Object invokeResult = doLogInvoke(baseInvoker::proceed);
+
+        // Cache the return type for future use if not already known
         if (null != invokeResult && null == methodHolder.getInnerReturnType()) {
             methodHolder.setInnerReturnType(invokeResult.getClass());
         }
+
+        // If writing is disabled (e.g., @CachedGet), return the result directly.
         if (!needWrite) {
             return invokeResult;
         }
+
+        // If the result is not null, write it to the cache.
         if (null != invokeResult) {
             this.manage.writeSingle(annoHolder.getCache(), key, invokeResult, annoHolder.getExpire());
             return invokeResult;
         }
+
+        // If the result is null and penetration prevention is on, cache the placeholder.
         if (this.context.isPreventOn()) {
             this.manage
                     .writeSingle(annoHolder.getCache(), key, PreventObjects.getPreventObject(), annoHolder.getExpire());
         }
+
         return null;
     }
 
     /**
-     * 记录缓存命中率
+     * Records cache hit and request counts for metrics.
      *
-     * @param result     缓存读取结果
-     * @param key        缓存键
-     * @param annoHolder 注解持有者
+     * @param result     The result from the cache read (can be null for a miss).
+     * @param key        The cache key.
+     * @param annoHolder The annotation metadata.
      */
     private void doRecord(Object result, String key, AnnoHolder annoHolder) {
         Logger.info("single cache hit rate: {}/1, key: {}", null == result ? 0 : 1, key);

@@ -27,20 +27,29 @@
 */
 package org.miaixz.bus.socket.metric.handler;
 
+import org.miaixz.bus.socket.Handler;
+import org.miaixz.bus.socket.Monitor;
+import org.miaixz.bus.socket.Plugin;
+import org.miaixz.bus.socket.Session;
+import org.miaixz.bus.socket.Status;
+
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.socket.*;
-
 /**
- * 抽象消息处理
+ * An abstract base class for message handlers, providing common functionality and integrating with plugins. This class
+ * implements both {@link Handler} and {@link Monitor} interfaces.
  *
+ * @param <T> the type of message handled by this processor
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
 
+    /**
+     * A list of plugins registered with this message handler.
+     */
     private final List<Plugin<T>> plugins = new ArrayList<>();
 
     @Override
@@ -97,18 +106,23 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
     }
 
     /**
-     * 处理接收到的消息
+     * Processes the received message. This is the abstract method that concrete implementations must provide their
+     * business logic in.
      *
-     * @param session 会话
-     * @param data    消息信息
+     * @param session the communication session
+     * @param data    the business message to be processed
      * @see Handler#process(Session, Object)
      */
     public abstract void process0(Session session, T data);
 
     /**
-     * @param session   本次触发状态机的Session对象
-     * @param status    状态枚举
-     * @param throwable 异常对象，如果存在的话
+     * Handles state machine events. This method is invoked by the framework when a specific {@link Status} event
+     * occurs. Plugins are notified first, then the abstract {@code stateEvent0} method is called.
+     *
+     * @param session   the {@link Session} object that triggered the state event
+     * @param status    the {@link Status} enumeration indicating the type of event
+     * @param throwable an optional {@link Throwable} object if an exception is associated with the event, otherwise
+     *                  {@code null}
      */
     @Override
     public final void stateEvent(Session session, Status status, Throwable throwable) {
@@ -119,13 +133,21 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
     }
 
     /**
-     * @param session   会话
-     * @param status    状态
-     * @param throwable 异常
+     * Handles state machine events. This is the abstract method that concrete implementations must provide their custom
+     * handling logic in.
+     *
+     * @param session   the communication session
+     * @param status    the status of the event
+     * @param throwable the exception associated with the event, if any
      * @see #stateEvent(Session, Status, Throwable)
      */
     public abstract void stateEvent0(Session session, Status status, Throwable throwable);
 
+    /**
+     * Adds a plugin to this message handler.
+     *
+     * @param plugin the {@link Plugin} to add
+     */
     public final void addPlugin(Plugin<T> plugin) {
         this.plugins.add(plugin);
     }

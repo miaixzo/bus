@@ -37,7 +37,7 @@ import org.miaixz.bus.mapper.Holder;
 import org.miaixz.bus.mapper.builder.ClassMetaResolver;
 
 /**
- * 实体类信息工厂，用于创建和管理实体类信息
+ * A factory for creating and managing entity class metadata.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,12 +45,12 @@ import org.miaixz.bus.mapper.builder.ClassMetaResolver;
 public abstract class MapperFactory {
 
     /**
-     * 获取接口和方法对应的实体信息
+     * Gets the entity metadata for a given mapper interface and method.
      *
-     * @param mapperType   Mapper 接口
-     * @param mapperMethod Mapper 方法
-     * @return 实体类信息
-     * @throws RuntimeException 如果无法获取对应的实体类
+     * @param mapperType   The Mapper interface.
+     * @param mapperMethod The Mapper method.
+     * @return The entity class metadata.
+     * @throws RuntimeException if the corresponding entity class cannot be determined.
      */
     public static TableMeta create(Class<?> mapperType, Method mapperMethod) {
         Optional<Class<?>> optionalClass = ClassMetaResolver.find(mapperType, mapperMethod);
@@ -62,23 +62,24 @@ public abstract class MapperFactory {
     }
 
     /**
-     * 获取指定实体类类型的实体信息
+     * Gets the entity metadata for a specified entity class type.
      *
-     * @param entityClass 实体类类型
-     * @return 实体类信息
-     * @throws NullPointerException 如果无法获取实体类信息
+     * @param entityClass The entity class type.
+     * @return The entity class metadata.
+     * @throws NullPointerException if the entity class information cannot be obtained.
      */
     public static TableMeta create(Class<?> entityClass) {
-        // 创建 TableMeta，不处理列（字段），此时返回的 TableMeta 已经经过所有处理链的加工
+        // Create TableMeta without processing columns (fields); the returned TableMeta has been processed by all
+        // chains.
         TableMeta tableMeta = Holder.TABLE_SCHEMA_CHAIN.createTable(entityClass);
         if (tableMeta == null) {
             throw new NullPointerException("Unable to get " + entityClass.getName() + " entity class information");
         }
-        // 如果实体表已经处理好，直接返回
+        // If the entity table is already processed, return it directly.
         if (!tableMeta.ready()) {
             synchronized (entityClass) {
                 if (!tableMeta.ready()) {
-                    // 未处理的需要获取字段
+                    // Get fields for unprocessed entities.
                     Class<?> declaredClass = entityClass;
                     boolean isSuperclass = false;
                     while (declaredClass != null && declaredClass != Object.class) {
@@ -88,10 +89,10 @@ public abstract class MapperFactory {
                         }
                         for (Field field : declaredFields) {
                             int modifiers = field.getModifiers();
-                            // 排除 static 和 transient 修饰的字段
+                            // Exclude static and transient fields.
                             if (!Modifier.isStatic(modifiers) && !Modifier.isTransient(modifiers)) {
                                 FieldMeta fieldMeta = new FieldMeta(entityClass, field);
-                                // 是否需要排除字段
+                                // Check if the field needs to be excluded.
                                 if (tableMeta.isExcludeField(fieldMeta)) {
                                     continue;
                                 }
@@ -100,15 +101,15 @@ public abstract class MapperFactory {
                                 optionalEntityColumns.ifPresent(columns -> columns.forEach(tableMeta::addColumn));
                             }
                         }
-                        // 迭代获取父类
+                        // Iterate to get the superclass.
                         declaredClass = declaredClass.getSuperclass();
-                        // 排除父类
+                        // Exclude superclasses if specified.
                         while (tableMeta.isExcludeSuperClass(declaredClass) && declaredClass != Object.class) {
                             declaredClass = declaredClass.getSuperclass();
                         }
                         isSuperclass = true;
                     }
-                    // 标记处理完成
+                    // Mark as processed.
                     tableMeta.ready(true);
                 }
             }
@@ -117,9 +118,9 @@ public abstract class MapperFactory {
     }
 
     /**
-     * 反转数组顺序
+     * Reverses the order of an array.
      *
-     * @param array 要反转的数组
+     * @param array The array to reverse.
      */
     protected static void reverse(Object[] array) {
         for (int i = 0; i < array.length / 2; i++) {

@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.regex.Pattern;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -51,33 +44,92 @@ import org.miaixz.bus.image.galaxy.media.RecordFactory;
 import org.miaixz.bus.image.galaxy.media.RecordType;
 import org.miaixz.bus.logger.Logger;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.regex.Pattern;
+
 /**
+ * The {@code DcmDir} class provides functionalities to create, read, and manage DICOMDIR files. It supports adding and
+ * removing references to DICOM files, listing directory records, and compacting the DICOMDIR file.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DcmDir {
 
     /**
-     * default number of characters per line
+     * Default number of characters per line for output.
      */
     private static final int DEFAULT_WIDTH = 78;
+    /**
+     * The standard DICOM element dictionary.
+     */
     private static final ElementDictionary DICT = ElementDictionary.getStandardElementDictionary();
+    /**
+     * Information about the file-set.
+     */
     private final FilesetInfo fsInfo = new FilesetInfo();
+    /**
+     * Flag to indicate if only records in use should be processed.
+     */
     private boolean inUse;
+    /**
+     * The width for formatted output.
+     */
     private int width = DEFAULT_WIDTH;
+    /**
+     * Encoding options for writing DICOM data.
+     */
     private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
+    /**
+     * Flag to preserve the original sequence length.
+     */
     private boolean origSeqLength;
+    /**
+     * Flag to check for duplicate instance references.
+     */
     private boolean checkDuplicate;
 
+    /**
+     * The DICOMDIR file.
+     */
     private File file;
+    /**
+     * Reader for the DICOMDIR.
+     */
     private ImageDirReader in;
+    /**
+     * Writer for the DICOMDIR.
+     */
     private ImageDirWriter out;
+    /**
+     * Factory for creating DICOMDIR records.
+     */
     private RecordFactory recFact;
 
+    /**
+     * Path to a CSV file for importing records.
+     */
     private String csv;
+    /**
+     * Delimiter character for the CSV file.
+     */
     private char delim;
+    /**
+     * Quote character for the CSV file.
+     */
     private char quote;
 
+    /**
+     * Reads a CSV file and adds the records to the DICOMDIR.
+     *
+     * @param num The initial number of records.
+     * @return The updated number of records.
+     * @throws Exception if an error occurs during file reading or parsing.
+     */
     private int readCSVFile(int num) throws Exception {
         try (BufferedReader br = new BufferedReader(new FileReader(csv))) {
             CSVParser parser = new CSVParser(delim, quote, br.readLine());
@@ -101,10 +153,16 @@ public class DcmDir {
         return num;
     }
 
+    /**
+     * Compacts the DICOMDIR file by removing unused space.
+     *
+     * @param f   The original DICOMDIR file.
+     * @param bak The backup file for the original DICOMDIR.
+     * @throws IOException if an I/O error occurs.
+     */
     private void compact(File f, File bak) throws IOException {
         File tmp = File.createTempFile("DICOMDIR", null, f.getParentFile());
-        ImageDirReader r = new ImageDirReader(f);
-        try {
+        try (ImageDirReader r = new ImageDirReader(f)) {
             fsInfo.setFilesetUID(r.getFileSetUID());
             fsInfo.setFilesetID(r.getFileSetID());
             fsInfo.setDescriptorFile(r.getDescriptorFile());
@@ -113,21 +171,31 @@ public class DcmDir {
             copyFrom(r);
         } finally {
             close();
-            try {
-                r.close();
-            } catch (IOException ignore) {
-            }
         }
         bak.delete();
         rename(f, bak);
         rename(tmp, f);
     }
 
+    /**
+     * Renames a file.
+     *
+     * @param from The source file.
+     * @param to   The destination file.
+     * @throws IOException if the rename operation fails.
+     */
     private void rename(File from, File to) throws IOException {
-        if (!from.renameTo(to))
-            throw new IOException(to.getPath());
+        if (!from.renameTo(to)) {
+            throw new IOException("Failed to rename " + from + " to " + to);
+        }
     }
 
+    /**
+     * Copies all records from a given {@link ImageDirReader} to the current writer.
+     *
+     * @param r The source DICOMDIR reader.
+     * @throws IOException if an I/O error occurs.
+     */
     private void copyFrom(ImageDirReader r) throws IOException {
         Attributes rec = r.findFirstRootDirectoryRecordInUse(false);
         while (rec != null) {
@@ -136,6 +204,14 @@ public class DcmDir {
         }
     }
 
+    /**
+     * Recursively copies child records from a source record to a destination record.
+     *
+     * @param r   The source DICOMDIR reader.
+     * @param src The source parent record.
+     * @param dst The destination parent record.
+     * @throws IOException if an I/O error occurs.
+     */
     private void copyChildsFrom(ImageDirReader r, Attributes src, Attributes dst) throws IOException {
         Attributes rec = r.findLowerDirectoryRecordInUse(src, false);
         while (rec != null) {
@@ -144,47 +220,98 @@ public class DcmDir {
         }
     }
 
+    /**
+     * Gets the current DICOMDIR file.
+     *
+     * @return The file.
+     */
     private File getFile() {
         return file;
     }
 
+    /**
+     * Sets whether to process only records that are in use.
+     *
+     * @param inUse {@code true} to process only in-use records.
+     */
     private void setInUse(boolean inUse) {
         this.inUse = inUse;
     }
 
+    /**
+     * Sets whether to write sequences with their original explicit length.
+     *
+     * @param origSeqLength {@code true} to use original sequence length.
+     */
     private void setOriginalSequenceLength(boolean origSeqLength) {
         this.origSeqLength = origSeqLength;
     }
 
+    /**
+     * Sets the encoding options for writing.
+     *
+     * @param encOpts The encoding options.
+     */
     private void setEncodingOptions(ImageEncodingOptions encOpts) {
         this.encOpts = encOpts;
     }
 
+    /**
+     * Sets the output width for printing attributes.
+     *
+     * @param width The width in characters.
+     * @throws IllegalArgumentException if width is less than 40.
+     */
     private void setWidth(int width) {
         if (width < 40)
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("width must be >= 40");
         this.width = width;
     }
 
+    /**
+     * Sets whether to check for duplicate instance references when adding files.
+     *
+     * @param checkDuplicate {@code true} to enable duplicate checking.
+     */
     private void setCheckDuplicate(boolean checkDuplicate) {
         this.checkDuplicate = checkDuplicate;
     }
 
+    /**
+     * Sets the record factory to be used for creating DICOMDIR records.
+     *
+     * @param recFact The record factory.
+     */
     private void setRecordFactory(RecordFactory recFact) {
         this.recFact = recFact;
     }
 
+    /**
+     * Closes the DICOMDIR reader and writer.
+     */
     private void close() {
         IoKit.close(in);
         in = null;
         out = null;
     }
 
+    /**
+     * Opens a DICOMDIR file for read-only access.
+     *
+     * @param file The DICOMDIR file.
+     * @throws IOException if an I/O error occurs.
+     */
     private void openForReadOnly(File file) throws IOException {
         this.file = file;
         in = new ImageDirReader(file);
     }
 
+    /**
+     * Creates a new, empty DICOMDIR file.
+     *
+     * @param file The file to create.
+     * @throws IOException if an I/O error occurs.
+     */
     private void create(File file) throws IOException {
         this.file = file;
         ImageDirWriter.createEmptyDirectory(
@@ -198,6 +325,12 @@ public class DcmDir {
         setCheckDuplicate(false);
     }
 
+    /**
+     * Opens an existing DICOMDIR file for read-write access.
+     *
+     * @param file The DICOMDIR file.
+     * @throws IOException if an I/O error occurs.
+     */
     private void open(File file) throws IOException {
         this.file = file;
         in = out = ImageDirWriter.open(file);
@@ -206,6 +339,11 @@ public class DcmDir {
         setCheckDuplicate(true);
     }
 
+    /**
+     * Lists the contents of the DICOMDIR to standard output.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     private void list() throws IOException {
         checkIn();
         list("File Meta Information:", in.getFileMetaInformation());
@@ -215,11 +353,24 @@ public class DcmDir {
                 new StringBuilder());
     }
 
+    /**
+     * Prints a formatted list of attributes.
+     *
+     * @param header The header to print before the attributes.
+     * @param attrs  The attributes to print.
+     */
     private void list(final String header, final Attributes attrs) {
         System.out.println(header);
         System.out.println(attrs.toString(Integer.MAX_VALUE, width));
     }
 
+    /**
+     * Recursively lists directory records.
+     *
+     * @param rec   The starting record.
+     * @param index A {@link StringBuilder} to build the hierarchical index string.
+     * @throws IOException if an I/O error occurs.
+     */
     private void list(Attributes rec, StringBuilder index) throws IOException {
         int indexLen = index.length();
         int i = 1;
@@ -232,6 +383,13 @@ public class DcmDir {
         }
     }
 
+    /**
+     * Creates a heading string for a directory record.
+     *
+     * @param rec   The directory record.
+     * @param index The current hierarchical index.
+     * @return The formatted heading string.
+     */
     private String heading(Attributes rec, StringBuilder index) {
         int prefixLen = index.length();
         try {
@@ -242,6 +400,13 @@ public class DcmDir {
         }
     }
 
+    /**
+     * Adds a reference to a DICOM file or all files in a directory to the DICOMDIR.
+     *
+     * @param f The file or directory to add.
+     * @return The number of records added.
+     * @throws IOException if an I/O error occurs.
+     */
     private int addReferenceTo(File f) throws IOException {
         checkOut();
         checkRecordFactory();
@@ -257,20 +422,12 @@ public class DcmDir {
 
         Attributes fmi;
         Attributes dataset;
-        ImageInputStream din = null;
-        try {
-            din = new ImageInputStream(f);
+        try (ImageInputStream din = new ImageInputStream(f)) {
             din.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
             fmi = din.readFileMetaInformation();
             dataset = din.readDatasetUntilPixelData();
         } catch (IOException e) {
             return 0;
-        } finally {
-            if (din != null)
-                try {
-                    din.close();
-                } catch (Exception ignore) {
-                }
         }
         char prompt = Symbol.C_DOT;
         if (fmi == null) {
@@ -285,6 +442,18 @@ public class DcmDir {
         return addRecords(dataset, n, out.toFileIDs(f), prompt, iuid, fmi);
     }
 
+    /**
+     * Adds the necessary directory records for a given DICOM instance.
+     *
+     * @param dataset The dataset of the DICOM instance.
+     * @param num     The current count of added records.
+     * @param fileIDs The file IDs for the referenced file.
+     * @param prompt  A character to indicate the status.
+     * @param iuid    The SOP Instance UID.
+     * @param fmi     The File Meta Information.
+     * @return The updated count of added records.
+     * @throws IOException if an I/O error occurs.
+     */
     private int addRecords(Attributes dataset, int num, String[] fileIDs, char prompt, String iuid, Attributes fmi)
             throws IOException {
         String pid = dataset.getString(Tag.PatientID, null);
@@ -347,6 +516,13 @@ public class DcmDir {
         return num;
     }
 
+    /**
+     * Removes the reference to a DICOM file or all files in a directory from the DICOMDIR.
+     *
+     * @param f The file or directory to remove.
+     * @return The number of records removed.
+     * @throws IOException if an I/O error occurs.
+     */
     private int removeReferenceTo(File f) throws IOException {
         checkOut();
         int n = 0;
@@ -359,9 +535,7 @@ public class DcmDir {
         String styuid;
         String seruid;
         String iuid;
-        ImageInputStream din = null;
-        try {
-            din = new ImageInputStream(f);
+        try (ImageInputStream din = new ImageInputStream(f)) {
             din.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
             Attributes fmi = din.readFileMetaInformation();
             Attributes dataset = din.readDataset(o -> o.tag() > Tag.SeriesInstanceUID);
@@ -375,12 +549,6 @@ public class DcmDir {
             seruid = dataset.getString(Tag.SeriesInstanceUID, null);
         } catch (IOException e) {
             return 0;
-        } finally {
-            if (din != null)
-                try {
-                    din.close();
-                } catch (Exception ignore) {
-                }
         }
         Attributes instRec;
         if (styuid != null && seruid != null) {
@@ -408,32 +576,64 @@ public class DcmDir {
         return 1;
     }
 
+    /**
+     * Commits all changes made to the DICOMDIR file.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     public void commit() throws IOException {
         checkOut();
         out.commit();
     }
 
+    /**
+     * Purges all records marked as inactive from the DICOMDIR.
+     *
+     * @return The number of records purged.
+     * @throws IOException if an I/O error occurs.
+     */
     private int purge() throws IOException {
         checkOut();
         return out.purge();
     }
 
+    /**
+     * Checks if the DICOMDIR is open for reading.
+     *
+     * @throws IllegalStateException if no file is open.
+     */
     private void checkIn() {
         if (in == null)
-            throw new IllegalStateException("no-open-file");
+            throw new IllegalStateException("DICOMDIR not open");
     }
 
+    /**
+     * Checks if the DICOMDIR is open for writing.
+     *
+     * @throws IllegalStateException if the file is not open or is read-only.
+     */
     private void checkOut() {
         checkIn();
         if (out == null)
-            throw new IllegalStateException("read-only");
+            throw new IllegalStateException("DICOMDIR is read-only");
     }
 
+    /**
+     * Checks if a record factory has been configured.
+     *
+     * @throws IllegalStateException if the record factory is not set.
+     */
     private void checkRecordFactory() {
         if (recFact == null)
-            throw new IllegalStateException("no-record-factory");
+            throw new IllegalStateException("No record factory configured");
     }
 
+    /**
+     * Loads a custom configuration for the record factory.
+     *
+     * @param recordConfig The path to the configuration file.
+     * @throws RuntimeException if the configuration cannot be loaded.
+     */
     private void loadCustomConfiguration(String recordConfig) {
         try {
             recFact.loadConfiguration(Paths.get(recordConfig).toString());
@@ -442,13 +642,35 @@ public class DcmDir {
         }
     }
 
+    /**
+     * A simple CSV parser to convert lines of a CSV file into DICOM attributes.
+     */
     static class CSVParser {
 
+        /**
+         * The regex pattern to split CSV fields.
+         */
         private final Pattern pattern;
+        /**
+         * The DICOM tags corresponding to the CSV columns.
+         */
         private final int[] tags;
+        /**
+         * The DICOM VRs corresponding to the CSV columns.
+         */
         private final VR[] vrs;
+        /**
+         * The quote character used in the CSV.
+         */
         private final char quot;
 
+        /**
+         * Constructs a CSV parser.
+         *
+         * @param delim  The delimiter character.
+         * @param quote  The quote character.
+         * @param header The header line of the CSV file.
+         */
         CSVParser(char delim, char quote, String header) {
             quot = quote;
             String regex = delim + "(?=(?:[^\\/" + quot + "]*\\/" + quot + "[^\\/" + quot + "]*\\/" + quot + ")*[^\\/"
@@ -463,13 +685,19 @@ public class DcmDir {
             }
         }
 
+        /**
+         * Converts a line from the CSV file into a DICOM dataset.
+         *
+         * @param line The CSV line.
+         * @return An {@link Attributes} object, or {@code null} if the line is invalid.
+         */
         Attributes toDataset(String line) {
             Attributes dataset = new Attributes();
             String[] fields = parseFields(line);
             if (fields.length > tags.length) {
                 Logger.warn(
-                        "Number of values in line " + line
-                                + " does not match number of headers. Hence line is ignored.");
+                        "Number of values in line \"" + line
+                                + "\" does not match number of headers. Hence line is ignored.");
                 return null;
             }
             for (int i = 0; i < fields.length; i++)
@@ -477,6 +705,12 @@ public class DcmDir {
             return dataset;
         }
 
+        /**
+         * Parses the fields from a single line of CSV.
+         *
+         * @param line The CSV line.
+         * @return An array of field values.
+         */
         private String[] parseFields(String line) {
             String[] fields = pattern.split(line, -1);
             for (int i = 0; i < fields.length; i++)
@@ -484,8 +718,14 @@ public class DcmDir {
             return fields;
         }
 
+        /**
+         * Decodes a single CSV field, handling quotes.
+         *
+         * @param field The field to decode.
+         * @return The decoded field value.
+         */
         private String decode(String field) {
-            char[] doubleQuote = new char[] { quot, quot };
+            char[] doubleQuote = { quot, quot };
             return !field.isEmpty() && field.charAt(0) == quot && field.charAt(field.length() - 1) == quot
                     ? field.substring(1, field.length() - 1).replace(String.valueOf(doubleQuote), String.valueOf(quot))
                     : field;

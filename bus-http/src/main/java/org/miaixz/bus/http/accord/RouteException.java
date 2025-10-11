@@ -27,33 +27,56 @@
 */
 package org.miaixz.bus.http.accord;
 
-import java.io.IOException;
-
 import org.miaixz.bus.http.Builder;
 
+import java.io.IOException;
+
 /**
- * An exception thrown to indicate a problem connecting via a single Route. Multiple attempts may have been made with
- * alternative protocols, none of which were successful.
+ * An exception thrown to indicate a problem connecting via a single route. This may be an aggregate of multiple
+ * connection attempts, none of which were successful.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public final class RouteException extends RuntimeException {
 
     private IOException firstException;
     private IOException lastException;
 
+    /**
+     * Constructs a new {@code RouteException}.
+     *
+     * @param cause The initial cause of the exception.
+     */
     RouteException(IOException cause) {
         super(cause);
         firstException = cause;
         lastException = cause;
     }
 
+    /**
+     * Returns the first exception that was encountered when attempting to connect.
+     *
+     * @return The first connection exception.
+     */
     public IOException getFirstConnectException() {
         return firstException;
     }
 
+    /**
+     * Returns the last exception that was encountered when attempting to connect.
+     *
+     * @return The last connection exception.
+     */
     public IOException getLastConnectException() {
         return lastException;
     }
 
+    /**
+     * Adds a new connection exception to this exception.
+     *
+     * @param e The new exception to add.
+     */
     void addConnectException(IOException e) {
         Builder.addSuppressedIfPossible(firstException, e);
         lastException = e;

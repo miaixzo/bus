@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.spring.listener;
 
-import java.util.*;
-import java.util.stream.StreamSupport;
-
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -44,8 +41,15 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.*;
 
+import java.util.*;
+import java.util.stream.StreamSupport;
+
 /**
- * 实现{@link ApplicationListener<ApplicationEnvironmentPreparedEvent>}以适应spring cloud环境 用于将日志属性注册到spring cloud引导环境。
+ * An {@link ApplicationListener} for {@link ApplicationEnvironmentPreparedEvent} that adapts to Spring Cloud
+ * environments.
+ * <p>
+ * This listener is responsible for registering logging properties into the Spring Cloud bootstrap environment. It
+ * ensures that logging configurations are correctly propagated when running within a Spring Cloud setup.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,11 +59,29 @@ public class SpringCloudConfigListener implements ApplicationListener<Applicatio
     private final static MapPropertySource HIGH_PRIORITY_CONFIG = new MapPropertySource(GeniusBuilder.BUS_HIGH_PRIORITY,
             new HashMap<>());
 
+    /**
+     * Returns the order value for this listener.
+     * <p>
+     * This listener is set to have the highest precedence to ensure it runs very early in the startup process.
+     * </p>
+     *
+     * @return The order value, {@code Ordered.HIGHEST_PRECEDENCE}.
+     */
     @Override
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
     }
 
+    /**
+     * Handles the {@link ApplicationEnvironmentPreparedEvent} event.
+     * <p>
+     * This method checks if the application is running in a Spring Cloud environment. If it is, and if a bootstrap
+     * context is present, it adds a high-priority property source. Otherwise, it builds a bootstrap application context
+     * to process environment post-processors and then configures logging and required properties.
+     * </p>
+     *
+     * @param event The environment prepared event.
+     */
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
         ConfigurableEnvironment environment = event.getEnvironment();
@@ -107,9 +129,13 @@ public class SpringCloudConfigListener implements ApplicationListener<Applicatio
     }
 
     /**
-     * 配置日志信息
+     * Configures logging-related properties.
+     * <p>
+     * It iterates through the environment's property sources, filters for logging configurations, and adds them to the
+     * high-priority configuration map.
+     * </p>
      *
-     * @param environment 环境资源信息
+     * @param environment The configurable environment.
      */
     private void logSetting(ConfigurableEnvironment environment) {
         StreamSupport.stream(environment.getPropertySources().spliterator(), false)
@@ -120,7 +146,12 @@ public class SpringCloudConfigListener implements ApplicationListener<Applicatio
     }
 
     /**
-     * 配置必需的属性
+     * Configures required properties.
+     * <p>
+     * If the application name is present in the environment, it is added to the high-priority configuration map.
+     * </p>
+     *
+     * @param environment The configurable environment.
      */
     private void requireProperties(ConfigurableEnvironment environment) {
         if (StringKit.hasText(environment.getProperty(GeniusBuilder.APP_NAME))) {

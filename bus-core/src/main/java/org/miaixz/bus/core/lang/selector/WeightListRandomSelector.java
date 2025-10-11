@@ -37,17 +37,25 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 动态按权重随机的随机池，底层是list实现。 原理为加入的{@link WeightObject}依次增加权重，随机时根据权重计算随机值，然后二分查找小于等于随机值的权重，返回对应的元素。
- * 我们假设随机池中有4个对象，其权重为4，5，1，6，权重越高，'-'越多，那么随机池如下：
+ * A dynamic, list-based random pool that selects elements based on their weight.
+ * <p>
+ * The underlying principle is that each added {@link WeightObject} has its weight accumulated. When selecting, a random
+ * value is calculated based on the total weight, and a binary search is performed to find the element whose cumulative
+ * weight is less than or equal to the random value.
+ *
+ * <p>
+ * For example, if the random pool contains four objects with weights 4, 5, 1, and 6, the pool can be visualized as:
  * 
  * <pre>{@code
- *     [obj1,  obj2, obj3, obj4  ]
- *     [----, -----,  -  , ------]
+ *     [obj1,  obj2,   obj3,   obj4  ]
+ *     [----, -----,    -  ,  ------]
+ *     [ 4  ,  9   ,   10  ,   16   ]  (Cumulative Weights)
  * }</pre>
- * 
- * 然后最后一个元素的权重值为总权重值，即obj2的权重值为obj1权重+obj2本身权重，依次类推。 我们取一个总权重范围的随机数，根据随机数在'-'列表中的位置，找到对应的obj即随机到的对象。
+ * <p>
+ * The cumulative weight of the last element is the total weight. A random number is generated within the range of the
+ * total weight. The position of this random number in the cumulative weight list determines which object is selected.
  *
- * @param <E> 元素类型
+ * @param <E> the type of the elements
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -57,42 +65,43 @@ public class WeightListRandomSelector<E> implements Selector<E>, Serializable {
     private static final long serialVersionUID = 2852278633171L;
 
     /**
-     * 随机元素池
+     * The pool of weighted random elements.
      */
     private final List<WeightObject<E>> randomPool;
 
     /**
-     * 构造
+     * Constructs a new {@code WeightListRandomSelector} with a default initial capacity.
      */
     public WeightListRandomSelector() {
         randomPool = new ArrayList<>();
     }
 
     /**
-     * 构造
+     * Constructs a new {@code WeightListRandomSelector} with a specified initial capacity.
      *
-     * @param poolSize 初始随机池大小
+     * @param poolSize the initial size of the random pool
      */
     public WeightListRandomSelector(final int poolSize) {
         randomPool = new ArrayList<>(poolSize);
     }
 
     /**
-     * 增加随机种子
+     * Adds a random element with a given weight. The weight is added to the cumulative total.
      *
-     * @param e      随机对象
-     * @param weight 权重
+     * @param e      the random object to add
+     * @param weight the weight of the object (must be > 0)
      */
     public void add(final E e, final int weight) {
-        Assert.isTrue(weight > 0, "权重必须大于0！");
+        Assert.isTrue(weight > 0, "Weight must be greater than 0!");
         randomPool.add(new WeightObject<>(e, sumWeight() + weight));
     }
 
     /**
-     * 移除随机种子
+     * Removes a random element from the pool. After removal, the cumulative weights of all subsequent elements are
+     * recalculated.
      *
-     * @param e 随机对象
-     * @return 是否移除成功
+     * @param e the random object to remove
+     * @return {@code true} if the element was successfully removed, {@code false} otherwise
      */
     public boolean remove(final E e) {
         boolean removed = false;
@@ -104,12 +113,12 @@ public class WeightListRandomSelector<E> implements Selector<E>, Serializable {
             ew = iterator.next();
             if (!removed && ObjectKit.equals(ew.object, e)) {
                 iterator.remove();
-                // 权重=当前权重-上一个权重
+                // The weight of the removed element is its cumulative weight minus the previous one.
                 weight = ew.weight - (i == 0 ? 0 : randomPool.get(i - 1).weight);
                 removed = true;
             }
             if (removed) {
-                // 重新计算后续权重
+                // Recalculate the cumulative weights of subsequent elements.
                 ew.weight -= weight;
             }
             i++;
@@ -118,14 +127,19 @@ public class WeightListRandomSelector<E> implements Selector<E>, Serializable {
     }
 
     /**
-     * 判断是否为空
+     * Checks if the random pool is empty.
      *
-     * @return 是否为空
+     * @return {@code true} if the pool is empty, {@code false} otherwise
      */
     public boolean isEmpty() {
         return randomPool.isEmpty();
     }
 
+    /**
+     * Selects an element based on its weight.
+     *
+     * @return the selected element, or {@code null} if the pool is empty
+     */
     @Override
     public E select() {
         if (isEmpty()) {
@@ -138,10 +152,11 @@ public class WeightListRandomSelector<E> implements Selector<E>, Serializable {
     }
 
     /**
-     * 二分查找小于等于key的最大值的元素
+     * Performs a binary search to find the element corresponding to the given random weight. It finds the first element
+     * whose cumulative weight is greater than or equal to the random weight.
      *
-     * @param randomWeight 随机权重值，查找这个权重对应的元素
-     * @return 随机池的一个元素或者null 当key大于所有元素的总权重时，返回null
+     * @param randomWeight the random weight value to search for
+     * @return the element corresponding to the random weight, or {@code null} if not found
      */
     private E binarySearch(final int randomWeight) {
         int low = 0;
@@ -159,9 +174,19 @@ public class WeightListRandomSelector<E> implements Selector<E>, Serializable {
                 return randomPool.get(mid).object;
             }
         }
+        // If not found exactly, low is the insertion point, which is the correct element.
+        if (low >= randomPool.size()) {
+            // Should not happen if randomWeight is within bounds
+            return null;
+        }
         return randomPool.get(low).object;
     }
 
+    /**
+     * Gets the total weight of all elements in the pool.
+     *
+     * @return the total weight
+     */
     private int sumWeight() {
         if (randomPool.isEmpty()) {
             return 0;

@@ -35,10 +35,11 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CollKit;
 
 /**
- * 字符串检查工具类，提供字符串的blank和empty等检查
+ * String validation utility class, providing checks for blank and empty strings.
  * <ul>
- * <li>empty定义：{@code null} or 空字符串：{@code ""}</li>
- * <li>blank定义：{@code null} or 空字符串：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>Empty definition: {@code null} or empty string: {@code ""}</li>
+ * <li>Blank definition: {@code null} or empty string: {@code ""} or spaces, full-width spaces, tabs, newlines, and
+ * other invisible characters</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -47,11 +48,11 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class CharsValidator {
 
     /**
-     * 字符串是否为空白，空白的定义如下
+     * Checks if a string is blank. A string is considered blank if it is:
      * <ol>
      * <li>{@code null}</li>
-     * <li>空字符串：{@code ""}</li>
-     * <li>空格、全角空格、制表符、换行符，等不可见字符</li>
+     * <li>An empty string: {@code ""}</li>
+     * <li>Contains only whitespace characters (spaces, full-width spaces, tabs, newlines, etc.)</li>
      * </ol>
      * <ul>
      * <li>{@code isBlank(null)     // true}</li>
@@ -61,21 +62,20 @@ public class CharsValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #isEmpty(CharSequence)} 的区别是： 该方法会校验空白字符，且性能相对于 {@link #isEmpty(CharSequence)} 略慢。
-     * </p>
-     *
+     * Note: The difference between this method and {@link #isEmpty(CharSequence)} is that this method checks for
+     * whitespace characters and is slightly slower than {@link #isEmpty(CharSequence)}.
      *
      * <p>
-     * 建议：
-     * </p>
+     * Recommendation:
+     *
      * <ul>
-     * <li>该方法建议仅对于客户端（或第三方接口）传入的参数使用该方法。</li>
-     * <li>需要同时校验多个字符串时，建议采用 {@link ArrayKit#hasBlank(CharSequence...)} 或
-     * {@link ArrayKit#isAllBlank(CharSequence...)}</li>
+     * <li>This method is recommended only for parameters passed from clients (or third-party interfaces).</li>
+     * <li>When checking multiple strings simultaneously, it is recommended to use
+     * {@link ArrayKit#hasBlank(CharSequence...)} or {@link ArrayKit#isAllBlank(CharSequence...)}.</li>
      * </ul>
      *
-     * @param text 被检测的字符串
-     * @return 若为空白，则返回 true
+     * @param text The {@link CharSequence} to check.
+     * @return {@code true} if the string is blank, {@code false} otherwise.
      * @see #isEmpty(CharSequence)
      */
     public static boolean isBlank(final CharSequence text) {
@@ -86,7 +86,7 @@ public class CharsValidator {
         }
 
         for (int i = 0; i < length; i++) {
-            // 只要有一个非空字符即为非空字符串
+            // As long as there is one non-blank character, it is not a blank string.
             if (!CharKit.isBlankChar(text.charAt(i))) {
                 return false;
             }
@@ -96,11 +96,11 @@ public class CharsValidator {
     }
 
     /**
-     * 字符串是否为非空白，非空白的定义如下：
+     * Checks if a string is not blank. A string is considered not blank if it is:
      * <ol>
-     * <li>不为 {@code null}</li>
-     * <li>不为空字符串：{@code ""}</li>
-     * <li>不为空格、全角空格、制表符、换行符，等不可见字符</li>
+     * <li>Not {@code null}</li>
+     * <li>Not an empty string: {@code ""}</li>
+     * <li>Does not contain only whitespace characters (spaces, full-width spaces, tabs, newlines, etc.)</li>
      * </ol>
      * <ul>
      * <li>{@code isNotBlank(null)     // false}</li>
@@ -110,14 +110,14 @@ public class CharsValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #isNotEmpty(CharSequence)} 的区别是： 该方法会校验空白字符，且性能相对于 {@link #isNotEmpty(CharSequence)} 略慢。
-     * </p>
-     * <p>
-     * 建议：仅对于客户端（或第三方接口）传入的参数使用该方法。
-     * </p>
+     * Note: The difference between this method and {@link #isNotEmpty(CharSequence)} is that this method checks for
+     * whitespace characters and is slightly slower than {@link #isNotEmpty(CharSequence)}.
      *
-     * @param text 被检测的字符串
-     * @return 是否为非空
+     * <p>
+     * Recommendation: This method is recommended only for parameters passed from clients (or third-party interfaces).
+     *
+     * @param text The {@link CharSequence} to check.
+     * @return {@code true} if the string is not blank, {@code false} otherwise.
      * @see #isBlank(CharSequence)
      */
     public static boolean isNotBlank(final CharSequence text) {
@@ -129,7 +129,7 @@ public class CharsValidator {
         }
 
         for (int i = 0; i < length; i++) {
-            // 只要有一个非空字符即为非空字符串
+            // As long as there is one non-blank character, it is not a blank string.
             if (!CharKit.isBlankChar(text.charAt(i))) {
                 return true;
             }
@@ -139,10 +139,10 @@ public class CharsValidator {
     }
 
     /**
-     * 字符串是否为空，空的定义如下
+     * Checks if a string is empty. A string is considered empty if it is:
      * <ol>
      * <li>{@code null}</li>
-     * <li>空字符串：{@code ""}</li>
+     * <li>An empty string: {@code ""}</li>
      * </ol>
      * <ul>
      * <li>{@code isEmpty(null)     // true}</li>
@@ -152,18 +152,21 @@ public class CharsValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #isBlank(CharSequence)} 的区别是：该方法不校验空白字符。
-     * </p>
+     * Note: The difference between this method and {@link #isBlank(CharSequence)} is that this method does not check
+     * for whitespace characters.
+     *
      * <p>
-     * 建议：
-     * </p>
+     * Recommendation:
+     *
      * <ul>
-     * <li>该方法建议用于工具类或任何可以预期的方法参数的校验中。</li>
-     * <li>需要同时校验多个字符串时，建议采用 {@link #hasEmpty(CharSequence...)} 或 {@link #isAllEmpty(CharSequence...)}</li>
+     * <li>This method is recommended for use in utility classes or for validating method parameters where the expected
+     * input is known.</li>
+     * <li>When checking multiple strings simultaneously, it is recommended to use {@link #hasEmpty(CharSequence...)} or
+     * {@link #isAllEmpty(CharSequence...)}.</li>
      * </ul>
      *
-     * @param text 被检测的字符串
-     * @return 是否为空
+     * @param text The {@link CharSequence} to check.
+     * @return {@code true} if the string is empty, {@code false} otherwise.
      * @see #isBlank(CharSequence)
      */
     public static boolean isEmpty(final CharSequence text) {
@@ -171,10 +174,10 @@ public class CharsValidator {
     }
 
     /**
-     * 字符串是否为非空白，非空白的定义如下
+     * Checks if a string is not empty. A string is considered not empty if it is:
      * <ol>
-     * <li>不为 {@code null}</li>
-     * <li>不为空字符串：{@code ""}</li>
+     * <li>Not {@code null}</li>
+     * <li>Not an empty string: {@code ""}</li>
      * </ol>
      * <ul>
      * <li>{@code isNotEmpty(null)     // false}</li>
@@ -184,14 +187,15 @@ public class CharsValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #isNotBlank(CharSequence)} 的区别是：该方法不校验空白字符。
-     * </p>
-     * <p>
-     * 建议：该方法建议用于工具类或任何可以预期的方法参数的校验中。
-     * </p>
+     * Note: The difference between this method and {@link #isNotBlank(CharSequence)} is that this method does not check
+     * for whitespace characters.
      *
-     * @param text 被检测的字符串
-     * @return 是否为非空
+     * <p>
+     * Recommendation: This method is recommended for use in utility classes or for validating method parameters where
+     * the expected input is known.
+     *
+     * @param text The {@link CharSequence} to check.
+     * @return {@code true} if the string is not empty, {@code false} otherwise.
      * @see #isEmpty(CharSequence)
      */
     public static boolean isNotEmpty(final CharSequence text) {
@@ -199,7 +203,8 @@ public class CharsValidator {
     }
 
     /**
-     * 指定字符串数组中，是否包含空字符串。 如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true。
+     * Checks if any string in the given array is blank. Returns {@code true} if the specified string array has a length
+     * of 0, or if any element is a blank string.
      * <ul>
      * <li>{@code hasBlank()                  // true}</li>
      * <li>{@code hasBlank("", null, " ")     // true}</li>
@@ -208,32 +213,33 @@ public class CharsValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #isAllBlank(CharSequence...)} 的区别在于：
-     * </p>
+     * Note: The difference between this method and {@link #isAllBlank(CharSequence...)} is:
+     *
      * <ul>
-     * <li>hasBlank(CharSequence...) 等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
-     * <li>{@link #isAllBlank(CharSequence...)} 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
+     * <li>{@code hasBlank(CharSequence...)} is equivalent to {@code isBlank(...) || isBlank(...) || ...}</li>
+     * <li>{@link #isAllBlank(CharSequence...)} is equivalent to {@code isBlank(...) && isBlank(...) && ...}</li>
      * </ul>
      *
-     * @param strs 字符串列表
-     * @return 是否包含空字符串
+     * @param strs An array of {@link CharSequence}s to check.
+     * @return {@code true} if any string in the array is blank, {@code false} otherwise.
      */
     public static boolean hasBlank(final CharSequence... strs) {
         return ArrayKit.hasBlank(strs);
     }
 
     /**
-     * 是否全都不为{@code null}或空对象或空白符的对象，通过{@link #hasBlank(CharSequence...)} 判断元素
+     * Checks if all provided {@link CharSequence} objects are not {@code null}, not empty, and not blank.
      *
-     * @param args 被检查的对象,一个或者多个
-     * @return 是否都不为空
+     * @param args One or more {@link CharSequence} objects to check.
+     * @return {@code true} if all objects are not blank, {@code false} otherwise.
      */
     public static boolean isAllNotBlank(final CharSequence... args) {
         return ArrayKit.isAllNotBlank(args);
     }
 
     /**
-     * 指定字符串数组中的元素，是否全部为空字符串。 如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true。
+     * Checks if all strings in the given array are blank. Returns {@code true} if the specified string array has a
+     * length of 0, or if all elements are blank strings.
      * <ul>
      * <li>{@code isAllBlank()                  // true}</li>
      * <li>{@code isAllBlank("", null, " ")     // true}</li>
@@ -242,22 +248,23 @@ public class CharsValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #hasBlank(CharSequence...)} 的区别在于：
-     * </p>
+     * Note: The difference between this method and {@link #hasBlank(CharSequence...)} is:
+     *
      * <ul>
-     * <li>{@link #hasBlank(CharSequence...)} 等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
-     * <li>isAllBlank(CharSequence...) 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
+     * <li>{@link #hasBlank(CharSequence...)} is equivalent to {@code isBlank(...) || isBlank(...) || ...}</li>
+     * <li>{@code isAllBlank(CharSequence...)} is equivalent to {@code isBlank(...) && isBlank(...) && ...}</li>
      * </ul>
      *
-     * @param strs 字符串列表
-     * @return 所有字符串是否为空白
+     * @param strs An array of {@link CharSequence}s to check.
+     * @return {@code true} if all strings in the array are blank, {@code false} otherwise.
      */
     public static boolean isAllBlank(final CharSequence... strs) {
         return ArrayKit.isAllBlank(strs);
     }
 
     /**
-     * 是否包含空字符串。 如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true。
+     * Checks if any string in the given array is empty. Returns {@code true} if the specified string array has a length
+     * of 0, or if any element is an empty string.
      * <ul>
      * <li>{@code hasEmpty()                  // true}</li>
      * <li>{@code hasEmpty("", null)          // true}</li>
@@ -267,15 +274,15 @@ public class CharsValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #isAllEmpty(CharSequence...)} 的区别在于：
-     * </p>
+     * Note: The difference between this method and {@link #isAllEmpty(CharSequence...)} is:
+     *
      * <ul>
-     * <li>hasEmpty(CharSequence...) 等价于 {@code isEmpty(...) || isEmpty(...) || ...}</li>
-     * <li>{@link #isAllEmpty(CharSequence...)} 等价于 {@code isEmpty(...) && isEmpty(...) && ...}</li>
+     * <li>{@code hasEmpty(CharSequence...)} is equivalent to {@code isEmpty(...) || isEmpty(...) || ...}</li>
+     * <li>{@link #isAllEmpty(CharSequence...)} is equivalent to {@code isEmpty(...) && isEmpty(...) && ...}</li>
      * </ul>
      *
-     * @param args 字符串列表
-     * @return 是否包含空字符串
+     * @param args An array of {@link CharSequence}s to check.
+     * @return {@code true} if any string in the array is empty, {@code false} otherwise.
      */
     public static boolean hasEmpty(final CharSequence... args) {
         if (ArrayKit.isEmpty(args)) {
@@ -291,10 +298,11 @@ public class CharsValidator {
     }
 
     /**
-     * 是否包含空字符串。 如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true。
+     * Checks if any string in the given {@link Iterable} is empty. Returns {@code true} if the specified
+     * {@link Iterable} is empty, or if any element is an empty string.
      *
-     * @param args 字符串列表
-     * @return 是否包含空字符串
+     * @param args An {@link Iterable} of {@link CharSequence}s to check.
+     * @return {@code true} if any string in the iterable is empty, {@code false} otherwise.
      */
     public static boolean hasEmpty(final Iterable<? extends CharSequence> args) {
         if (CollKit.isEmpty(args)) {
@@ -310,7 +318,8 @@ public class CharsValidator {
     }
 
     /**
-     * 指定字符串数组中的元素，是否全部为空字符串。 如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true。
+     * Checks if all strings in the given array are empty. Returns {@code true} if the specified string array has a
+     * length of 0, or if all elements are empty strings.
      * <ul>
      * <li>{@code isAllEmpty()                  // true}</li>
      * <li>{@code isAllEmpty("", null)          // true}</li>
@@ -320,15 +329,15 @@ public class CharsValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #hasEmpty(CharSequence...)} 的区别在于：
-     * </p>
+     * Note: The difference between this method and {@link #hasEmpty(CharSequence...)} is:
+     *
      * <ul>
-     * <li>{@link #hasEmpty(CharSequence...)} 等价于 {@code isEmpty(...) || isEmpty(...) || ...}</li>
-     * <li>isAllEmpty(CharSequence...) 等价于 {@code isEmpty(...) && isEmpty(...) && ...}</li>
+     * <li>{@link #hasEmpty(CharSequence...)} is equivalent to {@code isEmpty(...) || isEmpty(...) || ...}</li>
+     * <li>{@code isAllEmpty(CharSequence...)} is equivalent to {@code isEmpty(...) && isEmpty(...) && ...}</li>
      * </ul>
      *
-     * @param args 字符串列表
-     * @return 所有字符串是否为空白
+     * @param args An array of {@link CharSequence}s to check.
+     * @return {@code true} if all strings in the array are empty, {@code false} otherwise.
      */
     public static boolean isAllEmpty(final CharSequence... args) {
         if (ArrayKit.isNotEmpty(args)) {
@@ -343,10 +352,11 @@ public class CharsValidator {
     }
 
     /**
-     * 指定字符串数组中的元素，是否全部为空字符串。 如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true。
+     * Checks if all strings in the given {@link Iterable} are empty. Returns {@code true} if the specified
+     * {@link Iterable} is empty, or if all elements are empty strings.
      *
-     * @param args 字符串列表
-     * @return 所有字符串是否为空白
+     * @param args An {@link Iterable} of {@link CharSequence}s to check.
+     * @return {@code true} if all strings in the iterable are empty, {@code false} otherwise.
      */
     public static boolean isAllEmpty(final Iterable<? extends CharSequence> args) {
         if (CollKit.isNotEmpty(args)) {
@@ -361,7 +371,8 @@ public class CharsValidator {
     }
 
     /**
-     * 指定字符串数组中的元素，是否都不为空字符串。 如果指定的字符串数组的长度不为 0，或者所有元素都不是空字符串，则返回 true。
+     * Checks if all strings in the given array are not empty. Returns {@code true} if the specified string array has a
+     * length greater than 0, and all elements are not empty strings.
      * <ul>
      * <li>{@code isAllNotEmpty()                  // false}</li>
      * <li>{@code isAllNotEmpty("", null)          // false}</li>
@@ -371,25 +382,25 @@ public class CharsValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #isAllEmpty(CharSequence...)} 的区别在于：
-     * </p>
+     * Note: The difference between this method and {@link #isAllEmpty(CharSequence...)} is:
+     *
      * <ul>
-     * <li>{@link #isAllEmpty(CharSequence...)} 等价于 {@code isEmpty(...) && isEmpty(...) && ...}</li>
-     * <li>isAllNotEmpty(CharSequence...) 等价于 {@code !isEmpty(...) && !isEmpty(...) && ...}</li>
+     * <li>{@link #isAllEmpty(CharSequence...)} is equivalent to {@code isEmpty(...) && isEmpty(...) && ...}</li>
+     * <li>{@code isAllNotEmpty(CharSequence...)} is equivalent to {@code !isEmpty(...) && !isEmpty(...) && ...}</li>
      * </ul>
      *
-     * @param args 字符串数组
-     * @return 所有字符串是否都不为为空白
+     * @param args An array of {@link CharSequence}s to check.
+     * @return {@code true} if all strings in the array are not empty, {@code false} otherwise.
      */
     public static boolean isAllNotEmpty(final CharSequence... args) {
         return !hasEmpty(args);
     }
 
     /**
-     * 检查字符串是否为null、“null”、“undefined”
+     * Checks if a string is {@code null}, the string "null", or the string "undefined".
      *
-     * @param text 被检查的字符串
-     * @return 是否为null、“null”、“undefined”
+     * @param text The {@link CharSequence} to check.
+     * @return {@code true} if the string is {@code null}, "null", or "undefined", {@code false} otherwise.
      */
     public static boolean isNullOrUndefined(final CharSequence text) {
         if (null == text) {
@@ -399,10 +410,10 @@ public class CharsValidator {
     }
 
     /**
-     * 检查字符串是否为null、“”、“null”、“undefined”
+     * Checks if a string is empty ({@code null} or ""), the string "null", or the string "undefined".
      *
-     * @param text 被检查的字符串
-     * @return 是否为null、“”、“null”、“undefined”
+     * @param text The {@link CharSequence} to check.
+     * @return {@code true} if the string is empty, "null", or "undefined", {@code false} otherwise.
      */
     public static boolean isEmptyOrUndefined(final CharSequence text) {
         if (isEmpty(text)) {
@@ -412,10 +423,10 @@ public class CharsValidator {
     }
 
     /**
-     * 检查字符串是否为null、空白串、“null”、“undefined”
+     * Checks if a string is blank ({@code null}, "", or whitespace only), the string "null", or the string "undefined".
      *
-     * @param text 被检查的字符串
-     * @return 是否为null、空白串、“null”、“undefined”
+     * @param text The {@link CharSequence} to check.
+     * @return {@code true} if the string is blank, "null", or "undefined", {@code false} otherwise.
      */
     public static boolean isBlankOrUndefined(final CharSequence text) {
         if (isBlank(text)) {
@@ -425,10 +436,11 @@ public class CharsValidator {
     }
 
     /**
-     * 是否为“null”、“undefined”，不做空指针检查
+     * Checks if a string is "null" or "undefined", without performing a null pointer check on the input
+     * {@link CharSequence}.
      *
-     * @param text 字符串
-     * @return 是否为“null”、“undefined”
+     * @param text The {@link CharSequence} to check.
+     * @return {@code true} if the string is "null" or "undefined", {@code false} otherwise.
      */
     private static boolean isNullOrUndefinedString(final CharSequence text) {
         final String strString = text.toString().trim();
@@ -436,11 +448,11 @@ public class CharsValidator {
     }
 
     /**
-     * 字符串的每一个字符是否都与定义的匹配器匹配
+     * Checks if every character in the given string matches the provided {@link Predicate}.
      *
-     * @param value   字符串
-     * @param matcher 匹配器
-     * @return 是否全部匹配
+     * @param value   The {@link CharSequence} to check.
+     * @param matcher The {@link Predicate} to test each character against.
+     * @return {@code true} if all characters match the predicate, {@code false} otherwise.
      */
     public static boolean isAllCharMatch(final CharSequence value, final Predicate<Character> matcher) {
         if (isBlank(value)) {

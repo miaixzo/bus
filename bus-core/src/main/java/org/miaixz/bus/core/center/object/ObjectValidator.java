@@ -40,10 +40,11 @@ import org.miaixz.bus.core.text.CharsValidator;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 对象检查工具类，提供字对象的blank和empty等检查
+ * Object validation utility class, providing checks for object blankness and emptiness.
  * <ul>
- * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>Empty definition: {@code null} or empty string: {@code ""}</li>
+ * <li>Blank definition: {@code null} or empty string: {@code ""} or invisible characters like spaces, full-width
+ * spaces, tabs, newlines.</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -52,39 +53,40 @@ import org.miaixz.bus.core.xyz.*;
 public class ObjectValidator {
 
     /**
-     * 检查对象是否为{@code null}
+     * Checks if the given object is {@code null}.
      *
-     * @param object 对象
-     * @return 是否为null
+     * @param object The object to check.
+     * @return {@code true} if the object is {@code null}, {@code false} otherwise.
      */
     public static boolean isNull(final Object object) {
         return null == object;
     }
 
     /**
-     * 检查对象是否不为{@code null}
+     * Checks if the given object is not {@code null}.
      *
-     * @param object 对象
-     * @return 是否不为null
+     * @param object The object to check.
+     * @return {@code true} if the object is not {@code null}, {@code false} otherwise.
      */
     public static boolean isNotNull(final Object object) {
         return null != object;
     }
 
     /**
-     * 判断指定对象是否为空，支持类型包括：
+     * Determines if the specified object is empty. Supports the following types:
      * <ul>
-     * <li>{@code null}：默认返回{@code true}；</li>
-     * <li>数组：等同于{@link ArrayKit#isEmpty(Object)}；</li>
-     * <li>{@link CharSequence}：等同于{@link CharsBacker#isEmpty(CharSequence)}；</li>
-     * <li>{@link Collection}：等同于{@link CollKit#isEmpty(Collection)}；</li>
-     * <li>{@link Map}：等同于{@link MapKit#isEmpty(Map)}；</li>
-     * <li>{@link Iterator}或{@link Iterable}：等同于{@link IteratorKit#isEmpty(Iterator)}、
-     * {@link IteratorKit#isEmpty(Iterable)}；</li>
+     * <li>{@code null}: Returns {@code true} by default.</li>
+     * <li>Array: Equivalent to {@link ArrayKit#isEmpty(Object)}.</li>
+     * <li>{@link CharSequence}: Equivalent to {@link CharsBacker#isEmpty(CharSequence)}.</li>
+     * <li>{@link Collection}: Equivalent to {@link CollKit#isEmpty(Collection)}.</li>
+     * <li>{@link Map}: Equivalent to {@link MapKit#isEmpty(Map)}.</li>
+     * <li>{@link Iterator} or {@link Iterable}: Equivalent to {@link IteratorKit#isEmpty(Iterator)},
+     * {@link IteratorKit#isEmpty(Iterable)}.</li>
      * </ul>
      *
-     * @param object 被判断的对象
-     * @return 是否为空，如果类型不支持，返回false
+     * @param object The object to be checked.
+     * @return {@code true} if the object is empty or its type is not supported (in which case it's considered not
+     *         empty), {@code false} otherwise.
      * @see StringKit#isEmpty(CharSequence)
      * @see MapKit#isEmpty(Map)
      * @see IteratorKit#isEmpty(Iterable)
@@ -114,10 +116,10 @@ public class ObjectValidator {
     }
 
     /**
-     * 判断指定对象是否为非空
+     * Determines if the specified object is not empty.
      *
-     * @param object 被判断的对象
-     * @return 是否不为空，如果类型不支持，返回true
+     * @param object The object to be checked.
+     * @return {@code true} if the object is not empty, {@code false} otherwise.
      * @see #isEmpty(Object)
      */
     public static boolean isNotEmpty(final Object object) {
@@ -125,23 +127,25 @@ public class ObjectValidator {
     }
 
     /**
-     * 如果对象是字符串是否为空白，空白的定义如下：
+     * Checks if an object, if it is a string, is blank. The definition of blank is as follows:
      * <ol>
      * <li>{@code null}</li>
-     * <li>空字符串：{@code ""}</li>
-     * <li>空格、全角空格、制表符、换行符，等不可见字符</li>
+     * <li>Empty string: {@code ""}</li>
+     * <li>Invisible characters such as spaces, full-width spaces, tabs, newlines.</li>
      * </ol>
+     * Examples:
      * <ul>
      * <li>{@code isBlankIfString(null)     // true}</li>
      * <li>{@code isBlankIfString("")       // true}</li>
      * <li>{@code isBlankIfString(" \t\n")  // true}</li>
      * <li>{@code isBlankIfString("abc")    // false}</li>
      * </ul>
-     * 注意：该方法与 {@link #isEmptyIfString(Object)} 的区别是： 该方法会校验空白字符，且性能相对于 {@link #isEmptyIfString(Object)} 略慢。
+     * Note: The difference between this method and {@link #isEmptyIfString(Object)} is that this method checks for
+     * blank characters, and its performance is slightly slower than {@link #isEmptyIfString(Object)}.
      *
-     * @param object 对象
-     * @return 如果为字符串是否为空串
-     * @see StringKit#isBlank(CharSequence)
+     * @param object The object to check.
+     * @return {@code true} if the object is {@code null} or a blank {@link CharSequence}, {@code false} otherwise.
+     * @see CharsValidator#isBlank(CharSequence)
      */
     public static boolean isBlankIfString(final Object object) {
         if (null == object) {
@@ -153,11 +157,12 @@ public class ObjectValidator {
     }
 
     /**
-     * 如果对象是字符串是否为空串，空的定义如下：
+     * Checks if an object, if it is a string, is empty. The definition of empty is as follows:
      * <ol>
      * <li>{@code null}</li>
-     * <li>空字符串：{@code ""}</li>
+     * <li>Empty string: {@code ""}</li>
      * </ol>
+     * Examples:
      * <ul>
      * <li>{@code isEmptyIfString(null)     // true}</li>
      * <li>{@code isEmptyIfString("")       // true}</li>
@@ -166,11 +171,12 @@ public class ObjectValidator {
      * </ul>
      *
      * <p>
-     * 注意：该方法与 {@link #isBlankIfString(Object)} 的区别是：该方法不校验空白字符。
-     * </p>
+     * Note: The difference between this method and {@link #isBlankIfString(Object)} is that this method does not check
+     * for blank characters.
+     * 
      *
-     * @param object 对象
-     * @return 如果为字符串是否为空串
+     * @param object The object to check.
+     * @return {@code true} if the object is {@code null} or an empty {@link CharSequence}, {@code false} otherwise.
      */
     public static boolean isEmptyIfString(final Object object) {
         if (null == object) {
@@ -182,7 +188,7 @@ public class ObjectValidator {
     }
 
     /**
-     * 如果给定对象为{@code null}返回默认值
+     * Returns a default value if the given object is {@code null}.
      * 
      * <pre>{@code
      * ObjectKit.defaultIfNull(null, null);      // = null
@@ -192,22 +198,23 @@ public class ObjectValidator {
      * ObjectKit.defaultIfNull(Boolean.TRUE, *); // = Boolean.TRUE
      * }</pre>
      *
-     * @param <T>          对象类型
-     * @param object       被检查对象，可能为{@code null}
-     * @param defaultValue 被检查对象为{@code null}返回的默认值，可以为{@code null}
-     * @return 被检查对象不为 {@code null} 返回原值，否则返回默认值
+     * @param <T>          The type of the object.
+     * @param object       The object to check, which may be {@code null}.
+     * @param defaultValue The default value to return if the object is {@code null}. Can be {@code null}.
+     * @return The object itself if it is not {@code null}, otherwise the default value.
      */
     public static <T> T defaultIfNull(final T object, final T defaultValue) {
         return isNull(object) ? defaultValue : object;
     }
 
     /**
-     * 如果给定对象不为{@code null} 返回原值, 否则返回 {@link Supplier#get()} 提供的默认值
+     * Returns the original value if the given object is not {@code null}, otherwise returns the default value provided
+     * by {@link Supplier#get()}.
      *
-     * @param <T>             被检查对象类型
-     * @param source          被检查对象，可能为{@code null}
-     * @param defaultSupplier 为空时的默认值提供者
-     * @return 被检查对象不为 {@code null} 返回原值，否则返回 {@link Supplier#get()} 提供的默认值
+     * @param <T>             The type of the object being checked.
+     * @param source          The object to check, which may be {@code null}.
+     * @param defaultSupplier The supplier for the default value when the object is {@code null}.
+     * @return The object itself if it is not {@code null}, otherwise the default value from the supplier.
      */
     public static <T> T defaultIfNull(final T source, final Supplier<? extends T> defaultSupplier) {
         if (isNotNull(source)) {
@@ -217,14 +224,15 @@ public class ObjectValidator {
     }
 
     /**
-     * 如果给定对象不为{@code null} 返回自定义handler处理后的结果，否则返回默认值
+     * Returns the result of a custom handler if the given object is not {@code null}, otherwise returns a default
+     * value.
      *
-     * @param <R>          返回值类型
-     * @param <T>          被检查对象类型
-     * @param source       被检查对象，可能为{@code null}
-     * @param handler      非空时自定义的处理方法
-     * @param defaultValue 为空时的默认返回值
-     * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回默认值
+     * @param <R>          The return type.
+     * @param <T>          The type of the object being checked.
+     * @param source       The object to check, which may be {@code null}.
+     * @param handler      The custom handler method to apply when the object is not {@code null}.
+     * @param defaultValue The default return value when the object is {@code null}.
+     * @return The result of the handler if the object is not {@code null}, otherwise the default value.
      */
     public static <T, R> R defaultIfNull(
             final T source,
@@ -234,14 +242,16 @@ public class ObjectValidator {
     }
 
     /**
-     * 如果给定对象不为{@code null} 返回自定义handler处理后的结果，否则返回 {@link Supplier#get()} 提供的默认值
+     * Returns the result of a custom handler if the given object is not {@code null}, otherwise returns the default
+     * value provided by {@link Supplier#get()}.
      *
-     * @param <R>             返回值类型
-     * @param <T>             被检查对象类型
-     * @param source          被检查对象，可能为{@code null}
-     * @param handler         非空时自定义的处理方法
-     * @param defaultSupplier 为空时的默认值提供者
-     * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回 {@link Supplier#get()} 提供的默认值
+     * @param <R>             The return type.
+     * @param <T>             The type of the object being checked.
+     * @param source          The object to check, which may be {@code null}.
+     * @param handler         The custom handler method to apply when the object is not {@code null}.
+     * @param defaultSupplier The supplier for the default value when the object is {@code null}.
+     * @return The result of the handler if the object is not {@code null}, otherwise the default value from the
+     *         supplier.
      */
     public static <T, R> R defaultIfNull(
             final T source,
@@ -254,17 +264,17 @@ public class ObjectValidator {
     }
 
     /**
-     * 比较两个对象是否相等，满足下述任意条件即返回{@code true}：
+     * Compares two objects for equality. Returns {@code true} if any of the following conditions are met:
      * <ul>
-     * <li>若两对象皆为{@link BigDecimal}，且满足{@code 0 == obj1.compareTo(obj2)}</li>
-     * <li>若两对象都为数组，调用Arrays.equals完成判断</li>
-     * <li>{@code obj1 == null && obj2 == null}</li>
-     * <li>{@code obj1.equals(obj2)}</li>
+     * <li>If both objects are {@link BigDecimal}, and {@code 0 == obj1.compareTo(obj2)}.</li>
+     * <li>If both objects are arrays, comparison is done using {@link ArrayKit#equals(Object, Object)}.</li>
+     * <li>{@code obj1 == null && obj2 == null}.</li>
+     * <li>{@code obj1.equals(obj2)}.</li>
      * </ul>
      *
-     * @param obj1 对象1
-     * @param obj2 对象2
-     * @return 是否相等
+     * @param obj1 The first object to compare.
+     * @param obj2 The second object to compare.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
      */
     public static boolean equals(final Object obj1, final Object obj2) {
         if (obj1 instanceof Number && obj2 instanceof Number) {
@@ -276,12 +286,12 @@ public class ObjectValidator {
     }
 
     /**
-     * 检查对象是否与给定对象数组中的任何一个相等。
+     * Checks if an object is equal to any of the given objects in an array.
      *
-     * @param object  要检查的对象
-     * @param objects 要比较的对象数组
-     * @return 如果对象与数组中的任何一个对象相等，则返回true，否则返回false
-     * @throws IllegalArgumentException 如果对象数组为null或空
+     * @param object  The object to check.
+     * @param objects The array of objects to compare against.
+     * @return {@code true} if the object is equal to any object in the array, {@code false} otherwise.
+     * @throws IllegalArgumentException If the objects array is {@code null} or empty.
      */
     public static boolean equalsAny(Object object, Object... objects) {
         if (objects == null || objects.length == 0) {
@@ -296,11 +306,11 @@ public class ObjectValidator {
     }
 
     /**
-     * 比较两个对象是否不相等
+     * Compares two objects for inequality.
      *
-     * @param obj1 对象1
-     * @param obj2 对象2
-     * @return 是否不等
+     * @param obj1 The first object to compare.
+     * @param obj2 The second object to compare.
+     * @return {@code true} if the objects are not equal, {@code false} otherwise.
      * @see #equals(Object, Object)
      */
     public static boolean notEquals(final Object obj1, final Object obj2) {
@@ -308,10 +318,10 @@ public class ObjectValidator {
     }
 
     /**
-     * 是否为基本类型，包括包装类型和原始类型
+     * Checks if the given object is a basic type, including wrapper types and primitive types.
      *
-     * @param object 被检查对象，{@code null}返回{@code false}
-     * @return 是否为基本类型
+     * @param object The object to check. Returns {@code false} if {@code null}.
+     * @return {@code true} if the object is a basic type, {@code false} otherwise.
      * @see ClassKit#isBasicType(Class)
      */
     public static boolean isBasicType(final Object object) {
@@ -322,14 +332,15 @@ public class ObjectValidator {
     }
 
     /**
-     * 是否为有效的数字，主要用于检查浮点数是否为有意义的数值 若对象不为{@link Number}类型，则直接返回{@code true}，否则：
+     * Checks if the given object is a valid number, primarily used to check if floating-point numbers are meaningful
+     * values. If the object is not of type {@link Number}, it directly returns {@code true}. Otherwise:
      * <ul>
-     * <li>若对象类型为{@link Double}，则检查{@link Double#isInfinite()}或{@link Double#isNaN()}；</li>
-     * <li>若对象类型为{@link Float}，则检查{@link Float#isInfinite()}或{@link Float#isNaN()}；</li>
+     * <li>If the object type is {@link Double}, it checks {@link Double#isInfinite()} or {@link Double#isNaN()}.</li>
+     * <li>If the object type is {@link Float}, it checks {@link Float#isInfinite()} or {@link Float#isNaN()}.</li>
      * </ul>
      *
-     * @param object 被检查对象
-     * @return 检查结果，非数字类型和{@code null}将返回{@code true}
+     * @param object The object to check.
+     * @return {@code true} if the object is a valid number or not a number type, {@code false} otherwise.
      * @see MathKit#isValidNumber(Number)
      */
     public static boolean isValidIfNumber(final Object object) {

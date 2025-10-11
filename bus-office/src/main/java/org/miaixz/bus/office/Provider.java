@@ -31,7 +31,7 @@ import java.io.File;
 import java.io.InputStream;
 
 /**
- * 文档转换服务提供者. 负责使用office管理器执行文档的转换.
+ * Document conversion service provider. Responsible for performing document conversions using an office manager.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,27 +39,27 @@ import java.io.InputStream;
 public interface Provider {
 
     /**
-     * 转换存储在本地文件系统上的源文件.
+     * Converts a source file stored on the local file system.
      *
-     * @param source 转换输入作为一个文件.
-     * @return 当前转换规范.
+     * @param source The input file for conversion.
+     * @return The current conversion specification.
      */
     Object convert(File source);
 
     /**
-     * 转换源流输入流.
+     * Converts a source input stream.
      *
-     * @param source 转换输入作为输入流.
-     * @return 当前转换规范.
+     * @param source The input stream for conversion.
+     * @return The current conversion specification.
      */
     Object convert(InputStream source);
 
     /**
-     * 转换源流输入流.
+     * Converts a source input stream.
      *
-     * @param source      转换输入作为输入流.
-     * @param closeStream 是否在转换结束后关闭{@link InputStream}.
-     * @return 当前转换规范.
+     * @param source      The input stream for conversion.
+     * @param closeStream {@code true} to close the {@link InputStream} after conversion, {@code false} otherwise.
+     * @return The current conversion specification.
      */
     Object convert(InputStream source, boolean closeStream);
 

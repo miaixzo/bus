@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 路由策略
+ * Provides routing strategies for different protocols within the Vortex module. This package contains implementations
+ * of the {@link org.miaixz.bus.vortex.Router} interface, allowing the gateway to dispatch requests based on protocols
+ * like HTTP, MQ, and MCP.
  *
  * @author Kimi Liu
  * @since Java 17+

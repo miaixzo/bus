@@ -28,7 +28,8 @@
 package org.miaixz.bus.extra.mq;
 
 /**
- * 消息处理器
+ * A functional interface for handling incoming {@link Message} objects from a Message Queue (MQ) system.
+ * Implementations of this interface define the logic for processing messages received by a consumer.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -37,9 +38,9 @@ package org.miaixz.bus.extra.mq;
 public interface MessageHandler {
 
     /**
-     * 处理消息
+     * Handles the incoming message. This method is invoked when a new message is received by the consumer.
      *
-     * @param message 消息
+     * @param message The {@link Message} object to be handled.
      */
     void handle(Message message);
 }

@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 注解包，提供增强型注解
+ * This package provides a collection of custom annotations that offer enhanced functionality and metadata for various
+ * components.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -32,56 +32,70 @@ import java.io.Serializable;
 import java.util.Properties;
 
 /**
- * MQ配置
+ * Configuration class for Message Queue (MQ) settings. This class holds parameters required to connect to and interact
+ * with an MQ broker, such as the broker URL, additional properties, and an optional custom engine for specific MQ
+ * providers.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MQConfig implements Serializable {
 
+    /**
+     * The serialization version identifier for this class.
+     */
     @Serial
     private static final long serialVersionUID = 2852266759152L;
 
     /**
-     * 创建配置
+     * Creates a new {@code MQConfig} instance with the specified broker URL. This is a static factory method for
+     * convenient object creation.
      *
-     * @param brokerUrl Broker地址
-     * @return 配置
+     * @param brokerUrl The URL or address of the MQ broker.
+     * @return A new {@link MQConfig} instance initialized with the given broker URL.
      */
     public static MQConfig of(final String brokerUrl) {
         return new MQConfig(brokerUrl);
     }
 
+    /**
+     * The URL or address of the MQ broker.
+     */
     private String brokerUrl;
+    /**
+     * Additional properties for configuring the MQ connection or specific provider settings. These properties can be
+     * used to pass vendor-specific configurations.
+     */
     private Properties properties;
     /**
-     * 自定义引擎，当多个jar包引入时，可以自定使用的默认引擎
+     * Specifies a custom {@link MQProvider} implementation to be used. This is useful when multiple MQ provider JARs
+     * are present, allowing explicit selection of the desired engine.
      */
     private Class<? extends MQProvider> customEngine;
 
     /**
-     * 构造
+     * Constructs an {@code MQConfig} with the specified broker URL.
      *
-     * @param brokerUrl Broker地址
+     * @param brokerUrl The URL or address of the MQ broker.
      */
     public MQConfig(final String brokerUrl) {
         this.brokerUrl = brokerUrl;
     }
 
     /**
-     * 获取Broker地址
+     * Retrieves the broker URL configured for this MQ connection.
      *
-     * @return Broker地址
+     * @return The broker URL as a {@link String}.
      */
     public String getBrokerUrl() {
         return brokerUrl;
     }
 
     /**
-     * 设置Broker地址
+     * Sets the broker URL for this MQ configuration.
      *
-     * @param brokerUrl Broker地址
-     * @return this
+     * @param brokerUrl The new broker URL to set.
+     * @return This {@code MQConfig} instance, allowing for method chaining.
      */
     public MQConfig setBrokerUrl(final String brokerUrl) {
         this.brokerUrl = brokerUrl;
@@ -89,19 +103,19 @@ public class MQConfig implements Serializable {
     }
 
     /**
-     * 获取配置
+     * Retrieves the additional properties configured for this MQ connection.
      *
-     * @return 配置
+     * @return The {@link Properties} object containing additional configuration settings.
      */
     public Properties getProperties() {
         return properties;
     }
 
     /**
-     * 设置配置
+     * Sets the additional properties for this MQ configuration.
      *
-     * @param properties 配置
-     * @return this
+     * @param properties The {@link Properties} object to set.
+     * @return This {@code MQConfig} instance, allowing for method chaining.
      */
     public MQConfig setProperties(final Properties properties) {
         this.properties = properties;
@@ -109,11 +123,12 @@ public class MQConfig implements Serializable {
     }
 
     /**
-     * 添加配置项
+     * Adds a single property to the existing set of additional properties. If no properties object exists, a new one
+     * will be created.
      *
-     * @param key   键
-     * @param value 值
-     * @return this
+     * @param key   The key of the property to add.
+     * @param value The value of the property to add.
+     * @return The updated {@link Properties} object after adding the new property.
      */
     public Properties addProperty(final String key, final String value) {
         if (null == this.properties) {
@@ -124,19 +139,21 @@ public class MQConfig implements Serializable {
     }
 
     /**
-     * 自定义引擎，当多个jar包引入时，可以自定使用的默认引擎
+     * Retrieves the custom {@link MQProvider} engine class configured. This allows specifying a particular MQ
+     * implementation when multiple are available.
      *
-     * @return 自定义引擎
+     * @return The {@link Class} object representing the custom MQ provider engine.
      */
     public Class<? extends MQProvider> getCustomEngine() {
         return customEngine;
     }
 
     /**
-     * 自定义引擎，当多个jar包引入时，可以自定使用的默认引擎
+     * Sets a custom {@link MQProvider} engine class to be used. This is useful for explicitly selecting an MQ
+     * implementation when multiple JAR packages are introduced.
      *
-     * @param customEngine 自定义引擎
-     * @return this
+     * @param customEngine The {@link Class} object of the custom MQ provider engine.
+     * @return This {@code MQConfig} instance, allowing for method chaining.
      */
     public MQConfig setCustomEngine(final Class<? extends MQProvider> customEngine) {
         this.customEngine = customEngine;

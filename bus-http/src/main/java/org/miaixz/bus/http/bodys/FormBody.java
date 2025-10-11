@@ -27,41 +27,42 @@
 */
 package org.miaixz.bus.http.bodys;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.UnoUrl;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * HTTP 表单请求体
+ * An HTTP request body that represents form-encoded data.
  * <p>
- * 表示以 <code>application/x-www-form-urlencoded</code> 格式编码的表单数据。 提供对表单字段名称和值的编码和解码支持，字段以键值对形式存储。
- * </p>
+ * This class handles form data encoded in the {@code application/x-www-form-urlencoded} format. It provides support for
+ * encoding and decoding form field names and values, which are stored as key-value pairs.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FormBody extends RequestBody {
+public final class FormBody extends RequestBody {
 
     /**
-     * 编码后的字段名称列表
+     * The list of encoded field names.
      */
     private final List<String> encodedNames;
     /**
-     * 编码后的字段值列表
+     * The list of encoded field values.
      */
     private final List<String> encodedValues;
 
     /**
-     * 构造函数，初始化 FormBody 实例
+     * Constructs a new {@code FormBody} instance.
      *
-     * @param encodedNames  编码后的字段名称列表
-     * @param encodedValues 编码后的字段值列表
+     * @param encodedNames  The list of encoded field names.
+     * @param encodedValues The list of encoded field values.
      */
     FormBody(List<String> encodedNames, List<String> encodedValues) {
         this.encodedNames = org.miaixz.bus.http.Builder.immutableList(encodedNames);
@@ -69,58 +70,58 @@ public class FormBody extends RequestBody {
     }
 
     /**
-     * 获取表单字段数量
+     * Returns the number of form fields.
      *
-     * @return 字段数量
+     * @return The number of fields.
      */
     public int size() {
         return encodedNames.size();
     }
 
     /**
-     * 获取指定索引的编码字段名称
+     * Returns the encoded field name at the specified index.
      *
-     * @param index 索引
-     * @return 编码字段名称
+     * @param index The index.
+     * @return The encoded field name.
      */
     public String encodedName(int index) {
         return encodedNames.get(index);
     }
 
     /**
-     * 获取指定索引的解码字段名称
+     * Returns the decoded field name at the specified index.
      *
-     * @param index 索引
-     * @return 解码字段名称
+     * @param index The index.
+     * @return The decoded field name.
      */
     public String name(int index) {
         return UnoUrl.percentDecode(encodedName(index), true);
     }
 
     /**
-     * 获取指定索引的编码字段值
+     * Returns the encoded field value at the specified index.
      *
-     * @param index 索引
-     * @return 编码字段值
+     * @param index The index.
+     * @return The encoded field value.
      */
     public String encodedValue(int index) {
         return encodedValues.get(index);
     }
 
     /**
-     * 获取指定索引的解码字段值
+     * Returns the decoded field value at the specified index.
      *
-     * @param index 索引
-     * @return 解码字段值
+     * @param index The index.
+     * @return The decoded field value.
      */
     public String value(int index) {
         return UnoUrl.percentDecode(encodedValue(index), true);
     }
 
     /**
-     * 获取媒体类型
+     * Returns the media type of this request body.
      *
-     * @return 媒体类型（application/x-www-form-urlencoded）
+     * @return The media type (application/x-www-form-urlencoded).
      */
     @Override
     public MediaType contentType() {
@@ -128,34 +129,36 @@ public class FormBody extends RequestBody {
     }
 
     /**
-     * 获取请求体长度
+     * Returns the length of this request body in bytes.
      *
-     * @return 请求体字节长度
+     * @return The length of the request body.
      */
     @Override
-    public long length() {
+    public long contentLength() {
         return writeOrCountBytes(null, true);
     }
 
     /**
-     * 将请求体写入输出流
+     * Writes the content of this request body to the given sink.
      *
-     * @param sink 输出流
+     * @param sink The sink to write to.
+     * @throws IOException if an I/O error occurs.
      */
     @Override
-    public void writeTo(BufferSink sink) {
+    public void writeTo(BufferSink sink) throws IOException {
         writeOrCountBytes(sink, false);
     }
 
     /**
-     * 写入或计算请求体字节长度
+     * Writes the content to the given sink or counts the number of bytes that would be written.
      * <p>
-     * 用于写入请求体到输出流或计算其字节长度，确保内容一致性。
+     * This method is used to either write the request body to an output stream or to calculate its byte length,
+     * ensuring content consistency.
      * </p>
      *
-     * @param sink       输出流（计算长度时为 null）
-     * @param countBytes 是否仅计算字节数
-     * @return 字节长度
+     * @param sink       The sink to write to, or null if only counting bytes.
+     * @param countBytes {@code true} to only count bytes, {@code false} to write them.
+     * @return The number of bytes written or counted.
      */
     private long writeOrCountBytes(BufferSink sink, boolean countBytes) {
         long byteCount = 0L;
@@ -184,46 +187,46 @@ public class FormBody extends RequestBody {
     }
 
     /**
-     * FormBody 构建器
+     * A builder for creating {@link FormBody} instances.
      */
-    public static class Builder {
+    public static final class Builder {
 
         /**
-         * 字段名称列表
+         * The list of field names.
          */
         private final List<String> names = new ArrayList<>();
         /**
-         * 字段值列表
+         * The list of field values.
          */
         private final List<String> values = new ArrayList<>();
         /**
-         * 字符集
+         * The character set for encoding.
          */
         private final Charset charset;
 
         /**
-         * 默认构造函数
+         * Default constructor.
          */
         public Builder() {
             this(null);
         }
 
         /**
-         * 构造函数，指定字符集
+         * Constructs a new builder with a specified character set.
          *
-         * @param charset 字符集（null 表示默认 UTF-8）
+         * @param charset The character set to use for encoding (null for default UTF-8).
          */
         public Builder(Charset charset) {
             this.charset = charset;
         }
 
         /**
-         * 添加表单字段
+         * Adds a form field.
          *
-         * @param name  字段名称
-         * @param value 字段值
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 name 或 value 为 null
+         * @param name  The field name.
+         * @param value The field value.
+         * @return this builder instance.
+         * @throws NullPointerException if name or value is null.
          */
         public Builder add(String name, String value) {
             if (null == name) {
@@ -239,12 +242,12 @@ public class FormBody extends RequestBody {
         }
 
         /**
-         * 添加已编码的表单字段
+         * Adds an already-encoded form field.
          *
-         * @param name  已编码的字段名称
-         * @param value 已编码的字段值
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 name 或 value 为 null
+         * @param name  The encoded field name.
+         * @param value The encoded field value.
+         * @return this builder instance.
+         * @throws NullPointerException if name or value is null.
          */
         public Builder addEncoded(String name, String value) {
             if (null == name) {
@@ -260,9 +263,9 @@ public class FormBody extends RequestBody {
         }
 
         /**
-         * 构建 FormBody 实例
+         * Builds a new {@link FormBody} instance.
          *
-         * @return FormBody 实例
+         * @return A new {@link FormBody} instance.
          */
         public FormBody build() {
             return new FormBody(names, values);

@@ -28,43 +28,55 @@
 package org.miaixz.bus.core.lang.loader.spi;
 
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import org.miaixz.bus.core.cache.SimpleCache;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 键值对服务加载器，使用{@link Properties}加载并存储服务 服务文件默认位于"META-INF/bus/"下，文件名为服务接口类全名。 内容类似于：
+ * A service loader for key-value pair services, which uses {@link Properties} to load and store services. Service files
+ * are located by default under {@code META-INF/bus/}, with the file name being the fully qualified name of the service
+ * interface class. The content of the file is similar to:
  * 
  * <pre>
- *     # 我是注释
- *     service1 = service.Service1
- *     service2 = service.Service2
+ *     # This is a comment
+ *     service1 = com.example.Service1
+ *     service2 = com.example.Service2
  * </pre>
  * 
- * 通过调用{@link #getService(String)}方法，传入等号前的名称，即可获取对应服务。
+ * The corresponding service can be obtained by calling the {@link #getService(String)} method with the name before the
+ * equals sign.
  *
- * @param <S> 服务类型
+ * @param <S> The type of the service.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
 
-    private static final String PREFIX = Normal.META_INF + "/bus/";
+    /**
+     * The default prefix for service definition files, located under {@code META-INF/bus/}.
+     */
+    private static final String PREFIX = Normal.META_INF + Symbol.SLASH + Keys.BUS + Symbol.SLASH;
+
+    /**
+     * Cache for service instances.
+     */
     private final SimpleCache<String, S> serviceCache;
+    /**
+     * Stores the loaded service definitions.
+     */
     private Properties serviceProperties;
 
     /**
-     * 构造
+     * Constructs a new {@code MapServiceLoader}.
      *
-     * @param pathPrefix   路径前缀
-     * @param serviceClass 服务名称
-     * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
-     * @param charset      编码，默认UTF-8
+     * @param pathPrefix   The path prefix for the service files.
+     * @param serviceClass The service interface class.
+     * @param classLoader  A custom class loader, or {@code null} to use the current default class loader.
+     * @param charset      The character set to use for reading the service files, defaults to UTF-8.
      */
     public MapServiceLoader(final String pathPrefix, final Class<S> serviceClass, final ClassLoader classLoader,
             final Charset charset) {
@@ -75,36 +87,36 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
     }
 
     /**
-     * 构建KVServiceLoader
+     * Creates a new {@code MapServiceLoader} with the default path prefix.
      *
-     * @param <S>          服务类型
-     * @param serviceClass 服务名称
-     * @return KVServiceLoader
+     * @param <S>          The type of the service.
+     * @param serviceClass The service interface class.
+     * @return A new {@code MapServiceLoader} instance.
      */
     public static <S> MapServiceLoader<S> of(final Class<S> serviceClass) {
         return of(serviceClass, null);
     }
 
     /**
-     * 构建KVServiceLoader
+     * Creates a new {@code MapServiceLoader} with the default path prefix and a specified class loader.
      *
-     * @param <S>          服务类型
-     * @param serviceClass 服务名称
-     * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
-     * @return KVServiceLoader
+     * @param <S>          The type of the service.
+     * @param serviceClass The service interface class.
+     * @param classLoader  A custom class loader, or {@code null} to use the current default class loader.
+     * @return A new {@code MapServiceLoader} instance.
      */
     public static <S> MapServiceLoader<S> of(final Class<S> serviceClass, final ClassLoader classLoader) {
         return of(PREFIX, serviceClass, classLoader);
     }
 
     /**
-     * 构建KVServiceLoader
+     * Creates a new {@code MapServiceLoader} with a specified path prefix and class loader.
      *
-     * @param <S>          服务类型
-     * @param pathPrefix   路径前缀
-     * @param serviceClass 服务名称
-     * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
-     * @return KVServiceLoader
+     * @param <S>          The type of the service.
+     * @param pathPrefix   The path prefix for the service files.
+     * @param serviceClass The service interface class.
+     * @param classLoader  A custom class loader, or {@code null} to use the current default class loader.
+     * @return A new {@code MapServiceLoader} instance.
      */
     public static <S> MapServiceLoader<S> of(
             final String pathPrefix,
@@ -114,19 +126,19 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
     }
 
     /**
-     * 加载或重新加载全部服务
+     * Loads or reloads all services. This method parses all service resources with the same name. According to resource
+     * loading priority, resources loaded and parsed first are prioritized. Subsequent resources with the same name are
+     * discarded.
      */
     @Override
     public void load() {
-        // 解析同名的所有service资源
-        // 按照资源加载优先级，先加载和解析的资源优先使用，后加载的同名资源丢弃
         final Properties properties = new Properties();
         ResourceKit.loadAllTo(
                 properties,
                 pathPrefix + serviceClass.getName(),
                 classLoader,
                 charset,
-                // 非覆盖模式
+                // non-override mode
                 false);
         this.serviceProperties = properties;
     }
@@ -147,7 +159,6 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
         if (StringKit.isBlank(serviceClassName)) {
             return null;
         }
-
         return ClassKit.loadClass(serviceClassName);
     }
 
@@ -175,10 +186,10 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
     }
 
     /**
-     * 创建服务，无缓存
+     * Creates a new service instance without caching.
      *
-     * @param serviceName 服务名称
-     * @return 服务对象
+     * @param serviceName The name of the service.
+     * @return The service object.
      */
     private S createService(final String serviceName) {
         return ReflectKit.newInstance(getServiceClass(serviceName));

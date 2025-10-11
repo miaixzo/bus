@@ -28,9 +28,12 @@
 package org.miaixz.bus.cron.crontab;
 
 /**
- * 定时作业接口，通过实现execute方法执行具体的任务
+ * Interface for a scheduled job to be executed.
  * <p>
- * 作业执行是异步执行，即不同作业、相同作业在不同时间的执行是相互独立的。 假如前一个作业未完成，下一个调度开始，则不会等待前一个作业，直接执行。 关于作业的互斥，请自行加锁完成。
+ * Job execution is asynchronous. This means that executions of different jobs, or even multiple executions of the same
+ * job, are independent of each other. If a previously scheduled execution of a job has not yet completed, a new
+ * execution will start at its scheduled time without waiting for the previous one to finish. To ensure mutual
+ * exclusion, you must implement your own locking mechanism within the job.
  * </p>
  *
  * @author Kimi Liu
@@ -40,9 +43,12 @@ package org.miaixz.bus.cron.crontab;
 public interface Crontab {
 
     /**
-     * 执行作业
+     * Executes the scheduled task.
      * <p>
-     * 作业的具体实现需考虑异常情况，默认情况下任务异常在监听中统一监听处理，如果不加入监听，异常会被忽略 因此最好自行捕获异常后处理
+     * Implementations should handle any exceptions that may occur during execution. By default, exceptions are caught
+     * and passed to registered listeners. If no listeners are configured, exceptions will be silently ignored. It is
+     * therefore recommended to handle exceptions within the method body.
+     * </p>
      */
     void execute();
 

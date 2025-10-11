@@ -27,31 +27,53 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import org.miaixz.bus.image.Format;
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.io.ImageInputStream;
+import org.miaixz.bus.logger.Logger;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import org.miaixz.bus.image.Format;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-import org.miaixz.bus.logger.Logger;
-
 /**
+ * A {@link SimpleFileVisitor} that reads DICOM files, merges them with additional attributes, and prints the resulting
+ * dataset as a formatted string to the logger.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Dcm2String extends SimpleFileVisitor<Path> {
 
+    /**
+     * The format string for the output.
+     */
     private final Format format;
+    /**
+     * Additional attributes to be merged into the dataset before printing.
+     */
     private final Attributes cliAttrs;
 
+    /**
+     * Constructs a new {@code Dcm2String} visitor.
+     *
+     * @param format   The format string to use for printing the DICOM dataset.
+     * @param cliAttrs Additional attributes to merge with the dataset from the file.
+     */
     public Dcm2String(Format format, Attributes cliAttrs) {
         this.format = format;
         this.cliAttrs = cliAttrs;
     }
 
+    /**
+     * Called for each file visited. Reads the DICOM file, merges attributes, formats the content, and logs the output.
+     *
+     * @param path  The path to the file being visited.
+     * @param attrs The basic attributes of the file.
+     * @return {@link FileVisitResult#CONTINUE} to continue the file tree walk.
+     */
     @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
         try (ImageInputStream dis = new ImageInputStream(path.toFile())) {

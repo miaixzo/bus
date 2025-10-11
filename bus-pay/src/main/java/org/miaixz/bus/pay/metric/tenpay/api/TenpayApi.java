@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.tenpay.api;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * QQ 钱包API
+ * QQ Wallet Payment APIs.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,80 +38,86 @@ import org.miaixz.bus.pay.Matcher;
 public enum TenpayApi implements Matcher {
 
     /**
-     * 提交付款码支付
+     * Micropay URL.
      */
-    MICRO_PAY_URL("/pay/qpay_micro_pay.cgi", "提交付款码支付"),
+    MICRO_PAY_URL("/pay/qpay_micro_pay.cgi", "Submit Micropay"),
     /**
-     * 统一下单
+     * Unified Order URL.
      */
-    UNIFIED_ORDER_URL("/pay/qpay_unified_order.cgi", "统一下单"),
+    UNIFIED_ORDER_URL("/pay/qpay_unified_order.cgi", "Unified Order"),
     /**
-     * 订单查询
+     * Order Query URL.
      */
-    ORDER_QUERY_URL("/pay/qpay_order_query.cgi", "订单查询"),
+    ORDER_QUERY_URL("/pay/qpay_order_query.cgi", "Order Query"),
     /**
-     * 关闭订单
+     * Close Order URL.
      */
-    CLOSE_ORDER_URL("/pay/qpay_close_order.cgi", "关闭订单"),
+    CLOSE_ORDER_URL("/pay/qpay_close_order.cgi", "Close Order"),
     /**
-     * 撤销订单
+     * Reverse Order URL.
      */
-    ORDER_REVERSE_URL("/pay/qpay_reverse.cgi", "撤销订单"),
+    ORDER_REVERSE_URL("/pay/qpay_reverse.cgi", "Reverse Order"),
     /**
-     * 申请退款
+     * Refund URL.
      */
-    ORDER_REFUND_URL("/pay/qpay_refund.cgi", "申请退款"),
+    ORDER_REFUND_URL("/pay/qpay_refund.cgi", "Apply for Refund"),
     /**
-     * 退款查询
+     * Refund Query URL.
      */
-    REFUND_QUERY_URL("/pay/qpay_refund_query.cgi", "退款查询"),
+    REFUND_QUERY_URL("/pay/qpay_refund_query.cgi", "Refund Query"),
     /**
-     * 对账单下载
+     * Download Bill URL.
      */
-    DOWNLOAD_BILL_URL("/sp_download/qpay_mch_statement_down.cgi", "对账单下载"),
+    DOWNLOAD_BILL_URL("/sp_download/qpay_mch_statement_down.cgi", "Download Bill"),
     /**
-     * 创建现金红包
+     * Create Red Packet URL.
      */
-    CREATE_READ_PACK_URL("/hongbao/qpay_hb_mch_send.cgi", "创建现金红包"),
+    CREATE_READ_PACK_URL("/hongbao/qpay_hb_mch_send.cgi", "Create Red Packet"),
     /**
-     * 查询红包详情
+     * Get Red Packet Info URL.
      */
-    GET_HB_INFO_URL("/mch_query/qpay_hb_mch_list_query.cgi", "查询红包详情"),
+    GET_HB_INFO_URL("/mch_query/qpay_hb_mch_list_query.cgi", "Query Red Packet Info"),
     /**
-     * 红包对账单下载
+     * Download Red Packet Bill URL.
      */
-    DOWNLOAD_HB_BILL_URL("/hongbao/qpay_hb_mch_down_list_file.cgi", "红包对账单下载"),
+    DOWNLOAD_HB_BILL_URL("/hongbao/qpay_hb_mch_down_list_file.cgi", "Download Red Packet Bill"),
     /**
-     * 企业付款到余额
+     * Transfer to Balance URL.
      */
-    TRANSFER_URL("/epay/qpay_epay_b2c.cgi", "企业付款到余额"),
+    TRANSFER_URL("/epay/qpay_epay_b2c.cgi", "Transfer to Balance"),
     /**
-     * 查询企业付款
+     * Get Transfer Info URL.
      */
-    GET_TRANSFER_INFO_URL("/pay/qpay_epay_query.cgi", "查询企业付款"),
+    GET_TRANSFER_INFO_URL("/pay/qpay_epay_query.cgi", "Query Transfer Info"),
     /**
-     * 企业付款对账单下载
+     * Download Transfer Bill URL.
      */
-    DOWNLOAD_TRANSFER_BILL_URL("/pay/qpay_epay_statement_down.cgi", "企业付款对账单下载");
+    DOWNLOAD_TRANSFER_BILL_URL("/pay/qpay_epay_statement_down.cgi", "Download Transfer Bill");
 
     /**
-     * 接口方法
+     * The API endpoint.
      */
     private final String method;
     /**
-     * 描述
+     * The description of the API.
      */
     private final String desc;
 
+    /**
+     * Constructs a new TenpayApi.
+     *
+     * @param method The API endpoint.
+     * @param desc   The description of the API.
+     */
     TenpayApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -119,9 +125,9 @@ public enum TenpayApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the description of the transaction type.
      *
-     * @return the string
+     * @return The description of the transaction type.
      */
     @Override
     public String desc() {
@@ -129,9 +135,9 @@ public enum TenpayApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API endpoint.
      *
-     * @return the string
+     * @return The API endpoint.
      */
     @Override
     public String method() {

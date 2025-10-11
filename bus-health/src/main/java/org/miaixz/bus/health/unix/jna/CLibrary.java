@@ -43,13 +43,31 @@ import com.sun.jna.ptr.PointerByReference;
  */
 public interface CLibrary extends LibCAPI, Library {
 
+    /**
+     * Flag for getaddrinfo(): if specified, return canonical name.
+     */
     int AI_CANONNAME = 2;
 
+    /**
+     * Size of the ut_line field in a utmpx structure.
+     */
     int UT_LINESIZE = 32;
+    /**
+     * Size of the ut_name field in a utmpx structure.
+     */
     int UT_NAMESIZE = 32;
+    /**
+     * Size of the ut_host field in a utmpx structure.
+     */
     int UT_HOSTSIZE = 256;
-    int LOGIN_PROCESS = 6; // Session leader of a logged in user.
-    int USER_PROCESS = 7; // Normal process.
+    /**
+     * Session leader of a logged in user.
+     */
+    int LOGIN_PROCESS = 6;
+    /**
+     * Normal process.
+     */
+    int USER_PROCESS = 7;
 
     /**
      * Returns the process ID of the calling process. The ID is guaranteed to be unique and is useful for constructing
@@ -172,91 +190,255 @@ public interface CLibrary extends LibCAPI, Library {
      */
     int sysctlnametomib(String name, Pointer mibp, size_t.ByReference sizep);
 
+    /**
+     * Opens a file at the given absolute path.
+     *
+     * @param absolutePath The absolute path of the file to open.
+     * @param i            File access flags.
+     * @return a file descriptor on success, or -1 on failure.
+     */
     int open(String absolutePath, int i);
 
-    // Last argument is really off_t
+    /**
+     * Reads from a file descriptor at a given offset.
+     *
+     * @param fildes The file descriptor.
+     * @param buf    A buffer to read data into.
+     * @param nbyte  The number of bytes to read.
+     * @param offset The offset in the file to read from.
+     * @return the number of bytes read on success, or -1 on failure.
+     */
     ssize_t pread(int fildes, Pointer buf, size_t nbyte, NativeLong offset);
 
+    /**
+     * Socket address structure.
+     */
     @FieldOrder({ "sa_family", "sa_data" })
     class Sockaddr extends Structure {
 
+        /**
+         * Address family.
+         */
         public short sa_family;
+        /**
+         * Socket address data.
+         */
         public byte[] sa_data = new byte[14];
 
+        /**
+         * A reference to a {@link Sockaddr} structure.
+         */
         public static class ByReference extends Sockaddr implements Structure.ByReference {
         }
     }
 
+    /**
+     * TCP statistics structure for BSD.
+     */
     class BsdTcpstat {
 
-        public int tcps_connattempt; // 0
-        public int tcps_accepts; // 4
-        public int tcps_drops; // 12
-        public int tcps_conndrops; // 16
-        public int tcps_sndpack; // 64
-        public int tcps_sndrexmitpack; // 72
-        public int tcps_rcvpack; // 104
-        public int tcps_rcvbadsum; // 112
-        public int tcps_rcvbadoff; // 116
-        public int tcps_rcvmemdrop; // 120
-        public int tcps_rcvshort; // 124
+        /**
+         * Connections initiated.
+         */
+        public int tcps_connattempt;
+        /**
+         * Connections accepted.
+         */
+        public int tcps_accepts;
+        /**
+         * Connections dropped.
+         */
+        public int tcps_drops;
+        /**
+         * Embryonic connections dropped.
+         */
+        public int tcps_conndrops;
+        /**
+         * Packets sent.
+         */
+        public int tcps_sndpack;
+        /**
+         * Packets retransmitted.
+         */
+        public int tcps_sndrexmitpack;
+        /**
+         * Packets received.
+         */
+        public int tcps_rcvpack;
+        /**
+         * Packets received with bad checksum.
+         */
+        public int tcps_rcvbadsum;
+        /**
+         * Packets received with bad offset.
+         */
+        public int tcps_rcvbadoff;
+        /**
+         * Packets dropped for lack of memory.
+         */
+        public int tcps_rcvmemdrop;
+        /**
+         * Packets received shorter than header.
+         */
+        public int tcps_rcvshort;
     }
 
+    /**
+     * UDP statistics structure for BSD.
+     */
     class BsdUdpstat {
 
-        public int udps_ipackets; // 0
-        public int udps_hdrops; // 4
-        public int udps_badsum; // 8
-        public int udps_badlen; // 12
-        public int udps_opackets; // 36
-        public int udps_noportmcast; // 48
-        public int udps_rcv6_swcsum; // 64
-        public int udps_snd6_swcsum; // 89
+        /**
+         * Total input packets.
+         */
+        public int udps_ipackets;
+        /**
+         * Dropped due to no socket.
+         */
+        public int udps_hdrops;
+        /**
+         * Checksum error.
+         */
+        public int udps_badsum;
+        /**
+         * Data length larger than packet.
+         */
+        public int udps_badlen;
+        /**
+         * Total output packets.
+         */
+        public int udps_opackets;
+        /**
+         * No multicast destination.
+         */
+        public int udps_noportmcast;
+        /**
+         * Software checksummed packets received.
+         */
+        public int udps_rcv6_swcsum;
+        /**
+         * Software checksummed packets sent.
+         */
+        public int udps_snd6_swcsum;
     }
 
+    /**
+     * IP statistics structure for BSD.
+     */
     class BsdIpstat {
 
-        public int ips_total; // 0
-        public int ips_badsum; // 4
-        public int ips_tooshort; // 8
-        public int ips_toosmall; // 12
-        public int ips_badhlen; // 16
-        public int ips_badlen; // 20
-        public int ips_delivered; // 56
+        /**
+         * Total packets received.
+         */
+        public int ips_total;
+        /**
+         * Checksum bad.
+         */
+        public int ips_badsum;
+        /**
+         * Packet too short.
+         */
+        public int ips_tooshort;
+        /**
+         * Not enough data.
+         */
+        public int ips_toosmall;
+        /**
+         * Bad header length.
+         */
+        public int ips_badhlen;
+        /**
+         * Bad packet length.
+         */
+        public int ips_badlen;
+        /**
+         * Delivered to upper level protocols.
+         */
+        public int ips_delivered;
     }
 
+    /**
+     * IPv6 statistics structure for BSD.
+     */
     class BsdIp6stat {
 
-        public long ip6s_total; // 0
-        public long ip6s_localout; // 88
+        /**
+         * Total packets received.
+         */
+        public long ip6s_total;
+        /**
+         * Total output packets.
+         */
+        public long ip6s_localout;
     }
 
+    /**
+     * Address information structure.
+     */
     @FieldOrder({ "ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
             "ai_next" })
     class Addrinfo extends Structure implements AutoCloseable {
 
+        /**
+         * Input flags.
+         */
         public int ai_flags;
+        /**
+         * Address family for socket.
+         */
         public int ai_family;
+        /**
+         * Socket type.
+         */
         public int ai_socktype;
+        /**
+         * Protocol for socket.
+         */
         public int ai_protocol;
+        /**
+         * Length of socket address.
+         */
         public int ai_addrlen;
+        /**
+         * Socket address for socket.
+         */
         public Sockaddr.ByReference ai_addr;
+        /**
+         * Canonical name for service location.
+         */
         public String ai_canonname;
+        /**
+         * Pointer to next in list.
+         */
         public ByReference ai_next;
 
+        /**
+         * Constructs an {@code Addrinfo} object.
+         */
         public Addrinfo() {
         }
 
+        /**
+         * Constructs an {@code Addrinfo} object from a pointer.
+         *
+         * @param p The pointer to the structure.
+         */
         public Addrinfo(Pointer p) {
             super(p);
             read();
         }
 
+        /**
+         * Closes the memory associated with this structure.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
         }
 
+        /**
+         * A reference to an {@link Addrinfo} structure.
+         */
         public static class ByReference extends Addrinfo implements Structure.ByReference {
         }
     }

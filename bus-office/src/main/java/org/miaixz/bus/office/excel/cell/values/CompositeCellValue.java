@@ -35,7 +35,7 @@ import org.miaixz.bus.office.excel.cell.editors.CellEditor;
 import org.miaixz.bus.office.excel.xyz.CellKit;
 
 /**
- * 复合单元格值，用于根据单元格类型读取不同的值
+ * Composite cell value, used to read different values based on the cell type.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,11 +47,12 @@ public class CompositeCellValue implements CellValue<Object> {
     private final CellEditor cellEditor;
 
     /**
-     * 构造
+     * Constructs a new {@code CompositeCellValue}.
      *
-     * @param cell       {@link Cell}单元格
-     * @param cellType   单元格值类型{@link CellType}枚举，如果为{@code null}默认使用cell的类型
-     * @param cellEditor 单元格值编辑器。可以通过此编辑器对单元格值做自定义操作
+     * @param cell       The {@link Cell} object.
+     * @param cellType   The {@link CellType} enum for the cell value type. If {@code null}, the cell's own type is
+     *                   used.
+     * @param cellEditor The cell editor. This editor can be used to customize cell values.
      */
     public CompositeCellValue(final Cell cell, final CellType cellType, final CellEditor cellEditor) {
         this.cell = cell;
@@ -60,12 +61,13 @@ public class CompositeCellValue implements CellValue<Object> {
     }
 
     /**
-     * 创建CompositeCellValue
+     * Creates a {@code CompositeCellValue} instance.
      *
-     * @param cell       {@link Cell}单元格
-     * @param cellType   单元格值类型{@link CellType}枚举，如果为{@code null}默认使用cell的类型
-     * @param cellEditor 单元格值编辑器。可以通过此编辑器对单元格值做自定义操作
-     * @return CompositeCellValue
+     * @param cell       The {@link Cell} object.
+     * @param cellType   The {@link CellType} enum for the cell value type. If {@code null}, the cell's own type is
+     *                   used.
+     * @param cellEditor The cell editor. This editor can be used to customize cell values.
+     * @return A new {@code CompositeCellValue} instance.
      */
     public static CompositeCellValue of(final Cell cell, final CellType cellType, final CellEditor cellEditor) {
         return new CompositeCellValue(cell, cellType, cellEditor);
@@ -87,7 +89,7 @@ public class CompositeCellValue implements CellValue<Object> {
             cellType = cell.getCellType();
         }
 
-        // 尝试获取合并单元格，如果是合并单元格，则重新获取单元格类型
+        // Attempt to get merged cell. If it is a merged cell, re-get the cell type.
         final Cell mergedCell = CellKit.getFirstCellOfMerged(cell);
         if (mergedCell != cell) {
             cell = mergedCell;

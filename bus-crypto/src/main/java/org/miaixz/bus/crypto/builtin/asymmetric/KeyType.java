@@ -30,7 +30,8 @@ package org.miaixz.bus.crypto.builtin.asymmetric;
 import javax.crypto.Cipher;
 
 /**
- * 密钥类型
+ * Enumeration representing different types of cryptographic keys. These key types are typically used in asymmetric
+ * encryption operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,33 +39,33 @@ import javax.crypto.Cipher;
 public enum KeyType {
 
     /**
-     * 公钥
+     * Public key type, corresponding to {@link Cipher#PUBLIC_KEY}.
      */
     PublicKey(Cipher.PUBLIC_KEY),
     /**
-     * 私钥
+     * Private key type, corresponding to {@link Cipher#PRIVATE_KEY}.
      */
     PrivateKey(Cipher.PRIVATE_KEY),
     /**
-     * 密钥
+     * Secret key type, corresponding to {@link Cipher#SECRET_KEY}.
      */
     SecretKey(Cipher.SECRET_KEY);
 
     private final int value;
 
     /**
-     * 构造
+     * Constructs a {@code KeyType} enum with the specified integer value.
      *
-     * @param value 见{@link Cipher}
+     * @param value The integer value representing the key type, typically from {@link Cipher}.
      */
     KeyType(final int value) {
         this.value = value;
     }
 
     /**
-     * 获取枚举值对应的int表示
+     * Retrieves the integer representation of the key type.
      *
-     * @return 枚举值对应的int表示
+     * @return The integer value corresponding to this key type.
      */
     public int getValue() {
         return this.value;

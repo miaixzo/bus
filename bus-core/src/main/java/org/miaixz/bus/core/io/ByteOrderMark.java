@@ -38,8 +38,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * Byte Order Mark (BOM) 头描述
- * BOM定义：<a href="http://www.unicode.org/unicode/faq/utf_bom.html">http://www.unicode.org/unicode/faq/utf_bom.html</a>
+ * Description of a Byte Order Mark (BOM) header. BOM definitions:
+ * <a href="http://www.unicode.org/unicode/faq/utf_bom.html">http://www.unicode.org/unicode/faq/utf_bom.html</a>
  * <ul>
  * <li>EF BB BF = UTF-8</li>
  * <li>FE FF = UTF-16BE, big-endian</li>
@@ -47,10 +47,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * <li>00 00 FE FF = UTF-32BE, big-endian</li>
  * <li>FF FE 00 00 = UTF-32LE, little-endian</li>
  * </ul>
- *
- * <p>
- * 来自：Apache-commons-io
- * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -84,7 +80,7 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
     public static final ByteOrderMark UTF_32LE = new ByteOrderMark("UTF-32LE", (byte) 0xFF, (byte) 0xFE, (byte) 0x00,
             (byte) 0x00);
     /**
-     * 预定义的所有BOM信息
+     * All predefined BOM information.
      */
     public static final ByteOrderMark[] ALL = new ByteOrderMark[] { UTF_32BE, UTF_32LE, UTF_8, UTF_16BE, UTF_16LE };
 
@@ -92,11 +88,11 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
     private final byte[] bytes;
 
     /**
-     * 构造
+     * Constructs a new {@code ByteOrderMark} instance.
      *
-     * @param charsetName BOM定义的编码名称
-     * @param bytes       BOM bytes
-     * @throws IllegalArgumentException 编码名称为空或者bytes为空
+     * @param charsetName The character set name defined by the BOM.
+     * @param bytes       The BOM bytes.
+     * @throws IllegalArgumentException if the character set name is empty or the bytes array is empty.
      */
     public ByteOrderMark(final String charsetName, final byte... bytes) {
         if (ArrayKit.isEmpty(bytes)) {
@@ -108,47 +104,48 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
     }
 
     /**
-     * 获取BOM头定义的编码名称.
+     * Gets the character set name defined by the BOM header.
      *
-     * @return 编码名称
+     * @return The character set name.
      */
     public String getCharsetName() {
         return charsetName;
     }
 
     /**
-     * 获取BOM头byte数
+     * Gets the number of bytes in the BOM header.
      *
-     * @return BOM头byte数
+     * @return The number of bytes in the BOM header.
      */
     public int length() {
         return bytes.length;
     }
 
     /**
-     * 获取指定位置的byte值
+     * Gets the byte value at the specified position.
      *
-     * @param pos The position
-     * @return The specified byte
+     * @param pos The position.
+     * @return The specified byte.
      */
     public int get(final int pos) {
         return bytes[pos];
     }
 
     /**
-     * Gets a copier of the BOM's bytes.
+     * Gets a copy of the BOM's bytes.
      *
-     * @return a copier of the BOM's bytes
+     * @return A copy of the BOM's bytes.
      */
     public byte[] getBytes() {
         return Arrays.copyOfRange(bytes, 0, bytes.length);
     }
 
     /**
-     * 是否匹配头部BOM信息 当提供的长度小于BOM需要检查的长度时，返回{code false}
+     * Checks if the given head bytes match the BOM information. Returns {@code false} if the provided length is less
+     * than the length required for BOM check.
      *
-     * @param headBytes 头部bytes
-     * @return 是否匹配头部BOM信息
+     * @param headBytes The head bytes to check.
+     * @return {@code true} if the head bytes match the BOM, {@code false} otherwise.
      */
     @Override
     public boolean test(final byte[] headBytes) {
@@ -163,6 +160,15 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
         return true;
     }
 
+    /**
+     * Compares this {@code ByteOrderMark} to the specified object. The result is {@code true} if and only if the
+     * argument is not {@code null} and is a {@code ByteOrderMark} object that represents the same sequence of bytes as
+     * this object.
+     *
+     * @param object The object to compare this {@code ByteOrderMark} against.
+     * @return {@code true} if the given object represents a {@code ByteOrderMark} equivalent to this byte order mark,
+     *         {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object object) {
         if (!(object instanceof ByteOrderMark)) {
@@ -172,6 +178,11 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
         return Arrays.equals(this.bytes, bom.bytes);
     }
 
+    /**
+     * Returns a hash code for this byte order mark.
+     *
+     * @return A hash code value for this object.
+     */
     @Override
     public int hashCode() {
         int hashCode = getClass().hashCode();
@@ -181,6 +192,11 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
         return hashCode;
     }
 
+    /**
+     * Returns a string representation of this {@code ByteOrderMark}.
+     *
+     * @return A string representation of this object.
+     */
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
@@ -199,9 +215,17 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
         return builder.toString();
     }
 
+    /**
+     * Compares this byte order mark to another byte order mark. The comparison is based on the length of the BOM, in
+     * descending order.
+     *
+     * @param o The other byte order mark to compare to.
+     * @return A negative integer, zero, or a positive integer as this byte order mark is less than, equal to, or
+     *         greater than the specified byte order mark.
+     */
     @Override
     public int compareTo(final ByteOrderMark o) {
-        // 按照长度倒序
+        // Sort by length in descending order
         return Integer.compare(o.length(), this.length());
     }
 

@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v2;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v2 版本-企业付款相关接口
+ * WeChat Pay V2 API interfaces related to enterprise transfers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,59 +38,65 @@ import org.miaixz.bus.pay.Matcher;
 public enum TransferApi implements Matcher {
 
     /**
-     * 企业付款
+     * Enterprise transfer.
      */
-    TRANSFER("/mmpaymkttransfers/promotion/transfers", "企业付款"),
+    TRANSFER("/mmpaymkttransfers/promotion/transfers", "Enterprise transfer"),
 
     /**
-     * 查询企业付款
+     * Query enterprise transfer.
      */
-    GET_TRANSFER_INFO("/mmpaymkttransfers/gettransferinfo", "查询企业付款"),
+    GET_TRANSFER_INFO("/mmpaymkttransfers/gettransferinfo", "Query enterprise transfer"),
 
     /**
-     * 付款到银行卡
+     * Pay to bank card.
      */
-    TRANSFER_BANK("/mmpaysptrans/pay_bank", "付款到银行卡"),
+    TRANSFER_BANK("/mmpaysptrans/pay_bank", "Pay to bank card"),
 
     /**
-     * 查询付款到银行卡
+     * Query pay to bank card.
      */
-    GET_TRANSFER_BANK_INFO("/mmpaysptrans/query_bank", "查询付款到银行卡"),
+    GET_TRANSFER_BANK_INFO("/mmpaysptrans/query_bank", "Query pay to bank card"),
 
     /**
-     * 获取 RSA 加密公钥
+     * Get RSA encryption public key.
      */
-    GET_PUBLIC_KEY("/risk/getpublickey", "获取 RSA 加密公钥"),
+    GET_PUBLIC_KEY("/risk/getpublickey", "Get RSA encryption public key"),
 
     /**
-     * 向员工付款
+     * Pay to employee.
      */
-    PAY_WWS_TRANS_2_POCKET("/mmpaymkttransfers/promotion/paywwsptrans2pocket", "向员工付款"),
+    PAY_WWS_TRANS_2_POCKET("/mmpaymkttransfers/promotion/paywwsptrans2pocket", "Pay to employee"),
 
     /**
-     * 查询向员工付款记录
+     * Query pay to employee record.
      */
-    QUERY_WWS_TRANS_2_POCKET("/mmpaymkttransfers/promotion/querywwsptrans2pocket", "查询向员工付款记录");
+    QUERY_WWS_TRANS_2_POCKET("/mmpaymkttransfers/promotion/querywwsptrans2pocket", "Query pay to employee record");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new TransferApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     TransferApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -98,9 +104,9 @@ public enum TransferApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -108,9 +114,9 @@ public enum TransferApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

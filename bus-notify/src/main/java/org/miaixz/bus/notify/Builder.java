@@ -32,7 +32,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * 构造信息
+ * Builder for constructing notification messages or configurations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,21 +42,21 @@ import lombok.ToString;
 public class Builder {
 
     /**
-     * 缓存类型
+     * Defines the type of cache to be used for notification services.
      */
     @Getter
     @ToString
     public enum Type {
         /**
-         * 使用内置的缓存
+         * Uses the built-in cache mechanism.
          */
         DEFAULT,
         /**
-         * 使用Redis缓存
+         * Uses Redis for caching.
          */
         REDIS,
         /**
-         * 自定义缓存
+         * Uses a custom cache implementation.
          */
         CUSTOM
     }

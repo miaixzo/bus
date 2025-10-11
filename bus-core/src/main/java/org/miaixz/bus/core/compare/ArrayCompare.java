@@ -33,9 +33,11 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * 按照数组的顺序正序排列，数组的元素位置决定了对象的排序先后 默认的，如果参与排序的元素并不在数组中，则排序在前（可以通过atEndIfMiss设置)
+ * Comparator that sorts elements based on their order in a given array. The position of an element in the array
+ * determines its sort order. By default, if an element to be sorted is not in the array, it will be placed at the
+ * beginning. This behavior can be changed by setting {@code atEndIfMiss}.
  *
- * @param <T> 被排序元素类型
+ * @param <T> the type of elements to be compared.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -45,19 +47,20 @@ public class ArrayCompare<T> implements Comparator<T> {
     private final T[] array;
 
     /**
-     * 构造
+     * Constructs a new {@code ArrayCompare}.
      *
-     * @param objs 参与排序的数组，数组的元素位置决定了对象的排序先后
+     * @param objs the array of objects that defines the sort order.
      */
     public ArrayCompare(final T... objs) {
         this(false, objs);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code ArrayCompare}.
      *
-     * @param atEndIfMiss 如果不在列表中是否排在后边
-     * @param objs        参与排序的数组，数组的元素位置决定了对象的排序先后
+     * @param atEndIfMiss if {@code true}, elements not in the array will be placed at the end; otherwise, at the
+     *                    beginning.
+     * @param objs        the array of objects that defines the sort order.
      */
     public ArrayCompare(final boolean atEndIfMiss, final T... objs) {
         Assert.notNull(objs, "'objs' array must not be null");
@@ -70,11 +73,11 @@ public class ArrayCompare<T> implements Comparator<T> {
         final int index1 = getOrder(o1);
         final int index2 = getOrder(o2);
 
-        // 任意一个元素不在列表中
+        // If both elements have the same index (either found or not found)
         if (index1 == index2) {
+            // If the index indicates the element is not in the list, maintain original order.
             if (index1 < 0 || index1 == this.array.length) {
-                // 任意一个元素不在列表中, 返回原顺序
-                return 1;
+                return 1; // Keep original order for elements not in the list
             }
         }
 
@@ -82,10 +85,11 @@ public class ArrayCompare<T> implements Comparator<T> {
     }
 
     /**
-     * 查找对象类型所在列表的位置
+     * Finds the position of the given object in the sort-order array.
      *
-     * @param object 对象
-     * @return 位置，未找到位置根据{@link #atEndIfMiss}取不同值，false返回-1，否则返回列表长度
+     * @param object the object to find.
+     * @return the index of the object in the array. If not found, returns -1 if {@link #atEndIfMiss} is false, or the
+     *         length of the array if {@link #atEndIfMiss} is true.
      */
     private int getOrder(final T object) {
         int order = ArrayKit.indexOf(array, object);

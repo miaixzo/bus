@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.socket;
 
+import org.miaixz.bus.core.lang.Normal;
+
 import java.net.SocketOption;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.miaixz.bus.core.lang.Normal;
-
 /**
- * 服务端/客户端上下文信息 T:解码后生成的对象类型
+ * Represents the context for a server or client, holding configuration and operational parameters. The generic type
+ * {@code T} represents the type of object produced after decoding.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,168 +43,245 @@ import org.miaixz.bus.core.lang.Normal;
 public final class Context {
 
     /**
-     * 消息体缓存大小,字节
+     * The size of the read buffer for message bodies, in bytes.
      */
     private int readBufferSize = Normal._512;
     /**
-     * 内存块大小限制
+     * The size limit for individual memory chunks in the write buffer.
      */
     private int writeBufferSize = Normal._128;
     /**
-     * Write缓存区容量
+     * The capacity of the write buffer queue.
      */
     private int writeBufferCapacity = Normal._16;
     /**
-     * 远程服务器IP
+     * The IP address of the remote server.
      */
     private String host;
     /**
-     * 服务器消息拦截器
+     * The message interceptor for monitoring server events.
      */
     private Monitor monitor;
     /**
-     * 服务器端口号
+     * The port number for the server.
      */
     private int port = 7890;
 
     /**
-     * 服务端backlog
+     * The server socket backlog size.
      */
     private int backlog = 1000;
 
     /**
-     * 消息处理器
+     * The message handler for processing incoming data.
      */
     private Handler processor;
     /**
-     * 消息编解码
+     * The message codec for encoding and decoding data.
      */
     private Message message;
 
     /**
-     * Socket 配置
+     * A map of socket options to be configured on the underlying socket.
      */
     private Map<SocketOption<Object>, Object> socketOptions;
 
     /**
-     * 线程数
+     * The number of threads for the worker pool.
      */
     private int threadNum = 1;
 
     /**
-     * 获取默认内存块大小
+     * Gets the default size of memory chunks for writing.
      *
-     * @return 内存块大小
+     * @return the write buffer size
      */
     public int getWriteBufferSize() {
         return writeBufferSize;
     }
 
     /**
-     * @param writeBufferSize 内存块大小
+     * Sets the size of memory chunks for writing.
+     *
+     * @param writeBufferSize the new write buffer size
      */
     public void setWriteBufferSize(int writeBufferSize) {
         this.writeBufferSize = writeBufferSize;
     }
 
     /**
-     * @return 主机地址
+     * Gets the host address.
+     *
+     * @return the host address
      */
     public String getHost() {
         return host;
     }
 
     /**
-     * @param host 主机地址
+     * Sets the host address.
+     *
+     * @param host the new host address
      */
     public void setHost(String host) {
         this.host = host;
     }
 
     /**
-     * @return 端口号
+     * Gets the port number.
+     *
+     * @return the port number
      */
     public int getPort() {
         return port;
     }
 
     /**
-     * @param port 端口号
+     * Sets the port number.
+     *
+     * @param port the new port number
      */
     public void setPort(int port) {
         this.port = port;
     }
 
+    /**
+     * Gets the monitor for this context.
+     *
+     * @return the current {@link Monitor}
+     */
     public Monitor getMonitor() {
         return monitor;
     }
 
+    /**
+     * Gets the protocol message codec.
+     *
+     * @return the current {@link Message} codec
+     */
     public Message getProtocol() {
         return message;
     }
 
+    /**
+     * Sets the protocol message codec.
+     *
+     * @param message the new {@link Message} codec
+     */
     public void setProtocol(Message message) {
         this.message = message;
     }
 
+    /**
+     * Gets the message handler.
+     *
+     * @return the current {@link Handler}
+     */
     public Handler getProcessor() {
         return processor;
     }
 
     /**
-     * @param processor 消息处理器
+     * Sets the message handler. If the handler is also an instance of {@link Monitor}, it will be set as the monitor
+     * for this context.
+     *
+     * @param processor the new message handler
      */
     public void setProcessor(Handler processor) {
         this.processor = processor;
         this.monitor = (processor instanceof Monitor) ? (Monitor) processor : null;
     }
 
+    /**
+     * Gets the read buffer size.
+     *
+     * @return the read buffer size in bytes
+     */
     public int getReadBufferSize() {
         return readBufferSize;
     }
 
     /**
-     * @param readBufferSize 读缓冲大小
+     * Sets the read buffer size.
+     *
+     * @param readBufferSize the new read buffer size in bytes
      */
     public void setReadBufferSize(int readBufferSize) {
         this.readBufferSize = readBufferSize;
     }
 
+    /**
+     * Gets the map of configured socket options.
+     *
+     * @return the map of socket options
+     */
     public Map<SocketOption<Object>, Object> getSocketOptions() {
         return socketOptions;
     }
 
     /**
-     * @param socketOption socketOption名称
-     * @param f            socketOption值
+     * Sets a socket option.
+     *
+     * @param socketOption the socket option to set
+     * @param value        the value of the socket option
      */
-    public void setOption(SocketOption socketOption, Object f) {
+    public void setOption(SocketOption socketOption, Object value) {
         if (socketOptions == null) {
             socketOptions = new HashMap<>(4);
         }
-        socketOptions.put(socketOption, f);
+        socketOptions.put(socketOption, value);
     }
 
+    /**
+     * Gets the capacity of the write buffer queue.
+     *
+     * @return the write buffer capacity
+     */
     public int getWriteBufferCapacity() {
         return writeBufferCapacity;
     }
 
+    /**
+     * Sets the capacity of the write buffer queue.
+     *
+     * @param writeBufferCapacity the new capacity
+     */
     public void setWriteBufferCapacity(int writeBufferCapacity) {
         this.writeBufferCapacity = writeBufferCapacity;
     }
 
+    /**
+     * Gets the number of threads for the worker pool.
+     *
+     * @return the number of threads
+     */
     public int getThreadNum() {
         return threadNum;
     }
 
+    /**
+     * Sets the number of threads for the worker pool.
+     *
+     * @param threadNum the number of threads
+     */
     public void setThreadNum(int threadNum) {
         this.threadNum = threadNum;
     }
 
+    /**
+     * Gets the server socket backlog size.
+     *
+     * @return the backlog size
+     */
     public int getBacklog() {
         return backlog;
     }
 
+    /**
+     * Sets the server socket backlog size.
+     *
+     * @param backlog the new backlog size
+     */
     public void setBacklog(int backlog) {
         this.backlog = backlog;
     }

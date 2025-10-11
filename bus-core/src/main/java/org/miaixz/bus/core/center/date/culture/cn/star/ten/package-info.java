@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 十神
+ * Provides classes related to the Ten Gods (十神) in Chinese Bazi (Four Pillars of Destiny) astrology.
  *
  * @author Kimi Liu
  * @since Java 17+

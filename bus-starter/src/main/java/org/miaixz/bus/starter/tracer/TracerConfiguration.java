@@ -27,18 +27,25 @@
 */
 package org.miaixz.bus.starter.tracer;
 
+import jakarta.annotation.Resource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import jakarta.annotation.Resource;
-
 /**
+ * Auto-configuration for distributed tracing.
+ * <p>
+ * This class enables the {@link TracerProperties}, which will hold the configuration for the tracing system. It serves
+ * as the entry point for setting up tracing-related beans.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 @EnableConfigurationProperties(value = { TracerProperties.class })
 public class TracerConfiguration {
 
+    /**
+     * Injected distributed tracing configuration properties.
+     */
     @Resource
-    TracerProperties properties;
+    private TracerProperties properties;
 
 }

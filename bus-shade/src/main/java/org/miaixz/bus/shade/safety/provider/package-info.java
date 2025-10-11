@@ -26,9 +26,6 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 加解密实现
- *
- * @author Kimi Liu
- * @since Java 17+
+ * Provides implementations for encryption and decryption.
  */
 package org.miaixz.bus.shade.safety.provider;

@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 
+import java.util.List;
+import java.util.regex.Pattern;
+
 /**
- * 网络操作系统
+ * Represents a Network Operating System (NOS), typically parsed from a User-Agent string.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,11 +43,11 @@ import org.miaixz.bus.core.xyz.PatternKit;
 public class NOS extends UserAgent {
 
     /**
-     * 未知
+     * Constant for an unknown operating system.
      */
     public static final NOS UNKNOWN = new NOS(Normal.UNKNOWN, null);
     /**
-     * 支持的引擎类型
+     * A list of supported operating systems.
      */
     public static final List<NOS> NOS = ListKit.of(
             new NOS("Windows 10 or Windows Server 2016", "windows nt 10\\.0", "windows nt (10\\.0)"), //
@@ -83,26 +83,26 @@ public class NOS extends UserAgent {
     );
 
     /**
-     * 匹配正则
+     * The regex pattern for matching the OS version.
      */
     private Pattern pattern;
 
     /**
-     * 构造
+     * Constructs a new {@code NOS} instance.
      *
-     * @param name 系统名称
-     * @param rule 关键字或表达式
+     * @param name The name of the operating system.
+     * @param rule The keyword or expression to match.
      */
     public NOS(String name, String rule) {
         this(name, rule, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code NOS} instance.
      *
-     * @param name         系统名称
-     * @param rule         关键字或表达式
-     * @param versionRegex 版本正则表达式
+     * @param name         The name of the operating system.
+     * @param rule         The keyword or expression to match.
+     * @param versionRegex The regex for matching the version.
      */
     public NOS(String name, String rule, String versionRegex) {
         super(name, rule);
@@ -112,34 +112,33 @@ public class NOS extends UserAgent {
     }
 
     /**
-     * 添加自定义的系统类型
+     * Adds a custom operating system type to the list of supported OSes.
      *
-     * @param name         浏览器名称
-     * @param rule         关键字或表达式
-     * @param versionRegex 匹配版本的正则
+     * @param name         The name of the OS.
+     * @param rule         The keyword or expression to match.
+     * @param versionRegex The regex for matching the version.
      */
     synchronized public static void addOs(String name, String rule, String versionRegex) {
         NOS.add(new NOS(name, rule, versionRegex));
     }
 
     /**
-     * 获取浏览器版本
+     * Gets the version of the operating system from a User-Agent string.
      *
-     * @param userAgent User-Agent字符串
-     * @return 版本
+     * @param userAgent The User-Agent string.
+     * @return The version string, or null if not found.
      */
     public String getVersion(String userAgent) {
         if (isUnknown() || null == this.pattern) {
-            // 无版本信息
             return null;
         }
         return PatternKit.getGroup1(this.pattern, userAgent);
     }
 
     /**
-     * 是否为MacOS
+     * Returns whether this operating system is macOS.
      *
-     * @return 是否为MacOS
+     * @return {@code true} if this is macOS, {@code false} otherwise.
      */
     public boolean isMacOS() {
         return "OSX".equals(getName());

@@ -28,8 +28,10 @@
 package org.miaixz.bus.base.mapper;
 
 /**
- * BaseMapper 接口
+ * Base Mapper interface, extending from {@link SharedMapper} and specifying {@link String} as the primary key type.
+ * Provides common methods for persisting entities.
  *
+ * @param <T> the entity type
  * @author Kimi Liu
  * @since Java 17+
  */

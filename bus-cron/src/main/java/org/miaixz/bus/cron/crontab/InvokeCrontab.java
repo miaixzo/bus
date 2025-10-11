@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.cron.crontab;
 
-import java.lang.reflect.Method;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -37,8 +35,18 @@ import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
+import java.lang.reflect.Method;
+
 /**
- * 反射执行任务 通过传入类名#方法名，通过反射执行相应的方法 如果是静态方法直接执行，如果是对象方法，需要类有默认的构造方法。
+ * A {@link Crontab} implementation that executes a method on a specified class using reflection.
+ * <p>
+ * The target method is specified by a string in the format {@code com.example.MyClass#myMethod} or
+ * {@code com.example.MyClass.myMethod}.
+ * </p>
+ * <p>
+ * If the target method is static, it is invoked directly. If it is an instance method, a new instance of the class is
+ * created using its default (no-argument) constructor.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,9 +57,10 @@ public class InvokeCrontab implements Crontab {
     private final Method method;
 
     /**
-     * 构造
+     * Constructs a new InvokeCrontab.
      *
-     * @param classNameWithMethodName 类名与方法名的字符串表示，方法名和类名使用#隔开或者.隔开
+     * @param classNameWithMethodName The fully qualified class name and method name, separated by '#' or '.' (e.g.,
+     *                                "com.example.MyClass#myMethod").
      */
     public InvokeCrontab(final String classNameWithMethodName) {
         int splitIndex = classNameWithMethodName.lastIndexOf(Symbol.C_HASH);
@@ -62,7 +71,7 @@ public class InvokeCrontab implements Crontab {
             throw new InternalException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
         }
 
-        // 类
+        // Load the class
         final String className = classNameWithMethodName.substring(0, splitIndex);
         if (StringKit.isBlank(className)) {
             throw new IllegalArgumentException("Class name is blank !");
@@ -73,7 +82,7 @@ public class InvokeCrontab implements Crontab {
         }
         this.object = ReflectKit.newInstanceIfPossible(clazz);
 
-        // 方法
+        // Find the method
         final String methodName = classNameWithMethodName.substring(splitIndex + 1);
         if (StringKit.isBlank(methodName)) {
             throw new IllegalArgumentException("Method name is blank !");

@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.text.MessageFormat;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.*;
@@ -40,68 +38,146 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.service.QueryRetrieveLevel;
 import org.miaixz.bus.logger.Logger;
 
+import java.text.MessageFormat;
+
 /**
+ * The {@code CFind} class provides a simple way to perform a DICOM C-FIND operation. It encapsulates the setup and
+ * execution of a {@link FindSCU} instance.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CFind {
 
+    /**
+     * Represents the Patient ID (0010,0020) DICOM tag.
+     */
     public static final ImageParam PatientID = new ImageParam(Tag.PatientID);
+    /**
+     * Represents the Issuer of Patient ID (0010,0021) DICOM tag.
+     */
     public static final ImageParam IssuerOfPatientID = new ImageParam(Tag.IssuerOfPatientID);
+    /**
+     * Represents the Patient's Name (0010,0010) DICOM tag.
+     */
     public static final ImageParam PatientName = new ImageParam(Tag.PatientName);
+    /**
+     * Represents the Patient's Birth Date (0010,0030) DICOM tag.
+     */
     public static final ImageParam PatientBirthDate = new ImageParam(Tag.PatientBirthDate);
+    /**
+     * Represents the Patient's Sex (0010,0040) DICOM tag.
+     */
     public static final ImageParam PatientSex = new ImageParam(Tag.PatientSex);
 
+    /**
+     * Represents the Study Instance UID (0020,000D) DICOM tag.
+     */
     public static final ImageParam StudyInstanceUID = new ImageParam(Tag.StudyInstanceUID);
+    /**
+     * Represents the Accession Number (0008,0050) DICOM tag.
+     */
     public static final ImageParam AccessionNumber = new ImageParam(Tag.AccessionNumber);
+    /**
+     * Represents the Issuer of Accession Number Sequence (0008,0051) DICOM tag.
+     */
     public static final ImageParam IssuerOfAccessionNumberSequence = new ImageParam(
             Tag.IssuerOfAccessionNumberSequence);
+    /**
+     * Represents the Study ID (0020,0010) DICOM tag.
+     */
     public static final ImageParam StudyID = new ImageParam(Tag.StudyID);
+    /**
+     * Represents the Referring Physician's Name (0008,0090) DICOM tag.
+     */
     public static final ImageParam ReferringPhysicianName = new ImageParam(Tag.ReferringPhysicianName);
+    /**
+     * Represents the Study Description (0008,1030) DICOM tag.
+     */
     public static final ImageParam StudyDescription = new ImageParam(Tag.StudyDescription);
+    /**
+     * Represents the Study Date (0008,0020) DICOM tag.
+     */
     public static final ImageParam StudyDate = new ImageParam(Tag.StudyDate);
+    /**
+     * Represents the Study Time (0008,0030) DICOM tag.
+     */
     public static final ImageParam StudyTime = new ImageParam(Tag.StudyTime);
 
+    /**
+     * Represents the Series Instance UID (0020,000E) DICOM tag.
+     */
     public static final ImageParam SeriesInstanceUID = new ImageParam(Tag.SeriesInstanceUID);
+    /**
+     * Represents the Modality (0008,0060) DICOM tag.
+     */
     public static final ImageParam Modality = new ImageParam(Tag.Modality);
+    /**
+     * Represents the Series Number (0020,0011) DICOM tag.
+     */
     public static final ImageParam SeriesNumber = new ImageParam(Tag.SeriesNumber);
+    /**
+     * Represents the Series Description (0008,103E) DICOM tag.
+     */
     public static final ImageParam SeriesDescription = new ImageParam(Tag.SeriesDescription);
+    /**
+     * Represents the Series Date (0008,0021) DICOM tag.
+     */
     public static final ImageParam SeriesDate = new ImageParam(Tag.SeriesDate);
+    /**
+     * Represents the Series Time (0008,0031) DICOM tag.
+     */
     public static final ImageParam SeriesTime = new ImageParam(Tag.SeriesTime);
 
+    /**
+     * Represents the SOP Instance UID (0008,0018) DICOM tag.
+     */
     public static final ImageParam SOPInstanceUID = new ImageParam(Tag.SOPInstanceUID);
+    /**
+     * Represents the Instance Number (0020,0013) DICOM tag.
+     */
     public static final ImageParam InstanceNumber = new ImageParam(Tag.InstanceNumber);
+    /**
+     * Represents the SOP Class UID (0008,0016) DICOM tag.
+     */
     public static final ImageParam SopClassUID = new ImageParam(Tag.SOPClassUID);
 
     /**
-     * @param callingNode 调用DICOM节点的配置
-     * @param calledNode  被调用的DICOM节点配置
-     * @param keys        用于匹配和返回键。 没有值的Args是返回键
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
+     * Performs a DICOM C-FIND operation with default settings.
+     *
+     * @param callingNode the configuration of the calling DICOM node.
+     * @param calledNode  the configuration of the called DICOM node.
+     * @param keys        the matching and return keys. Keys without values are treated as return keys.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and progress information.
      */
     public static Status process(Node callingNode, Node calledNode, ImageParam... keys) {
         return process(null, callingNode, calledNode, 0, QueryRetrieveLevel.STUDY, keys);
     }
 
     /**
-     * @param args        可选的高级参数(代理、身份验证、连接和TLS)
-     * @param callingNode 调用DICOM节点的配置
-     * @param calledNode  被调用的DICOM节点配置
-     * @param keys        用于匹配和返回键。 没有值的Args是返回键
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
+     * Performs a DICOM C-FIND operation with advanced options.
+     *
+     * @param args        optional advanced parameters (proxy, authentication, connection, and TLS).
+     * @param callingNode the configuration of the calling DICOM node.
+     * @param calledNode  the configuration of the called DICOM node.
+     * @param keys        the matching and return keys. Keys without values are treated as return keys.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and progress.
      */
     public static Status process(Args args, Node callingNode, Node calledNode, ImageParam... keys) {
         return process(args, callingNode, calledNode, 0, QueryRetrieveLevel.STUDY, keys);
     }
 
     /**
-     * @param args        可选的高级参数(代理、身份验证、连接和TLS)
-     * @param callingNode 调用DICOM节点的配置
-     * @param calledNode  被调用的DICOM节点配置
-     * @param cancelAfter 接收到指定数目的匹配项后，取消查询请求
-     * @param level       指定检索级别。默认使用PatientRoot、StudyRoot、PatientStudyOnly模型进行研究
-     * @param keys        用于匹配和返回键。 没有值的Args是返回键
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
+     * Performs a DICOM C-FIND operation with advanced options and cancellation settings.
+     *
+     * @param args        optional advanced parameters (proxy, authentication, connection, and TLS).
+     * @param callingNode the configuration of the calling DICOM node.
+     * @param calledNode  the configuration of the called DICOM node.
+     * @param cancelAfter cancels the query request after receiving a specified number of matches.
+     * @param level       specifies the retrieve level. Defaults to STUDY for PatientRoot, StudyRoot, and
+     *                    PatientStudyOnly models.
+     * @param keys        the matching and return keys. Keys without values are treated as return keys.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and progress.
      */
     public static Status process(
             Args args,
@@ -187,6 +263,12 @@ public class CFind {
         }
     }
 
+    /**
+     * Retrieves the information model from the given options.
+     *
+     * @param options the command-line arguments or options.
+     * @return the {@link FindSCU.InformationModel}, defaulting to {@code StudyRoot}.
+     */
     private static FindSCU.InformationModel getInformationModel(Args options) {
         Object model = options.getInformationModel();
         if (model instanceof FindSCU.InformationModel) {
@@ -195,6 +277,13 @@ public class CFind {
         return FindSCU.InformationModel.StudyRoot;
     }
 
+    /**
+     * Adds a DICOM attribute to an {@link Attributes} object based on an {@link ImageParam}. If the parameter has no
+     * values, a null attribute is added. For sequence tags (VR=SQ), an empty item is added.
+     *
+     * @param attrs the {@link Attributes} object to which the attribute will be added.
+     * @param param the {@link ImageParam} containing the tag and values.
+     */
     public static void addAttributes(Attributes attrs, ImageParam param) {
         int tag = param.getTag();
         String[] ss = param.getValues();

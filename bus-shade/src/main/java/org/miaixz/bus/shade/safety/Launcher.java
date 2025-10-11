@@ -47,18 +47,40 @@ import org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
 
 /**
- * Spring-Boot 启动器
+ * Launcher for Spring-Boot applications with enhanced security features, including JAR encryption and decryption. This
+ * class handles the initialization of encryption/decryption providers and key management based on command-line
+ * arguments and manifest attributes.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Launcher {
 
+    /**
+     * Command-line arguments passed to the application.
+     */
     public final String[] args;
+    /**
+     * Provider for decryption operations.
+     */
     public final DecryptorProvider decryptorProvider;
+    /**
+     * Provider for encryption operations.
+     */
     public final EncryptorProvider encryptorProvider;
+    /**
+     * The encryption/decryption key used by the providers.
+     */
     public final Key key;
 
+    /**
+     * Constructs a new {@code Launcher} instance, initializing encryption/decryption parameters. It parses command-line
+     * arguments, manifest attributes, and an optional key file to determine the encryption algorithm, key size, IV
+     * size, and password.
+     *
+     * @param args Command-line arguments for the application.
+     * @throws Exception If an error occurs during initialization, such as file not found or algorithm not available.
+     */
     public Launcher(String... args) throws Exception {
         this.args = args;
         String algorithm = Builder.ALGORITHM;

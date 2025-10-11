@@ -46,7 +46,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 农历时辰
+ * Represents a specific two-hour block (shichen) in the Lunar calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,45 +54,45 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class LunarHour extends Loops {
 
     /**
-     * 八字计算接口
+     * The provider for Eight Characters (Bazi) calculations.
      */
     public static EightCharProvider provider = new DefaultEightCharProvider();
     /**
-     * 农历日
+     * The lunar day this hour belongs to.
      */
     protected LunarDay day;
     /**
-     * 时
+     * The hour (0-23).
      */
     protected int hour;
     /**
-     * 分
+     * The minute (0-59).
      */
     protected int minute;
     /**
-     * 秒
+     * The second (0-59).
      */
     protected int second;
 
     /**
-     * 公历时刻（第一次使用时才会初始化）
+     * The corresponding Gregorian (Solar) time, lazily initialized.
      */
     protected SolarTime solarTime;
 
     /**
-     * 干支时辰（第一次使用时才会初始化）
+     * The corresponding Sixty Cycle (Ganzhi) hour, lazily initialized.
      */
     protected SixtyCycleHour sixtyCycleHour;
 
     /**
-     * 初始化
+     * Constructs a {@code LunarHour} from its components.
      *
-     * @param year   农历年
-     * @param month  农历月，闰月为负
-     * @param day    农历日
-     * @param hour   时
-     * @param minute 分
-     * @param second 秒
+     * @param year   The lunar year.
+     * @param month  The lunar month (a negative value indicates a leap month).
+     * @param day    The lunar day.
+     * @param hour   The hour (0-23).
+     * @param minute The minute (0-59).
+     * @param second The second (0-59).
      */
     public LunarHour(int year, int month, int day, int hour, int minute, int second) {
         if (hour < 0 || hour > 23) {
@@ -111,82 +111,88 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 从农历年月日时分秒初始化
+     * Creates a {@code LunarHour} from its components.
      *
-     * @param year   农历年
-     * @param month  农历月，闰月为负
-     * @param day    农历日
-     * @param hour   时
-     * @param minute 分
-     * @param second 秒
+     * @param year   The lunar year.
+     * @param month  The lunar month (a negative value indicates a leap month).
+     * @param day    The lunar day.
+     * @param hour   The hour (0-23).
+     * @param minute The minute (0-59).
+     * @param second The second (0-59).
+     * @return a new {@code LunarHour} instance.
      */
     public static LunarHour fromYmdHms(int year, int month, int day, int hour, int minute, int second) {
         return new LunarHour(year, month, day, hour, minute, second);
     }
 
     /**
-     * 农历日
+     * Gets the lunar day object.
      *
-     * @return 农历日
+     * @return The {@link LunarDay}.
      */
     public LunarDay getLunarDay() {
         return day;
     }
 
     /**
-     * 年
+     * Gets the year.
      *
-     * @return 年
+     * @return The lunar year.
      */
     public int getYear() {
         return day.getYear();
     }
 
     /**
-     * 月
+     * Gets the month.
      *
-     * @return 月
+     * @return The lunar month.
      */
     public int getMonth() {
         return day.getMonth();
     }
 
     /**
-     * 日
+     * Gets the day.
      *
-     * @return 日
+     * @return The lunar day.
      */
     public int getDay() {
         return day.getDay();
     }
 
     /**
-     * 时
+     * Gets the hour.
      *
-     * @return 时
+     * @return The hour (0-23).
      */
     public int getHour() {
         return hour;
     }
 
     /**
-     * 分
+     * Gets the minute.
      *
-     * @return 分
+     * @return The minute (0-59).
      */
     public int getMinute() {
         return minute;
     }
 
     /**
-     * 秒
+     * Gets the second.
      *
-     * @return 秒
+     * @return The second (0-59).
      */
     public int getSecond() {
         return second;
     }
 
+    /**
+     * Gets the name of the two-hour block (e.g., "子时").
+     *
+     * @return The name of the hour.
+     */
     public String getName() {
         return EarthBranch.fromIndex(getIndexInDay()).getName() + "时";
     }
@@ -197,36 +203,39 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 位于当天的索引
+     * Gets the index of this hour within the day (0-11 for the 12 two-hour blocks). For example, 23:00-00:59 is index 0
+     * (子时).
      *
-     * @return 索引
+     * @return The index of the hour block.
      */
     public int getIndexInDay() {
         return (hour + 1) / 2;
     }
 
+    @Override
     public LunarHour next(int n) {
         if (n == 0) {
             return fromYmdHms(getYear(), getMonth(), getDay(), hour, minute, second);
         }
+        // Each step is 2 hours.
         int h = hour + n * 2;
         int diff = h < 0 ? -1 : 1;
-        int hour = Math.abs(h);
-        int days = hour / 24 * diff;
-        hour = (hour % 24) * diff;
-        if (hour < 0) {
-            hour += 24;
+        int totalHours = Math.abs(h);
+        int days = (totalHours / 24) * diff;
+        int remainingHours = (totalHours % 24) * diff;
+        if (remainingHours < 0) {
+            remainingHours += 24;
             days--;
         }
         LunarDay d = day.next(days);
-        return fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
+        return fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), remainingHours, minute, second);
     }
 
     /**
-     * 是否在指定农历时辰之前
+     * Checks if this lunar hour is before another.
      *
-     * @param target 农历时辰
-     * @return true/false
+     * @param target The other lunar hour.
+     * @return {@code true} if this hour is before the target.
      */
     public boolean isBefore(LunarHour target) {
         if (!day.equals(target.getLunarDay())) {
@@ -239,10 +248,10 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 是否在指定农历时辰之后
+     * Checks if this lunar hour is after another.
      *
-     * @param target 农历时辰
-     * @return true/false
+     * @param target The other lunar hour.
+     * @return {@code true} if this hour is after the target.
      */
     public boolean isAfter(LunarHour target) {
         if (!day.equals(target.getLunarDay())) {
@@ -255,13 +264,14 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 干支
+     * Gets the Sixty Cycle (Ganzhi) of this hour.
      *
-     * @return 干支
+     * @return The {@link SixtyCycle}.
      */
     public SixtyCycle getSixtyCycle() {
         int earthBranchIndex = getIndexInDay() % 12;
         SixtyCycle d = day.getSixtyCycle();
+        // The day's stem changes for the first hour block (23:00-00:59).
         if (hour >= 23) {
             d = d.next(1);
         }
@@ -271,9 +281,9 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 黄道黑道十二神
+     * Gets the Twelve Star (Huang Dao Hei Dao) for this hour.
      *
-     * @return 黄道黑道十二神
+     * @return The {@link TwelveStar}.
      */
     public TwelveStar getTwelveStar() {
         return TwelveStar.fromIndex(
@@ -282,9 +292,9 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 九星（时家紫白星歌诀：三元时白最为佳，冬至阳生顺莫差，孟日七宫仲一白，季日四绿发萌芽，每把时辰起甲子，本时星耀照光华，时星移入中宫去，顺飞八方逐细查。夏至阴生逆回首，孟归三碧季加六，仲在九宫时起甲，依然掌中逆轮跨。）
+     * Gets the Nine Star (Jiu Xing) for this hour.
      *
-     * @return 九星
+     * @return The {@link NineStar}.
      */
     public NineStar getNineStar() {
         SolarDay solar = day.getSolarDay();
@@ -300,9 +310,9 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 公历时刻
+     * Gets the corresponding Gregorian (Solar) time.
      *
-     * @return 公历时刻
+     * @return The {@link SolarTime}.
      */
     public SolarTime getSolarTime() {
         if (null == solarTime) {
@@ -313,18 +323,18 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 八字
+     * Gets the Eight Characters (Bazi) for this specific time.
      *
-     * @return 八字
+     * @return The {@link EightChar}.
      */
     public EightChar getEightChar() {
         return provider.getEightChar(this);
     }
 
     /**
-     * 干支时辰
+     * Gets the corresponding Sixty Cycle (Ganzhi) hour object.
      *
-     * @return 干支时辰
+     * @return The {@link SixtyCycleHour}.
      */
     public SixtyCycleHour getSixtyCycleHour() {
         if (null == sixtyCycleHour) {
@@ -334,27 +344,27 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 宜
+     * Gets the list of recommended activities for this hour.
      *
-     * @return 宜忌列表
+     * @return A list of recommended {@link Taboo}s.
      */
     public List<Taboo> getRecommends() {
         return Taboo.getHourRecommends(getSixtyCycleHour().getDay(), getSixtyCycle());
     }
 
     /**
-     * 忌
+     * Gets the list of avoided activities for this hour.
      *
-     * @return 宜忌列表
+     * @return A list of avoided {@link Taboo}s.
      */
     public List<Taboo> getAvoids() {
         return Taboo.getHourAvoids(getSixtyCycleHour().getDay(), getSixtyCycle());
     }
 
     /**
-     * 小六壬
+     * Gets the Minor Liu Ren for this hour.
      *
-     * @return 小六壬
+     * @return The {@link MinorRen}.
      */
     public MinorRen getMinorRen() {
         return getLunarDay().getMinorRen().next(getIndexInDay());

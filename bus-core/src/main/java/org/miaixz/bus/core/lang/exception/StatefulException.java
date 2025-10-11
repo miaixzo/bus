@@ -27,97 +27,102 @@
 */
 package org.miaixz.bus.core.lang.exception;
 
-import org.miaixz.bus.core.basic.normal.Errors;
-
 import java.io.Serial;
 
+import org.miaixz.bus.core.basic.normal.Errors;
+
 /**
- * 带有状态码的异常
+ * Represents an exception that carries a status code, indicating a specific state or error condition.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StatefulException extends UncheckedException {
 
+    /**
+     * The serialization version identifier.
+     */
     @Serial
     private static final long serialVersionUID = 2852265690567L;
 
     /**
-     * 异常状态码
+     * The status code associated with this exception.
      */
     private int status;
 
     /**
-     * 构造
+     * Constructs a new StatefulException with no detail message.
      */
     public StatefulException() {
         super();
     }
 
     /**
-     * 构造
+     * Constructs a new StatefulException with the specified cause.
      *
-     * @param e 异常
+     * @param e The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     public StatefulException(final Throwable e) {
         super(e);
     }
 
     /**
-     * 构造
+     * Constructs a new StatefulException with the specified detail message.
      *
-     * @param errmsg 消息
+     * @param errmsg The detail message.
      */
     public StatefulException(final String errmsg) {
         super(errmsg);
     }
 
     /**
-     * 构造
+     * Constructs a new StatefulException with the specified error object.
      *
-     * @param errors 错误码对象，包含键和值
+     * @param errors The error object containing error code and message.
      */
     public StatefulException(final Errors errors) {
         super(errors);
     }
 
     /**
-     * 构造
+     * Constructs a new StatefulException with the specified error object and detail message.
      *
-     * @param errors 错误码对象，包含键和值
-     * @param errmsg 消息
+     * @param errors The error object containing error code.
+     * @param errmsg The detail message.
      */
     public StatefulException(final Errors errors, String errmsg) {
         super(errors.getKey(), errmsg);
     }
 
     /**
-     * 构造
+     * Constructs a new StatefulException with the specified detail message format and arguments.
      *
-     * @param errmsgTemplate 消息模板
-     * @param args           参数
+     * @param errmsgTemplate The format string for the detail message.
+     * @param args           The arguments referenced by the format specifiers in the format string.
      */
     public StatefulException(final String errmsgTemplate, final Object... args) {
         super(errmsgTemplate, args);
     }
 
     /**
-     * 构造
+     * Constructs a new StatefulException with the specified detail message and cause.
      *
-     * @param errmsg 消息
-     * @param cause  被包装的子异常
+     * @param errmsg The detail message.
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     public StatefulException(final String errmsg, final Throwable cause) {
         super(errmsg, cause);
     }
 
     /**
-     * 构造
+     * Constructs a new StatefulException with the specified detail message, cause, suppression enabled or disabled, and
+     * writable stack trace enabled or disabled.
      *
-     * @param errmsg             消息
-     * @param cause              被包装的子异常
-     * @param enableSuppression  是否启用抑制
-     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     * @param errmsg             The detail message.
+     * @param cause              The cause (which is saved for later retrieval by the {@link Throwable#getCause()}
+     *                           method).
+     * @param enableSuppression  Whether or not suppression is enabled or disabled.
+     * @param writableStackTrace Whether or not the stack trace should be writable.
      */
     public StatefulException(final String errmsg, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
@@ -125,21 +130,21 @@ public class StatefulException extends UncheckedException {
     }
 
     /**
-     * 构造
+     * Constructs a new StatefulException with the specified cause, detail message format, and arguments.
      *
-     * @param cause          被包装的子异常
-     * @param errmsgTemplate 消息模板
-     * @param args           参数
+     * @param cause          The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param errmsgTemplate The format string for the detail message.
+     * @param args           The arguments referenced by the format specifiers in the format string.
      */
     public StatefulException(final Throwable cause, final String errmsgTemplate, final Object... args) {
         super(cause, errmsgTemplate, args);
     }
 
     /**
-     * 构造
+     * Constructs a new StatefulException with the specified status code and detail message.
      *
-     * @param status 状态码
-     * @param msg    消息
+     * @param status The status code.
+     * @param msg    The detail message.
      */
     public StatefulException(final int status, final String msg) {
         super(msg);
@@ -147,10 +152,10 @@ public class StatefulException extends UncheckedException {
     }
 
     /**
-     * 构造
+     * Constructs a new StatefulException with the specified status code and cause.
      *
-     * @param status    状态码
-     * @param throwable 异常
+     * @param status    The status code.
+     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     public StatefulException(final int status, final Throwable throwable) {
         super(throwable);
@@ -158,9 +163,11 @@ public class StatefulException extends UncheckedException {
     }
 
     /**
-     * @param status    状态码
-     * @param msg       消息
-     * @param throwable 异常
+     * Constructs a new StatefulException with the specified status code, detail message, and cause.
+     *
+     * @param status    The status code.
+     * @param msg       The detail message.
+     * @param throwable The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
     public StatefulException(final int status, final String msg, final Throwable throwable) {
         super(msg, throwable);
@@ -168,7 +175,9 @@ public class StatefulException extends UncheckedException {
     }
 
     /**
-     * @return 获得异常状态码
+     * Retrieves the status code associated with this exception.
+     *
+     * @return The status code.
      */
     public int getStatus() {
         return status;

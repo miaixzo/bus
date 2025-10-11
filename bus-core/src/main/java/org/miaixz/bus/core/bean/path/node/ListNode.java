@@ -33,37 +33,41 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 
 /**
- * 列表节点 [num0,num1,num2...]模式或者['key0','key1']模式
+ * Represents a list node in a Bean path expression, supporting patterns like {@code [num0,num1,num2...]} for indices or
+ * {@code ['key0','key1']} for keys.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ListNode implements Node {
 
+    /**
+     * The list of names or indices within this node.
+     */
     final List<String> names;
 
     /**
-     * 列表节点
+     * Constructs a {@code ListNode} by parsing the given expression.
      *
-     * @param expression 表达式
+     * @param expression The expression string for the list node (e.g., "num0,num1" or "'key0','key1'").
      */
     public ListNode(final String expression) {
         this.names = CharsBacker.splitTrim(expression, Symbol.COMMA);
     }
 
     /**
-     * 获取列表中的name，不去除单引号
+     * Retrieves the names or indices in the list, without removing single quotes.
      *
-     * @return name列表
+     * @return An array of names or indices.
      */
     public String[] getNames() {
         return this.names.toArray(new String[0]);
     }
 
     /**
-     * 将列表中的name，去除单引号
+     * Retrieves the names or indices in the list, with single quotes removed if present.
      *
-     * @return 处理后的name列表
+     * @return An array of unwrapped names or indices.
      */
     public String[] getUnWrappedNames() {
         final String[] unWrappedNames = new String[names.size()];
@@ -74,6 +78,11 @@ public class ListNode implements Node {
         return unWrappedNames;
     }
 
+    /**
+     * Returns a string representation of this list node.
+     *
+     * @return A string representation of the object.
+     */
     @Override
     public String toString() {
         return this.names.toString();

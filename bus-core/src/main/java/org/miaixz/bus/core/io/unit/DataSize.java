@@ -39,7 +39,8 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数据大小，可以将类似于'12MB'表示转换为bytes长度的数字 此类来自于：Spring-framework
+ * Represents a data size, allowing conversion from string representations like '12MB' to a numeric byte length. This
+ * class is inspired by Spring Framework's DataSize.
  *
  * <pre>
  *     byte        1B     1
@@ -55,100 +56,100 @@ import org.miaixz.bus.core.xyz.StringKit;
 public final class DataSize implements Comparable<DataSize> {
 
     /**
-     * The pattern for parsing.
+     * The pattern used for parsing data size strings. It captures the numeric value and the optional unit suffix.
      */
     private static final Pattern PATTERN = Pattern.compile("^([+-]?\\d+(\\.\\d+)?)([a-zA-Z]{0,3})$");
 
     /**
-     * Bytes per Kilobyte(KB).
+     * The number of bytes in a Kilobyte (KB).
      */
     private static final long BYTES_PER_KB = 1024;
 
     /**
-     * Bytes per Megabyte(MB).
+     * The number of bytes in a Megabyte (MB).
      */
     private static final long BYTES_PER_MB = BYTES_PER_KB * 1024;
 
     /**
-     * Bytes per Gigabyte(GB).
+     * The number of bytes in a Gigabyte (GB).
      */
     private static final long BYTES_PER_GB = BYTES_PER_MB * 1024;
 
     /**
-     * Bytes per Terabyte(TB).
+     * The number of bytes in a Terabyte (TB).
      */
     private static final long BYTES_PER_TB = BYTES_PER_GB * 1024;
 
     /**
-     * bytes长度
+     * The size in bytes.
      */
     private final long bytes;
 
     /**
-     * 构造
+     * Constructs a new {@code DataSize} instance with the specified number of bytes.
      *
-     * @param bytes 长度
+     * @param bytes The size in bytes. Can be positive or negative.
      */
     private DataSize(final long bytes) {
         this.bytes = bytes;
     }
 
     /**
-     * 获得对应bytes的DataSize
+     * Creates a {@code DataSize} instance representing the given number of bytes.
      *
-     * @param bytes bytes大小，可正可负
-     * @return this
+     * @param bytes The size in bytes. Can be positive or negative.
+     * @return A {@code DataSize} instance representing the specified bytes.
      */
     public static DataSize ofBytes(final long bytes) {
         return new DataSize(bytes);
     }
 
     /**
-     * 获得对应kilobytes的DataSize
+     * Creates a {@code DataSize} instance representing the given number of kilobytes.
      *
-     * @param kilobytes kilobytes大小，可正可负
-     * @return a DataSize
+     * @param kilobytes The size in kilobytes. Can be positive or negative.
+     * @return A {@code DataSize} instance representing the specified kilobytes.
      */
     public static DataSize ofKilobytes(final long kilobytes) {
         return new DataSize(Math.multiplyExact(kilobytes, BYTES_PER_KB));
     }
 
     /**
-     * 获得对应megabytes的DataSize
+     * Creates a {@code DataSize} instance representing the given number of megabytes.
      *
-     * @param megabytes megabytes大小，可正可负
-     * @return a DataSize
+     * @param megabytes The size in megabytes. Can be positive or negative.
+     * @return A {@code DataSize} instance representing the specified megabytes.
      */
     public static DataSize ofMegabytes(final long megabytes) {
         return new DataSize(Math.multiplyExact(megabytes, BYTES_PER_MB));
     }
 
     /**
-     * 获得对应gigabytes的DataSize
+     * Creates a {@code DataSize} instance representing the given number of gigabytes.
      *
-     * @param gigabytes gigabytes大小，可正可负
-     * @return a DataSize
+     * @param gigabytes The size in gigabytes. Can be positive or negative.
+     * @return A {@code DataSize} instance representing the specified gigabytes.
      */
     public static DataSize ofGigabytes(final long gigabytes) {
         return new DataSize(Math.multiplyExact(gigabytes, BYTES_PER_GB));
     }
 
     /**
-     * 获得对应terabytes的DataSize
+     * Creates a {@code DataSize} instance representing the given number of terabytes.
      *
-     * @param terabytes terabytes大小，可正可负
-     * @return a DataSize
+     * @param terabytes The size in terabytes. Can be positive or negative.
+     * @return A {@code DataSize} instance representing the specified terabytes.
      */
     public static DataSize ofTerabytes(final long terabytes) {
         return new DataSize(Math.multiplyExact(terabytes, BYTES_PER_TB));
     }
 
     /**
-     * 获得指定{@link DataUnit}对应的DataSize
+     * Creates a {@code DataSize} instance representing the given amount in the specified {@link DataUnit}.
      *
-     * @param amount 大小
-     * @param unit   数据大小单位，null表示默认的BYTES
-     * @return DataSize
+     * @param amount The numeric amount of the data size.
+     * @param unit   The {@link DataUnit} of the amount. If {@code null}, {@link DataUnit#BYTES} is used as default.
+     * @return A {@code DataSize} instance representing the specified amount and unit.
      */
     public static DataSize of(final long amount, DataUnit unit) {
         if (null == unit) {
@@ -158,11 +159,11 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * 获得指定{@link DataUnit}对应的DataSize
+     * Creates a {@code DataSize} instance representing the given amount in the specified {@link DataUnit}.
      *
-     * @param amount 大小
-     * @param unit   数据大小单位，null表示默认的BYTES
-     * @return DataSize
+     * @param amount The numeric amount of the data size as a {@link BigDecimal}.
+     * @param unit   The {@link DataUnit} of the amount. If {@code null}, {@link DataUnit#BYTES} is used as default.
+     * @return A {@code DataSize} instance representing the specified amount and unit.
      */
     public static DataSize of(final BigDecimal amount, DataUnit unit) {
         if (null == unit) {
@@ -172,7 +173,8 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * 获取指定数据大小文本对应的DataSize对象，如果无单位指定，默认获取{@link DataUnit#BYTES} 例如：
+     * Parses a text string representing a data size and returns its value in bytes. If no unit is specified in the
+     * text, {@link DataUnit#BYTES} is used as the default. Examples:
      * 
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
@@ -180,8 +182,8 @@ public final class DataSize implements Comparable<DataSize> {
      * "20"   -- parses as "20 bytes"
      * </pre>
      *
-     * @param text the text to parse
-     * @return the parsed DataSize
+     * @param text The text string to parse.
+     * @return The parsed data size in bytes.
      * @see #parse(CharSequence, DataUnit)
      */
     public static long parse(final String text) {
@@ -189,7 +191,8 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * 获取指定数据大小文本对应的DataSize对象，如果无单位指定，默认获取{@link DataUnit#BYTES} 例如：
+     * Parses a text string representing a data size and returns a {@code DataSize} object. If no unit is specified in
+     * the text, {@link DataUnit#BYTES} is used as the default. Examples:
      * 
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
@@ -197,8 +200,8 @@ public final class DataSize implements Comparable<DataSize> {
      * "20"   -- parses as "20 bytes"
      * </pre>
      *
-     * @param text the text to parse
-     * @return the parsed DataSize
+     * @param text The text string to parse.
+     * @return The parsed {@code DataSize} object.
      * @see #parse(CharSequence, DataUnit)
      */
     public static DataSize parse(final CharSequence text) {
@@ -206,9 +209,9 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * Obtain a DataSize from a text string such as {@code 12MB} using the specified default {@link DataUnit} if no unit
-     * is specified. The string starts with a number followed optionally by a unit matching one of the supported
-     * {@linkplain DataUnit suffixes}. Examples:
+     * Parses a text string representing a data size and returns a {@code DataSize} object. The string should start with
+     * a number followed optionally by a unit matching one of the supported {@linkplain DataUnit suffixes}. If no unit
+     * is specified, the {@code defaultUnit} is used. Examples:
      * 
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
@@ -218,9 +221,10 @@ public final class DataSize implements Comparable<DataSize> {
      * } is {@link DataUnit#KILOBYTES})
      * </pre>
      *
-     * @param text        the text to parse
-     * @param defaultUnit 默认的数据单位
-     * @return the parsed DataSize
+     * @param text        The text string to parse.
+     * @param defaultUnit The default {@link DataUnit} to use if no unit is specified in the text.
+     * @return The parsed {@code DataSize} object.
+     * @throws IllegalArgumentException If the text is {@code null} or does not match the data size pattern.
      */
     public static DataSize parse(final CharSequence text, final DataUnit defaultUnit) {
         Assert.notNull(text, "Text must not be null");
@@ -236,11 +240,12 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * 决定数据单位，后缀不识别时使用默认单位
+     * Determines the {@link DataUnit} from a given suffix. If the suffix is not recognized, the {@code defaultUnit} is
+     * used.
      *
-     * @param suffix      后缀
-     * @param defaultUnit 默认单位
-     * @return {@link DataUnit}
+     * @param suffix      The unit suffix string (e.g., "KB", "MB").
+     * @param defaultUnit The default {@link DataUnit} to use if the suffix is empty or unrecognized.
+     * @return The determined {@link DataUnit}.
      */
     private static DataUnit determineDataUnit(final String suffix, final DataUnit defaultUnit) {
         final DataUnit defaultUnitToUse = (defaultUnit != null ? defaultUnit : DataUnit.BYTES);
@@ -248,37 +253,41 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * 可读的文件大小 参考 <a href=
+     * Formats a given size in bytes into a human-readable string representation. Uses default formatting (2 decimal
+     * places, full unit names). Reference: <a href=
      * "http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc">http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc</a>
      *
-     * @param size Long类型大小
-     * @return 大小
+     * @param size The size in bytes.
+     * @return A human-readable string representation of the size.
      */
     public static String format(final long size) {
         return format(size, false);
     }
 
     /**
-     * 可读的文件大小 参考 <a href=
-     * "http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc">http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc</a>
+     * Formats a given size in bytes into a human-readable string representation, with an option for simple unit names.
+     * Reference: <a href=
+     * "http://stackoverflow.com/questions/3263892/format-file-as-mb-gb-etc">http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc</a>
      *
-     * @param size          Long类型大小
-     * @param useSimpleName 是否使用简写，例如：1KB 简写成 1K
-     * @return 大小
+     * @param size          The size in bytes.
+     * @param useSimpleName {@code true} to use simple unit names (e.g., "K" for Kilobytes), {@code false} for full
+     *                      names (e.g., "KB").
+     * @return A human-readable string representation of the size.
      */
     public static String format(final long size, final boolean useSimpleName) {
         return format(size, 2, useSimpleName ? Normal.CAPACITY_SIMPLE_NAMES : Normal.CAPACITY_NAMES, Symbol.SPACE);
     }
 
     /**
-     * 可读的文件大小 参考 <a href=
+     * Formats a given size in bytes into a human-readable string representation with custom scaling, unit names, and
+     * delimiter. Reference: <a href=
      * "http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc">http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc</a>
      *
-     * @param size      Long类型大小
-     * @param scale     小数点位数，四舍五入
-     * @param unitNames 单位数组
-     * @param delimiter 数字和单位的分隔符
-     * @return 大小
+     * @param size      The size in bytes.
+     * @param scale     The number of decimal places to round to.
+     * @param unitNames An array of unit names (e.g., {"B", "KB", "MB"}).
+     * @param delimiter The string to use as a separator between the numeric value and the unit.
+     * @return A human-readable string representation of the size.
      */
     public static String format(final long size, final int scale, final String[] unitNames, final String delimiter) {
         if (size <= 0) {
@@ -290,11 +299,11 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * 根据单位，将文件大小转换为对应单位的大小
+     * Formats a given size in bytes into a string representation using a specific {@link DataUnit}.
      *
-     * @param size         文件大小
-     * @param fileDataUnit 单位
-     * @return 大小
+     * @param size         The size in bytes.
+     * @param fileDataUnit The {@link DataUnit} to convert the size to for display.
+     * @return A string representation of the size in the specified unit.
      */
     public static String format(final Long size, final DataUnit fileDataUnit) {
         if (size <= 0) {
@@ -306,69 +315,88 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * 是否为负数，不包括0
+     * Checks if this data size is negative (less than 0 bytes).
      *
-     * @return 负数返回true，否则false
+     * @return {@code true} if the size is negative, {@code false} otherwise.
      */
     public boolean isNegative() {
         return this.bytes < 0;
     }
 
     /**
-     * 返回bytes大小
+     * Returns the size in bytes.
      *
-     * @return bytes大小
+     * @return The size in bytes.
      */
     public long toBytes() {
         return this.bytes;
     }
 
     /**
-     * 返回KB大小
+     * Returns the size in kilobytes (KB).
      *
-     * @return KB大小
+     * @return The size in kilobytes.
      */
     public long toKilobytes() {
         return this.bytes / BYTES_PER_KB;
     }
 
     /**
-     * 返回MB大小
+     * Returns the size in megabytes (MB).
      *
-     * @return MB大小
+     * @return The size in megabytes.
      */
     public long toMegabytes() {
         return this.bytes / BYTES_PER_MB;
     }
 
     /**
-     * 返回GB大小
+     * Returns the size in gigabytes (GB).
      *
-     * @return GB大小
+     * @return The size in gigabytes.
      */
     public long toGigabytes() {
         return this.bytes / BYTES_PER_GB;
     }
 
     /**
-     * 返回TB大小
+     * Returns the size in terabytes (TB).
      *
-     * @return TB大小
+     * @return The size in terabytes.
      */
     public long toTerabytes() {
         return this.bytes / BYTES_PER_TB;
     }
 
+    /**
+     * Compares this {@code DataSize} object with the specified {@code DataSize} object for order.
+     *
+     * @param other The {@code DataSize} object to be compared.
+     * @return A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than
+     *         the specified object.
+     */
     @Override
     public int compareTo(final DataSize other) {
         return Long.compare(this.bytes, other.bytes);
     }
 
+    /**
+     * Returns a string representation of this {@code DataSize} object in bytes. The format is "{@code <bytes>B}".
+     *
+     * @return A string representation of the data size.
+     */
     @Override
     public String toString() {
         return String.format("%dB", this.bytes);
     }
 
+    /**
+     * Indicates whether some other object is "equal to" this one. Two {@code DataSize} objects are considered equal if
+     * they represent the same number of bytes.
+     *
+     * @param other The reference object with which to compare.
+     * @return {@code true} if this object is the same as the {@code other} argument; {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object other) {
         if (this == other) {
@@ -381,6 +409,11 @@ public final class DataSize implements Comparable<DataSize> {
         return (this.bytes == otherSize.bytes);
     }
 
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return A hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return Long.hashCode(this.bytes);

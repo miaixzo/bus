@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数学表达式计算工具类
+ * A utility class for evaluating mathematical expressions.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,29 +45,30 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Calculator {
 
     /**
-     * 后缀式栈
+     * The stack for the postfix expression.
      */
     private final Stack<String> postfixStack = new Stack<>();
     /**
-     * 运用运算符ASCII码-40做索引的运算符优先级
+     * Operator priorities, indexed by the operator's ASCII value minus 40.
      */
     private final int[] operatPriority = new int[] { 0, 3, 2, 1, -1, 1, 0, 2 };
 
     /**
-     * 计算表达式的值
+     * Calculates the value of a given mathematical expression.
      *
-     * @param expression 表达式
-     * @return 计算结果
+     * @param expression The expression to evaluate.
+     * @return The result of the calculation.
      */
     public static double conversion(final String expression) {
         return (new Calculator()).calculate(expression);
     }
 
     /**
-     * 将表达式中负数的符号更改
+     * Transforms the expression by changing the sign of negative numbers. For example, -2+-1*(-3E-2)-(-1) is converted
+     * to ~2+~1*(~3E~2)-(~1).
      *
-     * @param expression 例如-2+-1*(-3E-2)-(-1) 被转为 ~2+~1*(~3E~2)-(~1)
-     * @return 转换后的字符串
+     * @param expression The expression to transform.
+     * @return The transformed string.
      */
     private static String transform(String expression) {
         expression = StringKit.cleanBlank(expression);
@@ -85,7 +86,7 @@ public class Calculator {
                     }
                 }
             } else if (CharKit.equals(arr[i], Character.toLowerCase(Symbol.C_X), true)) {
-                // x转换为*
+                // Convert 'x' to '*'.
                 arr[i] = Symbol.C_STAR;
             }
         }
@@ -98,27 +99,27 @@ public class Calculator {
     }
 
     /**
-     * 按照给定的表达式计算
+     * Calculates the result of the given expression. For example: 5+12*(3+5)/7
      *
-     * @param expression 要计算的表达式例如:5+12*(3+5)/7
-     * @return 计算结果
+     * @param expression The expression to calculate.
+     * @return The result of the calculation.
      */
     public double calculate(final String expression) {
         prepare(transform(expression));
 
         final Stack<String> resultStack = new Stack<>();
-        Collections.reverse(postfixStack);// 将后缀式栈反转
-        String firstValue, secondValue, currentOp;// 参与计算的第一个值，第二个值和算术运算符
+        Collections.reverse(postfixStack); // Reverse the postfix stack.
+        String firstValue, secondValue, currentOp; // The first value, second value, and operator for the calculation.
         while (!postfixStack.isEmpty()) {
             currentOp = postfixStack.pop();
-            if (!isOperator(currentOp.charAt(0))) {// 如果不是运算符则存入操作数栈中
+            if (!isOperator(currentOp.charAt(0))) { // If it's not an operator, push it onto the operand stack.
                 currentOp = currentOp.replace(Symbol.TILDE, Symbol.MINUS);
                 resultStack.push(currentOp);
-            } else {// 如果是运算符则从操作数栈中取两个值和该数值一起参与运算
+            } else { // If it's an operator, pop two values from the operand stack for calculation.
                 secondValue = resultStack.pop();
                 firstValue = resultStack.pop();
 
-                // 将负数标记符改为负号
+                // Change the negative sign marker back to a minus sign.
                 firstValue = firstValue.replace(Symbol.TILDE, Symbol.MINUS);
                 secondValue = secondValue.replace(Symbol.TILDE, Symbol.MINUS);
 
@@ -127,30 +128,35 @@ public class Calculator {
             }
         }
 
-        // 当结果集中有多个数字时，可能是省略*，类似(1+2)3
+        // If there are multiple numbers in the result stack, it may be due to an omitted multiplication operator, e.g.,
+        // (1+2)3.
         return MathKit.mul(resultStack.toArray(new String[0])).doubleValue();
     }
 
     /**
-     * 数据准备阶段将表达式转换成为后缀式栈
+     * Prepares the data by converting the infix expression to a postfix stack.
      *
-     * @param expression 表达式
+     * @param expression The expression to prepare.
      */
     private void prepare(final String expression) {
         final Stack<Character> opStack = new Stack<>();
-        opStack.push(Symbol.C_COMMA);// 运算符放入栈底元素逗号，此符号优先级最低
+        opStack.push(Symbol.C_COMMA); // Push a comma onto the bottom of the operator stack, as it has the lowest
+                                      // priority.
         final char[] arr = expression.toCharArray();
-        int currentIndex = 0;// 当前字符的位置
-        int count = 0;// 上次算术运算符到本次算术运算符的字符的长度便于或者之间的数值
-        char currentOp, peekOp;// 当前操作符和栈顶操作符
+        int currentIndex = 0; // The current character's position.
+        int count = 0; // The length of the substring between the last and current operators, used to extract the
+                       // number.
+        char currentOp, peekOp; // The current operator and the operator at the top of the stack.
         for (int i = 0; i < arr.length; i++) {
             currentOp = arr[i];
-            if (isOperator(currentOp)) {// 如果当前字符是运算符
+            if (isOperator(currentOp)) { // If the current character is an operator.
                 if (count > 0) {
-                    postfixStack.push(new String(arr, currentIndex, count));// 取两个运算符之间的数字
+                    postfixStack.push(new String(arr, currentIndex, count)); // Extract the number between the two
+                                                                             // operators.
                 }
                 peekOp = opStack.peek();
-                if (currentOp == ')') {// 遇到反括号则将运算符栈中的元素移除到后缀式栈中直到遇到左括号
+                if (currentOp == ')') { // If a right parenthesis is found, pop operators to the postfix stack until a
+                                        // left parenthesis is found.
                     while (opStack.peek() != Symbol.C_PARENTHESE_LEFT) {
                         postfixStack.push(String.valueOf(opStack.pop()));
                     }
@@ -169,20 +175,23 @@ public class Calculator {
                 count++;
             }
         }
-        if (count > 1 || (count == 1 && !isOperator(arr[currentIndex]))) {// 最后一个字符不是括号或者其他运算符的则加入后缀式栈中
+        if (count > 1 || (count == 1 && !isOperator(arr[currentIndex]))) { // If the last character is not a parenthesis
+                                                                           // or other operator, add it to the postfix
+                                                                           // stack.
             postfixStack.push(new String(arr, currentIndex, count));
         }
 
         while (opStack.peek() != Symbol.C_COMMA) {
-            postfixStack.push(String.valueOf(opStack.pop()));// 将操作符栈中的剩余的元素添加到后缀式栈中
+            postfixStack.push(String.valueOf(opStack.pop())); // Add the remaining operators from the operator stack to
+                                                              // the postfix stack.
         }
     }
 
     /**
-     * 判断是否为算术符号
+     * Checks if a character is an arithmetic operator.
      *
-     * @param c 字符
-     * @return 是否为算术符号
+     * @param c The character to check.
+     * @return {@code true} if it is an arithmetic operator, {@code false} otherwise.
      */
     private boolean isOperator(final char c) {
         return c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/'
@@ -190,20 +199,20 @@ public class Calculator {
     }
 
     /**
-     * 利用ASCII码-40做下标去算术符号优先级
+     * Compares the priority of two operators using their ASCII values minus 40 as an index.
      *
-     * @param cur  下标
-     * @param peek peek
-     * @return 优先级，如果cur高或相等，返回true，否则false
+     * @param cur  The current operator.
+     * @param peek The operator at the top of the stack.
+     * @return {@code true} if the priority of peek is greater than or equal to cur, {@code false} otherwise.
      */
-    private boolean compare(char cur, char peek) {// 如果是peek优先级高于cur，返回true，默认都是peek优先级要低
+    private boolean compare(char cur, char peek) { // Returns true if peek has higher or equal priority than cur.
         final int offset = 40;
         if (cur == Symbol.C_PERCENT) {
-            // %优先级最高
+            // The '%' operator has the highest priority.
             cur = 47;
         }
         if (peek == Symbol.C_PERCENT) {
-            // %优先级最高
+            // The '%' operator has the highest priority.
             peek = 47;
         }
 
@@ -211,12 +220,12 @@ public class Calculator {
     }
 
     /**
-     * 按照给定的算术运算符做计算
+     * Performs a calculation based on the given arithmetic operator.
      *
-     * @param firstValue  第一个值
-     * @param secondValue 第二个值
-     * @param currentOp   算数符，只支持'+'、'-'、'*'、'/'、'%'
-     * @return 结果
+     * @param firstValue  The first value.
+     * @param secondValue The second value.
+     * @param currentOp   The arithmetic operator, supporting only '+', '-', '*', '/', and '%'.
+     * @return The result of the calculation.
      */
     private BigDecimal calculate(final String firstValue, final String secondValue, final char currentOp) {
         final BigDecimal result;

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.core.lang.Normal;
 
+import java.lang.annotation.*;
+
 /**
- * 对json内的key_value进行脱敏/过滤
+ * An annotation to desensitize or filter key-value pairs within a field that contains a JSON string.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,30 +43,32 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface NShield {
 
     /**
-     * 需要脱敏的字段的数组
+     * An array of {@link Shield} annotations to specify desensitization rules for individual keys within the JSON.
      *
-     * @return 返回结果
+     * @return The array of shield rules.
      */
     Shield[] value() default {};
 
     /**
-     * 过滤对象
+     * Specifies the class type of the JSON object. This can be used for more advanced filtering or processing based on
+     * the object's structure.
      *
-     * @return 对象信息
+     * @return The class type of the JSON object.
      */
     Class<?> type();
 
     /**
-     * 包含属性
+     * A comma-separated list of property names to include from the JSON object. If specified, only these properties
+     * will be retained in the output.
      *
-     * @return 对象属性
+     * @return The properties to include.
      */
     String include() default Normal.EMPTY;
 
     /**
-     * 过滤属性
+     * A comma-separated list of property names to filter out (exclude) from the JSON object.
      *
-     * @return 对象属性
+     * @return The properties to filter.
      */
     String filter() default Normal.EMPTY;
 

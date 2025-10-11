@@ -30,51 +30,54 @@ package org.miaixz.bus.core.lang;
 import java.io.Serializable;
 
 /**
- * 枚举元素通用接口，在自定义枚举上实现此接口可以用于数据转换 数据库保存时建议保存 intVal()而非ordinal()防备需求变更
+ * Generic interface for enum elements, allowing custom enums to implement this interface for data conversion. It is
+ * recommended to save {@code code()} values rather than {@code ordinal()} when persisting to a database, to guard
+ * against future requirement changes.
  *
- * @param <E> Enum类型
+ * @param <E> The type of the enum implementing this interface.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Enumers<E extends Enumers<E>> extends Serializable {
 
     /**
-     * 枚举编码
+     * Returns the code associated with this enum constant.
      *
-     * @return 编码
+     * @return The enum code.
      */
     int code();
 
     /**
-     * 枚举名称
+     * Returns the name of this enum constant.
      *
-     * @return 名称
+     * @return The enum name.
      */
     String name();
 
     /**
-     * 在中文语境下，多数时间枚举会配合一个中文说明
+     * Returns a descriptive text for this enum constant. In a Chinese context, enums often have a corresponding Chinese
+     * description.
      *
-     * @return 描述
+     * @return The descriptive text, defaulting to the enum name if not overridden.
      */
     default String text() {
         return name();
     }
 
     /**
-     * 获取所有枚举对象
+     * Returns an array containing all of the enum constants of this enum type, in the order they're declared.
      *
-     * @return 枚举对象数组
+     * @return An array containing all the enum constants.
      */
     default E[] items() {
         return (E[]) this.getClass().getEnumConstants();
     }
 
     /**
-     * 通过int类型值查找兄弟其他枚举
+     * Retrieves an enum constant by its integer code.
      *
-     * @param intVal int值
-     * @return Enum
+     * @param intVal The integer value to search for.
+     * @return The enum constant corresponding to the given integer value, or {@code null} if not found.
      */
     default E from(final Integer intVal) {
         if (intVal == null) {
@@ -90,10 +93,11 @@ public interface Enumers<E extends Enumers<E>> extends Serializable {
     }
 
     /**
-     * 通过String类型的值转换，根据实现可以用name/text
+     * Retrieves an enum constant by its string value. This method can convert based on name or text, depending on the
+     * implementation.
      *
-     * @param strVal String值
-     * @return Enum
+     * @param strVal The string value to search for.
+     * @return The enum constant corresponding to the given string value, or {@code null} if not found.
      */
     default E from(final String strVal) {
         if (strVal == null) {

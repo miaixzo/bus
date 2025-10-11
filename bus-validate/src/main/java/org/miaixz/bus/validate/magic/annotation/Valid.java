@@ -30,34 +30,36 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 /**
- * 标记注解,标明要被拦截的类或方法或者参数
+ * A marker annotation that indicates a class, method, or parameter should be intercepted for validation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
 public @interface Valid {
 
     /**
-     * 校验属性 例如: {"id","name"}
+     * Specifies the properties to be validated. For example: `{"id", "name"}`. If empty, all properties are considered
+     * for validation unless explicitly skipped.
      *
-     * @return the array
+     * @return an array of property names to validate.
      */
     String[] value() default {};
 
     /**
-     * 忽略属性 例如: {"created","creator"}
+     * Specifies the properties to be ignored during validation. For example: `{"created", "creator"}`.
      *
-     * @return the array
+     * @return an array of property names to skip.
      */
     String[] skip() default {};
 
     /**
-     * 内部校验
+     * Specifies whether to perform a deep validation on the object's properties. If {@code true}, the validator will
+     * recursively validate the fields of the annotated object.
      *
-     * @return the true/false
+     * @return {@code true} for deep validation, {@code false} otherwise.
      */
     boolean inside() default true;
 

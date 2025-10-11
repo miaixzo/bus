@@ -44,23 +44,47 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 极光短信
+ * JPush SMS service provider implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JpushSmsProvider extends AbstractProvider<JpushMaterial, Context> {
 
+    /**
+     * Constructs a {@code JpushSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public JpushSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using JPush SMS service.
+     *
+     * @param entity The {@link JpushMaterial} containing SMS details like signature ID, recipient, template ID, and
+     *               template parameters.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(JpushMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
+        /**
+         * The signature ID for the SMS.
+         */
         bodys.put("sign_id", entity.getSignature());
+        /**
+         * The recipient's mobile number.
+         */
         bodys.put("mobile", entity.getReceive());
+        /**
+         * The template ID for the SMS message.
+         */
         bodys.put("temp_id", entity.getTemplate());
+        /**
+         * The parameters for the SMS template.
+         */
         bodys.put("temp_para", entity.getParams());
 
         Map<String, String> headers = new HashMap<>();
@@ -70,11 +94,16 @@ public class JpushSmsProvider extends AbstractProvider<JpushMaterial, Context> {
         String response = Httpx.post(this.getUrl(entity), bodys, headers);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "success_count"), 0);
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
+        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "error.message");
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }
 
+    /**
+     * Generates the Base64 encoded authorization string for JPush API requests.
+     *
+     * @return The Base64 encoded string of "appKey:appSecret".
+     */
     private String getSign() {
         String origin = context.getAppKey() + Symbol.COLON + context.getAppSecret();
         return Base64.getEncoder().encodeToString(origin.getBytes(Charset.UTF_8));

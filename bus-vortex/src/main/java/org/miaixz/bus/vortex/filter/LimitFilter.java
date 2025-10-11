@@ -29,8 +29,8 @@ package org.miaixz.bus.vortex.filter;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Format;
 import org.miaixz.bus.vortex.magic.Limiter;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
 import org.springframework.core.Ordered;
@@ -40,7 +40,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 /**
- * 限流过滤器，基于令牌桶算法对请求进行流量限制
+ * Rate limiting filter that applies traffic restrictions to requests based on the token bucket algorithm.
  *
  * @author Justubborn
  * @since Java 17+
@@ -48,24 +48,27 @@ import reactor.core.publisher.Mono;
 @Order(Ordered.HIGHEST_PRECEDENCE + 3)
 public class LimitFilter extends AbstractFilter {
 
+    /**
+     * The registry for rate limiters.
+     */
     private final LimiterRegistry registry;
 
     /**
-     * 构造器，初始化限流注册表
+     * Constructs a {@code LimitFilter} with the specified rate limiter registry.
      *
-     * @param registry 限流注册表
+     * @param registry The rate limiter registry.
      */
     public LimitFilter(LimiterRegistry registry) {
         this.registry = registry;
     }
 
     /**
-     * 内部过滤方法，执行限流逻辑
+     * Internal filtering method, executing the rate limiting logic.
      *
-     * @param exchange 当前的 ServerWebExchange 对象
-     * @param chain    过滤器链
-     * @param context  请求上下文
-     * @return {@link Mono<Void>} 表示异步处理完成
+     * @param exchange The current {@link ServerWebExchange} object.
+     * @param chain    The filter chain.
+     * @param context  The request context.
+     * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
      */
     @Override
     protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
@@ -75,19 +78,19 @@ public class LimitFilter extends AbstractFilter {
         for (Limiter cfg : cfgList) {
             cfg.acquire();
         }
-        Format.info(
-                exchange,
-                "RATE_LIMIT_APPLIED",
-                "Path: " + exchange.getRequest().getURI().getPath() + ", Method: " + methodVersion);
+        Logger.info(
+                "==>     Filter: Rate limit applied - Path: {}, Method: {}",
+                exchange.getRequest().getURI().getPath(),
+                methodVersion);
         return chain.filter(exchange);
     }
 
     /**
-     * 获取适用的限流配置
+     * Retrieves the applicable rate limiter configurations.
      *
-     * @param methodVersion 方法名和版本号的组合
-     * @param ip            请求的 IP 地址
-     * @return 适用的限流配置集合
+     * @param methodVersion The combination of method name and version number.
+     * @param ip            The IP address of the request.
+     * @return A set of applicable {@link Limiter} configurations.
      */
     private Set<Limiter> getLimiter(String methodVersion, String ip) {
         String[] limitKeys = new String[] { methodVersion, ip + methodVersion };

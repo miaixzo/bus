@@ -31,7 +31,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
- * 异步拦截器接口，定义请求处理的三个阶段
+ * Asynchronous interceptor interface, defining three stages of request processing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,48 +39,48 @@ import reactor.core.publisher.Mono;
 public interface Handler {
 
     /**
-     * 获取处理器顺序
+     * Retrieves the order of this handler. Handlers with smaller order values are executed earlier.
      *
-     * @return 顺序值，越小越先执行
+     * @return The order value; smaller values indicate higher precedence.
      */
     default int getOrder() {
         return 0;
     }
 
     /**
-     * 异步预处理方法，在请求处理前执行
+     * Asynchronous pre-processing method, executed before request handling.
      *
-     * @param exchange 当前 ServerWebExchange 对象
-     * @param service  服务实例（通常为策略对象）
-     * @param args     方法参数，可为 null
-     * @return {@code Mono<Boolean>} 返回 true 表示验证通过，false 表示验证失败
+     * @param exchange The current {@link ServerWebExchange} object.
+     * @param service  The service instance (typically a strategy object).
+     * @param args     Method arguments, may be {@code null}.
+     * @return {@code Mono<Boolean>} indicating whether validation passed ({@code true}) or failed ({@code false}).
      */
     default Mono<Boolean> preHandle(ServerWebExchange exchange, Object service, Object args) {
         return Mono.just(true);
     }
 
     /**
-     * 异步后处理方法，在请求处理后执行
+     * Asynchronous post-processing method, executed after request handling.
      *
-     * @param exchange 当前 ServerWebExchange 对象
-     * @param service  服务实例
-     * @param args     方法参数，可为 null
-     * @param result   接口方法返回的结果
-     * @return {@code Mono<Void>} 表示异步处理完成
+     * @param exchange The current {@link ServerWebExchange} object.
+     * @param service  The service instance.
+     * @param args     Method arguments, may be {@code null}.
+     * @param result   The result returned by the interface method.
+     * @return {@code Mono<Void>} indicating the completion of asynchronous processing.
      */
     default Mono<Void> postHandle(ServerWebExchange exchange, Object service, Object args, Object result) {
         return Mono.empty();
     }
 
     /**
-     * 异步完成处理方法，在请求完成后执行（无论成功或失败）
+     * Asynchronous completion method, executed after the request is completed (regardless of success or failure).
      *
-     * @param exchange  当前 ServerWebExchange 对象
-     * @param service   服务实例
-     * @param args      方法参数，可为 null
-     * @param result    最终响应结果，可为 null
-     * @param exception 异常对象（若有），可为 null
-     * @return {@code Mono<Void>} 表示异步处理完成
+     * @param exchange  The current {@link ServerWebExchange} object.
+     * @param service   The service instance.
+     * @param args      Method arguments, may be {@code null}.
+     * @param result    The final response result, may be {@code null}.
+     * @param exception The exception object (if any), may be {@code null}.
+     * @return {@code Mono<Void>} indicating the completion of asynchronous processing.
      */
     default Mono<Void> afterCompletion(
             ServerWebExchange exchange,

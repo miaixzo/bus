@@ -32,7 +32,8 @@ import java.util.Set;
 import org.miaixz.bus.core.xyz.SetKit;
 
 /**
- * 过滤词及一些简单处理
+ * Utility class for handling stop characters, such as punctuation and whitespace, which are typically ignored during
+ * text processing, especially in DFA-based algorithms.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,7 +41,8 @@ import org.miaixz.bus.core.xyz.SetKit;
 public class StopChar {
 
     /**
-     * 不需要处理的词，如标点符号、空格等
+     * A set of characters that are considered stop words or characters that do not require processing. This includes
+     * various punctuation marks, symbols, and whitespace characters.
      */
     public static final Set<Character> STOP_WORD = SetKit.of(
             ' ',
@@ -358,20 +360,21 @@ public class StopChar {
             '%');
 
     /**
-     * 判断指定的词是否是不处理的词。 如果参数为空，则返回true，因为空也属于不处理的字符。
+     * Checks if the given character is a stop character. Stop characters are typically ignored during text processing.
      *
-     * @param ch 指定的词
-     * @return 是否是不处理的词
+     * @param ch The character to check.
+     * @return {@code true} if the character is a whitespace character or present in the {@link #STOP_WORD} set,
+     *         {@code false} otherwise.
      */
     public static boolean isStopChar(final char ch) {
         return Character.isWhitespace(ch) || STOP_WORD.contains(ch);
     }
 
     /**
-     * 是否为合法字符（待处理字符）
+     * Checks if the given character is not a stop character (i.e., it is a valid character for processing).
      *
-     * @param ch 指定的词
-     * @return 是否为合法字符（待处理字符）
+     * @param ch The character to check.
+     * @return {@code true} if the character is not a stop character, {@code false} otherwise.
      */
     public static boolean isNotStopChar(final char ch) {
         return !isStopChar(ch);

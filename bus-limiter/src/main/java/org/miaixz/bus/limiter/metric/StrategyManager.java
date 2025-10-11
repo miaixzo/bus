@@ -34,7 +34,9 @@ import org.miaixz.bus.limiter.Provider;
 import org.miaixz.bus.limiter.magic.StrategyMode;
 
 /**
- * 规则管理
+ * Manages and provides access to different limiting strategy implementations. This class acts as a registry for
+ * {@link Provider} instances, mapping each {@link StrategyMode} to its corresponding provider responsible for executing
+ * that strategy.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,24 +44,26 @@ import org.miaixz.bus.limiter.magic.StrategyMode;
 public class StrategyManager {
 
     /**
-     * 规则缓存
+     * A static map to cache {@link Provider} instances, keyed by their {@link StrategyMode}. This allows for quick
+     * retrieval of the appropriate strategy executor.
      */
     private static final Map<StrategyMode, Provider> map = new HashMap<>();
 
     /**
-     * 添加规则管理
+     * Adds a {@link Provider} to the strategy manager. The provider is registered under its associated
+     * {@link StrategyMode}.
      *
-     * @param provider 服务提供者
+     * @param provider The {@link Provider} instance to be added.
      */
     public static void add(Provider provider) {
         map.put(provider.get(), provider);
     }
 
     /**
-     * 获取规则执行者
+     * Retrieves the {@link Provider} responsible for executing a specific {@link StrategyMode}.
      *
-     * @param strategyMode 执行规则
-     * @return the provider
+     * @param strategyMode The {@link StrategyMode} for which to retrieve the provider.
+     * @return The {@link Provider} instance associated with the given strategy mode, or {@code null} if not found.
      */
     public static Provider get(StrategyMode strategyMode) {
         return map.get(strategyMode);

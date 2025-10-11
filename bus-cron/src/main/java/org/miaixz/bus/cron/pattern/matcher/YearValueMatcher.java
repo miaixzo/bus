@@ -31,13 +31,13 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 
 /**
- * 年匹配器，用于Cron表达式中年份部分的匹配。
+ * A matcher for the year field of a cron expression.
  * <p>
- * 考虑到年份数字通常较大，不适合使用布尔数组进行存储和匹配，因此单独使用{@link LinkedHashSet}进行匹配。
+ * Considering that year values are typically large, using a boolean array for storage and matching is not suitable.
+ * Therefore, this implementation uses a {@link LinkedHashSet} for matching.
  * </p>
- *
  * <p>
- * 该类实现了{@link PartMatcher}接口，提供了年份匹配的具体实现。
+ * This class implements the {@link PartMatcher} interface, providing a specific implementation for year matching.
  * </p>
  *
  * @author Kimi Liu
@@ -46,15 +46,15 @@ import java.util.LinkedHashSet;
 public class YearValueMatcher implements PartMatcher {
 
     /**
-     * 存储年份值的集合
+     * A collection to store the year values.
      */
     private final LinkedHashSet<Integer> valueList;
 
     /**
-     * 构造一个年匹配器。
+     * Constructs a new YearValueMatcher.
      *
-     * @param intValueList 年份数字列表，不能为null
-     * @throws IllegalArgumentException 如果intValueList为null
+     * @param intValueList A collection of integer values representing the years. Must not be null.
+     * @throws IllegalArgumentException if intValueList is null.
      */
     public YearValueMatcher(final Collection<Integer> intValueList) {
         if (intValueList == null) {
@@ -64,11 +64,11 @@ public class YearValueMatcher implements PartMatcher {
     }
 
     /**
-     * 测试给定的年份是否匹配。
+     * Tests if the given year is matched by this matcher.
      *
-     * @param t 要测试的年份值
-     * @return 如果给定的年份在匹配器中则返回true，否则返回false
-     * @throws NullPointerException 如果参数t为null
+     * @param t The year value to test.
+     * @return {@code true} if the given year is in the matcher's value list, {@code false} otherwise.
+     * @throws NullPointerException if the argument t is null.
      */
     @Override
     public boolean test(final Integer t) {
@@ -79,10 +79,10 @@ public class YearValueMatcher implements PartMatcher {
     }
 
     /**
-     * 获取大于等于给定值的下一个匹配年份。
+     * Gets the next matching year that is greater than or equal to the given value.
      *
-     * @param value 当前年份值
-     * @return 大于等于给定值的下一个匹配年份，如果没有找到则返回-1表示无效
+     * @param value The current year value to start the search from.
+     * @return The next matching year that is greater than or equal to the given value, or -1 if no such year is found.
      */
     @Override
     public int nextAfter(final int value) {
@@ -91,14 +91,15 @@ public class YearValueMatcher implements PartMatcher {
                 return year;
             }
         }
-        // 没有找到大于等于当前值的年份，年无效，此表达式整体无效
+        // If no year greater than or equal to the current value is found, the year is considered invalid,
+        // making the entire expression invalid for future matches.
         return -1;
     }
 
     /**
-     * 返回此年匹配器的字符串表示形式。
+     * Returns a string representation of this YearValueMatcher.
      *
-     * @return 年匹配器的字符串表示形式
+     * @return A string representation of the matcher.
      */
     @Override
     public String toString() {

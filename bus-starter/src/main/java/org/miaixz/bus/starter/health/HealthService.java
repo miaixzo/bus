@@ -49,7 +49,11 @@ import org.springframework.boot.availability.ReadinessState;
 import org.springframework.context.ApplicationEventPublisher;
 
 /**
- * 健康状态提供者服务类，用于管理和监控系统的健康状态及硬件信息
+ * Service class for managing and monitoring the system's health status and hardware information.
+ * <p>
+ * This service integrates with Spring Boot's availability management to control liveness and readiness probes, and it
+ * uses the {@code bus-health} module to gather detailed system and hardware metrics.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,29 +61,32 @@ import org.springframework.context.ApplicationEventPublisher;
 public class HealthService {
 
     /**
-     * 健康状态配置属性
+     * Configuration properties for health monitoring.
      */
-    private HealthProperties properties;
-    /**
-     * 系统信息提供者，用于获取硬件和操作系统信息
-     */
-    private Provider provider;
-    /**
-     * Spring 应用事件发布器，用于发布可用性状态变更事件
-     */
-    private ApplicationEventPublisher publisher;
-    /**
-     * Spring 应用可用性接口，用于获取和检查当前的存活状态和就绪状态
-     */
-    private ApplicationAvailability availability;
+    private final HealthProperties properties;
 
     /**
-     * 构造函数，初始化健康状态服务。
+     * The system information provider for fetching hardware and OS details.
+     */
+    private final Provider provider;
+
+    /**
+     * The Spring ApplicationEventPublisher for publishing availability state changes.
+     */
+    private final ApplicationEventPublisher publisher;
+
+    /**
+     * The Spring ApplicationAvailability interface for checking the current liveness and readiness states.
+     */
+    private final ApplicationAvailability availability;
+
+    /**
+     * Constructs a new HealthService.
      *
-     * @param properties   健康状态配置属性
-     * @param provider     系统信息提供者
-     * @param publisher    Spring 应用事件发布器
-     * @param availability Spring 应用可用性接口
+     * @param properties   The health configuration properties.
+     * @param provider     The system information provider.
+     * @param publisher    The Spring application event publisher.
+     * @param availability The Spring application availability interface.
      */
     public HealthService(HealthProperties properties, Provider provider, ApplicationEventPublisher publisher,
             ApplicationAvailability availability) {
@@ -90,37 +97,40 @@ public class HealthService {
     }
 
     /**
-     * 获取系统健康状态信息。
+     * Retrieves system health status information based on the requested type identifiers.
      *
-     * @param tid 监控类型（可选，默认为 liveness,readiness）
-     * @return 操作结果，包含状态信息的 Message 对象
+     * @param tid A comma-separated string of type identifiers (e.g., "liveness,readiness,cpu"). If empty or null, it
+     *            defaults to the value from properties, or "liveness,readiness". The special value "all" retrieves all
+     *            available metrics.
+     * @return A map containing the requested health information on success, or a {@link Message} object on failure.
      */
     public Object healthz(String tid) {
         try {
-            // 设置 tid：优先使用输入，次选配置 type，否则默认 liveness,readiness
+            // Determine the TIDs to use: prioritize input, then properties, then default.
             String defaultTids = TID.LIVENESS + Symbol.COMMA + TID.READINESS;
-            tid = StringKit.isEmpty(tid) ? (properties == null || StringKit.isEmpty(properties.getType()) ? defaultTids
-                    : properties.getType().toLowerCase()) : tid.toLowerCase();
+            String effectiveTid = StringKit.isEmpty(tid)
+                    ? (properties == null || StringKit.isEmpty(properties.getType()) ? defaultTids
+                            : properties.getType().toLowerCase())
+                    : tid.toLowerCase();
 
-            // 若 tid 无效，设为 liveness,readiness
-            List<String> tidList = Arrays.asList(tid.split(Symbol.COMMA));
+            List<String> tidList = Arrays.asList(effectiveTid.split(Symbol.COMMA));
+            // Validate TIDs; if none are valid, default to liveness and readiness.
             if (tidList.stream().noneMatch(TID.ALL_TID::contains)) {
                 tidList = Arrays.asList(TID.LIVENESS, TID.READINESS);
-                Logger.debug("Invalid tid '{}', defaulting to liveness,readiness", tid);
+                Logger.debug("Invalid tid '{}', defaulting to liveness,readiness", effectiveTid);
             }
 
-            // 获取监控信息
+            // Gather monitoring information.
             Map<String, Object> result = new HashMap<>();
             result.put("requestId", ID.objectId());
             try {
-                result.putAll(TID.ALL.equals(tid) ? provider.getAll() : provider.get(tidList));
+                result.putAll(TID.ALL.equals(effectiveTid) ? provider.getAll() : provider.get(tidList));
             } catch (NumberFormatException e) {
-                Logger.warn("Invalid number format in provider data for tid '{}': {}", tid, e.getMessage());
-                // 返回默认值或空数据
+                Logger.warn("Invalid number format in provider data for tid '{}': {}", effectiveTid, e.getMessage());
+                // On error, fall back to appending individually.
                 tidList.forEach(type -> append(type, result));
             }
 
-            // 返回 Message 对象
             return result;
         } catch (Exception e) {
             Logger.error("Failed to retrieve health information for tid '{}': {}", tid, e.getMessage(), e);
@@ -130,9 +140,10 @@ public class HealthService {
     }
 
     /**
-     * 将存活状态改为 BROKEN，导致 Kubernetes 杀死并重启 pod。
+     * Sets the liveness state to {@link LivenessState#BROKEN}, signaling that the application is unhealthy and should
+     * be restarted by the orchestrator (e.g., Kubernetes).
      *
-     * @return 操作结果及当前时间
+     * @return A map indicating the new state and the current timestamp.
      */
     public Object broken() {
         AvailabilityChangeEvent.publish(publisher, this, LivenessState.BROKEN);
@@ -140,9 +151,9 @@ public class HealthService {
     }
 
     /**
-     * 将存活状态改为 CORRECT，表示 pod 正常运行。
+     * Sets the liveness state to {@link LivenessState#CORRECT}, signaling that the application is running correctly.
      *
-     * @return 操作结果及当前时间
+     * @return A map indicating the new state and the current timestamp.
      */
     public Object correct() {
         AvailabilityChangeEvent.publish(publisher, this, LivenessState.CORRECT);
@@ -150,9 +161,10 @@ public class HealthService {
     }
 
     /**
-     * 将就绪状态改为 ACCEPTING_TRAFFIC，Kubernetes 将请求转发到此 pod。
+     * Sets the readiness state to {@link ReadinessState#ACCEPTING_TRAFFIC}, signaling that the application is ready to
+     * receive requests.
      *
-     * @return 操作结果及当前时间
+     * @return A map indicating the new state and the current timestamp.
      */
     public Object accept() {
         AvailabilityChangeEvent.publish(publisher, this, ReadinessState.ACCEPTING_TRAFFIC);
@@ -160,9 +172,10 @@ public class HealthService {
     }
 
     /**
-     * 将就绪状态改为 REFUSING_TRAFFIC，Kubernetes 拒绝外部请求。
+     * Sets the readiness state to {@link ReadinessState#REFUSING_TRAFFIC}, signaling that the application should not
+     * receive new requests (e.g., during startup or shutdown).
      *
-     * @return 操作结果及当前时间
+     * @return A map indicating the new state and the current timestamp.
      */
     public Object refuse() {
         AvailabilityChangeEvent.publish(publisher, this, ReadinessState.REFUSING_TRAFFIC);
@@ -170,20 +183,20 @@ public class HealthService {
     }
 
     /**
-     * 创建健康状态探针操作的结果映射。
+     * Creates a result map for a health probe state change.
      *
-     * @param probe 探针类型
-     * @return 包含错误消息和时间戳的映射
+     * @param probe The type of probe action.
+     * @return A map containing the state and timestamp.
      */
     public Object builder(EnumValue.Probe probe) {
         return Map.of("state", probe.getValue(), "timestamp:", DateKit.current());
     }
 
     /**
-     * 根据类型添加系统或硬件信息到结果映射。
+     * Appends system or hardware information to the result map based on the specified type.
      *
-     * @param type 类型标识
-     * @param map  结果映射
+     * @param type The type identifier (e.g., "liveness", "cpu").
+     * @param map  The result map to append to.
      */
     public void append(String type, Map<String, Object> map) {
         switch (type.toLowerCase()) {

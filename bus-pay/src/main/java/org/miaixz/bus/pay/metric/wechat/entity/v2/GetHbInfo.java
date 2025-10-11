@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 查询红包记录
+ * Query Red Packet Record model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,10 +48,25 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class GetHbInfo extends Material {
 
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Merchant bill number.
+     */
     private String mch_billno;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Bill type.
+     */
     private String bill_type;
 
 }

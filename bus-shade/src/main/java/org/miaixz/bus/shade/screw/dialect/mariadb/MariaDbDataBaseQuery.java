@@ -46,7 +46,7 @@ import org.miaixz.bus.shade.screw.metadata.Database;
 import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 
 /**
- * mariadb 数据库查询
+ * MariaDB database query implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,18 +54,19 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
 
     /**
-     * 构造函数
+     * Constructs a {@code MariaDbDataBaseQuery}.
      *
-     * @param dataSource {@link DataSource}
+     * @param dataSource The JDBC data source.
      */
     public MariaDbDataBaseQuery(DataSource dataSource) {
         super(dataSource);
     }
 
     /**
-     * 获取数据库
+     * Retrieves the database information.
      *
-     * @return {@link Database} 数据库信息
+     * @return A {@link Database} object containing the database name.
+     * @throws InternalException if an error occurs during the query.
      */
     @Override
     public Database getDataBase() throws InternalException {
@@ -75,18 +76,19 @@ public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 获取表信息
+     * Retrieves information for all tables in the database.
      *
-     * @return {@link List} 所有表信息
+     * @return A list of {@link MariadbTable} objects, each representing a table.
+     * @throws InternalException if an error occurs during the query.
      */
     @Override
     public List<MariadbTable> getTables() throws InternalException {
         ResultSet resultSet = null;
         try {
-            // 查询
+            // Query for tables
             resultSet = getMetaData()
                     .getTables(getCatalog(), getSchema(), Builder.PERCENT_SIGN, new String[] { "TABLE" });
-            // 映射
+            // Map the result set to a list of MariadbTable objects
             return Mapping.convertList(resultSet, MariadbTable.class);
         } catch (SQLException e) {
             throw new InternalException(e);
@@ -96,27 +98,27 @@ public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 获取列信息
+     * Retrieves column information for a specific table.
      *
-     * @param table {@link String} 表名
-     * @return {@link List} 表字段信息
+     * @param table The name of the table.
+     * @return A list of {@link MariadbColumn} objects for the specified table.
+     * @throws InternalException if an error occurs during the query.
      */
     @Override
     public List<MariadbColumn> getTableColumns(String table) throws InternalException {
         Assert.notEmpty(table, "Table name can not be empty!");
         ResultSet resultSet = null;
         try {
-            // 查询
+            // Query for columns
             resultSet = getMetaData().getColumns(getCatalog(), getSchema(), table, Builder.PERCENT_SIGN);
-            // 映射
+            // Map the result set to a list of MariadbColumn objects
             List<MariadbColumn> list = Mapping.convertList(resultSet, MariadbColumn.class);
-            // 这里处理是为了如果是查询全部列呢？所以处理并获取唯一表名
-            List<String> tableNames = list.stream().map(MariadbColumn::getTableName).collect(Collectors.toList())
-                    .stream().distinct().collect(Collectors.toList());
+            // Get unique table names from the result
+            List<String> tableNames = list.stream().map(MariadbColumn::getTableName).distinct()
+                    .collect(Collectors.toList());
             if (CollKit.isEmpty(columnsCaching)) {
-                // 查询全部
+                // If querying for all tables
                 if (table.equals(Builder.PERCENT_SIGN)) {
-                    // 获取全部表列信息SQL
                     String sql = "SELECT A.TABLE_NAME, A.COLUMN_NAME, A.COLUMN_TYPE, case when LOCATE('(', A.COLUMN_TYPE) > 0 then replace(substring(A.COLUMN_TYPE, LOCATE('(', A.COLUMN_TYPE) + 1), ')', '') else null end COLUMN_LENGTH FROM INFORMATION_SCHEMA.COLUMNS A WHERE A.TABLE_SCHEMA = '%s'";
                     PreparedStatement statement = prepareStatement(String.format(sql, getDataBase().getDatabase()));
                     resultSet = statement.executeQuery();
@@ -125,28 +127,24 @@ public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
                         resultSet.setFetchSize(fetchSize);
                     }
                 }
-                // 单表查询
+                // If querying for a single table
                 else {
-                    // 获取表列信息SQL 查询表名、列名、说明、数据类型
                     String sql = "SELECT A.TABLE_NAME, A.COLUMN_NAME, A.COLUMN_TYPE, case when LOCATE('(', A.COLUMN_TYPE) > 0 then replace(substring(A.COLUMN_TYPE, LOCATE('(', A.COLUMN_TYPE) + 1), ')', '') else null end COLUMN_LENGTH FROM INFORMATION_SCHEMA.COLUMNS A WHERE A.TABLE_SCHEMA = '%s' and A.TABLE_NAME = '%s'";
                     resultSet = prepareStatement(String.format(sql, getDataBase().getDatabase(), table)).executeQuery();
                 }
                 List<MariadbColumn> inquires = Mapping.convertList(resultSet, MariadbColumn.class);
-                // 处理列，表名为key，列名为值
+                // Cache the column information by table name
                 tableNames.forEach(
                         name -> columnsCaching.put(
                                 name,
                                 inquires.stream().filter(i -> i.getTableName().equals(name))
                                         .collect(Collectors.toList())));
             }
-            // 处理备注信息
+            // Populate remarks and other details from the cached or freshly queried data
             list.forEach(i -> {
-                // 从缓存中根据表名获取列信息
                 List<Column> columns = columnsCaching.get(i.getTableName());
                 columns.forEach(j -> {
-                    // 列名表名一致
                     if (i.getColumnName().equals(j.getColumnName()) && i.getTableName().equals(j.getTableName())) {
-                        // 放入列类型
                         i.setColumnType(j.getColumnType());
                         i.setColumnLength(j.getColumnLength());
                     }
@@ -161,31 +159,30 @@ public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 获取所有列信息
+     * Retrieves column information for all tables.
      *
-     * @return {@link List} 表字段信息
-     * @throws InternalException 异常
+     * @return A list of {@link Column} objects for all tables.
+     * @throws InternalException if an error occurs during the query.
      */
     @Override
     public List<? extends Column> getTableColumns() throws InternalException {
-        // 获取全部列
         return getTableColumns(Builder.PERCENT_SIGN);
     }
 
     /**
-     * 根据表名获取主键
+     * Retrieves primary key information for a specific table.
      *
-     * @param table {@link String}
-     * @return {@link List}
-     * @throws InternalException 异常
+     * @param table The name of the table.
+     * @return A list of {@link PrimaryKey} objects for the specified table.
+     * @throws InternalException if an error occurs during the query.
      */
     @Override
     public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException {
         ResultSet resultSet = null;
         try {
-            // 查询
+            // Query for primary keys
             resultSet = getMetaData().getPrimaryKeys(getCatalog(), getSchema(), table);
-            // 映射
+            // Map the result set to a list of MariadbPrimaryKey objects
             return Mapping.convertList(resultSet, MariadbPrimaryKey.class);
         } catch (SQLException e) {
             throw new InternalException(e);
@@ -195,19 +192,18 @@ public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 根据表名获取主键
+     * Retrieves primary key information for all tables.
      *
-     * @return {@link List}
-     * @throws InternalException 异常
+     * @return A list of {@link PrimaryKey} objects for all tables.
+     * @throws InternalException if an error occurs during the query.
      */
     @Override
     public List<? extends PrimaryKey> getPrimaryKeys() throws InternalException {
         ResultSet resultSet = null;
         try {
-            // 由于单条循环查询存在性能问题，所以这里通过自定义SQL查询数据库主键信息
-            // MySQL 8 now use 'PRI' in place of 'pri'
+            // Custom SQL for better performance when querying all primary keys
             String sql = "SELECT A.TABLE_SCHEMA TABLE_CAT, NULL TABLE_SCHEM, A.TABLE_NAME, A.COLUMN_NAME, B.SEQ_IN_INDEX KEY_SEQ, B.INDEX_NAME PK_NAME FROM INFORMATION_SCHEMA.COLUMNS A, INFORMATION_SCHEMA.STATISTICS B WHERE A.COLUMN_KEY in('PRI', 'pri') AND B.INDEX_NAME = 'PRIMARY' AND (A.TABLE_SCHEMA = '%s') AND (B.TABLE_SCHEMA = '%s') AND A.TABLE_SCHEMA = B.TABLE_SCHEMA AND A.TABLE_NAME = B.TABLE_NAME AND A.COLUMN_NAME = B.COLUMN_NAME ORDER BY A.COLUMN_NAME";
-            // 拼接参数
+            // Format SQL with the database name
             String database = getDataBase().getDatabase();
             resultSet = prepareStatement(String.format(sql, database, database)).executeQuery();
             return Mapping.convertList(resultSet, MariadbPrimaryKey.class);

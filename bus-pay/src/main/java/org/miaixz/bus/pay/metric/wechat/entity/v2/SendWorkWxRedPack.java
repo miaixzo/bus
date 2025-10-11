@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
-import org.miaixz.bus.pay.magic.Material;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 企业微信-发放企业红包
+ * Model for the WeCom Pay - Send Corporate Red Packet API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,20 +47,65 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class SendWorkWxRedPack extends Material {
 
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Merchant's bill number.
+     */
     private String mch_billno;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * App ID of the WeCom application.
+     */
     private String wxappid;
+    /**
+     * Sender's name.
+     */
     private String sender_name;
+    /**
+     * WeCom application agent ID.
+     */
     private String agentid;
+    /**
+     * Media ID for the sender's header image.
+     */
     private String sender_header_media_id;
+    /**
+     * Recipient's OpenID.
+     */
     private String re_openid;
+    /**
+     * Total amount in cents.
+     */
     private String total_amount;
+    /**
+     * Wishing message.
+     */
     private String wishing;
+    /**
+     * Activity name.
+     */
     private String act_name;
+    /**
+     * Remark.
+     */
     private String remark;
+    /**
+     * Scene ID.
+     */
     private String scene_id;
+    /**
+     * WeCom-specific signature.
+     */
     private String workwx_sign;
 
 }

@@ -32,7 +32,8 @@ import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 
 /**
- * PostgreSQL 基于 RowBounds 的分页
+ * PostgreSQL dialect for pagination based on {@link RowBounds}. This class provides PostgreSQL-specific SQL generation
+ * for pagination using offset and limit.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,7 +41,14 @@ import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 public class PostgreSqlRowBounds extends AbstractRowBounds {
 
     /**
-     * 构建 <a href="https://www.postgresql.org/docs/current/queries-limit.html">PostgreSQL</a>分页查询语句
+     * Generates the PostgreSQL-specific pagination SQL using {@link RowBounds}. It appends {@code LIMIT ?} and
+     * optionally {@code OFFSET ?} to the original SQL.
+     *
+     * @param sql       the original SQL string
+     * @param rowBounds the {@link RowBounds} object containing offset and limit
+     * @param pageKey   the CacheKey for the paginated query
+     * @return the PostgreSQL-specific paginated SQL string
+     * @see <a href="https://www.postgresql.org/docs/current/queries-limit.html">PostgreSQL LIMIT Clause</a>
      */
     @Override
     public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {

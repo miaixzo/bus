@@ -27,7 +27,9 @@
 */
 
 /**
- * RocketMQ引擎
+ * Provides the Apache RocketMQ implementation for the Message Queue (MQ) engine. This package contains classes that
+ * enable integration with RocketMQ message brokers, offering functionalities for sending and receiving messages using
+ * RocketMQ client APIs.
  *
  * @author Kimi Liu
  * @since Java 17+

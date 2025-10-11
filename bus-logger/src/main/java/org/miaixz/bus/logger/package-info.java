@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 日志通用门面，功能类似于slf4j
+ * Provides a general-purpose logging facade, similar in functionality to SLF4J.
  *
  * @author Kimi Liu
  * @since Java 17+

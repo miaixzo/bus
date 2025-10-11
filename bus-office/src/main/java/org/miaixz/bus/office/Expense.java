@@ -30,7 +30,7 @@ package org.miaixz.bus.office;
 import java.util.Objects;
 
 /**
- * 重定向输出和错误流的进程的包装器类.
+ * Wrapper class for a process that redirects its output and error streams.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,9 +40,9 @@ public class Expense {
     private final Process process;
 
     /**
-     * 为给定的流程创建一个新的包装器.
+     * Creates a new wrapper for the given process.
      *
-     * @param process 为其创建包装器的过程.
+     * @param process The process for which to create the wrapper.
      */
     public Expense(final Process process) {
         super();
@@ -51,9 +51,9 @@ public class Expense {
     }
 
     /**
-     * 获取此包装器的进程.
+     * Retrieves the process wrapped by this instance.
      *
-     * @return 当前这个进程.
+     * @return The wrapped process.
      */
     public Process getProcess() {
         return this.process;

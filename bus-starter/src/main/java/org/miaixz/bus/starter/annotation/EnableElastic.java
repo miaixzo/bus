@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.elastic.ElasticConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用 ElasticSearch
+ * Enables Elasticsearch client support.
+ * <p>
+ * This annotation imports the {@link ElasticConfiguration}, which sets up the necessary beans for interacting with an
+ * Elasticsearch cluster, including the {@link org.elasticsearch.client.RestClient} and the modern
+ * {@link co.elastic.clients.elasticsearch.ElasticsearchClient}.
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
  * @since Java 17+

@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.spring.http;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
-
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.SpringBuilder;
@@ -44,9 +40,18 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Consumer;
+
 /**
- * 配置Spring MVC消息转换器，支持字符串和JSON的序列化/反序列化。 支持默认JSON框架（Jackson、Fastjson）以及通过JsonConverterConfigurer配置的自定义框架。
- * 确保UTF-8编码支持中文字符，并妥善处理缺失的依赖。 使用bus库的SpringBuilder获取自定义配置器。
+ * Configures Spring MVC message converters, supporting serialization/deserialization for strings and JSON.
+ * <p>
+ * This class extends {@link SpringEnvironmentPostProcessor} and implements
+ * {@link org.springframework.web.servlet.config.annotation.WebMvcConfigurer} to provide custom configurations for
+ * Spring MVC. It ensures UTF-8 encoding for Chinese characters, handles missing dependencies for JSON frameworks, and
+ * supports custom JSON converters. It also configures a unified URL prefix for controllers and registers a Sentinel
+ * request interceptor.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,30 +60,30 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
         implements org.springframework.web.servlet.config.annotation.WebMvcConfigurer {
 
     /**
-     * String转换器的默认媒体类型，支持JSON和UTF-8编码的纯文本
+     * Default media types for StringHttpMessageConverter, supporting JSON and plain text with UTF-8 encoding.
      */
     private static final List<MediaType> DEFAULT_MEDIA_TYPES = List
             .of(MediaType.APPLICATION_JSON, MediaType.parseMediaType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
 
     /**
-     * JSON序列化时的类型支持配置
+     * Configuration for type support during JSON serialization.
      */
     protected String autoType;
     /**
-     * Controller的统一URL前缀
+     * Unified URL prefix for controllers.
      */
     protected String prefix;
     /**
-     * Sentinel请求拦截器
+     * Sentinel request interceptor for handling requests.
      */
     protected SentinelRequestHandler handler;
 
     /**
-     * 构造函数，初始化autoType、prefix和handler
+     * Constructs a new {@code AwareWebMvcConfigurer} with the specified autoType, prefix, and handler.
      *
-     * @param autoType JSON序列化时的类型支持配置
-     * @param prefix   Controller的统一URL前缀
-     * @param handler  Sentinel请求拦截器
+     * @param autoType JSON serialization type support configuration.
+     * @param prefix   Unified URL prefix for controllers.
+     * @param handler  Sentinel request interceptor.
      */
     public AwareWebMvcConfigurer(String autoType, String prefix, SentinelRequestHandler handler) {
         super();
@@ -88,21 +93,23 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     }
 
     /**
-     * 添加拦截器到Spring MVC配置，注册SentinelRequestHandler并指定拦截路径
+     * Adds interceptors to the Spring MVC configuration. Registers the {@link SentinelRequestHandler} to intercept all
+     * paths, excluding static resources, error pages, and favicon.
      *
-     * @param registry 拦截器注册表
+     * @param registry The interceptor registry.
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // 确保拦截器正确注册，拦截所有路径，排除静态资源、错误页面和favicon
+        // Ensure the interceptor is correctly registered to intercept all paths, excluding static resources, error
+        // pages, and favicon.
         registry.addInterceptor(this.handler).addPathPatterns("/**")
                 .excludePathPatterns("/static/**", "/error", "/favicon.ico");
     }
 
     /**
-     * 添加自定义参数解析器到Spring MVC
+     * Adds custom argument resolvers to Spring MVC.
      *
-     * @param resolvers 参数解析器列表
+     * @param resolvers The list of argument resolvers.
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -110,24 +117,27 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     }
 
     /**
-     * 配置Spring MVC的消息转换器列表，按顺序添加StringHttpMessageConverter和JSON转换器。 确保至少一个JSON框架（Jackson、Fastjson或自定义配置器）可用，否则抛出异常。
+     * Configures the list of Spring MVC message converters. Adds {@link StringHttpMessageConverter} and JSON converters
+     * in order. Ensures that at least one JSON framework (Jackson, Fastjson, or custom configurer) is available,
+     * otherwise throws an exception.
      *
-     * @param converters 要配置的消息转换器列表
-     * @throws IllegalStateException 如果没有可用的JSON配置器
+     * @param converters The list of message converters to configure.
+     * @throws IllegalStateException if no JSON configurer is available.
      */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        // 配置StringHttpMessageConverter以支持字符串转换
+        // Configure StringHttpMessageConverter to support string conversion
         configureConverter(converters, this::configureStringConverter, "StringHttpMessageConverter");
 
-        // 配置JSON转换器，用户可通过实现JsonConverterConfigurer并标记@Component来自定义
+        // Configure JSON converters; users can customize by implementing JsonConverterConfigurer and marking with
+        // @Component
         configureJsonConverters(converters, getJsonConfigurers());
     }
 
     /**
-     * 为所有Controller配置统一的URL路径前缀
+     * Configures a unified URL path prefix for all controllers.
      *
-     * @param configurer URL路径匹配配置器
+     * @param configurer The URL path matching configurer.
      */
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
@@ -137,9 +147,11 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     }
 
     /**
-     * 获取用户定义的JSON配置器列表。 通过SpringBuilder.getBeansOfType获取，按order()值排序，并为每个配置器设置autoType。
+     * Retrieves a sorted list of user-defined JSON configurers. Configurers are obtained via
+     * {@link SpringBuilder#getBeansOfType(Class)}, sorted by their {@link JsonConverterConfigurer#order()} value, and
+     * their {@code autoType} property is set.
      *
-     * @return 排序后的JsonConverterConfigurer实例列表
+     * @return A sorted list of {@link JsonConverterConfigurer} instances.
      */
     private List<JsonConverterConfigurer> getJsonConfigurers() {
         List<JsonConverterConfigurer> configurers = SpringBuilder.getBeansOfType(JsonConverterConfigurer.class).values()
@@ -166,11 +178,11 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     }
 
     /**
-     * 配置单个消息转换器并记录日志
+     * Configures a single message converter and logs the operation.
      *
-     * @param converters 要添加到的消息转换器列表
-     * @param configurer 转换器的配置逻辑
-     * @param name       转换器名称（用于日志记录）
+     * @param converters The list of message converters to add to.
+     * @param configurer The consumer that applies the configuration logic for the converter.
+     * @param name       The name of the converter (for logging purposes).
      */
     private void configureConverter(
             List<HttpMessageConverter<?>> converters,
@@ -185,10 +197,10 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     }
 
     /**
-     * 配置JSON转换器列表，逐个应用自定义配置器
+     * Configures the list of JSON message converters by applying each custom {@link JsonConverterConfigurer}.
      *
-     * @param converters  要添加到的消息转换器列表
-     * @param configurers 要应用的JsonConverterConfigurer实例列表
+     * @param converters  The list of message converters to add to.
+     * @param configurers The list of {@link JsonConverterConfigurer} instances to apply.
      */
     private void configureJsonConverters(
             List<HttpMessageConverter<?>> converters,
@@ -199,13 +211,13 @@ public class AwareWebMvcConfigurer extends SpringEnvironmentPostProcessor
     }
 
     /**
-     * 配置StringHttpMessageConverter，使用UTF-8编码和默认媒体类型
+     * Configures the {@link StringHttpMessageConverter} with UTF-8 encoding and default media types.
      *
-     * @param converters 要添加到的消息转换器列表
+     * @param converters The list of message converters to add to.
      */
     private void configureStringConverter(List<HttpMessageConverter<?>> converters) {
         /**
-         * 字符串消息转换器实例，使用UTF-8编码
+         * String message converter instance, using UTF-8 encoding.
          */
         StringHttpMessageConverter stringConverter = new StringHttpMessageConverter(Charset.UTF_8);
         stringConverter.setSupportedMediaTypes(DEFAULT_MEDIA_TYPES);

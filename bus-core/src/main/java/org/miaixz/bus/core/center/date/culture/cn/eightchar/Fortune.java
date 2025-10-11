@@ -31,7 +31,8 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 
 /**
- * 小运
+ * Represents a "Fortune" (小运) in Chinese astrology, often calculated based on a Child Limit (童限). This class extends
+ * {@link Loops} for cyclical operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,54 +40,71 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 public class Fortune extends Loops {
 
     /**
-     * 童限
+     * The Child Limit (童限) associated with this Fortune.
      */
     protected ChildLimit childLimit;
 
     /**
-     * 序号
+     * The index of this Fortune within the Child Limit period.
      */
     protected int index;
 
+    /**
+     * Constructs a {@code Fortune} instance with the specified Child Limit and index.
+     *
+     * @param childLimit The {@link ChildLimit} instance.
+     * @param index      The index of this Fortune.
+     */
     public Fortune(ChildLimit childLimit, int index) {
         this.childLimit = childLimit;
         this.index = index;
     }
 
     /**
-     * 通过童限初始化
+     * Creates a {@code Fortune} instance from a Child Limit and an index.
      *
-     * @param childLimit 童限
-     * @param index      序号
-     * @return 小运
+     * @param childLimit The {@link ChildLimit} instance.
+     * @param index      The index of this Fortune.
+     * @return A new {@code Fortune} instance.
      */
     public static Fortune fromChildLimit(ChildLimit childLimit, int index) {
         return new Fortune(childLimit, index);
     }
 
     /**
-     * 年龄
+     * Gets the age associated with this Fortune.
      *
-     * @return 年龄
+     * @return The age.
      */
     public int getAge() {
         return childLimit.getEndTime().getYear() - childLimit.getStartTime().getYear() + 1 + index;
     }
 
     /**
-     * 干支
+     * Gets the Sixty-Year Cycle (干支) for this Fortune.
      *
-     * @return 干支
+     * @return The {@link SixtyCycle} instance.
      */
     public SixtyCycle getSixtyCycle() {
         int n = getAge();
         return childLimit.getEightChar().getHour().next(childLimit.isForward() ? n : -n);
     }
 
+    /**
+     * Gets the name of this Fortune, which is the name of its associated Sixty-Year Cycle.
+     *
+     * @return The name of the Fortune.
+     */
     public String getName() {
         return getSixtyCycle().getName();
     }
 
+    /**
+     * Gets the next {@code Fortune} in the sequence.
+     *
+     * @param n The number of steps to move forward or backward.
+     * @return The next {@code Fortune} instance.
+     */
     public Fortune next(int n) {
         return fromChildLimit(childLimit, index + n);
     }

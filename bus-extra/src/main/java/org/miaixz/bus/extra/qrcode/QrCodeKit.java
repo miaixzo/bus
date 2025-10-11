@@ -50,10 +50,10 @@ import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
 
 /**
- * 基于Zxing的二维码工具类，支持：
+ * QR code utility class based on Zxing, supporting:
  * <ul>
- * <li>二维码生成和识别，见{@link BarcodeFormat#QR_CODE}</li>
- * <li>条形码生成和识别，见{@link BarcodeFormat#CODE_39}等很多标准格式</li>
+ * <li>QR code generation and recognition, see {@link BarcodeFormat#QR_CODE}</li>
+ * <li>Barcode generation and recognition, see {@link BarcodeFormat#CODE_39} and many other standard formats</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -62,25 +62,26 @@ import com.google.zxing.common.HybridBinarizer;
 public class QrCodeKit {
 
     /**
-     * SVG矢量图格式
+     * SVG vector graphic format.
      */
     public static final String QR_TYPE_SVG = "svg";
     /**
-     * Ascii Art字符画文本
+     * Ascii Art character text format.
      */
     public static final String QR_TYPE_TXT = "txt";
 
     /**
-     * 生成 Base64 编码格式的二维码，以 String 形式表示
+     * Generates a Base64 encoded QR code in String format.
      *
      * <p>
-     * 输出格式为: data:image/[type];base64,[data]
+     * The output format is: data:image/[type];base64,[data]
      * </p>
      *
-     * @param content   内容
-     * @param qrConfig  二维码配置，包括宽度、高度、边距、颜色等
-     * @param imageType 类型（图片扩展名），见{@link #QR_TYPE_SVG}、 {@link #QR_TYPE_TXT}、{@link ImageKit}
-     * @return 图片 Base64 编码字符串
+     * @param content   The content to encode in the QR code.
+     * @param qrConfig  QR code configuration, including width, height, margin, color, etc.
+     * @param imageType The image type (file extension), see {@link #QR_TYPE_SVG}, {@link #QR_TYPE_TXT},
+     *                  {@link ImageKit}.
+     * @return The Base64 encoded image string.
      */
     public static String generateAsBase64DataUri(
             final String content,
@@ -105,12 +106,12 @@ public class QrCodeKit {
     }
 
     /**
-     * 生成PNG格式的二维码图片，以byte[]形式表示
+     * Generates a PNG format QR code image as a byte array.
      *
-     * @param content 内容
-     * @param width   宽度
-     * @param height  高度
-     * @return 图片的byte[]
+     * @param content The content to encode in the QR code.
+     * @param width   The width of the QR code image.
+     * @param height  The height of the QR code image.
+     * @return The QR code image as a byte array.
      */
     public static byte[] generatePng(final String content, final int width, final int height) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -119,11 +120,11 @@ public class QrCodeKit {
     }
 
     /**
-     * 生成PNG格式的二维码图片，以byte[]形式表示
+     * Generates a PNG format QR code image as a byte array with custom configuration.
      *
-     * @param content 内容
-     * @param config  二维码配置，包括宽度、高度、边距、颜色等
-     * @return 图片的byte[]
+     * @param content The content to encode in the QR code.
+     * @param config  QR code configuration, including width, height, margin, color, etc.
+     * @return The QR code image as a byte array.
      */
     public static byte[] generatePng(final String content, final QrConfig config) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -132,25 +133,25 @@ public class QrCodeKit {
     }
 
     /**
-     * 生成二维码到文件，二维码图片格式取决于文件的扩展名
+     * Generates a QR code to a file. The image format depends on the file's extension.
      *
-     * @param content    文本内容
-     * @param width      宽度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
-     * @param height     高度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
-     * @param targetFile 目标文件，扩展名决定输出格式
-     * @return 目标文件
+     * @param content    The text content to encode.
+     * @param width      The width (in pixels for general images or SVG, in character units for Ascii Art).
+     * @param height     The height (in pixels for general images or SVG, in character units for Ascii Art).
+     * @param targetFile The target file, whose extension determines the output format.
+     * @return The target file.
      */
     public static File generate(final String content, final int width, final int height, final File targetFile) {
         return generate(content, QrConfig.of(width, height), targetFile);
     }
 
     /**
-     * 生成二维码到文件，二维码图片格式取决于文件的扩展名
+     * Generates a QR code to a file with custom configuration. The image format depends on the file's extension.
      *
-     * @param content    文本内容
-     * @param config     二维码配置，包括宽度、高度、边距、颜色等
-     * @param targetFile 目标文件，扩展名决定输出格式
-     * @return 目标文件
+     * @param content    The text content to encode.
+     * @param config     QR code configuration, including width, height, margin, color, etc.
+     * @param targetFile The target file, whose extension determines the output format.
+     * @return The target file.
      */
     public static File generate(final String content, final QrConfig config, final File targetFile) {
         final String extName = FileName.extName(targetFile);
@@ -163,13 +164,14 @@ public class QrCodeKit {
     }
 
     /**
-     * 生成二维码到输出流
+     * Generates a QR code to an output stream.
      *
-     * @param content   文本内容
-     * @param width     宽度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
-     * @param height    高度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
-     * @param imageType 类型（图片扩展名），见{@link #QR_TYPE_SVG}、 {@link #QR_TYPE_TXT}、{@link ImageKit}
-     * @param out       目标流
+     * @param content   The text content to encode.
+     * @param width     The width (in pixels for general images or SVG, in character units for Ascii Art).
+     * @param height    The height (in pixels for general images or SVG, in character units for Ascii Art).
+     * @param imageType The image type (file extension), see {@link #QR_TYPE_SVG}, {@link #QR_TYPE_TXT},
+     *                  {@link ImageKit}.
+     * @param out       The target output stream.
      */
     public static void generate(
             final String content,
@@ -181,12 +183,12 @@ public class QrCodeKit {
     }
 
     /**
-     * 生成二维码到输出流
+     * Generates a QR code to an output stream with custom configuration.
      *
-     * @param content   文本内容
-     * @param config    二维码配置，包括宽度、高度、边距、颜色等
-     * @param imageType 图片类型（图片扩展名），见{@link ImageKit}
-     * @param out       目标流
+     * @param content   The text content to encode.
+     * @param config    QR code configuration, including width, height, margin, color, etc.
+     * @param imageType The image type (file extension), see {@link ImageKit}.
+     * @param out       The target output stream.
      */
     public static void generate(
             final String content,
@@ -210,44 +212,45 @@ public class QrCodeKit {
     }
 
     /**
-     * 生成二维码图片
+     * Generates a QR code image (black and white).
      *
-     * @param content 文本内容
-     * @param width   宽度
-     * @param height  高度
-     * @return 二维码图片（黑白）
+     * @param content The text content to encode.
+     * @param width   The width of the QR code image.
+     * @param height  The height of the QR code image.
+     * @return The generated QR code image.
      */
     public static BufferedImage generate(final String content, final int width, final int height) {
         return generate(content, QrConfig.of(width, height));
     }
 
     /**
-     * 生成二维码或条形码图片 只有二维码时QrConfig中的图片才有效
+     * Generates a QR code or barcode image with custom configuration. The image configuration in {@link QrConfig} is
+     * only effective for QR codes.
      *
-     * @param content 文本内容
-     * @param config  二维码配置，包括宽度、高度、边距、颜色等
-     * @return 二维码图片（黑白）
+     * @param content The text content to encode.
+     * @param config  QR code configuration, including width, height, margin, color, etc.
+     * @return The generated QR code image (black and white).
      */
     public static BufferedImage generate(final String content, final QrConfig config) {
         return new ImageRender(ObjectKit.defaultIfNull(config, QrConfig::new), null).render(encode(content, config));
     }
 
     /**
-     * 将文本内容编码为条形码或二维码
+     * Encodes text content into a barcode or QR code {@link BitMatrix}.
      *
-     * @param content 文本内容
-     * @param config  二维码配置，包括宽度、高度、边距、颜色、格式等
-     * @return {@link BitMatrix}
+     * @param content The text content to encode.
+     * @param config  QR code configuration, including width, height, margin, color, format, etc.
+     * @return The {@link BitMatrix} representing the encoded content.
      */
     public static BitMatrix encode(final CharSequence content, final QrConfig config) {
         return QrEncoder.of(config).encode(content);
     }
 
     /**
-     * 解码二维码或条形码图片为文本
+     * Decodes a QR code or barcode image from an input stream into text.
      *
-     * @param qrCodeInputstream 二维码输入流
-     * @return 解码文本
+     * @param qrCodeInputstream The input stream of the QR code image.
+     * @return The decoded text.
      */
     public static String decode(final InputStream qrCodeInputstream) {
         BufferedImage image = null;
@@ -260,10 +263,10 @@ public class QrCodeKit {
     }
 
     /**
-     * 解码二维码或条形码图片为文本
+     * Decodes a QR code or barcode image from a file into text.
      *
-     * @param qrCodeFile 二维码文件
-     * @return 解码文本
+     * @param qrCodeFile The file containing the QR code image.
+     * @return The decoded text.
      */
     public static String decode(final File qrCodeFile) {
         BufferedImage image = null;
@@ -276,47 +279,48 @@ public class QrCodeKit {
     }
 
     /**
-     * 将二维码或条形码图片解码为文本
+     * Decodes a QR code or barcode image into text.
      *
-     * @param image {@link Image} 二维码图片
-     * @return 解码后的文本
+     * @param image The {@link Image} object of the QR code.
+     * @return The decoded text.
      */
     public static String decode(final Image image) {
         return decode(image, true, false);
     }
 
     /**
-     * 将二维码或条形码图片解码为文本 此方法会尝试使用{@link HybridBinarizer}和{@link GlobalHistogramBinarizer}两种模式解析
-     * 需要注意部分二维码如果不带logo，使用PureBarcode模式会解析失败，此时须设置此选项为false。
+     * Decodes a QR code or barcode image into text. This method attempts to parse using both {@link HybridBinarizer}
+     * and {@link GlobalHistogramBinarizer} modes. Note that some QR codes without a logo may fail to parse in
+     * PureBarcode mode, in which case this option should be set to {@code false}.
      *
-     * @param image         {@link Image} 二维码图片
-     * @param isTryHarder   是否优化精度
-     * @param isPureBarcode 是否使用复杂模式，扫描带logo的二维码设为true
-     * @return 解码后的文本
+     * @param image         The {@link Image} object of the QR code.
+     * @param isTryHarder   Whether to optimize for accuracy (try harder).
+     * @param isPureBarcode Whether to use pure barcode mode (for scanning QR codes with logos, set to {@code true}).
+     * @return The decoded text.
      */
     public static String decode(final Image image, final boolean isTryHarder, final boolean isPureBarcode) {
         return QrDecoder.of(isTryHarder, isPureBarcode).decode(image);
     }
 
     /**
-     * 将二维码或条形码图片解码为文本 此方法会尝试使用{@link HybridBinarizer}和{@link GlobalHistogramBinarizer}两种模式解析
-     * 需要注意部分二维码如果不带logo，使用PureBarcode模式会解析失败，此时须设置此选项为false。
+     * Decodes a QR code or barcode image into text with custom decoding hints. This method attempts to parse using both
+     * {@link HybridBinarizer} and {@link GlobalHistogramBinarizer} modes.
      *
-     * @param image {@link Image} 二维码图片
-     * @param hints 自定义扫码配置，包括算法、编码、复杂模式等
-     * @return 解码后的文本
+     * @param image The {@link Image} object of the QR code.
+     * @param hints Custom scanning configuration, including algorithm, encoding, complex mode, etc.
+     * @return The decoded text.
      */
     public static String decode(final Image image, final Map<DecodeHintType, Object> hints) {
         return QrDecoder.of(hints).decode(image);
     }
 
     /**
-     * BitMatrix转BufferedImage
+     * Converts a {@link BitMatrix} to a {@link BufferedImage}.
      *
-     * @param matrix    BitMatrix
-     * @param foreColor 前景色
-     * @param backColor 背景色(null表示透明背景)
-     * @return BufferedImage
+     * @param matrix    The {@link BitMatrix} to convert.
+     * @param foreColor The foreground color.
+     * @param backColor The background color ({@code null} for transparent background).
+     * @return The converted {@link BufferedImage}.
      */
     public static BufferedImage toImage(final BitMatrix matrix, final int foreColor, final Integer backColor) {
         final int width = matrix.getWidth();
@@ -336,20 +340,22 @@ public class QrCodeKit {
     }
 
     /**
-     * @param content  内容
-     * @param qrConfig 二维码配置，包括宽度、高度、边距、颜色等
-     * @return SVG矢量图（字符串）
+     * Generates an SVG vector graphic of a QR code.
+     *
+     * @param content  The content to encode in the QR code.
+     * @param qrConfig QR code configuration, including width, height, margin, color, etc.
+     * @return The SVG vector graphic as a string.
      */
     public static String generateAsSvg(final String content, final QrConfig qrConfig) {
         return toSVG(encode(content, qrConfig), qrConfig);
     }
 
     /**
-     * BitMatrix转SVG(字符串)
+     * Converts a {@link BitMatrix} to an SVG string.
      *
-     * @param matrix BitMatrix
-     * @param config {@link QrConfig}
-     * @return SVG矢量图（字符串）
+     * @param matrix The {@link BitMatrix} to convert.
+     * @param config The {@link QrConfig} for SVG rendering.
+     * @return The SVG vector graphic as a string.
      */
     public static String toSVG(final BitMatrix matrix, final QrConfig config) {
         final StringBuilder result = new StringBuilder();
@@ -358,22 +364,22 @@ public class QrCodeKit {
     }
 
     /**
-     * 生成ASCII Art字符画形式的二维码
+     * Generates an ASCII Art character representation of a QR code.
      *
-     * @param content  内容
-     * @param qrConfig 二维码配置，仅宽度、高度、边距配置有效
-     * @return ASCII Art字符画形式的二维码
+     * @param content  The content to encode in the QR code.
+     * @param qrConfig QR code configuration, only width, height, and margin are effective.
+     * @return The ASCII Art character representation of the QR code.
      */
     public static String generateAsAsciiArt(final String content, final QrConfig qrConfig) {
         return toAsciiArt(encode(content, qrConfig), qrConfig);
     }
 
     /**
-     * BitMatrix转ASCII Art字符画形式的二维码
+     * Converts a {@link BitMatrix} to an ASCII Art character representation of a QR code.
      *
-     * @param matrix BitMatrix
-     * @param config QR设置
-     * @return ASCII Art字符画形式的二维码
+     * @param matrix The {@link BitMatrix} to convert.
+     * @param config The {@link QrConfig} for ASCII Art rendering.
+     * @return The ASCII Art character representation of the QR code.
      */
     public static String toAsciiArt(final BitMatrix matrix, final QrConfig config) {
         final StringBuilder result = new StringBuilder();
@@ -382,23 +388,24 @@ public class QrCodeKit {
     }
 
     /**
-     * 将文本转换为Base64编码的Data URI。
+     * Converts text to a Base64 encoded Data URI.
      *
-     * @param txt 需要转换为Base64编码Data URI的文本。
-     * @return 转换后的Base64编码Data URI字符串。
+     * @param txt The text to be converted to a Base64 encoded Data URI.
+     * @return The converted Base64 encoded Data URI string.
      */
     private static String txtToBase64DataUri(final String txt) {
         return UrlKit.getDataUriBase64("text/plain", Base64.encode(txt));
     }
 
     /**
-     * 将SVG字符串转换为Base64数据URI格式。
+     * Converts an SVG string to a Base64 Data URI format.
      * <p>
-     * 此方法通过将SVG内容编码为Base64，并将其封装在数据URI中，以便于在HTML或CSS中直接嵌入SVG图像。
+     * This method encodes the SVG content into Base64 and wraps it in a Data URI, allowing direct embedding of SVG
+     * images in HTML or CSS.
      * </p>
      *
-     * @param svg SVG图像的内容，为字符串形式。
-     * @return 转换后的Base64数据URI字符串，可用于直接在HTML或CSS中显示SVG图像。
+     * @param svg The SVG image content as a string.
+     * @return The converted Base64 Data URI string, which can be used to display SVG images directly in HTML or CSS.
      */
     private static String svgToBase64DataUri(final String svg) {
         return UrlKit.getDataUriBase64("image/svg+xml", Base64.encode(svg));

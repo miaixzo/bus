@@ -31,7 +31,7 @@ import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * apache log4j
+ * A factory for creating {@link org.apache.logging.log4j.Logger} instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,7 +39,8 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
 public class Log4jLoggingFactory extends AbstractFactory {
 
     /**
-     * 构造
+     * Constructs a new {@code Log4jLoggingFactory}. This factory is responsible for creating loggers based on the Log4j
+     * 2 framework. It also checks for the existence of the {@link org.apache.logging.log4j.LogManager} class.
      */
     public Log4jLoggingFactory() {
         super("org.apache.logging.log4j.Logger");

@@ -28,20 +28,20 @@
 package org.miaixz.bus.core.cache;
 
 /**
- * 缓存监听，用于实现缓存操作时的回调监听，例如缓存对象的移除事件等
+ * A listener for cache events, such as the removal of a cached object.
  *
- * @param <K> 缓存键
- * @param <V> 缓存值
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface CacheListener<K, V> {
 
     /**
-     * 对象移除回调
+     * Callback invoked when an object is removed from the cache.
      *
-     * @param key          键
-     * @param cachedObject 被缓存的对象
+     * @param key          The key of the removed object.
+     * @param cachedObject The value of the removed object.
      */
     void onRemove(K key, V cachedObject);
 

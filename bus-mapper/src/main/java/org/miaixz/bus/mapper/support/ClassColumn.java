@@ -30,7 +30,7 @@ package org.miaixz.bus.mapper.support;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
- * 记录字段对应的类和列名，用于匹配实体类字段与数据库列。
+ * Records the class and column name corresponding to a field, used to match entity class fields with database columns.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,20 +38,20 @@ import org.miaixz.bus.mapper.parsing.ColumnMeta;
 public class ClassColumn extends ClassField {
 
     /**
-     * 构造函数，初始化类和字段信息。
+     * Constructs a new ClassColumn, initializing the class and field information.
      *
-     * @param clazz 实体类
-     * @param field 字段名称
+     * @param clazz The entity class.
+     * @param field The field name (which represents the column name in this context).
      */
     public ClassColumn(Class<?> clazz, String field) {
         super(clazz, field);
     }
 
     /**
-     * 判断指定列是否与当前字段的列名匹配（忽略大小写）。
+     * Tests if the specified column matches the column name of the current field (case-insensitive).
      *
-     * @param column 数据库列信息
-     * @return 如果列名匹配则返回 true，否则返回 false
+     * @param column The database column metadata.
+     * @return {@code true} if the column names match, {@code false} otherwise.
      */
     @Override
     public boolean test(ColumnMeta column) {

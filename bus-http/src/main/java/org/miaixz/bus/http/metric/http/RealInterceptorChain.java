@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.Request;
@@ -41,8 +37,13 @@ import org.miaixz.bus.http.accord.Transmitter;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 /**
- * 承载整个拦截器链的具体拦截器链: 所有应用程序拦截器、Http核心、所有网络拦截器，最后是网络调用者.
+ * A concrete interceptor chain that carries the entire interceptor chain: all application interceptors, the Http core,
+ * all network interceptors, and finally the network caller.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 校验码工具
+ * Checksum utility.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,34 +48,34 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class CheckKit {
 
     /**
-     * 计算文件CRC32校验码
+     * Calculates the CRC32 checksum for a file.
      *
-     * @param file 文件，不能为目录
-     * @return CRC32值
-     * @throws InternalException IO异常
+     * @param file The file, cannot be a directory.
+     * @return The CRC32 value.
+     * @throws InternalException for IO errors.
      */
     public static long checksumCRC32(final File file) throws InternalException {
         return checksum(file, new CRC32()).getValue();
     }
 
     /**
-     * 计算流CRC32校验码，计算后关闭流
+     * Calculates the CRC32 checksum for an InputStream. The stream is closed after calculation.
      *
-     * @param in 文件，不能为目录
-     * @return CRC32值
-     * @throws InternalException IO异常
+     * @param in The InputStream.
+     * @return The CRC32 value.
+     * @throws InternalException for IO errors.
      */
     public static long checksumCRC32(final InputStream in) throws InternalException {
         return checksum(in, new CRC32()).getValue();
     }
 
     /**
-     * 计算文件校验码
+     * Calculates the checksum for a file using a given Checksum algorithm.
      *
-     * @param file     文件，不能为目录
-     * @param checksum {@link Checksum}
-     * @return Checksum
-     * @throws InternalException IO异常
+     * @param file     The file, cannot be a directory.
+     * @param checksum The {@link Checksum} algorithm to use.
+     * @return The {@link Checksum} object with the updated checksum.
+     * @throws InternalException for IO errors.
      */
     public static Checksum checksum(final File file, final Checksum checksum) throws InternalException {
         Assert.notNull(file, "File is null !");
@@ -90,12 +90,13 @@ public class CheckKit {
     }
 
     /**
-     * 计算流的校验码，计算后关闭流
+     * Calculates the checksum for an InputStream using a given Checksum algorithm. The stream is closed after
+     * calculation.
      *
-     * @param in       流
-     * @param checksum {@link Checksum}
-     * @return Checksum
-     * @throws InternalException IO异常
+     * @param in       The InputStream.
+     * @param checksum The {@link Checksum} algorithm to use.
+     * @return The {@link Checksum} object with the updated checksum.
+     * @throws InternalException for IO errors.
      */
     public static Checksum checksum(InputStream in, Checksum checksum) throws InternalException {
         Assert.notNull(in, "InputStream is null !");
@@ -112,12 +113,13 @@ public class CheckKit {
     }
 
     /**
-     * 计算流的校验码，计算后关闭流
+     * Calculates the checksum value for an InputStream using a given Checksum algorithm. The stream is closed after
+     * calculation.
      *
-     * @param in       流
-     * @param checksum {@link Checksum}
-     * @return Checksum
-     * @throws InternalException IO异常
+     * @param in       The InputStream.
+     * @param checksum The {@link Checksum} algorithm to use.
+     * @return The checksum value.
+     * @throws InternalException for IO errors.
      */
     public static long checksumValue(final InputStream in, final Checksum checksum) {
         return checksum(in, checksum).getValue();

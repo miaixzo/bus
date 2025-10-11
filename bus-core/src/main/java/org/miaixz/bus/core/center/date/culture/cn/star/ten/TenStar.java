@@ -30,31 +30,63 @@ package org.miaixz.bus.core.center.date.culture.cn.star.ten;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 十神
+ * Represents the Ten Gods (十神) in Chinese Bazi (Four Pillars of Destiny) astrology. This class extends {@link Samsara}
+ * to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TenStar extends Samsara {
 
+    /**
+     * Array of names for the Ten Gods.
+     */
     public static final String[] NAMES = { "比肩", "劫财", "食神", "伤官", "偏财", "正财", "七杀", "正官", "偏印", "正印" };
 
+    /**
+     * Constructs a {@code TenStar} instance with the specified index.
+     *
+     * @param index The index of the Ten God in the {@link #NAMES} array.
+     */
     public TenStar(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * Constructs a {@code TenStar} instance with the specified name.
+     *
+     * @param name The name of the Ten God.
+     */
     public TenStar(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Creates a {@code TenStar} instance from its index.
+     *
+     * @param index The index of the Ten God.
+     * @return A new {@code TenStar} instance.
+     */
     public static TenStar fromIndex(int index) {
         return new TenStar(index);
     }
 
+    /**
+     * Creates a {@code TenStar} instance from its name.
+     *
+     * @param name The name of the Ten God.
+     * @return A new {@code TenStar} instance.
+     */
     public static TenStar fromName(String name) {
         return new TenStar(name);
     }
 
+    /**
+     * Gets the next {@code TenStar} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code TenStar} instance.
+     */
     public TenStar next(int n) {
         return fromIndex(nextIndex(n));
     }

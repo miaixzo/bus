@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v2;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v2 版本-代金券接口
+ * WeChat Pay V2 API interfaces related to coupons.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,39 +38,45 @@ import org.miaixz.bus.pay.Matcher;
 public enum CouponApi implements Matcher {
 
     /**
-     * 发放代金券
+     * Send coupon.
      */
-    SEND_COUPON("/mmpaymkttransfers/send_coupon", "发放代金券"),
+    SEND_COUPON("/mmpaymkttransfers/send_coupon", "Send coupon"),
 
     /**
-     * 查询代金券批次
+     * Query coupon stock.
      */
-    QUERY_COUPON_STOCK("/mmpaymkttransfers/query_coupon_stock", "查询代金券批次"),
+    QUERY_COUPON_STOCK("/mmpaymkttransfers/query_coupon_stock", "Query coupon stock"),
 
     /**
-     * 查询代金券信息
+     * Query coupon information.
      */
-    QUERY_COUPONS_INFO("/mmpaymkttransfers/querycouponsinfo", "查询代金券信息");
+    QUERY_COUPONS_INFO("/mmpaymkttransfers/querycouponsinfo", "Query coupon information");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new CouponApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     CouponApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -78,9 +84,9 @@ public enum CouponApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -88,9 +94,9 @@ public enum CouponApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

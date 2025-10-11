@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * MyBatis 分页插件
+ * Provides core classes for MyBatis pagination plugin. This package includes interfaces and classes for handling
+ * pagination logic, such as {@link org.miaixz.bus.pager.Page}, {@link org.miaixz.bus.pager.Paginating}, and
+ * {@link org.miaixz.bus.pager.Dialect}.
  *
  * @author Kimi Liu
  * @since Java 17+

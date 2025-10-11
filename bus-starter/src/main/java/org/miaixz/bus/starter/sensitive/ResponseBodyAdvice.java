@@ -27,13 +27,7 @@
 */
 package org.miaixz.bus.starter.sensitive;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import jakarta.annotation.Resource;
 import org.miaixz.bus.base.advice.BaseAdvice;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.entity.Result;
@@ -50,10 +44,15 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 
-import jakarta.annotation.Resource;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * 请求响应处理类 对加了@Encrypt的方法的数据进行加密操作
+ * A {@link org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice} that intercepts responses from
+ * methods or classes annotated with {@link Sensitive} to perform data encryption and desensitization.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -62,136 +61,119 @@ public class ResponseBodyAdvice extends BaseAdvice
         implements org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice<Object> {
 
     @Resource
-    SensitiveProperties properties;
+    private SensitiveProperties properties;
 
     /**
-     * 依据对象的属性数组和值数组对进行赋值
+     * Determines if this advice should be applied to the given method return type.
      *
-     * @param <T>    对象
-     * @param entity 反射对象
-     * @param fields 属性数组
-     * @param value  值数组
+     * @param returnType    The return type of the method.
+     * @param converterType The selected converter type.
+     * @return {@code true} if the advice should be applied, {@code false} otherwise.
      */
-    private static <T> void setValue(T entity, String[] fields, Object[] value) {
-        for (int i = 0; i < fields.length; i++) {
-            String field = fields[i];
-            if (FieldKit.hasField(entity.getClass(), field)) {
-                MethodKit.invokeSetter(entity, field, value[i]);
-            }
-        }
-    }
-
-    /**
-     * 依据对象的属性获取对象值
-     *
-     * @param <T>    对象
-     * @param entity 反射对象
-     * @param field  属性数组
-     */
-    private static <T> Object getValue(T entity, String field) {
-        if (FieldKit.hasField(entity.getClass(), field)) {
-            Object object = MethodKit.invokeGetter(entity, field);
-            return null != object ? object.toString() : null;
-        }
-        return null;
-    }
-
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        Annotation[] annotations = returnType.getDeclaringClass().getAnnotations();
-        if (ArrayKit.isNotEmpty(annotations)) {
-            for (Annotation annotation : annotations) {
-                if (annotation instanceof Sensitive) {
-                    return true;
-                }
-            }
+        // Check for @Sensitive annotation on the class
+        if (returnType.getDeclaringClass().isAnnotationPresent(Sensitive.class)) {
+            return true;
         }
+        // Check for @Sensitive annotation on the method
         return returnType.getMethod().isAnnotationPresent(Sensitive.class);
     }
 
     /**
-     * 在选择{@code HttpMessageConverter}之后和之前调用 调用它的写方法
+     * Invoked before the response body is written by the selected {@link HttpMessageConverter}.
+     * <p>
+     * This method orchestrates the desensitization and encryption of the response body based on the {@link Sensitive}
+     * annotation on the controller method.
+     * </p>
      *
-     * @param body          需要操作的body
-     * @param parameter     方法参数
-     * @param mediaType     媒体类型
-     * @param converterType 转换类型
-     * @param request       当前 request
-     * @param response      当前 response
-     * @return 传入或修改(可能是新的)实例的主体
+     * @param body                  The body to be written.
+     * @param returnType            The return type of the controller method.
+     * @param selectedContentType   The content type selected by the converter.
+     * @param selectedConverterType The converter type selected to write the body.
+     * @param request               The current request.
+     * @param response              The current response.
+     * @return The modified body to be written, or the original body.
      */
     @Override
     public Object beforeBodyWrite(
             Object body,
-            MethodParameter parameter,
-            MediaType mediaType,
-            Class<? extends HttpMessageConverter<?>> converterType,
+            MethodParameter returnType,
+            MediaType selectedContentType,
+            Class<? extends HttpMessageConverter<?>> selectedConverterType,
             ServerHttpRequest request,
             ServerHttpResponse response) {
-        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
+        if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug() && body instanceof Message) {
             try {
-                final Sensitive sensitive = parameter.getMethod().getAnnotation(Sensitive.class);
+                final Sensitive sensitive = returnType.getMethodAnnotation(Sensitive.class);
                 if (ObjectKit.isEmpty(sensitive)) {
                     return body;
                 }
 
-                Object object = ((Message) body).getData();
-                if (object instanceof Result) {
-                    List list = new ArrayList<>();
-                    for (Object value : ((Result) object).getRows()) {
-                        this.beforeBodyWrite(sensitive, value);
-                        list.add(value);
+                Object data = ((Message) body).getData();
+                if (data instanceof Result) {
+                    List<Object> processedRows = new ArrayList<>();
+                    for (Object row : ((Result) data).getRows()) {
+                        processObject(sensitive, row);
+                        processedRows.add(row);
                     }
-                    ((Result) ((Message) body).getData()).setRows(list);
-                } else if (object instanceof List) {
-                    List list = new ArrayList<>();
-                    for (Object value : (List) object) {
-                        this.beforeBodyWrite(sensitive, value);
-                        list.add(value);
+                    ((Result) data).setRows(processedRows);
+                } else if (data instanceof List) {
+                    List<Object> processedList = new ArrayList<>();
+                    for (Object item : (List<?>) data) {
+                        processObject(sensitive, item);
+                        processedList.add(item);
                     }
-                    ((Message) body).setData(list);
+                    ((Message) body).setData(processedList);
                 } else {
-                    this.beforeBodyWrite(sensitive, object);
-                    ((Message) body).setData(object);
+                    processObject(sensitive, data);
+                    ((Message) body).setData(data);
                 }
             } catch (Exception e) {
-                Logger.error("Internal processing failure:" + e.getMessage());
+                Logger.error("Internal processing failure during response body modification", e);
             }
         }
         return body;
     }
 
-    private void beforeBodyWrite(Sensitive sensitive, Object object) {
+    /**
+     * Processes a single object for desensitization and encryption.
+     *
+     * @param sensitive The {@link Sensitive} annotation instance.
+     * @param object    The object to process.
+     */
+    private void processObject(Sensitive sensitive, Object object) {
         if (ObjectKit.isEmpty(object)) {
             return;
         }
-        // 数据脱敏
+        // Perform data desensitization
         if ((Builder.ALL.equals(sensitive.value()) || Builder.SENS.equals(sensitive.value()))
                 && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
-            Logger.debug("Response data sensitive enabled ...");
+            Logger.debug("Response data desensitization enabled...");
             Builder.on(object, sensitive);
         }
-        // 数据解密
-        if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
+        // Perform data encryption
+        if ((Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value()))
                 && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
-            Map<String, Privacy> map = getPrivacyMap(object.getClass());
-            for (Map.Entry<String, Privacy> entry : map.entrySet()) {
+            Map<String, Privacy> privacyMap = getPrivacyMap(object.getClass());
+            for (Map.Entry<String, Privacy> entry : privacyMap.entrySet()) {
                 Privacy privacy = entry.getValue();
                 if (ObjectKit.isNotEmpty(privacy) && StringKit.isNotEmpty(privacy.value())) {
                     if (Builder.ALL.equals(privacy.value()) || Builder.OUT.equals(privacy.value())) {
                         String property = entry.getKey();
-                        String value = (String) getValue(object, property);
-                        if (StringKit.isNotEmpty(value)) {
-                            if (ObjectKit.isEmpty(this.properties)) {
-                                throw new InternalException("Please check the request.crypto.encrypt");
+                        Object value = getValue(object, property);
+                        if (value instanceof String && StringKit.isNotEmpty((String) value)) {
+                            if (ObjectKit.isEmpty(this.properties.getEncrypt())) {
+                                throw new InternalException(
+                                        "Encryption properties are not configured. Please check 'bus.sensitive.encrypt'.");
                             }
-                            Logger.debug("Response data encryption enabled ...");
-                            value = org.miaixz.bus.crypto.Builder.encrypt(
+                            Logger.debug("Response data encryption enabled for property: {}", property);
+                            String encryptedValue = org.miaixz.bus.crypto.Builder.encrypt(
                                     this.properties.getEncrypt().getType(),
                                     this.properties.getEncrypt().getKey(),
-                                    value,
+                                    (String) value,
                                     Charset.UTF_8);
-                            setValue(object, new String[] { property }, new String[] { value });
+                            setValue(object, property, encryptedValue);
                         }
                     }
                 }
@@ -199,6 +181,12 @@ public class ResponseBodyAdvice extends BaseAdvice
         }
     }
 
+    /**
+     * Retrieves a map of fields annotated with {@link Privacy} for a given class.
+     *
+     * @param clazz The class to inspect.
+     * @return A map where the key is the field name and the value is the {@link Privacy} annotation.
+     */
     private Map<String, Privacy> getPrivacyMap(Class<?> clazz) {
         Map<String, Privacy> map = new HashMap<>();
         for (Field field : clazz.getDeclaredFields()) {
@@ -208,6 +196,35 @@ public class ResponseBodyAdvice extends BaseAdvice
             }
         }
         return map;
+    }
+
+    /**
+     * Sets a value on a bean property using its setter method.
+     *
+     * @param entity The bean instance.
+     * @param field  The name of the property.
+     * @param value  The value to set.
+     * @param <T>    The type of the bean.
+     */
+    private static <T> void setValue(T entity, String field, Object value) {
+        if (FieldKit.hasField(entity.getClass(), field)) {
+            MethodKit.invokeSetter(entity, field, value);
+        }
+    }
+
+    /**
+     * Gets a value from a bean property using its getter method.
+     *
+     * @param entity The bean instance.
+     * @param field  The name of the property.
+     * @param <T>    The type of the bean.
+     * @return The value of the property, or {@code null}.
+     */
+    private static <T> Object getValue(T entity, String field) {
+        if (FieldKit.hasField(entity.getClass(), field)) {
+            return MethodKit.invokeGetter(entity, field);
+        }
+        return null;
     }
 
 }

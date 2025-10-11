@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * 微软 授权范围
+ * Microsoft authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,50 +42,204 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum MicrosoftScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Allows the app to view the user's basic profile (name, picture, username). The meaning of {@code scope} is
+     * subject to {@code description}.
      */
-    PROFILE("profile", "允许应用查看用户的基本个人资料（名称、图片、用户名称）", true), EMAIL("email", "允许应用读取用户的主电子邮件地址", true),
-    OPENID("openid", "允许用户以其工作或学校帐户登录应用，并允许应用查看用户的基本个人资料信息", true),
-    OFFLINE_ACCESS("offline_access", "允许应用读取和更新用户数据，即使用户当前没有在使用此应用，也不例外", true),
+    PROFILE("profile", "Allows the app to view the user's basic personal profile (name, picture, username)", true),
+    /**
+     * Allows the app to read the user's primary email address.
+     */
+    EMAIL("email", "Allows the app to read the user's primary email address", true),
+    /**
+     * Allows users to sign in to the app with their work or school account, and allows the app to view the user's basic
+     * profile information.
+     */
+    OPENID("openid",
+            "Allows users to sign in to the app with their work or school account, and allows the app to view the user's basic profile information",
+            true),
+    /**
+     * Allows the app to read and update user data, even when the user is not currently using the app.
+     */
+    OFFLINE_ACCESS("offline_access",
+            "Allows the app to read and update user data, even when the user is not currently using this app", true),
 
-    USER_READ("User.Read", "登录并读取用户个人资料", false), USER_READWRITE("User.ReadWrite", "对用户个人资料的读写权限", false),
-    USER_READBASIC_ALL("User.ReadBasic.All", "读取所有用户的基本个人资料", false),
-    USER_READ_ALL("User.Read.All", "读取所有用户的完整个人资料", false),
-    USER_READWRITE_ALL("User.ReadWrite.All", "读取和写入所有用户的完整个人资料", false),
-    USER_INVITE_ALL("User.Invite.All", "将来宾用户邀请到组织", false), USER_EXPORT_ALL("User.Export.All", "导出用户数据", false),
-    USER_MANAGEIDENTITIES_ALL("User.ManageIdentities.All", "管理所有用户标识", false),
+    /**
+     * Sign in and read user profile.
+     */
+    USER_READ("User.Read", "Sign in and read user profile", false),
+    /**
+     * Read and write permissions to user profile.
+     */
+    USER_READWRITE("User.ReadWrite", "Read and write permissions to user profile", false),
+    /**
+     * Read basic profiles of all users.
+     */
+    USER_READBASIC_ALL("User.ReadBasic.All", "Read basic profiles of all users", false),
+    /**
+     * Read full profiles of all users.
+     */
+    USER_READ_ALL("User.Read.All", "Read full profiles of all users", false),
+    /**
+     * Read and write full profiles of all users.
+     */
+    USER_READWRITE_ALL("User.ReadWrite.All", "Read and write full profiles of all users", false),
+    /**
+     * Invite guest users to the organization.
+     */
+    USER_INVITE_ALL("User.Invite.All", "Invite guest users to the organization", false),
+    /**
+     * Export user data.
+     */
+    USER_EXPORT_ALL("User.Export.All", "Export user data", false),
+    /**
+     * Manage all user identities.
+     */
+    USER_MANAGEIDENTITIES_ALL("User.ManageIdentities.All", "Manage all user identities", false),
 
-    USERACTIVITY_READWRITE_CREATEDBYAPP("UserActivity.ReadWrite.CreatedByApp", "将应用活动读取和写入到用户的活动源", false),
+    /**
+     * Read and write app activities to the user's activity feed.
+     */
+    USERACTIVITY_READWRITE_CREATEDBYAPP("UserActivity.ReadWrite.CreatedByApp",
+            "Read and write app activities to the user's activity feed", false),
 
-    FILES_READ("Files.Read", "允许应用读取登录用户的文件", false), FILES_READ_ALL("Files.Read.All", "允许应用读取登录用户可以访问的所有文件", false),
-    FILES_READWRITE("Files.ReadWrite", "允许应用读取、创建、更新和删除登录用户的文件", false),
-    FILES_READWRITE_ALL("Files.ReadWrite.All", "允许应用读取、创建、更新和删除登录用户可以访问的所有文件", false),
-    FILES_READWRITE_APPFOLDER("Files.ReadWrite.AppFolder", "允许应用读取、创建、更新和删除应用程序文件夹中的文件", false),
-    FILES_READ_SELECTED("Files.Read.Selected", "允许应用读取用户选择的文件。在用户选择文件后，应用有几个小时的访问权限", false),
-    FILES_READWRITE_SELECTED("Files.ReadWrite.Selected", "允许应用读取和写入用户选择的文件。在用户选择文件后，应用有几个小时的访问权限", false),
-
-    ORGCONTACT_READ_ALL("OrgContact.Read.All", "允许应用代表已登录用户读取所有组织联系人。 这些联系人由组织管理，不同于用户的个人联系人", false),
-
-    MAIL_READ("Mail.Read", "允许应用读取用户邮箱中的电子邮件", false),
-    MAIL_READBASIC("Mail.ReadBasic",
-            "允许应用读取已登录用户的邮箱，但不读取 body、bodyPreview、uniqueBody、attachments、extensions 和任何扩展属性。 不包含邮件搜索权限", false),
-    MAIL_READWRITE("Mail.ReadWrite", "允许应用创建、读取、更新和删除用户邮箱中的电子邮件。不包括发送电子邮件的权限", false),
-    MAIL_READ_SHARED("Mail.Read.Shared", "允许应用读取用户可以访问的邮件，包括用户个人邮件和共享邮件", false),
-    MAIL_READWRITE_SHARED("Mail.ReadWrite.Shared", "允许应用创建、读取、更新和删除用户有权访问的邮件，包括用户个人邮件和共享邮件。不包括邮件发送权限", false),
-    MAIL_SEND("Mail.Send", "允许应用以组织用户身份发送邮件", false),
-    MAIL_SEND_SHARED("Mail.Send.Shared", "允许应用以登录用户身份发送邮件，包括代表他人发送邮件", false),
-    MAILBOXSETTINGS_READ("MailboxSettings.Read", "允许应用读取用户的邮箱设置。不包括邮件发送权限", false),
-    MAILBOXSETTINGS_READWRITE("MailboxSettings.ReadWrite", "允许应用创建、读取、更新和删除用户邮箱设置。 不包含直接发送邮件的权限，但允许应用创建能够转发或重定向邮件的规则",
+    /**
+     * Allows the app to read files of the signed-in user.
+     */
+    FILES_READ("Files.Read", "Allows the app to read files of the signed-in user", false),
+    /**
+     * Allows the app to read all files accessible to the signed-in user.
+     */
+    FILES_READ_ALL("Files.Read.All", "Allows the app to read all files accessible to the signed-in user", false),
+    /**
+     * Allows the app to read, create, update, and delete files of the signed-in user.
+     */
+    FILES_READWRITE("Files.ReadWrite", "Allows the app to read, create, update, and delete files of the signed-in user",
+            false),
+    /**
+     * Allows the app to read, create, update, and delete all files accessible to the signed-in user.
+     */
+    FILES_READWRITE_ALL("Files.ReadWrite.All",
+            "Allows the app to read, create, update, and delete all files accessible to the signed-in user", false),
+    /**
+     * Allows the app to read, create, update, and delete files in the application folder.
+     */
+    FILES_READWRITE_APPFOLDER("Files.ReadWrite.AppFolder",
+            "Allows the app to read, create, update, and delete files in the application folder", false),
+    /**
+     * Allows the app to read files selected by the user. The app has access for several hours after the user selects
+     * files.
+     */
+    FILES_READ_SELECTED("Files.Read.Selected",
+            "Allows the app to read files selected by the user. The app has access for several hours after the user selects files",
+            false),
+    /**
+     * Allows the app to read and write files selected by the user. The app has access for several hours after the user
+     * selects files.
+     */
+    FILES_READWRITE_SELECTED("Files.ReadWrite.Selected",
+            "Allows the app to read and write files selected by the user. The app has access for several hours after the user selects files",
             false),
 
-    NOTES_READ("Notes.Read", "允许应用代表已登录用户读取 OneNote 笔记本和分区标题并创建新的页面、笔记本和分区", false),
-    NOTES_CREATE("Notes.Create", "允许应用代创建用户 OneNote 笔记本", false),
-    NOTES_READWRITE("Notes.ReadWrite", "允许应用代表已登录用户读取、共享和修改 OneNote 笔记本", false),
-    NOTES_READ_ALL("Notes.Read.All", "允许应用读取登录用户在组织中有权访问的 OneNote 笔记本", false),
-    NOTES_READWRITE_ALL("Notes.ReadWrite.All", "允许应用读取、共享和修改已登录用户在组织中有权访问的 OneNote 笔记本", false);
+    /**
+     * Allows the app to read all organizational contacts on behalf of the signed-in user. These contacts are managed by
+     * the organization and are different from the user's personal contacts.
+     */
+    ORGCONTACT_READ_ALL("OrgContact.Read.All",
+            "Allows the app to read all organizational contacts on behalf of the signed-in user. These contacts are managed by the organization and are different from the user's personal contacts",
+            false),
 
+    /**
+     * Allows the app to read emails in the user's mailbox.
+     */
+    MAIL_READ("Mail.Read", "Allows the app to read emails in the user's mailbox", false),
+    /**
+     * Allows the app to read the signed-in user's mailbox, but not the body, bodyPreview, uniqueBody, attachments,
+     * extensions, and any extended properties. Does not include mail search permissions.
+     */
+    MAIL_READBASIC("Mail.ReadBasic",
+            "Allows the app to read the signed-in user's mailbox, but not the body, bodyPreview, uniqueBody, attachments, extensions, and any extended properties. Does not include mail search permissions",
+            false),
+    /**
+     * Allows the app to create, read, update, and delete emails in the user's mailbox. Does not include permission to
+     * send emails.
+     */
+    MAIL_READWRITE("Mail.ReadWrite",
+            "Allows the app to create, read, update, and delete emails in the user's mailbox. Does not include permission to send emails",
+            false),
+    /**
+     * Allows the app to read mail accessible to the user, including the user's personal mail and shared mail.
+     */
+    MAIL_READ_SHARED("Mail.Read.Shared",
+            "Allows the app to read mail accessible to the user, including the user's personal mail and shared mail",
+            false),
+    /**
+     * Allows the app to create, read, update, and delete mail accessible to the user, including the user's personal
+     * mail and shared mail. Does not include permission to send mail.
+     */
+    MAIL_READWRITE_SHARED("Mail.ReadWrite.Shared",
+            "Allows the app to create, read, update, and delete mail accessible to the user, including the user's personal mail and shared mail. Does not include mail sending permissions",
+            false),
+    /**
+     * Allows the app to send mail as an organizational user.
+     */
+    MAIL_SEND("Mail.Send", "Allows the app to send mail as an organizational user", false),
+    /**
+     * Allows the app to send mail as the signed-in user, including sending mail on behalf of others.
+     */
+    MAIL_SEND_SHARED("Mail.Send.Shared",
+            "Allows the app to send mail as the signed-in user, including sending mail on behalf of others", false),
+    /**
+     * Allows the app to read the user's mailbox settings. Does not include mail sending permissions.
+     */
+    MAILBOXSETTINGS_READ("MailboxSettings.Read",
+            "Allows the app to read the user's mailbox settings. Does not include mail sending permissions", false),
+    /**
+     * Allows the app to create, read, update, and delete user mailbox settings. Does not include direct mail sending
+     * permissions, but allows the app to create rules that can forward or redirect mail.
+     */
+    MAILBOXSETTINGS_READWRITE("MailboxSettings.ReadWrite",
+            "Allows the app to create, read, update, and delete user mailbox settings. Does not include direct mail sending permissions, but allows the app to create rules that can forward or redirect mail",
+            false),
+
+    /**
+     * Allows the app to read OneNote notebooks and section titles on behalf of the signed-in user and create new pages,
+     * notebooks, and sections.
+     */
+    NOTES_READ("Notes.Read",
+            "Allows the app to read OneNote notebooks and section titles on behalf of the signed-in user and create new pages, notebooks, and sections",
+            false),
+    /**
+     * Allows the app to create user OneNote notebooks.
+     */
+    NOTES_CREATE("Notes.Create", "Allows the app to create user OneNote notebooks", false),
+    /**
+     * Allows the app to read, share, and modify OneNote notebooks on behalf of the signed-in user.
+     */
+    NOTES_READWRITE("Notes.ReadWrite",
+            "Allows the app to read, share, and modify OneNote notebooks on behalf of the signed-in user", false),
+    /**
+     * Allows the app to read OneNote notebooks accessible to the signed-in user in the organization.
+     */
+    NOTES_READ_ALL("Notes.Read.All",
+            "Allows the app to read OneNote notebooks accessible to the signed-in user in the organization", false),
+    /**
+     * Allows the app to read, share, and modify OneNote notebooks accessible to the signed-in user in the organization.
+     */
+    NOTES_READWRITE_ALL("Notes.ReadWrite.All",
+            "Allows the app to read, share, and modify OneNote notebooks accessible to the signed-in user in the organization",
+            false);
+
+    /**
+     * The scope string as defined by Microsoft.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

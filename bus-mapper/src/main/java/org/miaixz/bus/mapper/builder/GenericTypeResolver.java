@@ -36,7 +36,9 @@ import org.apache.ibatis.cursor.Cursor;
 import org.miaixz.bus.core.lang.Optional;
 
 /**
- * 泛型类型解析器，基于 MyBatis 3 的源码，添加了 resolveMapperTypes 方法以支持接口泛型解析 源码来自 https://github.com/mybatis/mybatis-3
+ * A utility class for resolving generic types, based on the source code of MyBatis 3. It adds the
+ * {@code resolveMapperTypes} method to support resolving generic types of interfaces. Original source from
+ * https://github.com/mybatis/mybatis-3
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,18 +46,18 @@ import org.miaixz.bus.core.lang.Optional;
 public class GenericTypeResolver {
 
     /**
-     * 私有构造函数，防止实例化
+     * Private constructor to prevent instantiation.
      */
     public GenericTypeResolver() {
 
     }
 
     /**
-     * 获取方法的实际返回值类型
+     * Gets the actual return type of a method.
      *
-     * @param method  方法
-     * @param srcType 方法所属类
-     * @return 方法返回值实际类型
+     * @param method  The method.
+     * @param srcType The class where the method is declared.
+     * @return The actual return type of the method.
      */
     public static Class<?> getReturnType(Method method, Class<?> srcType) {
         Class<?> returnType = method.getReturnType();
@@ -114,10 +116,10 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析接口的泛型类型
+     * Resolves the generic types of a mapper interface.
      *
-     * @param srcType 接口类型
-     * @return 接口上的泛型参数实际类型数组
+     * @param srcType The interface type.
+     * @return An array of actual type arguments for the generic parameters of the interface.
      */
     public static Type[] resolveMapperTypes(Class<?> srcType) {
         Type[] types = srcType.getGenericInterfaces();
@@ -133,11 +135,11 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析方法所在接口的泛型类型
+     * Resolves the generic types of the interface where a method is declared.
      *
-     * @param method  方法
-     * @param srcType 接口类型
-     * @return 接口上的泛型参数实际类型数组
+     * @param method  The method.
+     * @param srcType The interface type.
+     * @return An array of actual type arguments for the generic parameters of the interface.
      */
     public static Type[] resolveMapperTypes(Method method, Type srcType) {
         Class<?> declaringClass = method.getDeclaringClass();
@@ -150,11 +152,11 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析字段的泛型类型
+     * Resolves the generic type of a field.
      *
-     * @param field   字段
-     * @param srcType 源类型
-     * @return 字段的实际类型
+     * @param field   The field.
+     * @param srcType The source type.
+     * @return The actual type of the field.
      */
     public static Type resolveFieldType(Field field, Type srcType) {
         Type fieldType = field.getGenericType();
@@ -163,11 +165,11 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析字段的实际类类型
+     * Resolves the actual class of a field's type.
      *
-     * @param field   字段
-     * @param srcType 源类型
-     * @return 字段的实际类类型
+     * @param field   The field.
+     * @param srcType The source type.
+     * @return The actual class of the field's type.
      */
     public static Class<?> resolveFieldClass(Field field, Type srcType) {
         Type fieldType = field.getGenericType();
@@ -177,10 +179,10 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 将 Type 转换为 Class 类型
+     * Converts a {@link Type} to its corresponding {@link Class}.
      *
-     * @param type 类型
-     * @return 对应的 Class 类型
+     * @param type The type to convert.
+     * @return The corresponding class.
      */
     public static Class<?> resolveTypeToClass(Type type) {
         if (type instanceof Class) {
@@ -203,11 +205,11 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析方法的返回值类型
+     * Resolves the return type of a method.
      *
-     * @param method  方法
-     * @param srcType 源类型
-     * @return 方法返回值的实际类型
+     * @param method  The method.
+     * @param srcType The source type.
+     * @return The actual return type of the method.
      */
     public static Type resolveReturnType(Method method, Type srcType) {
         Type returnType = method.getGenericReturnType();
@@ -216,11 +218,11 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析方法的参数类型
+     * Resolves the parameter types of a method.
      *
-     * @param method  方法
-     * @param srcType 源类型
-     * @return 方法参数的实际类型数组
+     * @param method  The method.
+     * @param srcType The source type.
+     * @return An array of actual parameter types for the method.
      */
     public static Type[] resolveParamTypes(Method method, Type srcType) {
         Type[] paramTypes = method.getGenericParameterTypes();
@@ -233,12 +235,12 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析泛型类型
+     * Resolves a generic type.
      *
-     * @param type           类型
-     * @param srcType        源类型
-     * @param declaringClass 声明类
-     * @return 解析后的实际类型
+     * @param type           The type to resolve.
+     * @param srcType        The source type.
+     * @param declaringClass The declaring class.
+     * @return The resolved actual type.
      */
     public static Type resolveType(Type type, Type srcType, Class<?> declaringClass) {
         if (type instanceof TypeVariable) {
@@ -253,12 +255,12 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析泛型数组类型
+     * Resolves a generic array type.
      *
-     * @param genericArrayType 泛型数组类型
-     * @param srcType          源类型
-     * @param declaringClass   声明类
-     * @return 解析后的实际类型
+     * @param genericArrayType The generic array type.
+     * @param srcType          The source type.
+     * @param declaringClass   The declaring class.
+     * @return The resolved actual type.
      */
     private static Type resolveGenericArrayType(
             GenericArrayType genericArrayType,
@@ -284,12 +286,12 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析参数化类型
+     * Resolves a parameterized type.
      *
-     * @param parameterizedType 参数化类型
-     * @param srcType           源类型
-     * @param declaringClass    声明类
-     * @return 解析后的参数化类型
+     * @param parameterizedType The parameterized type.
+     * @param srcType           The source type.
+     * @param declaringClass    The declaring class.
+     * @return The resolved parameterized type.
      */
     private static ParameterizedType resolveParameterizedType(
             ParameterizedType parameterizedType,
@@ -313,12 +315,12 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析通配符类型
+     * Resolves a wildcard type.
      *
-     * @param wildcardType   通配符类型
-     * @param srcType        源类型
-     * @param declaringClass 声明类
-     * @return 解析后的通配符类型
+     * @param wildcardType   The wildcard type.
+     * @param srcType        The source type.
+     * @param declaringClass The declaring class.
+     * @return The resolved wildcard type.
      */
     private static Type resolveWildcardType(WildcardType wildcardType, Type srcType, Class<?> declaringClass) {
         Type[] lowerBounds = resolveWildcardTypeBounds(wildcardType.getLowerBounds(), srcType, declaringClass);
@@ -327,12 +329,12 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析通配符类型的边界
+     * Resolves the bounds of a wildcard type.
      *
-     * @param bounds         边界类型数组
-     * @param srcType        源类型
-     * @param declaringClass 声明类
-     * @return 解析后的边界类型数组
+     * @param bounds         The array of bounds.
+     * @param srcType        The source type.
+     * @param declaringClass The declaring class.
+     * @return The array of resolved bounds.
      */
     private static Type[] resolveWildcardTypeBounds(Type[] bounds, Type srcType, Class<?> declaringClass) {
         Type[] result = new Type[bounds.length];
@@ -351,12 +353,12 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 解析泛型变量类型
+     * Resolves a type variable.
      *
-     * @param typeVar        泛型变量
-     * @param srcType        源类型
-     * @param declaringClass 声明类
-     * @return 解析后的实际类型
+     * @param typeVar        The type variable.
+     * @param srcType        The source type.
+     * @param declaringClass The declaring class.
+     * @return The resolved actual type.
      */
     private static Type resolveTypeVar(TypeVariable<?> typeVar, Type srcType, Class<?> declaringClass) {
         Type result;
@@ -395,14 +397,14 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 扫描超类或接口以解析泛型变量
+     * Scans superclasses and interfaces to resolve a type variable.
      *
-     * @param typeVar        泛型变量
-     * @param srcType        源类型
-     * @param declaringClass 声明类
-     * @param clazz          当前类
-     * @param superclass     超类或接口类型
-     * @return 解析后的实际类型
+     * @param typeVar        The type variable.
+     * @param srcType        The source type.
+     * @param declaringClass The declaring class.
+     * @param clazz          The current class.
+     * @param superclass     The superclass or interface type.
+     * @return The resolved actual type.
      */
     private static Type scanSuperTypes(
             TypeVariable<?> typeVar,
@@ -433,12 +435,12 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 转换父类类型变量
+     * Translates type variables from a parent type.
      *
-     * @param srcType    源参数化类型
-     * @param srcClass   源类
-     * @param parentType 父类参数化类型
-     * @return 转换后的参数化类型
+     * @param srcType    The source parameterized type.
+     * @param srcClass   The source class.
+     * @param parentType The parent parameterized type.
+     * @return The translated parameterized type.
      */
     private static ParameterizedType translateParentTypeVars(
             ParameterizedType srcType,
@@ -465,31 +467,31 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 参数化类型实现类
+     * An implementation of {@link ParameterizedType}.
      */
     public static class ParameterizedTypes implements ParameterizedType {
 
         /**
-         * 原始类型
+         * The raw type.
          */
         private final Class<?> rawType;
 
         /**
-         * 拥有者类型
+         * The owner type.
          */
         private final Type ownerType;
 
         /**
-         * 实际类型参数
+         * The actual type arguments.
          */
         private final Type[] actualTypeArguments;
 
         /**
-         * 构造函数，初始化参数化类型
+         * Constructs a new ParameterizedTypes instance.
          *
-         * @param rawType             原始类型
-         * @param ownerType           拥有者类型
-         * @param actualTypeArguments 实际类型参数
+         * @param rawType             The raw type.
+         * @param ownerType           The owner type.
+         * @param actualTypeArguments The actual type arguments.
          */
         public ParameterizedTypes(Class<?> rawType, Type ownerType, Type[] actualTypeArguments) {
             super();
@@ -499,9 +501,9 @@ public class GenericTypeResolver {
         }
 
         /**
-         * 获取实际类型参数
+         * Gets the actual type arguments.
          *
-         * @return 实际类型参数数组
+         * @return The array of actual type arguments.
          */
         @Override
         public Type[] getActualTypeArguments() {
@@ -509,9 +511,9 @@ public class GenericTypeResolver {
         }
 
         /**
-         * 获取拥有者类型
+         * Gets the owner type.
          *
-         * @return 拥有者类型
+         * @return The owner type.
          */
         @Override
         public Type getOwnerType() {
@@ -519,9 +521,9 @@ public class GenericTypeResolver {
         }
 
         /**
-         * 获取原始类型
+         * Gets the raw type.
          *
-         * @return 原始类型
+         * @return The raw type.
          */
         @Override
         public Type getRawType() {
@@ -529,9 +531,9 @@ public class GenericTypeResolver {
         }
 
         /**
-         * 返回字符串表示形式
+         * Returns a string representation of this parameterized type.
          *
-         * @return 参数化类型的字符串表示
+         * @return A string representation.
          */
         @Override
         public String toString() {
@@ -541,25 +543,25 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 通配符类型实现类
+     * An implementation of {@link WildcardType}.
      */
     public static class WildcardTypes implements WildcardType {
 
         /**
-         * 下界类型
+         * The lower bounds.
          */
         private final Type[] lowerBounds;
 
         /**
-         * 上界类型
+         * The upper bounds.
          */
         private final Type[] upperBounds;
 
         /**
-         * 构造函数，初始化通配符类型
+         * Constructs a new WildcardTypes instance.
          *
-         * @param lowerBounds 下界类型数组
-         * @param upperBounds 上界类型数组
+         * @param lowerBounds The array of lower bounds.
+         * @param upperBounds The array of upper bounds.
          */
         WildcardTypes(Type[] lowerBounds, Type[] upperBounds) {
             super();
@@ -568,9 +570,9 @@ public class GenericTypeResolver {
         }
 
         /**
-         * 获取下界类型
+         * Gets the lower bounds.
          *
-         * @return 下界类型数组
+         * @return The array of lower bounds.
          */
         @Override
         public Type[] getLowerBounds() {
@@ -578,9 +580,9 @@ public class GenericTypeResolver {
         }
 
         /**
-         * 获取上界类型
+         * Gets the upper bounds.
          *
-         * @return 上界类型数组
+         * @return The array of upper bounds.
          */
         @Override
         public Type[] getUpperBounds() {
@@ -589,19 +591,19 @@ public class GenericTypeResolver {
     }
 
     /**
-     * 泛型数组类型实现类
+     * An implementation of {@link GenericArrayType}.
      */
     public static class GenericArrayTypes implements GenericArrayType {
 
         /**
-         * 泛型组件类型
+         * The generic component type.
          */
         private final Type genericComponentType;
 
         /**
-         * 构造函数，初始化泛型数组类型
+         * Constructs a new GenericArrayTypes instance.
          *
-         * @param genericComponentType 泛型组件类型
+         * @param genericComponentType The generic component type.
          */
         GenericArrayTypes(Type genericComponentType) {
             super();
@@ -609,9 +611,9 @@ public class GenericTypeResolver {
         }
 
         /**
-         * 获取泛型组件类型
+         * Gets the generic component type.
          *
-         * @return 泛型组件类型
+         * @return The generic component type.
          */
         @Override
         public Type getGenericComponentType() {

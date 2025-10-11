@@ -30,43 +30,63 @@ package org.miaixz.bus.core.center.date.culture.cn.nine;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 数九
+ * Represents the "Shu Jiu" (数九) or Counting Nine periods, which are nine nine-day periods following the Winter
+ * Solstice. This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Nine extends Samsara {
 
+    /**
+     * Array of names for the Counting Nine periods.
+     */
     public static final String[] NAMES = { "一九", "二九", "三九", "四九", "五九", "六九", "七九", "八九", "九九" };
 
+    /**
+     * Constructs a {@code Nine} instance with the specified name.
+     *
+     * @param name The name of the Counting Nine period.
+     */
     public Nine(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Constructs a {@code Nine} instance with the specified index.
+     *
+     * @param index The index of the Counting Nine period in the {@link #NAMES} array.
+     */
     public Nine(int index) {
         super(NAMES, index);
     }
 
     /**
-     * 从名称初始化
+     * Creates a {@code Nine} instance from its name.
      *
-     * @param name 名称
-     * @return 数九
+     * @param name The name of the Counting Nine period.
+     * @return A new {@code Nine} instance.
      */
     public static Nine fromName(String name) {
         return new Nine(name);
     }
 
     /**
-     * 从索引初始化
+     * Creates a {@code Nine} instance from its index.
      *
-     * @param index 索引
-     * @return 数九
+     * @param index The index of the Counting Nine period.
+     * @return A new {@code Nine} instance.
      */
     public static Nine fromIndex(int index) {
         return new Nine(index);
     }
 
+    /**
+     * Gets the next {@code Nine} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code Nine} instance.
+     */
     public Nine next(int n) {
         return fromIndex(nextIndex(n));
     }

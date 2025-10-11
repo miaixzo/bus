@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.unionpay;
 import org.miaixz.bus.pay.Registry;
 
 /**
- * 云闪付
+ * UnionPay Cloud QuickPass utility class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,10 +38,10 @@ import org.miaixz.bus.pay.Registry;
 public class UnionPayBuilder {
 
     /**
-     * 获取用户授权 API
+     * Builds the user authorization URL.
      *
-     * @param url 回调地址
-     * @return 银联重定向 Url
+     * @param url The callback URL.
+     * @return The UnionPay redirect URL for user authorization.
      */
     public static String buildAuthUrl(String url) {
         return String.format(Registry.UNIONPAY.service(), url);

@@ -32,50 +32,60 @@ import java.util.*;
 import java.util.concurrent.locks.StampedLock;
 
 /**
- * Simhash是一种局部敏感hash，用于海量文本去重。
+ * Simhash is a locality-sensitive hash used for large-scale text deduplication.
  *
  * <p>
- * 算法实现来自：<a href="https://github.com/xlturing/Simhash4J">https://github.com/xlturing/Simhash4J</a>
- * </p>
+ * This implementation is adapted from:
+ * <a href="https://github.com/xlturing/Simhash4J">https://github.com/xlturing/Simhash4J</a>
  *
  * <p>
- * 局部敏感hash定义：假定两个字符串具有一定的相似性，在hash之后，仍然能保持这种相似性，就称之为局部敏感hash。
- * </p>
+ * A locality-sensitive hash (LSH) is defined as a hash function where, if two strings have a certain degree of
+ * similarity, they will remain similar after being hashed.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Simhash implements Hash64<Collection<? extends CharSequence>> {
 
+    /**
+     * The number of bits in the Simhash, typically 64.
+     */
     private final int bitNum = 64;
     /**
-     * 存储段数，默认按照4段进行simhash存储
+     * The number of segments to divide the Simhash into for storage, defaulting to 4.
      */
     private final int fracCount;
+    /**
+     * The number of bits in each segment of the Simhash.
+     */
     private final int fracBitNum;
     /**
-     * 汉明距离的衡量标准，小于此距离标准表示相似
+     * The Hamming distance threshold. Hashes with a distance less than this are considered similar.
      */
     private final int hammingThresh;
 
     /**
-     * 按照分段存储simhash，查找更快速
+     * A storage mechanism that segments the Simhash for faster lookups. It is a list of maps, where each map stores a
+     * fraction of the hash as a key.
      */
     private final List<Map<String, List<Long>>> storage;
+    /**
+     * A lock to ensure thread-safe access to the storage.
+     */
     private final StampedLock lock = new StampedLock();
 
     /**
-     * 构造
+     * Constructs a new {@code Simhash} instance with default settings (4 segments, Hamming threshold of 3).
      */
     public Simhash() {
         this(4, 3);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Simhash} instance with the specified number of segments and Hamming distance threshold.
      *
-     * @param fracCount     存储段数
-     * @param hammingThresh 汉明距离的衡量标准
+     * @param fracCount     The number of segments to divide the Simhash into.
+     * @param hammingThresh The Hamming distance threshold for considering documents similar.
      */
     public Simhash(final int fracCount, final int hammingThresh) {
         this.fracCount = fracCount;
@@ -88,15 +98,16 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
     }
 
     /**
-     * 指定文本计算simhash值
+     * Computes the 64-bit Simhash value for a given list of tokens (words). The process involves hashing each token,
+     * weighting the bits, and then generating the final hash.
      *
-     * @param segList 分词的词列表
-     * @return Hash值
+     * @param segList A collection of character sequences (tokens) from a document.
+     * @return The 64-bit Simhash value.
      */
     @Override
     public long hash64(final Collection<? extends CharSequence> segList) {
         final int bitNum = this.bitNum;
-        // 按照词语的hash值，计算simHashWeight(低位对齐)
+        // Calculate Simhash weight based on the hash of each word (aligned to the least significant bit)
         final int[] weight = new int[bitNum];
         long wordHash;
         for (final CharSequence seg : segList) {
@@ -109,7 +120,7 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
             }
         }
 
-        // 计算得到Simhash值
+        // Generate the final Simhash value
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < bitNum; i++) {
             sb.append((weight[i] > 0) ? 1 : 0);
@@ -119,10 +130,11 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
     }
 
     /**
-     * 判断文本是否与已存储的数据重复
+     * Determines if a given text is a duplicate of any text already stored, based on the Simhash and the configured
+     * Hamming distance threshold.
      *
-     * @param segList 文本分词后的结果
-     * @return 是否重复
+     * @param segList The tokenized text to check for duplicates.
+     * @return {@code true} if the text is considered a duplicate, {@code false} otherwise.
      */
     public boolean equals(final Collection<? extends CharSequence> segList) {
         final long simhash = hash64(segList);
@@ -138,7 +150,7 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
                 fracMap = storage.get(i);
                 if (fracMap.containsKey(frac)) {
                     for (final Long simhash2 : fracMap.get(frac)) {
-                        // 当汉明距离小于标准时相似
+                        // If the Hamming distance is less than the threshold, they are similar
                         if (hamming(simhash, simhash2) < hammingThresh) {
                             return true;
                         }
@@ -152,9 +164,10 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
     }
 
     /**
-     * 按照(frac, simhash, content)索引进行存储
+     * Stores a Simhash value in the segmented storage for future comparisons. The hash is split into segments, and each
+     * segment is stored as a key in the corresponding map.
      *
-     * @param simhash Simhash值
+     * @param simhash The Simhash value to store.
      */
     public void store(final Long simhash) {
         final int fracCount = this.fracCount;
@@ -182,11 +195,12 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
     }
 
     /**
-     * 计算汉明距离
+     * Calculates the Hamming distance between two 64-bit Simhash values. The Hamming distance is the number of bit
+     * positions at which the corresponding bits are different.
      *
-     * @param s1 值1
-     * @param s2 值2
-     * @return 汉明距离
+     * @param s1 The first Simhash value.
+     * @param s2 The second Simhash value.
+     * @return The Hamming distance between the two values.
      */
     private int hamming(final Long s1, final Long s2) {
         final int bitNum = this.bitNum;
@@ -199,10 +213,11 @@ public class Simhash implements Hash64<Collection<? extends CharSequence>> {
     }
 
     /**
-     * 将simhash分成n段
+     * Splits a 64-bit Simhash value into a specified number of segments. This is used to create keys for the segmented
+     * storage, enabling faster lookups.
      *
-     * @param simhash Simhash值
-     * @return N段Simhash
+     * @param simhash The Simhash value to split.
+     * @return A list of strings, where each string is a binary representation of a segment of the Simhash.
      */
     private List<String> splitSimhash(final Long simhash) {
         final int bitNum = this.bitNum;

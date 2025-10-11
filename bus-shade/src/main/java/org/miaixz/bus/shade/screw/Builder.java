@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.shade.screw.execute.ProduceExecute;
 
 /**
- * 默认常量
+ * Default constants and utility methods for document generation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,59 +39,59 @@ import org.miaixz.bus.shade.screw.execute.ProduceExecute;
 public class Builder {
 
     /**
-     * 百分号
+     * The percent sign symbol (%).
      */
     public static final String PERCENT_SIGN = Symbol.PERCENT;
     /**
-     * 暂未支持
+     * A constant string indicating that a feature is not yet supported.
      */
     public static final String NOT_SUPPORTED = "Not supported yet!";
 
     /**
-     * 默认国际化
+     * The default locale string ("zh_CN").
      */
     public static final String DEFAULT_LOCALE = "zh_CN";
     /**
-     * Mac
+     * A constant string for the Mac operating system.
      */
     public static final String MAC = "Mac";
     /**
-     * Windows
+     * A constant string for the Windows operating system.
      */
     public static final String WINDOWS = "Windows";
     /**
-     * 小数点0
+     * A constant string representing zero decimal digits ("0").
      */
     public static final String ZERO_DECIMAL_DIGITS = "0";
     /**
-     * 默认描述
+     * The default description for the database design document.
      */
     public static final String DESCRIPTION = "数据库设计文档";
     /**
-     * mysql useInformationSchema
+     * The connection property key for MySQL to use the Information Schema.
      */
     public static final String USE_INFORMATION_SCHEMA = "useInformationSchema";
     /**
-     * oracle 连接参数备注
+     * The connection property key for Oracle to retrieve remarks.
      */
     public static final String ORACLE_REMARKS = "remarks";
     /**
-     * 零
+     * The string representation of zero ("0").
      */
     public static final String ZERO = "0";
     /**
-     * N
+     * The string "N", typically representing "No".
      */
     public static final String N = "N";
     /**
-     * Y
+     * The string "Y", typically representing "Yes".
      */
     public static final String Y = "Y";
 
     /**
-     * 创建数据结构文档
+     * Creates and generates the database structure documentation file.
      *
-     * @param config 配置
+     * @param config The configuration object containing all necessary parameters for document generation.
      */
     public static void createFile(Config config) {
         new ProduceExecute(config).execute();

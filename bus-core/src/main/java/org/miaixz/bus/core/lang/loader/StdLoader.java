@@ -45,20 +45,34 @@ import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 
 /**
- * 标准的资源加载器
+ * A standard resource loader that uses a {@link ClassLoader} to find and load resources. It supports loading resources
+ * from the classpath, including JAR files and directories.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StdLoader extends ResourceLoader implements Loader {
 
+    /**
+     * The class loader used by this {@code StdLoader}.
+     */
     private final ClassLoader classLoader;
 
+    /**
+     * Constructs a new {@code StdLoader} using the current thread's context class loader. If the context class loader
+     * is {@code null}, the system class loader is used.
+     */
     public StdLoader() {
         this(null != Thread.currentThread().getContextClassLoader() ? Thread.currentThread().getContextClassLoader()
                 : ClassLoader.getSystemClassLoader());
     }
 
+    /**
+     * Constructs a new {@code StdLoader} with the specified class loader.
+     *
+     * @param classLoader The class loader to use for loading resources.
+     * @throws IllegalArgumentException If the provided class loader is {@code null}.
+     */
     public StdLoader(ClassLoader classLoader) {
         if (null == classLoader) {
             throw new IllegalArgumentException("classLoader must not be null");
@@ -66,6 +80,7 @@ public class StdLoader extends ResourceLoader implements Loader {
         this.classLoader = classLoader;
     }
 
+    @Override
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) throws IOException {
         while (path.startsWith(Symbol.SLASH))
             path = path.substring(1);
@@ -74,14 +89,41 @@ public class StdLoader extends ResourceLoader implements Loader {
         return new Enumerator(classLoader, path, recursively, null != filter ? filter : Filters.ALWAYS);
     }
 
+    /**
+     * An {@link Enumeration} implementation for iterating over resources found by a {@link StdLoader}.
+     */
     private static class Enumerator extends ResourceEnumerator implements Enumeration<Resource> {
 
+        /**
+         * The path to search for resources.
+         */
         private final String path;
+        /**
+         * Whether to search for resources in subdirectories recursively.
+         */
         private final boolean recursively;
+        /**
+         * The filter to apply to resources.
+         */
         private final Filter filter;
+        /**
+         * The enumeration of URLs found by the class loader for the given path.
+         */
         private final Enumeration<URL> urls;
+        /**
+         * The current enumeration of resources being processed.
+         */
         private Enumeration<Resource> resources;
 
+        /**
+         * Constructs a new {@code Enumerator}.
+         *
+         * @param classLoader The class loader to use.
+         * @param path        The path to search for resources.
+         * @param recursively Whether to search for resources in subdirectories.
+         * @param filter      The filter to apply to resources.
+         * @throws IOException If an I/O error occurs during resource loading.
+         */
         Enumerator(ClassLoader classLoader, String path, boolean recursively, Filter filter) throws IOException {
             this.path = path;
             this.recursively = recursively;
@@ -90,6 +132,14 @@ public class StdLoader extends ResourceLoader implements Loader {
             this.resources = Collections.enumeration(Collections.emptySet());
         }
 
+        /**
+         * Loads URLs for the given path using the specified class loader.
+         *
+         * @param classLoader The class loader to use.
+         * @param path        The path to search for.
+         * @return An enumeration of URLs found.
+         * @throws IOException If an I/O error occurs.
+         */
         private Enumeration<URL> load(ClassLoader classLoader, String path) throws IOException {
             if (path.length() > 0) {
                 return classLoader.getResources(path);
@@ -111,6 +161,7 @@ public class StdLoader extends ResourceLoader implements Loader {
             }
         }
 
+        @Override
         public boolean hasMoreElements() {
             if (null != next) {
                 return true;

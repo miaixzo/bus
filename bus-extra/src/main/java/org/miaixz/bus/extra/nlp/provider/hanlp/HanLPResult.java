@@ -36,29 +36,54 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 import com.hankcs.hanlp.seg.common.Term;
 
 /**
- * HanLP分词结果实现 项目地址：https://github.com/hankcs/HanLP
+ * Implementation of {@link NLPResult} for HanLP word segmentation results. This class wraps a {@link List} of
+ * {@link Term} objects from HanLP and provides an iterator over {@link NLPWord} objects, adapting HanLP's results to
+ * the common interface. Project homepage: <a href="https://github.com/hankcs/HanLP">https://github.com/hankcs/HanLP</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HanLPResult implements NLPResult {
 
-    Iterator<Term> result;
+    /**
+     * The iterator over HanLP {@link Term} objects, representing the segmented words.
+     */
+    private final Iterator<Term> result;
 
+    /**
+     * Constructs a {@code HanLPResult} instance by wrapping a list of segmentation results from HanLP.
+     *
+     * @param termList A {@link List} of {@link Term} objects obtained from HanLP segmentation.
+     */
     public HanLPResult(final List<Term> termList) {
         this.result = termList.iterator();
     }
 
+    /**
+     * Checks if there are more words in the segmentation result.
+     *
+     * @return {@code true} if there are more words; {@code false} otherwise.
+     */
     @Override
     public boolean hasNext() {
         return result.hasNext();
     }
 
+    /**
+     * Returns the next word in the segmentation result as an {@link NLPWord}. This method wraps the HanLP {@link Term}
+     * into a {@link HanLPWord}.
+     *
+     * @return The next {@link NLPWord} in the iteration.
+     */
     @Override
     public NLPWord next() {
         return new HanLPWord(result.next());
     }
 
+    /**
+     * Removes the last word returned by this iterator from the underlying collection. This operation is delegated to
+     * the underlying iterator.
+     */
     @Override
     public void remove() {
         result.remove();

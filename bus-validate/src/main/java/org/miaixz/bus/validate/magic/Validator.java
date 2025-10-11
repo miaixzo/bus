@@ -30,8 +30,9 @@ package org.miaixz.bus.validate.magic;
 import org.miaixz.bus.validate.Context;
 
 /**
- * 校验器接口
+ * Defines a simple validator interface.
  *
+ * @param <T> The type of the object to be validated.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -39,22 +40,22 @@ import org.miaixz.bus.validate.Context;
 public interface Validator<T> {
 
     /**
-     * 根据校验器,创建相对立的一个校验器
+     * Creates a new validator that is the logical negation of the given validator.
      *
-     * @param validator 校验器
-     * @param <T>       校验对象泛型
-     * @return 新的校验器, 永远与传入参数的校验器的校验结果相反
+     * @param <T>       The generic type of the object to be validated.
+     * @param validator The validator to negate.
+     * @return A new validator whose result is always the opposite of the input validator's result.
      */
     static <T> Validator<T> not(Validator<T> validator) {
         return (object, context) -> !validator.on(object, context);
     }
 
     /**
-     * 校验对象
+     * Validates the given object.
      *
-     * @param object  被校验的对象
-     * @param context 当前校验参数的上下文
-     * @return 校验结果, true：校验通过
+     * @param object  The object to be validated.
+     * @param context The context of the current validation.
+     * @return {@code true} if the validation passes, {@code false} otherwise.
      */
     boolean on(T object, Context context);
 

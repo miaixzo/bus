@@ -33,10 +33,10 @@ import java.util.function.Function;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 可序列化的Function接口，支持异常抛出。
+ * A serializable {@link Function} interface that supports throwing exceptions.
  *
- * @param <T> 参数类型
- * @param <R> 返回值类型
+ * @param <T> The type of the input to the function.
+ * @param <R> The type of the result of the function.
  * @author Kimi Liu
  * @see Function
  * @since Java 17+
@@ -45,41 +45,42 @@ import org.miaixz.bus.core.xyz.ExceptionKit;
 public interface FunctionX<T, R> extends Function<T, R>, Serializable {
 
     /**
-     * 返回一个始终返回输入参数的函数。
+     * Returns a function that always returns its input argument.
      *
-     * @param <T> 函数输入和输出的类型
-     * @return 始终返回输入参数的函数
+     * @param <T> The type of the input and output of the function.
+     * @return A function that always returns its input argument.
      */
     static <T> FunctionX<T, T> identity() {
         return t -> t;
     }
 
     /**
-     * 返回一个支持类型转换的恒等函数。
+     * Returns an identity function that supports type casting.
      *
-     * @param <T> 输入参数类型
-     * @param <R> 返回值类型
-     * @return 类型转换后的恒等函数
+     * @param <T> The type of the input argument.
+     * @param <R> The type of the return value.
+     * @return An identity function with type casting.
      */
     static <T, R> Function<T, R> castingIdentity() {
         return t -> (R) t;
     }
 
     /**
-     * 对给定参数应用此函数，可能抛出异常。
+     * Applies this function to the given argument, potentially throwing an exception.
      *
-     * @param t 函数输入参数
-     * @return 函数执行结果
-     * @throws Throwable 可能抛出的异常
+     * @param t The function input argument.
+     * @return The function result.
+     * @throws Throwable Any throwable exception that might occur during the operation.
      */
     R applying(T t) throws Throwable;
 
     /**
-     * 对给定参数应用此函数，自动处理异常。
+     * Applies this function to the given argument, automatically handling checked exceptions by wrapping them in a
+     * {@link RuntimeException}.
      *
-     * @param t 函数输入参数
-     * @return 函数执行结果
-     * @throws RuntimeException 包装后的运行时异常
+     * @param t The function input argument.
+     * @return The function result.
+     * @throws RuntimeException A wrapped runtime exception if a checked exception occurs.
      */
     @Override
     default R apply(final T t) {

@@ -30,7 +30,8 @@ package org.miaixz.bus.core.io;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 这是避免GC搅动和零填充所必需的 这个池是一个线程安全的静态单例
+ * This class manages the lifecycle of {@link SectionBuffer} instances to avoid GC churn and zero-filling. The pool is a
+ * thread-safe static singleton.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,24 +39,32 @@ import org.miaixz.bus.core.lang.Normal;
 public final class LifeCycle {
 
     /**
-     * 池的最大字节数 64 KiB
+     * The maximum size of the pool in bytes. Currently 64 KiB.
      */
     public static final long MAX_SIZE = Normal._64 * Normal._1024;
 
     /**
-     * 段的单链表
+     * The head of the singly-linked list of segments in the pool.
      */
     public static SectionBuffer next;
 
     /**
-     * 该池中的总字节数
+     * The total number of bytes currently in the pool.
      */
     public static long byteCount;
 
-    public LifeCycle() {
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private LifeCycle() {
 
     }
 
+    /**
+     * Retrieves a {@link SectionBuffer} from the pool. If the pool is empty, a new {@link SectionBuffer} is created.
+     *
+     * @return A {@link SectionBuffer} instance.
+     */
     public static SectionBuffer take() {
         synchronized (LifeCycle.class) {
             if (null != next) {
@@ -69,6 +78,13 @@ public final class LifeCycle {
         return new SectionBuffer(); // Pool is empty. Don't zero-fill while holding a lock.
     }
 
+    /**
+     * Recycles a {@link SectionBuffer} back into the pool. A segment can only be recycled if it is not shared and is
+     * not part of a circularly-linked list.
+     *
+     * @param segment The {@link SectionBuffer} to recycle.
+     * @throws IllegalArgumentException if the segment is still part of a list.
+     */
     public static void recycle(SectionBuffer segment) {
         if (segment.next != null || segment.prev != null)
             throw new IllegalArgumentException();

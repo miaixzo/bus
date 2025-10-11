@@ -32,7 +32,7 @@ import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 提供标准的命名风格生成器，使用原始类名和字段名作为表名和列名。
+ * Provides a standard naming style generator, using the original class and field names as table and column names.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,9 +40,9 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class DirectNamingProvider implements NamingProvider {
 
     /**
-     * 获取命名风格，返回标准命名风格。
+     * Gets the naming style, returning the standard naming style.
      *
-     * @return 标准命名风格标识
+     * @return The standard naming style identifier.
      */
     @Override
     public Object type() {
@@ -50,10 +50,10 @@ public class DirectNamingProvider implements NamingProvider {
     }
 
     /**
-     * 获取表名，使用实体类的简单类名。
+     * Gets the table name, using the simple name of the entity class.
      *
-     * @param entityClass 实体类
-     * @return 表名
+     * @param entityClass The entity class.
+     * @return The table name.
      */
     @Override
     public String tableName(Class<?> entityClass) {
@@ -61,11 +61,11 @@ public class DirectNamingProvider implements NamingProvider {
     }
 
     /**
-     * 获取列名，使用字段的名称。
+     * Gets the column name, using the name of the field.
      *
-     * @param entityTable 实体表信息
-     * @param field       实体字段信息
-     * @return 列名
+     * @param entityTable The entity table information.
+     * @param field       The entity field information.
+     * @return The column name.
      */
     @Override
     public String columnName(TableMeta entityTable, FieldMeta field) {

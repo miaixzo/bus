@@ -32,8 +32,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 磁盘信息
- * 
+ * Disk Information
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -43,42 +43,42 @@ import lombok.Setter;
 public class Disk {
 
     /**
-     * 设备名称 (如 /dev/sda1)
+     * Device name (e.g., /dev/sda1)
      */
     private String deviceName;
 
     /**
-     * 文件系统卷名
+     * File system volume name
      */
     private String volumeName;
 
     /**
-     * 卷标
+     * Volume label
      */
     private String label;
 
     /**
-     * 逻辑卷名
+     * Logical volume name
      */
     private String logicalVolumeName;
 
     /**
-     * 挂载点 (如 /mnt/data)
+     * Mount point (e.g., /mnt/data)
      */
     private String mountPoint;
 
     /**
-     * 文件系统描述
+     * File system description
      */
     private String description;
 
     /**
-     * 挂载选项 (如 rw,ro)
+     * Mount options (e.g., rw, ro)
      */
     private String mountOptions;
 
     /**
-     * 文件系统类型 (如 ext4, xfs, vfat)
+     * File system type (e.g., ext4, xfs, vfat)
      */
     private String filesystemType;
 
@@ -88,22 +88,22 @@ public class Disk {
     private String uuid;
 
     /**
-     * 总空间
+     * Total space
      */
     private Long totalSpace;
 
     /**
-     * 已用空间
+     * Used space
      */
     private Long usedSpace;
 
     /**
-     * 可用空间
+     * Free space
      */
     private Long freeSpace;
 
     /**
-     * 使用率 (usedSpace / totalSpace * 100)
+     * Usage percentage (usedSpace / totalSpace * 100)
      */
     private double usagePercent;
 

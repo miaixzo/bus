@@ -27,17 +27,16 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
-import java.util.regex.Pattern;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.regex.Pattern;
 
 /**
- * User-Agent信息对象
+ * Represents a User-Agent, providing information about the browser, engine, OS, and device.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,64 +46,64 @@ import lombok.Setter;
 public class UserAgent {
 
     /**
-     * 是否为移动平台
+     * Whether the device is a mobile platform.
      */
     private boolean mobile;
     /**
-     * 浏览器类型
+     * The browser type.
      */
     private Browser browser;
     /**
-     * 平台类型
+     * The device type.
      */
     private Device device;
     /**
-     * 系统类型
+     * The operating system type.
      */
     private NOS nos;
     /**
-     * 引擎类型
+     * The engine type.
      */
     private Engine engine;
     /**
-     * 浏览器版本
+     * The browser version.
      */
     private String version;
     /**
-     * 引擎版本
+     * The engine version.
      */
     private String engineVersion;
     /**
-     * 信息名称
+     * The name of the User-Agent component.
      */
     private String name;
     /**
-     * 信息匹配模式
+     * The regex pattern for matching this component.
      */
     private Pattern pattern;
 
     /**
-     * 构造
+     * Default constructor.
      */
     public UserAgent() {
 
     }
 
     /**
-     * 构造
+     * Constructs a new {@code UserAgent} instance.
      *
-     * @param name  名字
-     * @param regex 表达式
+     * @param name  The name of the component.
+     * @param regex The regex pattern for matching.
      */
     public UserAgent(String name, String regex) {
         this(name, (null == regex) ? null : Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code UserAgent} instance.
      *
-     * @param name    名字
-     * @param pattern 匹配模式
+     * @param name    The name of the component.
+     * @param pattern The regex pattern for matching.
      */
     public UserAgent(String name, Pattern pattern) {
         this.name = name;
@@ -112,10 +111,10 @@ public class UserAgent {
     }
 
     /**
-     * 解析User-Agent
+     * Parses a User-Agent string and returns a {@link UserAgent} object.
      *
-     * @param text User-Agent字符串
-     * @return {@link UserAgent}
+     * @param text The User-Agent string.
+     * @return A {@link UserAgent} object, or null if the input is blank.
      */
     public static UserAgent parse(final String text) {
         if (StringKit.isBlank(text)) {
@@ -123,26 +122,26 @@ public class UserAgent {
         }
         final UserAgent userAgent = new UserAgent();
 
-        // 浏览器
+        // Browser
         final Browser browser = parseBrowser(text);
         userAgent.setBrowser(browser);
         userAgent.setVersion(browser.getVersion(text));
 
-        // 浏览器引擎
+        // Engine
         final Engine engine = parseEngine(text);
         userAgent.setEngine(engine);
         userAgent.setEngineVersion(engine.getVersion(text));
 
-        // 操作系统
+        // Operating System
         final NOS os = parseNOS(text);
         userAgent.setNos(os);
         userAgent.setVersion(os.getVersion(text));
 
-        // 设备信息
+        // Device
         final Device device = parseDevice(text);
         userAgent.setDevice(device);
 
-        // MacOS 下的微信不属于移动平台
+        // WeChat on macOS is not a mobile platform.
         if (device.isMobile() || browser.isMobile()) {
             if (!os.isMacOS()) {
                 userAgent.setMobile(true);
@@ -153,10 +152,10 @@ public class UserAgent {
     }
 
     /**
-     * 解析浏览器类型
+     * Parses the browser type from a User-Agent string.
      *
-     * @param text User-Agent字符串
-     * @return 浏览器类型
+     * @param text The User-Agent string.
+     * @return The browser type.
      */
     private static Browser parseBrowser(final String text) {
         for (final Browser browser : Browser.BROWERS) {
@@ -168,10 +167,10 @@ public class UserAgent {
     }
 
     /**
-     * 解析引擎类型
+     * Parses the engine type from a User-Agent string.
      *
-     * @param text User-Agent字符串
-     * @return 引擎类型
+     * @param text The User-Agent string.
+     * @return The engine type.
      */
     private static Engine parseEngine(final String text) {
         for (final Engine engine : Engine.ENGINES) {
@@ -183,10 +182,10 @@ public class UserAgent {
     }
 
     /**
-     * 解析系统类型
+     * Parses the operating system type from a User-Agent string.
      *
-     * @param text User-Agent字符串
-     * @return 系统类型
+     * @param text The User-Agent string.
+     * @return The operating system type.
      */
     private static NOS parseNOS(final String text) {
         for (final NOS os : NOS.NOS) {
@@ -198,10 +197,10 @@ public class UserAgent {
     }
 
     /**
-     * 解析平台类型
+     * Parses the device type from a User-Agent string.
      *
-     * @param text User-Agent字符串
-     * @return 平台类型
+     * @param text The User-Agent string.
+     * @return The device type.
      */
     private static Device parseDevice(final String text) {
         for (final Device platform : Device.ALL_DEVICE) {
@@ -213,19 +212,19 @@ public class UserAgent {
     }
 
     /**
-     * 指定内容中是否包含匹配此信息的内容
+     * Returns whether the given content contains a match for this component.
      *
-     * @param content User-Agent字符串
-     * @return 是否包含匹配此信息的内容
+     * @param content The User-Agent string.
+     * @return {@code true} if a match is found, {@code false} otherwise.
      */
     public boolean isMatch(String content) {
         return PatternKit.contains(this.pattern, content);
     }
 
     /**
-     * 是否为unknown
+     * Returns whether this component is unknown.
      *
-     * @return 是否为unknown
+     * @return {@code true} if this component is unknown, {@code false} otherwise.
      */
     public boolean isUnknown() {
         return Normal.UNKNOWN.equals(this.name);

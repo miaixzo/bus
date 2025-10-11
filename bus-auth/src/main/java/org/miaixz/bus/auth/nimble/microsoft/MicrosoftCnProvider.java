@@ -35,27 +35,44 @@ import org.miaixz.bus.auth.Registry;
 import org.miaixz.bus.auth.magic.ErrorCode;
 
 /**
- * 微软中国 登录
+ * Microsoft China login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MicrosoftCnProvider extends AbstractMicrosoftProvider {
 
+    /**
+     * Constructs a {@code MicrosoftCnProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public MicrosoftCnProvider(Context context) {
         super(context, Registry.MICROSOFT_CN);
     }
 
+    /**
+     * Constructs a {@code MicrosoftCnProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public MicrosoftCnProvider(Context context, CacheX cache) {
         super(context, Registry.MICROSOFT_CN, cache);
     }
 
+    /**
+     * Checks the completeness and validity of the context configuration for Microsoft China authentication.
+     * Specifically, it ensures that the redirect URI uses HTTPS or is a localhost address.
+     *
+     * @param context the authentication context
+     * @throws AuthorizedException if the redirect URI is invalid
+     */
     @Override
     protected void check(Context context) {
         super.check(context);
-        // 微软中国的回调地址必须为https的链接或者localhost,不允许使用http
+        // Microsoft China's redirect uri must use the HTTPS or localhost
         if (Registry.MICROSOFT_CN == this.complex && !Protocol.isHttpsOrLocalHost(context.getRedirectUri())) {
-            // Microsoft's redirect uri must use the HTTPS or localhost
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getKey(), this.complex);
         }
     }

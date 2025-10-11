@@ -34,34 +34,34 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 
 /**
- * 抽象的对象拷贝封装，提供来源对象、目标对象持有
+ * Abstract base class for object copying, providing a common structure for holding source and target objects.
  *
- * @param <S> 来源对象类型
- * @param <T> 目标对象类型
+ * @param <S> The type of the source object.
+ * @param <T> The type of the target object.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractCopier<S, T> implements Copier<T> {
 
     /**
-     * 源对象
+     * The source object from which properties are copied.
      */
     protected final S source;
     /**
-     * 目标对象
+     * The target object to which properties are copied.
      */
     protected final T target;
     /**
-     * 拷贝选项
+     * The options governing the copying process.
      */
     protected final CopyOptions copyOptions;
 
     /**
-     * 构造
+     * Constructs an {@code AbstractCopier} with the specified source, target, and copy options.
      *
-     * @param source      源对象
-     * @param target      目标对象
-     * @param copyOptions 拷贝选项
+     * @param source      The source object.
+     * @param target      The target object.
+     * @param copyOptions The copy options. If {@code null}, default options will be used.
      */
     public AbstractCopier(final S source, final T target, final CopyOptions copyOptions) {
         this.source = source;
@@ -70,10 +70,11 @@ public abstract class AbstractCopier<S, T> implements Copier<T> {
     }
 
     /**
-     * 获取Bean描述信息 如果用户自定义了{@link BeanDesc}实现，则使用，否则使用默认的规则
+     * Retrieves the {@link BeanDesc} for a given class. If a custom {@link BeanDesc} implementation is specified in
+     * {@link CopyOptions}, it will be used; otherwise, the default rules will apply.
      *
-     * @param actualEditable 需要解析的类
-     * @return {@link BeanDesc}
+     * @param actualEditable The class for which to retrieve the {@link BeanDesc}.
+     * @return The {@link BeanDesc} instance for the specified class.
      */
     protected BeanDesc getBeanDesc(final Class<?> actualEditable) {
         if (null != this.copyOptions) {

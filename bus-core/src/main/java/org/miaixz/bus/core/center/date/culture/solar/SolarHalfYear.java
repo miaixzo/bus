@@ -33,30 +33,34 @@ import java.util.List;
 import org.miaixz.bus.core.center.date.culture.Loops;
 
 /**
- * 公历半年
+ * Represents a half-year in the Gregorian calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SolarHalfYear extends Loops {
 
+    /**
+     * Names of solar half-years.
+     */
     public static final String[] NAMES = { "上半年", "下半年" };
 
     /**
-     * 年
+     * The solar year this half-year belongs to.
      */
     protected SolarYear year;
 
     /**
-     * 索引，0-1
+     * The index of the half-year within the year, 0-1.
      */
     protected int index;
 
     /**
-     * 初始化
+     * Constructs a {@code SolarHalfYear} with the given year and index.
      *
-     * @param year  年
-     * @param index 索引，0-1
+     * @param year  The year.
+     * @param index The index of the half-year, 0-1.
+     * @throws IllegalArgumentException if the index is out of valid range.
      */
     public SolarHalfYear(int year, int index) {
         if (index < 0 || index > 1) {
@@ -66,37 +70,49 @@ public class SolarHalfYear extends Loops {
         this.index = index;
     }
 
+    /**
+     * Creates a {@code SolarHalfYear} instance from the given year and index.
+     *
+     * @param year  The year.
+     * @param index The index of the half-year.
+     * @return A new {@link SolarHalfYear} instance.
+     */
     public static SolarHalfYear fromIndex(int year, int index) {
         return new SolarHalfYear(year, index);
     }
 
     /**
-     * 公历年
+     * Gets the solar year this half-year belongs to.
      *
-     * @return 公历年
+     * @return The {@link SolarYear}.
      */
     public SolarYear getSolarYear() {
         return year;
     }
 
     /**
-     * 年
+     * Gets the year number.
      *
-     * @return 年
+     * @return The year number.
      */
     public int getYear() {
         return year.getYear();
     }
 
     /**
-     * 索引
+     * Gets the index of the half-year within the year, 0-1.
      *
-     * @return 索引，0-1
+     * @return The index.
      */
     public int getIndex() {
         return index;
     }
 
+    /**
+     * Gets the name of this solar half-year.
+     *
+     * @return The name of this solar half-year.
+     */
     public String getName() {
         return NAMES[index];
     }
@@ -106,15 +122,21 @@ public class SolarHalfYear extends Loops {
         return year + getName();
     }
 
+    /**
+     * Gets the solar half-year after a specified number of half-years.
+     *
+     * @param n The number of half-years to add.
+     * @return The {@link SolarHalfYear} after {@code n} half-years.
+     */
     public SolarHalfYear next(int n) {
         int i = index + n;
         return fromIndex((getYear() * 2 + i) / 2, indexOf(i, 2));
     }
 
     /**
-     * 月份列表
+     * Gets a list of all months in this solar half-year. A half-year has 6 months.
      *
-     * @return 月份列表，半年有6个月。
+     * @return A list of {@link SolarMonth} objects for this half-year.
      */
     public List<SolarMonth> getMonths() {
         List<SolarMonth> l = new ArrayList<>(6);
@@ -126,9 +148,9 @@ public class SolarHalfYear extends Loops {
     }
 
     /**
-     * 季度列表
+     * Gets a list of all quarters in this solar half-year. A half-year has 2 quarters.
      *
-     * @return 季度列表，半年有2个季度。
+     * @return A list of {@link SolarQuarter} objects for this half-year.
      */
     public List<SolarQuarter> getSeasons() {
         List<SolarQuarter> l = new ArrayList<>(2);

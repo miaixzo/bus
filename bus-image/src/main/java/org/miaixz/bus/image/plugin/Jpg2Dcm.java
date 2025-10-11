@@ -27,17 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
-import java.nio.channels.SeekableByteChannel;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -53,68 +42,165 @@ import org.miaixz.bus.image.nimble.codec.mp4.MP4Parser;
 import org.miaixz.bus.image.nimble.codec.mpeg.MPEG2Parser;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
+
 /**
+ * The {@code Jpg2Dcm} class provides functionality to encapsulate JPEG, MPEG, and MP4 files into a DICOM file format.
+ * It reads the source media file, combines it with metadata, and writes a new DICOM file with the media data
+ * encapsulated in the Pixel Data element.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Jpg2Dcm {
 
+    /**
+     * The buffer size for copying data.
+     */
     private static final int BUFFER_SIZE = 8162;
+    /**
+     * The standard DICOM element dictionary.
+     */
     private static final ElementDictionary DICT = ElementDictionary.getStandardElementDictionary();
 
+    /**
+     * Tags for UIDs that need to be generated if missing.
+     */
     private static final int[] IUID_TAGS = { Tag.StudyInstanceUID, Tag.SeriesInstanceUID, Tag.SOPInstanceUID };
 
+    /**
+     * Type 2 tags that need to be present, even if with a null value.
+     */
     private static final int[] TYPE2_TAGS = { Tag.ContentDate, Tag.ContentTime };
+    /**
+     * A set of static metadata to be merged into every created DICOM object.
+     */
     private final Attributes staticMetadata = new Attributes();
+    /**
+     * A buffer for file I/O operations.
+     */
     private final byte[] buf = new byte[BUFFER_SIZE];
+    /**
+     * A flag to exclude APPn segments from JPEG streams.
+     */
     private boolean noAPPn;
+    /**
+     * A flag to indicate if the content is a VL Photographic Image.
+     */
     private boolean photo;
+    /**
+     * The target Transfer Syntax UID.
+     */
     private String tsuid;
+    /**
+     * The content type of the source file (e.g., image/jpeg).
+     */
     private ContentType contentType;
+    /**
+     * The maximum length for each fragment of the encapsulated pixel data.
+     */
     private long fragmentLength = 4294967294L; // 2^32-2;
 
+    /**
+     * Supplements the metadata with UIDs for Study, Series, and SOP Instance if they are missing.
+     *
+     * @param metadata The attributes to supplement.
+     */
     private static void supplementMissingUIDs(Attributes metadata) {
         for (int tag : IUID_TAGS)
             if (!metadata.containsValue(tag))
                 metadata.setString(tag, VR.UI, UID.createUID());
     }
 
+    /**
+     * Supplements a missing attribute in the metadata with a default value.
+     *
+     * @param metadata The attributes to supplement.
+     * @param tag      The tag of the attribute.
+     * @param value    The default value to set if the attribute is missing.
+     */
     private static void supplementMissingValue(Attributes metadata, int tag, String value) {
         if (!metadata.containsValue(tag))
             metadata.setString(tag, DICT.vrOf(tag), value);
     }
 
+    /**
+     * Ensures that all Type 2 tags are present in the metadata, setting them to null if absent.
+     *
+     * @param metadata The attributes to supplement.
+     */
     private static void supplementType2Tags(Attributes metadata) {
         for (int tag : TYPE2_TAGS)
             if (!metadata.contains(tag))
                 metadata.setNull(tag, DICT.vrOf(tag));
     }
 
+    /**
+     * Sets whether to strip APPn markers from JPEG files.
+     *
+     * @param noAPPn {@code true} to strip APPn markers.
+     */
     private void setNoAPPn(boolean noAPPn) {
         this.noAPPn = noAPPn;
     }
 
+    /**
+     * Sets whether to create a VL Photographic Image Storage SOP Instance.
+     *
+     * @param photo {@code true} for VL Photographic Image, {@code false} for Secondary Capture.
+     */
     private void setPhoto(boolean photo) {
         this.photo = photo;
     }
 
+    /**
+     * Sets the Transfer Syntax UID for the output DICOM file.
+     *
+     * @param tsuid The Transfer Syntax UID.
+     */
     private void setTSUID(String tsuid) {
         this.tsuid = tsuid;
     }
 
+    /**
+     * Sets the content type of the source file.
+     *
+     * @param s The content type string (e.g., "image/jpeg").
+     * @throws IllegalArgumentException if the content type is not supported.
+     */
     public void setContentType(String s) {
         ContentType contentType = ContentType.of(s);
         if (contentType == null)
-            throw new IllegalArgumentException(s);
+            throw new IllegalArgumentException("Unsupported content type: " + s);
         this.contentType = contentType;
     }
 
+    /**
+     * Sets the maximum length for each pixel data fragment.
+     *
+     * @param fragmentLength The maximum fragment length.
+     * @throws IllegalArgumentException if the length is out of the valid range.
+     */
     public void setFragmentLength(long fragmentLength) {
         if (fragmentLength < 1024 || fragmentLength > 4294967294L)
             throw new IllegalArgumentException("Maximal Fragment Length must be in the range of [1024, 4294967294].");
         this.fragmentLength = fragmentLength & ~1;
     }
 
+    /**
+     * Converts a list of source files/directories to DICOM files.
+     *
+     * @param args A list where the last element is the destination and the others are sources.
+     * @throws Exception if an error occurs during conversion.
+     */
     private void convert(List<String> args) throws Exception {
         int argsSize = args.size();
         Path destPath = Paths.get(args.get(argsSize - 1));
@@ -129,20 +215,31 @@ public class Jpg2Dcm {
         }
     }
 
+    /**
+     * Converts a single source file to a DICOM file.
+     *
+     * @param srcFilePath  The path to the source media file.
+     * @param destFilePath The path for the destination DICOM file.
+     * @throws Exception if an error occurs during conversion.
+     */
     private void convert(Path srcFilePath, Path destFilePath) throws Exception {
-        ContentType contentType = this.contentType;
-        if (contentType == null) {
+        ContentType type = this.contentType;
+        if (type == null) {
             String probeContentType = Files.probeContentType(srcFilePath);
-            contentType = ContentType.of(probeContentType);
+            type = ContentType.of(probeContentType);
         }
-        Attributes fileMetadata = SAXReader.parse(IoKit.openFileOrURL(contentType.getSampleMetadataFile(photo)));
+        if (type == null) {
+            throw new IOException("Cannot determine content type of " + srcFilePath);
+        }
+
+        Attributes fileMetadata = SAXReader.parse(IoKit.openFileOrURL(type.getSampleMetadataFile(photo)));
         fileMetadata.addAll(staticMetadata);
-        supplementMissingValue(fileMetadata, Tag.SOPClassUID, contentType.getSOPClassUID(photo));
+        supplementMissingValue(fileMetadata, Tag.SOPClassUID, type.getSOPClassUID(photo));
         try (SeekableByteChannel channel = Files.newByteChannel(srcFilePath);
                 ImageOutputStream dos = new ImageOutputStream(destFilePath.toFile())) {
-            XPEGParser parser = contentType.newParser(channel);
+            XPEGParser parser = type.newParser(channel);
             parser.getAttributes(fileMetadata);
-            byte[] prefix = new byte[] {};
+            byte[] prefix = {};
             if (noAPPn && parser.getPositionAfterAPPSegments() > 0) {
                 channel.position(parser.getPositionAfterAPPSegments());
                 prefix = new byte[] { (byte) 0xFF, (byte) JPEG.SOI };
@@ -170,11 +267,19 @@ public class Jpg2Dcm {
         }
     }
 
+    /**
+     * Copies a specified number of bytes from a channel to an output stream.
+     *
+     * @param in  The source byte channel.
+     * @param len The number of bytes to copy.
+     * @param out The destination output stream.
+     * @throws IOException if an I/O error occurs.
+     */
     private void copy(ByteChannel in, long len, OutputStream out) throws IOException {
         ByteBuffer bb = ByteBuffer.wrap(buf);
         int read;
         while (len > 0) {
-            bb.position(0);
+            bb.clear();
             bb.limit((int) Math.min(len, buf.length));
             read = in.read(bb);
             out.write(buf, 0, read);
@@ -182,8 +287,14 @@ public class Jpg2Dcm {
         }
     }
 
+    /**
+     * An enumeration of supported content types for encapsulation.
+     */
     private enum ContentType {
 
+        /**
+         * Represents JPEG image content.
+         */
         IMAGE_JPEG {
 
             @Override
@@ -202,6 +313,9 @@ public class Jpg2Dcm {
                 return new JPEGParser(channel);
             }
         },
+        /**
+         * Represents MPEG video content.
+         */
         VIDEO_MPEG {
 
             @Override
@@ -209,6 +323,9 @@ public class Jpg2Dcm {
                 return new MPEG2Parser(channel);
             }
         },
+        /**
+         * Represents MP4 video content.
+         */
         VIDEO_MP4 {
 
             @Override
@@ -217,7 +334,15 @@ public class Jpg2Dcm {
             }
         };
 
+        /**
+         * Gets the ContentType enum constant for a given MIME type string.
+         *
+         * @param type The MIME type string.
+         * @return The corresponding ContentType, or {@code null} if not supported.
+         */
         static ContentType of(String type) {
+            if (type == null)
+                return null;
             switch (type.toLowerCase()) {
                 case "image/jpeg":
                 case "image/jp2":
@@ -236,17 +361,39 @@ public class Jpg2Dcm {
             return null;
         }
 
+        /**
+         * Gets the path to a sample metadata file for this content type.
+         *
+         * @param photo {@code true} if the content is a photographic image.
+         * @return The resource path to the metadata file.
+         */
         String getSampleMetadataFile(boolean photo) {
             return "resource:vlPhotographicImageMetadata.xml";
         }
 
+        /**
+         * Gets the appropriate SOP Class UID for this content type.
+         *
+         * @param photo {@code true} if the content is a photographic image.
+         * @return The SOP Class UID.
+         */
         String getSOPClassUID(boolean photo) {
             return UID.VideoPhotographicImageStorage.uid;
         }
 
+        /**
+         * Creates a new parser for this content type.
+         *
+         * @param channel The channel containing the media data.
+         * @return A new {@link XPEGParser} instance.
+         * @throws IOException if an I/O error occurs.
+         */
         abstract XPEGParser newParser(SeekableByteChannel channel) throws IOException;
     }
 
+    /**
+     * A file visitor to recursively find and convert media files in a directory.
+     */
     class Jpg2DcmFileVisitor extends SimpleFileVisitor<Path> {
 
         private final Path srcPath;

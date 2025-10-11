@@ -36,25 +36,38 @@ import org.miaixz.bus.shade.screw.metadata.DataSchema;
 import org.miaixz.bus.shade.screw.process.DataModelProcess;
 
 /**
- * 文档生成
+ * Executes the document generation process. This class orchestrates the steps of processing the data model and then
+ * producing the final document.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ProduceExecute extends AbstractExecute {
 
+    /**
+     * Constructs a {@code ProduceExecute} with the given configuration.
+     *
+     * @param config The {@link Config} object for the execution task.
+     */
     public ProduceExecute(Config config) {
         super(config);
     }
 
+    /**
+     * Executes the document generation process. This involves processing the database schema to create a data model,
+     * then using a template engine to generate the document from that model. The time taken for the process is logged.
+     *
+     * @throws InternalException if any error occurs during the process.
+     */
     @Override
     public void execute() {
         try {
             long start = System.currentTimeMillis();
-            // 处理数据
+            // Process the data model from the database schema.
             DataSchema dataModel = new DataModelProcess(config).process();
-            // 产生文档
+            // Get a new template engine instance from the factory.
             TemplateEngine produce = new EngineFactory(config.getEngineConfig()).newInstance();
+            // Generate the document.
             produce.produce(dataModel, getDocName(dataModel.getDatabase()));
             Logger.debug(
                     "database document generation complete time consuming:{}ms",

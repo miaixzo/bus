@@ -38,7 +38,8 @@ import org.miaixz.bus.crypto.builtin.digest.Digester;
 import org.miaixz.bus.crypto.builtin.digest.DigesterFactory;
 
 /**
- * MD5算法
+ * MD5 (Message-Digest Algorithm 5) implementation. MD5 is a widely used cryptographic hash function that produces a
+ * 128-bit (16-byte) hash value.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,42 +50,45 @@ public class MD5 extends Digester {
     private static final long serialVersionUID = 2852290106196L;
 
     /**
-     * MD5算法不使用BC库，使用JDK默认以提高初始性能
+     * The {@link DigesterFactory} for MD5, using the JDK's default provider for better initial performance. MD5
+     * algorithm does not use the Bouncy Castle library by default in this implementation.
      */
     private static final DigesterFactory FACTORY = DigesterFactory.ofJdk(Algorithm.MD5.getValue());
 
     /**
-     * 构造
+     * Constructs an MD5 digester.
      */
     public MD5() {
         super(FACTORY.createMessageDigester());
     }
 
     /**
-     * 构造
+     * Constructs an MD5 digester with the specified salt.
      *
-     * @param salt 盐值
+     * @param salt The salt value as a byte array.
      */
     public MD5(final byte[] salt) {
         this(salt, 0, 1);
     }
 
     /**
-     * 构造
+     * Constructs an MD5 digester with the specified salt and digest count.
      *
-     * @param salt        盐值
-     * @param digestCount 摘要次数，当此值小于等于1,默认为1。
+     * @param salt        The salt value as a byte array.
+     * @param digestCount The number of times to apply the digest algorithm. If less than or equal to 1, it defaults to
+     *                    1.
      */
     public MD5(final byte[] salt, final int digestCount) {
         this(salt, 0, digestCount);
     }
 
     /**
-     * 构造
+     * Constructs an MD5 digester with the specified salt, salt position, and digest count.
      *
-     * @param salt         盐值
-     * @param saltPosition 加盐位置，即将盐值字符串放置在数据的index数，默认0
-     * @param digestCount  摘要次数，当此值小于等于1,默认为1。
+     * @param salt         The salt value as a byte array.
+     * @param saltPosition The index at which the salt string is placed in the data. Defaults to 0.
+     * @param digestCount  The number of times to apply the digest algorithm. If less than or equal to 1, it defaults to
+     *                     1.
      */
     public MD5(final byte[] salt, final int saltPosition, final int digestCount) {
         this();
@@ -94,60 +98,60 @@ public class MD5 extends Digester {
     }
 
     /**
-     * 创建MD5实例
+     * Creates a new MD5 instance.
      *
-     * @return MD5
+     * @return A new {@link MD5} instance.
      */
     public static MD5 of() {
         return new MD5();
     }
 
     /**
-     * 生成16位MD5摘要
+     * Generates a 16-bit MD5 digest for the given data and returns it as a hexadecimal string.
      *
-     * @param data    数据
-     * @param charset 编码
-     * @return 16位MD5摘要
+     * @param data    The string data to be digested.
+     * @param charset The character set to use for encoding the string.
+     * @return The 16-bit MD5 digest as a hexadecimal string.
      */
     public String digestHex16(final String data, final Charset charset) {
         return Builder.md5HexTo16(digestHex(data, charset));
     }
 
     /**
-     * 生成16位MD5摘要
+     * Generates a 16-bit MD5 digest for the given data (UTF-8 encoded) and returns it as a hexadecimal string.
      *
-     * @param data 数据
-     * @return 16位MD5摘要
+     * @param data The string data to be digested.
+     * @return The 16-bit MD5 digest as a hexadecimal string.
      */
     public String digestHex16(final String data) {
         return Builder.md5HexTo16(digestHex(data));
     }
 
     /**
-     * 生成16位MD5摘要
+     * Generates a 16-bit MD5 digest for the data from the given input stream and returns it as a hexadecimal string.
      *
-     * @param data 数据
-     * @return 16位MD5摘要
+     * @param data The input stream containing the data to be digested.
+     * @return The 16-bit MD5 digest as a hexadecimal string.
      */
     public String digestHex16(final InputStream data) {
         return Builder.md5HexTo16(digestHex(data));
     }
 
     /**
-     * 生成16位MD5摘要
+     * Generates a 16-bit MD5 digest for the given file and returns it as a hexadecimal string.
      *
-     * @param data 数据
-     * @return 16位MD5摘要
+     * @param data The file to be digested.
+     * @return The 16-bit MD5 digest as a hexadecimal string.
      */
     public String digestHex16(final File data) {
         return Builder.md5HexTo16(digestHex(data));
     }
 
     /**
-     * 生成16位MD5摘要
+     * Generates a 16-bit MD5 digest for the given byte array data and returns it as a hexadecimal string.
      *
-     * @param data 数据
-     * @return 16位MD5摘要
+     * @param data The byte array data to be digested.
+     * @return The 16-bit MD5 digest as a hexadecimal string.
      */
     public String digestHex16(final byte[] data) {
         return Builder.md5HexTo16(digestHex(data));

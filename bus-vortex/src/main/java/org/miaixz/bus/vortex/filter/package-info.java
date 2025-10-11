@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 安全规则等过滤
+ * Provides filtering mechanisms for security rules and other request processing. This package contains various filters
+ * that can be applied to incoming requests to enforce security policies, modify request/response data, or perform other
+ * cross-cutting concerns.
  *
  * @author Kimi Liu
  * @since Java 17+

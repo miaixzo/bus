@@ -36,7 +36,9 @@ import org.miaixz.bus.health.mac.SmcKit;
 import com.sun.jna.platform.mac.IOKit.IOConnect;
 
 /**
- * Sensors from SMC
+ * <p>
+ * MacSensors class.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,9 +46,16 @@ import com.sun.jna.platform.mac.IOKit.IOConnect;
 @ThreadSafe
 final class MacSensors extends AbstractSensors {
 
-    // This shouldn't change once determined
+    /**
+     * The number of fans, initialized to 0 and determined once.
+     */
     private int numFans = 0;
 
+    /**
+     * Queries the CPU temperature from the SMC (System Management Controller).
+     *
+     * @return The CPU temperature in Celsius, or 0.0 if unable to retrieve.
+     */
     @Override
     public double queryCpuTemperature() {
         IOConnect conn = SmcKit.smcOpen();
@@ -58,6 +67,11 @@ final class MacSensors extends AbstractSensors {
         return 0d;
     }
 
+    /**
+     * Queries the fan speeds from the SMC.
+     *
+     * @return An array of fan speeds in RPM, or an empty array if no fans are found or unable to retrieve.
+     */
     @Override
     public int[] queryFanSpeeds() {
         // If we don't have fan # try to get it
@@ -73,6 +87,11 @@ final class MacSensors extends AbstractSensors {
         return fanSpeeds;
     }
 
+    /**
+     * Queries the CPU voltage from the SMC.
+     *
+     * @return The CPU voltage in Volts, or 0.0 if unable to retrieve.
+     */
     @Override
     public double queryCpuVoltage() {
         IOConnect conn = SmcKit.smcOpen();

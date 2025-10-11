@@ -33,7 +33,7 @@ import java.io.Serializable;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * CSV写出配置项
+ * CSV write configuration options.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,37 +44,40 @@ public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Seriali
     private static final long serialVersionUID = 2852283371616L;
 
     /**
-     * 是否始终使用文本分隔符，文本包装符，默认false，按需添加
+     * Whether to always use text delimiters (quotes). Default is {@code false}, delimiters are added as needed.
      */
     protected boolean alwaysDelimitText;
     /**
-     * 换行符
+     * The newline character(s) to use. Default is CR+LF.
      */
     protected char[] lineDelimiter = { Symbol.C_CR, Symbol.C_LF };
     /**
-     * 是否使用安全模式，对可能存在DDE攻击的内容进行替换
+     * Whether to enable DDE safe mode. If enabled, content that might pose a DDE attack risk will be handled.
      */
     protected boolean ddeSafe;
 
     /**
-     * 文件末尾是否添加换行符 按照https://datatracker.ietf.org/doc/html/rfc4180#section-2 规范，末尾换行符可有可无。
+     * Whether to add a newline character at the end of the file. According to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc4180#section-2">RFC 4180 Section 2</a>, a final line break is
+     * optional.
      */
     protected boolean endingLineBreak;
 
     /**
-     * 默认配置
+     * Creates a new default {@code CsvWriteConfig} instance.
      *
-     * @return 默认配置
+     * @return A new {@code CsvWriteConfig} with default settings.
      */
     public static CsvWriteConfig defaultConfig() {
         return new CsvWriteConfig();
     }
 
     /**
-     * 设置是否始终使用文本分隔符，文本包装符，默认false，按需添加
+     * Sets whether to always use text delimiters (quotes). Default is {@code false}, delimiters are added as needed.
      *
-     * @param alwaysDelimitText 是否始终使用文本分隔符，文本包装符，默认false，按需添加
-     * @return this
+     * @param alwaysDelimitText {@code true} to always use text delimiters, {@code false} to use them only when
+     *                          necessary.
+     * @return This configuration object, for chaining.
      */
     public CsvWriteConfig setAlwaysDelimitText(final boolean alwaysDelimitText) {
         this.alwaysDelimitText = alwaysDelimitText;
@@ -82,10 +85,10 @@ public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Seriali
     }
 
     /**
-     * 设置换行符
+     * Sets the newline character(s).
      *
-     * @param lineDelimiter 换行符
-     * @return this
+     * @param lineDelimiter The character array representing the newline sequence.
+     * @return This configuration object, for chaining.
      */
     public CsvWriteConfig setLineDelimiter(final char[] lineDelimiter) {
         this.lineDelimiter = lineDelimiter;
@@ -93,10 +96,12 @@ public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Seriali
     }
 
     /**
-     * 设置是否动态数据交换安全，使用文本包装符包裹可能存在DDE攻击的内容 见：https://blog.csdn.net/weixin_41924764/article/details/108665746
+     * Sets whether to enable DDE safe mode. This wraps content that might pose a DDE attack risk with text delimiters.
+     * For more information, refer to: <a href="https://blog.csdn.net/weixin_41924764/article/details/108665746">DDE
+     * Attack Risk in Excel</a>.
      *
-     * @param ddeSafe dde安全
-     * @return this
+     * @param ddeSafe {@code true} to enable DDE safe mode, {@code false} otherwise.
+     * @return This configuration object, for chaining.
      */
     public CsvWriteConfig setDdeSafe(final boolean ddeSafe) {
         this.ddeSafe = ddeSafe;
@@ -104,10 +109,12 @@ public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Seriali
     }
 
     /**
-     * 文件末尾是否添加换行符 按照https://datatracker.ietf.org/doc/html/rfc4180#section-2 规范，末尾换行符可有可无。
+     * Sets whether to add a newline character at the end of the file. According to
+     * <a href="https://datatracker.ietf.org/doc/html/rfc4180#section-2">RFC 4180 Section 2</a>, a final line break is
+     * optional.
      *
-     * @param endingLineBreak 文件末尾是否添加换行符
-     * @return this
+     * @param endingLineBreak {@code true} to add a newline at the end of the file, {@code false} otherwise.
+     * @return This configuration object, for chaining.
      */
     public CsvWriteConfig setEndingLineBreak(final boolean endingLineBreak) {
         this.endingLineBreak = endingLineBreak;

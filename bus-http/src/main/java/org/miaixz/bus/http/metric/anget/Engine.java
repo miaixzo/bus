@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 
+import java.util.List;
+import java.util.regex.Pattern;
+
 /**
- * 浏览器解析引擎
+ * Represents a browser rendering engine, such as Trident, WebKit, or Gecko.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,12 +43,12 @@ import org.miaixz.bus.core.xyz.PatternKit;
 public class Engine extends UserAgent {
 
     /**
-     * 未知
+     * Constant for an unknown engine.
      */
     public static final Engine UNKNOWN = new Engine(Normal.UNKNOWN, null);
 
     /**
-     * 支持的引擎类型
+     * A list of supported engine types.
      */
     public static final List<Engine> ENGINES = ListKit.view(
             new Engine("Trident", "trident"),
@@ -62,15 +62,15 @@ public class Engine extends UserAgent {
             new Engine("MIDP", "MIDP"));
 
     /**
-     * 匹配正则
+     * The regex pattern for matching the engine version.
      */
     private final Pattern pattern;
 
     /**
-     * 构造
+     * Constructs a new {@code Engine} instance.
      *
-     * @param name 引擎名称
-     * @param rule 关键字或表达式
+     * @param name The name of the engine.
+     * @param rule The keyword or expression to match in the User-Agent string.
      */
     public Engine(String name, String rule) {
         super(name, rule);
@@ -78,10 +78,10 @@ public class Engine extends UserAgent {
     }
 
     /**
-     * 获取引擎版本
+     * Gets the version of the browser engine from a User-Agent string.
      *
-     * @param userAgentString User-Agent字符串
-     * @return 版本
+     * @param userAgentString The User-Agent string.
+     * @return The version string, or null if not found.
      */
     public String getVersion(final String userAgentString) {
         if (isUnknown()) {

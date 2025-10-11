@@ -31,7 +31,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * FieldMethod
+ * Represents a pair of a {@link Field} and its corresponding {@link Method} (typically a setter). This class is used
+ * internally for mapping operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,46 +40,46 @@ import java.lang.reflect.Method;
 public class FieldMethod {
 
     /**
-     * 属性
+     * The {@link Field} object.
      */
     private Field field;
 
     /**
-     * 方法
+     * The corresponding {@link Method} object, usually a setter.
      */
     private Method method;
 
     /**
-     * Getter method for property field.
+     * Gets the {@link Field} object.
      *
-     * @return property value of field
+     * @return The {@link Field} object.
      */
     public Field getField() {
         return field;
     }
 
     /**
-     * Setter method for property field.
+     * Sets the {@link Field} object.
      *
-     * @param field value to be assigned to property field
+     * @param field The {@link Field} to set.
      */
     public void setField(Field field) {
         this.field = field;
     }
 
     /**
-     * Getter method for property method.
+     * Gets the {@link Method} object.
      *
-     * @return property value of method
+     * @return The {@link Method} object.
      */
     public Method getMethod() {
         return method;
     }
 
     /**
-     * Setter method for property method.
+     * Sets the {@link Method} object.
      *
-     * @param method value to be assigned to property method
+     * @param method The {@link Method} to set.
      */
     public void setMethod(Method method) {
         this.method = method;

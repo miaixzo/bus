@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 表信息
+ * Represents table information for a PostgreSQL database.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,52 +44,52 @@ import lombok.Setter;
 public class PostgreSqlTable implements Table {
 
     /**
-     * refGeneration
+     * Specifies how values in SELF_REFERENCING_COL_NAME are created.
      */
     @MappingField(value = "ref_generation")
     private String refGeneration;
     /**
-     * typeName
+     * The type name of the typed table (may be {@code null}).
      */
     @MappingField(value = "type_name")
     private String typeName;
     /**
-     * typeSchem
+     * The schema of the typed table (may be {@code null}).
      */
     @MappingField(value = "type_schem")
     private String typeSchem;
     /**
-     * tableSchem
+     * The schema of the table.
      */
     @MappingField(value = "table_schem")
     private String tableSchem;
     /**
-     * typeCat
+     * The catalog of the typed table (may be {@code null}).
      */
     @MappingField(value = "type_cat")
     private String typeCat;
     /**
-     * tableCat
+     * The table catalog (may be {@code null}).
      */
     @MappingField(value = "table_cat")
     private Object tableCat;
     /**
-     * 表名称
+     * The name of the table.
      */
     @MappingField(value = "table_name")
     private String tableName;
     /**
-     * selfReferencingColName
+     * The name of the designated "identifier" column of a typed table (may be {@code null}).
      */
     @MappingField(value = "self_referencing_col_name")
     private String selfReferencingColName;
     /**
-     * 说明
+     * The explanatory comment on the table.
      */
     @MappingField(value = "remarks")
     private String remarks;
     /**
-     * 表类型
+     * The type of the table (e.g., "TABLE", "VIEW", etc.).
      */
     @MappingField(value = "table_type")
     private String tableType;

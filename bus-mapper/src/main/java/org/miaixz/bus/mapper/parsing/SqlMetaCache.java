@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 
 /**
- * SQL 缓存类，用于延迟生成 SQL 脚本
+ * An SQL cache class for deferred generation of SQL scripts.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,31 +40,31 @@ import org.apache.ibatis.builder.annotation.ProviderContext;
 public class SqlMetaCache {
 
     /**
-     * 空对象实例
+     * A null object instance.
      */
     public static final SqlMetaCache NULL = new SqlMetaCache(null, null, null);
 
     /**
-     * 执行方法上下文
+     * The execution method context.
      */
     private final ProviderContext providerContext;
 
     /**
-     * 实体类信息
+     * The entity class metadata.
      */
     private final TableMeta tableMeta;
 
     /**
-     * SQL 提供者
+     * The SQL script supplier.
      */
     private final Supplier<String> sqlScriptSupplier;
 
     /**
-     * 构造函数，初始化 SQL 缓存
+     * Constructor to initialize the SQL cache.
      *
-     * @param providerContext   执行方法上下文
-     * @param tableMeta         实体类信息
-     * @param sqlScriptSupplier SQL 脚本提供者
+     * @param providerContext   The execution method context.
+     * @param tableMeta         The entity class metadata.
+     * @param sqlScriptSupplier The SQL script supplier.
      */
     public SqlMetaCache(ProviderContext providerContext, TableMeta tableMeta, Supplier<String> sqlScriptSupplier) {
         this.providerContext = providerContext;
@@ -73,27 +73,27 @@ public class SqlMetaCache {
     }
 
     /**
-     * 获取 SQL 脚本，延迟到最终生成 SqlSource 时执行
+     * Gets the SQL script. Execution is deferred until the SqlSource is finally generated.
      *
-     * @return SQL 脚本
+     * @return The SQL script.
      */
     public String getSqlScript() {
         return sqlScriptSupplier.get();
     }
 
     /**
-     * 获取执行方法上下文
+     * Gets the execution method context.
      *
-     * @return 执行方法上下文
+     * @return The execution method context.
      */
     public ProviderContext getProviderContext() {
         return providerContext;
     }
 
     /**
-     * 获取实体类信息
+     * Gets the entity class metadata.
      *
-     * @return 实体类信息
+     * @return The entity class metadata.
      */
     public TableMeta getTableMeta() {
         return tableMeta;

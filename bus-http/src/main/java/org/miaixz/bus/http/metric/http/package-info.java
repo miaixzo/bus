@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Http 内部逻辑
+ * Provides the internal implementation of the HTTP/1.1 and HTTP/2 protocols.
  *
  * @author Kimi Liu
  * @since Java 17+

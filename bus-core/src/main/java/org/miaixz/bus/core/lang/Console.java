@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 命令行（控制台）工具方法类 此类主要针对{@link System#out} 和 {@link System#err} 做封装。
+ * Command-line (console) utility methods. This class primarily encapsulates {@link System#out} and {@link System#err}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,16 +45,17 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Console {
 
     /**
-     * 同 System.out.println()方法，打印控制台日志
+     * Prints a new line to the console, similar to {@code System.out.println()}.
      */
     public static void log() {
         System.out.println();
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     * Prints an object to the console, similar to {@code System.out.println()}. If the object is a {@link Throwable},
+     * its stack trace is also printed.
      *
-     * @param object 要打印的对象
+     * @param object The object to print.
      */
     public static void log(final Object object) {
         if (object instanceof Throwable) {
@@ -66,10 +67,11 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     * Prints multiple objects to the console, separated by spaces. If the first object is a {@link Throwable}, its
+     * stack trace is also printed.
      *
-     * @param obj1      第一个要打印的对象
-     * @param otherObjs 其它要打印的对象
+     * @param obj1      The first object to print.
+     * @param otherObjs Other objects to print.
      */
     public static void log(final Object obj1, final Object... otherObjs) {
         if (ArrayKit.isEmpty(otherObjs)) {
@@ -80,10 +82,11 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志 当传入template无"{}"时，被认为非模板，直接打印多个参数以空格分隔
+     * Prints a formatted message to the console, similar to {@code System.out.println()}. If the template does not
+     * contain "{}", the arguments are printed separated by spaces.
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
+     * @param template The text template, with "{}" as placeholders for arguments.
+     * @param values   The arguments to fill into the template.
      */
     public static void log(final String template, final Object... values) {
         if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
@@ -94,11 +97,12 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志
+     * Prints a formatted message and a {@link Throwable}'s stack trace to the console, similar to
+     * {@code System.out.println()}.
      *
-     * @param t        异常对象
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
+     * @param t        The {@link Throwable} object whose stack trace is to be printed.
+     * @param template The text template, with "{}" as placeholders for arguments.
+     * @param values   The arguments to fill into the template.
      */
     public static void log(final Throwable t, final String template, final Object... values) {
         System.out.println(StringKit.format(template, values));
@@ -109,38 +113,39 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志
+     * Internal method to print a formatted message to {@code System.out}.
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
+     * @param template The text template, with "{}" as placeholders for arguments.
+     * @param values   The arguments to fill into the template.
      */
     private static void logInternal(final String template, final Object... values) {
         log(null, template, values);
     }
 
     /**
-     * 打印表格到控制台
+     * Prints a console table to the console.
      *
-     * @param consoleTable 控制台表格
+     * @param consoleTable The {@link Table} object to print.
      */
     public static void table(final Table consoleTable) {
         print(consoleTable.toString());
     }
 
     /**
-     * 同 System.out.print()方法，打印控制台日志
+     * Prints an object to the console without a new line, similar to {@code System.out.print()}.
      *
-     * @param object 要打印的对象
+     * @param object The object to print.
      */
     public static void print(final Object object) {
         print(Symbol.DELIM, object);
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     * Prints multiple objects to the console, separated by spaces, without a new line. If the first object is a
+     * {@link Throwable}, its stack trace is also printed.
      *
-     * @param object    第一个要打印的对象
-     * @param otherObjs 其它要打印的对象
+     * @param object    The first object to print.
+     * @param otherObjs Other objects to print.
      */
     public static void print(final Object object, final Object... otherObjs) {
         if (ArrayKit.isEmpty(otherObjs)) {
@@ -151,10 +156,11 @@ public class Console {
     }
 
     /**
-     * 同 System.out.print()方法，打印控制台日志
+     * Prints a formatted message to the console without a new line, similar to {@code System.out.print()}. If the
+     * template does not contain "{}", the arguments are printed separated by spaces.
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
+     * @param template The text template, with "{}" as placeholders for arguments.
+     * @param values   The arguments to fill into the template.
      */
     public static void print(final String template, final Object... values) {
         if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
@@ -165,21 +171,22 @@ public class Console {
     }
 
     /**
-     * 打印进度条
+     * Prints a progress bar to the console.
      *
-     * @param showChar 进度条提示字符，例如“#”
-     * @param len      打印长度
+     * @param showChar The character used to display the progress, e.g., '#'.
+     * @param len      The length of the progress bar to print.
      */
     public static void printProgress(final char showChar, final int len) {
         print("{}{}", Symbol.C_CR, StringKit.repeat(showChar, len));
     }
 
     /**
-     * 打印进度条
+     * Prints a progress bar to the console based on a given rate.
      *
-     * @param showChar 进度条提示字符，例如“#”
-     * @param totalLen 总长度
-     * @param rate     总长度所占比取值0~1
+     * @param showChar The character used to display the progress, e.g., '#'.
+     * @param totalLen The total length of the progress bar.
+     * @param rate     The progress rate, a value between 0 and 1 (inclusive).
+     * @throws IllegalArgumentException if the rate is not between 0 and 1.
      */
     public static void printProgress(final char showChar, final int totalLen, final double rate) {
         Assert.isTrue(rate >= 0 && rate <= 1, "Rate must between 0 and 1 (both include)");
@@ -187,26 +194,27 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志
+     * Internal method to print a formatted message to {@code System.out} without a new line.
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
+     * @param template The text template, with "{}" as placeholders for arguments.
+     * @param values   The arguments to fill into the template.
      */
     private static void printInternal(final String template, final Object... values) {
         System.out.print(StringKit.format(template, values));
     }
 
     /**
-     * 同 System.err.println()方法，打印控制台日志
+     * Prints a new line to the error console, similar to {@code System.err.println()}.
      */
     public static void error() {
         System.err.println();
     }
 
     /**
-     * 同 System.err.println()方法，打印控制台日志
+     * Prints an object to the error console, similar to {@code System.err.println()}. If the object is a
+     * {@link Throwable}, its stack trace is also printed.
      *
-     * @param object 要打印的对象
+     * @param object The object to print.
      */
     public static void error(final Object object) {
         if (object instanceof Throwable) {
@@ -218,10 +226,11 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     * Prints multiple objects to the error console, separated by spaces. If the first object is a {@link Throwable},
+     * its stack trace is also printed.
      *
-     * @param object    第一个要打印的对象
-     * @param otherObjs 其它要打印的对象
+     * @param object    The first object to print.
+     * @param otherObjs Other objects to print.
      */
     public static void error(final Object object, final Object... otherObjs) {
         if (ArrayKit.isEmpty(otherObjs)) {
@@ -232,10 +241,11 @@ public class Console {
     }
 
     /**
-     * 同 System.err.println()方法，打印控制台日志
+     * Prints a formatted error message to the console, similar to {@code System.err.println()}. If the template does
+     * not contain "{}", the arguments are printed separated by spaces.
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
+     * @param template The text template, with "{}" as placeholders for arguments.
+     * @param values   The arguments to fill into the template.
      */
     public static void error(final String template, final Object... values) {
         if (ArrayKit.isEmpty(values) || StringKit.contains(template, Symbol.DELIM)) {
@@ -246,11 +256,12 @@ public class Console {
     }
 
     /**
-     * 同 System.err.println()方法，打印控制台日志
+     * Prints a formatted error message and a {@link Throwable}'s stack trace to the console, similar to
+     * {@code System.err.println()}.
      *
-     * @param t        异常对象
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
+     * @param t        The {@link Throwable} object whose stack trace is to be printed.
+     * @param template The text template, with "{}" as placeholders for arguments.
+     * @param values   The arguments to fill into the template.
      */
     public static void error(final Throwable t, final String template, final Object... values) {
         System.err.println(StringKit.format(template, values));
@@ -261,37 +272,38 @@ public class Console {
     }
 
     /**
-     * 同 System.err.println()方法，打印控制台日志
+     * Internal method to print a formatted message to {@code System.err}.
      *
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param values   值
+     * @param template The text template, with "{}" as placeholders for arguments.
+     * @param values   The arguments to fill into the template.
      */
     private static void errorInternal(final String template, final Object... values) {
         error(null, template, values);
     }
 
     /**
-     * 创建从控制台读取内容的{@link Scanner}
+     * Creates a {@link Scanner} to read content from the console ({@code System.in}).
      *
-     * @return {@link Scanner}
+     * @return A new {@link Scanner} instance.
      */
     public static Scanner scanner() {
         return new Scanner(System.in);
     }
 
     /**
-     * 读取用户输入的内容（在控制台敲回车前的内容）
+     * Reads a line of content entered by the user from the console (until a newline character is encountered).
      *
-     * @return 用户输入的内容
+     * @return The content entered by the user.
      */
     public static String input() {
         return scanner().nextLine();
     }
 
     /**
-     * 返回当前位置+行号 (不支持Lambda、内部类、递归内使用)
+     * Returns the current code location and line number. (Not supported for use within Lambdas, inner classes, or
+     * recursion).
      *
-     * @return 返回当前行号
+     * @return A string representing the current class, method, file, and line number.
      */
     public static String where() {
         final StackTraceElement stackTraceElement = new Throwable().getStackTrace()[1];
@@ -303,26 +315,26 @@ public class Console {
     }
 
     /**
-     * 返回当前行号 (不支持Lambda、内部类、递归内使用)
+     * Returns the current line number. (Not supported for use within Lambdas, inner classes, or recursion).
      *
-     * @return 返回当前行号
+     * @return The current line number.
      */
     public static Integer lineNumber() {
         return new Throwable().getStackTrace()[1].getLineNumber();
     }
 
     /**
-     * 构建空格分隔的模板，类似于"{} {} {} {}"
+     * Builds a space-separated template string, e.g., "{} {} {} {}".
      *
-     * @param count 变量数量
-     * @return 模板
+     * @param count The number of placeholders.
+     * @return The generated template string.
      */
     private static String buildTemplateSplitBySpace(final int count) {
         return StringKit.repeatAndJoin(Symbol.DELIM, count, Symbol.SPACE);
     }
 
     /**
-     * 控制台打印表格工具
+     * Utility class for printing tables to the console.
      */
     public static class Table {
 
@@ -332,33 +344,38 @@ public class Console {
         private static final char SPACE = '\u3000';
         private static final char LF = Symbol.C_LF;
         /**
-         * 表格头信息
+         * List of header rows for the table.
          */
         private final List<List<String>> headerList = new ArrayList<>();
         /**
-         * 表格体信息
+         * List of body rows for the table.
          */
         private final List<List<String>> bodyList = new ArrayList<>();
+        /**
+         * Flag indicating whether to use full-width character mode. When set to true, all characters are converted to
+         * full-width to ensure alignment when Chinese characters are present.
+         */
         private boolean isSBCMode = true;
         /**
-         * 每列最大字符个数
+         * Maximum character count for each column.
          */
         private List<Integer> columnCharNumber;
 
         /**
-         * 创建ConsoleTable对象
+         * Creates a new {@code Table} instance.
          *
-         * @return Table
+         * @return A new {@code Table} object.
          */
         public static Table of() {
             return new Table();
         }
 
         /**
-         * 设置是否使用全角模式 当包含中文字符时，输出的表格可能无法对齐，因此当设置为全角模式时，全部字符转为全角。
+         * Sets whether to use full-width character mode. When Chinese characters are included, the output table may not
+         * align correctly. In full-width mode, all characters are converted to full-width to ensure proper alignment.
          *
-         * @param isSBCMode 是否全角模式
-         * @return this
+         * @param isSBCMode {@code true} to enable full-width mode, {@code false} otherwise.
+         * @return This {@code Table} instance for method chaining.
          */
         public Table setSBCMode(final boolean isSBCMode) {
             this.isSBCMode = isSBCMode;
@@ -366,10 +383,10 @@ public class Console {
         }
 
         /**
-         * 添加头信息
+         * Adds a header row to the table.
          *
-         * @param titles 列名
-         * @return 自身对象
+         * @param titles The column titles for the header row.
+         * @return This {@code Table} instance for method chaining.
          */
         public Table addHeader(final String... titles) {
             if (columnCharNumber == null) {
@@ -382,10 +399,10 @@ public class Console {
         }
 
         /**
-         * 添加体信息
+         * Adds a body row to the table.
          *
-         * @param values 列值
-         * @return 自身对象
+         * @param values The column values for the body row.
+         * @return This {@code Table} instance for method chaining.
          */
         public Table addBody(final String... values) {
             final List<String> l = new ArrayList<>();
@@ -395,10 +412,10 @@ public class Console {
         }
 
         /**
-         * 填充表格头或者体
+         * Fills columns for a given row (either header or body) and updates the maximum column character count.
          *
-         * @param l       被填充列表
-         * @param columns 填充内容
+         * @param l       The list representing the row to fill.
+         * @param columns The array of strings representing the column values.
          */
         private void fillColumns(final List<String> l, final String[] columns) {
             String column;
@@ -416,9 +433,9 @@ public class Console {
         }
 
         /**
-         * 获取表格字符串
+         * Generates the string representation of the table.
          *
-         * @return 表格字符串
+         * @return The formatted table as a string.
          */
         @Override
         public String toString() {
@@ -432,10 +449,10 @@ public class Console {
         }
 
         /**
-         * 填充表头或者表体信息（多行）
+         * Fills the rows of the table (either header or body) into the {@link StringBuilder}.
          *
-         * @param sb   内容
-         * @param list 表头列表或者表体列表
+         * @param sb   The {@link StringBuilder} to append the rows to.
+         * @param list The list of rows (each row is a list of strings).
          */
         private void fillRows(final StringBuilder sb, final List<List<String>> list) {
             for (final List<String> row : list) {
@@ -446,10 +463,10 @@ public class Console {
         }
 
         /**
-         * 填充一行数据
+         * Fills a single row of data into the {@link StringBuilder}, ensuring proper alignment based on column widths.
          *
-         * @param sb  内容
-         * @param row 一行数据
+         * @param sb  The {@link StringBuilder} to append the row to.
+         * @param row The list of strings representing the data in the row.
          */
         private void fillRow(final StringBuilder sb, final List<String> row) {
             final int size = row.size();
@@ -473,9 +490,9 @@ public class Console {
         }
 
         /**
-         * 拼装边框
+         * Appends a border line to the {@link StringBuilder}.
          *
-         * @param sb StringBuilder
+         * @param sb The {@link StringBuilder} to append the border to.
          */
         private void fillBorder(final StringBuilder sb) {
             sb.append(Symbol.C_PLUS);
@@ -487,17 +504,17 @@ public class Console {
         }
 
         /**
-         * 打印到控制台
+         * Prints the table to the console.
          */
         public void print() {
             Console.print(toString());
         }
 
         /**
-         * 半角字符数量
+         * Calculates the number of half-width characters in a string.
          *
-         * @param value 字符串
-         * @return 填充空格数量
+         * @param value The string to check.
+         * @return The count of half-width characters.
          */
         private int sbcCount(final String value) {
             int count = 0;

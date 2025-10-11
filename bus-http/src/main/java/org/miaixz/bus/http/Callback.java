@@ -30,75 +30,72 @@ package org.miaixz.bus.http;
 import java.io.IOException;
 
 /**
- * HTTP 请求的异步回调接口
+ * A generic callback interface for asynchronous operations.
  * <p>
- * 定义了处理 HTTP 请求失败和成功的回调方法，支持异步请求的响应处理。 实现类需确保响应体的正确关闭，并处理可能的异常情况。
- * </p>
+ * This interface defines callback methods for handling successful and failed operations, particularly for HTTP
+ * requests, enabling asynchronous response processing. Implementations must ensure that resources like the response
+ * body are properly closed and handle potential exceptions.
  *
- * @param <T> 回调数据的类型
+ * @param <T> The type of the data passed to the generic {@link #on(Object)} callback.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Callback<T> {
 
     /**
-     * 请求失败时的回调
+     * Called when the request could not be executed due to cancellation, a connectivity problem, or a timeout.
      * <p>
-     * 当请求因取消、连接问题或超时等原因失败时调用。 注意：失败前远程服务器可能已接收到请求。
+     * Because networks can fail during an exchange, it is possible that the remote server accepted the request before
+     * the failure.
      * </p>
      *
-     * @param call 请求调用者
-     * @param ex   异常信息
+     * @param call The call that was executed.
+     * @param ex   The exception that occurred.
      */
     default void onFailure(NewCall call, IOException ex) {
     }
 
     /**
-     * 请求失败时的回调（带请求标识）
-     * <p>
-     * 当请求失败时调用，包含请求标识以区分多个请求。
-     * </p>
+     * Called when the request fails, including a request ID to differentiate multiple requests. This is an alternative
+     * to {@link #onFailure(NewCall, IOException)} for more specific use cases.
      *
-     * @param newCall   请求调用者
-     * @param exception 异常信息
-     * @param id        请求标识
+     * @param newCall   The call that was executed.
+     * @param exception The exception that occurred.
+     * @param id        The request identifier.
      */
     default void onFailure(NewCall newCall, Exception exception, String id) {
     }
 
     /**
-     * 请求成功时的回调
+     * Called when the remote server returns an HTTP response.
      * <p>
-     * 当远程服务器成功返回 HTTP 响应时调用。 实现类需确保 {@link Response#body} 被正确关闭。 注意：传输层成功不代表应用层成功（如 404、500 状态码）。
+     * Implementations must close the {@link Response#body} to release resources. Note that a transport-level success
+     * (e.g., a 200 OK) does not guarantee an application-level success (e.g., a 404 or 500 status code).
      * </p>
      *
-     * @param call     请求调用者
-     * @param response 响应体
-     * @throws IOException 如果处理响应失败
+     * @param call     The call that was executed.
+     * @param response The response from the server.
+     * @throws IOException If an error occurs while processing the response.
      */
     default void onResponse(NewCall call, Response response) throws IOException {
     }
 
     /**
-     * 请求成功时的回调（带请求标识）
-     * <p>
-     * 当请求成功时调用，包含请求标识以区分多个请求。
-     * </p>
+     * Called when the request is successful, including a request ID to differentiate multiple requests. This is an
+     * alternative to {@link #onResponse(NewCall, Response)} for more specific use cases.
      *
-     * @param newCall  请求调用者
-     * @param response 响应信息
-     * @param id       请求标识
+     * @param newCall  The call that was executed.
+     * @param response The response from the server.
+     * @param id       The request identifier.
      */
     default void onResponse(NewCall newCall, Response response, String id) {
     }
 
     /**
-     * 通用数据回调
-     * <p>
-     * 用于处理特定类型的回调数据。
-     * </p>
+     * A generic data callback for handling specific types of callback data, such as STOMP messages or other
+     * asynchronous events.
      *
-     * @param data 回调数据
+     * @param data The callback data.
      */
     default void on(T data) {
     }

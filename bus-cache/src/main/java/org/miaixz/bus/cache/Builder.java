@@ -44,59 +44,66 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 /**
- * 通用方法构建
- * 
+ * A utility class for building cache keys, patterns, and other cache-related constructs.
+ * <p>
+ * This class provides static methods to handle the generation of cache keys from method arguments and annotations,
+ * supporting both single and multi-key scenarios. It also includes helpers for processing results for batch operations
+ * and generating patterns for metrics.
+ * </p>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Builder {
 
     /**
-     * 参数前缀
+     * The prefix used for synthetic argument names, e.g., "args0", "args1".
      */
     private static final String X_ARGS_PREFIX = "args";
+
     /**
-     * 方法到模式字符串的缓存映射
+     * A cache mapping methods to their generated pattern strings for metrics.
      */
     private static final ConcurrentMap<Method, String> patterns = new ConcurrentHashMap<>();
+
     /**
-     * 预定义的参数名数组
+     * A pre-defined array of synthetic argument names for quick access.
      */
     private static String[] X_ARGS = { X_ARGS_PREFIX + 0, X_ARGS_PREFIX + 1, X_ARGS_PREFIX + 2, X_ARGS_PREFIX + 3,
             X_ARGS_PREFIX + 4, X_ARGS_PREFIX + 5, X_ARGS_PREFIX + 6, X_ARGS_PREFIX + 7, X_ARGS_PREFIX + 8,
             X_ARGS_PREFIX + 9, X_ARGS_PREFIX + 10, X_ARGS_PREFIX + 11, X_ARGS_PREFIX + 12, X_ARGS_PREFIX + 13,
             X_ARGS_PREFIX + 14, X_ARGS_PREFIX + 15, X_ARGS_PREFIX + Normal._16, X_ARGS_PREFIX + 17, X_ARGS_PREFIX + 18,
             X_ARGS_PREFIX + 19 };
+
     /**
-     * 方法参数名缓存，键为方法对象，值为参数名数组
+     * A cache mapping methods to their parameter names.
      */
     private static final ConcurrentMap<Method, String[]> methodParameterNames = new ConcurrentHashMap<>();
+
     /**
-     * 是否首次执行的标志
+     * A flag to ensure the warning about missing compiler parameters is logged only once.
      */
     private static boolean isFirst = true;
 
     /**
-     * 获取方法参数名称
+     * Retrieves the parameter names for a given method.
      * <p>
-     * 从缓存中获取方法参数名称，如果缓存中不存在，则计算并缓存
+     * It uses a cache to store the parameter names. If not found in the cache, it resolves them using Java 8's
+     * reflection capabilities and caches the result.
      * </p>
      *
-     * @param method 方法对象
-     * @return 方法参数名称数组
+     * @param method The method whose parameter names are to be retrieved.
+     * @return An array of parameter names.
      */
     public static String[] getArgNames(Method method) {
         return methodParameterNames.computeIfAbsent(method, Builder::doGetArgNamesWithJava8);
     }
 
     /**
-     * 获取X格式的参数名称
-     * <p>
-     * 生成xArgN格式的参数名称数组
-     * </p>
+     * Generates an array of synthetic argument names (e.g., "args0", "args1", ...).
      *
-     * @param valueSize 参数数量
-     * @return X格式的参数名称数组
+     * @param valueSize The number of argument names to generate.
+     * @return An array of synthetic argument names.
      */
     public static String[] getXArgNames(int valueSize) {
         if (valueSize == 0) {
@@ -110,13 +117,14 @@ public class Builder {
     }
 
     /**
-     * 使用Java 8特性获取方法参数名称
+     * Retrieves method parameter names using Java 8+ reflection.
      * <p>
-     * Java 8之后提供了获取参数名方法，但需要编译时添加`–parameters`参数支持， 如`javac –parameters`，不然参数名为'arg0'格式
+     * This relies on the `-parameters` flag being passed to the Java compiler. If the flag is not present, the names
+     * will be like "arg0", "arg1", etc., and a warning will be logged once.
      * </p>
      *
-     * @param method 方法对象
-     * @return 方法参数名称数组
+     * @param method The method to inspect.
+     * @return An array of parameter names.
      */
     private static String[] doGetArgNamesWithJava8(Method method) {
         Parameter[] parameters = method.getParameters();
@@ -129,14 +137,11 @@ public class Builder {
     }
 
     /**
-     * 生成单键
-     * <p>
-     * 根据注解信息和方法参数生成单个缓存键
-     * </p>
+     * Generates a single cache key based on annotation details and method arguments.
      *
-     * @param annoHolder 注解持有者
-     * @param argValues  方法参数值数组
-     * @return 生成的缓存键
+     * @param annoHolder The annotation holder containing metadata about the cached method.
+     * @param argValues  The actual arguments passed to the method.
+     * @return The generated cache key as a string.
      */
     public static String generateSingleKey(AnnoHolder annoHolder, Object[] argValues) {
         String[] argNames = getArgNames(annoHolder.getMethod());
@@ -146,34 +151,36 @@ public class Builder {
     }
 
     /**
-     * 生成多键
+     * Generates multiple cache keys for a batch operation.
      * <p>
-     * 根据注解信息和方法参数生成多个缓存键，适用于集合或数组类型的参数
+     * This is used when an argument is a collection or array, and a separate cache key needs to be generated for each
+     * element.
      * </p>
      *
-     * @param annoHolder 注解持有者
-     * @param argValues  方法参数值数组
-     * @return 包含两个映射的数组：第一个是多元素到键的映射，第二个是键到多元素的映射
+     * @param annoHolder The annotation holder containing metadata about the cached method.
+     * @param argValues  The actual arguments passed to the method.
+     * @return An array of two maps: the first maps each element of the collection to its generated key, and the second
+     *         maps each generated key back to the element.
      */
     public static Map[] generateMultiKey(AnnoHolder annoHolder, Object[] argValues) {
-        /* 由于要将Collection内的元素作为Map的Key, 因此就要求元素必须实现的hashcode & equals方法 */
+        /* The elements of the collection will be used as Map keys, so they must implement hashCode() & equals(). */
         Map<Object, String> multiEntry2Key = new LinkedHashMap<>();
         Map<String, Object> key2MultiEntry = new LinkedHashMap<>();
 
-        // 准备要拼装key所需的原材料
-        // 标记为multi的参数
+        // Prepare materials for key assembly
+        // The argument marked as the source for multiple keys
         Collection multiArgEntries = getMultiArgEntries(argValues[annoHolder.getMultiIndex()]);
-        // 参数索引 -> CacheKey
+        // Map of argument index to @CacheKey annotation
         Map<Integer, CacheKey> argIndex2CacheKey = annoHolder.getCacheKeyMap();
-        // 全局prefix
+        // Global key prefix
         String prefix = annoHolder.getPrefix();
-        // 根据方法获取原始的参数名
+        // Original parameter names of the method
         String[] argNames = getArgNames(annoHolder.getMethod());
-        // 给参数名添加一个`#i`遍历指令
+        // Append an iteration variable '#i' for SpEL context
         String[] appendArgNames = (String[]) appendArray(argNames, "i");
         int i = 0;
         for (Object multiElement : multiArgEntries) {
-            // 给参数值数组的`#i`指令赋值
+            // Assign the current iteration index to the '#i' variable in the SpEL context
             Object[] appendArgValues = appendArray(argValues, i);
             String key = doGenerateKey(argIndex2CacheKey, prefix, appendArgNames, appendArgValues);
             key2MultiEntry.put(key, multiElement);
@@ -184,13 +191,13 @@ public class Builder {
     }
 
     /**
-     * 生成键的核心方法
+     * The core logic for generating a cache key.
      *
-     * @param parameterIndex2CacheKey 参数索引到缓存键注解的映射
-     * @param prefix                  键前缀
-     * @param argNames                参数名数组
-     * @param argValues               参数值数组
-     * @return 生成的缓存键
+     * @param parameterIndex2CacheKey A map from parameter index to its {@link CacheKey} annotation.
+     * @param prefix                  The key prefix.
+     * @param argNames                The names of the method arguments.
+     * @param argValues               The values of the method arguments.
+     * @return The final generated cache key.
      */
     private static String doGenerateKey(
             Map<Integer, CacheKey> parameterIndex2CacheKey,
@@ -209,24 +216,24 @@ public class Builder {
     }
 
     /**
-     * 获取当spel表达式为空(null or '')时，默认的拼装keyPart
+     * Gets the default value for a key part when the SpEL expression is empty.
      * <p>
-     * 注意：当multi的spel表达式为空时，这时会将整个`Collection`实例作为keyPart（当然，这种情况不会发生）...
+     * When a {@link CacheKey} has an empty SpEL expression, the entire argument at that index is used as the key part.
      * </p>
      *
-     * @param argValues 参数值数组
-     * @param argIndex  参数索引
-     * @return 默认值
+     * @param argValues The method argument values.
+     * @param argIndex  The index of the argument.
+     * @return The argument value at the specified index.
      */
     private static Object getDefaultValue(Object[] argValues, int argIndex) {
         return argValues[argIndex];
     }
 
     /**
-     * 将标记为`multi`的参数转成`Collection`实例
+     * Converts the argument marked for a multi-key operation into a {@link Collection}.
      *
-     * @param multiArg 多参数对象
-     * @return 集合实例
+     * @param multiArg The object to be converted (can be a Collection, Map, or array).
+     * @return A {@link Collection} instance.
      */
     private static Collection getMultiArgEntries(Object multiArg) {
         if (null == multiArg) {
@@ -237,17 +244,17 @@ public class Builder {
         } else if (multiArg instanceof Map) {
             return ((Map) multiArg).keySet();
         } else {
-            // 此处应该在multi参数校验的时候确保只能为Collection、Map、Object[]三种类型
+            // Validation should ensure that the multi-arg is one of Collection, Map, or Object[]
             return Arrays.stream((Object[]) multiArg).collect(Collectors.toList());
         }
     }
 
     /**
-     * 追加元素到数组
+     * Appends an element to an array, returning a new, larger array.
      *
-     * @param origin 原始数组
-     * @param append 要追加的元素
-     * @return 追加元素后的新数组
+     * @param origin The original array.
+     * @param append The element to append.
+     * @return A new array containing all original elements plus the appended element.
      */
     private static Object[] appendArray(Object[] origin, Object append) {
         Object[] dest = Arrays.copyOf(origin, origin.length + 1);
@@ -256,16 +263,17 @@ public class Builder {
     }
 
     /**
-     * 将Map转换为键值映射
+     * Converts a result map from a method into a key-value map for batch cache writing.
      * <p>
-     * 将方法返回的Map转换为键值映射，用于批量写入缓存。 支持防击穿逻辑，当开启防击穿功能时，会将未命中的键设置为防击穿对象。
+     * It also handles cache penetration prevention by inserting a placeholder for keys that were requested but not
+     * found in the method's result.
      * </p>
      *
-     * @param proceedEntryValueMap 方法返回的Map
-     * @param missKeys             未命中的键集合
-     * @param multiEntry2Key       多元素到键的映射
-     * @param prevent              防击穿开关
-     * @return 键值映射
+     * @param proceedEntryValueMap The map returned by the original method.
+     * @param missKeys             The set of keys that were not found in the cache initially.
+     * @param multiEntry2Key       A map from the multi-key source element to its generated cache key.
+     * @param prevent              A switch to enable or disable cache penetration prevention.
+     * @return A map of cache keys to values, ready for batch writing.
      */
     public static Map<String, Object> mapToKeyValue(
             Map proceedEntryValueMap,
@@ -282,7 +290,7 @@ public class Builder {
             keyValueMap.put(key, value);
         });
 
-        // 触发防击穿逻辑
+        // Trigger cache penetration prevention logic
         if (prevent == EnumValue.Switch.ON && !missKeys.isEmpty()) {
             missKeys.forEach(key -> keyValueMap.put(key, PreventObjects.getPreventObject()));
         }
@@ -290,17 +298,18 @@ public class Builder {
     }
 
     /**
-     * 将Collection转换为键值映射
+     * Converts a result collection from a method into a key-value map for batch cache writing.
      * <p>
-     * 将方法返回的Collection转换为键值映射，用于批量写入缓存。 支持防击穿逻辑，当开启防击穿功能时，会将未命中的键设置为防击穿对象。
+     * It uses a SpEL expression to extract an ID from each element in the collection, which is then used to look up the
+     * corresponding cache key.
      * </p>
      *
-     * @param proceedCollection 方法返回的Collection
-     * @param idSpel            ID的SpEL表达式
-     * @param missKeys          未命中的键集合
-     * @param id2Key            ID到键的映射
-     * @param prevent           防击穿开关
-     * @return 键值映射
+     * @param proceedCollection The collection returned by the original method.
+     * @param idSpel            The SpEL expression to extract the ID from each collection element.
+     * @param missKeys          The set of keys that were not found in the cache initially.
+     * @param id2Key            A map from the extracted ID to its generated cache key.
+     * @param prevent           A switch to enable or disable cache penetration prevention.
+     * @return A map of cache keys to values, ready for batch writing.
      */
     public static Map<String, Object> collectionToKeyValue(
             Collection proceedCollection,
@@ -325,26 +334,23 @@ public class Builder {
     }
 
     /**
-     * 生成缓存模式
+     * Generates and caches a pattern string for a method, used for metrics.
      * <p>
-     * 根据注解信息生成缓存命中率统计的模式字符串，如果缓存中存在则直接返回
+     * The pattern is created by combining the key prefix and the SpEL expressions from {@link CacheKey} annotations.
      * </p>
      *
-     * @param annoHolder 注解持有者
-     * @return 缓存模式字符串
+     * @param annoHolder The annotation holder containing metadata.
+     * @return The generated (or cached) pattern string.
      */
     public static String generatePattern(AnnoHolder annoHolder) {
         return patterns.computeIfAbsent(annoHolder.getMethod(), (method) -> doPatternCombiner(annoHolder));
     }
 
     /**
-     * 组合模式字符串
-     * <p>
-     * 将注解持有者中的前缀和缓存键表达式组合成一个唯一的模式标识
-     * </p>
+     * Combines the prefix and key expressions into a single pattern identifier.
      *
-     * @param annoHolder 注解持有者
-     * @return 组合后的模式字符串
+     * @param annoHolder The annotation holder.
+     * @return The combined pattern string.
      */
     private static String doPatternCombiner(AnnoHolder annoHolder) {
         StringBuilder sb = new StringBuilder(annoHolder.getPrefix());

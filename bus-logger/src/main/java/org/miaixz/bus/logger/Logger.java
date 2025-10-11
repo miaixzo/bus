@@ -31,7 +31,7 @@ import org.miaixz.bus.core.xyz.CallerKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 静态日志类，用于在不引入日志对象的情况下打印日志
+ * Static logger class for logging without introducing a logger instance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,203 +39,211 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Logger {
 
     /**
-     * 完全限定类名(Fully Qualified Class Name)，用于纠正定位错误行号
+     * The fully qualified class name, used to correct the location of the wrong line number.
      */
     private static final String FQCN = Logger.class.getName();
 
     /**
-     * 默认构造
+     * Default constructor.
      */
     public Logger() {
 
     }
 
     /**
-     * Trace等级日志，小于debug 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Logs a message at the TRACE level. Due to the dynamic acquisition of the log, the efficiency is low. It is
+     * recommended to use it in the case of infrequent calls!
      *
-     * @param format 格式文本，{}代表变量
-     * @param args   变量对应的参数
+     * @param format the format string
+     * @param args   the arguments to be substituted into the format string
      */
     public static void trace(final String format, final Object... args) {
         trace(Registry.get(CallerKit.getCallers()), format, args);
     }
 
     /**
-     * Trace等级日志，小于Debug
+     * Logs a message at the TRACE level.
      *
-     * @param provider 日志对象
-     * @param format   格式文本，{}代表变量
-     * @param args     变量对应的参数
+     * @param provider the logger provider
+     * @param format   the format string
+     * @param args     the arguments to be substituted into the format string
      */
     public static void trace(final Provider provider, final String format, final Object... args) {
         provider.trace(FQCN, null, format, args);
     }
 
     /**
-     * Debug等级日志，小于Info 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Logs a message at the DEBUG level. Due to the dynamic acquisition of the log, the efficiency is low. It is
+     * recommended to use it in the case of infrequent calls!
      *
-     * @param format 格式文本，{}代表变量
-     * @param args   变量对应的参数
+     * @param format the format string
+     * @param args   the arguments to be substituted into the format string
      */
     public static void debug(final String format, final Object... args) {
         debug(Registry.get(CallerKit.getCallers()), format, args);
     }
 
     /**
-     * Debug等级日志，小于Info
+     * Logs a message at the DEBUG level.
      *
-     * @param provider 日志对象
-     * @param format   格式文本，{}代表变量
-     * @param args     变量对应的参数
+     * @param provider the logger provider
+     * @param format   the format string
+     * @param args     the arguments to be substituted into the format string
      */
     public static void debug(final Provider provider, final String format, final Object... args) {
         provider.debug(FQCN, null, format, args);
     }
 
     /**
-     * Info等级日志，小于Warn 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Logs a message at the INFO level. Due to the dynamic acquisition of the log, the efficiency is low. It is
+     * recommended to use it in the case of infrequent calls!
      *
-     * @param format 格式文本，{}代表变量
-     * @param args   变量对应的参数
+     * @param format the format string
+     * @param args   the arguments to be substituted into the format string
      */
     public static void info(final String format, final Object... args) {
         info(Registry.get(CallerKit.getCallers()), format, args);
     }
 
     /**
-     * Info等级日志，小于Warn
+     * Logs a message at the INFO level.
      *
-     * @param provider 日志对象
-     * @param format   格式文本，{}代表变量
-     * @param args     变量对应的参数
+     * @param provider the logger provider
+     * @param format   the format string
+     * @param args     the arguments to be substituted into the format string
      */
     public static void info(final Provider provider, final String format, final Object... args) {
         provider.info(FQCN, null, format, args);
     }
 
     /**
-     * Warn等级日志，小于Error 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Logs a message at the WARN level. Due to the dynamic acquisition of the log, the efficiency is low. It is
+     * recommended to use it in the case of infrequent calls!
      *
-     * @param format 格式文本，{} 代表变量
-     * @param args   变量对应的参数
+     * @param format the format string
+     * @param args   the arguments to be substituted into the format string
      */
     public static void warn(final String format, final Object... args) {
         warn(Registry.get(CallerKit.getCallers()), format, args);
     }
 
     /**
-     * Warn等级日志，小于Error 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Logs a message at the WARN level. Due to the dynamic acquisition of the log, the efficiency is low. It is
+     * recommended to use it in the case of infrequent calls!
      *
-     * @param e      需在日志中堆栈打印的异常
-     * @param format 格式文本，{}代表变量
-     * @param args   变量对应的参数
+     * @param e      the exception to log
+     * @param format the format string
+     * @param args   the arguments to be substituted into the format string
      */
     public static void warn(final Throwable e, final String format, final Object... args) {
         warn(Registry.get(CallerKit.getCallers()), e, StringKit.format(format, args));
     }
 
     /**
-     * Warn等级日志，小于Error
+     * Logs a message at the WARN level.
      *
-     * @param provider 日志对象
-     * @param format   格式文本，{}代表变量
-     * @param args     变量对应的参数
+     * @param provider the logger provider
+     * @param format   the format string
+     * @param args     the arguments to be substituted into the format string
      */
     public static void warn(final Provider provider, final String format, final Object... args) {
         warn(provider, null, format, args);
     }
 
     /**
-     * Warn等级日志，小于Error
+     * Logs a message at the WARN level.
      *
-     * @param provider 日志对象
-     * @param e        需在日志中堆栈打印的异常
-     * @param format   格式文本，{}代表变量
-     * @param args     变量对应的参数
+     * @param provider the logger provider
+     * @param e        the exception to log
+     * @param format   the format string
+     * @param args     the arguments to be substituted into the format string
      */
     public static void warn(final Provider provider, final Throwable e, final String format, final Object... args) {
         provider.warn(FQCN, e, format, args);
     }
 
     /**
-     * Error等级日志 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Logs a message at the ERROR level. Due to the dynamic acquisition of the log, the efficiency is low. It is
+     * recommended to use it in the case of infrequent calls!
      *
-     * @param e 需在日志中堆栈打印的异常
+     * @param e the exception to log
      */
     public static void error(final Throwable e) {
         error(Registry.get(CallerKit.getCallers()), e);
     }
 
     /**
-     * Error等级日志 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Logs a message at the ERROR level. Due to the dynamic acquisition of the log, the efficiency is low. It is
+     * recommended to use it in the case of infrequent calls!
      *
-     * @param format 格式文本，{} 代表变量
-     * @param args   变量对应的参数
+     * @param format the format string
+     * @param args   the arguments to be substituted into the format string
      */
     public static void error(final String format, final Object... args) {
         error(Registry.get(CallerKit.getCallers()), format, args);
     }
 
     /**
-     * Error等级日志 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Logs a message at the ERROR level. Due to the dynamic acquisition of the log, the efficiency is low. It is
+     * recommended to use it in the case of infrequent calls!
      *
-     * @param e      需在日志中堆栈打印的异常
-     * @param format 格式文本，{}代表变量
-     * @param args   变量对应的参数
+     * @param e      the exception to log
+     * @param format the format string
+     * @param args   the arguments to be substituted into the format string
      */
     public static void error(final Throwable e, final String format, final Object... args) {
         error(Registry.get(CallerKit.getCallers()), e, format, args);
     }
 
     /**
-     * Error等级日志
+     * Logs a message at the ERROR level.
      *
-     * @param provider 日志对象
-     * @param e        需在日志中堆栈打印的异常
+     * @param provider the logger provider
+     * @param e        the exception to log
      */
     public static void error(final Provider provider, final Throwable e) {
         error(provider, e, e.getMessage());
     }
 
     /**
-     * Error等级日志
+     * Logs a message at the ERROR level.
      *
-     * @param provider 日志对象
-     * @param format   格式文本，{}代表变量
-     * @param args     变量对应的参数
+     * @param provider the logger provider
+     * @param format   the format string
+     * @param args     the arguments to be substituted into the format string
      */
     public static void error(final Provider provider, final String format, final Object... args) {
         error(provider, null, format, args);
     }
 
     /**
-     * Error等级日志
+     * Logs a message at the ERROR level.
      *
-     * @param provider 日志对象
-     * @param e        需在日志中堆栈打印的异常
-     * @param format   格式文本，{}代表变量
-     * @param args     变量对应的参数
+     * @param provider the logger provider
+     * @param e        the exception to log
+     * @param format   the format string
+     * @param args     the arguments to be substituted into the format string
      */
     public static void error(final Provider provider, final Throwable e, final String format, final Object... args) {
         provider.error(FQCN, e, format, args);
     }
 
     /**
-     * 打印日志
+     * Logs a message with the given level.
      *
-     * @param level  日志级别
-     * @param t      需在日志中堆栈打印的异常
-     * @param format 格式文本，{}代表变量
-     * @param args   变量对应的参数
+     * @param level  the logging level
+     * @param t      the throwable to log
+     * @param format the format string
+     * @param args   the arguments to be substituted into the format string
      */
     public static void log(final Level level, final Throwable t, final String format, final Object... args) {
         Registry.get(CallerKit.getCallers()).log(FQCN, level, t, format, args);
     }
 
     /**
-     * 获取当前日志级别
+     * Gets the current logging level.
      *
-     * @return 当前日志级别，如果无法获取则返回 Level.OFF
+     * @return the current logging level, or {@link Level#OFF} if it cannot be determined
      */
     public static Level getLevel() {
         Provider provider = Registry.get(CallerKit.getCallers());
@@ -243,10 +251,10 @@ public class Logger {
     }
 
     /**
-     * 设置日志级别
+     * Sets the logging level.
      *
-     * @param level 日志级别
-     * @throws UnsupportedOperationException 如果底层日志框架不支持动态级别设置
+     * @param level the logging level to set
+     * @throws UnsupportedOperationException if the underlying logging framework does not support dynamic level setting
      */
     public static void setLevel(Level level) {
         Provider provider = Registry.get(CallerKit.getCallers());
@@ -256,9 +264,10 @@ public class Logger {
     }
 
     /**
-     * 获取日志实现
+     * Gets the underlying logger factory class.
      *
-     * @return 日志实现类，例如org.jboss.logging.Logger
+     * @return the logger factory class, e.g., {@code org.jboss.logging.Logger}, or {@code null} if it cannot be
+     *         determined
      */
     public static Class<?> getFactory() {
         Factory factory = Holder.getFactory();
@@ -266,43 +275,43 @@ public class Logger {
             return null;
         }
 
-        // 如果无法直接获取，尝试通过工厂名称推断
+        // If it cannot be obtained directly, try to infer it from the factory name
         String factoryName = factory.getName();
         if (factoryName.contains("org.jboss.logging.Logger")) {
             try {
                 return Class.forName("org.jboss.logging.Logger");
             } catch (ClassNotFoundException ex) {
-                // 忽略异常，继续尝试其他方式
+                // Ignore exceptions and continue trying other methods
             }
         } else if (factoryName.contains("org.slf4j.Logger")) {
             try {
                 return Class.forName("org.slf4j.Logger");
             } catch (ClassNotFoundException ex) {
-                // 忽略异常，继续尝试其他方式
+                // Ignore exceptions and continue trying other methods
             }
         } else if (factoryName.contains("org.apache.logging.log4j.Logger")) {
             try {
                 return Class.forName("org.apache.logging.log4j.Logger");
             } catch (ClassNotFoundException ex) {
-                // 忽略异常，继续尝试其他方式
+                // Ignore exceptions and continue trying other methods
             }
         } else if (factoryName.contains("java.util.logging.Logger")) {
             try {
                 return Class.forName("java.util.logging.Logger");
             } catch (ClassNotFoundException ex) {
-                // 忽略异常，继续尝试其他方式
+                // Ignore exceptions and continue trying other methods
             }
         } else if (factoryName.contains("org.apache.commons.logging.Log")) {
             try {
                 return Class.forName("org.apache.commons.logging.Log");
             } catch (ClassNotFoundException ex) {
-                // 忽略异常，继续尝试其他方式
+                // Ignore exceptions and continue trying other methods
             }
         } else if (factoryName.contains("org.tinylog.Logger")) {
             try {
                 return Class.forName("org.tinylog.Logger");
             } catch (ClassNotFoundException ex) {
-                // 忽略异常，继续尝试其他方式
+                // Ignore exceptions and continue trying other methods
             }
         }
 
@@ -310,64 +319,64 @@ public class Logger {
     }
 
     /**
-     * 获得日志对象
+     * Gets the current logger provider.
      *
-     * @return 当前日志提供者，可能为 null
+     * @return the current logger provider, or {@code null} if none is available
      */
     public static Provider getProvider() {
         return Registry.get(CallerKit.getCallers());
     }
 
     /**
-     * 检查指定日志级别是否启用
+     * Checks if the specified logging level is enabled.
      *
-     * @param level 日志级别
-     * @return 是否启用
+     * @param level the logging level to check
+     * @return {@code true} if the specified level is enabled, {@code false} otherwise
      */
     public static boolean isEnabled(Level level) {
         return getProvider().isEnabled(level);
     }
 
     /**
-     * Trace 等级日志否开启
+     * Checks if the TRACE level is enabled.
      *
-     * @return the true/false
+     * @return {@code true} if TRACE is enabled, {@code false} otherwise
      */
     public static boolean isTraceEnabled() {
         return getProvider().isTraceEnabled();
     }
 
     /**
-     * Debug 等级日志否开启
+     * Checks if the DEBUG level is enabled.
      *
-     * @return the true/false
+     * @return {@code true} if DEBUG is enabled, {@code false} otherwise
      */
     public static boolean isDebugEnabled() {
         return getProvider().isDebugEnabled();
     }
 
     /**
-     * Info 等级日志否开启
+     * Checks if the INFO level is enabled.
      *
-     * @return the true/false
+     * @return {@code true} if INFO is enabled, {@code false} otherwise
      */
     public static boolean isInfoEnabled() {
         return getProvider().isInfoEnabled();
     }
 
     /**
-     * Warn 等级日志否开启
+     * Checks if the WARN level is enabled.
      *
-     * @return the true/false
+     * @return {@code true} if WARN is enabled, {@code false} otherwise
      */
     public static boolean isWarnEnabled() {
         return getProvider().isWarnEnabled();
     }
 
     /**
-     * Error 等级日志否开启
+     * Checks if the ERROR level is enabled.
      *
-     * @return the true/false
+     * @return {@code true} if ERROR is enabled, {@code false} otherwise
      */
     public static boolean isErrorEnabled() {
         return getProvider().isErrorEnabled();

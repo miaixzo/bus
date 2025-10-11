@@ -31,7 +31,8 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 树配置属性相关
+ * Configuration for tree node properties. This class allows customization of the property names used for ID, parent ID,
+ * weight, name, and children in a tree structure.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,36 +43,48 @@ public class NodeConfig implements Serializable {
     private static final long serialVersionUID = 2852250253009L;
 
     /**
-     * 默认属性配置对象
+     * The default node configuration instance.
      */
     public static final NodeConfig DEFAULT_CONFIG = new NodeConfig();
 
     /**
-     * 属性名配置字段
+     * The name of the ID property. Default is "id".
      */
     private String idKey = "id";
+    /**
+     * The name of the parent ID property. Default is "parentId".
+     */
     private String parentIdKey = "parentId";
+    /**
+     * The name of the weight property. Default is "selector".
+     */
     private String weightKey = "selector";
+    /**
+     * The name of the name property. Default is "name".
+     */
     private String nameKey = "name";
+    /**
+     * The name of the children property. Default is "children".
+     */
     private String childrenKey = "children";
     /**
-     * 可以配置递归深度 从0开始计算 默认此配置为空,即不限制
+     * The maximum depth of the tree to build, starting from 0. A null value means unlimited depth.
      */
     private Integer deep;
 
     /**
-     * 获取ID对应的名称
+     * Gets the property name for the node's ID.
      *
-     * @return ID对应的名称
+     * @return The ID property name.
      */
     public String getIdKey() {
         return this.idKey;
     }
 
     /**
-     * 设置ID对应的名称
+     * Sets the property name for the node's ID.
      *
-     * @param idKey ID对应的名称
+     * @param idKey The new ID property name.
      * @return this
      */
     public NodeConfig setIdKey(final String idKey) {
@@ -80,18 +93,18 @@ public class NodeConfig implements Serializable {
     }
 
     /**
-     * 获取权重对应的名称
+     * Gets the property name for the node's weight.
      *
-     * @return 权重对应的名称
+     * @return The weight property name.
      */
     public String getWeightKey() {
         return this.weightKey;
     }
 
     /**
-     * 设置权重对应的名称
+     * Sets the property name for the node's weight.
      *
-     * @param weightKey 权重对应的名称
+     * @param weightKey The new weight property name.
      * @return this
      */
     public NodeConfig setWeightKey(final String weightKey) {
@@ -100,18 +113,18 @@ public class NodeConfig implements Serializable {
     }
 
     /**
-     * 获取节点名对应的名称
+     * Gets the property name for the node's name.
      *
-     * @return 节点名对应的名称
+     * @return The name property name.
      */
     public String getNameKey() {
         return this.nameKey;
     }
 
     /**
-     * 设置节点名对应的名称
+     * Sets the property name for the node's name.
      *
-     * @param nameKey 节点名对应的名称
+     * @param nameKey The new name property name.
      * @return this
      */
     public NodeConfig setNameKey(final String nameKey) {
@@ -120,18 +133,18 @@ public class NodeConfig implements Serializable {
     }
 
     /**
-     * 获取子点对应的名称
+     * Gets the property name for the node's children list.
      *
-     * @return 子点对应的名称
+     * @return The children property name.
      */
     public String getChildrenKey() {
         return this.childrenKey;
     }
 
     /**
-     * 设置子点对应的名称
+     * Sets the property name for the node's children list.
      *
-     * @param childrenKey 子点对应的名称
+     * @param childrenKey The new children property name.
      * @return this
      */
     public NodeConfig setChildrenKey(final String childrenKey) {
@@ -140,18 +153,18 @@ public class NodeConfig implements Serializable {
     }
 
     /**
-     * 获取父节点ID对应的名称
+     * Gets the property name for the node's parent ID.
      *
-     * @return 父点对应的名称
+     * @return The parent ID property name.
      */
     public String getParentIdKey() {
         return this.parentIdKey;
     }
 
     /**
-     * 设置父点对应的名称
+     * Sets the property name for the node's parent ID.
      *
-     * @param parentIdKey 父点对应的名称
+     * @param parentIdKey The new parent ID property name.
      * @return this
      */
     public NodeConfig setParentIdKey(final String parentIdKey) {
@@ -160,18 +173,18 @@ public class NodeConfig implements Serializable {
     }
 
     /**
-     * 获取递归深度
+     * Gets the maximum recursion depth for building the tree.
      *
-     * @return 递归深度
+     * @return The maximum depth, or {@code null} for unlimited.
      */
     public Integer getDeep() {
         return this.deep;
     }
 
     /**
-     * 设置递归深度
+     * Sets the maximum recursion depth for building the tree.
      *
-     * @param deep 递归深度
+     * @param deep The maximum depth (starting from 0).
      * @return this
      */
     public NodeConfig setDeep(final Integer deep) {

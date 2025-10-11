@@ -28,7 +28,9 @@
 package org.miaixz.bus.image.builtin;
 
 /**
- * Implementation
+ * Implements the Phonem algorithm for fuzzy string matching, based on the work of Martin Wilz. This algorithm
+ * transforms a string into a phonetic representation, useful for comparing words that sound alike but may have
+ * different spellings.
  *
  * @see <a href="http://www.uni-koeln.de/phil-fak/phonetik/Lehre/MA-Arbeiten/magister_wilz.pdf">Martin Wilz</a>
  * 
@@ -37,12 +39,26 @@ package org.miaixz.bus.image.builtin;
  */
 public class Phonem implements FuzzyString {
 
+    /**
+     * Main method for testing the Phonem algorithm. It takes command-line arguments and prints their phonetic
+     * representation.
+     *
+     * @param args Command-line arguments (strings to be phonetically encoded).
+     */
     public static void main(String[] args) {
         Phonem inst = new Phonem();
         for (String arg : args)
             System.out.println(inst.toFuzzy(arg));
     }
 
+    /**
+     * Converts the input string into its Phonem phonetic representation. The algorithm processes the string by applying
+     * a series of rules to transform character combinations into a simplified phonetic code. It handles various
+     * German-specific phonetic rules.
+     *
+     * @param s The input string to convert to its phonetic representation.
+     * @return The Phonem code for the input string. Returns an empty string if the input is null or empty.
+     */
     @Override
     public String toFuzzy(String s) {
         if (s == null || s.length() == 0)

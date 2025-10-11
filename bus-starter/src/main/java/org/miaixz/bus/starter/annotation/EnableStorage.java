@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.storage.StorageConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用OSS存储
+ * Enables object storage (OSS) support.
+ * <p>
+ * This annotation imports the {@link StorageConfiguration}, which sets up the necessary beans for interacting with
+ * various object storage services (e.g., AWS S3, Aliyun OSS, Tencent COS). It provides a unified interface for file
+ * storage operations.
  *
  * @author Kimi Liu
  * @since Java 17+

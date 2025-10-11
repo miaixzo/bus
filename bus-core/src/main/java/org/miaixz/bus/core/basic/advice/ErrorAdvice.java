@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.basic.advice;
 
-import org.miaixz.bus.core.basic.service.ErrorService;
-
 import java.util.ServiceLoader;
 
+import org.miaixz.bus.core.basic.service.ErrorService;
+
 /**
- * 异常信息处理
+ * Handles exceptions by delegating to registered {@link ErrorService} implementations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,19 +40,25 @@ import java.util.ServiceLoader;
 public class ErrorAdvice {
 
     /**
-     * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true, 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求 这里可以加上登录校验,权限拦截、请求限流等
+     * This method is called before the business processor handles the request to process the user's request. If it
+     * returns {@code true}, subsequent interceptors and the target method will be called; otherwise, the request is
+     * terminated. This is a suitable place for implementing login verification, permission interception, request
+     * limiting, etc.
      *
-     * @param ex 对象参数
-     * @return 如果执行链应该继续执行, 则为:true 否则:false
+     * @param ex The exception object.
+     * @return {@code true} if the execution chain should continue, {@code false} otherwise.
      */
     public boolean handler(Exception ex) {
+        // Load all implementations of the ErrorService interface.
         final ServiceLoader<ErrorService> loader = ServiceLoader.load(ErrorService.class);
         boolean continueChain = true;
+        // Iterate through each ErrorService and call its before and after methods.
+        // The chain continues only if all services return true.
         for (ErrorService service : loader) {
             continueChain &= service.before(ex) && service.after(ex);
         }
+        // If no ErrorService implementations are found, use a default implementation.
         if (!loader.iterator().hasNext()) {
-            // 没有实现时，使用默认实现
             ErrorService defaultService = new ErrorService() {
             };
             continueChain &= defaultService.before(ex) && defaultService.after(ex);

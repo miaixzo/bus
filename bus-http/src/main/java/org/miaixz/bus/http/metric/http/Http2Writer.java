@@ -37,23 +37,44 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 编写HTTP/2传输帧.
+ * Writes HTTP/2 transport frames.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Http2Writer implements Closeable {
 
+    /**
+     * The HPACK writer for encoding headers.
+     */
     final Hpack.Writer hpackWriter;
+    /**
+     * The underlying sink to which frames are written.
+     */
     private final BufferSink sink;
+    /**
+     * True if this writer is for a client endpoint.
+     */
     private final boolean client;
+    /**
+     * A buffer used for HPACK encoding.
+     */
     private final Buffer hpackBuffer;
     /**
-     * 在一次对{@link #data}的调用中可能发送的最大字节数
+     * The maximum number of bytes that may be sent in a single DATA frame.
      */
     private int maxFrameSize;
+    /**
+     * True if this writer has been closed.
+     */
     private boolean closed;
 
+    /**
+     * Constructs a new Http2Writer.
+     *
+     * @param sink   The sink to write to.
+     * @param client True if this is a client endpoint.
+     */
     Http2Writer(BufferSink sink, boolean client) {
         this.sink = sink;
         this.client = client;
@@ -62,12 +83,24 @@ public class Http2Writer implements Closeable {
         this.maxFrameSize = Http2.INITIAL_MAX_FRAME_SIZE;
     }
 
+    /**
+     * Writes an unsigned 24-bit integer.
+     *
+     * @param sink The sink to write to.
+     * @param i    The integer to write.
+     * @throws IOException if an I/O error occurs.
+     */
     private static void writeMedium(BufferSink sink, int i) throws IOException {
         sink.writeByte((i >>> Normal._16) & 0xff);
         sink.writeByte((i >>> 8) & 0xff);
         sink.writeByte(i & 0xff);
     }
 
+    /**
+     * Writes the HTTP/2 connection preface. This must be sent by the client at the beginning of a connection.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     public synchronized void connectionPreface() throws IOException {
         if (closed)
             throw new IOException("closed");
@@ -82,6 +115,9 @@ public class Http2Writer implements Closeable {
 
     /**
      * Applies {@code peerSettings} and then sends a settings ACK.
+     *
+     * @param peerSettings The settings received from the peer.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized void applyAndAckSettings(Http2Settings peerSettings) throws IOException {
         if (closed)
@@ -99,13 +135,16 @@ public class Http2Writer implements Closeable {
     }
 
     /**
-     * HTTP/2 only. 发送推送header 推送promise包含所有与服务器发起的请求相关的头信息，以及一个{@code promise edstreamid}，
-     * 它将传递响应帧。推送承诺帧作为响应的一部分发送到{@code streamId}。{@code promisedStreamId}的 优先级比{@code streamId}大1
+     * HTTP/2 only. Sends push promise headers. A push promise contains all the headers associated with a
+     * server-initiated request, and a {@code promisedStreamId} that will be used for the response frames. The push
+     * promise frame is sent as part of the response to {@code streamId}. The priority of {@code promisedStreamId} is
+     * one greater than that of {@code streamId}.
      *
-     * @param streamId         客户端发起的流ID。必须是奇数.
-     * @param promisedStreamId 服务器发起的流ID。必须是偶数.
-     * @param requestHeaders   最低限度包括 {@code :method}, {@code :scheme}, {@code :authority}, and {@code :path}.
-     * @throws IOException 异常
+     * @param streamId         The client-initiated stream ID. Must be an odd number.
+     * @param promisedStreamId The server-initiated stream ID. Must be an even number.
+     * @param requestHeaders   Minimally includes {@code :method}, {@code :scheme}, {@code :authority}, and
+     *                         {@code :path}.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized void pushPromise(int streamId, int promisedStreamId, List<Http2Header> requestHeaders)
             throws IOException {
@@ -125,12 +164,24 @@ public class Http2Writer implements Closeable {
             writeContinuationFrames(streamId, byteCount - length);
     }
 
+    /**
+     * Flushes all buffered data on the underlying sink.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     public synchronized void flush() throws IOException {
         if (closed)
             throw new IOException("closed");
         sink.flush();
     }
 
+    /**
+     * Sends a RST_STREAM frame to terminate a stream.
+     *
+     * @param streamId  The stream ID.
+     * @param errorCode The error code indicating the reason for termination.
+     * @throws IOException if an I/O error occurs.
+     */
     public synchronized void rstStream(int streamId, Http2ErrorCode errorCode) throws IOException {
         if (closed)
             throw new IOException("closed");
@@ -146,18 +197,22 @@ public class Http2Writer implements Closeable {
     }
 
     /**
-     * The maximum size of bytes that may be sent in a single call to {@link #data}.
+     * Returns the maximum size of bytes that may be sent in a single call to {@link #data}.
+     *
+     * @return The maximum data length.
      */
     public int maxDataLength() {
         return maxFrameSize;
     }
 
     /**
-     * {@code source.length} may be longer than the max length of the variant's data frame. Implementations must send
-     * multiple frames as necessary.
+     * Sends a DATA frame.
      *
-     * @param source    the buffer to draw bytes from. May be null if byteCount is 0.
-     * @param byteCount must be between 0 and the minimum of {@code source.length} and {@link #maxDataLength}.
+     * @param outFinished True if this is the last frame to be sent on this stream.
+     * @param streamId    The stream ID.
+     * @param source      The buffer to draw bytes from. May be null if byteCount is 0.
+     * @param byteCount   Must be between 0 and the minimum of {@code source.length} and {@link #maxDataLength}.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized void data(boolean outFinished, int streamId, Buffer source, int byteCount) throws IOException {
         if (closed)
@@ -168,6 +223,15 @@ public class Http2Writer implements Closeable {
         dataFrame(streamId, flags, source, byteCount);
     }
 
+    /**
+     * Writes a DATA frame.
+     *
+     * @param streamId  The stream ID.
+     * @param flags     The frame flags.
+     * @param buffer    The buffer containing the data.
+     * @param byteCount The number of bytes to write.
+     * @throws IOException if an I/O error occurs.
+     */
     void dataFrame(int streamId, byte flags, Buffer buffer, int byteCount) throws IOException {
         byte type = Http2.TYPE_DATA;
         frameHeader(streamId, byteCount, type, flags);
@@ -177,7 +241,10 @@ public class Http2Writer implements Closeable {
     }
 
     /**
-     * Write httpd's settings to the peer.
+     * Writes HTTP/2 settings to the peer.
+     *
+     * @param settings The settings to send.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized void settings(Http2Settings settings) throws IOException {
         if (closed)
@@ -203,8 +270,13 @@ public class Http2Writer implements Closeable {
     }
 
     /**
-     * Send a connection-level ping to the peer. {@code ack} indicates this is a reply. The data in {@code payload1} and
-     * {@code payload2} opaque binary, and there are no rules on the content.
+     * Sends a connection-level ping to the peer. {@code ack} indicates this is a reply. The data in {@code payload1}
+     * and {@code payload2} is opaque binary, and there are no rules on the content.
+     *
+     * @param ack      True if this is a reply to a ping from the peer.
+     * @param payload1 The first payload integer.
+     * @param payload2 The second payload integer.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized void ping(boolean ack, int payload1, int payload2) throws IOException {
         if (closed)
@@ -220,11 +292,13 @@ public class Http2Writer implements Closeable {
     }
 
     /**
-     * 告诉对方停止创建流，我们最后处理{@code lastGoodStreamId}，如果没有处理流，则为零.
+     * Informs the peer to stop creating streams. We last processed {@code lastGoodStreamId}, or zero if no streams were
+     * processed.
      *
-     * @param lastGoodStreamId 处理的最后一个流ID，如果没有处理流，则为零
-     * @param errorCode        关闭连接的原因.
-     * @param debugData        只适用于HTTP/2;要发送的不透明调试数据.
+     * @param lastGoodStreamId The last stream ID that was processed, or zero if no streams were processed.
+     * @param errorCode        The reason for closing the connection.
+     * @param debugData        Opaque debug data for HTTP/2 only.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized void goAway(int lastGoodStreamId, Http2ErrorCode errorCode, byte[] debugData)
             throws IOException {
@@ -246,8 +320,12 @@ public class Http2Writer implements Closeable {
     }
 
     /**
-     * Inform peer that an additional {@code windowSizeIncrement} bytes can be sent on {@code
-     * streamId}, or the connection if {@code streamId} is zero.
+     * Inform peer that an additional {@code windowSizeIncrement} bytes can be sent on {@code streamId}, or on the
+     * connection if {@code streamId} is zero.
+     *
+     * @param streamId            The stream ID.
+     * @param windowSizeIncrement The number of bytes to increment the window by.
+     * @throws IOException if an I/O error occurs.
      */
     public synchronized void windowUpdate(int streamId, long windowSizeIncrement) throws IOException {
         if (closed)
@@ -265,6 +343,15 @@ public class Http2Writer implements Closeable {
         sink.flush();
     }
 
+    /**
+     * Writes an HTTP/2 frame header.
+     *
+     * @param streamId The stream ID.
+     * @param length   The length of the frame payload.
+     * @param type     The frame type.
+     * @param flags    The frame flags.
+     * @throws IOException if an I/O error occurs.
+     */
     public void frameHeader(int streamId, int length, byte type, byte flags) throws IOException {
         if (Logger.isDebugEnabled()) {
             Logger.warn(Http2.frameLog(false, streamId, length, type, flags));
@@ -286,6 +373,13 @@ public class Http2Writer implements Closeable {
         sink.close();
     }
 
+    /**
+     * Writes CONTINUATION frames if the header block is larger than the maximum frame size.
+     *
+     * @param streamId  The stream ID.
+     * @param byteCount The number of bytes to write.
+     * @throws IOException if an I/O error occurs.
+     */
     private void writeContinuationFrames(int streamId, long byteCount) throws IOException {
         while (byteCount > 0) {
             int length = (int) Math.min(maxFrameSize, byteCount);
@@ -295,6 +389,14 @@ public class Http2Writer implements Closeable {
         }
     }
 
+    /**
+     * Writes a HEADERS frame, followed by any necessary CONTINUATION frames.
+     *
+     * @param outFinished True if this is the last frame to be sent on this stream.
+     * @param streamId    The stream ID.
+     * @param headerBlock The list of headers to write.
+     * @throws IOException if an I/O error occurs.
+     */
     public synchronized void headers(boolean outFinished, int streamId, List<Http2Header> headerBlock)
             throws IOException {
         if (closed)

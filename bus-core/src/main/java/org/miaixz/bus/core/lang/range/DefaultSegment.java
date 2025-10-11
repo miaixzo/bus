@@ -30,44 +30,60 @@ package org.miaixz.bus.core.lang.range;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 片段默认实现
+ * Default implementation of the {@link Segment} interface. This class represents a segment defined by a beginning and
+ * an ending index.
  *
- * @param <T> 数字类型，用于表示位置index
+ * @param <T> the numeric type used to represent the indices (e.g., Integer, Long)
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DefaultSegment<T extends Number> implements Segment<T> {
 
     /**
-     * 起始位置
+     * The beginning index of the segment.
      */
     protected T beginIndex;
     /**
-     * 结束位置
+     * The ending index of the segment.
      */
     protected T endIndex;
 
     /**
-     * 构造
+     * Constructs a new {@code DefaultSegment} with the specified beginning and ending indices.
      *
-     * @param beginIndex 起始位置
-     * @param endIndex   结束位置
+     * @param beginIndex the beginning index of the segment
+     * @param endIndex   the ending index of the segment
      */
     public DefaultSegment(final T beginIndex, final T endIndex) {
         this.beginIndex = beginIndex;
         this.endIndex = endIndex;
     }
 
+    /**
+     * Retrieves the beginning index of this segment.
+     *
+     * @return the beginning index
+     */
     @Override
     public T getBeginIndex() {
         return this.beginIndex;
     }
 
+    /**
+     * Retrieves the ending index of this segment.
+     *
+     * @return the ending index
+     */
     @Override
     public T getEndIndex() {
         return this.endIndex;
     }
 
+    /**
+     * Returns a string representation of this segment in the format "[beginIndex, endIndex]".
+     *
+     * @return a string representation of the segment
+     */
     @Override
     public String toString() {
         return StringKit.format("[{}, {}]", beginIndex, endIndex);

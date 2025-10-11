@@ -39,14 +39,10 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.setting.Setting;
 
 /**
- * Profile可以让我们定义一系列的配置信息，然后指定其激活条件。 此类中我们规范一套规则如下：
- * 默认的，我们读取${classpath}/default下的配置文件(*.setting文件)，当调用setProfile方法时，指定一个profile，即可读取其目录下的配置文件。
- * 比如我们定义几个profile：test，develop，production，分别代表测试环境、开发环境和线上环境，我希望读取数据库配置文件db.setting，那么：
- * <ol>
- * <li>test = ${classpath}/test/db.setting</li>
- * <li>develop = ${classpath}/develop/db.setting</li>
- * <li>production = ${classpath}/production/db.setting</li>
- * </ol>
+ * Represents a configuration profile, allowing for environment-specific settings. A profile defines a set of
+ * configuration files that are activated under certain conditions. For example, you can define profiles like 'test',
+ * 'develop', and 'production', where each profile loads configuration files from a corresponding directory (e.g.,
+ * {@code /test/db.setting}, {@code /develop/db.setting}).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,44 +53,44 @@ public class Profile implements Serializable {
     private static final long serialVersionUID = 2852228167252L;
 
     /**
-     * 配置文件缓存
+     * A cache for {@link Setting} instances, keyed by file name.
      */
     private final Map<String, Setting> settingMap = new ConcurrentHashMap<>();
     /**
-     * 条件
+     * The name of the current active profile.
      */
     private String profile;
     /**
-     * 编码
+     * The character set for reading settings files.
      */
     private Charset charset;
     /**
-     * 是否使用变量
+     * Whether to enable variable substitution in settings files.
      */
     private boolean useVar;
 
     /**
-     * 默认构造，环境使用默认的：default，编码UTF-8，不使用变量
+     * Default constructor. Uses the profile name "default", UTF-8 encoding, and disables variable substitution.
      */
     public Profile() {
         this("default");
     }
 
     /**
-     * 构造，编码UTF-8，不使用变量
+     * Constructs a profile with a specific name, UTF-8 encoding, and no variable substitution.
      *
-     * @param profile 环境
+     * @param profile The environment profile name.
      */
     public Profile(final String profile) {
         this(profile, Setting.DEFAULT_CHARSET, false);
     }
 
     /**
-     * 构造
+     * Constructs a profile with full configuration.
      *
-     * @param profile 环境
-     * @param charset 编码
-     * @param useVar  是否使用变量
+     * @param profile The environment profile name.
+     * @param charset The character set for reading files.
+     * @param useVar  {@code true} to enable variable substitution.
      */
     public Profile(final String profile, final Charset charset, final boolean useVar) {
         this.profile = profile;
@@ -103,26 +99,22 @@ public class Profile implements Serializable {
     }
 
     /**
-     * 获取当前环境下的配置文件
+     * Gets a {@link Setting} instance for a given file name under the current profile. The file is loaded from a path
+     * constructed as {@code [profile_name]/[file_name]}. Instances are cached to avoid repeated file loading.
      *
-     * @param name 文件名，如果没有扩展名，默认为.setting
-     * @return 当前环境下配置文件
+     * @param name The name of the settings file. If no extension is provided, ".setting" is assumed.
+     * @return The {@link Setting} instance for the current profile.
      */
     public Setting getSetting(final String name) {
         final String nameForProfile = fixNameForProfile(name);
-        Setting setting = settingMap.get(nameForProfile);
-        if (null == setting) {
-            setting = new Setting(nameForProfile, this.charset, this.useVar);
-            settingMap.put(nameForProfile, setting);
-        }
-        return setting;
+        return settingMap.computeIfAbsent(nameForProfile, (key) -> new Setting(key, this.charset, this.useVar));
     }
 
     /**
-     * 设置环境
+     * Sets the active profile.
      *
-     * @param profile 环境
-     * @return 自身
+     * @param profile The new profile name.
+     * @return This {@code Profile} instance for chaining.
      */
     public Profile setProfile(final String profile) {
         this.profile = profile;
@@ -130,10 +122,10 @@ public class Profile implements Serializable {
     }
 
     /**
-     * 设置编码
+     * Sets the character set to be used for reading configuration files.
      *
-     * @param charset 编码
-     * @return 自身
+     * @param charset The new character set.
+     * @return This {@code Profile} instance for chaining.
      */
     public Profile setCharset(final Charset charset) {
         this.charset = charset;
@@ -141,10 +133,10 @@ public class Profile implements Serializable {
     }
 
     /**
-     * 设置是否使用变量
+     * Sets whether to enable variable substitution in configuration files.
      *
-     * @param useVar 变量
-     * @return 自身
+     * @param useVar {@code true} to enable variable substitution.
+     * @return This {@code Profile} instance for chaining.
      */
     public Profile setUseVar(final boolean useVar) {
         this.useVar = useVar;
@@ -152,9 +144,9 @@ public class Profile implements Serializable {
     }
 
     /**
-     * 清空所有环境的配置文件
+     * Clears the cache of all loaded {@link Setting} instances.
      *
-     * @return 自身
+     * @return This {@code Profile} instance for chaining.
      */
     public Profile clear() {
         this.settingMap.clear();
@@ -162,10 +154,10 @@ public class Profile implements Serializable {
     }
 
     /**
-     * 修正文件名
+     * Constructs the full path for a setting file based on the current profile.
      *
-     * @param name 文件名
-     * @return 修正后的文件名
+     * @param name The base name of the file.
+     * @return The profile-specific path (e.g., "dev/database.setting").
      */
     private String fixNameForProfile(final String name) {
         Assert.notBlank(name, "Setting name must be not blank !");

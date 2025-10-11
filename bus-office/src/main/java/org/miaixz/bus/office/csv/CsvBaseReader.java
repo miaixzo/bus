@@ -43,7 +43,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * CSV文件读取器基础类，提供灵活的文件、路径中的CSV读取，一次构造可多次调用读取不同数据，参考：FastCSV
+ * Base class for CSV file readers, providing flexible CSV reading from files and paths. This class allows for multiple
+ * reads of different data after a single construction. Inspired by FastCSV.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,132 +55,136 @@ public class CsvBaseReader implements Serializable {
     private static final long serialVersionUID = 2852282185110L;
 
     /**
-     * 读取配置
+     * The configuration for reading CSV.
      */
     private final CsvReadConfig config;
 
     /**
-     * 构造，使用默认配置项
+     * Constructs a new {@code CsvBaseReader} with default configuration.
      */
     public CsvBaseReader() {
         this(null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CsvBaseReader} with the given configuration.
      *
-     * @param config 配置项
+     * @param config The CSV read configuration. May be {@code null} for default configuration.
      */
     public CsvBaseReader(final CsvReadConfig config) {
         this.config = ObjectKit.defaultIfNull(config, CsvReadConfig::of);
     }
 
     /**
-     * 设置字段分隔符，默认逗号','
+     * Sets the field separator character. Default is comma ','.
      *
-     * @param fieldSeparator 字段分隔符，默认逗号','
+     * @param fieldSeparator The field separator character.
      */
     public void setFieldSeparator(final char fieldSeparator) {
         this.config.setFieldSeparator(fieldSeparator);
     }
 
     /**
-     * 设置 文本分隔符，文本包装符，默认双引号'"'
+     * Sets the text delimiter character (text wrapper). Default is double quotes '"'
      *
-     * @param textDelimiter 文本分隔符，文本包装符，默认双引号'"'
+     * @param textDelimiter The text delimiter character.
      */
     public void setTextDelimiter(final char textDelimiter) {
         this.config.setTextDelimiter(textDelimiter);
     }
 
     /**
-     * 设置是否首行做为标题行，默认false
+     * Sets whether the first row should be treated as a header row. Default is {@code false}.
      *
-     * @param containsHeader 是否首行做为标题行，默认false
+     * @param containsHeader {@code true} if the first row is a header, {@code false} otherwise.
      */
     public void setContainsHeader(final boolean containsHeader) {
         this.config.setContainsHeader(containsHeader);
     }
 
     /**
-     * 设置是否跳过空白行，默认true
+     * Sets whether empty rows should be skipped. Default is {@code true}.
      *
-     * @param skipEmptyRows 是否跳过空白行，默认true
+     * @param skipEmptyRows {@code true} to skip empty rows, {@code false} otherwise.
      */
     public void setSkipEmptyRows(final boolean skipEmptyRows) {
         this.config.setSkipEmptyRows(skipEmptyRows);
     }
 
     /**
-     * 设置每行字段个数不同时是否抛出异常，默认false
+     * Sets whether an {@link InternalException} should be thrown if the number of fields in rows differs. Default is
+     * {@code false}.
      *
-     * @param errorOnDifferentFieldCount 每行字段个数不同时是否抛出异常，默认false
+     * @param errorOnDifferentFieldCount {@code true} to throw an exception on inconsistent field counts, {@code false}
+     *                                   otherwise.
      */
     public void setErrorOnDifferentFieldCount(final boolean errorOnDifferentFieldCount) {
         this.config.setErrorOnDifferentFieldCount(errorOnDifferentFieldCount);
     }
 
     /**
-     * 读取CSV文件，默认UTF-8编码
+     * Reads CSV data from the specified file using UTF-8 encoding.
      *
-     * @param file CSV文件
-     * @return {@link CsvData}，包含数据列表和行信息
-     * @throws InternalException IO异常
+     * @param file The CSV file to read.
+     * @return A {@link CsvData} object containing the data list and row information.
+     * @throws InternalException If an I/O error occurs.
      */
     public CsvData read(final File file) throws InternalException {
         return read(file, Charset.UTF_8);
     }
 
     /**
-     * 从字符串中读取CSV数据
+     * Reads CSV data from the given string.
      *
-     * @param csvStr CSV字符串
-     * @return {@link CsvData}，包含数据列表和行信息
+     * @param csvStr The CSV string to read.
+     * @return A {@link CsvData} object containing the data list and row information.
      */
     public CsvData readFromString(final String csvStr) {
         return read(new StringReader(csvStr), true);
     }
 
     /**
-     * 从字符串中读取CSV数据
+     * Reads CSV data from the given string and processes each row with a handler.
      *
-     * @param csvStr     CSV字符串
-     * @param rowHandler 行处理器，用于一行一行的处理数据
+     * @param csvStr     The CSV string to read.
+     * @param rowHandler The row handler to process each {@link CsvRow}.
      */
     public void readFromString(final String csvStr, final ConsumerX<CsvRow> rowHandler) {
         read(parse(new StringReader(csvStr)), true, rowHandler);
     }
 
     /**
-     * 读取CSV文件
+     * Reads CSV data from the specified file.
      *
-     * @param file    CSV文件
-     * @param charset 文件编码，默认系统编码
-     * @return {@link CsvData}，包含数据列表和行信息
-     * @throws InternalException IO异常
+     * @param file    The CSV file to read.
+     * @param charset The character set of the file.
+     * @return A {@link CsvData} object containing the data list and row information.
+     * @throws InternalException    If an I/O error occurs.
+     * @throws NullPointerException if {@code file} is {@code null}.
      */
     public CsvData read(final File file, final java.nio.charset.Charset charset) throws InternalException {
         return read(Objects.requireNonNull(file.toPath(), "file must not be null"), charset);
     }
 
     /**
-     * 读取CSV文件，默认UTF-8编码
+     * Reads CSV data from the specified path using UTF-8 encoding.
      *
-     * @param path CSV文件
-     * @return {@link CsvData}，包含数据列表和行信息
-     * @throws InternalException IO异常
+     * @param path The path to the CSV file.
+     * @return A {@link CsvData} object containing the data list and row information.
+     * @throws InternalException If an I/O error occurs.
      */
     public CsvData read(final Path path) throws InternalException {
         return read(path, Charset.UTF_8);
     }
 
     /**
-     * 读取CSV文件
+     * Reads CSV data from the specified path.
      *
-     * @param path    CSV文件
-     * @param charset 文件编码，默认系统编码
-     * @return {@link CsvData}，包含数据列表和行信息
-     * @throws InternalException IO异常
+     * @param path    The path to the CSV file.
+     * @param charset The character set of the file.
+     * @return A {@link CsvData} object containing the data list and row information.
+     * @throws InternalException    If an I/O error occurs.
+     * @throws NullPointerException if {@code path} is {@code null}.
      */
     public CsvData read(final Path path, final java.nio.charset.Charset charset) throws InternalException {
         Assert.notNull(path, "path must not be null");
@@ -187,12 +192,13 @@ public class CsvBaseReader implements Serializable {
     }
 
     /**
-     * 从Reader中读取CSV数据，读取后关闭Reader
+     * Reads CSV data from the given {@link Reader}. The reader will be closed after reading if {@code closeReader} is
+     * {@code true}.
      *
-     * @param reader      Reader
-     * @param closeReader 是否关闭Reader
-     * @return {@link CsvData}，包含数据列表和行信息
-     * @throws InternalException IO异常
+     * @param reader      The {@link Reader} to read CSV data from.
+     * @param closeReader {@code true} to close the reader after reading, {@code false} otherwise.
+     * @return A {@link CsvData} object containing the data list and row information.
+     * @throws InternalException If an I/O error occurs.
      */
     public CsvData read(final Reader reader, final boolean closeReader) throws InternalException {
         final CsvParser csvParser = parse(reader);
@@ -204,16 +210,18 @@ public class CsvBaseReader implements Serializable {
     }
 
     /**
-     * 从Reader中读取CSV数据，结果为Map，读取后关闭Reader。 此方法默认识别首行为标题行。
+     * Reads CSV data from the given {@link Reader} and returns it as a list of maps. The reader will be closed after
+     * reading if {@code closeReader} is {@code true}. This method assumes the first row is a header row.
      *
-     * @param reader      Reader
-     * @param closeReader 是否关闭Reader
-     * @return {@link CsvData}，包含数据列表和行信息
-     * @throws InternalException IO异常
+     * @param reader      The {@link Reader} to read CSV data from.
+     * @param closeReader {@code true} to close the reader after reading, {@code false} otherwise.
+     * @return A {@link List} of {@link Map}s, where each map represents a row with header names as keys and field
+     *         values as values.
+     * @throws InternalException If an I/O error occurs.
      */
     public List<Map<String, String>> readMapList(final Reader reader, final boolean closeReader)
             throws InternalException {
-        // 此方法必须包含标题
+        // This method requires a header.
         this.config.setContainsHeader(true);
 
         final List<Map<String, String>> result = new ArrayList<>();
@@ -222,16 +230,17 @@ public class CsvBaseReader implements Serializable {
     }
 
     /**
-     * 从Reader中读取CSV数据并转换为Bean列表，读取后关闭Reader。 此方法默认识别首行为标题行。
+     * Reads CSV data from the given {@link Reader} and converts it into a list of Bean objects. The reader will be
+     * closed after reading if {@code closeReader} is {@code true}. This method assumes the first row is a header row.
      *
-     * @param <T>         Bean类型
-     * @param reader      Reader
-     * @param closeReader 是否关闭Reader
-     * @param clazz       Bean类型
-     * @return Bean列表
+     * @param <T>         The type of the Bean.
+     * @param reader      The {@link Reader} to read CSV data from.
+     * @param closeReader {@code true} to close the reader after reading, {@code false} otherwise.
+     * @param clazz       The class of the Bean to convert to.
+     * @return A {@link List} of Bean objects.
      */
     public <T> List<T> read(final Reader reader, final boolean closeReader, final Class<T> clazz) {
-        // 此方法必须包含标题
+        // This method requires a header.
         this.config.setContainsHeader(true);
 
         final List<T> result = new ArrayList<>();
@@ -240,15 +249,16 @@ public class CsvBaseReader implements Serializable {
     }
 
     /**
-     * 从字符串中读取CSV数据并转换为Bean列表，读取后关闭Reader。 此方法默认识别首行为标题行。
+     * Reads CSV data from a string and converts it into a list of Bean objects. The reader will be closed after
+     * reading. This method assumes the first row is a header row.
      *
-     * @param <T>    Bean类型
-     * @param csvStr csv字符串
-     * @param clazz  Bean类型
-     * @return Bean列表
+     * @param <T>    The type of the Bean.
+     * @param csvStr The CSV string to read.
+     * @param clazz  The class of the Bean to convert to.
+     * @return A {@link List} of Bean objects.
      */
     public <T> List<T> read(final String csvStr, final Class<T> clazz) {
-        // 此方法必须包含标题
+        // This method requires a header.
         this.config.setContainsHeader(true);
 
         final List<T> result = new ArrayList<>();
@@ -257,12 +267,13 @@ public class CsvBaseReader implements Serializable {
     }
 
     /**
-     * 从Reader中读取CSV数据，读取后关闭Reader
+     * Reads CSV data from the given {@link Reader} and processes each row with a handler. The reader will be closed
+     * after reading if {@code closeReader} is {@code true}.
      *
-     * @param reader      Reader
-     * @param closeReader 是否关闭Reader
-     * @param rowHandler  行处理器，用于一行一行的处理数据
-     * @throws InternalException IO异常
+     * @param reader      The {@link Reader} to read CSV data from.
+     * @param closeReader {@code true} to close the reader after reading, {@code false} otherwise.
+     * @param rowHandler  The row handler to process each {@link CsvRow}.
+     * @throws InternalException If an I/O error occurs.
      */
     public void read(final Reader reader, final boolean closeReader, final ConsumerX<CsvRow> rowHandler)
             throws InternalException {
@@ -270,12 +281,13 @@ public class CsvBaseReader implements Serializable {
     }
 
     /**
-     * 读取CSV数据，读取后关闭Parser
+     * Reads CSV data from the given {@link CsvParser} and processes each row with a handler. The parser will be closed
+     * after reading if {@code closeParser} is {@code true}.
      *
-     * @param csvParser   CSV解析器
-     * @param closeParser 是否关闭解析器
-     * @param rowHandler  行处理器，用于一行一行的处理数据
-     * @throws InternalException IO异常
+     * @param csvParser   The {@link CsvParser} to read CSV data from.
+     * @param closeParser {@code true} to close the parser after reading, {@code false} otherwise.
+     * @param rowHandler  The row handler to process each {@link CsvRow}.
+     * @throws InternalException If an I/O error occurs.
      */
     private void read(final CsvParser csvParser, final boolean closeParser, final ConsumerX<CsvRow> rowHandler)
             throws InternalException {
@@ -291,11 +303,11 @@ public class CsvBaseReader implements Serializable {
     }
 
     /**
-     * 构建 {@link CsvParser}
+     * Builds a {@link CsvParser} from the given {@link Reader}.
      *
-     * @param reader Reader
-     * @return CsvParser
-     * @throws InternalException IO异常
+     * @param reader The {@link Reader} to build the parser from.
+     * @return A new {@link CsvParser} instance.
+     * @throws InternalException If an I/O error occurs during parser creation.
      */
     protected CsvParser parse(final Reader reader) throws InternalException {
         return new CsvParser(reader, this.config);

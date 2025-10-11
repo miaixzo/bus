@@ -44,10 +44,21 @@ import com.sun.jna.ptr.NativeLongByReference;
  */
 public interface IOKit extends com.sun.jna.platform.mac.IOKit {
 
+    /**
+     * Singleton instance of the IOKit library.
+     */
     IOKit INSTANCE = Native.load("IOKit", IOKit.class);
 
     /**
-     * Beta/Non-API do not commit to JNA
+     * Beta/Non-API do not commit to JNA. Calls a structured method on an I/O Kit connection.
+     *
+     * @param connection          The I/O Kit connection.
+     * @param selector            The selector for the method to call.
+     * @param inputStructure      The input structure for the method.
+     * @param structureInputSize  The size of the input structure.
+     * @param outputStructure     The output structure for the method.
+     * @param structureOutputSize A pointer to the size of the output structure.
+     * @return An integer result code.
      */
     int IOConnectCallStructMethod(
             IOConnect connection,
@@ -63,10 +74,25 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     @FieldOrder({ "major", "minor", "build", "reserved", "release" })
     class SMCKeyDataVers extends Structure {
 
+        /**
+         * Major version number.
+         */
         public byte major;
+        /**
+         * Minor version number.
+         */
         public byte minor;
+        /**
+         * Build number.
+         */
         public byte build;
+        /**
+         * Reserved byte.
+         */
         public byte reserved;
+        /**
+         * Release version.
+         */
         public short release;
     }
 
@@ -76,10 +102,25 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     @FieldOrder({ "version", "length", "cpuPLimit", "gpuPLimit", "memPLimit" })
     class SMCKeyDataPLimitData extends Structure {
 
+        /**
+         * Version of the power limit data structure.
+         */
         public short version;
+        /**
+         * Length of the power limit data structure.
+         */
         public short length;
+        /**
+         * CPU power limit.
+         */
         public int cpuPLimit;
+        /**
+         * GPU power limit.
+         */
         public int gpuPLimit;
+        /**
+         * Memory power limit.
+         */
         public int memPLimit;
     }
 
@@ -89,8 +130,17 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     @FieldOrder({ "dataSize", "dataType", "dataAttributes" })
     class SMCKeyDataKeyInfo extends Structure {
 
+        /**
+         * Size of the data.
+         */
         public int dataSize;
+        /**
+         * Type of the data.
+         */
         public int dataType;
+        /**
+         * Attributes of the data.
+         */
         public byte dataAttributes;
     }
 
@@ -100,16 +150,46 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     @FieldOrder({ "key", "vers", "pLimitData", "keyInfo", "result", "status", "data8", "data32", "bytes" })
     class SMCKeyData extends Structure implements AutoCloseable {
 
+        /**
+         * The SMC key.
+         */
         public int key;
+        /**
+         * SMC version data.
+         */
         public SMCKeyDataVers vers;
+        /**
+         * SMC power limit data.
+         */
         public SMCKeyDataPLimitData pLimitData;
+        /**
+         * SMC key information.
+         */
         public SMCKeyDataKeyInfo keyInfo;
+        /**
+         * Result code.
+         */
         public byte result;
+        /**
+         * Status code.
+         */
         public byte status;
+        /**
+         * 8-bit data.
+         */
         public byte data8;
+        /**
+         * 32-bit data.
+         */
         public int data32;
+        /**
+         * Raw bytes of data.
+         */
         public byte[] bytes = new byte[32];
 
+        /**
+         * Closes the memory associated with this structure.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());
@@ -117,16 +197,31 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     }
 
     /**
-     * Holds an SMC value
+     * Holds an SMC value.
      */
     @FieldOrder({ "key", "dataSize", "dataType", "bytes" })
     class SMCVal extends Structure implements AutoCloseable {
 
+        /**
+         * The SMC key.
+         */
         public byte[] key = new byte[5];
+        /**
+         * Size of the data.
+         */
         public int dataSize;
+        /**
+         * Type of the data.
+         */
         public byte[] dataType = new byte[5];
+        /**
+         * Raw bytes of data.
+         */
         public byte[] bytes = new byte[32];
 
+        /**
+         * Closes the memory associated with this structure.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());

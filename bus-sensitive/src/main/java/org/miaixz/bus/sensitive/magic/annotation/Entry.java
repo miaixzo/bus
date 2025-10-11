@@ -30,7 +30,13 @@ package org.miaixz.bus.sensitive.magic.annotation;
 import java.lang.annotation.*;
 
 /**
- * 如果对象中属性为另外一个对象(集合),则可以使用这个注解指定 1. 如果属性为 Iterable 的子类集合,则当做列表处理,遍历其中的对象 2. 如果是普通对象,则处理对象中的脱敏信息 3. 如果是普通字段/MAP,则不做处理
+ * Marks a field that is a nested object or a collection of objects, indicating that desensitization should be applied
+ * recursively to its contents.
+ * <p>
+ * 1. If the field is an {@link Iterable} (e.g., a List), the framework will iterate through its elements and apply
+ * desensitization to each object. 2. If the field is a regular object (POJO), the framework will process its fields for
+ * desensitization annotations. 3. If the field is a simple type (e.g., String, Integer) or a Map, this annotation has
+ * no effect.
  *
  * @author Kimi Liu
  * @since Java 17+

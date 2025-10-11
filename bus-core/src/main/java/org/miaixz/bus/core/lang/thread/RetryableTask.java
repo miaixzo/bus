@@ -39,44 +39,49 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
- * 重试任务类
+ * A utility class for executing tasks with retry logic. It allows specifying retry conditions based on exceptions or
+ * custom predicates, along with maximum attempts and delay between retries.
  *
- * @param <T> 任务结果类型
+ * @param <T> The type of the task result.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RetryableTask<T> {
 
     /**
-     * 执行方法
+     * The supplier representing the task to be executed.
      */
     private final Supplier<T> sup;
     /**
-     * 重试策略, 返回true时表示重试
+     * The retry strategy, a {@link BiPredicate} that returns {@code true} if a retry should occur. The predicate
+     * receives the task result and any thrown {@link Throwable}.
      */
     private final BiPredicate<T, Throwable> predicate;
     /**
-     * 执行结果
+     * The result of the task execution.
      */
     private T result;
     /**
-     * 重试次数，默认3次
+     * The maximum number of retry attempts. Default is 3.
      */
     private long maxAttempts = 3;
     /**
-     * 重试间隔，默认1秒
+     * The delay duration between retry attempts. Default is 1 second.
      */
     private Duration delay = Duration.ofSeconds(1);
     /**
-     * 异常信息
+     * The last {@link Throwable} encountered during task execution, if any.
      */
     private Throwable throwable;
 
     /**
-     * 构造方法，内部使用，调用请使用请用ofXXX
+     * Private constructor for {@code RetryableTask}. Use static factory methods like
+     * {@link #retryForExceptions(Runnable, Class[])} or {@link #retryForPredicate(Supplier, BiPredicate)} to create
+     * instances.
      *
-     * @param sup       执行的方法
-     * @param predicate 策略 {@link BiPredicate}，返回{@code true}时表示重试
+     * @param sup       The {@link Supplier} representing the task to be executed.
+     * @param predicate The {@link BiPredicate} defining the retry strategy. Returns {@code true} to retry.
+     * @throws IllegalArgumentException if {@code sup} or {@code predicate} is {@code null}.
      */
     private RetryableTask(final Supplier<T> sup, final BiPredicate<T, Throwable> predicate) {
         Assert.notNull(sup, "task parameter cannot be null");
@@ -87,12 +92,14 @@ public class RetryableTask<T> {
     }
 
     /**
-     * 重试根据指定的异常，没有返回值
+     * Creates a {@code RetryableTask} that retries execution if a specified exception type is thrown. This method is
+     * for tasks that do not return a value.
      *
-     * @param <T> 返回值类型
-     * @param run 执行的方法 {@link Runnable}
-     * @param ths 指定异常 {@link Throwable}，匹配任意一个异常时重试
-     * @return 当前对象
+     * @param <T> The type of the task result (will be {@code Void} for {@link Runnable} tasks).
+     * @param run The {@link Runnable} task to execute.
+     * @param ths An array of {@link Throwable} classes. The task will retry if any of these exceptions are caught.
+     * @return A new {@code RetryableTask} instance configured for exception-based retries.
+     * @throws IllegalArgumentException if {@code ths} is empty.
      */
     @SafeVarargs
     public static <T> RetryableTask<T> retryForExceptions(final Runnable run, final Class<? extends Throwable>... ths) {
@@ -103,12 +110,14 @@ public class RetryableTask<T> {
     }
 
     /**
-     * 重试根据指定的异常，有返回值
+     * Creates a {@code RetryableTask} that retries execution if a specified exception type is thrown. This method is
+     * for tasks that return a value.
      *
-     * @param <T> 返回值类型
-     * @param sup 执行的方法 {@link Supplier}
-     * @param ths 指定异常 {@link Throwable}，匹配任意一个异常时重试
-     * @return 当前对象
+     * @param <T> The type of the task result.
+     * @param sup The {@link Supplier} representing the task to execute.
+     * @param ths An array of {@link Throwable} classes. The task will retry if any of these exceptions are caught.
+     * @return A new {@code RetryableTask} instance configured for exception-based retries.
+     * @throws IllegalArgumentException if {@code ths} is empty.
      */
     @SafeVarargs
     public static <T> RetryableTask<T> retryForExceptions(
@@ -127,12 +136,13 @@ public class RetryableTask<T> {
     }
 
     /**
-     * 重试根据指定的策略，没有返回值
+     * Creates a {@code RetryableTask} that retries execution based on a custom {@link BiPredicate}. This method is for
+     * tasks that do not return a value.
      *
-     * @param <T>       返回值类型
-     * @param run       执行的方法 {@link Runnable}
-     * @param predicate 策略 {@link BiPredicate}，返回{@code true}时表示重试
-     * @return 当前对象
+     * @param <T>       The type of the task result (will be {@code Void} for {@link Runnable} tasks).
+     * @param run       The {@link Runnable} task to execute.
+     * @param predicate The {@link BiPredicate} defining the retry strategy. Returns {@code true} to retry.
+     * @return A new {@code RetryableTask} instance configured for predicate-based retries.
      */
     public static <T> RetryableTask<T> retryForPredicate(
             final Runnable run,
@@ -144,12 +154,13 @@ public class RetryableTask<T> {
     }
 
     /**
-     * 重试根据指定的策略，没有返回值
+     * Creates a {@code RetryableTask} that retries execution based on a custom {@link BiPredicate}. This method is for
+     * tasks that return a value.
      *
-     * @param <T>       返回值类型
-     * @param sup       执行的方法 {@link Supplier}
-     * @param predicate 策略 {@link BiPredicate}，返回{@code true}时表示重试
-     * @return 当前对象
+     * @param <T>       The type of the task result.
+     * @param sup       The {@link Supplier} representing the task to execute.
+     * @param predicate The {@link BiPredicate} defining the retry strategy. Returns {@code true} to retry.
+     * @return A new {@code RetryableTask} instance configured for predicate-based retries.
      */
     public static <T> RetryableTask<T> retryForPredicate(
             final Supplier<T> sup,
@@ -158,86 +169,91 @@ public class RetryableTask<T> {
     }
 
     /**
-     * 最大重试次数
+     * Sets the maximum number of attempts for this retryable task.
      *
-     * @param maxAttempts 次数
-     * @return 当前对象
+     * @param maxAttempts The maximum number of times the task should be attempted, including the initial execution.
+     * @return This {@code RetryableTask} instance for method chaining.
+     * @throws IllegalArgumentException if {@code maxAttempts} is not greater than 0.
      */
     public RetryableTask<T> maxAttempts(final long maxAttempts) {
-        Assert.isTrue(this.maxAttempts > 0, "maxAttempts must be greater than 0");
+        Assert.isTrue(maxAttempts > 0, "maxAttempts must be greater than 0");
 
         this.maxAttempts = maxAttempts;
         return this;
     }
 
     /**
-     * 重试间隔时间
+     * Sets the delay duration between retry attempts.
      *
-     * @param delay 间隔时间
-     * @return 当前对象
+     * @param delay The {@link Duration} to wait before retrying the task.
+     * @return This {@code RetryableTask} instance for method chaining.
+     * @throws IllegalArgumentException if {@code delay} is {@code null}.
      */
     public RetryableTask<T> delay(final Duration delay) {
-        Assert.notNull(this.delay, "delay parameter cannot be null");
+        Assert.notNull(delay, "delay parameter cannot be null");
 
         this.delay = delay;
         return this;
     }
 
     /**
-     * 获取结果, 如果无法获取结果, 则抛出最后一次执行时的异常
+     * Retrieves the result of the task execution, or throws the last encountered exception if the task failed.
      *
-     * @return the Object
-     * @throws Throwable 获取结果时, 如果无法获取结果, 则抛出最后一次执行时的异常
+     * @return The result of the task.
+     * @throws Throwable The last {@link Throwable} thrown during task execution if no result was obtained.
      */
     public T orElseThrow() throws Throwable {
         return Optional.ofNullable(this.result).orElseThrow(() -> this.throwable().orElse(new RuntimeException()));
     }
 
     /**
-     * 获取异常
+     * Returns an {@link Optional} containing the last {@link Throwable} encountered during task execution, if any.
      *
-     * @return 返回包装了异常的 {@link Optional}对象
+     * @return An {@link Optional} describing the {@link Throwable}, or an empty {@link Optional} if no exception
+     *         occurred.
      */
     public Optional<Throwable> throwable() {
         return Optional.ofNullable(this.throwable);
     }
 
     /**
-     * 获取结果
+     * Returns an {@link Optional} containing the result of the task execution, if successful.
      *
-     * @return 返回包装了结果的 {@link Optional}对象
+     * @return An {@link Optional} describing the result, or an empty {@link Optional} if the task failed or returned
+     *         {@code null}.
      */
     public Optional<T> get() {
         return Optional.ofNullable(this.result);
     }
 
     /**
-     * 异步执行重试方法
+     * Executes the retryable task asynchronously.
      *
-     * @return 返回一个异步对象 {@link CompletableFuture}
+     * @return A {@link CompletableFuture} that will complete with this {@code RetryableTask} instance after execution.
      */
     public CompletableFuture<RetryableTask<T>> asyncExecute() {
         return CompletableFuture.supplyAsync(this::doExecute, GlobalThreadPool.getExecutor());
     }
 
     /**
-     * 同步执行重试方法
+     * Executes the retryable task synchronously.
      *
-     * @return 当前对象
+     * @return This {@code RetryableTask} instance after execution.
      */
     public RetryableTask<T> execute() {
         return doExecute();
     }
 
     /**
-     * 开始重试
+     * Performs the actual retry logic. The task is executed at least once, and then retried based on the configured
+     * {@code predicate}, {@code maxAttempts}, and {@code delay}.
      *
-     * @return 当前对象
+     * @return This {@code RetryableTask} instance after all attempts are made or the task succeeds.
      */
     private RetryableTask<T> doExecute() {
         Throwable th = null;
 
-        // 任务至少被执行一次
+        // The task is executed at least once
         do {
             try {
                 this.result = this.sup.get();
@@ -245,13 +261,13 @@ public class RetryableTask<T> {
                 th = t;
             }
 
-            // 判断重试
+            // Determine if a retry is needed based on the predicate
             if (!this.predicate.test(this.result, th)) {
-                // 条件不满足时，跳出
+                // If conditions for retry are not met, break the loop
                 break;
             }
 
-            // 避免最后一次任务执行时的线程睡眠
+            // Avoid sleeping after the last attempt if no more retries are left
             if (this.maxAttempts > 0) {
                 ThreadKit.sleep(delay.toMillis());
             }

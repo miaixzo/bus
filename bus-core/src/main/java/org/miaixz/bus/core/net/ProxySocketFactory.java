@@ -36,29 +36,32 @@ import java.net.Socket;
 import javax.net.SocketFactory;
 
 /**
- * 代理Socket工厂，用于创建代理Socket
+ * A {@link SocketFactory} for creating sockets that connect through a proxy.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ProxySocketFactory extends SocketFactory {
 
+    /**
+     * The proxy to be used for new sockets.
+     */
     private final Proxy proxy;
 
     /**
-     * 构造
+     * Constructs a new {@code ProxySocketFactory}.
      *
-     * @param proxy Socket代理
+     * @param proxy The socket proxy.
      */
     public ProxySocketFactory(final Proxy proxy) {
         this.proxy = proxy;
     }
 
     /**
-     * 创建代理SocketFactory
+     * Creates a new {@code ProxySocketFactory}.
      *
-     * @param proxy 代理对象
-     * @return {@code ProxySocketFactory}
+     * @param proxy The proxy object.
+     * @return A new {@code ProxySocketFactory} instance.
      */
     public static ProxySocketFactory of(final Proxy proxy) {
         return new ProxySocketFactory(proxy);

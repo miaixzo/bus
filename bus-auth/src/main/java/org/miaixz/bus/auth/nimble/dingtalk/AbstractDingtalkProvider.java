@@ -29,6 +29,7 @@ package org.miaixz.bus.auth.nimble.dingtalk;
 
 import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
@@ -49,27 +50,41 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 钉钉 登录抽象类 负责处理使用钉钉账号登录第三方网站和扫码登录第三方网站两种钉钉的登录方式
+ * Abstract class for DingTalk login providers. This class handles both DingTalk account login for third-party websites
+ * and QR code login for third-party websites.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractDingtalkProvider extends AbstractProvider {
 
+    /**
+     * Constructs an {@code AbstractDingtalkProvider} with the specified context and complex configuration.
+     *
+     * @param context the authentication context
+     * @param complex the complex configuration for DingTalk
+     */
     public AbstractDingtalkProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
+    /**
+     * Constructs an {@code AbstractDingtalkProvider} with the specified context, complex configuration, and cache.
+     *
+     * @param context the authentication context
+     * @param complex the complex configuration for DingTalk
+     * @param cache   the cache implementation
+     */
     public AbstractDingtalkProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
     /**
-     * 钉钉请求的签名
+     * Generates the signature for a DingTalk request.
      *
-     * @param secretKey 平台应用的授权密钥
-     * @param timestamp 时间戳
-     * @return Signature
+     * @param secretKey the application secret key of the platform
+     * @param timestamp the timestamp
+     * @return the generated signature
      */
     public static String sign(String secretKey, String timestamp) {
         byte[] signData = Builder.sign(
@@ -79,11 +94,25 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
         return UrlEncoder.encodeAll(new String(Base64.encode(signData, false)));
     }
 
+    /**
+     * Retrieves the access token from DingTalk's authorization server. For DingTalk, the access token is typically
+     * derived from the authorization code.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         return AuthToken.builder().accessCode(callback.getCode()).build();
     }
 
+    /**
+     * Retrieves user information from DingTalk's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String code = authToken.getAccessCode();
@@ -96,10 +125,10 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
                 throw new AuthorizedException("Failed to parse user info response: empty response");
             }
 
-            Object errCodeObj = object.get("errcode");
+            Object errCodeObj = object.get(Consts.ERRCODE);
             int errCode = errCodeObj instanceof Number ? ((Number) errCodeObj).intValue() : -1;
             if (errCode != 0) {
-                String errMsg = (String) object.get("errmsg");
+                String errMsg = (String) object.get(Consts.ERRMSG);
                 throw new AuthorizedException(errMsg != null ? errMsg : "Unknown error");
             }
 
@@ -125,10 +154,11 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -138,14 +168,14 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权后的token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
-        // 根据timestamp, appSecret计算签名值
+        // Calculate signature value based on timestamp and appSecret
         String timestamp = System.currentTimeMillis() + "";
         String urlEncodeSignature = sign(context.getAppSecret(), timestamp);
 

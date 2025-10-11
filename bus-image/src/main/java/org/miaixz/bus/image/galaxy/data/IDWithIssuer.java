@@ -33,16 +33,38 @@ import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 
 /**
+ * Represents a DICOM identifier along with its optional issuer information. This class is commonly used for patient
+ * IDs, accession numbers, and other identifiers that may be qualified by an issuing authority.
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
 public class IDWithIssuer {
 
+    /**
+     * The actual identifier string.
+     */
     private final String id;
+    /**
+     * The Type of Patient ID (0008,0005) if applicable.
+     */
     private String typeOfPatientID;
+    /**
+     * The Identifier Type Code (0040,0032) if applicable.
+     */
     private String identifierTypeCode;
+    /**
+     * The {@link Issuer} of this identifier.
+     */
     private Issuer issuer;
 
+    /**
+     * Constructs an {@code IDWithIssuer} with the specified ID and {@link Issuer}.
+     * 
+     * @param id     The identifier string. Must not be empty.
+     * @param issuer The {@link Issuer} of the ID. Can be {@code null}.
+     * @throws IllegalArgumentException if the ID is empty.
+     */
     public IDWithIssuer(String id, Issuer issuer) {
         if (id.isEmpty())
             throw new IllegalArgumentException("empty id");
@@ -50,11 +72,23 @@ public class IDWithIssuer {
         this.setIssuer(issuer);
     }
 
+    /**
+     * Constructs an {@code IDWithIssuer} with the specified ID and issuer string. The issuer string is parsed using the
+     * '&amp;' separator.
+     * 
+     * @param id     The identifier string.
+     * @param issuer The issuer string, or {@code null}.
+     */
     public IDWithIssuer(String id, String issuer) {
         this.id = id;
         this.setIssuer(issuer != null ? new Issuer(issuer, '&') : null);
     }
 
+    /**
+     * Constructs an {@code IDWithIssuer} by parsing a DICOM CX (Composite Person Name) formatted string.
+     * 
+     * @param cx The CX formatted string.
+     */
     public IDWithIssuer(String cx) {
         String[] ss = Builder.split(cx, '^');
         this.id = HL7Separator.unescapeAll(ss[0]);
@@ -66,6 +100,15 @@ public class IDWithIssuer {
         }
     }
 
+    /**
+     * Creates an {@code IDWithIssuer} instance from {@link Attributes} containing the ID and Issuer of Patient ID
+     * Sequence.
+     * 
+     * @param attrs        The {@link Attributes} to extract information from.
+     * @param idTag        The tag for the identifier (e.g., {@link Tag#PatientID}).
+     * @param issuerSeqTag The tag for the Issuer of Patient ID Sequence (e.g., {@link Tag#IssuerOfPatientID}).
+     * @return An {@code IDWithIssuer} instance, or {@code null} if the ID is not found.
+     */
     public static IDWithIssuer valueOf(Attributes attrs, int idTag, int issuerSeqTag) {
         String id = attrs.getString(idTag);
         if (id == null)
@@ -74,6 +117,14 @@ public class IDWithIssuer {
         return new IDWithIssuer(id, Issuer.valueOf(attrs.getNestedDataset(issuerSeqTag)));
     }
 
+    /**
+     * Creates an {@code IDWithIssuer} instance representing a Patient ID from the given {@link Attributes}. This method
+     * extracts Patient ID (0010,0020), Issuer of Patient ID (0010,0021), Type of Patient ID (0008,0005), and Identifier
+     * Type Code (0040,0032) from the attributes.
+     * 
+     * @param attrs The {@link Attributes} to extract patient ID information from.
+     * @return An {@code IDWithIssuer} instance for the Patient ID, or {@code null} if Patient ID is not found.
+     */
     public static IDWithIssuer pidOf(Attributes attrs) {
         String id = attrs.getString(Tag.PatientID);
         if (id == null)
@@ -85,11 +136,23 @@ public class IDWithIssuer {
         return result;
     }
 
+    /**
+     * Extracts the Identifier Type Code (0040,0032) from the Issuer of Patient ID Qualifiers Sequence (0040,0033).
+     * 
+     * @param attrs The {@link Attributes} containing the sequence.
+     * @return The Identifier Type Code string, or {@code null} if not found.
+     */
     private static String identifierTypeCodeOf(Attributes attrs) {
         Attributes qualifiers = attrs.getNestedDataset(Tag.IssuerOfPatientIDQualifiersSequence);
         return qualifiers != null ? qualifiers.getString(Tag.IdentifierTypeCode) : null;
     }
 
+    /**
+     * Retrieves all Patient IDs (including Other Patient IDs) from the given {@link Attributes}.
+     * 
+     * @param attrs The {@link Attributes} to extract patient IDs from.
+     * @return A {@link Set} of {@code IDWithIssuer} objects representing all patient IDs.
+     */
     public static Set<IDWithIssuer> pidsOf(Attributes attrs) {
         IDWithIssuer pid = IDWithIssuer.pidOf(attrs);
         Sequence opidseq = attrs.getSequence(Tag.OtherPatientIDsSequence);
@@ -107,6 +170,12 @@ public class IDWithIssuer {
         return pids;
     }
 
+    /**
+     * Retrieves Other Patient IDs from the given {@link Attributes}.
+     * 
+     * @param attrs The {@link Attributes} to extract other patient IDs from.
+     * @return A {@link Set} of {@code IDWithIssuer} objects representing other patient IDs.
+     */
     public static Set<IDWithIssuer> opidsOf(Attributes attrs) {
         Sequence opidseq = attrs.getSequence(Tag.OtherPatientIDsSequence);
         if (opidseq == null || opidseq.isEmpty())
@@ -118,6 +187,13 @@ public class IDWithIssuer {
         return pids;
     }
 
+    /**
+     * Adds an {@code IDWithIssuer} to a set, handling potential duplicates and qualification. If a less qualified
+     * matching ID already exists in the set, it is replaced by the more qualified one.
+     * 
+     * @param pid  The {@code IDWithIssuer} to add.
+     * @param pids The {@link Set} to add to.
+     */
     private static void addTo(IDWithIssuer pid, Set<IDWithIssuer> pids) {
         if (pid == null)
             return;
@@ -135,34 +211,74 @@ public class IDWithIssuer {
         pids.add(pid);
     }
 
+    /**
+     * Returns a new {@code IDWithIssuer} instance with the same ID but without any issuer information.
+     * 
+     * @return A new {@code IDWithIssuer} instance.
+     */
     public IDWithIssuer withoutIssuer() {
         return issuer == null ? this : new IDWithIssuer(id, (Issuer) null);
     }
 
+    /**
+     * Returns the identifier string.
+     * 
+     * @return The ID string.
+     */
     public final String getID() {
         return id;
     }
 
+    /**
+     * Returns the Type of Patient ID (0008,0005).
+     * 
+     * @return The Type of Patient ID string, or {@code null}.
+     */
     public String getTypeOfPatientID() {
         return typeOfPatientID;
     }
 
+    /**
+     * Sets the Type of Patient ID (0008,0005).
+     * 
+     * @param typeOfPatientID The Type of Patient ID string to set.
+     */
     public void setTypeOfPatientID(String typeOfPatientID) {
         this.typeOfPatientID = typeOfPatientID;
     }
 
+    /**
+     * Returns the Identifier Type Code (0040,0032).
+     * 
+     * @return The Identifier Type Code string, or {@code null}.
+     */
     public final String getIdentifierTypeCode() {
         return identifierTypeCode;
     }
 
+    /**
+     * Sets the Identifier Type Code (0040,0032).
+     * 
+     * @param identifierTypeCode The Identifier Type Code string to set.
+     */
     public final void setIdentifierTypeCode(String identifierTypeCode) {
         this.identifierTypeCode = identifierTypeCode;
     }
 
+    /**
+     * Returns the {@link Issuer} of this identifier.
+     * 
+     * @return The {@link Issuer} object, or {@code null}.
+     */
     public final Issuer getIssuer() {
         return issuer;
     }
 
+    /**
+     * Sets the {@link Issuer} of this identifier.
+     * 
+     * @param issuer The {@link Issuer} object to set.
+     */
     public final void setIssuer(Issuer issuer) {
         this.issuer = issuer;
     }
@@ -205,31 +321,41 @@ public class IDWithIssuer {
     }
 
     /**
-     * Test if this ID equals other ID and this issuer matches other issuer. If this ID equals other ID but only this or
-     * other is qualified by an issuer, the test fails.
-     *
-     * @param other-the @{code IDWithIssuer} to compare.
-     * @return {@code true}, if this ID equals other ID and this issuer matches other issuer, otherwise {@code false}.
+     * Tests if this ID equals another ID and this issuer matches the other issuer. If this ID equals the other ID but
+     * only this or the other is qualified by an issuer, the test fails.
+     * 
+     * @param other The {@code IDWithIssuer} to compare.
+     * @return {@code true} if this ID equals the other ID and this issuer matches the other issuer, otherwise
+     *         {@code false}.
      */
     public boolean matches(IDWithIssuer other) {
         return matches(other, false, false);
     }
 
     /**
-     * Test if this ID equals other ID and this issuer matches other issuer. If this ID equals other ID but only this or
-     * other is qualified by an issuer, the test returns the value passed by param <em>matchNoIssuer</em>.
-     *
-     * @param other             the @{code IDWithIssuer} to compare.
-     * @param matchNoIssuer     value returned if only this or other is qualified by an issuer
-     * @param matchOnNoMismatch value returned if the issuer of this and the other includes different types of
-     *                          identifiers
-     * @return {@code true}, if this ID equals other ID and this issuer matches other issuer, otherwise {@code false}.
+     * Tests if this ID equals another ID and this issuer matches the other issuer. If this ID equals the other ID but
+     * only this or the other is qualified by an issuer, the test returns the value passed by parameter
+     * {@code matchNoIssuer}.
+     * 
+     * @param other             The {@code IDWithIssuer} to compare.
+     * @param matchNoIssuer     Value returned if only this or the other is qualified by an issuer.
+     * @param matchOnNoMismatch Value returned if the issuer of this and the other includes different types of
+     *                          identifiers.
+     * @return {@code true} if this ID equals the other ID and this issuer matches the other issuer, otherwise
+     *         {@code false}.
      */
     public boolean matches(IDWithIssuer other, boolean matchNoIssuer, boolean matchOnNoMismatch) {
         return id.equals(other.id) && (issuer == null ? (other.issuer == null || matchNoIssuer)
                 : issuer.matches(other.issuer, matchNoIssuer, matchOnNoMismatch));
     }
 
+    /**
+     * Exports the Patient ID and its associated issuer information into the given {@link Attributes}. If {@code attrs}
+     * is {@code null}, a new {@link Attributes} object is created.
+     * 
+     * @param attrs The {@link Attributes} object to export to. Can be {@code null}.
+     * @return The {@link Attributes} object containing the Patient ID and issuer information.
+     */
     public Attributes exportPatientIDWithIssuer(Attributes attrs) {
         if (attrs == null)
             attrs = new Attributes(3);

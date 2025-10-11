@@ -33,35 +33,39 @@ import org.miaixz.bus.core.lang.Chain;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * 组合{@link Iterator}，将多个{@link Iterator}组合在一起，便于集中遍历
+ * Combines multiple {@link Iterator} instances into a single, sequential {@link Iterator}. This allows for iterating
+ * over elements from several sources as if they were from one continuous source.
  *
- * @param <T> 元素类型
+ * @param <T> the type of elements returned by this iterator
  * @author Kimi Liu
  * @since Java 17+
  */
 public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, IteratorChain<T>> {
 
     /**
-     * 所有的Iterator
+     * A list containing all the iterators in this chain.
      */
     protected final List<Iterator<T>> allIterators = new ArrayList<>();
     /**
-     * 当前位置
+     * The index of the current iterator being processed in the {@link #allIterators} list. Initialized to -1,
+     * indicating no iterator has been started yet.
      */
     protected int currentIter = -1;
 
     /**
-     * 构造 可以使用 {@link #addChain(Iterator)} 方法加入更多的集合。
+     * Constructs an empty {@code IteratorChain}. Additional iterators can be added using the
+     * {@link #addChain(Iterator)} method.
      */
     public IteratorChain() {
 
     }
 
     /**
-     * 构造
+     * Constructs an {@code IteratorChain} with the given array of iterators.
      *
-     * @param iterators 多个{@link Iterator}
-     * @throws IllegalArgumentException 当存在重复的迭代器，或添加的迭代器中存在{@code null}时抛出
+     * @param iterators an array of {@link Iterator} instances to be chained. Can be empty or {@code null}.
+     * @throws IllegalArgumentException if any of the provided iterators are {@code null} or if duplicate iterators are
+     *                                  added.
      */
     @SafeVarargs
     public IteratorChain(final Iterator<T>... iterators) {
@@ -73,15 +77,15 @@ public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, Iterato
     }
 
     /**
-     * 添加迭代器
+     * Adds an iterator to the end of this chain.
      *
-     * @param iterator 迭代器
-     * @return 当前实例
-     * @throws IllegalArgumentException 当迭代器被重复添加，或待添加的迭代器为{@code null}时抛出
+     * @param iterator the {@link Iterator} to add, must not be {@code null}.
+     * @return this {@code IteratorChain} instance, for method chaining.
+     * @throws IllegalArgumentException if the iterator is {@code null} or if it has already been added to this chain.
      */
     @Override
     public IteratorChain<T> addChain(final Iterator<T> iterator) {
-        Objects.requireNonNull(iterator);
+        Objects.requireNonNull(iterator, "Iterator must not be null");
         if (allIterators.contains(iterator)) {
             throw new IllegalArgumentException("Duplicate iterator");
         }
@@ -89,6 +93,12 @@ public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, Iterato
         return this;
     }
 
+    /**
+     * Returns {@code true} if the iteration has more elements. This method checks if the current iterator has more
+     * elements, or if there are subsequent iterators in the chain with elements.
+     *
+     * @return {@code true} if the iteration has more elements
+     */
     @Override
     public boolean hasNext() {
         if (currentIter == -1) {
@@ -106,6 +116,12 @@ public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, Iterato
         return false;
     }
 
+    /**
+     * Returns the next element in the iteration.
+     *
+     * @return the next element in the iteration
+     * @throws NoSuchElementException if the iteration has no more elements
+     */
     @Override
     public T next() {
         if (!hasNext()) {
@@ -115,6 +131,13 @@ public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, Iterato
         return allIterators.get(currentIter).next();
     }
 
+    /**
+     * Removes from the underlying collection the last element returned by this iterator. This method can be called only
+     * once per call to {@link #next()}.
+     *
+     * @throws IllegalStateException if the {@code next()} method has not yet been called, or the {@code remove()}
+     *                               method has already been called after the last call to the {@code next()} method.
+     */
     @Override
     public void remove() {
         if (-1 == currentIter) {
@@ -124,6 +147,11 @@ public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, Iterato
         allIterators.get(currentIter).remove();
     }
 
+    /**
+     * Returns an iterator over the iterators contained in this chain.
+     *
+     * @return an {@link Iterator} that iterates over the {@link Iterator} instances in this chain.
+     */
     @Override
     public Iterator<Iterator<T>> iterator() {
         return this.allIterators.iterator();

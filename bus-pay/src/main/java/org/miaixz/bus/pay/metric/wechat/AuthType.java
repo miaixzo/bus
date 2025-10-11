@@ -28,7 +28,7 @@
 package org.miaixz.bus.pay.metric.wechat;
 
 /**
- * 微信支付 v3 接口授权认证
+ * WeChat Pay v3 interface authorization and authentication types.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,20 +36,36 @@ package org.miaixz.bus.pay.metric.wechat;
 public enum AuthType {
 
     /**
-     * 国密
+     * SM2 cryptographic algorithm.
      */
-    SM2("WECHATPAY2-SM2-WITH-SM3", "AEAD_SM4_GCM", "国密算法"),
+    SM2("WECHATPAY2-SM2-WITH-SM3", "AEAD_SM4_GCM", "SM Algorithm"),
     /**
-     * RSA
+     * RSA cryptographic algorithm.
      */
-    RSA("WECHATPAY2-SHA256-RSA2048", "AEAD_AES_256_GCM", "RSA算法");
+    RSA("WECHATPAY2-SHA256-RSA2048", "AEAD_AES_256_GCM", "RSA Algorithm");
 
+    /**
+     * The authorization type code.
+     */
     private final String code;
 
+    /**
+     * The certificate algorithm identifier.
+     */
     private final String cert;
 
+    /**
+     * The description of the authorization type.
+     */
     private final String desc;
 
+    /**
+     * Constructs a new AuthType.
+     *
+     * @param code The authorization type code.
+     * @param cert The certificate algorithm identifier.
+     * @param desc The description of the authorization type.
+     */
     AuthType(String code, String cert, String desc) {
         this.code = code;
         this.cert = cert;
@@ -57,27 +73,27 @@ public enum AuthType {
     }
 
     /**
-     * 获取枚举编码
+     * Gets the authorization type code.
      *
-     * @return 枚举编码
+     * @return The authorization type code.
      */
     public String getCode() {
         return this.code;
     }
 
     /**
-     * 获取详细的描述信息
+     * Gets the detailed description of the authorization type.
      *
-     * @return 描述信息
+     * @return The description.
      */
     public String getDesc() {
         return this.desc;
     }
 
     /**
-     * 获取平台证书算法
+     * Gets the platform certificate algorithm identifier.
      *
-     * @return 平台证书算法
+     * @return The certificate algorithm identifier.
      */
     public String getCert() {
         return this.cert;

@@ -27,15 +27,6 @@
 */
 package org.miaixz.bus.cron;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
-import java.util.TimeZone;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
@@ -52,31 +43,41 @@ import org.miaixz.bus.cron.pattern.CronPattern;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Setting;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+import java.util.TimeZone;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
- * 任务调度器
+ * Task scheduler.
  * <p>
- * 调度器启动流程：
+ * The scheduler startup process is as follows:
  * 
  * <pre>
- * 启动Timer = 启动TaskLauncher = 启动TaskExecutor
+ * Start Timer -> Start TaskLauncher -> Start TaskExecutor
  * </pre>
- * 
- * 调度器关闭流程:
+ * <p>
+ * The scheduler shutdown process is as follows:
  * 
  * <pre>
- * 关闭Timer = 关闭所有运行中的TaskLauncher = 关闭所有运行中的TaskExecutor
+ * Stop Timer -> Stop all running TaskLaunchers -> Stop all running TaskExecutors
  * </pre>
  * 
- * 其中：
+ * Where:
  * 
- * <pre>Launcher ：定时器每分钟调用一次（如果{@link Scheduler#isMatchSecond()}为{@code
+ * <pre>
+ * Launcher: Called by the timer every minute (or every second if {@link Scheduler#isMatchSecond()} is {@code
  * true
- * }每秒调用一次），
- * 负责检查<strong>Repertoire</strong>是否有匹配到此时间运行的Task
+ * }),
+ * responsible for checking if the <strong>Repertoire</strong> has any tasks that match the current time to run.
  * </pre>
- *
+ * 
  * <pre>
- * Executor ：TaskLauncher匹配成功后，触发TaskExecutor执行具体的作业，执行完毕销毁
+ * Executor: Triggered by the TaskLauncher upon a successful match, executes the specific job, and is destroyed upon completion.
  * </pre>
  *
  * @author Kimi Liu
@@ -90,56 +91,56 @@ public class Scheduler implements Serializable {
     private final Lock lock = new ReentrantLock();
 
     /**
-     * 定时任务配置
+     * Cron task configuration.
      */
     protected Configure config = new Configure();
     /**
-     * 是否为守护线程
+     * Whether the scheduler runs as a daemon thread.
      */
     protected boolean daemon;
     /**
-     * 定时任务表
+     * The table of scheduled tasks.
      */
     protected Repertoire repertoire = new Repertoire();
     /**
-     * 启动器管理器
+     * Manages the task launchers.
      */
     protected Supervisor supervisor;
     /**
-     * 执行器管理器
+     * Manages the task executors.
      */
     protected Manager manager;
     /**
-     * 监听管理器列表
+     * Manages the task listeners.
      */
     protected TaskListenerManager listenerManager = new TaskListenerManager();
     /**
-     * 线程池，用于执行TaskLauncher和TaskExecutor
+     * Thread pool for executing TaskLaunchers and TaskExecutors.
      */
     protected ExecutorService threadExecutor;
     /**
-     * 是否已经启动
+     * A flag indicating whether the scheduler has been started.
      */
     private boolean started = false;
     /**
-     * 定时器
+     * The timer that triggers task checks.
      */
     private CronTimer timer;
 
     /**
-     * 获得时区，默认为 {@link TimeZone#getDefault()}
+     * Gets the time zone, defaulting to {@link TimeZone#getDefault()}.
      *
-     * @return 时区
+     * @return The time zone.
      */
     public TimeZone getTimeZone() {
         return this.config.getTimeZone();
     }
 
     /**
-     * 设置时区
+     * Sets the time zone.
      *
-     * @param timeZone 时区
-     * @return this
+     * @param timeZone The time zone.
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler setTimeZone(final TimeZone timeZone) {
         this.config.setTimeZone(timeZone);
@@ -147,11 +148,12 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 设置自定义线程池 自定义线程池时须考虑方法执行的线程是否为守护线程
+     * Sets a custom thread pool. When using a custom thread pool, consider whether the execution threads should be
+     * daemon threads.
      *
-     * @param threadExecutor 自定义线程池
-     * @return this
-     * @throws CrontabException 定时任务已经启动抛出此异常
+     * @param threadExecutor The custom thread pool.
+     * @return this {@link Scheduler} instance.
+     * @throws CrontabException if the scheduler is already started.
      */
     public Scheduler setThreadExecutor(final ExecutorService threadExecutor) throws CrontabException {
         lock.lock();
@@ -165,21 +167,22 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 是否为守护线程
+     * Checks if the scheduler is running as a daemon.
      *
-     * @return 是否为守护线程
+     * @return {@code true} if it is a daemon, {@code false} otherwise.
      */
     public boolean isDaemon() {
         return this.daemon;
     }
 
     /**
-     * 设置是否为守护线程 如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。默认非守护线程
-     * 如果用户调用{@link #setThreadExecutor(ExecutorService)}自定义线程池则此参数无效
+     * Sets whether the scheduler should run as a daemon thread. If true, tasks will be terminated immediately when
+     * {@link #stop()} is called; otherwise, they will run to completion. This setting is ignored if a custom thread
+     * executor is set via {@link #setThreadExecutor(ExecutorService)}.
      *
-     * @param on {@code true}为守护线程，否则非守护线程
-     * @return this
-     * @throws CrontabException 定时任务已经启动抛出此异常
+     * @param on {@code true} to run as a daemon, {@code false} otherwise.
+     * @return this {@link Scheduler} instance.
+     * @throws CrontabException if the scheduler is already started.
      */
     public Scheduler setDaemon(final boolean on) throws CrontabException {
         lock.lock();
@@ -193,19 +196,19 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 是否支持秒匹配
+     * Checks if second matching is enabled.
      *
-     * @return {@code true}使用，{@code false}不使用
+     * @return {@code true} if enabled, {@code false} otherwise.
      */
     public boolean isMatchSecond() {
         return this.config.isMatchSecond();
     }
 
     /**
-     * 设置是否支持秒匹配，默认不使用
+     * Sets whether to support second matching in cron expressions. Defaults to false.
      *
-     * @param isMatchSecond {@code true}支持，{@code false}不支持
-     * @return this
+     * @param isMatchSecond {@code true} to enable, {@code false} to disable.
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler setMatchSecond(final boolean isMatchSecond) {
         this.config.setMatchSecond(isMatchSecond);
@@ -213,10 +216,10 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 增加监听器
+     * Adds a task listener.
      *
-     * @param listener {@link TaskListener}
-     * @return this
+     * @param listener The {@link TaskListener} to add.
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler addListener(final TaskListener listener) {
         this.listenerManager.addListener(listener);
@@ -224,10 +227,10 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 移除监听器
+     * Removes a task listener.
      *
-     * @param listener {@link TaskListener}
-     * @return this
+     * @param listener The {@link TaskListener} to remove.
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler removeListener(final TaskListener listener) {
         this.listenerManager.removeListener(listener);
@@ -235,10 +238,11 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 批量加入配置文件中的定时任务 配置文件格式为： xxx.xxx.xxx.Class.method = * * * * *
+     * Schedules tasks from a {@link Setting} configuration file. The configuration format is:
+     * {@code com.example.MyClass.myMethod = * * * * *}.
      *
-     * @param cronSetting 定时任务设置文件
-     * @return this
+     * @param cronSetting The configuration file.
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler schedule(final Setting cronSetting) {
         if (MapKit.isNotEmpty(cronSetting)) {
@@ -254,7 +258,7 @@ public class Scheduler implements Serializable {
                     final String pattern = entry.getValue();
                     Logger.debug("Load job: {} {}", pattern, jobClass);
                     try {
-                        // 自定义ID避免重复从配置文件加载
+                        // Use a custom ID to avoid duplicates when reloading from the config file.
                         schedule("id_" + jobClass, pattern, new InvokeCrontab(jobClass));
                     } catch (final Exception e) {
                         throw new CrontabException("Schedule [{}] [{}] error!", pattern, jobClass);
@@ -266,11 +270,11 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 新增Task，使用随机UUID
+     * Schedules a task with a randomly generated UUID.
      *
-     * @param pattern {@link CronPattern}对应的String表达式
-     * @param crontab {@link Crontab}
-     * @return ID
+     * @param pattern The cron expression string.
+     * @param crontab The {@link Crontab} task.
+     * @return The generated task ID.
      */
     public String schedule(final String pattern, final Crontab crontab) {
         final String id = ID.objectId();
@@ -279,36 +283,39 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 新增Task，如果任务ID已经存在，抛出异常
+     * Schedules a {@link Runnable} task with a specified ID.
      *
-     * @param id      ID，为每一个Task定义一个ID
-     * @param pattern {@link CronPattern}对应的String表达式
-     * @param task    {@link Runnable}
-     * @return this
+     * @param id      The unique ID for the task.
+     * @param pattern The cron expression string.
+     * @param task    The {@link Runnable} to execute.
+     * @return this {@link Scheduler} instance.
+     * @throws CrontabException if a task with the same ID already exists.
      */
     public Scheduler schedule(final String id, final String pattern, final Runnable task) {
         return schedule(id, new CronPattern(pattern), new RunnableCrontab(task));
     }
 
     /**
-     * 新增Task，如果任务ID已经存在，抛出异常
+     * Schedules a {@link Crontab} task with a specified ID.
      *
-     * @param id      ID，为每一个Task定义一个ID
-     * @param pattern {@link CronPattern}对应的String表达式
-     * @param crontab {@link Crontab}
-     * @return this
+     * @param id      The unique ID for the task.
+     * @param pattern The cron expression string.
+     * @param crontab The {@link Crontab} task.
+     * @return this {@link Scheduler} instance.
+     * @throws CrontabException if a task with the same ID already exists.
      */
     public Scheduler schedule(final String id, final String pattern, final Crontab crontab) {
         return schedule(id, new CronPattern(pattern), crontab);
     }
 
     /**
-     * 新增Task，如果任务ID已经存在，抛出异常
+     * Schedules a {@link Crontab} task with a specified ID and {@link CronPattern}.
      *
-     * @param id      ID，为每一个Task定义一个ID
-     * @param pattern {@link CronPattern}
-     * @param crontab {@link Crontab}
-     * @return this
+     * @param id      The unique ID for the task.
+     * @param pattern The {@link CronPattern}.
+     * @param crontab The {@link Crontab} task.
+     * @return this {@link Scheduler} instance.
+     * @throws CrontabException if a task with the same ID already exists.
      */
     public Scheduler schedule(final String id, final CronPattern pattern, final Crontab crontab) {
         repertoire.add(id, pattern, crontab);
@@ -316,10 +323,10 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 移除Task
+     * Removes a task by its ID.
      *
-     * @param id Task的ID
-     * @return this
+     * @param id The ID of the task to remove.
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler deschedule(final String id) {
         descheduleWithStatus(id);
@@ -327,21 +334,21 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 移除Task，并返回是否移除成功
+     * Removes a task by its ID and returns whether the removal was successful.
      *
-     * @param id Task的ID
-     * @return 是否移除成功，{@code false}表示未找到对应ID的任务
+     * @param id The ID of the task to remove.
+     * @return {@code true} if the task was found and removed, {@code false} otherwise.
      */
     public boolean descheduleWithStatus(final String id) {
         return this.repertoire.remove(id);
     }
 
     /**
-     * 更新Task执行的时间规则
+     * Updates the cron pattern for an existing task.
      *
-     * @param id      Task的ID
-     * @param pattern {@link CronPattern}
-     * @return this
+     * @param id      The ID of the task to update.
+     * @param pattern The new {@link CronPattern}.
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler updatePattern(final String id, final CronPattern pattern) {
         this.repertoire.updatePattern(id, pattern);
@@ -349,56 +356,57 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 获取定时任务表，注意此方法返回非复制对象，对返回对象的修改将影响已有定时任务
+     * Gets the task table. Note: This returns a direct reference, not a copy. Modifications to the returned object will
+     * affect the scheduler.
      *
-     * @return 定时任务表{@link Repertoire}
+     * @return The task table ({@link Repertoire}).
      */
     public Repertoire getTaskTable() {
         return this.repertoire;
     }
 
     /**
-     * 获得指定id的{@link CronPattern}
+     * Gets the {@link CronPattern} for a given task ID.
      *
-     * @param id ID
-     * @return {@link CronPattern}
+     * @param id The task ID.
+     * @return The {@link CronPattern}, or {@code null} if not found.
      */
     public CronPattern getPattern(final String id) {
         return this.repertoire.getPattern(id);
     }
 
     /**
-     * 获得指定id的{@link Crontab}
+     * Gets the {@link Crontab} for a given task ID.
      *
-     * @param id ID
-     * @return {@link Crontab}
+     * @param id The task ID.
+     * @return The {@link Crontab}, or {@code null} if not found.
      */
     public Crontab getTask(final String id) {
         return this.repertoire.getTask(id);
     }
 
     /**
-     * 是否无任务
+     * Checks if the scheduler has any tasks.
      *
-     * @return true表示无任务
+     * @return {@code true} if there are no tasks, {@code false} otherwise.
      */
     public boolean isEmpty() {
         return this.repertoire.isEmpty();
     }
 
     /**
-     * 当前任务数
+     * Gets the number of scheduled tasks.
      *
-     * @return 当前任务数
+     * @return The number of tasks.
      */
     public int size() {
         return this.repertoire.size();
     }
 
     /**
-     * 清空任务表
+     * Clears all tasks from the scheduler.
      *
-     * @return this
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler clear() {
         this.repertoire = new Repertoire();
@@ -406,17 +414,20 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * @return 是否已经启动
+     * Checks if the scheduler is started.
+     *
+     * @return {@code true} if started, {@code false} otherwise.
      */
     public boolean isStarted() {
         return this.started;
     }
 
     /**
-     * 启动
+     * Starts the scheduler.
      *
-     * @param isDaemon 是否以守护线程方式启动，如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。
-     * @return this
+     * @param isDaemon Whether to run as a daemon thread. If true, tasks will be terminated immediately when
+     *                 {@link #stop()} is called; otherwise, they will run to completion.
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler start(final boolean isDaemon) {
         this.daemon = isDaemon;
@@ -424,9 +435,9 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 启动
+     * Starts the scheduler.
      *
-     * @return this
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler start() {
         lock.lock();
@@ -434,10 +445,12 @@ public class Scheduler implements Serializable {
             checkStarted();
 
             if (null == this.threadExecutor) {
-                // 无界线程池，确保每一个需要执行的线程都可以及时运行，同时复用已有线程避免线程重复创建
-                this.threadExecutor = ExecutorBuilder.of().useSynchronousQueue().setThreadFactory(//
-                        ThreadFactoryBuilder.of().setNamePrefix("x-cron-").setDaemon(this.daemon).build()//
-                ).build();
+                // Use an unbounded thread pool to ensure every task can run promptly,
+                // while reusing existing threads to avoid repeated creation.
+                this.threadExecutor = ExecutorBuilder.of().useSynchronousQueue()
+                        .setThreadFactory(
+                                ThreadFactoryBuilder.of().setNamePrefix("x-cron-").setDaemon(this.daemon).build())
+                        .build();
             }
             this.supervisor = new Supervisor(this);
             this.manager = new Manager(this);
@@ -454,20 +467,22 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 停止定时任务 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。 此方法并不会清除任务表中的任务，请调用{@link #clear()}
-     * 方法清空任务或者使用{@link #stop(boolean)}方法可选是否清空
+     * Stops the scheduler. This will immediately terminate the timer thread. If running in daemon mode, currently
+     * executing jobs will also be terminated; otherwise, they will run to completion. This method does not clear the
+     * task list. Use {@link #clear()} or {@link #stop(boolean)} to clear tasks.
      *
-     * @return this
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler stop() {
         return stop(false);
     }
 
     /**
-     * 停止定时任务 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
+     * Stops the scheduler. This will immediately terminate the timer thread. If running in daemon mode, currently
+     * executing jobs will also be terminated; otherwise, they will run to completion.
      *
-     * @param clearTasks 是否清除所有任务
-     * @return this
+     * @param clearTasks Whether to clear all tasks from the task list.
+     * @return this {@link Scheduler} instance.
      */
     public Scheduler stop(final boolean clearTasks) {
         lock.lock();
@@ -476,20 +491,20 @@ public class Scheduler implements Serializable {
                 throw new IllegalStateException("Scheduler not started !");
             }
 
-            // 停止CronTimer
+            // Stop CronTimer
             this.timer.stopTimer();
             this.timer = null;
 
-            // 停止线程池
+            // Shutdown thread pool
             this.threadExecutor.shutdown();
             this.threadExecutor = null;
 
-            // 可选是否清空任务表
+            // Optionally clear the task table
             if (clearTasks) {
                 clear();
             }
 
-            // 修改标志
+            // Update started flag
             started = false;
         } finally {
             lock.unlock();
@@ -498,9 +513,9 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 检查定时任务是否已经启动
+     * Checks if the scheduler has already been started.
      *
-     * @throws CrontabException 已经启动则抛出此异常
+     * @throws CrontabException if the scheduler is already started.
      */
     private void checkStarted() throws CrontabException {
         if (this.started) {

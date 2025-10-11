@@ -38,24 +38,45 @@ import org.miaixz.bus.core.lang.reflect.Invoker;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 方法调用器，通过反射调用方法。
+ * Method invoker for invoking methods using reflection. This class provides a unified way to invoke methods, handling
+ * argument conversion and access.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MethodInvoker implements Invoker {
 
+    /**
+     * The underlying {@link Method} to be invoked.
+     */
     private final Method method;
+    /**
+     * An array of {@link Type} objects representing the generic parameter types of the method.
+     */
     private final Type[] paramTypes;
+    /**
+     * An array of {@link Class} objects representing the raw parameter types of the method.
+     */
     private final Class<?>[] paramTypeClasses;
+    /**
+     * The return type of the method, or the type of the single parameter if it's a setter-like method.
+     */
     private final Type type;
+    /**
+     * The raw class of the return type of the method, or the raw class of the single parameter if it's a setter-like
+     * method.
+     */
     private final Class<?> typeClass;
+    /**
+     * Flag indicating whether to check and potentially convert arguments before invocation.
+     */
     private boolean checkArgs;
 
     /**
-     * 构造
+     * Constructs a new {@code MethodInvoker} for the given method. The method's accessibility is set to true.
      *
-     * @param method 方法
+     * @param method The method to be invoked. Must not be {@code null}.
+     * @throws IllegalArgumentException if {@code method} is {@code null}.
      */
     public MethodInvoker(final Method method) {
         this.method = ReflectKit.setAccessible(Assert.notNull(method));
@@ -63,7 +84,7 @@ public class MethodInvoker implements Invoker {
         this.paramTypes = TypeKit.getParamTypes(method);
         this.paramTypeClasses = method.getParameterTypes();
         if (paramTypes.length == 1) {
-            // setter方法读取参数类型
+            // For setter-like methods, the type is considered to be the parameter type.
             type = paramTypes[0];
             typeClass = paramTypeClasses[0];
         } else {
@@ -73,17 +94,18 @@ public class MethodInvoker implements Invoker {
     }
 
     /**
-     * 创建方法调用器
+     * Creates a new {@code MethodInvoker} instance for the given method.
      *
-     * @param method 方法
-     * @return 方法调用器
+     * @param method The method to be invoked.
+     * @return A new {@code MethodInvoker} instance, or {@code null} if the provided method is {@code null}.
      */
     public static MethodInvoker of(final Method method) {
         return null == method ? null : new MethodInvoker(method);
     }
 
     /**
-     * 执行接口或对象中的方法
+     * Executes a method on an object or interface. This method automatically converts arguments to match the method's
+     * parameter types.
      *
      * <pre class="code">
      * 
@@ -98,12 +120,13 @@ public class MethodInvoker implements Invoker {
      *         .newProxyInstance(ClassKit.getClassLoader(), new Class[] { Duck.class }, MethodInvoker::invoke);
      * </pre>
      *
-     * @param <T>    返回结果类型
-     * @param object 接口的子对象或代理对象
-     * @param method 方法
-     * @param args   参数，自动根据{@link Method}定义类型转换
-     * @return 结果
-     * @throws InternalException 执行异常包装
+     * @param <T>    The return type of the method.
+     * @param object The target object or proxy object on which the method is to be invoked.
+     * @param method The method to invoke.
+     * @param args   The arguments for the method call. These arguments will be automatically converted to match the
+     *               method's defined parameter types.
+     * @return The result of the method invocation.
+     * @throws InternalException If an error occurs during method execution.
      */
     public static <T> T invoke(final Object object, final Method method, final Object... args)
             throws InternalException {
@@ -112,7 +135,8 @@ public class MethodInvoker implements Invoker {
     }
 
     /**
-     * 执行接口或对象中的方法，参数类型不做转换，必须与方法参数类型完全匹配
+     * Executes a method on an object or interface, without argument type conversion. The provided arguments must
+     * exactly match the method's parameter types.
      *
      * <pre class="code">
      * 
@@ -127,12 +151,12 @@ public class MethodInvoker implements Invoker {
      *         .newProxyInstance(MethodInvoker.getClassLoader(), new Class[] { Duck.class }, MethodInvoker::invoke);
      * </pre>
      *
-     * @param <T>    返回结果类型
-     * @param object 接口的子对象或代理对象
-     * @param method 方法
-     * @param args   参数
-     * @return 结果
-     * @throws InternalException 执行异常包装
+     * @param <T>    The return type of the method.
+     * @param object The target object or proxy object on which the method is to be invoked.
+     * @param method The method to invoke.
+     * @param args   The arguments for the method call. These arguments must exactly match the method's parameter types.
+     * @return The result of the method invocation.
+     * @throws InternalException If an error occurs during method execution.
      */
     public static <T> T invokeExact(final Object object, final Method method, final Object... args)
             throws InternalException {
@@ -151,18 +175,19 @@ public class MethodInvoker implements Invoker {
     }
 
     /**
-     * 执行方法句柄，{@link MethodHandle#invokeWithArguments(Object...)}包装
-     * 非static方法需先调用{@link MethodHandle#bindTo(Object)}绑定执行对象。
+     * Executes a {@link MethodHandle}, wrapping {@link MethodHandle#invokeWithArguments(Object...)}. For non-static
+     * methods, {@link MethodHandle#bindTo(Object)} must be called first to bind the execution object.
      *
      * <p>
-     * 需要注意的是，此处没有使用{@link MethodHandle#invoke(Object...)}，因为其参数第一个必须为对象或类。
-     * {@link MethodHandle#invokeWithArguments(Object...)}只需传参数即可。
-     * </p>
+     * Note that this method uses {@link MethodHandle#invokeWithArguments(Object...)} instead of
+     * {@link MethodHandle#invoke(Object...)}, because the latter requires the first parameter to be the object or class
+     * itself. {@code invokeWithArguments} only requires the method parameters.
      *
-     * @param methodHandle {@link java.lang.invoke.MethodHandle}
-     * @param args         方法参数值，支持子类转换和自动拆装箱
-     * @param <T>          返回值类型
-     * @return 方法返回值
+     * @param methodHandle The {@link java.lang.invoke.MethodHandle} to invoke.
+     * @param args         The method parameter values. Supports subclass conversion and auto-boxing/unboxing.
+     * @param <T>          The return type of the method.
+     * @return The return value of the method.
+     * @throws InternalException If an error occurs during method handle invocation.
      */
     public static <T> T invokeHandle(final MethodHandle methodHandle, final Object... args) {
         try {
@@ -173,23 +198,28 @@ public class MethodInvoker implements Invoker {
     }
 
     /**
-     * 获取方法
+     * Retrieves the underlying {@link Method} object.
      *
-     * @return 方法
+     * @return The {@link Method} object associated with this invoker.
      */
     public Method getMethod() {
         return this.method;
     }
 
     /**
-     * 获取方法参数类型
+     * Retrieves the generic parameter types of the method.
      *
-     * @return 方法参数类型
+     * @return An array of {@link Type} objects representing the generic parameter types.
      */
     public Type[] getParamTypes() {
         return this.paramTypes;
     }
 
+    /**
+     * Retrieves the return type of the method.
+     *
+     * @return The {@link Type} object representing the return type.
+     */
     public Type getReturnType() {
         return this.method.getReturnType();
     }
@@ -210,21 +240,35 @@ public class MethodInvoker implements Invoker {
     }
 
     /**
-     * 设置是否检查参数
-     *
+     * Sets whether to check arguments before method invocation.
+     * 
      * <pre>
-     * 1. 参数个数是否与方法参数个数一致
-     * 2. 如果某个参数为null但是方法这个位置的参数为原始类型，则赋予原始类型默认值
+     * 1. Checks if the number of arguments matches the method's parameter count.
+     * 2. If a parameter is {@code
+     * null
+     * } but the corresponding method parameter is a primitive type,
+     *    it assigns the default value for that primitive type.
      * </pre>
      *
-     * @param checkArgs 是否检查参数
-     * @return this
+     * @param checkArgs {@code true} to enable argument checking, {@code false} otherwise.
+     * @return This {@code MethodInvoker} instance for method chaining.
      */
     public MethodInvoker setCheckArgs(final boolean checkArgs) {
         this.checkArgs = checkArgs;
         return this;
     }
 
+    /**
+     * Invokes the method on the specified target object with the given arguments. If {@code checkArgs} is enabled,
+     * arguments will be validated and potentially converted.
+     *
+     * @param target The target object on which the method is to be invoked. For static methods, this can be
+     *               {@code null}.
+     * @param args   The arguments to be passed to the method.
+     * @param <T>    The expected return type of the method.
+     * @return The result of the method invocation.
+     * @throws InternalException If an error occurs during method invocation.
+     */
     @Override
     public <T> T invoke(Object target, final Object... args) throws InternalException {
         if (this.checkArgs) {
@@ -232,17 +276,19 @@ public class MethodInvoker implements Invoker {
         }
 
         final Method method = this.method;
-        // static方法调用则target为null
+        // For static method calls, the target object should be null.
         if (ModifierKit.isStatic(method)) {
             target = null;
         }
-        // 根据方法定义的参数类型，将用户传入的参数规整和转换
+        // Normalize and convert arguments based on the method's defined parameter types.
         final Object[] actualArgs = MethodKit.actualArgs(method, args);
         try {
-            // 修改了lambda的策略，动态生成后在metaspace不会释放，导致资源占用高
+            // Using MethodHandle for invocation.
+            // Note: The strategy for lambda generation has been changed; dynamically generated lambdas
+            // are not released from metaspace, leading to high resource consumption.
             return invokeExact(target, method, actualArgs);
         } catch (final Exception e) {
-            // 传统反射方式执行方法
+            // Fallback to traditional reflection if MethodHandle invocation fails.
             try {
                 return (T) method.invoke(target, actualArgs);
             } catch (final IllegalAccessException | InvocationTargetException ex) {
@@ -252,22 +298,28 @@ public class MethodInvoker implements Invoker {
     }
 
     /**
-     * 执行静态方法
+     * Invokes a static method with the given arguments.
      *
-     * @param <T>  对象类型
-     * @param args 参数对象
-     * @return 结果
-     * @throws InternalException 多种异常包装
+     * @param <T>  The expected return type of the method.
+     * @param args The arguments for the static method call.
+     * @return The result of the static method invocation.
+     * @throws InternalException If an error occurs during method invocation.
      */
     public <T> T invokeStatic(final Object... args) throws InternalException {
         return invoke(null, args);
     }
 
     /**
-     * 检查传入参数的有效性。
+     * Checks the validity of the provided arguments against the method's parameter types.
+     * <ul>
+     * <li>Ensures the number of arguments matches the method's parameter count.</li>
+     * <li>If a parameter is {@code null} but the corresponding method parameter is a primitive type, it assigns the
+     * default value for that primitive type to prevent {@code NullPointerException}.</li>
+     * </ul>
      *
-     * @param args 传入的参数数组，不能为空。
-     * @throws IllegalArgumentException 如果参数数组为空或长度为0，则抛出此异常。
+     * @param args The array of arguments to be checked. Must not be {@code null}.
+     * @throws IllegalArgumentException If the number of arguments does not match the method's parameter count, or if
+     *                                  {@code args} is {@code null}.
      */
     private void checkArgs(final Object[] args) {
         final Class<?>[] paramTypeClasses = this.paramTypeClasses;
@@ -281,7 +333,7 @@ public class MethodInvoker implements Invoker {
             for (int i = 0; i < args.length; i++) {
                 type = paramTypeClasses[i];
                 if (type.isPrimitive() && null == args[i]) {
-                    // 参数是原始类型，而传入参数为null时赋予默认值
+                    // If the parameter is a primitive type and the passed argument is null, assign the default value.
                     args[i] = ClassKit.getDefaultValue(type);
                 }
             }

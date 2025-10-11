@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 敏感数据加解密以及数据脱敏mybatis插件
+ * Provides the core framework for data desensitization and encryption/decryption, including context management,
+ * filters, and strategy providers.
  *
  * @author Kimi Liu
  * @since Java 17+

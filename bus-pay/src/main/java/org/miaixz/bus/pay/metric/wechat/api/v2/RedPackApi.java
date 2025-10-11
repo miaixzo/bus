@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v2;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v2 版本-现金红包接口
+ * WeChat Pay V2 API interfaces related to red packets.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,54 +38,60 @@ import org.miaixz.bus.pay.Matcher;
 public enum RedPackApi implements Matcher {
 
     /**
-     * 发放红包
+     * Send red packet.
      */
-    SEND_RED_PACK("/mmpaymkttransfers/sendredpack", "发放红包"),
+    SEND_RED_PACK("/mmpaymkttransfers/sendredpack", "Send red packet"),
 
     /**
-     * 发放裂变红包
+     * Send group red packet.
      */
-    SEND_GROUP_RED_PACK("/mmpaymkttransfers/sendgroupredpack", "发放裂变红包"),
+    SEND_GROUP_RED_PACK("/mmpaymkttransfers/sendgroupredpack", "Send group red packet"),
 
     /**
-     * 查询红包记录
+     * Query red packet record.
      */
-    GET_HB_INFO("/mmpaymkttransfers/gethbinfo", "查询红包记录"),
+    GET_HB_INFO("/mmpaymkttransfers/gethbinfo", "Query red packet record"),
 
     /**
-     * 小程序发红包
+     * Mini Program send red packet.
      */
-    SEND_MINI_PROGRAM_HB("/mmpaymkttransfers/sendminiprogramhb", "小程序发红包"),
+    SEND_MINI_PROGRAM_HB("/mmpaymkttransfers/sendminiprogramhb", "Mini Program send red packet"),
 
     /**
-     * 发放企业红包
+     * Send corporate red packet.
      */
-    SEND_WORK_WX_RED_PACK("/mmpaymkttransfers/sendworkwxredpack", "发放企业红包"),
+    SEND_WORK_WX_RED_PACK("/mmpaymkttransfers/sendworkwxredpack", "Send corporate red packet"),
 
     /**
-     * 查询企业红包记录
+     * Query corporate red packet record.
      */
-    QUERY_WORK_WX_RED_PACK("/mmpaymkttransfers/queryworkwxredpack", "查询企业红包记录");
+    QUERY_WORK_WX_RED_PACK("/mmpaymkttransfers/queryworkwxredpack", "Query corporate red packet record");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new RedPackApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     RedPackApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -93,9 +99,9 @@ public enum RedPackApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -103,9 +109,9 @@ public enum RedPackApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

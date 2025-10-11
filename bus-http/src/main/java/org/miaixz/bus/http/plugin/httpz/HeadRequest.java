@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
-import java.util.Map;
-
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.bodys.RequestBody;
 
+import java.util.Map;
+
 /**
- * HEAD 请求处理类，封装 HEAD 请求的参数和配置。 HEAD 请求用于获取资源的元数据，不包含响应体。
+ * Represents an HTTP HEAD request. This class encapsulates all the parameters and configuration for a HEAD request.
+ * HEAD requests are used to retrieve the headers for a resource without fetching the response body.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,22 +42,22 @@ import org.miaixz.bus.http.bodys.RequestBody;
 public class HeadRequest extends HttpRequest {
 
     /**
-     * 构造函数，初始化 HEAD 请求的参数。
+     * Constructs a new {@code HeadRequest}.
      *
-     * @param url     请求的 URL
-     * @param tag     请求的标签，用于取消请求
-     * @param params  查询参数
-     * @param headers 请求头
-     * @param id      请求的唯一标识
+     * @param url     The request URL.
+     * @param tag     A tag for this request, used for cancellation.
+     * @param params  The query parameters for the request.
+     * @param headers The request headers.
+     * @param id      A unique identifier for this request.
      */
     public HeadRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers, String id) {
         super(url, tag, params, headers, null, null, null, id);
     }
 
     /**
-     * 构建 HEAD 请求的请求体。 HEAD 请求无请求体，返回 null。
+     * Builds the request body. For a HEAD request, the body is always null.
      *
-     * @return 始终返回 null
+     * @return Always returns {@code null}.
      */
     @Override
     protected RequestBody buildRequestBody() {
@@ -64,14 +65,15 @@ public class HeadRequest extends HttpRequest {
     }
 
     /**
-     * 构建 HEAD 请求对象。
+     * Builds the final Httpd {@link Request} object.
      *
-     * @param requestBody 请求体（HEAD 请求为 null）
-     * @return 构建完成的 Request 对象
+     * @param requestBody The request body, which will be null for a HEAD request.
+     * @return The constructed {@link Request} object.
      */
     @Override
     protected Request buildRequest(RequestBody requestBody) {
-        return builder.head().build(); // 使用 HEAD 方法构建请求
+        // Constructs the request using the HEAD method.
+        return builder.head().build();
     }
 
 }

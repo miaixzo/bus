@@ -35,68 +35,95 @@ import org.miaixz.bus.core.io.check.crc16.CRC16Checksum;
 import org.miaixz.bus.core.io.check.crc16.CRC16IBM;
 
 /**
- * CRC16 循环冗余校验码（Cyclic Redundancy Check）实现，默认IBM算法
+ * Implements the CRC16 (Cyclic Redundancy Check) algorithm, using the IBM algorithm by default.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CRC16 implements Checksum, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852277865069L;
 
+    /**
+     * The underlying CRC16Checksum implementation.
+     */
     private final CRC16Checksum crc16;
 
     /**
-     * 构造
+     * Constructs a new CRC16 instance using the default IBM CRC16 algorithm.
      */
     public CRC16() {
         this(new CRC16IBM());
     }
 
     /**
-     * 构造
+     * Constructs a new CRC16 instance with a custom {@link CRC16Checksum} implementation.
      *
-     * @param crc16Checksum {@link CRC16Checksum} 实现
+     * @param crc16Checksum The custom {@link CRC16Checksum} implementation to use.
      */
     public CRC16(final CRC16Checksum crc16Checksum) {
         this.crc16 = crc16Checksum;
     }
 
     /**
-     * 获取16进制的CRC16值
+     * Retrieves the CRC16 value as a hexadecimal string.
      *
-     * @return 16进制的CRC16值
+     * @return The CRC16 value in hexadecimal format.
      */
     public String getHexValue() {
         return this.crc16.getHexValue();
     }
 
     /**
-     * 获取16进制的CRC16值
+     * Retrieves the CRC16 value as a hexadecimal string, with optional zero-padding.
      *
-     * @param isPadding 不足4位时，是否填充0以满足位数
-     * @return 16进制的CRC16值，4位
+     * @param isPadding If {@code true}, the hexadecimal string will be padded with leading zeros to ensure a length of
+     *                  4 characters.
+     * @return The CRC16 value in hexadecimal format.
      */
     public String getHexValue(final boolean isPadding) {
         return crc16.getHexValue(isPadding);
     }
 
+    /**
+     * Returns the current CRC16 value.
+     *
+     * @return The current CRC16 value.
+     */
     @Override
     public long getValue() {
         return crc16.getValue();
     }
 
+    /**
+     * Resets the CRC16 calculation to its initial state.
+     */
     @Override
     public void reset() {
         crc16.reset();
     }
 
+    /**
+     * Updates the CRC16 with the specified array of bytes.
+     *
+     * @param b   The byte array to update the CRC16 with.
+     * @param off The start offset in the data.
+     * @param len The number of bytes to use for the update.
+     */
     @Override
     public void update(final byte[] b, final int off, final int len) {
         crc16.update(b, off, len);
     }
 
+    /**
+     * Updates the CRC16 with the specified byte.
+     *
+     * @param b The byte to update the CRC16 with.
+     */
     @Override
     public void update(final int b) {
         crc16.update(b);

@@ -23,7 +23,7 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.mapper.binding.condition;
 
@@ -36,102 +36,107 @@ import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.provider.ConditionProvider;
 
 /**
- * 基于 Condition 的查询和操作接口，提供条件查询、更新、删除等功能
+ * An interface for condition-based queries and operations, providing methods for conditional queries, updates, and
+ * deletions.
  *
- * @param <T> 实体类类型
- * @param <E> 符合 Condition 数据结构的对象，如 {@link Condition} 或 MBG 生成的 Condition 对象
+ * @param <T> The type of the entity class.
+ * @param <E> An object that conforms to the Condition data structure, such as {@link Condition} or an MBG-generated
+ *            Condition object.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ConditionMapper<T, E> {
 
     /**
-     * 创建并返回 Condition 对象
+     * Creates and returns a new {@link Condition} object.
      *
-     * @return 新创建的 Condition 对象
+     * @return A new {@link Condition} object.
      */
     default Condition<T> condition() {
         return new Condition<>();
     }
 
     /**
-     * 根据 Condition 条件删除记录
+     * Deletes records based on the given {@link Condition}.
      *
-     * @param condition 条件对象
-     * @return 大于等于1表示成功，0表示失败
+     * @param condition The condition object.
+     * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @DeleteProvider(type = ConditionProvider.class, method = "deleteByCondition")
     int deleteByCondition(E condition);
 
     /**
-     * 根据 Condition 条件批量更新实体
+     * Updates entity records based on the given {@link Condition}.
      *
-     * @param entity    实体对象
-     * @param condition 条件对象
-     * @return 大于等于1表示成功，0表示失败
+     * @param entity    The entity object with updated values.
+     * @param condition The condition object.
+     * @param <S>       A subtype of the entity class.
+     * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = ConditionProvider.class, method = "updateByCondition")
     <S extends T> int updateByCondition(@Param("entity") S entity, @Param("condition") E condition);
 
     /**
-     * 根据 Condition 条件和 SET 值更新字段
+     * Updates fields based on the given {@link Condition} and the values set in it.
      *
-     * @param condition 条件对象
-     * @return 大于等于1表示成功，0表示失败
+     * @param condition The condition object containing the values to be set.
+     * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = ConditionProvider.class, method = "updateByConditionSetValues")
     int updateByConditionSetValues(@Param("condition") E condition);
 
     /**
-     * 根据 Condition 条件批量更新实体非空字段
+     * Updates non-null fields of an entity based on the given {@link Condition}.
      *
-     * @param entity    实体对象
-     * @param condition 条件对象
-     * @return 大于等于1表示成功，0表示失败
+     * @param entity    The entity object with updated values.
+     * @param condition The condition object.
+     * @param <S>       A subtype of the entity class.
+     * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = ConditionProvider.class, method = "updateByConditionSelective")
     <S extends T> int updateByConditionSelective(@Param("entity") S entity, @Param("condition") E condition);
 
     /**
-     * 根据 Condition 条件批量查询
+     * Selects a list of entities based on the given {@link Condition}.
      *
-     * @param condition 条件对象
-     * @return 实体对象列表
+     * @param condition The condition object.
+     * @return A list of entity objects.
      */
     @Lang(Caching.class)
     @SelectProvider(type = ConditionProvider.class, method = "selectByCondition")
     List<T> selectByCondition(E condition);
 
     /**
-     * 根据 Condition 条件查询唯一实体
+     * Selects a single entity based on the given {@link Condition}. Throws an exception if more than one record is
+     * found.
      *
-     * @param condition 条件对象
-     * @return 唯一实体对象，若结果多条则抛出异常，可能为空
+     * @param condition The condition object.
+     * @return An {@link Optional} containing the unique entity object, or an empty Optional if not found.
      */
     @Lang(Caching.class)
     @SelectProvider(type = ConditionProvider.class, method = "selectByCondition")
     Optional<T> selectOneByCondition(E condition);
 
     /**
-     * 根据 Condition 条件查询记录总数
+     * Counts the number of records matching the given {@link Condition}.
      *
-     * @param condition 条件对象
-     * @return 记录总数
+     * @param condition The condition object.
+     * @return The total number of matching records.
      */
     @Lang(Caching.class)
     @SelectProvider(type = ConditionProvider.class, method = "countByCondition")
     long countByCondition(E condition);
 
     /**
-     * 根据 Condition 条件分页查询
+     * Selects a list of entities with pagination based on the given {@link Condition}.
      *
-     * @param condition 条件对象
-     * @param rowBounds 分页信息
-     * @return 实体对象列表
+     * @param condition The condition object.
+     * @param rowBounds The pagination information.
+     * @return A list of entity objects for the current page.
      */
     List<T> selectByCondition(E condition, RowBounds rowBounds);
 

@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供数学计算相关封装，包括排列组合等，入口为MathKit
+ * Provides utility classes for mathematical calculations, including permutations and combinations. The main entry point
+ * is {@code MathKit}.
  *
  * @author Kimi Liu
  * @since Java 17+

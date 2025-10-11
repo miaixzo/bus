@@ -37,7 +37,9 @@ import org.miaixz.bus.extra.mq.MQProvider;
 import org.miaixz.bus.extra.mq.Producer;
 
 /**
- * Kafka消息队列引擎实现类，用于提供Kafka的消息队列服务
+ * Kafka message queue engine implementation class. This class provides an adapter for interacting with Apache Kafka,
+ * serving as a concrete {@link MQProvider} for Kafka message queue services. It handles the initialization of Kafka
+ * client configurations and provides access to Kafka producers and consumers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,41 +47,49 @@ import org.miaixz.bus.extra.mq.Producer;
 public class KafkaProvider implements MQProvider {
 
     /**
-     * Kafka客户端配置属性
+     * Kafka client configuration properties. These properties are used to configure both Kafka producers and consumers,
+     * including bootstrap servers, serializers, etc.
      */
     private Properties properties;
 
     /**
-     * 默认构造方法，用于SPI方式加载时检查库是否引入
+     * Default constructor. This constructor is primarily used when loading the provider via SPI to check for the
+     * presence of the Kafka client library on the classpath. It asserts that {@link CommonClientConfigs} class is
+     * available.
      */
     public KafkaProvider() {
-        // SPI方式加载时检查库是否引入
+        // Check if the library is introduced when loading via SPI
         Assert.notNull(org.apache.kafka.clients.CommonClientConfigs.class);
     }
 
     /**
-     * 构造方法，使用MQConfig初始化Kafka配置
+     * Constructs a {@code KafkaProvider} with the specified {@link MQConfig}. This constructor initializes the Kafka
+     * client properties based on the provided configuration.
      *
-     * @param config Kafka配置对象，包含连接所需信息
+     * @param config The {@link MQConfig} object, containing necessary connection information like the broker URL and
+     *               additional properties.
      */
     public KafkaProvider(final MQConfig config) {
         init(config);
     }
 
     /**
-     * 构造方法，使用Properties初始化Kafka配置
+     * Constructs a {@code KafkaProvider} with the specified raw Kafka {@link Properties}. This allows for direct
+     * configuration using Kafka's native property format.
      *
-     * @param properties Kafka配置属性
+     * @param properties The Kafka configuration {@link Properties}.
      */
     public KafkaProvider(final Properties properties) {
         init(properties);
     }
 
     /**
-     * 使用MQConfig初始化Kafka配置
+     * Initializes the Kafka provider using the provided {@link MQConfig}. This method converts the generic
+     * {@link MQConfig} into Kafka-specific {@link Properties} and then calls {@link #init(Properties)} to set up the
+     * provider.
      *
-     * @param config Kafka配置对象，包含连接所需信息
-     * @return 当前KafkaProvider实例，支持链式调用
+     * @param config The {@link MQConfig} object, containing necessary connection information.
+     * @return This {@code KafkaProvider} instance, allowing for method chaining.
      */
     @Override
     public KafkaProvider init(final MQConfig config) {
@@ -87,10 +97,11 @@ public class KafkaProvider implements MQProvider {
     }
 
     /**
-     * 使用Properties初始化Kafka配置
+     * Initializes the Kafka provider using the provided raw Kafka {@link Properties}. This method sets the internal
+     * properties that will be used by producers and consumers.
      *
-     * @param properties Kafka配置属性
-     * @return 当前KafkaProvider实例，支持链式调用
+     * @param properties The Kafka configuration {@link Properties}.
+     * @return This {@code KafkaProvider} instance, allowing for method chaining.
      */
     public KafkaProvider init(final Properties properties) {
         this.properties = properties;
@@ -98,11 +109,12 @@ public class KafkaProvider implements MQProvider {
     }
 
     /**
-     * 增加配置项
+     * Adds a single configuration item to the existing Kafka properties. This method can be used to set or override
+     * specific Kafka client properties.
      *
-     * @param key   配置项名称
-     * @param value 配置项值
-     * @return 当前KafkaProvider实例，支持链式调用
+     * @param key   The key of the configuration item.
+     * @param value The value of the configuration item.
+     * @return This {@code KafkaProvider} instance, allowing for method chaining.
      */
     public KafkaProvider addProperty(final String key, final String value) {
         this.properties.put(key, value);
@@ -110,9 +122,10 @@ public class KafkaProvider implements MQProvider {
     }
 
     /**
-     * 获取Kafka生产者实例
+     * Retrieves a {@link Producer} instance configured for Kafka. The returned producer uses the properties set during
+     * the provider's initialization.
      *
-     * @return Kafka生产者实例
+     * @return A {@link KafkaProducer} instance for sending messages to Kafka.
      */
     @Override
     public Producer getProducer() {
@@ -120,9 +133,10 @@ public class KafkaProvider implements MQProvider {
     }
 
     /**
-     * 获取Kafka消费者实例
+     * Retrieves a {@link Consumer} instance configured for Kafka. The returned consumer uses the properties set during
+     * the provider's initialization.
      *
-     * @return Kafka消费者实例
+     * @return A {@link KafkaConsumer} instance for receiving messages from Kafka.
      */
     @Override
     public Consumer getConsumer() {
@@ -130,16 +144,17 @@ public class KafkaProvider implements MQProvider {
     }
 
     /**
-     * 根据MQConfig构建Kafka配置属性
+     * Builds Kafka configuration properties based on the provided generic {@link MQConfig}. It extracts the broker URL
+     * and merges any additional properties from {@link MQConfig}.
      *
-     * @param config Kafka配置对象，包含连接所需信息
-     * @return 构建好的Kafka配置属性
+     * @param config The {@link MQConfig} object, containing necessary connection information.
+     * @return The constructed Kafka configuration {@link Properties}.
      */
     private static Properties buidProperties(final MQConfig config) {
         final Properties properties = new Properties();
-        // 设置Kafka服务器地址
+        // Set Kafka server address using CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG
         properties.setProperty(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, config.getBrokerUrl());
-        // 添加其他配置属性
+        // Add other configuration properties from MQConfig
         properties.putAll(config.getProperties());
         return properties;
     }

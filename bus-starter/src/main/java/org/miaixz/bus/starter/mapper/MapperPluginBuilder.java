@@ -27,12 +27,9 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.StringValue;
+import org.apache.ibatis.plugin.Interceptor;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
@@ -52,11 +49,17 @@ import org.miaixz.bus.spring.annotation.PlaceHolderBinder;
 import org.miaixz.bus.starter.jdbc.DataSourceHolder;
 import org.springframework.core.env.Environment;
 
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.StringValue;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
- * MyBatis 插件构建器，负责初始化并配置 MyBatis 拦截器及其处理器
+ * A builder for creating and configuring MyBatis {@link Interceptor} instances.
+ * <p>
+ * This class is responsible for initializing and setting up various interceptor handlers, such as for pagination and
+ * multi-tenancy, based on the application's configuration.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -64,19 +67,20 @@ import net.sf.jsqlparser.expression.StringValue;
 public class MapperPluginBuilder {
 
     /**
-     * 构建并配置 MyBatis 拦截器
+     * Builds and configures the primary {@link MybatisInterceptor}.
      *
-     * @param environment Spring 环境对象，用于获取配置
-     * @return 配置好的 MyBatis 拦截器
+     * @param environment The Spring {@link Environment} object, used to retrieve configuration properties.
+     * @return A fully configured {@link MybatisInterceptor} instance.
      */
     public static MybatisInterceptor build(Environment environment) {
         List<MapperHandler> handlers = new ArrayList<>();
+        // Default handler for basic operations.
         handlers.add(new OperationHandler());
 
         if (ObjectKit.isNotEmpty(environment)) {
-            // 分页配置
+            // Configure pagination if properties are present.
             configurePagination(environment, handlers);
-            // 多租户配置
+            // Configure multi-tenancy if properties are present.
             configureTenant(environment, handlers);
         }
 
@@ -86,10 +90,10 @@ public class MapperPluginBuilder {
     }
 
     /**
-     * 配置 MyBatis 相关属性，添加分页处理器
+     * Configures MyBatis properties and adds the {@link PaginationHandler}.
      *
-     * @param environment Spring 环境对象
-     * @param handlers    处理器列表
+     * @param environment The Spring environment.
+     * @param handlers    The list of handlers to add the pagination handler to.
      */
     private static void configurePagination(Environment environment, List<MapperHandler> handlers) {
         MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
@@ -103,14 +107,15 @@ public class MapperPluginBuilder {
             PaginationHandler paginationHandler = new PaginationHandler();
             paginationHandler.setProperties(props);
             handlers.add(paginationHandler);
+            Logger.info("Pagination handler configured and added.");
         }
     }
 
     /**
-     * 配置多租户相关属性，添加多租户处理器
+     * Configures multi-tenancy properties and adds the {@link TenantHandler}.
      *
-     * @param environment Spring 环境对象
-     * @param handlers    处理器列表
+     * @param environment The Spring environment.
+     * @param handlers    The list of handlers to add the tenant handler to.
      */
     private static void configureTenant(Environment environment, List<MapperHandler> handlers) {
         MapperProperties properties = PlaceHolderBinder.bind(environment, MapperProperties.class, GeniusBuilder.MAPPER);
@@ -118,7 +123,7 @@ public class MapperPluginBuilder {
         if (ObjectKit.isNotEmpty(properties) && ObjectKit.isNotEmpty(properties.getConfigurationProperties())) {
             Properties configProps = properties.getConfigurationProperties();
 
-            // 检查是否有任何数据源配置了租户
+            // Check if any data source is configured for multi-tenancy.
             boolean hasTenantConfig = configProps.stringPropertyNames().stream().anyMatch(key -> {
                 String value = configProps.getProperty(key);
                 return value != null && value.contains(Args.TENANT_IGNORE_TABLE);
@@ -134,37 +139,34 @@ public class MapperPluginBuilder {
                     public Expression getTenantId() {
                         String tenantId = ContextBuilder.getTenantId();
                         if (StringKit.isEmpty(tenantId)) {
-                            throw new MapperException("Tenant information not found");
+                            throw new MapperException("Tenant information not found in the current context");
                         }
                         return new StringValue(tenantId);
                     }
 
                     @Override
                     public String getColumn() {
-                        // 获取当前数据源的租户列配置
+                        // Get the tenant column for the current data source.
                         String currentDataSourceKey = DataSourceHolder.getKey();
-
-                        // 构建配置键名，例如: com_deepparser.tenant.column
                         String tenantColumnKey = currentDataSourceKey + Symbol.DOT + Args.TENANT_COLUMN_KEY;
                         String tenantColumn = configProps.getProperty(tenantColumnKey);
-
                         return ObjectKit.isNotEmpty(tenantColumn) ? tenantColumn : Args.TENANT_TABLE_COLUMN;
                     }
 
                     @Override
                     public boolean ignore(String name) {
-                        // 获取当前数据源的配置
+                        // Get the configuration for the current data source.
                         String currentDataSourceKey = DataSourceHolder.getKey();
 
-                        // 获取表前缀
+                        // Get the table prefix.
                         String prefixKey = currentDataSourceKey + Symbol.DOT + Args.TABLE_PREFIX_KEY;
                         String prefix = configProps.getProperty(prefixKey, Normal.EMPTY);
 
-                        // 获取忽略表列表
+                        // Get the list of ignored tables.
                         String ignoreKey = currentDataSourceKey + Symbol.DOT + Args.TENANT_IGNORE_KEY;
                         String ignoreTables = configProps.getProperty(ignoreKey, Args.TENANT_IGNORE_TABLE);
 
-                        // 分割 ignoreTables 的值并加上前缀
+                        // Check if the current table is in the ignored list (with prefix).
                         List<String> ignoreTableList = Arrays.stream(ignoreTables.split(Symbol.COMMA))
                                 .map(table -> prefix + table.trim()).collect(Collectors.toList());
 
@@ -172,6 +174,7 @@ public class MapperPluginBuilder {
                     }
                 });
                 handlers.add(tenantHandler);
+                Logger.info("Multi-tenancy handler configured and added.");
             }
         }
     }

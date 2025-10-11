@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * 京东 授权范围
+ * JD (Jingdong) authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,12 +42,21 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum JdScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Basic authorization. The meaning of {@code scope} is subject to {@code description}.
      */
-    SNSAPI_BASE("snsapi_base", "基础授权", true);
+    SNSAPI_BASE("snsapi_base", "Basic authorization", true);
 
+    /**
+     * The scope string as defined by JD.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

@@ -55,9 +55,10 @@ import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.http.Http2Header;
 
 /**
- * HTTP 相关的实用工具类
+ * Utility class for HTTP-related operations.
  * <p>
- * 提供处理 HTTP 请求和响应的工具方法，包括数据解析、编码、集合操作、日期格式化等。
+ * Provides utility methods for handling HTTP requests and responses, including data parsing, encoding, collection
+ * operations, date formatting, and more.
  * </p>
  *
  * @author Kimi Liu
@@ -66,35 +67,35 @@ import org.miaixz.bus.http.metric.http.Http2Header;
 public class Builder {
 
     /**
-     * 最大日期值（9999年12月31日）
+     * Maximum date value (December 31, 9999).
      */
     public static final long MAX_DATE = 253402300799999L;
     /**
-     * 空头部
+     * An empty {@link Headers} instance.
      */
     public static final Headers EMPTY_HEADERS = Headers.of();
     /**
-     * 空响应体
+     * An empty {@link ResponseBody} instance.
      */
     public static final ResponseBody EMPTY_RESPONSE = ResponseBody.create(null, Normal.EMPTY_BYTE_ARRAY);
     /**
-     * GMT 时区
+     * The UTC (Coordinated Universal Time) timezone.
      */
     public static final TimeZone UTC = TimeZone.getTimeZone("GMT");
     /**
-     * 自然顺序比较器
+     * A comparator that orders strings naturally.
      */
     public static final Comparator<String> NATURAL_ORDER = String::compareTo;
     /**
-     * 引号字符串分隔符
+     * Byte string containing characters that delimit quoted strings.
      */
     public static final ByteString QUOTED_STRING_DELIMITERS = ByteString.encodeUtf8("\"\\");
     /**
-     * 令牌分隔符
+     * Byte string containing characters that delimit tokens.
      */
     public static final ByteString TOKEN_DELIMITERS = ByteString.encodeUtf8("\t ,=");
     /**
-     * 浏览器兼容的日期格式
+     * Array of browser-compatible date format strings.
      */
     public static final String[] BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS = new String[] {
             "EEE, dd MMM yyyy HH:mm:ss zzz", "EEEE, dd-MMM-yy HH:mm:ss zzz", "EEE MMM d HH:mm:ss yyyy",
@@ -103,47 +104,47 @@ public class Builder {
             "EEE dd-MMM-yy HH:mm:ss z", "EEE dd MMM yy HH:mm:ss z", "EEE,dd-MMM-yy HH:mm:ss z",
             "EEE,dd-MMM-yyyy HH:mm:ss z", "EEE, dd-MM-yyyy HH:mm:ss z", "EEE MMM d yyyy HH:mm:ss z", };
     /**
-     * 浏览器兼容的日期格式器
+     * Array of browser-compatible date formatters.
      */
     public static final DateFormat[] BROWSER_COMPATIBLE_DATE_FORMATS = new DateFormat[BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length];
     /**
-     * CONNECT 命令
+     * The HTTP CONNECT method.
      */
     public static final String CONNECT = "CONNECT";
     /**
-     * CONNECTED 命令
+     * The STOMP CONNECTED frame command.
      */
     public static final String CONNECTED = "CONNECTED";
     /**
-     * SEND 命令
+     * The STOMP SEND frame command.
      */
     public static final String SEND = "SEND";
     /**
-     * MESSAGE 命令
+     * The STOMP MESSAGE frame command.
      */
     public static final String MESSAGE = "MESSAGE";
     /**
-     * SUBSCRIBE 命令
+     * The STOMP SUBSCRIBE frame command.
      */
     public static final String SUBSCRIBE = "SUBSCRIBE";
     /**
-     * UNSUBSCRIBE 命令
+     * The STOMP UNSUBSCRIBE frame command.
      */
     public static final String UNSUBSCRIBE = "UNSUBSCRIBE";
     /**
-     * ACK 命令
+     * The STOMP ACK frame command.
      */
     public static final String ACK = "ACK";
     /**
-     * UNKNOWN 命令
+     * The STOMP UNKNOWN frame command.
      */
     public static final String UNKNOWN = "UNKNOWN";
     /**
-     * ERROR 命令
+     * The STOMP ERROR frame command.
      */
     public static final String ERROR = "ERROR";
     /**
-     * Unicode BOM 标记
+     * A {@link SegmentBuffer} containing common Unicode Byte Order Marks (BOMs).
      */
     private static final SegmentBuffer UNICODE_BOMS = SegmentBuffer.of(
             ByteString.decodeHex("efbbbf"),
@@ -152,11 +153,11 @@ public class Builder {
             ByteString.decodeHex("0000ffff"),
             ByteString.decodeHex("ffff0000"));
     /**
-     * 异常抑制的反射方法
+     * Reflective method for adding suppressed exceptions to a {@link Throwable}.
      */
     private static final Method addSuppressedExceptionMethod;
     /**
-     * 标准日期格式器
+     * A thread-local {@link DateFormat} for RFC 1123 date formatting.
      */
     private static final ThreadLocal<DateFormat> STANDARD_DATE_FORMAT = ThreadLocal.withInitial(() -> {
         DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
@@ -176,16 +177,16 @@ public class Builder {
     }
 
     /**
-     * 构造函数
+     * Constructs a new {@code Builder} instance.
      */
     public Builder() {
     }
 
     /**
-     * 添加抑制的异常
+     * Adds a suppressed exception to the given throwable if possible.
      *
-     * @param e          主异常
-     * @param suppressed 抑制的异常
+     * @param e          The primary throwable.
+     * @param suppressed The throwable to be suppressed.
      */
     public static void addSuppressedIfPossible(Throwable e, Throwable suppressed) {
         if (addSuppressedExceptionMethod != null) {
@@ -197,12 +198,12 @@ public class Builder {
     }
 
     /**
-     * 检查数组偏移和计数
+     * Checks if the given offset and count are within the bounds of an array of a specified length.
      *
-     * @param arrayLength 数组长度
-     * @param offset      偏移量
-     * @param count       计数
-     * @throws ArrayIndexOutOfBoundsException 如果参数无效
+     * @param arrayLength The total length of the array.
+     * @param offset      The starting offset.
+     * @param count       The number of elements.
+     * @throws ArrayIndexOutOfBoundsException If the offset or count are invalid for the given array length.
      */
     public static void checkOffsetAndCount(long arrayLength, long offset, long count) {
         if ((offset | count) < 0 || offset > arrayLength || arrayLength - offset < count) {
@@ -211,12 +212,12 @@ public class Builder {
     }
 
     /**
-     * 尝试耗尽数据源
+     * Attempts to exhaust the given source within a specified timeout.
      *
-     * @param source   数据源
-     * @param timeout  超时时间
-     * @param timeUnit 时间单位
-     * @return true 如果成功耗尽
+     * @param source   The source to discard.
+     * @param timeout  The maximum time to wait.
+     * @param timeUnit The unit of time for the timeout.
+     * @return {@code true} if the source was successfully discarded, {@code false} otherwise.
      */
     public static boolean discard(Source source, int timeout, TimeUnit timeUnit) {
         try {
@@ -227,13 +228,13 @@ public class Builder {
     }
 
     /**
-     * 读取数据源直到耗尽或超时
+     * Skips all bytes from the source until it is exhausted or the timeout is reached.
      *
-     * @param source   数据源
-     * @param duration 超时时间
-     * @param timeUnit 时间单位
-     * @return true 如果成功耗尽
-     * @throws IOException 如果读取失败
+     * @param source   The source to skip.
+     * @param duration The maximum time to wait.
+     * @param timeUnit The unit of time for the duration.
+     * @return {@code true} if all bytes were skipped, {@code false} if the timeout was reached.
+     * @throws IOException If an I/O error occurs during skipping.
      */
     public static boolean skipAll(Source source, int duration, TimeUnit timeUnit) throws IOException {
         long now = System.nanoTime();
@@ -258,45 +259,45 @@ public class Builder {
     }
 
     /**
-     * 创建不可修改的列表
+     * Returns an immutable copy of the given list.
      *
-     * @param list 原始列表
-     * @param <T>  列表元素类型
-     * @return 不可修改的列表
+     * @param list The list to make immutable.
+     * @param <T>  The type of elements in the list.
+     * @return An immutable list.
      */
     public static <T> List<T> immutableList(List<T> list) {
         return Collections.unmodifiableList(new ArrayList<>(list));
     }
 
     /**
-     * 创建不可修改的映射
+     * Returns an immutable copy of the given map.
      *
-     * @param map 原始映射
-     * @param <K> 键类型
-     * @param <V> 值类型
-     * @return 不可修改的映射
+     * @param map The map to make immutable.
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @return An immutable map.
      */
     public static <K, V> Map<K, V> immutableMap(Map<K, V> map) {
         return map.isEmpty() ? Collections.emptyMap() : Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
 
     /**
-     * 创建不可修改的列表
+     * Returns an immutable list containing the given elements.
      *
-     * @param elements 元素数组
-     * @param <T>      元素类型
-     * @return 不可修改的列表
+     * @param elements The elements to include in the list.
+     * @param <T>      The type of elements.
+     * @return An immutable list.
      */
     public static <T> List<T> immutableList(T... elements) {
         return Collections.unmodifiableList(Arrays.asList(elements.clone()));
     }
 
     /**
-     * 创建线程工厂
+     * Creates a {@link ThreadFactory} that produces threads with a given name and daemon status.
      *
-     * @param name   线程名称
-     * @param daemon 是否为守护线程
-     * @return 线程工厂
+     * @param name   The name prefix for the created threads.
+     * @param daemon {@code true} if the created threads should be daemon threads, {@code false} otherwise.
+     * @return A {@link ThreadFactory} instance.
      */
     public static ThreadFactory threadFactory(String name, boolean daemon) {
         return runnable -> {
@@ -307,12 +308,12 @@ public class Builder {
     }
 
     /**
-     * 获取两个字符串数组的交集
+     * Returns the intersection of two string arrays based on a given comparator.
      *
-     * @param comparator 比较器
-     * @param first      第一个数组
-     * @param second     第二个数组
-     * @return 交集数组
+     * @param comparator The comparator to use for string comparison.
+     * @param first      The first array of strings.
+     * @param second     The second array of strings.
+     * @return A new array containing strings present in both input arrays.
      */
     public static String[] intersect(Comparator<? super String> comparator, String[] first, String[] second) {
         List<String> result = new ArrayList<>();
@@ -328,12 +329,12 @@ public class Builder {
     }
 
     /**
-     * 检查两个字符串数组是否存在交集
+     * Checks if there is any common string between two arrays based on a given comparator.
      *
-     * @param comparator 比较器
-     * @param first      第一个数组
-     * @param second     第二个数组
-     * @return true 如果存在交集
+     * @param comparator The comparator to use for string comparison.
+     * @param first      The first array of strings.
+     * @param second     The second array of strings.
+     * @return {@code true} if an intersection exists, {@code false} otherwise.
      */
     public static boolean nonEmptyIntersection(Comparator<String> comparator, String[] first, String[] second) {
         if (first == null || second == null || first.length == 0 || second.length == 0) {
@@ -350,11 +351,12 @@ public class Builder {
     }
 
     /**
-     * 生成主机头部
+     * Generates a host header string for a given URL.
      *
-     * @param url                URL
-     * @param includeDefaultPort 是否包含默认端口
-     * @return 主机头部字符串
+     * @param url                The URL for which to generate the host header.
+     * @param includeDefaultPort {@code true} to include the port even if it's the default for the scheme, {@code false}
+     *                           otherwise.
+     * @return The host header string.
      */
     public static String hostHeader(UnoUrl url, boolean includeDefaultPort) {
         String host = url.host().contains(Symbol.COLON) ? "[" + url.host() + "]" : url.host();
@@ -363,12 +365,12 @@ public class Builder {
     }
 
     /**
-     * 查找字符串在数组中的索引
+     * Finds the index of a string in an array using a custom comparator.
      *
-     * @param comparator 比较器
-     * @param array      数组
-     * @param value      值
-     * @return 索引（不存在时为 -1）
+     * @param comparator The comparator to use for string comparison.
+     * @param array      The array to search.
+     * @param value      The string value to find.
+     * @return The index of the value in the array, or -1 if not found.
      */
     public static int indexOf(Comparator<String> comparator, String[] array, String value) {
         for (int i = 0, size = array.length; i < size; i++) {
@@ -379,11 +381,11 @@ public class Builder {
     }
 
     /**
-     * 拼接字符串到数组
+     * Concatenates a string to an existing string array, returning a new array.
      *
-     * @param array 数组
-     * @param value 值
-     * @return 新数组
+     * @param array The original array.
+     * @param value The string value to append.
+     * @return A new array with the appended string.
      */
     public static String[] concat(String[] array, String value) {
         String[] result = new String[array.length + 1];
@@ -393,12 +395,12 @@ public class Builder {
     }
 
     /**
-     * 跳过前导 ASCII 空白字符
+     * Skips leading ASCII whitespace characters in a substring.
      *
-     * @param input 输入字符串
-     * @param pos   起始位置
-     * @param limit 结束位置
-     * @return 非空白字符位置
+     * @param input The input string.
+     * @param pos   The starting position (inclusive).
+     * @param limit The ending position (exclusive).
+     * @return The index of the first non-whitespace character, or {@code limit} if all are whitespace.
      */
     public static int skipLeadingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = pos; i < limit; i++) {
@@ -418,12 +420,12 @@ public class Builder {
     }
 
     /**
-     * 跳过尾部 ASCII 空白字符
+     * Skips trailing ASCII whitespace characters in a substring.
      *
-     * @param input 输入字符串
-     * @param pos   起始位置
-     * @param limit 结束位置
-     * @return 非空白字符位置
+     * @param input The input string.
+     * @param pos   The starting position (inclusive).
+     * @param limit The ending position (exclusive).
+     * @return The index of the character after the last non-whitespace character, or {@code pos} if all are whitespace.
      */
     public static int skipTrailingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = limit - 1; i >= pos; i--) {
@@ -443,12 +445,12 @@ public class Builder {
     }
 
     /**
-     * 修剪字符串
+     * Trims leading and trailing ASCII whitespace from a substring.
      *
-     * @param string 输入字符串
-     * @param pos    起始位置
-     * @param limit  结束位置
-     * @return 修剪后的字符串
+     * @param string The input string.
+     * @param pos    The starting position (inclusive).
+     * @param limit  The ending position (exclusive).
+     * @return The trimmed substring.
      */
     public static String trimSubstring(String string, int pos, int limit) {
         int start = skipLeadingAsciiWhitespace(string, pos, limit);
@@ -457,13 +459,13 @@ public class Builder {
     }
 
     /**
-     * 查找分隔符位置
+     * Finds the first occurrence of any delimiter character within a substring.
      *
-     * @param input      输入字符串
-     * @param pos        起始位置
-     * @param limit      结束位置
-     * @param delimiters 分隔符集合
-     * @return 分隔符位置
+     * @param input      The input string.
+     * @param pos        The starting position (inclusive).
+     * @param limit      The ending position (exclusive).
+     * @param delimiters A string containing all possible delimiter characters.
+     * @return The index of the first delimiter, or {@code limit} if no delimiter is found.
      */
     public static int delimiterOffset(String input, int pos, int limit, String delimiters) {
         for (int i = pos; i < limit; i++) {
@@ -474,13 +476,13 @@ public class Builder {
     }
 
     /**
-     * 查找单个分隔符位置
+     * Finds the first occurrence of a specific delimiter character within a substring.
      *
-     * @param input     输入字符串
-     * @param pos       起始位置
-     * @param limit     结束位置
-     * @param delimiter 分隔符
-     * @return 分隔符位置
+     * @param input     The input string.
+     * @param pos       The starting position (inclusive).
+     * @param limit     The ending position (exclusive).
+     * @param delimiter The single delimiter character to find.
+     * @return The index of the delimiter, or {@code limit} if no delimiter is found.
      */
     public static int delimiterOffset(String input, int pos, int limit, char delimiter) {
         for (int i = pos; i < limit; i++) {
@@ -491,10 +493,10 @@ public class Builder {
     }
 
     /**
-     * 规范化主机名
+     * Canonicalizes a hostname, converting it to its ASCII representation and validating it.
      *
-     * @param host 主机名
-     * @return 规范化主机名（无效时为 null）
+     * @param host The hostname to canonicalize.
+     * @return The canonicalized hostname, or {@code null} if the host is invalid.
      */
     public static String canonicalizeHost(String host) {
         if (host.contains(Symbol.COLON)) {
@@ -526,10 +528,10 @@ public class Builder {
     }
 
     /**
-     * 检查主机名是否包含无效 ASCII 字符
+     * Checks if the given ASCII hostname contains any invalid characters.
      *
-     * @param hostnameAscii 主机名
-     * @return true 如果包含无效字符
+     * @param hostnameAscii The ASCII hostname to check.
+     * @return {@code true} if invalid characters are found, {@code false} otherwise.
      */
     private static boolean containsInvalidHostnameAsciiCodes(String hostnameAscii) {
         for (int i = 0; i < hostnameAscii.length(); i++) {
@@ -546,10 +548,10 @@ public class Builder {
     }
 
     /**
-     * 查找控制字符或非 ASCII 字符的索引
+     * Finds the index of the first control character or non-ASCII character in a string.
      *
-     * @param input 输入字符串
-     * @return 索引（不存在时为 -1）
+     * @param input The input string.
+     * @return The index of the first invalid character, or -1 if all characters are valid ASCII.
      */
     public static int indexOfControlOrNonAscii(String input) {
         for (int i = 0, length = input.length(); i < length; i++) {
@@ -562,22 +564,23 @@ public class Builder {
     }
 
     /**
-     * 检查是否为 IP 地址
+     * Verifies if the given host string is a valid IP address.
      *
-     * @param host 主机名
-     * @return true 如果是 IP 地址
+     * @param host The host string to check.
+     * @return {@code true} if the host is an IP address, {@code false} otherwise.
      */
     public static boolean verifyAsIpAddress(String host) {
         return Pattern.IP_ADDRESS_PATTERN.matcher(host).matches();
     }
 
     /**
-     * 根据 BOM 选择字符集
+     * Detects the character set of a {@link BufferSource} based on its Byte Order Mark (BOM), falling back to a default
+     * charset if no BOM is found.
      *
-     * @param source  数据源
-     * @param charset 默认字符集
-     * @return 字符集
-     * @throws IOException 如果读取失败
+     * @param source  The buffer source to check for BOM.
+     * @param charset The default charset to use if no BOM is detected.
+     * @return The detected or default {@link Charset}.
+     * @throws IOException If an I/O error occurs while reading from the source.
      */
     public static Charset bomAwareCharset(BufferSource source, Charset charset) throws IOException {
         switch (source.select(UNICODE_BOMS)) {
@@ -605,13 +608,14 @@ public class Builder {
     }
 
     /**
-     * 检查持续时间
+     * Validates a duration value, ensuring it's non-negative and within integer limits when converted to milliseconds.
      *
-     * @param name     参数名称
-     * @param duration 持续时间
-     * @param unit     时间单位
-     * @return 持续时间（毫秒）
-     * @throws IllegalArgumentException 如果参数无效
+     * @param name     The name of the duration parameter (for error messages).
+     * @param duration The duration value.
+     * @param unit     The {@link TimeUnit} of the duration.
+     * @return The duration in milliseconds as an integer.
+     * @throws IllegalArgumentException If the duration is negative, the unit is null, or the duration is too
+     *                                  large/small.
      */
     public static int checkDuration(String name, long duration, TimeUnit unit) {
         if (duration < 0)
@@ -627,10 +631,10 @@ public class Builder {
     }
 
     /**
-     * 解码十六进制字符
+     * Decodes a hexadecimal character to its integer value.
      *
-     * @param c 字符
-     * @return 解码值（无效时为 -1）
+     * @param c The hexadecimal character.
+     * @return The integer value (0-15), or -1 if the character is not a valid hex digit.
      */
     public static int decodeHexDigit(char c) {
         if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
@@ -643,12 +647,12 @@ public class Builder {
     }
 
     /**
-     * 解码 IPv6 地址
+     * Decodes an IPv6 address from a substring.
      *
-     * @param input 输入字符串
-     * @param pos   起始位置
-     * @param limit 结束位置
-     * @return InetAddress 对象（无效时为 null）
+     * @param input The input string containing the IPv6 address.
+     * @param pos   The starting position (inclusive).
+     * @param limit The ending position (exclusive).
+     * @return An {@link InetAddress} object representing the IPv6 address, or {@code null} if decoding fails.
      */
     private static InetAddress decodeIpv6(String input, int pos, int limit) {
         byte[] address = new byte[Normal._16];
@@ -713,14 +717,14 @@ public class Builder {
     }
 
     /**
-     * 解码 IPv6 地址中的 IPv4 后缀
+     * Decodes an IPv4 suffix within an IPv6 address string.
      *
-     * @param input         输入字符串
-     * @param pos           起始位置
-     * @param limit         结束位置
-     * @param address       地址数组
-     * @param addressOffset 地址偏移
-     * @return true 如果解码成功
+     * @param input         The input string.
+     * @param pos           The starting position (inclusive).
+     * @param limit         The ending position (exclusive).
+     * @param address       The byte array to store the decoded IPv4 address.
+     * @param addressOffset The offset in the {@code address} array where the IPv4 bytes should be written.
+     * @return {@code true} if the IPv4 suffix was successfully decoded, {@code false} otherwise.
      */
     private static boolean decodeIpv4Suffix(String input, int pos, int limit, byte[] address, int addressOffset) {
         int b = addressOffset;
@@ -761,10 +765,10 @@ public class Builder {
     }
 
     /**
-     * 将 IPv6 地址编码为 ASCII 格式
+     * Converts an IPv6 address byte array to its ASCII string representation.
      *
-     * @param address 地址字节数组
-     * @return ASCII 格式的地址
+     * @param address The byte array representing the IPv6 address.
+     * @return The ASCII string representation of the IPv6 address.
      */
     private static String inet6AddressToAscii(byte[] address) {
         int longestRunOffset = -1;
@@ -800,10 +804,10 @@ public class Builder {
     }
 
     /**
-     * 将 HTTP/2 头部列表转换为 Headers
+     * Converts a list of HTTP/2 headers to a {@link Headers} object.
      *
-     * @param headerBlock HTTP/2 头部列表
-     * @return Headers 实例
+     * @param headerBlock The list of {@link Http2Header} objects.
+     * @return A {@link Headers} instance built from the HTTP/2 headers.
      */
     public static Headers toHeaders(List<Http2Header> headerBlock) {
         Headers.Builder builder = new Headers.Builder();
@@ -814,10 +818,10 @@ public class Builder {
     }
 
     /**
-     * 将 Headers 转换为 HTTP/2 头部列表
+     * Converts a {@link Headers} object to a list of HTTP/2 headers.
      *
-     * @param headers Headers 实例
-     * @return HTTP/2 头部列表
+     * @param headers The {@link Headers} object to convert.
+     * @return A list of {@link Http2Header} objects.
      */
     public static List<Http2Header> toHeaderBlock(Headers headers) {
         List<Http2Header> result = new ArrayList<>();
@@ -828,21 +832,21 @@ public class Builder {
     }
 
     /**
-     * 检查两个 URL 是否可以复用连接
+     * Checks if two {@link UnoUrl} instances can share the same connection.
      *
-     * @param a 第一个 URL
-     * @param b 第二个 URL
-     * @return true 如果可以复用连接
+     * @param a The first URL.
+     * @param b The second URL.
+     * @return {@code true} if the URLs can share a connection, {@code false} otherwise.
      */
     public static boolean sameConnection(UnoUrl a, UnoUrl b) {
         return a.host().equals(b.host()) && a.port() == b.port() && a.scheme().equals(b.scheme());
     }
 
     /**
-     * 解析日期字符串
+     * Parses a date string into a {@link Date} object, trying various browser-compatible formats.
      *
-     * @param value 日期字符串
-     * @return 日期对象（无效时为 null）
+     * @param value The date string to parse.
+     * @return A {@link Date} object if parsing is successful, {@code null} otherwise.
      */
     public static Date parse(String value) {
         if (value.length() == 0) {
@@ -873,10 +877,10 @@ public class Builder {
     }
 
     /**
-     * 格式化日期
+     * Formats a {@link Date} object into an RFC 1123 compliant string.
      *
-     * @param value 日期对象
-     * @return 日期字符串
+     * @param value The {@link Date} object to format.
+     * @return The formatted date string.
      */
     public static String format(Date value) {
         return STANDARD_DATE_FORMAT.get().format(value);

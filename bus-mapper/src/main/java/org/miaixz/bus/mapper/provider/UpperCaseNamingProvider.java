@@ -32,7 +32,7 @@ import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 提供大写命名风格的表名和列名生成器。
+ * Provides an uppercase naming style generator for table and column names.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,9 +40,9 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class UpperCaseNamingProvider extends DirectNamingProvider {
 
     /**
-     * 获取命名风格，返回大写命名风格。
+     * Gets the naming style, returning the uppercase naming style identifier.
      *
-     * @return 大写命名风格标识
+     * @return The uppercase naming style identifier.
      */
     @Override
     public String type() {
@@ -50,10 +50,10 @@ public class UpperCaseNamingProvider extends DirectNamingProvider {
     }
 
     /**
-     * 获取表名，将表名转换为大写。
+     * Gets the table name, converting it to uppercase.
      *
-     * @param entityClass 实体类
-     * @return 大写的表名
+     * @param entityClass The entity class.
+     * @return The table name in uppercase.
      */
     @Override
     public String tableName(Class<?> entityClass) {
@@ -61,11 +61,11 @@ public class UpperCaseNamingProvider extends DirectNamingProvider {
     }
 
     /**
-     * 获取列名，将列名转换为大写。
+     * Gets the column name, converting it to uppercase.
      *
-     * @param entityTable 实体表信息
-     * @param field       实体字段信息
-     * @return 大写的列名
+     * @param entityTable The entity table information.
+     * @param field       The entity field information.
+     * @return The column name in uppercase.
      */
     @Override
     public String columnName(TableMeta entityTable, FieldMeta field) {

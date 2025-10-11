@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 富文本脱敏处理器，用于对富文本内容进行脱敏处理
+ * Rich text masking processor for masking rich text content.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,35 +43,35 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class MaskingProcessor {
 
     /**
-     * 脱敏规则列表
+     * The list of masking rules.
      */
     private final List<TextMaskingRule> rules = new ArrayList<>();
 
     /**
-     * 是否保留HTML标签
+     * Whether to preserve HTML tags.
      */
     private boolean preserveHtmlTags = true;
 
     /**
-     * 构造函数
+     * Constructor.
      */
     public MaskingProcessor() {
 
     }
 
     /**
-     * 构造函数
+     * Constructor.
      *
-     * @param preserveHtmlTags 是否保留HTML标签
+     * @param preserveHtmlTags Whether to preserve HTML tags.
      */
     public MaskingProcessor(final boolean preserveHtmlTags) {
         this.preserveHtmlTags = preserveHtmlTags;
     }
 
     /**
-     * 添加脱敏规则
+     * Adds a masking rule.
      *
-     * @param rule 脱敏规则
+     * @param rule The masking rule.
      * @return this
      */
     public MaskingProcessor addRule(final TextMaskingRule rule) {
@@ -80,41 +80,41 @@ public class MaskingProcessor {
     }
 
     /**
-     * 对文本内容进行脱敏处理
+     * Masks the text content.
      *
-     * @param text 文本内容
-     * @return 脱敏后的文本
+     * @param text The text content.
+     * @return The masked text.
      */
     public String mask(final String text) {
         if (StringKit.isBlank(text)) {
             return text;
         }
 
-        // 如果是HTML内容，则需要特殊处理
+        // Special handling for HTML content
         if (preserveHtmlTags && isHtmlContent(text)) {
             return maskHtmlContent(text);
         } else {
-            // 普通文本直接处理
+            // Process plain text directly
             return maskPlainText(text);
         }
     }
 
     /**
-     * 判断是否为HTML内容
+     * Checks if the text is HTML content.
      *
-     * @param text 文本内容
-     * @return 是否为HTML内容
+     * @param text The text content.
+     * @return Whether the text is HTML content.
      */
     private boolean isHtmlContent(final String text) {
-        // 简单判断是否包含HTML标签
+        // Simple check for HTML tags
         return text.contains("<") && text.contains(">") && (text.contains("</") || text.contains("/>"));
     }
 
     /**
-     * 对HTML内容进行脱敏处理
+     * Masks HTML content.
      *
-     * @param html HTML内容
-     * @return 脱敏后的HTML
+     * @param html The HTML content.
+     * @return The masked HTML.
      */
     private String maskHtmlContent(final String html) {
         final StringBuilder result = new StringBuilder();
@@ -126,7 +126,7 @@ public class MaskingProcessor {
             final char c = html.charAt(i);
 
             if (c == '<') {
-                // 处理标签前的文本内容
+                // Process the text content before the tag
                 if (!inTag && i > lastIndex) {
                     final String textContent = html.substring(lastIndex, i);
                     result.append(processTextContentWithContext(textContent, currentTag));
@@ -135,15 +135,15 @@ public class MaskingProcessor {
                 inTag = true;
                 lastIndex = i;
 
-                // 尝试获取当前标签名
+                // Try to get the current tag name
                 int tagNameStart = i + 1;
                 if (tagNameStart < html.length()) {
-                    // 跳过结束标签的斜杠
+                    // Skip the slash of the closing tag
                     if (html.charAt(tagNameStart) == '/') {
                         tagNameStart++;
                     }
 
-                    // 查找标签名结束位置
+                    // Find the end of the tag name
                     int tagNameEnd = html.indexOf(' ', tagNameStart);
                     if (tagNameEnd == -1) {
                         tagNameEnd = html.indexOf('>', tagNameStart);
@@ -155,18 +155,18 @@ public class MaskingProcessor {
                 }
             } else if (c == '>' && inTag) {
                 inTag = false;
-                result.append(html, lastIndex, i + 1); // 保留标签
+                result.append(html, lastIndex, i + 1); // Preserve the tag
                 lastIndex = i + 1;
             }
         }
 
-        // 处理最后一部分
+        // Process the last part
         if (lastIndex < html.length()) {
             if (inTag) {
-                // 如果还在标签内，直接添加剩余部分
+                // If still inside a tag, append the rest of the string
                 result.append(html.substring(lastIndex));
             } else {
-                // 处理最后的文本内容
+                // Process the final text content
                 final String textContent = html.substring(lastIndex);
                 result.append(processTextContentWithContext(textContent, currentTag));
             }
@@ -176,11 +176,11 @@ public class MaskingProcessor {
     }
 
     /**
-     * 根据上下文处理文本内容
+     * Processes text content based on the context.
      *
-     * @param text    文本内容
-     * @param tagName 当前所在的标签名
-     * @return 处理后的文本
+     * @param text    The text content.
+     * @param tagName The name of the current tag.
+     * @return The processed text.
      */
     private String processTextContentWithContext(final String text, final String tagName) {
         if (StringKit.isBlank(text)) {
@@ -190,20 +190,20 @@ public class MaskingProcessor {
         String result = text;
 
         for (final TextMaskingRule rule : rules) {
-            // 检查是否需要根据标签进行过滤
+            // Check if filtering by tag is needed
             if (tagName != null) {
-                // 如果设置了只包含特定标签且当前标签不在列表中，则跳过
+                // If only specific tags are included and the current tag is not in the list, skip
                 if (!rule.getIncludeTags().isEmpty() && !rule.getIncludeTags().contains(tagName)) {
                     continue;
                 }
 
-                // 如果当前标签在排除列表中，则跳过
+                // If the current tag is in the exclude list, skip
                 if (rule.getExcludeTags().contains(tagName)) {
                     continue;
                 }
             }
 
-            // 应用脱敏规则
+            // Apply the masking rule
             result = applyMaskingRule(result, rule);
         }
 
@@ -211,10 +211,10 @@ public class MaskingProcessor {
     }
 
     /**
-     * 对普通文本进行脱敏处理
+     * Masks plain text.
      *
-     * @param text 文本内容
-     * @return 脱敏后的文本
+     * @param text The text content.
+     * @return The masked text.
      */
     private String maskPlainText(final String text) {
         String result = text;
@@ -227,11 +227,11 @@ public class MaskingProcessor {
     }
 
     /**
-     * 应用脱敏规则
+     * Applies a masking rule.
      *
-     * @param text 文本内容
-     * @param rule 脱敏规则
-     * @return 脱敏后的文本
+     * @param text The text content.
+     * @param rule The masking rule.
+     * @return The masked text.
      */
     private String applyMaskingRule(final String text, final TextMaskingRule rule) {
         if (StringKit.isBlank(text) || StringKit.isBlank(rule.getPattern())) {
@@ -247,18 +247,18 @@ public class MaskingProcessor {
             final String matched = matcher.group();
             final String replacement = switch (rule.getMasking()) {
                 case FULL ->
-                        // 完全脱敏，用脱敏字符替换整个匹配内容
+                        // Full masking: replace the entire matched content with the mask character
                         StringKit.repeat(rule.getMaskChar(), matched.length());
                 case PARTIAL ->
-                        // 部分脱敏，保留部分原始内容
+                        // Partial masking: preserve some of the original content
                         partialMask(matched, rule.getPreserveLeft(), rule.getPreserveRight(), rule.getMaskChar());
                 case REPLACE ->
-                        // 替换脱敏，用指定文本替换
+                        // Replacement masking: replace with the specified text
                         rule.getReplacement();
                 default -> matched;
             };
 
-            // 处理正则表达式中的特殊字符
+            // Handle special characters in the regular expression
             matcher.appendReplacement(sb, Matcher.quoteReplacement(replacement));
         }
 
@@ -268,13 +268,13 @@ public class MaskingProcessor {
     }
 
     /**
-     * 部分脱敏，保留部分原始内容
+     * Partially masks the text, preserving some of the original content.
      *
-     * @param text          原文本
-     * @param preserveLeft  保留左侧字符数
-     * @param preserveRight 保留右侧字符数
-     * @param maskChar      脱敏字符
-     * @return 脱敏后的文本
+     * @param text          The original text.
+     * @param preserveLeft  The number of characters to preserve on the left.
+     * @param preserveRight The number of characters to preserve on the right.
+     * @param maskChar      The masking character.
+     * @return The masked text.
      */
     private String partialMask(final String text, int preserveLeft, int preserveRight, final char maskChar) {
         if (StringKit.isBlank(text)) {
@@ -283,11 +283,11 @@ public class MaskingProcessor {
 
         final int length = text.length();
 
-        // 调整保留字符数，确保不超过文本长度
+        // Adjust the number of preserved characters to ensure it does not exceed the text length
         preserveLeft = Math.min(preserveLeft, length);
         preserveRight = Math.min(preserveRight, length - preserveLeft);
 
-        // 计算需要脱敏的字符数
+        // Calculate the number of characters to be masked
         final int maskLength = length - preserveLeft - preserveRight;
 
         if (maskLength <= 0) {
@@ -296,15 +296,15 @@ public class MaskingProcessor {
 
         final StringBuilder sb = new StringBuilder(length);
 
-        // 添加左侧保留的字符
+        // Append the preserved characters on the left
         if (preserveLeft > 0) {
             sb.append(text, 0, preserveLeft);
         }
 
-        // 添加脱敏字符
+        // Append the masking characters
         sb.append(StringKit.repeat(maskChar, maskLength));
 
-        // 添加右侧保留的字符
+        // Append the preserved characters on the right
         if (preserveRight > 0) {
             sb.append(text, length - preserveRight, length);
         }

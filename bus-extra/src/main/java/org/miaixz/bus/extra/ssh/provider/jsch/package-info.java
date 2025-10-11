@@ -23,10 +23,12 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Jsch(http://www.jcraft.com/jsch/) 引擎封装
+ * Provides an encapsulation for the JSch (Java Secure Channel) library. This package contains classes that integrate
+ * with JSch to offer SSH and SFTP functionalities. Project homepage:
+ * <a href="http://www.jcraft.com/jsch/">http://www.jcraft.com/jsch/</a>
  *
  * @author Kimi Liu
  * @since Java 17+

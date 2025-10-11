@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-点金计划接口
+ * WeChat Pay V3 API interfaces related to the Gold Plan.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,49 +38,56 @@ import org.miaixz.bus.pay.Matcher;
 public enum GoldPlanApi implements Matcher {
 
     /**
-     * 点金计划管理
+     * Gold Plan management.
      */
-    CHANGE_GOLD_PLAN_STATUS("/v3/goldplan/merchants/changegoldplanstatus", "点金计划管理"),
+    CHANGE_GOLD_PLAN_STATUS("/v3/goldplan/merchants/changegoldplanstatus", "Gold Plan management"),
 
     /**
-     * 商家小票管理
+     * Merchant receipt management.
      */
-    CHANGE_CUSTOM_PAGE_STATUS("/v3/goldplan/merchants/changecustompagestatus", "商家小票管理"),
+    CHANGE_CUSTOM_PAGE_STATUS("/v3/goldplan/merchants/changecustompagestatus", "Merchant receipt management"),
 
     /**
-     * 商家小票管理
+     * Set advertising industry filter.
      */
-    SET_ADVERTISING_INDUSTRY_FILTER("/v3/goldplan/merchants/set-advertising-industry-filter", "商家小票管理"),
+    SET_ADVERTISING_INDUSTRY_FILTER("/v3/goldplan/merchants/set-advertising-industry-filter",
+            "Set advertising industry filter"),
 
     /**
-     * 开通广告展示
+     * Open advertising display.
      */
-    OPEN_ADVERTISING_SHOW("/v3/goldplan/merchants/open-advertising-show", "开通广告展示"),
+    OPEN_ADVERTISING_SHOW("/v3/goldplan/merchants/open-advertising-show", "Open advertising display"),
 
     /**
-     * 关闭广告展示
+     * Close advertising display.
      */
-    CLOSE_ADVERTISING_SHOW("/v3/goldplan/merchants/close-advertising-show", "关闭广告展示");
+    CLOSE_ADVERTISING_SHOW("/v3/goldplan/merchants/close-advertising-show", "Close advertising display");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new GoldPlanApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     GoldPlanApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -88,9 +95,9 @@ public enum GoldPlanApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -98,9 +105,9 @@ public enum GoldPlanApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

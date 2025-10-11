@@ -35,7 +35,8 @@ import java.lang.annotation.Target;
 import org.miaixz.bus.mapper.builder.SchemaSqlBuilder;
 
 /**
- * 用于对 SQL 进行二次加工的注解，可应用于接口、方法、参数及注解，仅支持一层搜索
+ * An annotation used for post-processing SQL statements. It can be applied to interfaces, methods, parameters, and
+ * other annotations. The search for this annotation is limited to a single level.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,9 +46,9 @@ import org.miaixz.bus.mapper.builder.SchemaSqlBuilder;
 public @interface SqlWrapper {
 
     /**
-     * 加工处理器类
+     * Specifies the processor classes that will be used to modify the SQL.
      *
-     * @return 处理器类数组，默认为空
+     * @return An array of {@link SchemaSqlBuilder} classes. Defaults to an empty array.
      */
     Class<? extends SchemaSqlBuilder>[] value() default {};
 

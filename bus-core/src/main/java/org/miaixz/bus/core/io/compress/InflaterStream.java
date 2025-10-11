@@ -35,29 +35,35 @@ import java.util.zip.Inflater;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * {@link java.util.zip.InflaterInputStream}包装实现，实现"deflate"算法解压 参考：org.apache.hc.client5.http.entity.DeflateInputStream
+ * Wrapper implementation for {@link java.util.zip.InflaterInputStream}, providing decompression using the "deflate"
+ * algorithm. Reference: org.apache.hc.client5.http.entity.DeflateInputStream
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class InflaterStream extends InputStream {
 
+    /**
+     * The underlying {@link java.util.zip.InflaterInputStream}.
+     */
     private final java.util.zip.InflaterInputStream in;
 
     /**
-     * 构造
+     * Constructs a new InflaterStream with a default buffer size of 512 bytes.
      *
-     * @param wrapped 被包装的流
+     * @param wrapped The input stream to be wrapped and decompressed.
      */
     public InflaterStream(final InputStream wrapped) {
         this(wrapped, 512);
     }
 
     /**
-     * 构造
+     * Constructs a new InflaterStream with a specified buffer size.
      *
-     * @param wrapped 被包装的流
-     * @param size    buffer大小
+     * @param wrapped The input stream to be wrapped and decompressed.
+     * @param size    The buffer size for the internal {@link java.util.zip.InflaterInputStream}.
+     * @throws InternalException if an unexpected end of stream occurs or an I/O error happens during stream
+     *                           initialization.
      */
     public InflaterStream(final InputStream wrapped, final int size) {
         final PushbackInputStream pushback = new PushbackInputStream(wrapped, 2);

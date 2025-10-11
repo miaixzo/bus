@@ -34,29 +34,37 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * 健康检查
+ * REST controller for application health checks and state management.
+ * <p>
+ * This controller provides endpoints to query the application's health status and to manually control its liveness and
+ * readiness states, which is particularly useful in containerized environments like Kubernetes.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HealthController extends Controller {
 
-    public HealthService service;
+    /**
+     * The underlying service that handles health logic.
+     */
+    public final HealthService service;
 
     /**
-     * 构造函数，注入 HealthProviderService。
+     * Constructs the controller and injects the {@link HealthService}.
      *
-     * @param service 健康状态服务
+     * @param service The health provider service.
      */
     public HealthController(HealthService service) {
         this.service = service;
     }
 
     /**
-     * 获取系统健康状态信息
+     * Retrieves system health status information.
      *
-     * @param tid 参数
-     * @return 操作结果
+     * @param tid An optional request parameter specifying the type of information to retrieve (e.g., "liveness", "cpu",
+     *            "memory").
+     * @return The operation result, typically a JSON object with health data.
      */
     @ResponseBody
     @RequestMapping(value = "/healthz", method = { RequestMethod.POST, RequestMethod.GET })
@@ -65,9 +73,9 @@ public class HealthController extends Controller {
     }
 
     /**
-     * 将存活状态改为 BROKEN，导致 Kubernetes 杀死并重启 pod。
-     * 
-     * @return 操作结果
+     * Sets the liveness state to BROKEN, causing Kubernetes to kill and restart the pod.
+     *
+     * @return The operation result.
      */
     @ResponseBody
     @RequestMapping(value = "/broken", method = { RequestMethod.POST, RequestMethod.GET })
@@ -76,9 +84,9 @@ public class HealthController extends Controller {
     }
 
     /**
-     * 将存活状态改为 CORRECT，表示 pod 正常运行。
-     * 
-     * @return 操作结果
+     * Sets the liveness state to CORRECT, indicating the pod is running normally.
+     *
+     * @return The operation result.
      */
     @ResponseBody
     @RequestMapping(value = "/correct", method = { RequestMethod.POST, RequestMethod.GET })
@@ -87,9 +95,9 @@ public class HealthController extends Controller {
     }
 
     /**
-     * 将就绪状态改为 ACCEPTING_TRAFFIC，Kubernetes 将请求转发到此 pod。
-     * 
-     * @return 操作结果
+     * Sets the readiness state to ACCEPTING_TRAFFIC, allowing Kubernetes to route requests to this pod.
+     *
+     * @return The operation result.
      */
     @ResponseBody
     @RequestMapping(value = "/accept", method = { RequestMethod.POST, RequestMethod.GET })
@@ -98,9 +106,9 @@ public class HealthController extends Controller {
     }
 
     /**
-     * 将就绪状态改为 REFUSING_TRAFFIC，Kubernetes 拒绝外部请求。
+     * Sets the readiness state to REFUSING_TRAFFIC, preventing Kubernetes from routing external requests to this pod.
      *
-     * @return 操作结果
+     * @return The operation result.
      */
     @ResponseBody
     @RequestMapping(value = "/refuse", method = { RequestMethod.POST, RequestMethod.GET })

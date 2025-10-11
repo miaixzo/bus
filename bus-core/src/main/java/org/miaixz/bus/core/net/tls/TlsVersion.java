@@ -34,7 +34,8 @@ import java.util.List;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * 在协商安全插槽时可以提供的TLS版本 查看{@link javax.net.ssl.SSLSocket # setEnabledProtocols}
+ * The TLS versions that can be offered when negotiating a secure socket. See
+ * {@link javax.net.ssl.SSLSocket#setEnabledProtocols}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,32 +43,47 @@ import org.miaixz.bus.core.net.Protocol;
 public enum TlsVersion {
 
     /**
-     * 2016年版本
+     * TLS 1.3, released in 2018.
      */
     TLSv1_3(Protocol.TLSv1_3.name),
     /**
-     * 2008年版本
+     * TLS 1.2, released in 2008.
      */
     TLSv1_2(Protocol.TLSv1_2.name),
     /**
-     * 2006年版本
+     * TLS 1.1, released in 2006.
      */
     TLSv1_1(Protocol.TLSv1_1.name),
     /**
-     * 1999年版本
+     * TLS 1.0, released in 1999.
      */
     TLSv1(Protocol.TLSv1.name),
     /**
-     * 1996年版本
+     * SSL 3.0, released in 1996.
      */
     SSLv3(Protocol.SSLv3.name);
 
+    /**
+     * The name of the TLS version in the Java runtime.
+     */
     public final String javaName;
 
+    /**
+     * Constructs a new TlsVersion.
+     *
+     * @param javaName The name of the TLS version in the Java runtime.
+     */
     TlsVersion(String javaName) {
         this.javaName = javaName;
     }
 
+    /**
+     * Returns the TlsVersion for the given Java name.
+     *
+     * @param javaName The name of the TLS version in the Java runtime.
+     * @return The TlsVersion.
+     * @throws IllegalArgumentException if the TLS version is not supported.
+     */
     public static TlsVersion forJavaName(String javaName) {
         if (Protocol.TLSv1_3.name.equals(javaName)) {
             return TLSv1_3;
@@ -87,6 +103,12 @@ public enum TlsVersion {
         throw new IllegalArgumentException("Unexpected TLS version: " + javaName);
     }
 
+    /**
+     * Returns a list of TlsVersions for the given Java names.
+     *
+     * @param tlsVersions The names of the TLS versions in the Java runtime.
+     * @return A list of TlsVersions.
+     */
     public static List<TlsVersion> forJavaNames(String... tlsVersions) {
         List<TlsVersion> result = new ArrayList<>(tlsVersions.length);
         for (String tlsVersion : tlsVersions) {
@@ -95,6 +117,11 @@ public enum TlsVersion {
         return Collections.unmodifiableList(result);
     }
 
+    /**
+     * Returns the name of the TLS version in the Java runtime.
+     *
+     * @return The name of the TLS version.
+     */
     public String javaName() {
         return javaName;
     }

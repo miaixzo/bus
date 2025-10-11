@@ -28,7 +28,8 @@
 package org.miaixz.bus.tracer;
 
 /**
- * 链路追踪
+ * Provides core functionality for distributed tracing. This class serves as a central point for managing and accessing
+ * tracing-related components.
  *
  * @author Kimi Liu
  * @since Java 17+

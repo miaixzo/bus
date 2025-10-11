@@ -36,38 +36,52 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * TOML文件读取 来自：https://github.com/TheElectronWill/TOML-javalib
+ * A reader for TOML (Tom's Obvious, Minimal Language) files. This implementation is based on the TOML-javalib project.
  * <p>
- * 日期格式支持：
+ * Supported date formats:
  * <ul>
- * <li>2015-03-20 转为：{@link LocalDate}</li>
- * <li>2015-03-20T19:04:35 转为：{@link LocalDateTime}</li>
- * <li>2015-03-20T19:04:35+01:00 转为：{@link ZonedDateTime}</li>
+ * <li>{@code 2021-03-21} is parsed as a {@link LocalDate}.</li>
+ * <li>{@code 2021-03-21T19:06:30} is parsed as a {@link LocalDateTime}.</li>
+ * <li>{@code 2021-03-21T19:06:30+01:00} is parsed as a {@link ZonedDateTime}.</li>
  * </ul>
  * <p>
- * 此类支持更加宽松的key，除了{@code A-Za-z0-9_- }，还支持' ','.', '[', ']' 和 '='
- * <p>
+ * This class supports a lenient bare key syntax in addition to the standard {@code A-Za-z0-9_-} characters.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TomlReader {
 
+    /**
+     * The TOML string data to be parsed.
+     */
     private final String data;
+    /**
+     * Flag indicating whether to enforce strict ASCII for bare keys.
+     */
     private final boolean strictAsciiBareKeys;
-    private int pos = 0;// current position
-    private int line = 1;// current line
+    /**
+     * The current parsing position in the data string.
+     */
+    private int pos = 0;
+    /**
+     * The current line number for error reporting.
+     */
+    private int line = 1;
 
     /**
-     * 构造
+     * Constructs a new {@code TomlReader}.
+     * <p>
+     * Bare key character rules:
      * 
      * <pre>
-     *     严格模式：[A-Za-z0-9_-]
-     *     宽松模式：所有字符但是不包括. [ ] # =
+     * Strict mode (true): [A-Za-z0-9_-]
+     * Lenient mode (false): Any character except . [ ] # =
      * </pre>
      *
-     * @param data                TOML数据
-     * @param strictAsciiBareKeys {@code true} 只允许严格的key格式, {@code false} 支持宽松格式.
+     * @param data                The TOML data as a string.
+     * @param strictAsciiBareKeys If {@code true}, only allows strict bare key format; if {@code false}, supports a more
+     *                            lenient format.
      */
     public TomlReader(final String data, final boolean strictAsciiBareKeys) {
         this.data = data;
@@ -75,9 +89,9 @@ public class TomlReader {
     }
 
     /**
-     * 读取TOML
+     * Reads and parses the entire TOML data string into a map.
      *
-     * @return TOML
+     * @return A map representing the parsed TOML data.
      */
     public Map<String, Object> read() {
         final Map<String, Object> map = nextTableContent();
@@ -97,104 +111,89 @@ public class TomlReader {
             }
             pos--;
 
-            // --- Reads the data --
+            // Reads the key
             final List<String> keyParts = new ArrayList<>(4);
             boolean insideSquareBrackets = true;
             while (insideSquareBrackets) {
                 if (!hasNext())
                     throw new InternalException("Invalid table declaration at line " + line + ": it never ends");
 
-                String name = null;
+                String name;
                 final char nameFirstChar = nextUseful(false);
                 switch (nameFirstChar) {
-                    case '"': {
-                        if (pos + 1 < data.length()) {
-                            final char c2 = data.charAt(pos);
-                            final char c3 = data.charAt(pos + 1);
-                            if (c2 == '"' && c3 == '"') {
-                                pos += 2;
-                                name = nextBasicMultilineString();
-                            }
-                        }
-                        if (name == null) {
+                    case '"':
+                        if (pos + 1 < data.length() && data.charAt(pos) == '"' && data.charAt(pos + 1) == '"') {
+                            pos += 2;
+                            name = nextBasicMultilineString();
+                        } else {
                             name = nextBasicString();
                         }
                         break;
-                    }
 
-                    case '\'': {
-                        if (pos + 1 < data.length()) {
-                            final char c2 = data.charAt(pos);
-                            final char c3 = data.charAt(pos + 1);
-                            if (c2 == '\'' && c3 == '\'') {
-                                pos += 2;
-                                name = nextLiteralMultilineString();
-                            }
-                        }
-                        if (name == null) {
+                    case '\'':
+                        if (pos + 1 < data.length() && data.charAt(pos) == '\'' && data.charAt(pos + 1) == '\'') {
+                            pos += 2;
+                            name = nextLiteralMultilineString();
+                        } else {
                             name = nextLiteralString();
                         }
                         break;
-                    }
 
                     default:
-                        pos--;// to include the first (already read) non-space character
+                        pos--; // Go back to include the first character.
                         name = nextBareKey(']', '.').trim();
                         if (data.charAt(pos) == ']') {
                             if (!name.isEmpty())
                                 keyParts.add(name);
                             insideSquareBrackets = false;
                         } else if (name.isEmpty()) {
-                            throw new InternalException("Invalid empty data at line " + line);
+                            throw new InternalException("Invalid empty key at line " + line);
                         }
-
-                        pos++;// to go after the character we stopped at in nextBareKey()
+                        pos++; // Move past the character we stopped at.
                         break;
                 }
                 if (insideSquareBrackets)
                     keyParts.add(name.trim());
             }
 
-            // -- Checks --
             if (keyParts.isEmpty())
-                throw new InternalException("Invalid empty data at line " + line);
+                throw new InternalException("Invalid empty key at line " + line);
 
-            if (twoBrackets && next() != ']') {// 2 brackets at the start but only one at the end!
+            if (twoBrackets && next() != ']') {
                 throw new InternalException("Missing character ']' at line " + line);
             }
 
-            // -- Reads the value (table content) --
+            // Reads the table content
             final Map<String, Object> value = nextTableContent();
 
-            // -- Saves the value --
-            Map<String, Object> valueMap = map;// the map that contains the value
+            // Saves the value
+            Map<String, Object> currentMap = map;
             for (int i = 0; i < keyParts.size() - 1; i++) {
                 final String part = keyParts.get(i);
-                final Object child = valueMap.get(part);
+                final Object child = currentMap.get(part);
                 final Map<String, Object> childMap;
-                if (child == null) {// implicit table
+                if (child == null) { // Implicit table
                     childMap = new LinkedHashMap<>(4);
-                    valueMap.put(part, childMap);
-                } else if (child instanceof Map) {// table
+                    currentMap.put(part, childMap);
+                } else if (child instanceof Map) { // Existing table
                     childMap = (Map<String, Object>) child;
-                } else {// array
+                } else { // Array of tables
                     final List<Map<String, Object>> list = (List<Map<String, Object>>) child;
                     childMap = list.get(list.size() - 1);
                 }
-                valueMap = childMap;
+                currentMap = childMap;
             }
-            if (twoBrackets) {// element of a table array
+            if (twoBrackets) { // Array of tables
                 final String name = keyParts.get(keyParts.size() - 1);
-                Collection<Map<String, Object>> tableArray = (Collection<Map<String, Object>>) valueMap.get(name);
+                Collection<Map<String, Object>> tableArray = (Collection<Map<String, Object>>) currentMap.get(name);
                 if (tableArray == null) {
                     tableArray = new ArrayList<>(2);
-                    valueMap.put(name, tableArray);
+                    currentMap.put(name, tableArray);
                 }
                 tableArray.add(value);
-            } else {// just a table
-                valueMap.put(keyParts.get(keyParts.size() - 1), value);
+            } else { // Standard table
+                currentMap.put(keyParts.get(keyParts.size() - 1), value);
             }
-
         }
         return map;
     }
@@ -209,8 +208,7 @@ public class TomlReader {
 
     private char nextUseful(final boolean skipComments) {
         char c = Symbol.C_SPACE;
-        while (hasNext() && (c == Symbol.C_SPACE || c == '\t' || c == '\r' || c == '\n'
-                || (c == Symbol.C_HASH && skipComments))) {
+        while (hasNext() && (Character.isWhitespace(c) || (c == Symbol.C_HASH && skipComments))) {
             c = next();
             if (skipComments && c == Symbol.C_HASH) {
                 final int nextLinebreak = data.indexOf('\n', pos);
@@ -230,7 +228,7 @@ public class TomlReader {
     private char nextUsefulOrLinebreak() {
         char c = Symbol.C_SPACE;
         while (c == Symbol.C_SPACE || c == '\t' || c == '\r') {
-            if (!hasNext())// fixes error when no '\n' at the end of the file
+            if (!hasNext())
                 return '\n';
             c = next();
         }
@@ -243,37 +241,20 @@ public class TomlReader {
         switch (firstChar) {
             case Symbol.C_PLUS:
             case Symbol.C_MINUS:
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
+            case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
                 return nextNumberOrDate(firstChar);
 
             case '"':
-                if (pos + 1 < data.length()) {
-                    final char c2 = data.charAt(pos);
-                    final char c3 = data.charAt(pos + 1);
-                    if (c2 == '"' && c3 == '"') {
-                        pos += 2;
-                        return nextBasicMultilineString();
-                    }
+                if (pos + 1 < data.length() && data.charAt(pos) == '"' && data.charAt(pos + 1) == '"') {
+                    pos += 2;
+                    return nextBasicMultilineString();
                 }
                 return nextBasicString();
 
             case '\'':
-                if (pos + 1 < data.length()) {
-                    final char c2 = data.charAt(pos);
-                    final char c3 = data.charAt(pos + 1);
-                    if (c2 == '\'' && c3 == '\'') {
-                        pos += 2;
-                        return nextLiteralMultilineString();
-                    }
+                if (pos + 1 < data.length() && data.charAt(pos) == '\'' && data.charAt(pos + 1) == '\'') {
+                    pos += 2;
+                    return nextLiteralMultilineString();
                 }
                 return nextLiteralString();
 
@@ -283,13 +264,13 @@ public class TomlReader {
             case '{':
                 return nextInlineTable();
 
-            case 't':// Must be "true"
+            case 't': // "true"
                 if (pos + 3 > data.length() || next() != 'r' || next() != 'u' || next() != 'e') {
                     throw new InternalException("Invalid value at line " + line);
                 }
                 return true;
 
-            case 'f':// Must be "false"
+            case 'f': // "false"
                 if (pos + 4 > data.length() || next() != 'a' || next() != 'l' || next() != 's' || next() != 'e') {
                     throw new InternalException("Invalid value at line " + line);
                 }
@@ -309,9 +290,9 @@ public class TomlReader {
                 break;
             }
             final Object value = nextValue(c);
-            if (!list.isEmpty() && !(list.get(0).getClass().isAssignableFrom(value.getClass())))
-                throw new InternalException(
-                        "Invalid array at line " + line + ": all the values must have the same type");
+            if (!list.isEmpty() && !list.get(0).getClass().isAssignableFrom(value.getClass())) {
+                throw new InternalException("Invalid array at line " + line + ": all values must have the same type");
+            }
             list.add(value);
 
             final char afterEntry = nextUseful(true);
@@ -332,51 +313,32 @@ public class TomlReader {
         final Map<String, Object> map = new LinkedHashMap<>();
         while (true) {
             final char nameFirstChar = nextUsefulOrLinebreak();
-            String name = null;
+            String name;
+            if (nameFirstChar == '}') {
+                return map;
+            }
             switch (nameFirstChar) {
-                case '}':
-                    return map;
-
-                case '"': {
-                    if (pos + 1 < data.length()) {
-                        final char c2 = data.charAt(pos);
-                        final char c3 = data.charAt(pos + 1);
-                        if (c2 == '"' && c3 == '"') {
-                            pos += 2;
-                            name = nextBasicMultilineString();
-                        }
-                    }
-                    if (name == null)
-                        name = nextBasicString();
+                case '"':
+                    name = nextBasicString();
                     break;
-                }
 
-                case '\'': {
-                    if (pos + 1 < data.length()) {
-                        final char c2 = data.charAt(pos);
-                        final char c3 = data.charAt(pos + 1);
-                        if (c2 == '\'' && c3 == '\'') {
-                            pos += 2;
-                            name = nextLiteralMultilineString();
-                        }
-                    }
-                    if (name == null)
-                        name = nextLiteralString();
+                case '\'':
+                    name = nextLiteralString();
                     break;
-                }
 
                 default:
-                    pos--;// to include the first (already read) non-space character
+                    pos--; // Go back to include the first character.
                     name = nextBareKey(Symbol.C_SPACE, '\t', Symbol.C_EQUAL);
                     if (name.isEmpty())
-                        throw new InternalException("Invalid empty data at line " + line);
+                        throw new InternalException("Invalid empty key at line " + line);
                     break;
             }
 
-            final char separator = nextUsefulOrLinebreak();// tries to find the '=' sign
-            if (separator != Symbol.C_EQUAL)
+            final char separator = nextUsefulOrLinebreak();
+            if (separator != Symbol.C_EQUAL) {
                 throw new InternalException(
                         "Invalid character '" + toString(separator) + "' at line " + line + ": expected '='");
+            }
 
             final char valueFirstChar = nextUsefulOrLinebreak();
             final Object value = nextValue(valueFirstChar);
@@ -398,65 +360,53 @@ public class TomlReader {
             if (!hasNext() || nameFirstChar == '[') {
                 return map;
             }
-            String name = null;
+            String name;
             switch (nameFirstChar) {
-                case '"': {
-                    if (pos + 1 < data.length()) {
-                        final char c2 = data.charAt(pos);
-                        final char c3 = data.charAt(pos + 1);
-                        if (c2 == '"' && c3 == '"') {
-                            pos += 2;
-                            name = nextBasicMultilineString();
-                        }
-                    }
-                    if (name == null) {
+                case '"':
+                    if (pos + 1 < data.length() && data.charAt(pos) == '"' && data.charAt(pos + 1) == '"') {
+                        pos += 2;
+                        name = nextBasicMultilineString();
+                    } else {
                         name = nextBasicString();
                     }
                     break;
-                }
 
-                case '\'': {
-                    if (pos + 1 < data.length()) {
-                        final char c2 = data.charAt(pos);
-                        final char c3 = data.charAt(pos + 1);
-                        if (c2 == '\'' && c3 == '\'') {
-                            pos += 2;
-                            name = nextLiteralMultilineString();
-                        }
-                    }
-                    if (name == null) {
+                case '\'':
+                    if (pos + 1 < data.length() && data.charAt(pos) == '\'' && data.charAt(pos + 1) == '\'') {
+                        pos += 2;
+                        name = nextLiteralMultilineString();
+                    } else {
                         name = nextLiteralString();
                     }
                     break;
-                }
 
                 default:
-                    pos--;// to include the first (already read) non-space character
+                    pos--; // Go back to include the first character.
                     name = nextBareKey(Symbol.C_SPACE, '\t', Symbol.C_EQUAL);
                     if (name.isEmpty())
-                        throw new InternalException("Invalid empty data at line " + line);
+                        throw new InternalException("Invalid empty key at line " + line);
                     break;
             }
-            final char separator = nextUsefulOrLinebreak();// tries to find the '=' sign
-            if (separator != Symbol.C_EQUAL)// an other character
+            final char separator = nextUsefulOrLinebreak();
+            if (separator != Symbol.C_EQUAL) {
                 throw new InternalException(
                         "Invalid character '" + toString(separator) + "' at line " + line + ": expected '='");
-
+            }
             final char valueFirstChar = nextUsefulOrLinebreak();
             if (valueFirstChar == '\n') {
-                throw new InternalException("Invalid newline before the value at line " + line);
+                throw new InternalException("Invalid newline before a value at line " + line);
             }
             final Object value = nextValue(valueFirstChar);
 
             final char afterEntry = nextUsefulOrLinebreak();
             if (afterEntry == Symbol.C_HASH) {
-                pos--;// to make the next nextUseful() call read the # character
+                pos--;
             } else if (afterEntry != '\n') {
                 throw new InternalException(
-                        "Invalid character '" + toString(afterEntry) + "' after the value at line " + line);
+                        "Invalid character '" + toString(afterEntry) + "' after a value at line " + line);
             }
             if (map.containsKey(name))
-                throw new InternalException("Duplicate data \"" + name + "\"");
+                throw new InternalException("Duplicate key \"" + name + "\"");
 
             map.put(name, value);
         }
@@ -470,14 +420,11 @@ public class TomlReader {
         whileLoop: while (hasNext()) {
             c = next();
             switch (c) {
-                case Symbol.C_COLON:
-                case 'T':
-                case 'Z':
+                case Symbol.C_COLON, 'T', 'Z':
                     maybeInteger = maybeDouble = false;
                     break;
 
-                case 'e':
-                case 'E':
+                case 'e', 'E':
                     maybeInteger = maybeDate = false;
                     break;
 
@@ -486,44 +433,39 @@ public class TomlReader {
                     break;
 
                 case Symbol.C_MINUS:
-                    if (pos != 0 && data.charAt(pos - 1) != 'e' && data.charAt(pos - 1) != 'E')
+                    if (pos > 1 && data.charAt(pos - 2) != 'e' && data.charAt(pos - 2) != 'E') {
                         maybeInteger = maybeDouble = false;
+                    }
                     break;
 
-                case Symbol.C_COMMA:
-                case Symbol.C_SPACE:
-                case '\t':
-                case '\n':
-                case '\r':
-                case ']':
-                case '}':
+                case Symbol.C_COMMA, Symbol.C_SPACE, '\t', '\n', '\r', ']', '}':
                     pos--;
                     break whileLoop;
             }
-            if (c == Symbol.C_UNDERLINE)
+            if (c == Symbol.C_UNDERLINE) {
                 maybeDate = false;
-            else
+            } else {
                 sb.append(c);
+            }
         }
-        final String values = sb.toString();
+        final String valueStr = sb.toString();
         try {
             if (maybeInteger) {
-                if (values.length() < 10)
-                    return Integer.parseInt(values);
-                return Long.parseLong(values);
+                if (valueStr.length() < 10)
+                    return Integer.parseInt(valueStr);
+                return Long.parseLong(valueStr);
             }
-
             if (maybeDouble)
-                return Double.parseDouble(values);
-
-            if (maybeDate)
-                return Toml.DATE_FORMATTER.parseBest(values, ZonedDateTime::from, LocalDateTime::from, LocalDate::from);
-
+                return Double.parseDouble(valueStr);
+            if (maybeDate) {
+                return Toml.DATE_FORMATTER
+                        .parseBest(valueStr, ZonedDateTime::from, LocalDateTime::from, LocalDate::from);
+            }
         } catch (final Exception ex) {
-            throw new InternalException("Invalid value: \"" + values + "\" at line " + line, ex);
+            throw new InternalException("Invalid value: \"" + valueStr + "\" at line " + line, ex);
         }
 
-        throw new InternalException("Invalid value: \"" + values + "\" at line " + line);
+        throw new InternalException("Invalid value: \"" + valueStr + "\" at line " + line);
     }
 
     private String nextBareKey(final char... allowedEnds) {
@@ -531,7 +473,7 @@ public class TomlReader {
         for (int i = pos; i < data.length(); i++) {
             final char c = data.charAt(i);
             for (final char allowedEnd : allowedEnds) {
-                if (c == allowedEnd) {// checks if this character allowed to end this bare data
+                if (c == allowedEnd) {
                     keyName = data.substring(pos, i);
                     pos = i;
                     return keyName;
@@ -539,52 +481,51 @@ public class TomlReader {
             }
             if (strictAsciiBareKeys) {
                 if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9')
-                        || c == Symbol.C_UNDERLINE || c == Symbol.C_MINUS))
+                        || c == Symbol.C_UNDERLINE || c == Symbol.C_MINUS)) {
                     throw new InternalException(
-                            "Forbidden character '" + toString(c) + "' in strict bare-data at line " + line);
+                            "Forbidden character '" + toString(c) + "' in strict bare key at line " + line);
+                }
             } else if (c <= Symbol.C_SPACE || c == Symbol.C_HASH || c == Symbol.C_EQUAL || c == '.' || c == '['
-                    || c == ']') {// lenient bare data
+                    || c == ']') {
                 throw new InternalException(
-                        "Forbidden character '" + toString(c) + "' in lenient bare-data at line " + line);
-            } // else continue reading
+                        "Forbidden character '" + toString(c) + "' in lenient bare key at line " + line);
+            }
         }
-        throw new InternalException("Invalid data/value pair at line " + line
-                + " end of data reached before the value attached to the data was found");
+        throw new InternalException("Invalid key-value pair at line " + line + ": unexpected end of data");
     }
 
     private String nextLiteralString() {
         final int index = data.indexOf('\'', pos);
         if (index == -1)
             throw new InternalException("Invalid literal String at line " + line + ": it never ends");
-
         final String text = data.substring(pos, index);
-        if (text.indexOf('\n') != -1)
+        if (text.indexOf('\n') != -1) {
             throw new InternalException("Invalid literal String at line " + line + ": newlines are not allowed here");
-
+        }
         pos = index + 1;
         return text;
     }
 
     private String nextLiteralMultilineString() {
         final int index = data.indexOf("'''", pos);
-        if (index == -1)
+        if (index == -1) {
             throw new InternalException("Invalid multiline literal String at line " + line + ": it never ends");
+        }
         final String text;
-        if (data.charAt(pos) == '\r' && data.charAt(pos + 1) == '\n') {// "\r\n" at the beginning of the string
+        if (data.charAt(pos) == '\r' && pos + 1 < data.length() && data.charAt(pos + 1) == '\n') { // Starts with "\r\n"
             text = data.substring(pos + 2, index);
             line++;
-        } else if (data.charAt(pos) == '\n') {// '\n' at the beginning of the string
+        } else if (data.charAt(pos) == '\n') { // Starts with '\n'
             text = data.substring(pos + 1, index);
             line++;
         } else {
             text = data.substring(pos, index);
         }
-        for (int i = 0; i < text.length(); i++) {// count lines
-            final char c = text.charAt(i);
-            if (c == '\n')
+        for (int i = 0; i < text.length(); i++) { // count lines
+            if (text.charAt(i) == '\n')
                 line++;
         }
-        pos = index + 3;// goes after the 3 quotes
+        pos = index + 3;
         return text;
     }
 
@@ -593,8 +534,9 @@ public class TomlReader {
         boolean escape = false;
         while (hasNext()) {
             final char c = next();
-            if (c == '\n' || c == '\r')
+            if (c == '\n' || c == '\r') {
                 throw new InternalException("Invalid basic String at line " + line + ": newlines not allowed");
+            }
             if (escape) {
                 sb.append(unescape(c));
                 escape = false;
@@ -606,7 +548,7 @@ public class TomlReader {
                 sb.append(c);
             }
         }
-        throw new InternalException("Invalid basic String at line " + line + ": it nerver ends");
+        throw new InternalException("Invalid basic String at line " + line + ": it never ends");
     }
 
     private String nextBasicMultilineString() {
@@ -615,8 +557,8 @@ public class TomlReader {
         while (hasNext()) {
             final char c = next();
             if (first && (c == '\r' || c == '\n')) {
-                if (c == '\r' && hasNext() && data.charAt(pos) == '\n')// "\r\n"
-                    pos++;// so that it is NOT read by the next call to next()
+                if (c == '\r' && hasNext() && data.charAt(pos) == '\n')
+                    pos++;
                 else
                     line++;
                 first = false;
@@ -624,12 +566,12 @@ public class TomlReader {
             }
             if (escape) {
                 if (c == '\r' || c == '\n' || c == Symbol.C_SPACE || c == '\t') {
-                    if (c == '\r' && hasNext() && data.charAt(pos) == '\n')// "\r\n"
+                    if (c == '\r' && hasNext() && data.charAt(pos) == '\n')
                         pos++;
                     else if (c == '\n')
                         line++;
                     nextUseful(false);
-                    pos--;// so that it is read by the next call to next()
+                    pos--;
                 } else {
                     sb.append(unescape(c));
                 }
@@ -637,9 +579,7 @@ public class TomlReader {
             } else if (c == '\\') {
                 escape = true;
             } else if (c == '"') {
-                if (pos + 1 >= data.length())
-                    break;
-                if (data.charAt(pos) == '"' && data.charAt(pos + 1) == '"') {
+                if (pos + 1 < data.length() && data.charAt(pos) == '"' && data.charAt(pos + 1) == '"') {
                     pos += 2;
                     return sb.toString();
                 }
@@ -676,27 +616,25 @@ public class TomlReader {
             case '\\':
                 return '\\';
 
-            case 'u': {// unicode uXXXX
-                if (data.length() - pos < 5)
+            case 'u': { // unicode uXXXX
+                if (data.length() - pos < 4)
                     throw new InternalException("Invalid unicode code point at line " + line);
                 final String unicode = data.substring(pos, pos + 4);
                 pos += 4;
                 try {
-                    final int hexVal = Integer.parseInt(unicode, 16);
-                    return (char) hexVal;
+                    return (char) Integer.parseInt(unicode, 16);
                 } catch (final NumberFormatException ex) {
                     throw new InternalException("Invalid unicode code point at line " + line, ex);
                 }
             }
 
-            case 'U': {// unicode UXXXXXXXX
-                if (data.length() - pos < 9)
+            case 'U': { // unicode UXXXXXXXX
+                if (data.length() - pos < 8)
                     throw new InternalException("Invalid unicode code point at line " + line);
                 final String unicode = data.substring(pos, pos + 8);
                 pos += 8;
                 try {
-                    final int hexVal = Integer.parseInt(unicode, 16);
-                    return (char) hexVal;
+                    return (char) Integer.parseInt(unicode, 16);
                 } catch (final NumberFormatException ex) {
                     throw new InternalException("Invalid unicode code point at line " + line, ex);
                 }
@@ -708,7 +646,10 @@ public class TomlReader {
     }
 
     /**
-     * Converts a char to a String. The char is escaped if needed.
+     * Converts a character to its string representation, escaping it if necessary.
+     * 
+     * @param c The character to convert.
+     * @return The string representation.
      */
     private String toString(final char c) {
         switch (c) {

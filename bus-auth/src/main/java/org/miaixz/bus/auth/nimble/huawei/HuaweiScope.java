@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * 华为 授权范围(V3)
+ * Huawei authorization scopes (V3).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,30 +42,43 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum HuaweiScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Basic scope, required for V3. The meaning of {@code scope} is subject to {@code description}.
      */
-    OPENID("openid", "基础scope，v3必选", true),
+    OPENID("openid", "Basic scope, required for V3", true),
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Retrieves the user's basic information.
      */
-    BASE_PROFILE("https://www.huawei.com/auth/account/base.profile", "获取用户的基本信息", true),
-    MOBILE_NUMBER("https://www.huawei.com/auth/account/mobile.number", "获取用户的手机号", false),
-    ACCOUNTLIST("https://www.huawei.com/auth/account/accountlist", "获取用户的账单列表", false),
+    BASE_PROFILE("https://www.huawei.com/auth/account/base.profile", "Retrieves the user's basic information", true),
+    /**
+     * Retrieves the user's mobile number.
+     */
+    MOBILE_NUMBER("https://www.huawei.com/auth/account/mobile.number", "Retrieves the user's mobile number", false),
+    /**
+     * Retrieves the user's bill list.
+     */
+    ACCOUNTLIST("https://www.huawei.com/auth/account/accountlist", "Retrieves the user's bill list", false),
 
     /**
-     * 以下两个 scope 不需要经过华为评估和验证
+     * The following two scopes do not require Huawei assessment and verification.
      */
-    SCOPE_DRIVE_FILE("https://www.huawei.com/auth/drive.file", "只允许访问由应用程序创建或打开的文件", false),
-    SCOPE_DRIVE_APPDATA("https://www.huawei.com/auth/drive.appdata", "只允许访问由应用程序创建或打开的文件", false),
+    SCOPE_DRIVE_FILE("https://www.huawei.com/auth/drive.file",
+            "Only allows access to files created or opened by the application", false),
+    SCOPE_DRIVE_APPDATA("https://www.huawei.com/auth/drive.appdata",
+            "Only allows access to files created or opened by the application", false),
     /**
-     * 以下四个 scope 使用前需要向drivekit@huawei.com提交申请
+     * The following four scopes require an application to drivekit@huawei.com before use.
      * <p>
-     * 参考：https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides-V5/server-dev-0000001050039664-V5#ZH-CN_TOPIC_0000001050039664__section1618418855716
+     * Reference:
+     * https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides-V5/server-dev-0000001050039664-V5#ZH-CN_TOPIC_0000001050039664__section1618418855716
      */
-    SCOPE_DRIVE("https://www.huawei.com/auth/drive", "只允许访问由应用程序创建或打开的文件", false),
-    SCOPE_DRIVE_READONLY("https://www.huawei.com/auth/drive.readonly", "只允许访问由应用程序创建或打开的文件", false),
-    SCOPE_DRIVE_METADATA("https://www.huawei.com/auth/drive.metadata", "只允许访问由应用程序创建或打开的文件", false),
-    SCOPE_DRIVE_METADATA_READONLY("https://www.huawei.com/auth/drive.metadata.readonly", "只允许访问由应用程序创建或打开的文件", false),
+    SCOPE_DRIVE("https://www.huawei.com/auth/drive", "Only allows access to files created or opened by the application",
+            false),
+    SCOPE_DRIVE_READONLY("https://www.huawei.com/auth/drive.readonly",
+            "Only allows access to files created or opened by the application", false),
+    SCOPE_DRIVE_METADATA("https://www.huawei.com/auth/drive.metadata",
+            "Only allows access to files created or opened by the application", false),
+    SCOPE_DRIVE_METADATA_READONLY("https://www.huawei.com/auth/drive.metadata.readonly",
+            "Only allows access to files created or opened by the application", false),
 
     ;
 

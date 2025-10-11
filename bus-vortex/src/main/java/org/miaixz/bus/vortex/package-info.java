@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 基于spring webflux 开发的API网关
+ * Provides the core components for the Vortex API Gateway, built on Spring WebFlux. This package includes fundamental
+ * interfaces and classes for defining assets, configurations, filters, handlers, and routers, forming the backbone of
+ * the gateway's functionality.
  *
  * @author Kimi Liu
  * @since Java 17+

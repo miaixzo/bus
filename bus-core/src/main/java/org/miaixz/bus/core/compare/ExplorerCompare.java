@@ -37,18 +37,19 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Windows 资源管理器风格字符串比较器 此比较器模拟了 Windows 资源管理器的文件名排序方式，可得到与其相同的排序结果。
+ * A string comparator that mimics the sorting behavior of Windows Explorer. This comparator provides the same sorting
+ * results for filenames as seen in Windows Explorer.
  *
  * <p>
- * 假设有一个数组，包含若干个文件名 {@code {"xyz2.doc", "xyz1.doc", "xyz12.doc"}}
- * </p>
+ * For example, given an array of filenames: {@code {"xyz2.doc", "xyz1.doc", "xyz12.doc"}}.
+ * 
  * <p>
- * 调用 {@code Arrays.sort(filenames);} 时，得到 {@code {"xyz1.doc", "xyz12.doc", "xyz2.doc" }}
- * </p>
+ * A standard sort with {@code Arrays.sort(filenames);} would result in {@code {"xyz1.doc", "xyz12.doc", "xyz2.doc"}}.
+ * 
  * <p>
- * 调用 {@code Arrays.sort(filenames, new WindowsCompare());} 时，得到 {@code {"xyz1.doc", "xyz2.doc", "xyz12.doc"
- * }}，这与在资源管理器中看到的相同
- * </p>
+ * Using this comparator with {@code Arrays.sort(filenames, new ExplorerCompare());} results in {@code {"xyz1.doc",
+ * "xyz2.doc", "xyz12.doc"}}, which matches the order in Windows Explorer.
+ * 
  *
  * @author Kimi Liu
  * @see <a href="https://stackoverflow.com/questions/23205020/java-sort-strings-like-windows-explorer">Java - Sort
@@ -58,7 +59,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ExplorerCompare implements Comparator<CharSequence> {
 
     /**
-     * 单例
+     * Singleton instance of the comparator.
      */
     public static final ExplorerCompare INSTANCE = new ExplorerCompare();
 
@@ -67,15 +68,15 @@ public class ExplorerCompare implements Comparator<CharSequence> {
         final Iterator<String> i1 = splitStringPreserveDelimiter(str1).iterator();
         final Iterator<String> i2 = splitStringPreserveDelimiter(str2).iterator();
         while (true) {
-            // 直到这里都是平等的
+            // End of both strings, they are equal
             if (!i1.hasNext() && !i2.hasNext()) {
                 return 0;
             }
-            // i1 没有其他部分 -> 排在最前面
+            // i1 is shorter, so it comes first
             if (!i1.hasNext()) {
                 return -1;
             }
-            // i1 的部分比 i2 多 -> 紧随其后
+            // i2 is shorter, so it comes first
             if (!i2.hasNext()) {
                 return 1;
             }
@@ -84,14 +85,14 @@ public class ExplorerCompare implements Comparator<CharSequence> {
             final String data2 = i2.next();
             int result;
             try {
-                // 如果两个数据都是数字，则比较数字
+                // If both parts are numbers, compare them numerically
                 result = Long.compare(Long.parseLong(data1), Long.parseLong(data2));
-                // 如果数字相等，则较长者优先
+                // If numbers are equal, the one with more digits comes first (e.g., 01 vs 1)
                 if (result == 0) {
                     result = -Integer.compare(data1.length(), data2.length());
                 }
             } catch (final NumberFormatException ex) {
-                // 比较文本不区分大小写
+                // Otherwise, compare as case-insensitive text
                 result = data1.compareToIgnoreCase(data2);
             }
 
@@ -101,6 +102,12 @@ public class ExplorerCompare implements Comparator<CharSequence> {
         }
     }
 
+    /**
+     * Splits a string into a list of parts, preserving delimiters (digits, dots, whitespace).
+     *
+     * @param text the character sequence to split.
+     * @return a list of string parts.
+     */
     private List<String> splitStringPreserveDelimiter(final CharSequence text) {
         final Matcher matcher = Pattern.compile("\\d+|\\.|\\s").matcher(text);
         final List<String> list = new ArrayList<>();

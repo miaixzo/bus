@@ -30,7 +30,7 @@ package org.miaixz.bus.core.math;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 数字和罗马数字转换
+ * Converts between integers and Roman numerals.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,19 +38,19 @@ import org.miaixz.bus.core.lang.Normal;
 public class RomanNumberFormatter {
 
     /**
-     * 整数转罗马数字 限制：[1,3999]的正整数
+     * Converts an integer to a Roman numeral. The valid range for the input integer is [1, 3999].
      * <ul>
-     * <li>I 1</li>
-     * <li>V 5</li>
-     * <li>X 10</li>
-     * <li>L 50</li>
-     * <li>C 100</li>
-     * <li>D 500</li>
-     * <li>M 1000</li>
+     * <li>I: 1</li>
+     * <li>V: 5</li>
+     * <li>X: 10</li>
+     * <li>L: 50</li>
+     * <li>C: 100</li>
+     * <li>D: 500</li>
+     * <li>M: 1000</li>
      * </ul>
      *
-     * @param num [1,3999]的正整数
-     * @return 罗马数字
+     * @param num The integer to convert, must be in the range [1, 3999].
+     * @return The Roman numeral representation.
      */
     public static String intToRoman(final int num) {
         if (num > 3999 || num < 1) {
@@ -65,11 +65,11 @@ public class RomanNumberFormatter {
     }
 
     /**
-     * 罗马数字转整数
+     * Converts a Roman numeral to an integer.
      *
-     * @param roman 罗马字符
-     * @return 整数
-     * @throws IllegalArgumentException 如果传入非罗马字符串，抛出异常
+     * @param roman The Roman numeral string.
+     * @return The integer value.
+     * @throws IllegalArgumentException If the input string contains non-Roman characters.
      */
     public static int romanToInt(final String roman) {
         int result = 0;

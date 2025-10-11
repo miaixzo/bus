@@ -34,13 +34,22 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Phone;
 
 /**
- * 固定电话校验
+ * Validator for the {@link Phone} annotation, checking if a string is a valid landline phone number.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PhoneMatcher implements Matcher<Object, Phone> {
 
+    /**
+     * Checks if the given object, when converted to a string, is a valid landline phone number.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link Phone} annotation instance (ignored).
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is a valid landline phone number, {@code false} otherwise. Returns
+     *         {@code true} if the object is null or empty.
+     */
     @Override
     public boolean on(Object object, Phone annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {

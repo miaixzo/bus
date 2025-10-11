@@ -30,14 +30,14 @@ package org.miaixz.bus.validate.magic.annotation;
 import java.lang.annotation.*;
 
 import org.miaixz.bus.validate.Builder;
-import org.miaixz.bus.validate.metric.LengthMatcher;
+import org.miaixz.bus.validate.metric.SizeMatcher;
 
 /**
- * 字符串、数组、集合的大小校验
+ * Validates the size of a String, array, or collection.
  *
  * <p>
- * 默认被校验对象是null时,通过校验
- * </P>
+ * By default, if the object to be validated is null, the validation passes.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,57 +45,61 @@ import org.miaixz.bus.validate.metric.LengthMatcher;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
-@Complex(value = Builder._LENGTH, clazz = LengthMatcher.class)
+@Complex(value = Builder._SIZE, clazz = SizeMatcher.class)
 public @interface Size {
 
     /**
-     * 最小长度, 小于等于
+     * The minimum size (inclusive).
      *
-     * @return the int
+     * @return the minimum allowed size.
      */
     @Filler("min")
     int min() default Integer.MIN_VALUE;
 
     /**
-     * 最大长度,大于等于
+     * The maximum size (inclusive).
      *
-     * @return the int
+     * @return the maximum allowed size.
      */
     @Filler("max")
     int max() default Integer.MAX_VALUE;
 
     /**
-     * 如果长度为0,判断能否通过校验 默认为false true：表示长度为零,默认通过校验；false：表示长度为0,仍然要进行长度验证
+     * Determines whether a value with a length of 0 is considered valid. Defaults to {@code false}.
+     * <ul>
+     * <li>{@code true}: indicates that a value with zero length passes validation by default.</li>
+     * <li>{@code false}: indicates that a value with zero length is still subject to length validation.</li>
+     * </ul>
      *
-     * @return the boolean
+     * @return {@code true} if zero-length values are allowed, {@code false} otherwise.
      */
     boolean zeroAble() default false;
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}长度必须在规定范围内, 最小: ${min}, 最大: ${max}";
+    String errmsg() default "The size of ${field} must be within the specified range. Min: ${min}, Max: ${max}";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

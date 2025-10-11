@@ -44,53 +44,57 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * Word docx生成器
+ * Word DOCX document generator.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Word07Writer implements Closeable {
 
+    /**
+     * The underlying {@link XWPFDocument} instance.
+     */
     private final XWPFDocument doc;
     /**
-     * 目标文件
+     * The target file to write the document to.
      */
     protected File targetFile;
     /**
-     * 是否被关闭
+     * Flag indicating whether the writer has been closed.
      */
     protected boolean isClosed;
 
     /**
-     * 构造
+     * Constructs a new {@code Word07Writer} with a new blank document.
      */
     public Word07Writer() {
         this(new XWPFDocument());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Word07Writer} for the specified target file. If the file exists, it will be opened;
+     * otherwise, a new document will be created.
      *
-     * @param targetFile 写出的文件
+     * @param targetFile The file to write the document to.
      */
     public Word07Writer(final File targetFile) {
         this(DocxKit.create(targetFile), targetFile);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Word07Writer} with the given {@link XWPFDocument}.
      *
-     * @param doc {@link XWPFDocument}
+     * @param doc The {@link XWPFDocument} to wrap.
      */
     public Word07Writer(final XWPFDocument doc) {
         this(doc, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Word07Writer} with the given {@link XWPFDocument} and target file.
      *
-     * @param doc        {@link XWPFDocument}
-     * @param targetFile 写出的文件
+     * @param doc        The {@link XWPFDocument} to wrap.
+     * @param targetFile The file to write the document to.
      */
     public Word07Writer(final XWPFDocument doc, final File targetFile) {
         this.doc = doc;
@@ -98,19 +102,19 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 获取{@link XWPFDocument}
+     * Gets the underlying {@link XWPFDocument}.
      *
-     * @return {@link XWPFDocument}
+     * @return The {@link XWPFDocument} instance.
      */
     public XWPFDocument getDoc() {
         return this.doc;
     }
 
     /**
-     * 设置写出的目标文件
+     * Sets the target file to write the document to.
      *
-     * @param targetFile 目标文件
-     * @return this
+     * @param targetFile The target file.
+     * @return This {@code Word07Writer} instance, for chaining.
      */
     public Word07Writer setTargetFile(final File targetFile) {
         this.targetFile = targetFile;
@@ -118,23 +122,23 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 增加一个段落
+     * Adds a paragraph with the specified font and text content.
      *
-     * @param font  字体信息{@link Font}
-     * @param texts 段落中的文本，支持多个文本作为一个段落
-     * @return this
+     * @param font  The font information ({@link Font}). May be {@code null} to use default font settings.
+     * @param texts The text content for the paragraph. Multiple strings will be concatenated within the same paragraph.
+     * @return This {@code Word07Writer} instance, for chaining.
      */
     public Word07Writer addText(final Font font, final String... texts) {
         return addText(null, font, texts);
     }
 
     /**
-     * 增加一个段落
+     * Adds a paragraph with the specified alignment, font, and text content.
      *
-     * @param align 段落对齐方式{@link ParagraphAlignment}
-     * @param font  字体信息{@link Font}
-     * @param texts 段落中的文本，支持多个文本作为一个段落
-     * @return this
+     * @param align The paragraph alignment ({@link ParagraphAlignment}). May be {@code null} for default alignment.
+     * @param font  The font information ({@link Font}). May be {@code null} to use default font settings.
+     * @param texts The text content for the paragraph. Multiple strings will be concatenated within the same paragraph.
+     * @return This {@code Word07Writer} instance, for chaining.
      */
     public Word07Writer addText(final ParagraphAlignment align, final Font font, final String... texts) {
         final XWPFParagraph p = this.doc.createParagraph();
@@ -158,10 +162,11 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 增加表格数据
+     * Adds table data to the document.
      *
-     * @param data 表格数据，多行数据。元素表示一行数据，当为集合或者数组时，为一行；当为Map或者Bean时key表示标题，values为数据
-     * @return this
+     * @param data Table data, representing multiple rows. Each element can be a collection or array for a row, or a
+     *             Map/Bean where keys represent headers and values are data.
+     * @return This {@code Word07Writer} instance, for chaining.
      * @see DocxTable#createTable(XWPFDocument, Iterable)
      */
     public Word07Writer addTable(final Iterable<?> data) {
@@ -170,12 +175,12 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 增加图片，单独成段落
+     * Adds an image as a standalone paragraph.
      *
-     * @param picFile 图片文件
-     * @param width   宽度
-     * @param height  高度
-     * @return this
+     * @param picFile The image file.
+     * @param width   The width of the image in pixels.
+     * @param height  The height of the image in pixels.
+     * @return This {@code Word07Writer} instance, for chaining.
      */
     public Word07Writer addPicture(final File picFile, final int width, final int height) {
         final String fileName = picFile.getName();
@@ -183,14 +188,16 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 增加图片，单独成段落，增加后图片流关闭，默认居中对齐
+     * Adds an image as a standalone paragraph. The image stream will be closed after adding. Default alignment is
+     * center.
      *
-     * @param in       图片流
-     * @param picType  图片类型，见Document.PICTURE_TYPE_XXX
-     * @param fileName 文件名
-     * @param width    宽度
-     * @param height   高度
-     * @return this
+     * @param in       The image input stream.
+     * @param picType  The picture type, see {@link PictureType}.
+     * @param fileName The file name of the image.
+     * @param width    The width of the image in pixels.
+     * @param height   The height of the image in pixels.
+     * @return This {@code Word07Writer} instance, for chaining.
+     * @throws InternalException if an {@link InvalidFormatException} or {@link IOException} occurs.
      */
     public Word07Writer addPicture(
             final InputStream in,
@@ -202,15 +209,16 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 增加图片，单独成段落，增加后图片流关闭
+     * Adds an image as a standalone paragraph. The image stream will be closed after adding.
      *
-     * @param in       图片流
-     * @param picType  图片类型，见Document.PICTURE_TYPE_XXX
-     * @param fileName 文件名
-     * @param width    宽度
-     * @param height   高度
-     * @param align    图片的对齐方式
-     * @return this
+     * @param in       The image input stream.
+     * @param picType  The picture type, see {@link PictureType}.
+     * @param fileName The file name of the image.
+     * @param width    The width of the image in pixels.
+     * @param height   The height of the image in pixels.
+     * @param align    The alignment of the image within the paragraph.
+     * @return This {@code Word07Writer} instance, for chaining.
+     * @throws InternalException if an {@link InvalidFormatException} or {@link IOException} occurs.
      */
     public Word07Writer addPicture(
             final InputStream in,
@@ -234,12 +242,13 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 增加多张图片，单独成段落，增加后图片流关闭
+     * Adds multiple images as standalone paragraphs. The image streams will be closed after adding.
      *
-     * @param width    图片统一宽度
-     * @param height   图片统一高度
-     * @param picFiles 图片列表
-     * @return this
+     * @param width    The uniform width for all images in pixels.
+     * @param height   The uniform height for all images in pixels.
+     * @param picFiles An array of image files.
+     * @return This {@code Word07Writer} instance, for chaining.
+     * @throws InternalException if an {@link InvalidFormatException} or {@link IOException} occurs.
      */
     public Word07Writer addPictures(final int width, final int height, final File... picFiles) {
         final XWPFParagraph paragraph = doc.createParagraph();
@@ -259,22 +268,25 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 将Excel Workbook刷出到预定义的文件 如果用户未自定义输出的文件，将抛出{@link NullPointerException} 预定义文件可以通过{@link #setTargetFile(File)}
-     * 方法预定义，或者通过构造定义
+     * Flushes the Word Workbook to the pre-defined target file. If no target file is defined, a
+     * {@link NullPointerException} will be thrown. The target file can be set using {@link #setTargetFile(File)} or
+     * defined during construction.
      *
-     * @return this
-     * @throws InternalException IO异常
+     * @return This {@code Word07Writer} instance, for chaining.
+     * @throws InternalException If an I/O error occurs.
      */
     public Word07Writer flush() throws InternalException {
         return flush(this.targetFile);
     }
 
     /**
-     * 将Excel Workbook刷出到文件 如果用户未自定义输出的文件，将抛出{@link NullPointerException}
+     * Flushes the Word Workbook to the specified file. If no target file is defined, a {@link NullPointerException}
+     * will be thrown.
      *
-     * @param destFile 写出到的文件
-     * @return this
-     * @throws InternalException IO异常
+     * @param destFile The file to write the document to.
+     * @return This {@code Word07Writer} instance, for chaining.
+     * @throws InternalException    If an I/O error occurs.
+     * @throws NullPointerException if {@code destFile} is {@code null}.
      */
     public Word07Writer flush(final File destFile) throws InternalException {
         Assert.notNull(
@@ -284,23 +296,23 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 将Word Workbook刷出到输出流
+     * Flushes the Word Workbook to the specified output stream.
      *
-     * @param out 输出流
-     * @return this
-     * @throws InternalException IO异常
+     * @param out The output stream to write the document to.
+     * @return This {@code Word07Writer} instance, for chaining.
+     * @throws InternalException If an I/O error occurs.
      */
     public Word07Writer flush(final OutputStream out) throws InternalException {
         return flush(out, false);
     }
 
     /**
-     * 将Word Document刷出到输出流
+     * Flushes the Word Document to the specified output stream.
      *
-     * @param out        输出流
-     * @param isCloseOut 是否关闭输出流
-     * @return this
-     * @throws InternalException IO异常
+     * @param out        The output stream to write the document to.
+     * @param isCloseOut {@code true} to close the output stream after flushing, {@code false} otherwise.
+     * @return This {@code Word07Writer} instance, for chaining.
+     * @throws InternalException If an I/O error occurs.
      */
     public Word07Writer flush(final OutputStream out, final boolean isCloseOut) throws InternalException {
         Assert.isFalse(this.isClosed, "WordWriter has been closed!");
@@ -318,7 +330,7 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 关闭Word文档 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
+     * Closes the Word document. If a target file is set, the document will be flushed to it before closing.
      */
     @Override
     public void close() {
@@ -329,7 +341,7 @@ public class Word07Writer implements Closeable {
     }
 
     /**
-     * 关闭Word文档但是不写出
+     * Closes the Word document without flushing its content.
      */
     protected void closeWithoutFlush() {
         IoKit.closeQuietly(this.doc);

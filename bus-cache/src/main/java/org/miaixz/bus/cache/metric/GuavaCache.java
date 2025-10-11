@@ -27,71 +27,73 @@
 */
 package org.miaixz.bus.cache.metric;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.cache.CacheX;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Guava 缓存支持
+ * An implementation of {@link CacheX} backed by a Google Guava {@link LoadingCache}.
  * <p>
- * 基于Google Guava Cache实现的缓存接口，提供本地缓存功能。 支持设置最大容量、过期时间等配置参数，并提供批量读写操作。
+ * This class provides an in-memory caching solution with support for size-based eviction and time-based expiration. The
+ * expiration behavior is configured globally for the entire cache instance upon creation.
  * </p>
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys.
+ * @param <V> The type of values.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GuavaCache<K, V> implements CacheX<K, V> {
 
     /**
-     * Guava缓存实例
+     * The underlying Guava cache instance.
      */
-    private LoadingCache<K, V> cache;
+    private final LoadingCache<K, V> cache;
 
     /**
-     * 构造方法
+     * Constructs a {@code GuavaCache} with a specified maximum size and expiration time.
      * <p>
-     * 使用指定的大小和过期时间创建缓存实例
+     * The cache is configured to expire entries after a fixed duration since they were last written.
      * </p>
      *
-     * @param size   缓存最大容量
-     * @param expire 过期时间（毫秒）
+     * @param size   The maximum number of entries the cache can hold.
+     * @param expire The expiration time in milliseconds, applied as `expireAfterWrite`.
      */
     public GuavaCache(long size, long expire) {
         this.cache = CacheBuilder.newBuilder().maximumSize(size).expireAfterWrite(expire, TimeUnit.MILLISECONDS)
                 .build(new CacheLoader<>() {
 
                     @Override
-                    public Object load(Object key) {
-                        return null;
+                    public V load(Object key) {
+                        return null; // By default, does not load anything on miss.
                     }
                 });
     }
 
     /**
-     * 构造方法
+     * Constructs a {@code GuavaCache} from a {@link Properties} object.
      * <p>
-     * 使用Properties配置创建缓存实例，支持配置最大容量、过期时间等参数
-     * </p>
+     * The following properties are supported:
+     * <ul>
+     * <li>{@code prefix.maximumSize}: The maximum number of entries. Defaults to 1000.</li>
+     * <li>{@code prefix.expireAfterAccess}: Expiration time in milliseconds since last access.</li>
+     * <li>{@code prefix.expireAfterWrite}: Expiration time in milliseconds since last write.</li>
+     * <li>{@code prefix.initialCapacity}: The initial capacity of the cache.</li>
+     * </ul>
+     * The `prefix` itself is defined by the `prefix` property.
      *
-     * @param properties 配置属性
+     * @param properties The configuration properties.
      */
     public GuavaCache(Properties properties) {
-        // 获取参数前缀
-        String prefix = StringKit.isNotEmpty(properties.getProperty("prefix")) ? properties.getProperty("prefix")
-                : Normal.EMPTY;
-        // 获取所有配置值
+        String prefix = properties.getProperty("prefix", Normal.EMPTY);
         String maximumSize = properties.getProperty(prefix + "maximumSize");
         String expireAfterAccess = properties.getProperty(prefix + "expireAfterAccess");
         String expireAfterWrite = properties.getProperty(prefix + "expireAfterWrite");
@@ -111,30 +113,25 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 构造函数（支持异步加载）
+     * Constructs a {@code GuavaCache} with a custom {@link CacheLoader} for automatic loading.
      * <p>
-     * 使用指定的大小、过期时间和缓存加载器创建缓存实例
+     * This allows the cache to automatically fetch values for keys that are not yet present.
      * </p>
      *
-     * @param size        最大缓存条目数
-     * @param expire      过期时间（毫秒）
-     * @param cacheLoader 缓存加载器
+     * @param size        The maximum number of entries the cache can hold.
+     * @param expire      The expiration time in milliseconds, applied as `expireAfterWrite`.
+     * @param cacheLoader The loader to use for fetching values on cache misses.
      */
     public GuavaCache(long size, long expire, CacheLoader<K, V> cacheLoader) {
-        this.cache = CacheBuilder.newBuilder()
-                // 设置最大缓存条目数
-                .maximumSize(size)
-                // 设置写入后过期时间
-                .expireAfterWrite(expire, TimeUnit.MILLISECONDS)
-                // 设置缓存加载器
+        this.cache = CacheBuilder.newBuilder().maximumSize(size).expireAfterWrite(expire, TimeUnit.MILLISECONDS)
                 .build(cacheLoader);
     }
 
     /**
-     * 从缓存中读取单个值
+     * Reads a single value from the cache.
      *
-     * @param key 键
-     * @return 值，如果不存在则返回null
+     * @param key The key whose associated value is to be returned.
+     * @return The value associated with the key, or {@code null} if the key is not present.
      */
     @Override
     public V read(K key) {
@@ -142,10 +139,10 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 从缓存中批量读取值
+     * Reads multiple values from the cache in a batch.
      *
-     * @param keys 键集合
-     * @return 键值映射
+     * @param keys A collection of keys to retrieve.
+     * @return A map of keys to their corresponding values for all keys present in the cache.
      */
     @Override
     public Map<K, V> read(Collection<K> keys) {
@@ -153,11 +150,15 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 向缓存中写入单个键值对
+     * Writes a key-value pair to the cache.
+     * <p>
+     * <strong>Note:</strong> This implementation ignores the {@code expire} parameter. The expiration policy is
+     * determined by the cache-wide settings configured at construction time.
+     * </p>
      *
-     * @param key    键
-     * @param value  值
-     * @param expire 过期时间（毫秒）
+     * @param key    The key to write.
+     * @param value  The value to associate with the key.
+     * @param expire This parameter is ignored.
      */
     @Override
     public void write(K key, V value, long expire) {
@@ -165,10 +166,14 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 向缓存中批量写入键值对
+     * Writes multiple key-value pairs to the cache.
+     * <p>
+     * <strong>Note:</strong> This implementation ignores the {@code expire} parameter. The expiration policy is
+     * determined by the cache-wide settings configured at construction time.
+     * </p>
      *
-     * @param keyValueMap 键值映射
-     * @param expire      过期时间（毫秒）
+     * @param keyValueMap A map of key-value pairs to write.
+     * @param expire      This parameter is ignored.
      */
     @Override
     public void write(Map<K, V> keyValueMap, long expire) {
@@ -176,9 +181,9 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 从缓存中移除指定的键
+     * Removes one or more entries from the cache.
      *
-     * @param keys 要移除的键
+     * @param keys The keys of the entries to remove.
      */
     @Override
     public void remove(K... keys) {
@@ -186,7 +191,11 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 清空缓存
+     * Performs cache maintenance, such as removing expired entries.
+     * <p>
+     * <strong>Note:</strong> This method calls Guava's {@code cleanUp()}, which performs periodic maintenance. It does
+     * <strong>not</strong> clear all entries from the cache. To remove all entries, use {@code cache.invalidateAll()}.
+     * </p>
      */
     @Override
     public void clear() {

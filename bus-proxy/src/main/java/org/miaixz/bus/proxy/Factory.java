@@ -33,7 +33,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 代理引擎简单工厂 根据用户引入代理库的不同，产生不同的代理引擎对象
+ * A simple factory for obtaining a proxy provider instance. This factory automatically detects the best available proxy
+ * implementation (e.g., CGLIB, JDK proxy) on the classpath using Java's Service Provider Interface (SPI).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,9 +42,10 @@ import org.miaixz.bus.logger.Logger;
 public class Factory {
 
     /**
-     * 获得单例的ProxyEngine
+     * Gets the singleton instance of the proxy provider. It uses SPI to find the best available provider and caches it
+     * for subsequent calls.
      *
-     * @return 单例的ProxyEngine
+     * @return The singleton {@link Provider} instance.
      */
     public static Provider getEngine() {
         final Provider engine = Instances.get(Provider.class.getName(), Factory::createEngine);
@@ -54,9 +56,9 @@ public class Factory {
     }
 
     /**
-     * 根据用户引入Cglib与否创建代理工厂
+     * Creates a new proxy provider instance by loading the first available implementation found via SPI.
      *
-     * @return 代理工厂
+     * @return A new {@link Provider} instance.
      */
     public static Provider createEngine() {
         return NormalSpiLoader.loadFirstAvailable(Provider.class);

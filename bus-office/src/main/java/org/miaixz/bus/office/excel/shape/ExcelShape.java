@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.StreamKit;
 
 /**
- * Excel图片工具类
+ * Utility class for Excel pictures (shapes).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,41 +46,42 @@ import org.miaixz.bus.core.xyz.StreamKit;
 public class ExcelShape {
 
     /**
-     * 写入图片到文件
+     * Writes picture data to a file.
      *
-     * @param pic  图片数据
-     * @param file 文件
+     * @param pic  The {@link Picture} object containing the image data.
+     * @param file The target file to write the image to.
      */
     public static void writePicTo(final Picture pic, final File file) {
         writePicTo(pic.getPictureData(), file);
     }
 
     /**
-     * 写入图片到文件
+     * Writes picture data to a file.
      *
-     * @param pic  图片数据
-     * @param file 文件
+     * @param pic  The {@link PictureData} object containing the image data.
+     * @param file The target file to write the image to.
      */
     public static void writePicTo(final PictureData pic, final File file) {
         FileKit.writeBytes(pic.getData(), file);
     }
 
     /**
-     * 获取所有图片列表
+     * Gets a list of all pictures in the workbook.
      *
-     * @param workbook 工作簿{@link Workbook}
-     * @return 图片列表
+     * @param workbook The workbook {@link Workbook}.
+     * @return A list of {@link PictureData} objects.
      */
     public static List<? extends PictureData> getAllPictures(final Workbook workbook) {
         return workbook.getAllPictures();
     }
 
     /**
-     * 获取工作簿指定sheet中绘制的图片列表
+     * Gets a list of pictures drawn in a specific sheet of the workbook.
      *
-     * @param workbook   工作簿{@link Workbook}
-     * @param sheetIndex sheet的索引
-     * @return 图片映射，键格式：行_列，值：{@link PictureData}
+     * @param workbook   The workbook {@link Workbook}.
+     * @param sheetIndex The 0-based index of the sheet.
+     * @return A list of {@link Picture} objects.
+     * @throws NullPointerException if {@code workbook} is {@code null}.
      */
     public static List<Picture> getShapePics(final Workbook workbook, int sheetIndex) {
         Assert.notNull(workbook, "Workbook must be not null !");
@@ -92,10 +93,12 @@ public class ExcelShape {
     }
 
     /**
-     * 获取工作簿指定sheet中绘制的图片列表 结果中{@link Picture#getClientAnchor()}标识位置信息，{@link Picture#getPictureData()}标识图片数据
+     * Gets a list of pictures drawn in a specific sheet. The result includes {@link Picture#getClientAnchor()} for
+     * position information and {@link Picture#getPictureData()} for image data.
      *
-     * @param sheet 工作表{@link Sheet}
-     * @return 图片列表
+     * @param sheet The worksheet {@link Sheet}.
+     * @return A list of {@link Picture} objects.
+     * @throws NullPointerException if {@code sheet} is {@code null}.
      */
     public static List<Picture> getShapePics(final Sheet sheet) {
         Assert.notNull(sheet, "Sheet must be not null !");

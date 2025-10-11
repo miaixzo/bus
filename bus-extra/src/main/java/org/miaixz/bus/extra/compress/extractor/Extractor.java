@@ -36,7 +36,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 归档数据解包封装，用于将zip、tar等包解包为文件
+ * Archive data unpacking wrapper, used to unpack packages such as zip, tar, etc., into files.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,42 +44,47 @@ import org.miaixz.bus.core.xyz.StringKit;
 public interface Extractor extends Closeable {
 
     /**
-     * 释放（解压）到指定目录，结束后自动关闭流，此方法只能调用一次
+     * Extracts (decompresses) to the specified directory. The stream is automatically closed after completion. This
+     * method can only be called once.
      *
-     * @param targetDir 目标目录
+     * @param targetDir The target directory.
      */
     default void extract(final File targetDir) {
         extract(targetDir, null);
     }
 
     /**
-     * 释放（解压）到指定目录，结束后自动关闭流，此方法只能调用一次
+     * Extracts (decompresses) to the specified directory. The stream is automatically closed after completion. This
+     * method can only be called once.
      *
-     * @param targetDir 目标目录
-     * @param predicate 解压文件过滤器，用于指定需要释放的文件，{@code null}表示不过滤。{@link Predicate#test(Object)}为{@code true}时释放。
+     * @param targetDir The target directory.
+     * @param predicate A filter for extracted files, used to specify which files to extract. {@code null} means no
+     *                  filtering. Extracts when {@link Predicate#test(Object)} is {@code true}.
      */
     void extract(File targetDir, Predicate<ArchiveEntry> predicate);
 
     /**
-     * 获取指定名称的文件流
+     * Gets the input stream for a file with the specified name.
      *
-     * @param entryName entry名称
-     * @return 文件流，无文件返回{@code null}
+     * @param entryName The entry name.
+     * @return The file stream, or {@code null} if the file does not exist.
      */
     default InputStream get(final String entryName) {
         return getFirst((entry) -> StringKit.equals(entryName, entry.getName()));
     }
 
     /**
-     * 获取满足指定过滤要求的压缩包内的第一个文件流
+     * Gets the first file stream in the compressed package that meets the specified filter requirements.
      *
-     * @param predicate 用于指定需要释放的文件，null表示不过滤。当{@link Predicate#test(Object)}为{@code true}返回对应流。
-     * @return 满足过滤要求的第一个文件的流, 无满足条件的文件返回{@code null}
+     * @param predicate Used to specify the files to be extracted. null means no filtering. Returns the corresponding
+     *                  stream when {@link Predicate#test(Object)} is {@code true}.
+     * @return The stream of the first file that meets the filter requirements, or {@code null} if no matching file is
+     *         found.
      */
     InputStream getFirst(final Predicate<ArchiveEntry> predicate);
 
     /**
-     * 无异常关闭
+     * Closes without throwing an exception.
      */
     @Override
     void close();

@@ -36,11 +36,17 @@ import java.nio.file.spi.FileTypeDetector;
 import org.miaixz.bus.core.xyz.StreamKit;
 
 /**
+ * A {@link FileTypeDetector} implementation that detects Genozip compressed files. It checks for the Genozip magic
+ * number (0x27 0x05 0x20 0x12) at the beginning of the file.
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GenozipFileDetector extends FileTypeDetector {
 
+    /**
+     * The MIME type for Genozip files.
+     */
     public final static String APPLICATION_VND_GENOZIP = "application/vnd.genozip";
 
     @Override

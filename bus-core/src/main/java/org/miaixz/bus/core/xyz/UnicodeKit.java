@@ -28,7 +28,7 @@
 package org.miaixz.bus.core.xyz;
 
 /**
- * 提供Unicode字符串和普通字符串之间的转换
+ * Utility for converting between Unicode-escaped strings and normal strings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,10 +36,10 @@ package org.miaixz.bus.core.xyz;
 public class UnicodeKit {
 
     /**
-     * Unicode字符串转为普通字符串 Unicode字符串的表现方式为：\\uXXXX
+     * Converts a Unicode-escaped string (e.g., "\\uXXXX") to a normal string.
      *
-     * @param unicode Unicode字符串
-     * @return 普通字符串
+     * @param unicode The Unicode-escaped string.
+     * @return The normal string.
      */
     public static String toString(final String unicode) {
         if (StringKit.isBlank(unicode)) {
@@ -51,21 +51,20 @@ public class UnicodeKit {
         int i;
         int pos = 0;
         while ((i = StringKit.indexOfIgnoreCase(unicode, "\\u", pos)) != -1) {
-            sb.append(unicode, pos, i);// 写入Unicode符之前的部分
+            sb.append(unicode, pos, i);
             pos = i;
             if (i + 5 < len) {
                 final char c;
                 try {
                     c = (char) Integer.parseInt(unicode.substring(i + 2, i + 6), 16);
                     sb.append(c);
-                    pos = i + 6;// 跳过整个Unicode符
+                    pos = i + 6;
                 } catch (final NumberFormatException e) {
-                    // 非法Unicode符，跳过
-                    sb.append(unicode, pos, i + 2);// 写入"\\u"
+                    // Invalid Unicode sequence, skip it.
+                    sb.append(unicode, pos, i + 2);
                     pos = i + 2;
                 }
             } else {
-                // 非Unicode符，结束
                 break;
             }
         }
@@ -77,10 +76,10 @@ public class UnicodeKit {
     }
 
     /**
-     * 字符编码为Unicode形式
+     * Encodes a character into its Unicode-escaped form.
      *
-     * @param c 被编码的字符
-     * @return Unicode字符串
+     * @param c The character to encode.
+     * @return The Unicode string.
      * @see HexKit#toUnicodeHex(char)
      */
     public static String toUnicode(final char c) {
@@ -88,10 +87,10 @@ public class UnicodeKit {
     }
 
     /**
-     * 字符编码为Unicode形式
+     * Encodes a character (represented as an int) into its Unicode-escaped form.
      *
-     * @param c 被编码的字符
-     * @return Unicode字符串
+     * @param c The character code point.
+     * @return The Unicode string.
      * @see HexKit#toUnicodeHex(int)
      */
     public static String toUnicode(final int c) {
@@ -99,21 +98,21 @@ public class UnicodeKit {
     }
 
     /**
-     * 字符串编码为Unicode形式
+     * Encodes a string into its Unicode-escaped form.
      *
-     * @param text 被编码的字符串
-     * @return Unicode字符串
+     * @param text The string to encode.
+     * @return The Unicode string.
      */
     public static String toUnicode(final CharSequence text) {
         return toUnicode(text, true);
     }
 
     /**
-     * 字符串编码为Unicode形式
+     * Encodes a string into its Unicode-escaped form.
      *
-     * @param text        被编码的字符串
-     * @param isSkipAscii 是否跳过ASCII字符（只跳过可见字符）
-     * @return Unicode字符串
+     * @param text        The string to encode.
+     * @param isSkipAscii If `true`, printable ASCII characters are not encoded.
+     * @return The Unicode string.
      */
     public static String toUnicode(final CharSequence text, final boolean isSkipAscii) {
         if (StringKit.isEmpty(text)) {

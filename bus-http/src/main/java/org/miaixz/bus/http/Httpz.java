@@ -27,151 +27,156 @@
 */
 package org.miaixz.bus.http;
 
-import javax.net.ssl.X509TrustManager;
-
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.http.plugin.httpz.*;
 
+import javax.net.ssl.X509TrustManager;
+
 /**
- * 发送 HTTP 请求的辅助类，提供便捷的链式调用接口来构建和执行 HTTP 请求。 支持 GET、POST、PUT、HEAD、DELETE 等请求方法。
+ * A utility class for sending HTTP requests with a convenient, chainable API. It supports various request methods like
+ * GET, POST, PUT, HEAD, and DELETE.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Httpz {
 
-    // 静态客户端实例，用于管理 HTTP 请求
+    /**
+     * The static client instance used for managing HTTP requests.
+     */
     private static Client client = new Client();
 
     /**
-     * 创建一个新的 HttpBuilder 实例，使用默认客户端。
+     * Creates a new {@link HttpBuilder} instance using the default client.
      *
-     * @return HttpBuilder 实例
+     * @return a new {@link HttpBuilder} instance.
      */
     public static HttpBuilder newBuilder() {
         return new HttpBuilder(client.getHttpd());
     }
 
     /**
-     * 创建一个新的 HttpBuilder 实例，使用指定的客户端。
+     * Creates a new {@link HttpBuilder} instance using the specified client.
      *
-     * @param client Httpd 客户端
-     * @return HttpBuilder 实例
+     * @param client The {@link Httpd} client to use.
+     * @return a new {@link HttpBuilder} instance.
      */
     public static HttpBuilder newBuilder(Httpd client) {
         return new HttpBuilder(client);
     }
 
     /**
-     * 创建一个新的 GetBuilder 实例，用于构建 GET 请求。
+     * Creates a new {@link GetBuilder} for constructing GET requests.
      *
-     * @return GetBuilder 实例
+     * @return a new {@link GetBuilder} instance.
      */
     public static GetBuilder get() {
         return client.get();
     }
 
     /**
-     * 创建一个新的 PostBuilder 实例，用于构建 POST 请求。
+     * Creates a new {@link PostBuilder} for constructing POST requests.
      *
-     * @return PostBuilder 实例
+     * @return a new {@link PostBuilder} instance.
      */
     public static PostBuilder post() {
         return client.post();
     }
 
     /**
-     * 创建一个新的 PutBuilder 实例，用于构建 PUT 请求。
+     * Creates a new {@link PutBuilder} for constructing PUT requests.
      *
-     * @return PutBuilder 实例
+     * @return a new {@link PutBuilder} instance.
      */
     public static PutBuilder put() {
         return client.put();
     }
 
     /**
-     * 创建一个新的 HeadBuilder 实例，用于构建 HEAD 请求。
+     * Creates a new {@link HeadBuilder} for constructing HEAD requests.
      *
-     * @return HeadBuilder 实例
+     * @return a new {@link HeadBuilder} instance.
      */
     public static HeadBuilder head() {
         return client.head();
     }
 
     /**
-     * 创建一个新的 DeleteBuilder 实例，用于构建 DELETE 请求。
+     * Creates a new {@link DeleteBuilder} for constructing DELETE requests.
      *
-     * @return DeleteBuilder 实例
+     * @return a new {@link DeleteBuilder} instance.
      */
     public static DeleteBuilder delete() {
         return client.delete();
     }
 
     /**
-     * 获取当前使用的客户端实例。
+     * Gets the currently used client instance.
      *
-     * @return Client 实例
+     * @return the {@link Client} instance.
      */
     public static Client getClient() {
         return client;
     }
 
     /**
-     * 设置自定义客户端实例。
+     * Sets a custom client instance.
      *
-     * @param httpClient 自定义 Client 实例
+     * @param httpClient The custom {@link Client} instance.
      */
     public static void setClient(Client httpClient) {
         Httpz.client = httpClient;
     }
 
     /**
-     * 内部客户端类，管理 HTTP 请求的执行和取消。
+     * The inner client class that manages the execution and cancellation of HTTP requests.
      */
     public static class Client {
 
-        // HTTP 请求核心客户端
+        /**
+         * The core HTTP client.
+         */
         private Httpd httpd;
 
         /**
-         * 默认构造函数，初始化 Httpd 客户端并配置 SSL。
+         * Default constructor that initializes the {@link Httpd} client with SSL configuration.
          */
         public Client() {
             final X509TrustManager trustManager = SSLContextBuilder.newTrustManager();
             this.httpd = new Httpd().newBuilder()
                     .sslSocketFactory(SSLContextBuilder.newSslSocketFactory(trustManager), trustManager)
-                    .hostnameVerifier((hostname, session) -> true) // 信任所有主机名
+                    .hostnameVerifier((hostname, session) -> true) // Trust all hostnames
                     .build();
         }
 
         /**
-         * 使用指定的 Httpd 客户端进行初始化。
+         * Initializes with a specified {@link Httpd} client.
          *
-         * @param httpd Httpd 客户端
+         * @param httpd The {@link Httpd} client.
          */
         public Client(Httpd httpd) {
             this.httpd = httpd;
         }
 
         /**
-         * 取消所有正在排队或运行的请求，使用默认客户端。
+         * Cancels all queued or running requests using the default client.
          */
         public static void cancelAll() {
             cancelAll(client.getHttpd());
         }
 
         /**
-         * 取消指定客户端的所有正在排队或运行的请求。
+         * Cancels all queued or running requests for a specific client.
          *
-         * @param httpd Httpd 客户端
+         * @param httpd The {@link Httpd} client.
          */
         public static void cancelAll(final Httpd httpd) {
             if (httpd != null) {
-                // 取消排队中的请求
+                // Cancel queued calls
                 for (NewCall call : httpd.dispatcher().queuedCalls()) {
                     call.cancel();
                 }
-                // 取消运行中的请求
+                // Cancel running calls
                 for (NewCall call : httpd.dispatcher().runningCalls()) {
                     call.cancel();
                 }
@@ -179,29 +184,29 @@ public class Httpz {
         }
 
         /**
-         * 取消带有指定标签的请求，使用默认客户端。
+         * Cancels requests with a specific tag using the default client.
          *
-         * @param tag 请求的标签
+         * @param tag The request tag.
          */
         public static void cancel(final Object tag) {
             cancel(client.getHttpd(), tag);
         }
 
         /**
-         * 取消指定客户端中带有特定标签的请求。
+         * Cancels requests with a specific tag for a specific client.
          *
-         * @param httpd Httpd 客户端
-         * @param tag   请求的标签
+         * @param httpd The {@link Httpd} client.
+         * @param tag   The request tag.
          */
         public static void cancel(final Httpd httpd, final Object tag) {
             if (httpd != null && tag != null) {
-                // 取消排队中匹配标签的请求
+                // Cancel queued calls with matching tag
                 for (NewCall call : httpd.dispatcher().queuedCalls()) {
                     if (tag.equals(call.request().tag())) {
                         call.cancel();
                     }
                 }
-                // 取消运行中匹配标签的请求
+                // Cancel running calls with matching tag
                 for (NewCall call : httpd.dispatcher().runningCalls()) {
                     if (tag.equals(call.request().tag())) {
                         call.cancel();
@@ -211,63 +216,63 @@ public class Httpz {
         }
 
         /**
-         * 创建 GetBuilder 实例，用于构建 GET 请求。
+         * Creates a {@link GetBuilder} for constructing GET requests.
          *
-         * @return GetBuilder 实例
+         * @return a new {@link GetBuilder} instance.
          */
         public GetBuilder get() {
             return new GetBuilder(httpd);
         }
 
         /**
-         * 创建 PostBuilder 实例，用于构建 POST 请求。
+         * Creates a {@link PostBuilder} for constructing POST requests.
          *
-         * @return PostBuilder 实例
+         * @return a new {@link PostBuilder} instance.
          */
         public PostBuilder post() {
             return new PostBuilder(httpd);
         }
 
         /**
-         * 创建 PutBuilder 实例，用于构建 PUT 请求。
+         * Creates a {@link PutBuilder} for constructing PUT requests.
          *
-         * @return PutBuilder 实例
+         * @return a new {@link PutBuilder} instance.
          */
         public PutBuilder put() {
             return new PutBuilder(httpd);
         }
 
         /**
-         * 创建 HeadBuilder 实例，用于构建 HEAD 请求。
+         * Creates a {@link HeadBuilder} for constructing HEAD requests.
          *
-         * @return HeadBuilder 实例
+         * @return a new {@link HeadBuilder} instance.
          */
         public HeadBuilder head() {
             return new HeadBuilder(httpd);
         }
 
         /**
-         * 创建 DeleteBuilder 实例，用于构建 DELETE 请求。
+         * Creates a {@link DeleteBuilder} for constructing DELETE requests.
          *
-         * @return DeleteBuilder 实例
+         * @return a new {@link DeleteBuilder} instance.
          */
         public DeleteBuilder delete() {
             return new DeleteBuilder(httpd);
         }
 
         /**
-         * 获取当前 Httpd 客户端。
+         * Gets the current {@link Httpd} client.
          *
-         * @return Httpd 实例
+         * @return the {@link Httpd} instance.
          */
         public Httpd getHttpd() {
             return httpd;
         }
 
         /**
-         * 设置 Httpd 客户端。
+         * Sets the {@link Httpd} client.
          *
-         * @param httpd Httpd 实例
+         * @param httpd the {@link Httpd} instance.
          */
         public void setHttpd(Httpd httpd) {
             this.httpd = httpd;

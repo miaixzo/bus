@@ -34,9 +34,9 @@ import java.util.Objects;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 可变{@code Object}
+ * A mutable {@code Object} wrapper.
  *
- * @param <T> 可变的类型
+ * @param <T> The type of the mutable object.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -45,30 +45,33 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
     @Serial
     private static final long serialVersionUID = 2852270938613L;
 
+    /**
+     * The mutable value.
+     */
     private T value;
 
     /**
-     * 构造，空值
+     * Constructs a new MutableObject with a {@code null} value.
      */
     public MutableObject() {
 
     }
 
     /**
-     * 构造
+     * Constructs a new MutableObject with the specified value.
      *
-     * @param value 值
+     * @param value The initial value.
      */
     public MutableObject(final T value) {
         this.value = value;
     }
 
     /**
-     * 构建MutableObj
+     * Creates a new {@code MutableObject}.
      *
-     * @param value 被包装的值
-     * @param <T>   值类型
-     * @return MutableObject
+     * @param value The value to wrap.
+     * @param <T>   The type of the value.
+     * @return A new {@code MutableObject} instance.
      */
     public static <T> MutableObject<T> of(final T value) {
         return new MutableObject<>(value);

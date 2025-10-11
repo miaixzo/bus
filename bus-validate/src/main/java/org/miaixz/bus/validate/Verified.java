@@ -30,6 +30,7 @@ package org.miaixz.bus.validate;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -46,7 +47,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 被校验对象 注意: 当被校验对象为null时,无法获取到对象的Class,所以不会执行对象的Class上标记的任何校验注解
+ * Represents an object to be validated. Note: When the object to be validated is null, its Class cannot be obtained, so
+ * any validation annotations marked on the class will not be executed.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,26 +59,26 @@ import java.util.List;
 public class Verified extends Provider {
 
     /**
-     * 校验者信息
+     * List of validation materials.
      */
     private List<Material> list;
     /**
-     * 被校验属性值
+     * The value of the property being validated.
      */
     private Object object;
     /**
-     * 被校验属性名称
+     * The name of the property being validated.
      */
     private String field;
     /**
-     * 校验者上下文
+     * The validation context.
      */
     private Context context;
 
     /**
-     * 被校验对象 内部使用一个默认的校验器上下文
+     * Constructs a Verified object with a default validator context.
      *
-     * @param object 被校验的原始对象
+     * @param object The original object to be validated.
      */
     public Verified(Object object) {
         this.object = object;
@@ -85,10 +87,12 @@ public class Verified extends Provider {
     }
 
     /**
-     * 被校验对象
+     * Constructs a Verified object with a parent context.
      *
-     * @param object        被校验的原始对象
-     * @param parentContext 父级校验上下文,当前校验环境会继承所有父级上下文信息,除了是否校验对象内部的属性
+     * @param object        The original object to be validated.
+     * @param parentContext The parent validation context. The current validation environment will inherit all parent
+     *                      context information except for the property indicating whether to validate the object's
+     *                      internals.
      */
     public Verified(Object object, Context parentContext) {
         this.object = object;
@@ -97,10 +101,10 @@ public class Verified extends Provider {
     }
 
     /**
-     * 被校验对象 内部使用一个默认的校验器上下文
+     * Constructs a Verified object with a default validator context.
      *
-     * @param object      被校验的原始对象
-     * @param annotations 被校验对象上的所有注解
+     * @param object      The original object to be validated.
+     * @param annotations All annotations on the object to be validated.
      */
     public Verified(Object object, Annotation[] annotations) {
         this.object = object;
@@ -109,11 +113,13 @@ public class Verified extends Provider {
     }
 
     /**
-     * 被校验对象
+     * Constructs a Verified object.
      *
-     * @param object      被校验的原始对象
-     * @param annotations 被校验对象上的所有注解
-     * @param context     父级校验上下文,当前校验环境会继承所有父级上下文信息,除了是否校验对象内部的属性
+     * @param object      The original object to be validated.
+     * @param annotations All annotations on the object to be validated.
+     * @param context     The parent validation context. The current validation environment will inherit all parent
+     *                    context information except for the property indicating whether to validate the object's
+     *                    internals.
      */
     public Verified(Object object, Annotation[] annotations, Context context) {
         this.object = object;
@@ -122,12 +128,14 @@ public class Verified extends Provider {
     }
 
     /**
-     * 被校验对象
+     * Constructs a Verified object.
      *
-     * @param object      被校验的原始对象
-     * @param annotations 被校验对象上的所有注解
-     * @param context     父级校验上下文,当前校验环境会继承所有父级上下文信息,除了是否校验对象内部的属性
-     * @param field       属性信息
+     * @param object      The original object to be validated.
+     * @param annotations All annotations on the object to be validated.
+     * @param context     The parent validation context. The current validation environment will inherit all parent
+     *                    context information except for the property indicating whether to validate the object's
+     *                    internals.
+     * @param field       The property information.
      */
     public Verified(Object object, Annotation[] annotations, Context context, String field) {
         this.field = field;
@@ -137,10 +145,10 @@ public class Verified extends Provider {
     }
 
     /**
-     * 根据对象注解解析校验器
+     * Resolves validators based on object annotations.
      *
-     * @param annotations 注解信息
-     * @return the object
+     * @param annotations The annotation information.
+     * @return A list of resolved validation materials.
      */
     private List<Material> resolve(Annotation[] annotations) {
         List<Material> list = new ArrayList<>();
@@ -162,11 +170,11 @@ public class Verified extends Provider {
     }
 
     /**
-     * 根据对象注解配置校验上下文
+     * Configures the validation context based on object annotations.
      *
-     * @param context     上下文
-     * @param annotations 注解信息
-     * @return the object
+     * @param context     The context.
+     * @param annotations The annotation information.
+     * @return The configured context.
      */
     private Context resolve(Context context, Annotation[] annotations) {
         if (ObjectKit.isNotEmpty(this.object)) {
@@ -193,9 +201,10 @@ public class Verified extends Provider {
     }
 
     /**
-     * 执行校验 如果校验环境设置了快速失败的属性为true,那么一旦出现校验失败,则会抛出异常
+     * Executes the validation. If the fast-fail property is set to true in the validation context, an exception will be
+     * thrown immediately upon the first validation failure.
      *
-     * @return 校验结果收集器
+     * @return The validation result collector.
      */
     public Collector access() {
         Collector collector = new Collector(this);
@@ -212,11 +221,11 @@ public class Verified extends Provider {
     }
 
     /**
-     * 创建校验器属性对象
+     * Creates a validation material object.
      *
-     * @param annotation 注解
-     * @param object     对象
-     * @return 校验器属性对象
+     * @param annotation The annotation.
+     * @param object     The object.
+     * @return The validation material object.
      */
     public Material build(Annotation annotation, Object object) {
         Assert.isTrue(
@@ -225,8 +234,8 @@ public class Verified extends Provider {
         Class<? extends Annotation> annotationType = annotation.annotationType();
         try {
             String[] groups = (String[]) annotationType.getMethod(Builder.GROUP).invoke(annotation);
-            String errmsg = (String) annotationType.getMethod(Builder.ERRMSG).invoke(annotation);
-            String errcode = (String) annotationType.getMethod(Builder.ERRCODE).invoke(annotation);
+            String errmsg = (String) annotationType.getMethod(Consts.ERRMSG).invoke(annotation);
+            String errcode = (String) annotationType.getMethod(Consts.ERRCODE).invoke(annotation);
             String name = (String) annotationType.getMethod(Builder.FIELD).invoke(annotation);
             this.field = Builder.DEFAULT_FIELD.equals(name) ? this.field : name;
             Material material = new Material();

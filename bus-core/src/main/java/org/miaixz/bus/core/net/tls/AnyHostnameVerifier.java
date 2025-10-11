@@ -40,7 +40,10 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * https 域名校验，信任所有域名 注意此类慎用，信任全部可能会有中间人攻击风险
+ * A {@link HostnameVerifier} that trusts all hostnames.
+ * <p>
+ * <strong>Warning:</strong> This class should be used with caution, as it effectively disables hostname verification,
+ * which can expose your application to man-in-the-middle attacks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,16 +51,31 @@ import org.miaixz.bus.core.lang.Symbol;
 public class AnyHostnameVerifier implements HostnameVerifier {
 
     /**
-     * 单例对象
+     * Singleton instance of {@code AnyHostnameVerifier}.
      */
     public static final AnyHostnameVerifier INSTANCE = new AnyHostnameVerifier();
 
+    /**
+     * See {@link X509Certificate#getSubjectAlternativeNames()}. DNS alternative name type.
+     */
     private static final int ALT_DNS_NAME = 2;
+    /**
+     * See {@link X509Certificate#getSubjectAlternativeNames()}. IP address alternative name type.
+     */
     private static final int ALT_IPA_NAME = 7;
 
+    /**
+     * Private constructor for singleton pattern.
+     */
     private AnyHostnameVerifier() {
     }
 
+    /**
+     * Returns a list of all alternative names from the given certificate.
+     *
+     * @param certificate The {@link X509Certificate}.
+     * @return A list of all alternative names.
+     */
     public static List<String> allSubjectAltNames(X509Certificate certificate) {
         List<String> altIpaNames = getSubjectAltNames(certificate, ALT_IPA_NAME);
         List<String> altDnsNames = getSubjectAltNames(certificate, ALT_DNS_NAME);
@@ -67,6 +85,13 @@ public class AnyHostnameVerifier implements HostnameVerifier {
         return result;
     }
 
+    /**
+     * Gets the subject alternative names of a given type from the certificate.
+     *
+     * @param certificate The {@link X509Certificate}.
+     * @param type        The type of the alternative name.
+     * @return A list of subject alternative names.
+     */
     private static List<String> getSubjectAltNames(X509Certificate certificate, int type) {
         List<String> result = new ArrayList<>();
         try {
@@ -96,6 +121,13 @@ public class AnyHostnameVerifier implements HostnameVerifier {
         }
     }
 
+    /**
+     * Verifies that the host name is an acceptable match with the server's authentication scheme.
+     *
+     * @param host    the host name.
+     * @param session the SSL session.
+     * @return {@code true} if the host name is acceptable, {@code false} otherwise.
+     */
     @Override
     public boolean verify(String host, SSLSession session) {
         try {
@@ -106,6 +138,13 @@ public class AnyHostnameVerifier implements HostnameVerifier {
         }
     }
 
+    /**
+     * Verifies the host against the given certificate.
+     *
+     * @param host        The host to verify.
+     * @param certificate The {@link X509Certificate}.
+     * @return {@code true} if the host is valid for the given certificate, {@code false} otherwise.
+     */
     public boolean verify(String host, X509Certificate certificate) {
         return Pattern.IP_ADDRESS_PATTERN.matcher(host).matches() ? verifyIpAddress(host, certificate)
                 : verifyHostname(host, certificate);
@@ -113,6 +152,10 @@ public class AnyHostnameVerifier implements HostnameVerifier {
 
     /**
      * Returns true if {@code certificate} matches {@code ipAddress}.
+     *
+     * @param ipAddress   The IP address to verify.
+     * @param certificate The {@link X509Certificate}.
+     * @return {@code true} if the IP address is valid for the given certificate, {@code false} otherwise.
      */
     private boolean verifyIpAddress(String ipAddress, X509Certificate certificate) {
         List<String> altNames = getSubjectAltNames(certificate, ALT_IPA_NAME);
@@ -126,6 +169,10 @@ public class AnyHostnameVerifier implements HostnameVerifier {
 
     /**
      * Returns true if {@code certificate} matches {@code hostname}.
+     *
+     * @param hostname    The hostname to verify.
+     * @param certificate The {@link X509Certificate}.
+     * @return {@code true} if the hostname is valid for the given certificate, {@code false} otherwise.
      */
     private boolean verifyHostname(String hostname, X509Certificate certificate) {
         hostname = hostname.toLowerCase(Locale.US);
@@ -139,14 +186,15 @@ public class AnyHostnameVerifier implements HostnameVerifier {
     }
 
     /**
-     * 返回{@code true} iff {@code hostname}匹配域名{@code pattern}.
+     * Returns {@code true} if {@code hostname} matches the domain name {@code pattern}.
      *
-     * @param hostname 小写字母的主机名.
-     * @param pattern  从证书的域名模式。可能是一个通配符模式，如{@code *.android.com}
-     * @return the true/false
+     * @param hostname The hostname in lowercase.
+     * @param pattern  The domain name pattern from the certificate. It may be a wildcard pattern like
+     *                 {@code *.android.com}.
+     * @return {@code true} if the hostname matches the pattern, {@code false} otherwise.
      */
     public boolean verifyHostname(String hostname, String pattern) {
-        // 基本健康检查
+        // Basic health checks
         if ((null == hostname) || (hostname.length() == 0) || (hostname.startsWith(Symbol.DOT))
                 || (hostname.endsWith(Symbol.DOUBLE_DOT))) {
             return false;
@@ -164,14 +212,16 @@ public class AnyHostnameVerifier implements HostnameVerifier {
         }
 
         pattern = pattern.toLowerCase(Locale.US);
-        // 主机名和模式现在是小写的——域名不区分大小写.
+        // Hostnames and patterns are now in lowercase -- domain names are case-insensitive.
 
         if (!pattern.contains(Symbol.STAR)) {
-            // 不是通配符模式——主机名和模式必须完全匹配.
+            // Not a wildcard pattern -- hostname and pattern must match exactly.
             return hostname.equals(pattern);
         }
 
+        // Wildcard pattern logic
         if ((!pattern.startsWith("*.")) || (pattern.indexOf(Symbol.C_STAR, 1) != -1)) {
+            // Wildcard must be at the beginning, and only one wildcard is allowed.
             return false;
         }
 
@@ -199,6 +249,7 @@ public class AnyHostnameVerifier implements HostnameVerifier {
         int suffixStartIndexInHostname = hostname.length() - suffix.length();
         if ((suffixStartIndexInHostname > 0)
                 && (hostname.lastIndexOf(Symbol.C_DOT, suffixStartIndexInHostname - 1) != -1)) {
+            // Asterisk matched across a label boundary.
             return false;
         }
 

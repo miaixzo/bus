@@ -40,248 +40,291 @@ import org.miaixz.bus.pay.metric.AbstractProvider;
 import org.miaixz.bus.pay.metric.tenpay.api.TenpayApi;
 
 /**
- * QQ 钱包支付
+ * QQ Wallet payment provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TenpayProvider extends AbstractProvider<Material, Context> {
 
+    /**
+     * Constructs a new TenpayProvider.
+     *
+     * @param context The context.
+     */
     public TenpayProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Constructs a new TenpayProvider.
+     *
+     * @param context The context.
+     * @param complex The complex object.
+     */
     public TenpayProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
+    /**
+     * Constructs a new TenpayProvider.
+     *
+     * @param context The context.
+     * @param complex The complex object.
+     * @param cache   The cache.
+     */
     public TenpayProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the complete URL for the API request.
      *
-     * @return {@link String} 返回完整的接口请求URL
+     * @return The complete URL.
      */
     public String getUrl() {
         return getUrl(this.complex);
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the complete URL for the API request.
      *
-     * @param complex {@link TenpayApi} 支付 API 接口枚举
-     * @return {@link String} 返回完整的接口请求URL
+     * @param complex The payment API interface enumeration.
+     * @return The complete URL.
      */
     public String getUrl(Complex complex) {
         return (complex.isSandbox() ? Registry.TENPAY.sandbox() : Registry.TENPAY.service()).concat(complex.method());
     }
 
     /**
-     * 提交付款码支付
+     * Submits a micropay payment.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String microPay(Map<String, String> params) {
         return doPost(TenpayApi.MICRO_PAY_URL, params);
     }
 
     /**
-     * 统一下单
+     * Creates a unified order.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String unifiedOrder(Map<String, String> params) {
         return doPost(TenpayApi.UNIFIED_ORDER_URL, params);
     }
 
     /**
-     * 订单查询
+     * Queries an order.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String orderQuery(Map<String, String> params) {
         return doPost(TenpayApi.ORDER_QUERY_URL, params);
     }
 
     /**
-     * 关闭订单
+     * Closes an order.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String closeOrder(Map<String, String> params) {
         return doPost(TenpayApi.CLOSE_ORDER_URL, params);
     }
 
     /**
-     * 撤销订单
+     * Reverses an order.
      *
-     * @param params   请求参数
-     * @param cerPath  证书文件目录
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param cerPath  The certificate file path.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String orderReverse(Map<String, String> params, String cerPath, String certPass) {
         return doPost(TenpayApi.ORDER_REVERSE_URL, params, cerPath, certPass);
     }
 
     /**
-     * 撤销订单
+     * Reverses an order.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The InputStream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String orderReverse(Map<String, String> params, InputStream certFile, String certPass) {
         return doPost(TenpayApi.ORDER_REVERSE_URL, params, certFile, certPass);
     }
 
     /**
-     * 申请退款
+     * Applies for a refund.
      *
-     * @param params   请求参数
-     * @param cerPath  证书文件目录
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param cerPath  The certificate file path.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String orderRefund(Map<String, String> params, String cerPath, String certPass) {
         return doPost(TenpayApi.ORDER_REFUND_URL, params, cerPath, certPass);
     }
 
     /**
-     * 申请退款
+     * Applies for a refund.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The InputStream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String orderRefund(Map<String, String> params, InputStream certFile, String certPass) {
         return doPost(TenpayApi.ORDER_REFUND_URL, params, certFile, certPass);
     }
 
     /**
-     * 退款查询
+     * Queries a refund.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String refundQuery(Map<String, String> params) {
         return doPost(TenpayApi.REFUND_QUERY_URL, params);
     }
 
     /**
-     * 对账单下载
+     * Downloads a bill.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String downloadBill(Map<String, String> params) {
         return doPost(TenpayApi.DOWNLOAD_BILL_URL, params);
     }
 
     /**
-     * 创建现金红包
+     * Creates a red packet.
      *
-     * @param params   请求参数
-     * @param cerPath  证书文件目录
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param cerPath  The certificate file path.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String createReadPack(Map<String, String> params, String cerPath, String certPass) {
         return doPost(TenpayApi.CREATE_READ_PACK_URL, params, cerPath, certPass);
     }
 
     /**
-     * 创建现金红包
+     * Creates a red packet.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The InputStream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String createReadPack(Map<String, String> params, InputStream certFile, String certPass) {
         return doPost(TenpayApi.CREATE_READ_PACK_URL, params, certFile, certPass);
     }
 
     /**
-     * 查询红包详情
+     * Gets red packet information.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String getHbInfo(Map<String, String> params) {
         return doPost(TenpayApi.GET_HB_INFO_URL, params);
     }
 
     /**
-     * 下载红包对账单
+     * Downloads a red packet bill.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String downloadHbBill(Map<String, String> params) {
         return doPost(TenpayApi.DOWNLOAD_HB_BILL_URL, params);
     }
 
     /**
-     * 企业付款到余额
+     * Transfers to balance.
      *
-     * @param params   请求参数
-     * @param cerPath  证书文件目录
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param cerPath  The certificate file path.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String transfer(Map<String, String> params, String cerPath, String certPass) {
         return doPost(TenpayApi.TRANSFER_URL, params, cerPath, certPass);
     }
 
     /**
-     * 企业付款到余额
+     * Transfers to balance.
      *
-     * @param params   请求参数
-     * @param certFile 证书文件的 InputStream
-     * @param certPass 证书密码
-     * @return {@link String} 请求返回的结果
+     * @param params   The request parameters.
+     * @param certFile The InputStream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The result of the request.
      */
     public String transfer(Map<String, String> params, InputStream certFile, String certPass) {
         return doPost(TenpayApi.TRANSFER_URL, params, certFile, certPass);
     }
 
     /**
-     * 查询企业付款
+     * Gets transfer information.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String getTransferInfo(Map<String, String> params) {
         return doPost(TenpayApi.GET_TRANSFER_INFO_URL, params);
     }
 
     /**
-     * 下载企业付款对账单
+     * Downloads a transfer bill.
      *
-     * @param params 请求参数
-     * @return {@link String} 请求返回的结果
+     * @param params The request parameters.
+     * @return The result of the request.
      */
     public String downloadTransferBill(Map<String, String> params) {
         return doPost(TenpayApi.DOWNLOAD_TRANSFER_BILL_URL, params);
     }
 
+    /**
+     * Performs a POST request.
+     *
+     * @param complex The API endpoint.
+     * @param params  The request parameters.
+     * @return The response from the server.
+     */
     public String doPost(Complex complex, Map<String, String> params) {
         return post(getUrl(complex), XmlKit.mapToXmlString(params));
     }
 
+    /**
+     * Performs a POST request with a certificate.
+     *
+     * @param complex  The API endpoint.
+     * @param params   The request parameters.
+     * @param certPath The certificate file path.
+     * @param certPass The certificate password.
+     * @return The response from the server.
+     */
     public String doPost(Complex complex, Map<String, String> params, String certPath, String certPass) {
         return post(getUrl(complex), XmlKit.mapToXmlString(params), certPath, certPass, null);
     }
 
+    /**
+     * Performs a POST request with a certificate.
+     *
+     * @param complex  The API endpoint.
+     * @param params   The request parameters.
+     * @param certFile The InputStream of the certificate file.
+     * @param certPass The certificate password.
+     * @return The response from the server.
+     */
     public String doPost(Complex complex, Map<String, String> params, InputStream certFile, String certPass) {
         return post(getUrl(complex), XmlKit.mapToXmlString(params), certFile, certPass, null);
     }

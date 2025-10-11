@@ -31,7 +31,7 @@ import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
 /**
- * jboss-logging
+ * A factory for creating {@link org.jboss.logging.Logger} instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,7 +39,8 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
 public class JbossLoggingFactory extends AbstractFactory {
 
     /**
-     * 构造
+     * Constructs a new {@code JbossLoggingFactory}. This factory is responsible for creating loggers based on the JBoss
+     * Logging framework. It also checks for the existence of the {@link org.jboss.logging.Logger} class.
      */
     public JbossLoggingFactory() {
         super("org.jboss.logging.Logger");

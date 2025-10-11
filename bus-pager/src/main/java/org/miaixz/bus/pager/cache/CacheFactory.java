@@ -40,7 +40,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.Property;
 
 /**
- * CacheFactory
+ * Factory for creating and configuring cache instances for SQL caching. It supports creating caches based on a
+ * specified class name or defaulting to {@link CaffeineCache} or {@link SimpleCache}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,14 +49,19 @@ import org.miaixz.bus.pager.Property;
 public abstract class CacheFactory {
 
     /**
-     * 创建 SQL 缓存
+     * Creates a SQL cache instance based on the provided class name and properties. If {@code sqlCacheClass} is empty,
+     * it attempts to create a {@link CaffeineCache}, falling back to {@link SimpleCache} if Caffeine is not available.
+     * If {@code sqlCacheClass} is provided, it attempts to instantiate that class, supporting constructors with
+     * {@link Properties} and {@link String} arguments, or a default constructor.
      *
-     * @param <K>           对象
-     * @param <V>           对象
-     * @param sqlCacheClass 对象
-     * @param prefix        前缀
-     * @param properties    属性
-     * @return the object
+     * @param <K>           the type of keys maintained by this cache
+     * @param <V>           the type of mapped values
+     * @param sqlCacheClass the fully qualified class name of the cache implementation to create. Can be null or empty
+     *                      to use default.
+     * @param prefix        a prefix for properties, used to distinguish cache-specific properties.
+     * @param properties    the properties to configure the cache instance.
+     * @return a new instance of {@link CacheX}
+     * @throws PageException if properties are empty or if there is an error creating the cache instance.
      */
     public static <K, V> CacheX<K, V> createCache(String sqlCacheClass, String prefix, Properties properties) {
         if (ObjectKit.isEmpty(properties)) {

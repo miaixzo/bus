@@ -33,44 +33,67 @@ import java.lang.reflect.Type;
 import org.miaixz.bus.core.xyz.ClassKit;
 
 /**
- * 类转换器 将类名转换为类，默认初始化这个类（执行static块）
+ * Converts an object to a {@link Class}. The input is typically a string representing the fully qualified class name.
+ * By default, the class is initialized (i.e., its static block is executed).
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ClassConverter extends AbstractConverter implements MatcherConverter {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852266707267L;
 
     /**
-     * 单例
+     * Singleton instance.
      */
     public static ClassConverter INSTANCE = new ClassConverter();
 
+    /**
+     * Whether to initialize the loaded class.
+     */
     private final boolean isInitialized;
 
     /**
-     * 构造
+     * Constructs a new {@code ClassConverter} that initializes the loaded class by default.
      */
     public ClassConverter() {
         this(true);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code ClassConverter}.
      *
-     * @param isInitialized 是否初始化类（调用static模块内容和初始化static属性）
+     * @param isInitialized If {@code true}, the class will be initialized upon loading (its static initializers will be
+     *                      run).
      */
     public ClassConverter(final boolean isInitialized) {
         this.isInitialized = isInitialized;
     }
 
+    /**
+     * Checks if this converter can handle the conversion to a {@link Class}.
+     *
+     * @param targetType The target type.
+     * @param rawType    The raw class of the target type.
+     * @param value      The value to be converted.
+     * @return {@code true} if the raw type is {@code java.lang.Class}, {@code false} otherwise.
+     */
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
         return "java.lang.Class".equals(rawType.getName());
     }
 
+    /**
+     * Internally converts the given value to a {@link Class}.
+     *
+     * @param targetClass The target class, which should be {@link Class}.
+     * @param value       The value to be converted, typically a class name.
+     * @return The loaded {@link Class} object.
+     */
     @Override
     protected Class<?> convertInternal(final Class<?> targetClass, final Object value) {
         return ClassKit.loadClass(convertToString(value), isInitialized);

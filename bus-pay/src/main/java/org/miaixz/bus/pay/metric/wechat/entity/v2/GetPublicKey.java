@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
-import org.miaixz.bus.pay.magic.Material;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 获取RSA加密公钥
+ * Model for the Get RSA Public Key API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,9 +47,21 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class GetPublicKey extends Material {
 
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Signature type.
+     */
     private String sign_type;
 
 }

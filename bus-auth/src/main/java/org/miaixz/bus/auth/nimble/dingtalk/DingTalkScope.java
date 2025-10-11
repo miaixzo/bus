@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * DingTalk 授权范围
+ * DingTalk authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,16 +42,27 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum DingTalkScope implements AuthorizeScope {
 
     /**
-     * 无需申请 默认开启
+     * No application required, enabled by default. Authorizes to obtain user ID. The meaning of {@code scope} is
+     * subject to {@code description}.
      */
-    openid("openid", "授权后可获得用户userid", true),
+    openid("openid", "Authorizes to obtain user ID", true),
     /**
-     * 无需申请 默认开启
+     * No application required, enabled by default. Authorizes to obtain the organization ID selected by the user during
+     * login.
      */
-    corpid("corpid", "授权后可获得登录过程中用户选择的组织id", false);
+    corpid("corpid", "Authorizes to obtain the organization ID selected by the user during login", false);
 
+    /**
+     * The scope string as defined by DingTalk.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

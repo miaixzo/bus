@@ -40,10 +40,12 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.SetKit;
 
 /**
- * 基于多个{@link TreeEntry}构成的、彼此平行的树结构构成的森林集合。
+ * Represents a forest (a collection of trees) where each node is a {@link TreeEntry}. This interface extends
+ * {@link Map} and provides specialized methods for building and navigating hierarchical tree structures. Each key in
+ * the map corresponds to a unique node in the forest.
  *
- * @param <K> key类型
- * @param <V> value类型
+ * @param <K> The type of the keys (node identifiers).
+ * @param <V> The type of the values stored in the nodes.
  * @author Kimi Liu
  * @see TreeEntry
  * @since Java 17+
@@ -51,15 +53,12 @@ import org.miaixz.bus.core.xyz.SetKit;
 public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
 
     /**
-     * 添加一个节点，效果等同于 {@code putNode(data, node.getValue())}
-     * <ul>
-     * <li>若key对应节点不存在，则以传入的键值创建一个新的节点；</li>
-     * <li>若key对应节点存在，则将该节点的值替换为{@code node}指定的值；</li>
-     * </ul>
+     * Adds or updates a node in the forest using the provided {@link TreeEntry}. If a node with the same key already
+     * exists, its value is updated. This is a convenience method that delegates to {@link #putNode(Object, Object)}.
      *
-     * @param key  节点的key值
-     * @param node 节点
-     * @return 节点，若key已有对应节点，则返回具有旧值的节点，否则返回null
+     * @param key  The key of the node.
+     * @param node The {@link TreeEntry} containing the value to associate with the key.
+     * @return The previous {@link TreeEntry} associated with the key, or {@code null} if there was no mapping.
      * @see #putNode(Object, Object)
      */
     @Override
@@ -68,9 +67,9 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     }
 
     /**
-     * 批量添加节点，若节点具有父节点或者子节点，则一并在当前实例中引入该关系
+     * Adds all nodes from the specified map into this forest, preserving their parent-child relationships.
      *
-     * @param treeEntryMap 节点集合
+     * @param treeEntryMap A map of keys to {@link TreeEntry} objects to be added.
      */
     @Override
     default void putAll(final Map<? extends K, ? extends TreeEntry<K, V>> treeEntryMap) {
@@ -88,13 +87,13 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     }
 
     /**
-     * 批量添加节点
+     * Populates the forest from a collection of value objects, using functions to extract keys and parent keys.
      *
-     * @param <C>                集合类型
-     * @param values             要添加的值
-     * @param keyGenerator       从值中获取key的方法
-     * @param parentKeyGenerator 从值中获取父节点key的方法
-     * @param ignoreNullNode     是否获取到的key为null的子节点/父节点
+     * @param <C>                The type of the collection.
+     * @param values             The collection of value objects to add as nodes.
+     * @param keyGenerator       A function to extract the key for a node from its value object.
+     * @param parentKeyGenerator A function to extract the parent's key from a node's value object.
+     * @param ignoreNullNode     If {@code true}, entries where the key or parent key is {@code null} will be skipped.
      */
     default <C extends Collection<V>> void putAllNode(
             final C values,
@@ -108,51 +107,34 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
             final K key = keyGenerator.apply(v);
             final K parentKey = parentKeyGenerator.apply(v);
 
-            // 不忽略keu为null节点
             final boolean hasKey = ObjectKit.isNotNull(key);
             final boolean hasParentKey = ObjectKit.isNotNull(parentKey);
+
             if (!ignoreNullNode || (hasKey && hasParentKey)) {
                 linkNodes(parentKey, key);
                 get(key).setValue(v);
-                return;
-            }
-
-            // 父子节点的key都为null
-            if (!hasKey && !hasParentKey) {
-                return;
-            }
-
-            // 父节点key为null
-            if (hasKey) {
+            } else if (hasKey) {
                 putNode(key, v);
-                return;
+            } else if (hasParentKey) {
+                // Ensure parent node exists even if child key is null
+                putNode(parentKey, null);
             }
-
-            // 子节点key为null
-            putNode(parentKey, null);
         });
     }
 
     /**
-     * 添加一个节点
-     * <ul>
-     * <li>若key对应节点不存在，则以传入的键值创建一个新的节点；</li>
-     * <li>若key对应节点存在，则将该节点的值替换为{@code node}指定的值；</li>
-     * </ul>
+     * Adds or updates a single node in the forest. If a node with the given key does not exist, a new one is created.
+     * If a node with the given key already exists, its value is updated.
      *
-     * @param key   节点的key
-     * @param value 节点的value
-     * @return 节点，若key已有对应节点，则返回具有旧值的节点，否则返回null
+     * @param key   The key of the node.
+     * @param value The value of the node.
+     * @return The {@link TreeEntry} associated with the key (either existing or newly created).
      */
     TreeEntry<K, V> putNode(K key, V value);
 
     /**
-     * 同时添加父子节点：
-     * <ul>
-     * <li>若{@code parentKey}或{@code childKey}对应的节点不存在，则会根据键值创建一个对应的节点；</li>
-     * <li>若{@code parentKey}或{@code childKey}对应的节点存在，则会更新对应节点的值；</li>
-     * </ul>
-     * 该操作等同于：
+     * Adds or updates both a parent and a child node and establishes a parent-child link between them. This is a
+     * convenience method equivalent to:
      * 
      * <pre>{@code
      * putNode(parentKey, parentValue);
@@ -160,10 +142,10 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
      * linkNodes(parentKey, childKey);
      * }</pre>
      *
-     * @param parentKey   父节点的key
-     * @param parentValue 父节点的value
-     * @param childKey    子节点的key
-     * @param childValue  子节点的值
+     * @param parentKey   The key of the parent node.
+     * @param parentValue The value of the parent node.
+     * @param childKey    The key of the child node.
+     * @param childValue  The value of the child node.
      */
     default void putLinkedNodes(final K parentKey, final V parentValue, final K childKey, final V childValue) {
         putNode(parentKey, parentValue);
@@ -172,50 +154,48 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     }
 
     /**
-     * 添加子节点，并为子节点指定父节点：
-     * <ul>
-     * <li>若{@code parentKey}或{@code childKey}对应的节点不存在，则会根据键值创建一个对应的节点；</li>
-     * <li>若{@code parentKey}或{@code childKey}对应的节点存在，则会更新对应节点的值；</li>
-     * </ul>
+     * Adds or updates a child node and links it to a parent node. If the parent or child nodes do not exist, they are
+     * created.
      *
-     * @param parentKey  父节点的key
-     * @param childKey   子节点的key
-     * @param childValue 子节点的值
+     * @param parentKey  The key of the parent node.
+     * @param childKey   The key of the child node.
+     * @param childValue The value of the child node.
      */
     void putLinkedNodes(K parentKey, K childKey, V childValue);
 
     /**
-     * 为集合中的指定的节点建立父子关系
+     * Establishes a parent-child relationship between two nodes that are presumed to exist in the forest.
      *
-     * @param parentKey 父节点的key
-     * @param childKey  子节点的key
+     * @param parentKey The key of the parent node.
+     * @param childKey  The key of the child node.
      */
     default void linkNodes(final K parentKey, final K childKey) {
         linkNodes(parentKey, childKey, null);
     }
 
     /**
-     * 为集合中的指定的节点建立父子关系
+     * Establishes a parent-child relationship between two nodes and provides a consumer to perform actions on them.
      *
-     * @param parentKey 父节点的key
-     * @param childKey  子节点的key
-     * @param consumer  对父节点和子节点的操作，允许为null
+     * @param parentKey The key of the parent node.
+     * @param childKey  The key of the child node.
+     * @param consumer  An optional {@link BiConsumer} to process the parent and child nodes after linking.
      */
     void linkNodes(K parentKey, K childKey, BiConsumer<TreeEntry<K, V>, TreeEntry<K, V>> consumer);
 
     /**
-     * 若{@code parentKey}或{@code childKey}对应节点都存在，则移除指定该父节点与其直接关联的指定子节点间的引用关系
+     * Removes the direct link between a parent and its immediate child node.
      *
-     * @param parentKey 父节点的key
-     * @param childKey  子节点
+     * @param parentKey The key of the parent node.
+     * @param childKey  The key of the child node to unlink.
      */
     void unlinkNode(K parentKey, K childKey);
 
     /**
-     * 获取指定节点所在树结构的全部树节点 比如：存在 a -&gt; b -&gt; c 的关系，则输入 a/b/c 都将返回 a, b, c
+     * Retrieves all nodes belonging to the same tree as the node with the specified key. For example, in a tree
+     * {@code a -> b -> c}, providing {@code a}, {@code b}, or {@code c} will return all three nodes.
      *
-     * @param key 指定节点的key
-     * @return 节点
+     * @param key The key of a node within the desired tree.
+     * @return A {@link Set} of all {@link TreeEntry} objects in the tree, or an empty set if the key is not found.
      */
     default Set<TreeEntry<K, V>> getTreeNodes(final K key) {
         final TreeEntry<K, V> target = get(key);
@@ -228,73 +208,78 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     }
 
     /**
-     * 获取以指定节点作为叶子节点的树结构，然后获取该树结构的根节点 比如：存在 a -&gt; b -&gt; c 的关系，则输入 a/b/c 都将返回 a
+     * Retrieves the root node of the tree to which the specified node belongs. For example, in a tree
+     * {@code a -> b -> c}, providing {@code b} or {@code c} will return node {@code a}.
      *
-     * @param key 指定节点的key
-     * @return 节点
+     * @param key The key of a node within the tree.
+     * @return The root {@link TreeEntry} of the tree, or {@code null} if the key is not found.
      */
     default TreeEntry<K, V> getRootNode(final K key) {
         return Optional.ofNullable(get(key)).map(TreeEntry::getRoot).orElse(null);
     }
 
     /**
-     * 获取指定节点的直接父节点 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 a 将返回 null，输入 b 将返回 a，输入 c 将返回 b
+     * Retrieves the direct parent of the specified node. For example, in a tree {@code a -> b -> c}, providing
+     * {@code c} will return node {@code b}.
      *
-     * @param key 指定节点的key
-     * @return 节点
+     * @param key The key of the node whose parent is to be retrieved.
+     * @return The direct parent {@link TreeEntry}, or {@code null} if the node has no parent or is not found.
      */
     default TreeEntry<K, V> getDeclaredParentNode(final K key) {
         return Optional.ofNullable(get(key)).map(TreeEntry::getDeclaredParent).orElse(null);
     }
 
     /**
-     * 获取以指定节点作为叶子节点的树结构，然后获取该树结构中指定节点的指定父节点
+     * Retrieves a specific ancestor node from the hierarchy above the specified node.
      *
-     * @param key       指定节点的key
-     * @param parentKey 指定父节点key
-     * @return 节点
+     * @param key       The key of the starting node.
+     * @param parentKey The key of the ancestor node to find.
+     * @return The ancestor {@link TreeEntry}, or {@code null} if it is not an ancestor or is not found.
      */
     default TreeEntry<K, V> getParentNode(final K key, final K parentKey) {
         return Optional.ofNullable(get(key)).map(t -> t.getParent(parentKey)).orElse(null);
     }
 
     /**
-     * 获取以指定节点作为叶子节点的树结构，然后确认该树结构中当前节点是否存在指定父节点
+     * Checks if a node is an ancestor of another node.
      *
-     * @param key       指定节点的key
-     * @param parentKey 指定父节点的key
-     * @return 是否
+     * @param key       The key of the potential descendant node.
+     * @param parentKey The key of the potential ancestor node.
+     * @return {@code true} if the node identified by {@code parentKey} is an ancestor of the node identified by
+     *         {@code key}.
      */
     default boolean containsParentNode(final K key, final K parentKey) {
         return Optional.ofNullable(get(key)).map(m -> m.containsParent(parentKey)).orElse(false);
     }
 
     /**
-     * 获取指定节点的值
+     * Retrieves the value of the specified node.
      *
-     * @param key 节点的key
-     * @return 节点值，若节点不存在，或节点值为null都将返回null
+     * @param key The key of the node.
+     * @return The value of the node, or {@code null} if the node does not exist or its value is {@code null}.
      */
     default V getNodeValue(final K key) {
         return Optional.ofNullable(get(key)).map(TreeEntry::getValue).getOrNull();
     }
 
     /**
-     * 判断以该父节点作为根节点的树结构中是否具有指定子节点
+     * Checks if a node is a descendant of another node.
      *
-     * @param parentKey 父节点
-     * @param childKey  子节点
-     * @return 是否
+     * @param parentKey The key of the potential ancestor node.
+     * @param childKey  The key of the potential descendant node.
+     * @return {@code true} if the node identified by {@code childKey} is a descendant of the node identified by
+     *         {@code parentKey}.
      */
     default boolean containsChildNode(final K parentKey, final K childKey) {
         return Optional.ofNullable(get(parentKey)).map(m -> m.containsChild(childKey)).orElse(false);
     }
 
     /**
-     * 获取指定父节点直接关联的子节点 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 b 将返回 c，输入 a 将返回 b
+     * Retrieves all direct children of the specified node. For example, in a tree {@code a -> b -> c}, providing
+     * {@code a} will return a collection containing only node {@code b}.
      *
-     * @param key data
-     * @return 节点
+     * @param key The key of the parent node.
+     * @return A {@link Collection} of the direct child {@link TreeEntry} objects, or an empty collection if none exist.
      */
     default Collection<TreeEntry<K, V>> getDeclaredChildNodes(final K key) {
         return Optional.ofNullable(get(key)).map(TreeEntry::getDeclaredChildren).map(Map::values)
@@ -302,10 +287,11 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     }
 
     /**
-     * 获取指定父节点的全部子节点 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 b 将返回 c，输入 a 将返回 b，c
+     * Retrieves all descendant nodes (children, grandchildren, etc.) of the specified node. For example, in a tree
+     * {@code a -> b -> c}, providing {@code a} will return a collection containing nodes {@code b} and {@code c}.
      *
-     * @param key data
-     * @return 该节点的全部子节点
+     * @param key The key of the parent node.
+     * @return A {@link Collection} of all descendant {@link TreeEntry} objects, or an empty collection if none exist.
      */
     default Collection<TreeEntry<K, V>> getChildNodes(final K key) {
         return Optional.ofNullable(get(key)).map(TreeEntry::getChildren).map(Map::values)

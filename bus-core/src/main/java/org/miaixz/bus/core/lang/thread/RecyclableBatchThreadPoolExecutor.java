@@ -37,18 +37,20 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 可召回批处理线程池执行器。
+ * A recyclable batch thread pool executor designed for efficient parallel processing of tasks.
  * <p>
- * 功能：
+ * Key Features:
  * <ul>
- * <li>支持数据分批并行处理。</li>
- * <li>主线程空闲时召回线程池队列中的任务执行。</li>
- * <li>线程安全，多任务并发执行，线程池满载时效率等同单线程，无阻塞风险。</li>
+ * <li>Supports parallel processing of data in batches.</li>
+ * <li>Allows the main thread to reclaim and execute tasks from the thread pool queue when idle.</li>
+ * <li>Thread-safe, enabling concurrent execution of multiple tasks. When the thread pool is fully loaded, its
+ * efficiency is comparable to a single-threaded execution, without blocking risks.</li>
  * </ul>
- * 适用场景：
+ * Applicable Scenarios:
  * <ul>
- * <li>同步批量处理数据，提升吞吐量，防止任务堆积 ({@link #process(List, int, Function)})。</li>
- * <li>加速普通查询接口 ({@link #processByWarp(Warp[])})。</li>
+ * <li>Synchronous batch processing of data to improve throughput and prevent task accumulation (see
+ * {@link #process(List, int, Function)}).</li>
+ * <li>Accelerating general query interface calls (see {@link #processByWarp(Warp[])}).</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -56,28 +58,34 @@ import java.util.stream.Stream;
  */
 public class RecyclableBatchThreadPoolExecutor {
 
+    /**
+     * The underlying {@link ExecutorService} used for executing tasks.
+     */
     private final ExecutorService executor;
 
     /**
-     * 构造线程池执行器。
+     * Constructs a {@code RecyclableBatchThreadPoolExecutor} with a specified pool size.
      *
-     * @param poolSize 线程池大小
+     * @param poolSize The fixed size of the thread pool.
      */
     public RecyclableBatchThreadPoolExecutor(final int poolSize) {
         this(poolSize, "recyclable-batch-pool-");
     }
 
     /**
-     * 构造线程池执行器，推荐使用。
+     * Constructs a {@code RecyclableBatchThreadPoolExecutor} with a specified pool size and thread name prefix. This
+     * constructor is recommended for most use cases.
      * <p>
-     * 特性：
+     * Characteristics:
      * <ul>
-     * <li>使用无界队列，主线程召回任务执行，避免任务堆积，无需拒绝策略。</li>
-     * <li>高并发场景（如 Web 应用）可能导致内存溢出，建议限制请求或优化资源管理。</li>
+     * <li>Uses an unbounded queue, allowing the main thread to reclaim and execute tasks, thus avoiding task
+     * accumulation and eliminating the need for rejection policies.</li>
+     * <li>In high-concurrency scenarios (e.g., web applications), this might lead to out-of-memory errors. It is
+     * advisable to limit requests or optimize resource management.</li>
      * </ul>
      *
-     * @param poolSize         线程池大小
-     * @param threadPoolPrefix 线程名前缀
+     * @param poolSize         The fixed size of the thread pool.
+     * @param threadPoolPrefix The prefix for naming threads within this pool.
      */
     public RecyclableBatchThreadPoolExecutor(final int poolSize, final String threadPoolPrefix) {
         final AtomicInteger threadNumber = new AtomicInteger(1);
@@ -92,183 +100,23 @@ public class RecyclableBatchThreadPoolExecutor {
     }
 
     /**
-     * 使用自定义线程池构造。
+     * Constructs a {@code RecyclableBatchThreadPoolExecutor} using a custom {@link ExecutorService}.
      * <p>
-     * 通常无需使用，推荐默认构造方法。
+     * Typically, this constructor is not needed; the default constructors are usually sufficient.
      *
-     * @param executor 自定义线程池
+     * @param executor The custom {@link ExecutorService} to be used.
      */
     public RecyclableBatchThreadPoolExecutor(final ExecutorService executor) {
         this.executor = executor;
     }
 
     /**
-     * 关闭线程池，拒绝接受新任务。
-     */
-    public void shutdown() {
-        executor.shutdown();
-    }
-
-    /**
-     * 获取底层线程池。
+     * Splits a list of data into smaller batches.
      *
-     * @return 线程池执行器
-     */
-    public ExecutorService getExecutor() {
-        return executor;
-    }
-
-    /**
-     * 分批处理数据并返回合并结果。
-     * <p>
-     * 特性：
-     * <ul>
-     * <li>所有批次完成后过滤空值，保持输入数据顺序，处理器返回 null 可忽略结果。</li>
-     * <li>{@link Function} 需自行处理异常并保证线程安全。</li>
-     * <li>数据分片后可能被外部修改，必要时需提前复制数据。</li>
-     * <li>主线程参与批处理，异步任务建议使用普通线程池。</li>
-     * </ul>
-     *
-     * @param <T>       输入数据类型
-     * @param <R>       输出数据类型
-     * @param data      待处理数据集合
-     * @param batchSize 每批次数据量
-     * @param processor 单条数据处理函数
-     * @return 处理结果集合
-     * @throws IllegalArgumentException 如果 batchSize 小于 1
-     */
-    public <T, R> List<R> process(final List<T> data, final int batchSize, final Function<T, R> processor) {
-        if (batchSize < 1) {
-            throw new IllegalArgumentException("batchSize 必须大于等于 1");
-        }
-        final List<List<T>> batches = splitData(data, batchSize);
-        final int batchCount = batches.size();
-        final int minusOne = batchCount - 1;
-        final ArrayDeque<IdempotentTask<R>> taskQueue = new ArrayDeque<>(minusOne);
-        final Map<Integer, Future<TaskResult<R>>> futuresMap = new HashMap<>();
-        // 提交前 batchCount-1 批任务
-        for (int i = 0; i < minusOne; i++) {
-            final int index = i;
-            final IdempotentTask<R> task = new IdempotentTask<>(i, () -> processBatch(batches.get(index), processor));
-            taskQueue.add(task);
-            futuresMap.put(i, executor.submit(task));
-        }
-        final List<R>[] resultArr = new ArrayList[batchCount];
-        // 处理最后一批
-        resultArr[minusOne] = processBatch(batches.get(minusOne), processor);
-        // 处理剩余任务
-        processRemainingTasks(taskQueue, futuresMap, resultArr);
-        // 排序、过滤空值
-        return Stream.of(resultArr).filter(Objects::nonNull).flatMap(List::stream).collect(Collectors.toList());
-    }
-
-    /**
-     * 处理剩余任务并收集结果。
-     *
-     * @param <R>        输出数据类型
-     * @param taskQueue  任务队列
-     * @param futuresMap 异步任务映射
-     * @param resultArr  结果存储数组
-     * @throws RuntimeException 如果任务执行过程中发生异常
-     */
-    private <R> void processRemainingTasks(
-            final Queue<IdempotentTask<R>> taskQueue,
-            final Map<Integer, Future<TaskResult<R>>> futuresMap,
-            final List<R>[] resultArr) {
-        // 主线程消费未执行任务
-        IdempotentTask<R> task;
-        while ((task = taskQueue.poll()) != null) {
-            try {
-                final TaskResult<R> call = task.call();
-                if (call.effective) {
-                    // 取消被主线程执行的任务
-                    final Future<TaskResult<R>> future = futuresMap.remove(task.index);
-                    future.cancel(false);
-                    // 加入结果集
-                    resultArr[task.index] = call.result;
-                }
-            } catch (final Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        futuresMap.forEach((index, future) -> {
-            try {
-                final TaskResult<R> taskResult = future.get();
-                if (taskResult.effective) {
-                    resultArr[index] = taskResult.result;
-                }
-            } catch (final InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
-    /**
-     * 幂等任务包装类，确保任务仅执行一次。
-     *
-     * @param <R> 结果类型
-     */
-    private static class IdempotentTask<R> implements Callable<TaskResult<R>> {
-
-        private final int index;
-        private final Callable<List<R>> delegate;
-        private final AtomicBoolean executed = new AtomicBoolean(false);
-
-        /**
-         * 构造幂等任务。
-         *
-         * @param index    任务索引
-         * @param delegate 任务执行逻辑
-         */
-        IdempotentTask(final int index, final Callable<List<R>> delegate) {
-            this.index = index;
-            this.delegate = delegate;
-        }
-
-        /**
-         * 执行任务并返回结果。
-         *
-         * @return 任务结果
-         * @throws Exception 如果任务执行失败
-         */
-        @Override
-        public TaskResult<R> call() throws Exception {
-            if (executed.compareAndSet(false, true)) {
-                return new TaskResult<>(delegate.call(), true);
-            }
-            return new TaskResult<>(null, false);
-        }
-    }
-
-    /**
-     * 任务结果包装类，标记结果有效性。
-     *
-     * @param <R> 结果类型
-     */
-    private static class TaskResult<R> {
-
-        private final List<R> result;
-        private final boolean effective;
-
-        /**
-         * 构造任务结果。
-         *
-         * @param result    处理结果
-         * @param effective 结果是否有效
-         */
-        TaskResult(final List<R> result, final boolean effective) {
-            this.result = result;
-            this.effective = effective;
-        }
-    }
-
-    /**
-     * 将数据分片为批次。
-     *
-     * @param <T>       数据类型
-     * @param data      原始数据
-     * @param batchSize 每批次数据量
-     * @return 分片后的二维集合
+     * @param <T>       The type of data elements.
+     * @param data      The original list of data.
+     * @param batchSize The maximum number of elements in each batch.
+     * @return A list of lists, where each inner list represents a batch of data.
      */
     private static <T> List<List<T>> splitData(final List<T> data, final int batchSize) {
         final int batchCount = (data.size() + batchSize - 1) / batchSize;
@@ -289,23 +137,132 @@ public class RecyclableBatchThreadPoolExecutor {
     }
 
     /**
-     * 处理单批次数据。
+     * Processes a single batch of data using the provided processor function.
      *
-     * @param <T>       输入数据类型
-     * @param <R>       输出数据类型
-     * @param batch     单批次数据
-     * @param processor 处理函数
-     * @return 处理结果集合
+     * @param <T>       The type of input data elements in the batch.
+     * @param <R>       The type of output data elements.
+     * @param batch     The list representing a single batch of data.
+     * @param processor The function to apply to each element in the batch.
+     * @return A list of processed results for the batch, with nulls filtered out.
      */
     private static <T, R> List<R> processBatch(final List<T> batch, final Function<T, R> processor) {
         return batch.stream().map(processor).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**
-     * 处理 Warp 数组。
+     * Shuts down the thread pool, rejecting any new tasks. Previously submitted tasks will be executed.
+     */
+    public void shutdown() {
+        executor.shutdown();
+    }
+
+    /**
+     * Retrieves the underlying {@link ExecutorService} used by this batch executor.
+     *
+     * @return The {@link ExecutorService} instance.
+     */
+    public ExecutorService getExecutor() {
+        return executor;
+    }
+
+    /**
+     * Processes a list of data in batches, returning a merged list of results.
      * <p>
-     * 示例：
-     * 
+     * Characteristics:
+     * <ul>
+     * <li>After all batches are completed, null values are filtered out. The order of input data is maintained. A
+     * processor returning {@code null} for an item will cause that item's result to be ignored.</li>
+     * <li>The provided {@link Function} must handle its own exceptions and ensure thread safety.</li>
+     * <li>Data may be modified externally after being split into batches; copy data beforehand if necessary.</li>
+     * <li>The main thread participates in batch processing. For asynchronous tasks, a regular thread pool is
+     * recommended.</li>
+     * </ul>
+     *
+     * @param <T>       The type of the input data elements.
+     * @param <R>       The type of the output data elements.
+     * @param data      The collection of data to be processed.
+     * @param batchSize The number of data elements in each batch.
+     * @param processor The function to apply to each individual data element.
+     * @return A list of processed results, with nulls filtered out, maintaining the original order.
+     * @throws IllegalArgumentException If {@code batchSize} is less than 1.
+     * @throws RuntimeException         If any task execution encounters an exception.
+     */
+    public <T, R> List<R> process(final List<T> data, final int batchSize, final Function<T, R> processor) {
+        if (batchSize < 1) {
+            throw new IllegalArgumentException("batchSize must be greater than or equal to 1");
+        }
+        final List<List<T>> batches = splitData(data, batchSize);
+        final int batchCount = batches.size();
+        final int minusOne = batchCount - 1;
+        final ArrayDeque<IdempotentTask<R>> taskQueue = new ArrayDeque<>(minusOne);
+        final Map<Integer, Future<TaskResult<R>>> futuresMap = new HashMap<>();
+        // Submit the first batchCount-1 tasks
+        for (int i = 0; i < minusOne; i++) {
+            final int index = i;
+            final IdempotentTask<R> task = new IdempotentTask<>(i, () -> processBatch(batches.get(index), processor));
+            taskQueue.add(task);
+            futuresMap.put(i, executor.submit(task));
+        }
+        final List<R>[] resultArr = new ArrayList[batchCount];
+        // Process the last batch on the current thread
+        resultArr[minusOne] = processBatch(batches.get(minusOne), processor);
+        // Process remaining tasks, potentially by the main thread
+        processRemainingTasks(taskQueue, futuresMap, resultArr);
+        // Sort and filter null values
+        return Stream.of(resultArr).filter(Objects::nonNull).flatMap(List::stream).collect(Collectors.toList());
+    }
+
+    /**
+     * Processes any remaining tasks in the queue and collects their results. The main thread attempts to execute tasks
+     * from the queue. Any tasks already submitted to the executor will have their results retrieved from their
+     * respective {@link Future}s.
+     *
+     * @param <R>        The type of the output data elements.
+     * @param taskQueue  The queue of {@link IdempotentTask}s that are yet to be processed or whose results are pending.
+     * @param futuresMap A map of task indices to their corresponding {@link Future}s, for tasks submitted to the
+     *                   executor.
+     * @param resultArr  The array to store the results of each batch.
+     * @throws RuntimeException If a task execution fails or is interrupted.
+     */
+    private <R> void processRemainingTasks(
+            final Queue<IdempotentTask<R>> taskQueue,
+            final Map<Integer, Future<TaskResult<R>>> futuresMap,
+            final List<R>[] resultArr) {
+        // Main thread consumes unexecuted tasks
+        IdempotentTask<R> task;
+        while ((task = taskQueue.poll()) != null) {
+            try {
+                final TaskResult<R> call = task.call();
+                if (call.effective) {
+                    // Cancel tasks that were executed by the main thread
+                    final Future<TaskResult<R>> future = futuresMap.remove(task.index);
+                    if (future != null) {
+                        future.cancel(false);
+                    }
+                    // Add result to the result set
+                    resultArr[task.index] = call.result;
+                }
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        futuresMap.forEach((index, future) -> {
+            try {
+                final TaskResult<R> taskResult = future.get();
+                if (taskResult.effective) {
+                    resultArr[index] = taskResult.result;
+                }
+            } catch (final InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    /**
+     * Processes an array of {@link Warp} objects concurrently.
+     * <p>
+     * Example:
+     *
      * <pre>{@code
      * Warp<String> warp1 = Warp.of(this::select1);
      * Warp<List<String>> warp2 = Warp.of(this::select2);
@@ -314,38 +271,123 @@ public class RecyclableBatchThreadPoolExecutor {
      * List<String> r2 = warp2.get();
      * }</pre>
      *
-     * @param warps Warp 数组
-     * @return Warp 集合，结果中空值不会被过滤
+     * @param warps An array of {@link Warp} objects to be processed.
+     * @return A list of {@link Warp} objects, where null results are not filtered out.
      */
     public List<Warp<?>> processByWarp(final Warp<?>... warps) {
         return processByWarp(Arrays.asList(warps));
     }
 
     /**
-     * 处理 Warp 集合。
+     * Processes a collection of {@link Warp} objects concurrently.
      *
-     * @param warps Warp 集合
-     * @return Warp 集合，结果中空值不会被过滤
+     * @param warps A list of {@link Warp} objects to be processed.
+     * @return A list of {@link Warp} objects, where null results are not filtered out.
      */
     public List<Warp<?>> processByWarp(final List<Warp<?>> warps) {
         return process(warps, 1, Warp::execute);
     }
 
     /**
-     * 处理逻辑包装类。
+     * An idempotent task wrapper that ensures a task is executed only once. This is useful when a task might be
+     * submitted to a thread pool but also potentially executed by the main thread if it becomes idle.
      *
-     * @param <R> 结果类型
+     * @param <R> The type of the result returned by the task.
+     */
+    private static class IdempotentTask<R> implements Callable<TaskResult<R>> {
+
+        /**
+         * The index of this task within the batch processing sequence.
+         */
+        private final int index;
+        /**
+         * The delegate {@link Callable} representing the actual task logic.
+         */
+        private final Callable<List<R>> delegate;
+        /**
+         * An atomic boolean to ensure the task's delegate is executed only once.
+         */
+        private final AtomicBoolean executed = new AtomicBoolean(false);
+
+        /**
+         * Constructs an {@code IdempotentTask}.
+         *
+         * @param index    The index of the task.
+         * @param delegate The actual task logic to be executed.
+         */
+        IdempotentTask(final int index, final Callable<List<R>> delegate) {
+            this.index = index;
+            this.delegate = delegate;
+        }
+
+        /**
+         * Executes the task's delegate if it has not been executed before, ensuring idempotency.
+         *
+         * @return A {@link TaskResult} containing the result of the delegate execution and a flag indicating if it was
+         *         effective.
+         * @throws Exception If the delegate task execution fails.
+         */
+        @Override
+        public TaskResult<R> call() throws Exception {
+            if (executed.compareAndSet(false, true)) {
+                return new TaskResult<>(delegate.call(), true);
+            }
+            return new TaskResult<>(null, false);
+        }
+    }
+
+    /**
+     * A wrapper class for task results, indicating whether the result is effective (i.e., the task was actually
+     * executed).
+     *
+     * @param <R> The type of the result.
+     */
+    private static class TaskResult<R> {
+
+        /**
+         * The list of results produced by the task.
+         */
+        private final List<R> result;
+        /**
+         * A boolean flag indicating whether this result is effective (i.e., the task was executed).
+         */
+        private final boolean effective;
+
+        /**
+         * Constructs a {@code TaskResult}.
+         *
+         * @param result    The list of results from the task execution.
+         * @param effective {@code true} if the task was effectively executed and produced this result; {@code false}
+         *                  otherwise.
+         */
+        TaskResult(final List<R> result, final boolean effective) {
+            this.result = result;
+            this.effective = effective;
+        }
+    }
+
+    /**
+     * A wrapper class for encapsulating a processing logic ({@link Supplier}) and its result. This allows for deferred
+     * execution and retrieval of results.
+     *
+     * @param <R> The type of the result produced by the encapsulated logic.
      */
     public static class Warp<R> {
 
+        /**
+         * The {@link Supplier} that provides the processing logic.
+         */
         private final Supplier<R> supplier;
+        /**
+         * The result of the execution of the supplier.
+         */
         private R result;
 
         /**
-         * 构造 Warp。
+         * Constructs a {@code Warp} with the given {@link Supplier}.
          *
-         * @param supplier 执行逻辑
-         * @throws NullPointerException 如果 supplier 为 null
+         * @param supplier The execution logic to be wrapped. Must not be {@code null}.
+         * @throws NullPointerException If {@code supplier} is {@code null}.
          */
         private Warp(final Supplier<R> supplier) {
             Objects.requireNonNull(supplier);
@@ -353,29 +395,30 @@ public class RecyclableBatchThreadPoolExecutor {
         }
 
         /**
-         * 创建 Warp 实例。
+         * Creates a new {@code Warp} instance with the specified {@link Supplier}.
          *
-         * @param <R>      结果类型
-         * @param supplier 执行逻辑
-         * @return Warp 实例
+         * @param <R>      The type of the result.
+         * @param supplier The execution logic.
+         * @return A new {@code Warp} instance.
          */
         public static <R> Warp<R> of(final Supplier<R> supplier) {
             return new Warp<>(supplier);
         }
 
         /**
-         * 获取处理结果。
+         * Retrieves the result of the encapsulated processing logic. The result is available after {@link #execute()}
+         * has been called.
          *
-         * @return 处理结果
+         * @return The processed result.
          */
         public R get() {
             return result;
         }
 
         /**
-         * 执行处理逻辑。
+         * Executes the encapsulated processing logic (the {@link Supplier}) and stores its result.
          *
-         * @return 当前 Warp 实例
+         * @return This {@code Warp} instance for method chaining.
          */
         public Warp<R> execute() {
             result = supplier.get();

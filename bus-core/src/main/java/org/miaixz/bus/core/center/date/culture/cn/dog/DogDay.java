@@ -30,21 +30,28 @@ package org.miaixz.bus.core.center.date.culture.cn.dog;
 import org.miaixz.bus.core.center.date.culture.Replenish;
 
 /**
- * 三伏天
+ * Represents a specific day within the "Sanfu" (Dog Days) period. This class extends {@link Replenish} to associate a
+ * specific day index with a {@link Dog} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DogDay extends Replenish {
 
+    /**
+     * Constructs a {@code DogDay} instance with the specified {@link Dog} and day index.
+     *
+     * @param dog      The {@link Dog} instance representing the Sanfu period.
+     * @param dayIndex The index of the day within the Sanfu period.
+     */
     public DogDay(Dog dog, int dayIndex) {
         super(dog, dayIndex);
     }
 
     /**
-     * 三伏
+     * Gets the {@link Dog} instance associated with this Dog Day.
      *
-     * @return 三伏
+     * @return The {@link Dog} instance.
      */
     public Dog getDog() {
         return (Dog) tradition;

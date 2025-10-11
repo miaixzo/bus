@@ -45,15 +45,22 @@ import org.miaixz.bus.pager.Dialect;
 import org.miaixz.bus.pager.builder.BoundSqlBuilder;
 
 /**
- * count 查询
+ * Utility class for executing count queries in MyBatis pagination. This class handles the creation and execution of
+ * count SQL, as well as parameter processing.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class CountExecutor {
 
+    /**
+     * Reflective field for accessing `additionalParameters` in {@link BoundSql}.
+     */
     private static Field additionalParametersField;
 
+    /**
+     * Reflective field for accessing `providerMethodArgumentNames` in {@link ProviderSqlSource}.
+     */
     private static Field providerMethodArgumentNamesField;
 
     static {
@@ -64,18 +71,20 @@ public abstract class CountExecutor {
             throw new PageException("Failed to get the BoundSql property additionalParameters: " + e, e);
         }
         try {
-            // 兼容低版本
+            // Compatible with lower versions
             providerMethodArgumentNamesField = ProviderSqlSource.class.getDeclaredField("providerMethodArgumentNames");
             providerMethodArgumentNamesField.setAccessible(true);
         } catch (NoSuchFieldException ignore) {
+            // Field might not exist in all MyBatis versions, ignore if not found
         }
     }
 
     /**
-     * 获取 BoundSql 属性值 additionalParameters
+     * Retrieves the `additionalParameters` map from a {@link BoundSql} object using reflection.
      *
-     * @param boundSql boundSql
-     * @return the map
+     * @param boundSql the BoundSql object
+     * @return a map of additional parameters
+     * @throws PageException if an {@link IllegalAccessException} occurs during field access
      */
     public static Map<String, Object> getAdditionalParameter(BoundSql boundSql) {
         try {
@@ -86,10 +95,12 @@ public abstract class CountExecutor {
     }
 
     /**
-     * 获取 ProviderSqlSource 属性值 providerMethodArgumentNames
+     * Retrieves the `providerMethodArgumentNames` array from a {@link ProviderSqlSource} object using reflection. This
+     * method is used for compatibility with different MyBatis versions.
      *
-     * @param providerSqlSource 服务提供者
-     * @return the array
+     * @param providerSqlSource the ProviderSqlSource object
+     * @return an array of provider method argument names, or null if the field does not exist or cannot be accessed
+     * @throws PageException if an {@link IllegalAccessException} occurs during field access
      */
     public static String[] getProviderMethodArgumentNames(ProviderSqlSource providerSqlSource) {
         try {
@@ -102,32 +113,34 @@ public abstract class CountExecutor {
     }
 
     /**
-     * 尝试获取已经存在的在 MS，提供对手写count和page的支持
+     * Attempts to retrieve an already existing {@link MappedStatement} from the configuration. This supports custom
+     * count and page MappedStatements.
      *
-     * @param configuration 配置
-     * @param msId          标识
-     * @return the mappedStatement
+     * @param configuration the MyBatis configuration
+     * @param msId          the ID of the MappedStatement to retrieve
+     * @return the MappedStatement if found, otherwise null
      */
     public static MappedStatement getExistedMappedStatement(Configuration configuration, String msId) {
         MappedStatement mappedStatement = null;
         try {
             mappedStatement = configuration.getMappedStatement(msId, false);
         } catch (Throwable t) {
-            // ignore
+            // ignore if not found
         }
         return mappedStatement;
     }
 
     /**
-     * 执行手动设置的 count 查询，该查询支持的参数必须和被分页的方法相同
+     * Executes a manually configured count query. The parameters for this query must be the same as the paginated
+     * method.
      *
-     * @param executor      执行者
-     * @param countMs       MappedStatement
-     * @param parameter     参数
-     * @param boundSql      BoundSql
-     * @param resultHandler ResultHandler
-     * @return the long
-     * @throws SQLException 异常
+     * @param executor      the MyBatis executor
+     * @param countMs       the MappedStatement for the count query
+     * @param parameter     the parameter object for the query
+     * @param boundSql      the BoundSql object for the original query
+     * @param resultHandler the result handler for the query
+     * @return the total count of records
+     * @throws SQLException if a database access error occurs
      */
     public static Long executeManualCount(
             Executor executor,
@@ -139,7 +152,7 @@ public abstract class CountExecutor {
         BoundSql countBoundSql = countMs.getBoundSql(parameter);
         Object countResultList = executor
                 .query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
-        // 某些数据（如 TDEngine）查询 count 无结果时返回 null
+        // Some databases (e.g., TDEngine) return null when a count query has no results
         if (countResultList == null || ((List) countResultList).isEmpty()) {
             return 0L;
         }
@@ -147,17 +160,17 @@ public abstract class CountExecutor {
     }
 
     /**
-     * 执行自动生成的 count 查询
+     * Executes an automatically generated count query.
      *
-     * @param dialect       方言
-     * @param executor      执行者
-     * @param countMs       MappedStatement
-     * @param parameter     参数
-     * @param boundSql      BoundSql
-     * @param rowBounds     RowBounds
-     * @param resultHandler ResultHandler
-     * @return the long
-     * @throws SQLException 异常
+     * @param dialect       the database dialect to use
+     * @param executor      the MyBatis executor
+     * @param countMs       the MappedStatement for the count query
+     * @param parameter     the parameter object for the query
+     * @param boundSql      the BoundSql object for the original query
+     * @param rowBounds     the RowBounds object containing pagination parameters
+     * @param resultHandler the result handler for the query
+     * @return the total count of records
+     * @throws SQLException if a database access error occurs
      */
     public static Long executeAutoCount(
             Dialect dialect,
@@ -168,26 +181,27 @@ public abstract class CountExecutor {
             RowBounds rowBounds,
             ResultHandler resultHandler) throws SQLException {
         Map<String, Object> additionalParameters = getAdditionalParameter(boundSql);
-        // 创建 count 查询的缓存 key
+        // Create cache key for count query
         CacheKey countKey = executor.createCacheKey(countMs, parameter, RowBounds.DEFAULT, boundSql);
-        // 调用方言获取 count sql
+        // Call dialect to get count SQL
         String countSql = dialect.getCountSql(countMs, boundSql, parameter, rowBounds, countKey);
         // countKey.update(countSql);
         BoundSql countBoundSql = new BoundSql(countMs.getConfiguration(), countSql, boundSql.getParameterMappings(),
                 parameter);
-        // 当使用动态 SQL 时，可能会产生临时的参数，这些参数需要手动设置到新的 BoundSql 中
+        // When using dynamic SQL, temporary parameters may be generated, which need to be manually set to the new
+        // BoundSql.
         for (String key : additionalParameters.keySet()) {
             countBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
         }
-        // 对 boundSql 的拦截处理
+        // Intercept BoundSql processing
         if (dialect instanceof BoundSqlBuilder.Chain) {
             countBoundSql = ((BoundSqlBuilder.Chain) dialect)
                     .doBoundSql(BoundSqlBuilder.Type.COUNT_SQL, countBoundSql, countKey);
         }
-        // 执行 count 查询
+        // Execute count query
         Object countResultList = executor
                 .query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
-        // 某些数据（如 TDEngine）查询 count 无结果时返回 null
+        // Some databases (e.g., TDEngine) return null when a count query has no results
         if (countResultList == null || ((List) countResultList).isEmpty()) {
             return 0L;
         }
@@ -195,19 +209,19 @@ public abstract class CountExecutor {
     }
 
     /**
-     * 分页查询
+     * Executes a paginated query.
      *
-     * @param dialect       方言
-     * @param executor      执行者
-     * @param ms            MappedStatement
-     * @param parameter     参数
-     * @param rowBounds     RowBounds
-     * @param resultHandler ResultHandler
-     * @param boundSql      BoundSql
-     * @param cacheKey      CacheKey
-     * @param <E>           对象
-     * @return the object
-     * @throws SQLException 异常
+     * @param dialect       the database dialect to use
+     * @param executor      the MyBatis executor
+     * @param ms            the MappedStatement for the query
+     * @param parameter     the parameter object for the query
+     * @param rowBounds     the RowBounds object containing pagination parameters
+     * @param resultHandler the result handler for the query
+     * @param boundSql      the BoundSql object for the original query
+     * @param cacheKey      the CacheKey for the query
+     * @param <E>           the type of elements in the result list
+     * @return a list of paginated results
+     * @throws SQLException if a database access error occurs
      */
     public static <E> List<E> pageQuery(
             Dialect dialect,
@@ -218,28 +232,28 @@ public abstract class CountExecutor {
             ResultHandler resultHandler,
             BoundSql boundSql,
             CacheKey cacheKey) throws SQLException {
-        // 判断是否需要进行分页查询
+        // Determine if pagination query needs to be executed
         if (dialect.beforePage(ms, parameter, rowBounds)) {
-            // 处理参数对象
+            // Process parameter object
             parameter = dialect.processParameterObject(ms, parameter, boundSql, cacheKey);
-            // 调用方言获取分页 sql
+            // Call dialect to get paginated SQL
             String pageSql = dialect.getPageSql(ms, boundSql, parameter, rowBounds, cacheKey);
 
             Map<String, Object> additionalParameters = getAdditionalParameter(boundSql);
             boundSql = new BoundSql(ms.getConfiguration(), pageSql, boundSql.getParameterMappings(), parameter);
-            // 设置动态参数
+            // Set dynamic parameters
             for (String key : additionalParameters.keySet()) {
                 boundSql.setAdditionalParameter(key, additionalParameters.get(key));
             }
-            // 对 boundSql 的拦截处理
+            // Intercept BoundSql processing
             if (dialect instanceof BoundSqlBuilder.Chain) {
                 boundSql = ((BoundSqlBuilder.Chain) dialect)
                         .doBoundSql(BoundSqlBuilder.Type.PAGE_SQL, boundSql, cacheKey);
             }
-            // 执行分页查询
+            // Execute paginated query
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, boundSql);
         } else {
-            // 不执行分页的情况下，也不执行内存分页
+            // If pagination is not executed, do not perform in-memory pagination either
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, cacheKey, boundSql);
         }
     }

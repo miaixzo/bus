@@ -20,13 +20,21 @@
  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ OUT of OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 缓存/时间等实现
+ * Provides internal data structures, constants, and helper classes for the caching framework.
+ * <p>
+ * This package contains various "magic" components that are fundamental to the operation of the caching annotations and
+ * logic. These include holders for annotation and method metadata, data carriers for cache operation results, and
+ * predefined constants.
+ * <p>
+ * Classes in this package are generally considered internal to the framework and are not intended for direct use by
+ * application code.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+

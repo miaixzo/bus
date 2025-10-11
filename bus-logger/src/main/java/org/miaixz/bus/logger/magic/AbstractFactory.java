@@ -30,7 +30,7 @@ package org.miaixz.bus.logger.magic;
 import org.miaixz.bus.logger.Factory;
 
 /**
- * 抽象日志
+ * Abstract base class for logger factories.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,36 +38,37 @@ import org.miaixz.bus.logger.Factory;
 public abstract class AbstractFactory implements Factory {
 
     /**
-     * 日志框架名，用于打印当前所用日志框架
+     * The name of the logging framework.
      */
     private final String name;
 
     /**
-     * 构造
+     * Constructs a new {@code AbstractFactory} with the specified name.
      *
-     * @param name 日志框架名
+     * @param name the name of the logging framework.
      */
     public AbstractFactory(final String name) {
         this.name = name;
     }
 
-    /**
-     * 获取日志框架名，用于打印当前所用日志框架
-     *
-     * @return 日志框架名
-     */
+    @Override
     public String getName() {
         return this.name;
     }
 
     /**
-     * 检查日志实现是否存在 此方法仅用于检查所提供的日志相关类是否存在，当传入的日志类类不存在时抛出ClassNotFoundException
-     * 此方法的作用是在detectLogFactory方法自动检测所用日志时，如果实现类不存在，调用此方法会自动抛出异常，从而切换到下一种日志的检测。
+     * Checks if the logging implementation exists.
+     * <p>
+     * This method is used to verify the presence of the required classes for a specific logging framework. It is called
+     * during the automatic detection process (e.g., in {@code detectLogFactory}). If the implementation class does not
+     * exist, this method should throw an exception (like {@code ClassNotFoundException}), which signals the detection
+     * mechanism to try the next available logging framework.
+     * </p>
      *
-     * @param clazz 日志实现相关类
+     * @param clazz the logging implementation class to check.
      */
     protected void exists(final Class<?> clazz) {
-        // 不做任何操作
+        // This method does nothing by default.
     }
 
 }

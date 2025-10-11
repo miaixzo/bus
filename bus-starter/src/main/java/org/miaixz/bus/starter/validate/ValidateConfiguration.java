@@ -30,7 +30,11 @@ package org.miaixz.bus.starter.validate;
 import org.springframework.context.annotation.Import;
 
 /**
- * 数据校验配置
+ * Auto-configuration for data validation.
+ * <p>
+ * This configuration class enables the AOP-based validation feature by importing the {@link AspectjValidateProxy}. This
+ * allows for automatic validation of method parameters in Spring-managed beans (typically controllers) that are
+ * annotated with validation constraints.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -56,7 +56,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * 实体表接口，记录实体和表的关系
+ * Represents the metadata of an entity table, recording the relationship between an entity and its corresponding table.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,98 +67,99 @@ import lombok.experimental.Accessors;
 public class TableMeta extends PropertyMeta<TableMeta> {
 
     /**
-     * 原始表名，在拼 SQL 中，使用 tableName() 方法，可能返回代理方法加工后的值
+     * The original table name. When constructing SQL, the {@code tableName()} method should be used, which may return a
+     * value processed by a proxy method.
      */
     protected String table;
 
     /**
-     * catalog 名称，配置后会在表名前面加上 catalog
+     * The catalog name. If configured, the catalog will be prepended to the table name.
      */
     protected String catalog;
 
     /**
-     * schema 名称，配置后会在表名前面加上 schema
+     * The schema name. If configured, the schema will be prepended to the table name.
      */
     protected String schema;
 
     /**
-     * 实体类和字段转表名和字段名方式
+     * The naming style for converting entity classes and fields to table and column names.
      */
     protected String style;
 
     /**
-     * 实体类
+     * The entity class.
      */
     protected Class<?> entityClass;
 
     /**
-     * 字段信息
+     * The list of column metadata for this table.
      */
     protected List<ColumnMeta> columns;
 
     /**
-     * 初始化完成，可以使用
+     * Indicates if the initialization is complete and the table metadata is ready for use.
      */
     protected boolean ready;
 
     /**
-     * 使用指定的 resultMap
+     * The ID of the specific {@link ResultMap} to use.
      */
     protected String resultMap;
 
     /**
-     * 自动根据字段生成 resultMap
+     * Whether to automatically generate a {@link ResultMap} based on the fields.
      */
     protected boolean autoResultMap;
 
     /**
-     * 已初始化自动 ResultMap
+     * The list of initialized {@link ResultMap}s.
      */
     protected List<ResultMap> resultMaps;
 
     /**
-     * 排除指定父类的所有字段
+     * An array of superclasses whose fields should be excluded from mapping.
      */
     protected Class<?>[] excludeSuperClasses;
 
     /**
-     * 排除指定类型的字段
+     * An array of field types to be excluded from mapping.
      */
     protected Class<?>[] excludeFieldTypes;
 
     /**
-     * 排除指定字段名的字段
+     * An array of field names to be excluded from mapping.
      */
     protected String[] excludeFields;
 
     /**
-     * 已经初始化的配置
+     * A set of configurations that have already been initialized.
      */
     protected Set<Configuration> initConfiguration = new HashSet<>();
 
     /**
-     * 构造函数，初始化实体表
+     * Constructs a new TableMeta instance.
      *
-     * @param entityClass 实体类
+     * @param entityClass The entity class.
      */
     protected TableMeta(Class<?> entityClass) {
         this.entityClass = entityClass;
     }
 
     /**
-     * 创建 MapperTable 实例
+     * Creates a new TableMeta instance.
      *
-     * @param entityClass 实体类
-     * @return MapperTable 实例
+     * @param entityClass The entity class.
+     * @return A new TableMeta instance.
      */
     public static TableMeta of(Class<?> entityClass) {
         return new TableMeta(entityClass);
     }
 
     /**
-     * 获取 SQL 语句中使用的表名
+     * Gets the table name used in SQL statements.
      *
-     * @return 表名，格式为 catalog.schema.tableName
+     * @return The table name, formatted as {@code catalog.schema.tableName}.
      */
     public String tableName() {
         return Stream.of(catalog(), schema(), table()).filter(s -> s != null && !s.isEmpty())
@@ -166,9 +167,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取所有列
+     * Gets all column metadata.
      *
-     * @return 所有列信息
+     * @return A list of all column metadata.
      */
     public List<ColumnMeta> columns() {
         if (this.columns == null) {
@@ -178,36 +179,36 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取所有字段
+     * Gets all field metadata.
      *
-     * @return 所有字段
+     * @return A list of all field metadata.
      */
     public List<FieldMeta> fieldMetas() {
         return columns().stream().map(ColumnMeta::fieldMeta).collect(Collectors.toList());
     }
 
     /**
-     * 获取所有列名
+     * Gets all column names.
      *
-     * @return 所有列名
+     * @return A list of all column names.
      */
     public List<String> columnNames() {
         return columns().stream().map(ColumnMeta::column).collect(Collectors.toList());
     }
 
     /**
-     * 获取所有属性名
+     * Gets all property names.
      *
-     * @return 所有属性名
+     * @return A list of all property names.
      */
     public List<String> fieldNames() {
         return columns().stream().map(ColumnMeta::property).collect(Collectors.toList());
     }
 
     /**
-     * 添加列
+     * Adds a column to the table metadata.
      *
-     * @param column 列信息
+     * @param column The column metadata to add.
      */
     public void addColumn(ColumnMeta column) {
         if (!columns().contains(column)) {
@@ -218,18 +219,19 @@ public class TableMeta extends PropertyMeta<TableMeta> {
             }
             column.tableMeta(this);
         } else {
-            // 同名列在父类存在时，说明是子类覆盖的，字段顺序应更靠前
+            // If a column with the same name exists in a superclass, it means it's overridden by a subclass,
+            // so the field order should be prioritized.
             ColumnMeta existsColumn = columns().remove(columns().indexOf(column));
             columns().add(0, existsColumn);
         }
     }
 
     /**
-     * 判断是否可以使用 resultMaps
+     * Determines if {@link ResultMap}s can be used.
      *
-     * @param providerContext 当前方法信息
-     * @param cacheKey        缓存 key，每个方法唯一，默认与 msId 相同
-     * @return true 表示可以使用，false 表示不可用
+     * @param providerContext The current method information.
+     * @param cacheKey        The cache key, unique for each method (defaults to msId).
+     * @return {@code true} if {@link ResultMap}s can be used, {@code false} otherwise.
      */
     protected boolean canUseResultMaps(ProviderContext providerContext, String cacheKey) {
         if (resultMaps != null && !resultMaps.isEmpty()
@@ -246,20 +248,20 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 判断当前实体类是否使用 resultMap
+     * Determines if the current entity class uses a {@link ResultMap}.
      *
-     * @return true 表示使用，false 表示不使用
+     * @return {@code true} if a {@link ResultMap} is used, {@code false} otherwise.
      */
     public boolean useResultMaps() {
         return resultMaps != null || autoResultMap || StringKit.isNotEmpty(resultMap);
     }
 
     /**
-     * 判断是否已替换 resultMap
+     * Checks if the {@link ResultMap} has already been replaced.
      *
-     * @param configuration MyBatis 配置类
-     * @param cacheKey      缓存 key，每个方法唯一
-     * @return true 表示已替换，false 表示未替换
+     * @param configuration The MyBatis configuration.
+     * @param cacheKey      The cache key, unique for each method.
+     * @return {@code true} if replaced, {@code false} otherwise.
      */
     protected boolean hasBeenReplaced(Configuration configuration, String cacheKey) {
         MappedStatement mappedStatement = configuration.getMappedStatement(cacheKey);
@@ -270,11 +272,11 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 设置运行时信息，不同方法分别执行一次，需保证幂等
+     * Initializes runtime information. This method is executed once per method and must be idempotent.
      *
-     * @param configuration   MyBatis 配置类
-     * @param providerContext 当前方法信息
-     * @param cacheKey        缓存 key，每个方法唯一
+     * @param configuration   The MyBatis configuration.
+     * @param providerContext The current method information.
+     * @param cacheKey        The cache key, unique for each method.
      */
     public void initRuntimeContext(Configuration configuration, ProviderContext providerContext, String cacheKey) {
         if (!initConfiguration.contains(configuration)) {
@@ -292,11 +294,11 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 初始化 ResultMap
+     * Initializes the {@link ResultMap}.
      *
-     * @param configuration   MyBatis 配置类
-     * @param providerContext 当前方法信息
-     * @param cacheKey        缓存 key
+     * @param configuration   The MyBatis configuration.
+     * @param providerContext The current method information.
+     * @param cacheKey        The cache key.
      */
     protected void initResultMap(Configuration configuration, ProviderContext providerContext, String cacheKey) {
         if (StringKit.isNotEmpty(resultMap)) {
@@ -327,11 +329,11 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 生成 ResultMap ID
+     * Generates a {@link ResultMap} ID.
      *
-     * @param providerContext 提供者上下文
-     * @param resultMapId     ResultMap ID
-     * @return 完整的 ResultMap ID
+     * @param providerContext The provider context.
+     * @param resultMapId     The {@link ResultMap} ID.
+     * @return The complete {@link ResultMap} ID.
      */
     protected String generateResultMapId(ProviderContext providerContext, String resultMapId) {
         if (resultMapId.indexOf(".") > 0) {
@@ -341,12 +343,12 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 生成 ResultMap
+     * Generates a {@link ResultMap}.
      *
-     * @param configuration   MyBatis 配置类
-     * @param providerContext 提供者上下文
-     * @param cacheKey        缓存 key
-     * @return ResultMap 实例
+     * @param configuration   The MyBatis configuration.
+     * @param providerContext The provider context.
+     * @param cacheKey        The cache key.
+     * @return A {@link ResultMap} instance.
      */
     protected ResultMap genResultMap(Configuration configuration, ProviderContext providerContext, String cacheKey) {
         List<ResultMapping> resultMappings = new ArrayList<>();
@@ -382,11 +384,11 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 实例化 TypeHandler
+     * Instantiates a {@link TypeHandler}.
      *
-     * @param javaTypeClass    Java 类型
-     * @param typeHandlerClass TypeHandler 类型
-     * @return TypeHandler 实例
+     * @param javaTypeClass    The Java type.
+     * @param typeHandlerClass The {@link TypeHandler} type.
+     * @return A {@link TypeHandler} instance.
      */
     public TypeHandler getTypeHandlerInstance(Class<?> javaTypeClass, Class<?> typeHandlerClass) {
         if (javaTypeClass != null) {
@@ -407,9 +409,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取主键列，若无主键则返回所有列
+     * Gets primary key columns. If no primary keys are defined, all columns are returned.
      *
-     * @return 主键列列表
+     * @return A list of primary key columns.
      */
     public List<ColumnMeta> idColumns() {
         List<ColumnMeta> idColumns = columns().stream().filter(ColumnMeta::id).collect(Collectors.toList());
@@ -420,72 +422,72 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取普通列，排除主键字段
+     * Gets normal columns, excluding primary key fields.
      *
-     * @return 普通列列表
+     * @return A list of normal columns.
      */
     public List<ColumnMeta> normalColumns() {
         return columns().stream().filter(column -> !column.id()).collect(Collectors.toList());
     }
 
     /**
-     * 获取查询列
+     * Gets selectable columns.
      *
-     * @return 可查询列列表
+     * @return A list of selectable columns.
      */
     public List<ColumnMeta> selectColumns() {
         return columns().stream().filter(ColumnMeta::selectable).collect(Collectors.toList());
     }
 
     /**
-     * 获取查询条件列，默认所有列
+     * Gets query condition columns. By default, all columns are considered.
      *
-     * @return 查询条件列列表
+     * @return A list of query condition columns.
      */
     public List<ColumnMeta> whereColumns() {
         return columns();
     }
 
     /**
-     * 获取插入列
+     * Gets insertable columns.
      *
-     * @return 可插入列列表
+     * @return A list of insertable columns.
      */
     public List<ColumnMeta> insertColumns() {
         return columns().stream().filter(ColumnMeta::insertable).collect(Collectors.toList());
     }
 
     /**
-     * 获取更新列
+     * Gets updatable columns.
      *
-     * @return 可更新列列表
+     * @return A list of updatable columns.
      */
     public List<ColumnMeta> updateColumns() {
         return columns().stream().filter(ColumnMeta::updatable).collect(Collectors.toList());
     }
 
     /**
-     * 获取 GROUP BY 列，默认空
+     * Gets GROUP BY columns. Returns empty by default.
      *
-     * @return GROUP BY 列的 Optional 包装对象
+     * @return An {@link Optional} containing a list of GROUP BY columns.
      */
     public Optional<List<ColumnMeta>> groupByColumns() {
         return Optional.empty();
     }
 
     /**
-     * 获取 HAVING 列，默认空
+     * Gets HAVING columns. Returns empty by default.
      *
-     * @return HAVING 列的 Optional 包装对象
+     * @return An {@link Optional} containing a list of HAVING columns.
      */
     public Optional<List<ColumnMeta>> havingColumns() {
         return Optional.empty();
     }
 
     /**
-     * 获取排序列
+     * Gets ORDER BY columns.
      *
-     * @return 排序列的 Optional 包装对象
+     * @return An {@link Optional} containing a list of ORDER BY columns.
      */
     public Optional<List<ColumnMeta>> orderByColumns() {
         List<ColumnMeta> orderByColumns = columns().stream().filter(c -> StringKit.isNotEmpty(c.orderBy))
@@ -497,18 +499,19 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取所有查询列，格式为 column1, column2, ...
+     * Gets all selectable columns in the format "column1, column2, ...".
      *
-     * @return 查询列字符串
+     * @return The comma-separated string of selectable columns.
      */
     public String baseColumnList() {
         return selectColumns().stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA));
     }
 
     /**
-     * 获取所有查询列，格式为 column1 AS property1, column2 AS property2, ...
+     * Gets all selectable columns in the format "column1 AS property1, column2 AS property2, ...". If
+     * {@link #useResultMaps()} is true, it returns {@link #baseColumnList()}.
      *
-     * @return 查询列带别名字符串
+     * @return The comma-separated string of selectable columns with aliases.
      */
     public String baseColumnAsPropertyList() {
         if (useResultMaps()) {
@@ -518,18 +521,18 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取所有插入列，格式为 column1, column2, ...
+     * Gets all insertable columns in the format "column1, column2, ...".
      *
-     * @return 插入列字符串
+     * @return The comma-separated string of insertable columns.
      */
     public String insertColumnList() {
         return insertColumns().stream().map(ColumnMeta::column).collect(Collectors.joining(Symbol.COMMA));
     }
 
     /**
-     * 获取 GROUP BY 列列表，格式为 column1, column2, ...
+     * Gets the GROUP BY column list in the format "column1, column2, ...".
      *
-     * @return GROUP BY 列的 Optional 包装对象
+     * @return An {@link Optional} containing the comma-separated string of GROUP BY columns.
      */
     public Optional<String> groupByColumnList() {
         Optional<List<ColumnMeta>> groupByColumns = groupByColumns();
@@ -539,9 +542,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取带 GROUP BY 前缀的列字符串
+     * Gets the GROUP BY column string with the " GROUP BY " prefix.
      *
-     * @return 带 GROUP BY 前缀的列字符串的 Optional 包装对象
+     * @return An {@link Optional} containing the prefixed GROUP BY column string.
      */
     public Optional<String> groupByColumn() {
         Optional<String> groupByColumnList = groupByColumnList();
@@ -549,9 +552,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取 HAVING 列列表，格式为 column1, column2, ...
+     * Gets the HAVING column list in the format "column1, column2, ...".
      *
-     * @return HAVING 列的 Optional 包装对象
+     * @return An {@link Optional} containing the comma-separated string of HAVING columns.
      */
     public Optional<String> havingColumnList() {
         Optional<List<ColumnMeta>> havingColumns = havingColumns();
@@ -561,9 +564,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取带 HAVING 前缀的列字符串
+     * Gets the HAVING column string with the " HAVING " prefix.
      *
-     * @return 带 HAVING 前缀的列字符串的 Optional 包装对象
+     * @return An {@link Optional} containing the prefixed HAVING column string.
      */
     public Optional<String> havingColumn() {
         Optional<String> havingColumnList = havingColumnList();
@@ -571,9 +574,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取 ORDER BY 列列表，格式为 column1 ASC, column2 DESC, ...
+     * Gets the ORDER BY column list in the format "column1 ASC, column2 DESC, ...".
      *
-     * @return ORDER BY 列的 Optional 包装对象
+     * @return An {@link Optional} containing the comma-separated string of ORDER BY columns.
      */
     public Optional<String> orderByColumnList() {
         Optional<List<ColumnMeta>> orderByColumns = orderByColumns();
@@ -583,9 +586,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 获取带 ORDER BY 前缀的列字符串
+     * Gets the ORDER BY column string with the " ORDER BY " prefix.
      *
-     * @return 带 ORDER BY 前缀的列字符串的 Optional 包装对象
+     * @return An {@link Optional} containing the prefixed ORDER BY column string.
      */
     public Optional<String> orderByColumn() {
         Optional<String> orderColumnList = orderByColumnList();
@@ -593,10 +596,10 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 判断是否需要排除父类
+     * Determines if a superclass should be excluded.
      *
-     * @param superClass 父类
-     * @return true 表示需要排除，false 表示不需要
+     * @param superClass The superclass to check.
+     * @return {@code true} if the superclass should be excluded, {@code false} otherwise.
      */
     public boolean isExcludeSuperClass(Class<?> superClass) {
         if (excludeSuperClasses != null) {
@@ -610,10 +613,10 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 判断是否需要排除指定字段
+     * Determines if a specific field should be excluded.
      *
-     * @param field 字段
-     * @return true 表示需要排除，false 表示不需要
+     * @param field The field to check.
+     * @return {@code true} if the field should be excluded, {@code false} otherwise.
      */
     public boolean isExcludeField(FieldMeta field) {
         if (excludeFieldTypes != null) {
@@ -636,10 +639,10 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 判断两个 MapperTable 对象是否相等
+     * Compares this TableMeta with another object for equality.
      *
-     * @param o 比较对象
-     * @return true 表示相等，false 表示不相等
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
      */
     @Override
     public boolean equals(Object o) {
@@ -651,9 +654,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 计算对象的哈希值
+     * Computes the hash code for this object.
      *
-     * @return 哈希值
+     * @return The hash code.
      */
     @Override
     public int hashCode() {
@@ -661,9 +664,9 @@ public class TableMeta extends PropertyMeta<TableMeta> {
     }
 
     /**
-     * 返回字符串表示形式
+     * Returns a string representation of the object.
      *
-     * @return 表名
+     * @return The table name.
      */
     @Override
     public String toString() {

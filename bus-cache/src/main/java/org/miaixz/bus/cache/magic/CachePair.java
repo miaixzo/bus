@@ -28,33 +28,34 @@
 package org.miaixz.bus.cache.magic;
 
 /**
- * 缓存键值对类
+ * A generic, immutable container for a pair of objects.
  * <p>
- * 用于存储一对关联的键值，提供泛型支持以适应不同类型的数据。 采用不可变设计，一旦创建后不能修改其内容。
+ * This class is used to store two related objects (a left and a right value) as a single unit. It is immutable; its
+ * contents cannot be changed after creation.
  * </p>
  *
- * @param <L> 左值类型
- * @param <R> 右值类型
+ * @param <L> The type of the left value.
+ * @param <R> The type of the right value.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CachePair<L, R> {
 
     /**
-     * 左值
+     * The left value in the pair.
      */
     private final L left;
 
     /**
-     * 右值
+     * The right value in the pair.
      */
     private final R right;
 
     /**
-     * 私有构造方法
+     * Private constructor to enforce instantiation via the factory method.
      *
-     * @param left  左值
-     * @param right 右值
+     * @param left  The left value.
+     * @param right The right value.
      */
     private CachePair(L left, R right) {
         this.left = left;
@@ -62,31 +63,31 @@ public class CachePair<L, R> {
     }
 
     /**
-     * 创建CachePair实例的工厂方法
+     * Creates a new {@code CachePair} instance.
      *
-     * @param <L>   左值类型
-     * @param <R>   右值类型
-     * @param left  左值
-     * @param right 右值
-     * @return CachePair实例
+     * @param <L>   The type of the left value.
+     * @param <R>   The type of the right value.
+     * @param left  The left value.
+     * @param right The right value.
+     * @return A new {@code CachePair} instance containing the provided values.
      */
     public static <L, R> CachePair<L, R> of(L left, R right) {
         return new CachePair<>(left, right);
     }
 
     /**
-     * 获取左值
+     * Gets the left value from the pair.
      *
-     * @return 左值
+     * @return The left value.
      */
     public L getLeft() {
         return left;
     }
 
     /**
-     * 获取右值
+     * Gets the right value from the pair.
      *
-     * @return 右值
+     * @return The right value.
      */
     public R getRight() {
         return right;

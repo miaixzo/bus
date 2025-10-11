@@ -28,7 +28,8 @@
 package org.miaixz.bus.core.bean.path.node;
 
 /**
- * Bean路径节点接口
+ * Represents a node in a Bean path expression. This interface serves as a marker for different types of path segments
+ * (e.g., named properties, list indices, or ranges) within a Bean path.
  *
  * @author Kimi Liu
  * @since Java 17+

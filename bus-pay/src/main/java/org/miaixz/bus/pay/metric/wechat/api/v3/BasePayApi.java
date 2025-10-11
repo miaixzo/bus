@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-基础支付接口
+ * WeChat Pay V3 API interfaces related to basic payments.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,174 +38,183 @@ import org.miaixz.bus.pay.Matcher;
 public enum BasePayApi implements Matcher {
 
     /**
-     * JSAPI下单
+     * JSAPI order.
      */
-    JS_API_PAY("/v3/pay/transactions/jsapi", "JSAPI 下单"),
+    JS_API_PAY("/v3/pay/transactions/jsapi", "JSAPI order"),
 
     /**
-     * 服务商模式-JSAPI下单
+     * Service provider mode - JSAPI order.
      */
-    PARTNER_JS_API_PAY("/v3/pay/partner/transactions/jsapi", "服务商模式-JSAPI下单"),
+    PARTNER_JS_API_PAY("/v3/pay/partner/transactions/jsapi", "Service provider mode - JSAPI order"),
 
     /**
-     * APP 下单
+     * APP order.
      */
-    APP_PAY("/v3/pay/transactions/app", "APP 下单"),
+    APP_PAY("/v3/pay/transactions/app", "APP order"),
 
     /**
-     * 服务商模式-APP 下单
+     * Service provider mode - APP order.
      */
-    PARTNER_APP_PAY("/v3/pay/partner/transactions/app", "服务商模式-APP 下单"),
+    PARTNER_APP_PAY("/v3/pay/partner/transactions/app", "Service provider mode - APP order"),
 
     /**
-     * H5 下单
+     * H5 order.
      */
-    H5_PAY("/v3/pay/transactions/h5", "H5 下单"),
+    H5_PAY("/v3/pay/transactions/h5", "H5 order"),
 
     /**
-     * 服务商模式-H5 下单
+     * Service provider mode - H5 order.
      */
-    PARTNER_H5_PAY("/v3/pay/partner/transactions/h5", "服务商模式-H5 下单"),
+    PARTNER_H5_PAY("/v3/pay/partner/transactions/h5", "Service provider mode - H5 order"),
 
     /**
-     * Native 下单
+     * Native order.
      */
-    NATIVE_PAY("/v3/pay/transactions/native", "Native 下单"),
+    NATIVE_PAY("/v3/pay/transactions/native", "Native order"),
 
     /**
-     * 服务商模式-Native 下单
+     * Service provider mode - Native order.
      */
-    PARTNER_NATIVE_PAY("/v3/pay/partner/transactions/native", "服务商模式-Native 下单"),
+    PARTNER_NATIVE_PAY("/v3/pay/partner/transactions/native", "Service provider mode - Native order"),
 
     /**
-     * 付款码支付
+     * Payment code payment.
      */
-    CODE_PAY("/v3/pay/transactions/codepay", "付款码支付"),
+    CODE_PAY("/v3/pay/transactions/codepay", "Payment code payment"),
 
     /**
-     * 合单 APP 下单
+     * Combined APP order.
      */
-    COMBINE_TRANSACTIONS_APP("/v3/combine-transactions/app", "合单 APP 下单"),
+    COMBINE_TRANSACTIONS_APP("/v3/combine-transactions/app", "Combined APP order"),
 
     /**
-     * 合单 JSAPI 下单
+     * Combined JSAPI order.
      */
-    COMBINE_TRANSACTIONS_JS("/v3/combine-transactions/jsapi", "合单 JSAPI 下单"),
+    COMBINE_TRANSACTIONS_JS("/v3/combine-transactions/jsapi", "Combined JSAPI order"),
 
     /**
-     * 合单 H5 下单
+     * Combined H5 order.
      */
-    COMBINE_TRANSACTIONS_H5("/v3/combine-transactions/h5", "合单 H5 下单"),
+    COMBINE_TRANSACTIONS_H5("/v3/combine-transactions/h5", "Combined H5 order"),
 
     /**
-     * 合单 Native下单
+     * Combined Native order.
      */
-    COMBINE_TRANSACTIONS_NATIVE("/v3/combine-transactions/native", "合单 Native 下单"),
+    COMBINE_TRANSACTIONS_NATIVE("/v3/combine-transactions/native", "Combined Native order"),
 
     /**
-     * 合单查询订单
+     * Combined order query.
      */
-    COMBINE_QUERY_BY_OUT_TRADE_NO("/v3/combine-transactions/out-trade-no/%s", "合单查询订单"),
+    COMBINE_QUERY_BY_OUT_TRADE_NO("/v3/combine-transactions/out-trade-no/%s", "Combined order query"),
 
     /**
-     * 合单关闭订单
+     * Combined order close.
      */
-    COMBINE_CLOSE_BY_OUT_TRADE_NO("/v3/combine-transactions/out-trade-no/%s/close", "合单关闭订单"),
+    COMBINE_CLOSE_BY_OUT_TRADE_NO("/v3/combine-transactions/out-trade-no/%s/close", "Combined order close"),
 
     /**
-     * 合单支付-申请退款
+     * Combined payment - apply for refund.
      */
-    DOMESTIC_REFUND("/v3/refund/domestic/refunds", "合单支付-申请退款"),
+    DOMESTIC_REFUND("/v3/refund/domestic/refunds", "Combined payment - apply for refund"),
 
     /**
-     * 合单支付-查询单笔退款
+     * Combined payment - query single refund.
      */
-    DOMESTIC_REFUND_QUERY("/v3/refund/domestic/refunds/%s", "合单支付-查询单笔退款"),
+    DOMESTIC_REFUND_QUERY("/v3/refund/domestic/refunds/%s", "Combined payment - query single refund"),
 
     /**
-     * 微信支付订单号查询
+     * WeChat Pay order number query.
      */
-    ORDER_QUERY_BY_TRANSACTION_ID("/v3/pay/transactions/id/%s", "微信支付订单号查询"),
+    ORDER_QUERY_BY_TRANSACTION_ID("/v3/pay/transactions/id/%s", "WeChat Pay order number query"),
 
     /**
-     * 服务商模式-微信支付订单号查询
+     * Service provider mode - WeChat Pay order number query.
      */
-    PARTNER_ORDER_QUERY_BY_TRANSACTION_ID("/v3/pay/partner/transactions/id/%s", "服务商模式-微信支付订单号查询"),
+    PARTNER_ORDER_QUERY_BY_TRANSACTION_ID("/v3/pay/partner/transactions/id/%s",
+            "Service provider mode - WeChat Pay order number query"),
 
     /**
-     * 商户订单号查询
+     * Merchant order number query.
      */
-    ORDER_QUERY_BY_OUT_TRADE_NO("/v3/pay/transactions/out-trade-no/%s", "商户订单号查询"),
+    ORDER_QUERY_BY_OUT_TRADE_NO("/v3/pay/transactions/out-trade-no/%s", "Merchant order number query"),
 
     /**
-     * 服务商模式-商户订单号查询
+     * Service provider mode - merchant order number query.
      */
-    PARTNER_ORDER_QUERY_BY_OUT_TRADE_NO("/v3/pay/partner/transactions/out-trade-no/%s", "服务商模式-商户订单号查询"),
+    PARTNER_ORDER_QUERY_BY_OUT_TRADE_NO("/v3/pay/partner/transactions/out-trade-no/%s",
+            "Service provider mode - merchant order number query"),
 
     /**
-     * 关闭订单
+     * Close order.
      */
-    CLOSE_ORDER_BY_OUT_TRADE_NO("/v3/pay/transactions/out-trade-no/%s/close", "关闭订单"),
+    CLOSE_ORDER_BY_OUT_TRADE_NO("/v3/pay/transactions/out-trade-no/%s/close", "Close order"),
 
     /**
-     * 撤销订单
+     * Reverse order.
      */
-    REVERSE_ORDER_BY_OUT_TRADE_NO("/v3/pay/transactions/out-trade-no/%s/reverse", "撤销订单"),
+    REVERSE_ORDER_BY_OUT_TRADE_NO("/v3/pay/transactions/out-trade-no/%s/reverse", "Reverse order"),
 
     /**
-     * 服务商模式-关闭订单
+     * Service provider mode - close order.
      */
-    PARTNER_CLOSE_ORDER_BY_OUT_TRADE_NO("/v3/pay/partner/transactions/out-trade-no/%s/close", "服务商模式-关闭订单"),
+    PARTNER_CLOSE_ORDER_BY_OUT_TRADE_NO("/v3/pay/partner/transactions/out-trade-no/%s/close",
+            "Service provider mode - close order"),
 
     /**
-     * 申请退款
+     * Apply for refund.
      */
-    REFUND("/v3/refund/domestic/refunds", "申请退款"),
+    REFUND("/v3/refund/domestic/refunds", "Apply for refund"),
 
     /**
-     * 查询单笔退款
+     * Query single refund.
      */
-    REFUND_QUERY_BY_OUT_REFUND_NO("/v3/refund/domestic/refunds/%s", "查询单笔退款"),
+    REFUND_QUERY_BY_OUT_REFUND_NO("/v3/refund/domestic/refunds/%s", "Query single refund"),
 
     /**
-     * 申请交易账单
+     * Apply for trade bill.
      */
-    TRADE_BILL("/v3/bill/tradebill", "申请交易账单"),
+    TRADE_BILL("/v3/bill/tradebill", "Apply for trade bill"),
 
     /**
-     * 申请资金账单
+     * Apply for fund flow bill.
      */
-    FUND_FLOW_BILL("/v3/bill/fundflowbill", "申请资金账单"),
+    FUND_FLOW_BILL("/v3/bill/fundflowbill", "Apply for fund flow bill"),
 
     /**
-     * 申请单个子商户资金账单
+     * Apply for single sub-merchant fund flow bill.
      */
-    SUB_MERCHANT_FUND_FLOW_BILL("/v3/bill/sub-merchant-fundflowbill", "申请单个子商户资金账单"),
+    SUB_MERCHANT_FUND_FLOW_BILL("/v3/bill/sub-merchant-fundflowbill", "Apply for single sub-merchant fund flow bill"),
 
     /**
-     * 下载账单
+     * Download bill.
      */
-    BILL_DOWNLOAD("/v3/billdownload/file", "下载账单");
+    BILL_DOWNLOAD("/v3/billdownload/file", "Download bill");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new BasePayApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     BasePayApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -213,9 +222,9 @@ public enum BasePayApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -223,9 +232,9 @@ public enum BasePayApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

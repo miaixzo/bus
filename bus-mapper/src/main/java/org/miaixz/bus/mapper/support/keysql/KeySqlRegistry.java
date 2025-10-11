@@ -51,9 +51,11 @@ import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 处理实体类上的主键策略，自动配置主键生成逻辑。
+ * Handles primary key strategies on entity classes, automatically configuring primary key generation logic.
  * <p>
- * 如果方法通过 MyBatis 注解（如 @Options 或 @SelectKey）配置了主键策略，将记录警告信息并跳过实体类上的主键策略配置。
+ * If a method has primary key strategies configured via MyBatis annotations (e.g., {@code @Options} or
+ * {@code @SelectKey}), a warning will be logged, and the entity class's primary key strategy configuration will be
+ * skipped.
  * </p>
  *
  * @author Kimi Liu
@@ -62,12 +64,12 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class KeySqlRegistry implements Registry {
 
     /**
-     * 自定义主键策略，检查并应用实体类上的主键生成策略。
+     * Customizes the primary key strategy, checking and applying primary key generation logic on entity classes.
      *
-     * @param entity  实体表信息
-     * @param ms      MappedStatement 对象
-     * @param context 提供者上下文，包含方法和接口信息
-     * @throws RuntimeException 如果存在多个字段配置了主键策略
+     * @param entity  The entity table information.
+     * @param ms      The {@link MappedStatement} object.
+     * @param context The provider context, containing method and interface information.
+     * @throws RuntimeException if multiple fields are configured with a primary key strategy.
      */
     @Override
     public void customize(TableMeta entity, MappedStatement ms, ProviderContext context) {
@@ -125,13 +127,13 @@ public class KeySqlRegistry implements Registry {
     }
 
     /**
-     * 生成可执行 SQL 的 SelectKeyGenerator，用于通过 SQL 获取主键值。
+     * Generates a {@link SelectKeyGenerator} that executes SQL to obtain the primary key value.
      *
-     * @param ms            MappedStatement 对象
-     * @param column        主键字段
-     * @param sql           主键生成 SQL
-     * @param executeBefore 是否在插入前执行
-     * @return 配置好的 SelectKeyGenerator
+     * @param ms            The {@link MappedStatement} object.
+     * @param column        The primary key column.
+     * @param sql           The SQL for primary key generation.
+     * @param executeBefore Whether to execute before insertion.
+     * @return The configured {@link SelectKeyGenerator}.
      */
     private KeyGenerator handleSelectKeyGenerator(
             MappedStatement ms,
@@ -164,12 +166,12 @@ public class KeySqlRegistry implements Registry {
     }
 
     /**
-     * 创建参数映射配置。
+     * Creates a parameter mapping configuration.
      *
-     * @param ms                 MappedStatement 对象
-     * @param parameterTypeClass 参数类型
-     * @param statementId        语句 ID
-     * @return 参数映射对象
+     * @param ms                 The {@link MappedStatement} object.
+     * @param parameterTypeClass The parameter type.
+     * @param statementId        The statement ID.
+     * @return The parameter map object.
      */
     private ParameterMap getStatementParameterMap(MappedStatement ms, Class<?> parameterTypeClass, String statementId) {
         List<ParameterMapping> parameterMappings = new ArrayList<>();
@@ -179,12 +181,12 @@ public class KeySqlRegistry implements Registry {
     }
 
     /**
-     * 创建结果映射配置。
+     * Creates a result mapping configuration.
      *
-     * @param ms          MappedStatement 对象
-     * @param resultType  结果类型
-     * @param statementId 语句 ID
-     * @return 结果映射列表
+     * @param ms          The {@link MappedStatement} object.
+     * @param resultType  The result type.
+     * @param statementId The statement ID.
+     * @return The list of result maps.
      */
     private List<ResultMap> getStatementResultMaps(MappedStatement ms, Class<?> resultType, String statementId) {
         List<ResultMap> resultMaps = new ArrayList<>();

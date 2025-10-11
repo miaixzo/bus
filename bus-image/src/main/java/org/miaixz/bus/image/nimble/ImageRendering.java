@@ -42,11 +42,10 @@ import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.opencv.core.CvType;
 
 /**
- * DICOM图像渲染类，用于处理DICOM图像的各种渲染操作。
- *
+ * A utility class for performing various rendering operations on DICOM images.
  * <p>
- * 该类提供了多种图像渲染方法，包括原始图像渲染、模态LUT应用、VOI LUT应用、 嵌入式覆盖层处理等。它支持不同数据类型的图像处理，并提供窗口/级别调整功能。
- * </p>
+ * This class provides static methods for applying transformations such as Modality LUTs, VOI LUTs (window/level), and
+ * handling embedded overlays. It supports processing images with different data types.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,13 +53,13 @@ import org.opencv.core.CvType;
 public class ImageRendering {
 
     /**
-     * 返回应用了模态LUT且不包含嵌入式覆盖层的原始渲染图像。
+     * Returns the raw rendered image with the Modality LUT applied, after clearing any embedded overlay bits.
      *
-     * @param imageSource 源图像
-     * @param desc        包含模态LUT和覆盖层信息的图像描述符
-     * @param params      包含窗口/级别参数的DicomImageReadParam
-     * @param frameIndex  要处理的帧索引（单帧图像为0）
-     * @return 应用了模态LUT的原始渲染图像
+     * @param imageSource The source image.
+     * @param desc        The image descriptor containing Modality LUT and overlay information.
+     * @param params      The image read parameters, which may influence LUT selection.
+     * @param frameIndex  The index of the frame to process (0 for single-frame images).
+     * @return The raw rendered image with the Modality LUT applied.
      */
     public static PlanarImage getRawRenderedImage(
             final PlanarImage imageSource,
@@ -73,12 +72,12 @@ public class ImageRendering {
     }
 
     /**
-     * 返回应用了模态LUT的原始渲染图像。
+     * Applies the Modality LUT to a given image.
      *
-     * @param img     源图像
-     * @param adapter 包含模态LUT信息的DicomImageAdapter
-     * @param params  包含窗口/级别参数的DicomImageReadParam
-     * @return 应用了模态LUT的原始渲染图像
+     * @param img     The source image.
+     * @param adapter An adapter providing access to the Modality LUT.
+     * @param params  The image read parameters, which may influence LUT selection.
+     * @return The image with the Modality LUT applied.
      */
     public static PlanarImage getModalityLutImage(PlanarImage img, ImageAdapter adapter, ImageReadParam params) {
         WindLevelParameters p = new WindLevelParameters(adapter, params);
@@ -91,13 +90,13 @@ public class ImageRendering {
     }
 
     /**
-     * 返回应用了VOI LUT且不包含嵌入式覆盖层的默认渲染图像。
+     * Returns the default rendered image, which includes the application of a VOI LUT and any overlays.
      *
-     * @param imageSource 源图像
-     * @param desc        包含VOI LUT和覆盖层信息的图像描述符
-     * @param params      包含窗口/级别参数的DicomImageReadParam
-     * @param frameIndex  要处理的帧索引（单帧图像为0）
-     * @return 应用了VOI LUT和覆盖层的默认渲染图像
+     * @param imageSource The source image.
+     * @param desc        The image descriptor containing VOI LUT and overlay information.
+     * @param params      The image read parameters, containing window/level settings.
+     * @param frameIndex  The index of the frame to process (0 for single-frame images).
+     * @return The default rendered image with VOI LUT and overlays applied.
      */
     public static PlanarImage getDefaultRenderedImage(
             final PlanarImage imageSource,
@@ -110,13 +109,13 @@ public class ImageRendering {
     }
 
     /**
-     * 返回应用了VOI LUT的图像。
+     * Returns the image with the VOI (Value of Interest) LUT applied.
      *
-     * @param imageSource 源图像
-     * @param desc        包含VOI LUT信息的图像描述符
-     * @param params      包含窗口/级别参数的DicomImageReadParam
-     * @param frameIndex  要处理的帧索引（单帧图像为0）
-     * @return 应用了VOI LUT的图像
+     * @param imageSource The source image.
+     * @param desc        The image descriptor containing VOI LUT information.
+     * @param params      The image read parameters, containing window/level settings.
+     * @param frameIndex  The index of the frame to process (0 for single-frame images).
+     * @return The image with the VOI LUT applied.
      */
     public static PlanarImage getVoiLutImage(
             final PlanarImage imageSource,
@@ -128,12 +127,12 @@ public class ImageRendering {
     }
 
     /**
-     * 返回应用了VOI LUT的图像。
+     * Returns the image with the VOI (Value of Interest) LUT applied.
      *
-     * @param imageSource 源图像
-     * @param adapter     包含VOI LUT信息的DicomImageAdapter
-     * @param params      包含窗口/级别参数的DicomImageReadParam
-     * @return 应用了VOI LUT的图像
+     * @param imageSource The source image.
+     * @param adapter     An adapter providing access to the VOI LUT.
+     * @param params      The image read parameters, containing window/level settings.
+     * @return The image with the VOI LUT applied.
      */
     public static PlanarImage getVoiLutImage(PlanarImage imageSource, ImageAdapter adapter, ImageReadParam params) {
         WindLevelParameters p = new WindLevelParameters(adapter, params);
@@ -147,12 +146,12 @@ public class ImageRendering {
     }
 
     /**
-     * 处理字节或短数据的图像。
+     * Processes an image with byte or short integer pixel data by applying Modality and VOI LUTs.
      *
-     * @param imageSource 源图像
-     * @param adapter     图像适配器
-     * @param p           窗口/级别参数
-     * @return 处理后的图像
+     * @param imageSource The source image.
+     * @param adapter     The image adapter for accessing LUTs.
+     * @param p           The window and level parameters.
+     * @return The processed image.
      */
     private static ImageCV getImageForByteOrShortData(
             PlanarImage imageSource,
@@ -164,16 +163,17 @@ public class ImageRendering {
                 : modalityLookup.lookup(imageSource.toMat());
 
         /*
-         * C.11.2.1.2 窗位和窗宽
+         * Per DICOM Standard PS3.3 C.11.2.1.2 Window Center and Width:
          *
-         * 这些属性仅用于光度解释(0028,0004)值为MONOCHROME1和MONOCHROME2的图像。 对于其他图像没有意义。
+         * These Attributes are applied to the pixel data values of the image (or the result of the Modality LUT
+         * transformation) to transform them to output values. The output values are specified by VOI LUT Function
+         * (0028,1056). They are used only for images with Photometric Interpretation (0028,0004) values of MONOCHROME1
+         * and MONOCHROME2. They have no meaning for other images.
          */
         if ((!p.isAllowWinLevelOnColorImage()
                 || MathKit.isEqual(p.getWindow(), 255.0) && MathKit.isEqual(p.getLevel(), 127.5))
                 && !desc.getPhotometricInterpretation().isMonochrome()) {
-            /*
-             * 如果光度解释不是单色的，不要应用VOI LUT。这对于PALETTE_COLOR是必要的。
-             */
+            // Do not apply VOI LUT if photometric interpretation is not monochrome (necessary for PALETTE COLOR).
             return imageModalityTransformed;
         }
 
@@ -192,12 +192,12 @@ public class ImageRendering {
     }
 
     /**
-     * 处理浮点或整型数据的图像。
+     * Processes an image with float or integer pixel data by applying a window/level rescale operation.
      *
-     * @param imageSource 源图像
-     * @param p           窗口/级别参数
-     * @param datatype    数据类型
-     * @return 处理后的图像
+     * @param imageSource The source image.
+     * @param p           The window and level parameters.
+     * @param datatype    The data type of the image pixel data.
+     * @return The processed image, rescaled to 8-bit.
      */
     private static ImageCV getImageWithFloatOrIntData(PlanarImage imageSource, WindLevelParameters p, int datatype) {
         double low = p.getLevel() - p.getWindow() / 2.0;
@@ -212,17 +212,17 @@ public class ImageRendering {
     }
 
     /**
-     * 返回不包含嵌入式覆盖层的图像。如果图像有嵌入式覆盖层，它将清除bitsStored和highBit定义范围之外的位。
-     *
+     * Returns an image with embedded overlay bits cleared. If the image contains embedded overlays, this method zeroes
+     * out any bits that are outside the range defined by Bits Stored and High Bit.
      * <p>
-     * 对于在覆盖数据元素(60xx,3000)中编码的覆盖层，覆盖位分配(60xx,0100)始终为1， 覆盖位位置(60xx,0102)始终为0。
+     * Per DICOM Standard PS3.5, Chapter 8.1.2, for overlays encoded in the Overlay Data element (60xx,3000), Overlay
+     * Bits Allocated (60xx,0100) is always 1, and Overlay Bit Position (60xx,0102) is always 0. This method handles
+     * overlays embedded in the high bits of the pixel data.
      *
-     * @param img        源图像
-     * @param desc       包含覆盖层信息的图像描述符
-     * @param frameIndex 要处理的帧索引（单帧图像为0）
-     * @return 不包含嵌入式覆盖层的图像
-     * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_8.html">8.1.2
-     *      覆盖数据和相关数据元素的编码</a>
+     * @param img        The source image.
+     * @param desc       The image descriptor containing overlay and pixel information.
+     * @param frameIndex The index of the frame to process (0 for single-frame images).
+     * @return A new image with overlay bits cleared, or the original image if no embedded overlays are present.
      */
     public static PlanarImage getImageWithoutEmbeddedOverlay(PlanarImage img, ImageDescriptor desc, int frameIndex) {
         Objects.requireNonNull(img);
@@ -237,11 +237,11 @@ public class ImageRendering {
                 if (high > bitsStored) {
                     val -= (1 << (high - bitsStored)) - 1;
                 }
-                // 将高于highBit和低于high-bitsStored的所有位设置为0（即bitsStored之外的所有位）
+                // Set all bits higher than highBit and lower than (high - bitsStored) to 0.
                 if (high > bitsStored) {
                     desc.getModalityLutForFrame(frameIndex).adaptWithOverlayBitMask(high - bitsStored);
                 }
-                // 将bitsStored之外的所有位设置为0
+                // Set all bits outside of Bits Stored to 0.
                 return ImageProcessor.bitwiseAnd(img.toMat(), val);
             }
         }

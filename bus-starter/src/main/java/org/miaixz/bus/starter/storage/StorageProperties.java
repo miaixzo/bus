@@ -27,8 +27,8 @@
 */
 package org.miaixz.bus.starter.storage;
 
-import java.util.Map;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.cache.CacheProperties;
 import org.miaixz.bus.storage.Context;
@@ -36,11 +36,13 @@ import org.miaixz.bus.storage.Registry;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
 
 /**
- * 存储配置信息 1. 默认读取配置文件信息 2. 通过set形式设置(动态/DB等)
+ * Configuration properties for the object storage service.
+ * <p>
+ * This class binds properties from the configuration file (e.g., {@code application.yml}) by default. It can also be
+ * configured dynamically through setter methods (e.g., from a database).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,11 +53,13 @@ import lombok.Setter;
 public class StorageProperties {
 
     /**
-     * 基础配置
+     * A map of storage provider configurations, where the key is the provider {@link Registry} type and the value is
+     * the {@link Context} containing the specific configuration for that provider.
      */
     private Map<Registry, Context> type;
+
     /**
-     * 缓存配置
+     * Nested configuration for caching options related to the storage service.
      */
     @NestedConfigurationProperty
     private CacheProperties cache;

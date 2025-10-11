@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
-import java.util.Map;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.Httpd;
 
+import java.util.Map;
+
 /**
- * DELETE 请求参数构造器，提供链式调用接口来构建 DELETE 请求。 支持设置 URL、查询参数、请求头、标签和请求 ID。
+ * A builder for creating HTTP DELETE requests using a fluent interface. This class allows for setting the URL, query
+ * parameters, headers, a tag, and a request ID.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,49 +42,53 @@ import org.miaixz.bus.http.Httpd;
 public class DeleteBuilder extends RequestBuilder<DeleteBuilder> {
 
     /**
-     * 构造函数，初始化 DeleteBuilder。
+     * Constructs a new {@code DeleteBuilder}.
      *
-     * @param httpd Httpd 客户端
+     * @param httpd The {@link Httpd} client instance.
      */
     public DeleteBuilder(Httpd httpd) {
         super(httpd);
     }
 
     /**
-     * 构建 DELETE 请求的 RequestCall 对象。 如果存在查询参数，将其拼接至 URL。
+     * Builds the {@link RequestCall} for the DELETE request. If any query parameters have been added, they will be
+     * appended to the URL.
      *
-     * @return RequestCall 对象，用于执行请求
+     * @return A {@code RequestCall} object ready to be executed.
      */
     @Override
     public RequestCall build() {
         if (null != params) {
-            url = append(url, params); // 拼接查询参数至 URL
+            // Append query parameters to the URL.
+            url = append(url, params);
         }
         return new DeleteRequest(url, tag, params, headers, id).build(httpd);
     }
 
     /**
-     * 将查询参数拼接至 URL。
+     * Appends the given query parameters to the URL string.
      *
-     * @param url    原始 URL
-     * @param params 查询参数
-     * @return 拼接后的 URL
+     * @param url    The original URL.
+     * @param params The map of query parameters to append.
+     * @return The new URL with the appended query parameters.
      */
     protected String append(String url, Map<String, String> params) {
         if (null == url || null == params || params.isEmpty()) {
-            return url; // 无参数或 URL 为空，直接返回
+            return url;
         }
         StringBuilder builder = new StringBuilder();
         params.forEach((k, v) -> {
             if (builder.length() == 0) {
-                builder.append(Symbol.QUESTION_MARK); // 第一个参数前加 ?
-            } else if (builder.length() > 0) {
-                builder.append(Symbol.AND); // 后续参数加 &
+                // Add '?' before the first parameter.
+                builder.append(Symbol.QUESTION_MARK);
+            } else {
+                // Add '&' before subsequent parameters.
+                builder.append(Symbol.AND);
             }
             builder.append(k);
             builder.append(Symbol.EQUAL).append(v);
         });
-        return url + builder.toString(); // 返回拼接后的 URL
+        return url + builder;
     }
 
 }

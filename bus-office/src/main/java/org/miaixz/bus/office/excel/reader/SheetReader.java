@@ -30,18 +30,21 @@ package org.miaixz.bus.office.excel.reader;
 import org.apache.poi.ss.usermodel.Sheet;
 
 /**
- * Excel {@link Sheet}读取接口，通过实现此接口，将{@link Sheet}中的数据读取为不同类型。
+ * Interface for reading Excel {@link Sheet} data. Implementations of this interface read data from a {@link Sheet} and
+ * convert it into a specific type.
  *
- * @param <T> 读取的数据类型
+ * @param <T> The type of data to be read.
+ * @author Kimi Liu
+ * @since Java 17+
  */
 @FunctionalInterface
 public interface SheetReader<T> {
 
     /**
-     * 读取数据
+     * Reads data from the specified {@link Sheet}.
      *
-     * @param sheet {@link Sheet}
-     * @return 读取结果
+     * @param sheet The {@link Sheet} to read from.
+     * @return The read result of type T.
      */
     T read(Sheet sheet);
 

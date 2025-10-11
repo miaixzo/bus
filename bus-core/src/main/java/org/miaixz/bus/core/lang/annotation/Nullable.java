@@ -30,7 +30,13 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 可以为 Null（仅标识）
+ * A marker annotation indicating that a field, method parameter, or method return value is permitted to be
+ * {@code null}.
+ * <p>
+ * This annotation is primarily intended for documentation and to be used by static analysis tools to improve
+ * null-safety checks. It clarifies the contract of an API, making it explicit that a {@code null} value is acceptable.
+ * It does not enforce any runtime behavior on its own, but frameworks may use it for validation or other purposes. It
+ * is similar in purpose to annotations like {@code jakarta.annotation.Nullable}.
  *
  * @author Kimi Liu
  * @since Java 17+

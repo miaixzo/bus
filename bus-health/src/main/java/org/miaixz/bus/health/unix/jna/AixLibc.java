@@ -34,15 +34,27 @@ import org.miaixz.bus.health.Builder;
 import com.sun.jna.Native;
 
 /**
- * C library. This class should be considered non-API as it may be removed if/when its code is incorporated into the JNA
- * project.
+ * C library for AIX. This class should be considered non-API as it may be removed if/when its code is incorporated into
+ * the JNA project.
  */
 public interface AixLibc extends CLibrary {
 
+    /**
+     * Singleton instance of the AixLibc library.
+     */
     AixLibc INSTANCE = Native.load("c", AixLibc.class);
 
+    /**
+     * Size of the {@code pr_clname} field in {@code AixLwpsInfo}.
+     */
     int PRCLSZ = 8;
+    /**
+     * Size of the {@code pr_fname} field in {@code AixPsInfo}.
+     */
     int PRFNSZ = 16;
+    /**
+     * Size of the {@code pr_psargs} field in {@code AixPsInfo}.
+     */
     int PRARGSZ = 80;
 
     /**
@@ -52,36 +64,125 @@ public interface AixLibc extends CLibrary {
      */
     int thread_self();
 
+    /**
+     * Represents the process information structure on AIX.
+     */
     class AixPsInfo {
 
-        public int pr_flag; // process flags from proc struct p_flag
-        public int pr_flag2; // process flags from proc struct p_flag2
-        public int pr_nlwp; // number of threads in process
-        public int pr__pad1; // reserved for future use
-        public long pr_uid; // real user id
-        public long pr_euid; // effective user id
-        public long pr_gid; // real group id
-        public long pr_egid; // effective group id
-        public long pr_pid; // unique process id
-        public long pr_ppid; // process id of parent
-        public long pr_pgid; // pid of process group leader
-        public long pr_sid; // session id
-        public long pr_ttydev; // controlling tty device
-        public long pr_addr; // internal address of proc struct
-        public long pr_size; // size of process image in KB (1024) units
-        public long pr_rssize; // resident set size in KB (1024) units
-        public Timestruc pr_start; // process start time, time since epoch
-        public Timestruc pr_time; // usr+sys cpu time for this process
-        public short pr_cid; // corral id
-        public short pr__pad2; // reserved for future use
-        public int pr_argc; // initial argument count
-        public long pr_argv; // address of initial argument vector in user process
-        public long pr_envp; // address of initial environment vector in user process
-        public byte[] pr_fname = new byte[PRFNSZ]; // last component of exec()ed pathname
-        public byte[] pr_psargs = new byte[PRARGSZ]; // initial characters of arg list
-        public long[] pr__pad = new long[8]; // reserved for future use
-        public AixLwpsInfo pr_lwp; // "representative" thread info
+        /**
+         * Process flags from proc struct p_flag.
+         */
+        public int pr_flag;
+        /**
+         * Process flags from proc struct p_flag2.
+         */
+        public int pr_flag2;
+        /**
+         * Number of threads in process.
+         */
+        public int pr_nlwp;
+        /**
+         * Reserved for future use.
+         */
+        public int pr__pad1;
+        /**
+         * Real user ID.
+         */
+        public long pr_uid;
+        /**
+         * Effective user ID.
+         */
+        public long pr_euid;
+        /**
+         * Real group ID.
+         */
+        public long pr_gid;
+        /**
+         * Effective group ID.
+         */
+        public long pr_egid;
+        /**
+         * Unique process ID.
+         */
+        public long pr_pid;
+        /**
+         * Process ID of parent.
+         */
+        public long pr_ppid;
+        /**
+         * PID of process group leader.
+         */
+        public long pr_pgid;
+        /**
+         * Session ID.
+         */
+        public long pr_sid;
+        /**
+         * Controlling tty device.
+         */
+        public long pr_ttydev;
+        /**
+         * Internal address of proc struct.
+         */
+        public long pr_addr;
+        /**
+         * Size of process image in KB (1024) units.
+         */
+        public long pr_size;
+        /**
+         * Resident set size in KB (1024) units.
+         */
+        public long pr_rssize;
+        /**
+         * Process start time, time since epoch.
+         */
+        public Timestruc pr_start;
+        /**
+         * User + system CPU time for this process.
+         */
+        public Timestruc pr_time;
+        /**
+         * Corral ID.
+         */
+        public short pr_cid;
+        /**
+         * Reserved for future use.
+         */
+        public short pr__pad2;
+        /**
+         * Initial argument count.
+         */
+        public int pr_argc;
+        /**
+         * Address of initial argument vector in user process.
+         */
+        public long pr_argv;
+        /**
+         * Address of initial environment vector in user process.
+         */
+        public long pr_envp;
+        /**
+         * Last component of exec()ed pathname.
+         */
+        public byte[] pr_fname = new byte[PRFNSZ];
+        /**
+         * Initial characters of arg list.
+         */
+        public byte[] pr_psargs = new byte[PRARGSZ];
+        /**
+         * Reserved for future use.
+         */
+        public long[] pr__pad = new long[8];
+        /**
+         * "Representative" thread info.
+         */
+        public AixLwpsInfo pr_lwp;
 
+        /**
+         * Constructs an {@code AixPsInfo} object by reading data from a ByteBuffer.
+         *
+         * @param buff The ByteBuffer to read from.
+         */
         public AixPsInfo(ByteBuffer buff) {
             this.pr_flag = Builder.readIntFromBuffer(buff);
             this.pr_flag2 = Builder.readIntFromBuffer(buff);
@@ -116,22 +217,69 @@ public interface AixLibc extends CLibrary {
 
     }
 
+    /**
+     * Represents the lightweight process (thread) information structure on AIX.
+     */
     class AixLwpsInfo {
 
-        public long pr_lwpid; // thread id
-        public long pr_addr; // internal address of thread
-        public long pr_wchan; // wait addr for sleeping thread
-        public int pr_flag; // thread flags
-        public byte pr_wtype; // type of thread wait
-        public byte pr_state; // numeric scheduling state
-        public byte pr_sname; // printable character representing pr_state
-        public byte pr_nice; // nice for cpu usage
-        public int pr_pri; // priority, high value = high priority
-        public int pr_policy; // scheduling policy
-        public byte[] pr_clname = new byte[PRCLSZ]; // printable character representing pr_policy
-        public int pr_onpro; // processor on which thread last ran
-        public int pr_bindpro; // processor to which thread is bound
+        /**
+         * Thread ID.
+         */
+        public long pr_lwpid;
+        /**
+         * Internal address of thread.
+         */
+        public long pr_addr;
+        /**
+         * Wait address for sleeping thread.
+         */
+        public long pr_wchan;
+        /**
+         * Thread flags.
+         */
+        public int pr_flag;
+        /**
+         * Type of thread wait.
+         */
+        public byte pr_wtype;
+        /**
+         * Numeric scheduling state.
+         */
+        public byte pr_state;
+        /**
+         * Printable character representing pr_state.
+         */
+        public byte pr_sname;
+        /**
+         * Nice value for CPU usage.
+         */
+        public byte pr_nice;
+        /**
+         * Priority, high value = high priority.
+         */
+        public int pr_pri;
+        /**
+         * Scheduling policy.
+         */
+        public int pr_policy;
+        /**
+         * Printable character representing pr_policy.
+         */
+        public byte[] pr_clname = new byte[PRCLSZ];
+        /**
+         * Processor on which thread last ran.
+         */
+        public int pr_onpro;
+        /**
+         * Processor to which thread is bound.
+         */
+        public int pr_bindpro;
 
+        /**
+         * Constructs an {@code AixLwpsInfo} object by reading data from a ByteBuffer.
+         *
+         * @param buff The ByteBuffer to read from.
+         */
         public AixLwpsInfo(ByteBuffer buff) {
             this.pr_lwpid = Builder.readLongFromBuffer(buff);
             this.pr_addr = Builder.readLongFromBuffer(buff);
@@ -150,14 +298,28 @@ public interface AixLibc extends CLibrary {
     }
 
     /**
-     * 64-bit timestruc required for psinfo structure
+     * 64-bit timestruc required for psinfo structure.
      */
     class Timestruc {
 
-        public long tv_sec; // seconds
-        public int tv_nsec; // nanoseconds
-        public int pad; // nanoseconds
+        /**
+         * Seconds.
+         */
+        public long tv_sec;
+        /**
+         * Nanoseconds.
+         */
+        public int tv_nsec;
+        /**
+         * Padding.
+         */
+        public int pad;
 
+        /**
+         * Constructs a {@code Timestruc} object by reading data from a ByteBuffer.
+         *
+         * @param buff The ByteBuffer to read from.
+         */
         public Timestruc(ByteBuffer buff) {
             this.tv_sec = Builder.readLongFromBuffer(buff);
             this.tv_nsec = Builder.readIntFromBuffer(buff);

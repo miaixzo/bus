@@ -34,37 +34,39 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 按照顺序正序排列，元素位置决定了对象的排序先后，如果参与排序的元素并不在其中，则排序在前（可以通过atEndIfMiss设置)
+ * A comparator that sorts elements based on a predefined index. The position of an element determines its sort order.
+ * If an element is not in the index, it is sorted at the beginning by default, but this can be configured with
+ * {@code atEndIfMiss}.
  *
- * @param <T> 被排序元素类型
+ * @param <T> the type of elements to be compared.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class IndexedCompare<T> implements Comparator<T> {
 
     /**
-     * 不在列表中是否排在后边
+     * Whether to place elements not in the list at the end.
      */
     private final boolean atEndIfMiss;
     /**
-     * map存储对象类型所在列表的位置,k为对象，v为位置
+     * A map storing the position of each object, where the key is the object and the value is its index.
      */
     private final Map<? super T, Integer> map;
 
     /**
-     * 构造
+     * Constructs a new {@code IndexedCompare}.
      *
-     * @param objs 参与排序的数组，数组的元素位置决定了对象的排序先后
+     * @param objs the array of objects that defines the sort order.
      */
     public IndexedCompare(final T... objs) {
         this(false, objs);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code IndexedCompare}.
      *
-     * @param atEndIfMiss 如果不在列表中是否排在后边
-     * @param map         参与排序的map，map中的value值大小决定了对象的排序先后
+     * @param atEndIfMiss if {@code true}, elements not in the map will be placed at the end.
+     * @param map         the map defining the sort order, where the value determines the priority.
      */
     public IndexedCompare(final boolean atEndIfMiss, final Map<? super T, Integer> map) {
         this.atEndIfMiss = atEndIfMiss;
@@ -72,10 +74,10 @@ public class IndexedCompare<T> implements Comparator<T> {
     }
 
     /**
-     * 构造
+     * Constructs a new {@code IndexedCompare}.
      *
-     * @param atEndIfMiss 如果不在列表中是否排在后边
-     * @param objs        参与排序的数组，数组的元素位置决定了对象的排序先后
+     * @param atEndIfMiss if {@code true}, elements not in the array will be placed at the end.
+     * @param objs        the array of objects that defines the sort order.
      */
     public IndexedCompare(final boolean atEndIfMiss, final T... objs) {
         Assert.notNull(objs, "'objs' array must not be null");
@@ -93,11 +95,11 @@ public class IndexedCompare<T> implements Comparator<T> {
 
         if (index1 == index2) {
             if (index1 < 0 || index1 == this.map.size()) {
-                // 任意一个元素不在map中, 返回原顺序
+                // If either element is not in the map, maintain the original order.
                 return 1;
             }
 
-            // 位置一样，认为是同一个元素
+            // Same position means they are considered equal.
             return 0;
         }
 
@@ -105,10 +107,10 @@ public class IndexedCompare<T> implements Comparator<T> {
     }
 
     /**
-     * 查找对象类型所对应的顺序值,即在原列表中的顺序
+     * Finds the order value for the given object, which corresponds to its position in the original list.
      *
-     * @param object 对象
-     * @return 位置，未找到位置根据{@link #atEndIfMiss}取不同值，false返回-1，否则返回map长度
+     * @param object the object to find.
+     * @return the position. If not found, returns -1 if {@link #atEndIfMiss} is false, otherwise returns the map size.
      */
     private int getOrder(final T object) {
         Integer order = map.get(object);

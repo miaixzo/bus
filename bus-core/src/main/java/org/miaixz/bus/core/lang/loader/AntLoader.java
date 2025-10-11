@@ -34,7 +34,7 @@ import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * ANT风格路径资源加载器
+ * An ANT-style path resource loader. This loader supports ANT-style path expressions for loading resources.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,25 +42,25 @@ import org.miaixz.bus.core.lang.Symbol;
 public class AntLoader extends PatternLoader implements Loader {
 
     /**
-     * 构造
+     * Constructs a new {@code AntLoader} with a default {@link StdLoader} as its delegate.
      */
     public AntLoader() {
         this(new StdLoader());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code AntLoader} with a specified {@link ClassLoader} for its delegate {@link StdLoader}.
      *
-     * @param classLoader 加载器
+     * @param classLoader The class loader to use for the delegate {@link StdLoader}.
      */
     public AntLoader(ClassLoader classLoader) {
         this(new StdLoader(classLoader));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code AntLoader} with a specified delegate {@link Loader}.
      *
-     * @param delegate 类加载代理
+     * @param delegate The delegate loader to use for actual resource loading.
      */
     public AntLoader(Loader delegate) {
         super(delegate);
@@ -69,18 +69,21 @@ public class AntLoader extends PatternLoader implements Loader {
     @Override
     public Enumeration<Resource> load(String pattern, boolean recursively, Filter filter) throws IOException {
         if (Math.max(pattern.indexOf(Symbol.C_STAR), pattern.indexOf(Symbol.C_QUESTION_MARK)) < 0) {
+            // If no wildcard characters are present, delegate to the base loader without pattern matching.
             return delegate.load(pattern, recursively, filter);
         } else {
+            // Otherwise, use pattern matching provided by the superclass (PatternLoader).
             return super.load(pattern, recursively, filter);
         }
     }
 
     /**
-     * 加载路径处理
+     * Extracts the base path from an ANT-style path expression.
      *
-     * @param ant ANT风格路径表达式
-     * @return the string
+     * @param ant The ANT-style path expression.
+     * @return The base path without wildcard characters.
      */
+    @Override
     protected String path(String ant) {
         int index = Integer.MAX_VALUE - 1;
         if (ant.contains(Symbol.STAR) && ant.indexOf(Symbol.C_STAR) < index)
@@ -91,21 +94,24 @@ public class AntLoader extends PatternLoader implements Loader {
     }
 
     /**
-     * 是否递归
+     * Determines whether to recursively load resources based on the ANT-style path expression. For {@code AntLoader},
+     * this method always returns {@code true} to enable recursive loading by default when wildcards are present.
      *
-     * @param ant ANT风格路径表达式
-     * @return the boolean
+     * @param ant The ANT-style path expression.
+     * @return Always {@code true}.
      */
+    @Override
     protected boolean recursively(String ant) {
         return true;
     }
 
     /**
-     * 过滤器
+     * Creates an {@link AntFilter} based on the provided ANT-style path expression.
      *
-     * @param ant ANT风格路径表达式
-     * @return the 过滤器
+     * @param ant The ANT-style path expression.
+     * @return A new {@link AntFilter} instance.
      */
+    @Override
     protected Filter filter(String ant) {
         return new AntFilter(ant);
     }

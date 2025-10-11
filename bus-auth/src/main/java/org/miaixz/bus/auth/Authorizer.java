@@ -37,7 +37,9 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 授权模块构建器，用于快速构造认证提供者。 通过建造者模式配置认证来源、上下文、缓存和协议配置，动态创建对应的认证提供者实例。
+ * Authorization module builder, used to quickly construct authentication providers. It uses the builder pattern to
+ * configure the authentication source, context, cache, and protocol configurations, dynamically creating corresponding
+ * authentication provider instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,43 +47,43 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Authorizer {
 
     /**
-     * 认证来源（如 TWITTER、SAML）
+     * Authentication source (e.g., TWITTER, SAML).
      */
     private String source;
     /**
-     * 上下文配置，包含协议特定参数
+     * Context configuration, containing protocol-specific parameters.
      */
     private Context context;
     /**
-     * 缓存实现，用于存储状态等临时数据
+     * Cache implementation, used to store temporary data such as state.
      */
     private CacheX cache;
     /**
-     * 自定义协议配置数组
+     * Array of custom protocol configurations.
      */
     private Complex[] complex;
 
     /**
-     * 私有构造函数，防止直接实例化。
+     * Private constructor to prevent direct instantiation.
      */
     private Authorizer() {
 
     }
 
     /**
-     * 创建 Authorize 构建器实例。
+     * Creates an Authorizer builder instance.
      *
-     * @return 新创建的 Authorize 实例
+     * @return a new Authorizer instance
      */
     public static Authorizer builder() {
         return new Authorizer();
     }
 
     /**
-     * 设置认证来源。
+     * Sets the authentication source.
      *
-     * @param source 认证来源（如 TWITTER、SAML_EXAMPLE）
-     * @return 当前 Authorize 实例
+     * @param source the authentication source (e.g., TWITTER, SAML_EXAMPLE)
+     * @return the current Authorizer instance
      */
     public Authorizer source(String source) {
         this.source = source;
@@ -89,10 +91,10 @@ public class Authorizer {
     }
 
     /**
-     * 设置上下文配置。
+     * Sets the context configuration.
      *
-     * @param context 上下文配置对象
-     * @return 当前 Authorize 实例
+     * @param context the context configuration object
+     * @return the current Authorizer instance
      */
     public Authorizer context(Context context) {
         this.context = context;
@@ -100,10 +102,10 @@ public class Authorizer {
     }
 
     /**
-     * 使用函数动态设置上下文配置。
+     * Dynamically sets the context configuration using a function.
      *
-     * @param context 函数，根据 source 生成上下文配置
-     * @return 当前 Authorize 实例
+     * @param context a function that generates the context configuration based on the source
+     * @return the current Authorizer instance
      */
     public Authorizer context(Function<String, Context> context) {
         this.context = context.apply(this.source);
@@ -111,10 +113,10 @@ public class Authorizer {
     }
 
     /**
-     * 设置缓存实现。
+     * Sets the cache implementation.
      *
-     * @param cache 缓存对象
-     * @return 当前 Authorize 实例
+     * @param cache the cache object
+     * @return the current Authorizer instance
      */
     public Authorizer cache(CacheX cache) {
         this.cache = cache;
@@ -122,10 +124,10 @@ public class Authorizer {
     }
 
     /**
-     * 设置自定义协议配置。
+     * Sets custom protocol configurations.
      *
-     * @param complex 协议配置数组
-     * @return 当前 Authorize 实例
+     * @param complex an array of protocol configurations
+     * @return the current Authorizer instance
      */
     public Authorizer complex(Complex... complex) {
         this.complex = complex;
@@ -133,32 +135,33 @@ public class Authorizer {
     }
 
     /**
-     * 构建认证提供者实例。 根据配置的 source 查找匹配的 Complex，动态创建对应的提供者实例。
+     * Builds an authentication provider instance. It finds the matching {@link Complex} based on the configured source
+     * and dynamically creates the corresponding provider instance.
      *
-     * @return 认证提供者实例
-     * @throws AuthorizedException 如果 source 或 context 未设置，或未找到匹配的 Complex
+     * @return an authentication provider instance
+     * @throws AuthorizedException if the source or context is not set, or if no matching {@link Complex} is found
      */
     public Provider build() {
-        // 验证 source 和 context 是否已设置
+        // Validate if source and context are set
         if (StringKit.isEmpty(this.source) || null == this.context) {
             throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
         }
 
-        // 合并默认的 Registry 和自定义 Complex
+        // Merge default Registry and custom Complex configurations
         Complex[] complexes = this.concat(Registry.values(), this.complex);
 
-        // 筛选符合 source 的 Complex
+        // Filter for the Complex that matches the source
         Complex complex = Arrays.stream(complexes).distinct()
                 .filter(authSource -> authSource.getName().equalsIgnoreCase(this.source)).findAny()
                 .orElseThrow(() -> new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey()));
 
-        // 获取提供者类
+        // Get the provider class
         Class<? extends AbstractProvider> targetClass = complex.getTargetClass();
         if (null == targetClass) {
             throw new AuthorizedException(ErrorCode._NOT_IMPLEMENTED.getKey());
         }
 
-        // 动态创建提供者实例
+        // Dynamically create the provider instance
         try {
             if (this.cache == null) {
                 return targetClass.getDeclaredConstructor(Context.class).newInstance(this.context);
@@ -173,11 +176,11 @@ public class Authorizer {
     }
 
     /**
-     * 合并两个 Complex 数组。
+     * Concatenates two arrays of {@link Complex} objects.
      *
-     * @param first  第一个 Complex 数组（通常为默认配置）
-     * @param second 第二个 Complex 数组（自定义配置）
-     * @return 合并后的 Complex 数组
+     * @param first  the first array of Complex objects (usually default configurations)
+     * @param second the second array of Complex objects (custom configurations)
+     * @return the concatenated array of Complex objects
      */
     private Complex[] concat(Complex[] first, Complex[] second) {
         if (null == second || second.length == 0) {

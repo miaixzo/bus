@@ -28,19 +28,31 @@
 package org.miaixz.bus.http.metric;
 
 /**
- * 可运行的实现，它总是设置它的线程名
+ * An abstract {@link Runnable} implementation that always sets its thread name.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class NamedRunnable implements Runnable {
 
+    /**
+     * The name of the runnable, which will be set as the thread name.
+     */
     protected final String name;
 
+    /**
+     * Constructs a new {@code NamedRunnable} with a formatted name.
+     *
+     * @param format The format string for the name.
+     * @param args   The arguments for the format string.
+     */
     public NamedRunnable(String format, Object... args) {
         this.name = String.format(format, args);
     }
 
+    /**
+     * Executes the runnable, setting the thread name before execution and restoring it afterwards.
+     */
     @Override
     public final void run() {
         String oldName = Thread.currentThread().getName();
@@ -52,6 +64,9 @@ public abstract class NamedRunnable implements Runnable {
         }
     }
 
+    /**
+     * The abstract method to be implemented by subclasses, containing the actual logic to be executed.
+     */
     protected abstract void execute();
 
 }

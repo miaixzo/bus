@@ -36,8 +36,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * {@link ByteBuffer} 、{@link CharBuffer}工具类 此工具来自于 t-io 项目以及其它项目的相关部分收集
- * ByteBuffer的相关介绍见：https://www.cnblogs.com/ruber/p/6857159.html
+ * Utility class for {@link ByteBuffer} and {@link CharBuffer}. This tool collects relevant parts from the t-io project
+ * and other projects. For more information on ByteBuffer, see: https://www.cnblogs.com/ruber/p/6857159.html
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,10 +45,10 @@ import org.miaixz.bus.core.lang.Symbol;
 public class BufferKit {
 
     /**
-     * {@link ByteBuffer} 转byte数组
+     * Converts a {@link ByteBuffer} to a byte array.
      *
-     * @param bytebuffer {@link ByteBuffer}
-     * @return byte数组
+     * @param bytebuffer The {@link ByteBuffer} to convert.
+     * @return The byte array.
      */
     public static byte[] toBytes(final ByteBuffer bytebuffer) {
         if (bytebuffer.hasArray()) {
@@ -65,49 +65,51 @@ public class BufferKit {
     }
 
     /**
-     * 拷贝到一个新的ByteBuffer
+     * Copies a portion of a source ByteBuffer to a new ByteBuffer.
      *
-     * @param src   源ByteBuffer
-     * @param start 起始位置（包括）
-     * @param end   结束位置（不包括）
-     * @return 新的ByteBuffer
+     * @param src   The source ByteBuffer.
+     * @param start The starting position (inclusive).
+     * @param end   The ending position (exclusive).
+     * @return A new ByteBuffer containing the copied portion.
      */
     public static ByteBuffer copy(final ByteBuffer src, final int start, final int end) {
         return copy(src, ByteBuffer.allocate(end - start));
     }
 
     /**
-     * 拷贝ByteBuffer
+     * Copies data from a source ByteBuffer to a destination ByteBuffer. The amount copied is the minimum of the
+     * source's limit and the destination's remaining capacity.
      *
-     * @param src  源ByteBuffer
-     * @param dest 目标ByteBuffer
-     * @return 目标ByteBuffer
+     * @param src  The source ByteBuffer.
+     * @param dest The destination ByteBuffer.
+     * @return The destination ByteBuffer.
      */
     public static ByteBuffer copy(final ByteBuffer src, final ByteBuffer dest) {
         return copy(src, dest, Math.min(src.limit(), dest.remaining()));
     }
 
     /**
-     * 拷贝ByteBuffer
+     * Copies a specified length of data from a source ByteBuffer to a destination ByteBuffer.
      *
-     * @param src    源ByteBuffer
-     * @param dest   目标ByteBuffer
-     * @param length 长度
-     * @return 目标ByteBuffer
+     * @param src    The source ByteBuffer.
+     * @param dest   The destination ByteBuffer.
+     * @param length The number of bytes to copy.
+     * @return The destination ByteBuffer.
      */
     public static ByteBuffer copy(final ByteBuffer src, final ByteBuffer dest, final int length) {
         return copy(src, src.position(), dest, dest.position(), length);
     }
 
     /**
-     * 拷贝ByteBuffer
+     * Copies a specified length of data from a source ByteBuffer to a destination ByteBuffer, starting from specified
+     * positions in both buffers.
      *
-     * @param src       源ByteBuffer
-     * @param srcStart  源开始的位置
-     * @param dest      目标ByteBuffer
-     * @param destStart 目标开始的位置
-     * @param length    长度
-     * @return 目标ByteBuffer
+     * @param src       The source ByteBuffer.
+     * @param srcStart  The starting position in the source ByteBuffer.
+     * @param dest      The destination ByteBuffer.
+     * @param destStart The starting position in the destination ByteBuffer.
+     * @param length    The number of bytes to copy.
+     * @return The destination ByteBuffer.
      */
     public static ByteBuffer copy(
             final ByteBuffer src,
@@ -120,31 +122,31 @@ public class BufferKit {
     }
 
     /**
-     * 读取剩余部分并转为UTF-8编码字符串
+     * Reads the remaining bytes from the ByteBuffer and converts them to a UTF-8 encoded string.
      *
-     * @param buffer ByteBuffer
-     * @return 字符串
+     * @param buffer The ByteBuffer to read from.
+     * @return The string representation of the remaining bytes.
      */
     public static String readString(final ByteBuffer buffer) {
         return readString(buffer, Charset.UTF_8);
     }
 
     /**
-     * 读取剩余部分并转为字符串
+     * Reads the remaining bytes from the ByteBuffer and converts them to a string using the specified charset.
      *
-     * @param buffer  ByteBuffer
-     * @param charset 编码
-     * @return 字符串
+     * @param buffer  The ByteBuffer to read from.
+     * @param charset The charset to use for decoding the bytes.
+     * @return The string representation of the remaining bytes.
      */
     public static String readString(final ByteBuffer buffer, final java.nio.charset.Charset charset) {
         return StringKit.toString(readBytes(buffer), charset);
     }
 
     /**
-     * 读取剩余部分bytes
+     * Reads the remaining bytes from the ByteBuffer.
      *
-     * @param buffer ByteBuffer
-     * @return bytes
+     * @param buffer The ByteBuffer to read from.
+     * @return A byte array containing the remaining bytes.
      */
     public static byte[] readBytes(final ByteBuffer buffer) {
         final int remaining = buffer.remaining();
@@ -154,11 +156,12 @@ public class BufferKit {
     }
 
     /**
-     * 读取指定长度的bytes 如果长度不足，则读取剩余部分，此时buffer必须为读模式
+     * Reads a specified maximum length of bytes from the ByteBuffer. If the remaining bytes are less than
+     * {@code maxLength}, all remaining bytes are read. The buffer must be in read mode.
      *
-     * @param buffer    ByteBuffer
-     * @param maxLength 最大长度
-     * @return bytes
+     * @param buffer    The ByteBuffer to read from.
+     * @param maxLength The maximum number of bytes to read.
+     * @return A byte array containing the read bytes.
      */
     public static byte[] readBytes(final ByteBuffer buffer, int maxLength) {
         final int remaining = buffer.remaining();
@@ -171,12 +174,12 @@ public class BufferKit {
     }
 
     /**
-     * 读取指定区间的数据
+     * Reads data from the specified range within the ByteBuffer.
      *
-     * @param buffer {@link ByteBuffer}
-     * @param start  开始位置
-     * @param end    结束位置
-     * @return bytes
+     * @param buffer The {@link ByteBuffer} to read from.
+     * @param start  The starting position (inclusive).
+     * @param end    The ending position (exclusive).
+     * @return A byte array containing the data from the specified range.
      */
     public static byte[] readBytes(final ByteBuffer buffer, final int start, final int end) {
         final byte[] bs = new byte[end - start];
@@ -185,26 +188,28 @@ public class BufferKit {
     }
 
     /**
-     * 一行的末尾位置，查找位置时位移ByteBuffer到结束位置
+     * Finds the end position of a line in the ByteBuffer. The ByteBuffer's position is advanced to the end of the line.
      *
-     * @param buffer {@link ByteBuffer}
-     * @return 末尾位置，未找到或达到最大长度返回-1
+     * @param buffer The {@link ByteBuffer} to search.
+     * @return The end position of the line, or -1 if not found or maximum length reached.
      */
     public static int lineEnd(final ByteBuffer buffer) {
         return lineEnd(buffer, buffer.remaining());
     }
 
     /**
-     * 一行的末尾位置，查找位置时位移ByteBuffer到结束位置 支持的换行符如下：
-     *
+     * Finds the end position of a line in the ByteBuffer, with a maximum search length. The ByteBuffer's position is
+     * advanced to the end of the line. Supported line endings are:
+     * 
      * <pre>
      * 1. \r\n
      * 2. \n
      * </pre>
      *
-     * @param buffer    {@link ByteBuffer}
-     * @param maxLength 读取最大长度
-     * @return 末尾位置，未找到或达到最大长度返回-1
+     * @param buffer    The {@link ByteBuffer} to search.
+     * @param maxLength The maximum length to search for a line ending.
+     * @return The end position of the line, or -1 if not found or maximum length reached.
+     * @throws IndexOutOfBoundsException if the search exceeds maxLength without finding a line end.
      */
     public static int lineEnd(final ByteBuffer buffer, final int maxLength) {
         final int primitivePosition = buffer.position();
@@ -219,34 +224,35 @@ public class BufferKit {
             } else if (b == Symbol.C_LF) {
                 return canEnd ? charIndex - 2 : charIndex - 1;
             } else {
-                // 只有\r无法确认换行
+                // Only \r cannot confirm a line break
                 canEnd = false;
             }
 
             if (charIndex - primitivePosition > maxLength) {
-                // 查找到尽头，未找到，还原位置
+                // Reached the end of the search, not found, restore position
                 buffer.position(primitivePosition);
                 throw new IndexOutOfBoundsException(StringKit.format("Position is out of maxLength: {}", maxLength));
             }
         }
 
-        // 查找到buffer尽头，未找到，还原位置
+        // Reached the end of the buffer, not found, restore position
         buffer.position(primitivePosition);
-        // 读到结束位置
+        // Reached the end of the read position
         return -1;
     }
 
     /**
-     * 读取一行，如果buffer中最后一部分并非完整一行，则返回null 支持的换行符如下：
-     *
+     * Reads a single line from the ByteBuffer. If the last part of the buffer is not a complete line, {@code null} is
+     * returned. Supported line endings are:
+     * 
      * <pre>
      * 1. \r\n
      * 2. \n
      * </pre>
      *
-     * @param buffer  ByteBuffer
-     * @param charset 编码
-     * @return 一行
+     * @param buffer  The ByteBuffer to read from.
+     * @param charset The charset to use for decoding the line.
+     * @return The read line, or {@code null} if no complete line is found.
      */
     public static String readLine(final ByteBuffer buffer, final java.nio.charset.Charset charset) {
         final int startPosition = buffer.position();
@@ -263,31 +269,31 @@ public class BufferKit {
     }
 
     /**
-     * 创建新Buffer
+     * Creates a new {@link ByteBuffer} from a byte array.
      *
-     * @param data 数据
-     * @return {@link ByteBuffer}
+     * @param data The byte array to wrap.
+     * @return A new {@link ByteBuffer}.
      */
     public static ByteBuffer of(final byte[] data) {
         return ByteBuffer.wrap(data);
     }
 
     /**
-     * 从字符串创建新Buffer
+     * Creates a new {@link ByteBuffer} from a character sequence using the specified charset.
      *
-     * @param data    数据
-     * @param charset 编码
-     * @return {@link ByteBuffer}
+     * @param data    The character sequence.
+     * @param charset The charset to use for encoding the characters.
+     * @return A new {@link ByteBuffer}.
      */
     public static ByteBuffer of(final CharSequence data, final java.nio.charset.Charset charset) {
         return of(ByteKit.toBytes(data, charset));
     }
 
     /**
-     * 创建{@link CharBuffer}
+     * Creates a new {@link CharBuffer} with the specified capacity.
      *
-     * @param capacity 容量
-     * @return {@link CharBuffer}
+     * @param capacity The capacity of the CharBuffer.
+     * @return A new {@link CharBuffer}.
      */
     public static CharBuffer ofCharBuffer(final int capacity) {
         return CharBuffer.allocate(capacity);

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.office.Context;
 
 /**
- * 表示在线转换任务的默认行为
+ * Represents the default behavior for online conversion tasks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,7 +40,7 @@ public class OnlineMadeInOffice extends AbstractOffice {
 
     @Override
     public void execute(Context context) throws InternalException {
-
+        // No specific implementation for online office execution in this abstract class.
     }
 
 }

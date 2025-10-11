@@ -39,7 +39,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
- * 上下文传参类，用于存储和传递请求相关的上下文信息
+ * Context parameter class, used to store and pass request-related context information.
  *
  * @author Justubborn
  * @since Java 17+
@@ -52,77 +52,80 @@ import org.springframework.web.server.ServerWebExchange;
 public class Context extends Tracer {
 
     /**
-     * 上下文在 ServerWebExchange 或 ServerRequest 属性中的键名
+     * The key name for the context object in ServerWebExchange or ServerRequest attributes.
      */
     private static final String $ = "_context";
 
     /**
-     * 请求参数，存储键值对形式的参数
+     * Request parameters, stored as key-value pairs.
      */
     private Map<String, String> requestMap;
 
     /**
-     * 请求参数，存储键值对形式的参数
+     * Request headers, stored as key-value pairs.
      */
     private Map<String, String> headerMap;
 
     /**
-     * 文件上传参数，存储文件部分的映射
+     * File upload parameters, storing a map of file parts.
      */
     private Map<String, Part> filePartMap;
 
     /**
-     * 数据格式，默认使用 JSON 格式
+     * Data format, defaults to JSON format.
      */
-    private Format format = Format.JSON;
+    @Builder.Default
+    private Formats formats = Formats.JSON;
 
     /**
-     * 请求渠道，默认使用 web 渠道
+     * Request channel, defaults to the web channel.
      */
+    @Builder.Default
     private Channel channel = Channel.WEB;
 
     /**
-     * 请求类型
+     * The HTTP method of the request.
      */
     private HttpMethod httpMethod;
 
     /**
-     * 资产信息，具体内容由 Assets 类定义
+     * Asset information, specifically defined by the {@link Assets} class.
      */
     private Assets assets;
 
     /**
-     * 令牌，用于身份验证或会话管理
+     * Token, used for authentication or session management.
      */
     private String token;
 
     /**
-     * 数据是否加密签名
+     * Indicates whether the data is encrypted and signed.
      */
     private Integer sign;
 
     /**
-     * 请求开始时间，用于性能监控或日志记录
+     * Request start time, used for performance monitoring or logging.
      */
     private long timestamp;
 
     /**
-     * 从 ServerWebExchange 获取或初始化上下文对象 会自动从请求中提取header信息并设置到headerMap中
+     * Retrieves or initializes the context object from {@link ServerWebExchange}. It automatically extracts header
+     * information from the request and sets it into the headerMap.
      *
-     * @param exchange 当前的 ServerWebExchange 对象
-     * @return 上下文对象，若不存在则创建新的空上下文并设置header信息
+     * @param exchange The current {@link ServerWebExchange} object.
+     * @return The context object; if it does not exist, a new empty context is created and header information is set.
      */
     public static Context get(ServerWebExchange exchange) {
         Context context = exchange.getAttribute(Context.$);
         if (context == null) {
             context = new Context();
-            // 从请求中提取header信息
+            // Extracts header information from the request
             Map<String, String> headers = exchange.getRequest().getHeaders().toSingleValueMap().entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             context.setHeaderMap(headers);
             exchange.getAttributes().put(Context.$, context);
         } else if (context.getHeaderMap() == null) {
-            // 如果context存在但headerMap为null，也设置header信息
+            // If context exists but headerMap is null, also set header information
             Map<String, String> headers = exchange.getRequest().getHeaders().toSingleValueMap().entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             context.setHeaderMap(headers);
@@ -131,22 +134,23 @@ public class Context extends Tracer {
     }
 
     /**
-     * 从 ServerRequest 获取或初始化上下文对象 会自动从请求中提取header信息并设置到headerMap中
+     * Retrieves or initializes the context object from {@link ServerRequest}. It automatically extracts header
+     * information from the request and sets it into the headerMap.
      *
-     * @param request 当前的 ServerRequest 对象
-     * @return 上下文对象，若不存在则创建新的空上下文并设置header信息
+     * @param request The current {@link ServerRequest} object.
+     * @return The context object; if it does not exist, a new empty context is created and header information is set.
      */
     public static Context get(ServerRequest request) {
         Context context = (Context) request.attribute(Context.$).orElse(null);
         if (context == null) {
             context = new Context();
-            // 从请求中提取header信息
+            // Extracts header information from the request
             Map<String, String> headers = request.headers().asHttpHeaders().toSingleValueMap().entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             context.setHeaderMap(headers);
             request.attributes().put(Context.$, context);
         } else if (context.getHeaderMap() == null) {
-            // 如果context存在但headerMap为null，也设置header信息
+            // If context exists but headerMap is null, also set header information
             Map<String, String> headers = request.headers().asHttpHeaders().toSingleValueMap().entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             context.setHeaderMap(headers);

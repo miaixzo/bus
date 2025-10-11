@@ -34,57 +34,70 @@ import java.nio.charset.Charset;
 import org.miaixz.bus.extra.ssh.Connector;
 
 /**
- * FTP配置项，提供FTP各种参数信息
+ * Configuration class for FTP (File Transfer Protocol) operations. This class encapsulates various parameters required
+ * to establish and manage an FTP connection, including connection details, character encoding, timeouts, and
+ * server-specific settings.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FtpConfig implements Serializable {
 
+    /**
+     * The serialization version identifier for this class.
+     */
     @Serial
     private static final long serialVersionUID = 2852292979822L;
 
+    /**
+     * Connection information, including host, port, username, and password. This object is typically used to establish
+     * the initial connection to the FTP server.
+     */
     private Connector connector;
     /**
-     * 编码
+     * The character set used for encoding and decoding file names and other text-based data during FTP operations.
+     * Defaults to UTF-8 if not specified.
      */
     private Charset charset;
     /**
-     * Socket连接超时时长，单位毫秒
+     * The socket connection timeout duration in milliseconds. This specifies how long to wait for a connection to be
+     * established before timing out.
      */
     private long soTimeout;
     /**
-     * 服务器语言
+     * The server language code, which can be used for locale-specific FTP commands or responses.
      */
     private String serverLanguageCode;
     /**
-     * 服务器系统关键词
+     * A keyword identifying the server system type, which might influence certain FTP command behaviors.
      */
     private String systemKey;
 
     /**
-     * 构造
+     * Constructs a new, empty {@code FtpConfig} instance. All fields are initialized to their default values (null or
+     * 0).
      */
     public FtpConfig() {
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FtpConfig} instance with specified connection information and character set.
      *
-     * @param connector 连接信息，包括host、port、user、password等信息
-     * @param charset   编码
+     * @param connector The {@link Connector} object containing host, port, user, password, etc.
+     * @param charset   The {@link Charset} to use for encoding and decoding.
      */
     public FtpConfig(final Connector connector, final Charset charset) {
         this(connector, charset, null, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FtpConfig} instance with specified connection information, character set, server language
+     * code, and system key.
      *
-     * @param connector          连接信息，包括host、port、user、password等信息
-     * @param charset            编码
-     * @param serverLanguageCode 服务器语言
-     * @param systemKey          系统关键字
+     * @param connector          The {@link Connector} object containing host, port, user, password, etc.
+     * @param charset            The {@link Charset} to use for encoding and decoding.
+     * @param serverLanguageCode The server language code, e.g., "en", "zh".
+     * @param systemKey          The server system keyword, e.g., "UNIX", "WINDOWS".
      */
     public FtpConfig(final Connector connector, final Charset charset, final String serverLanguageCode,
             final String systemKey) {
@@ -95,28 +108,29 @@ public class FtpConfig implements Serializable {
     }
 
     /**
-     * 创建默认配置
+     * Creates a default {@code FtpConfig} instance with no parameters set. This is a static factory method for
+     * convenient object creation.
      *
-     * @return FtpConfig
+     * @return A new {@code FtpConfig} instance.
      */
     public static FtpConfig of() {
         return new FtpConfig();
     }
 
     /**
-     * 获取连接信息
+     * Retrieves the connection information for the FTP server.
      *
-     * @return 连接信息
+     * @return The {@link Connector} object containing host, port, user, password, etc.
      */
     public Connector getConnector() {
         return connector;
     }
 
     /**
-     * 设置连接信息
+     * Sets the connection information for the FTP server.
      *
-     * @param connector 连接信息
-     * @return this
+     * @param connector The {@link Connector} object to set.
+     * @return This {@code FtpConfig} instance, allowing for method chaining.
      */
     public FtpConfig setConnector(final Connector connector) {
         this.connector = connector;
@@ -124,10 +138,11 @@ public class FtpConfig implements Serializable {
     }
 
     /**
-     * 设置超时，注意此方法会调用{@link Connector#setTimeout(long)} 此方法需在{@link #setConnector(Connector)}后调用，否则会创建空的Connector
+     * Sets the connection timeout duration for the FTP connection. If the {@link Connector} object is null, a new one
+     * will be created.
      *
-     * @param timeout 链接超时
-     * @return this
+     * @param timeout The connection timeout duration in milliseconds.
+     * @return This {@code FtpConfig} instance, allowing for method chaining.
      */
     public FtpConfig setConnectionTimeout(final long timeout) {
         if (null == connector) {
@@ -138,19 +153,19 @@ public class FtpConfig implements Serializable {
     }
 
     /**
-     * 获取编码
+     * Retrieves the character set used for FTP operations.
      *
-     * @return 编码
+     * @return The {@link Charset} used for encoding and decoding.
      */
     public Charset getCharset() {
         return charset;
     }
 
     /**
-     * 设置编码
+     * Sets the character set for FTP operations.
      *
-     * @param charset 编码
-     * @return this
+     * @param charset The {@link Charset} to set.
+     * @return This {@code FtpConfig} instance, allowing for method chaining.
      */
     public FtpConfig setCharset(final Charset charset) {
         this.charset = charset;
@@ -158,19 +173,20 @@ public class FtpConfig implements Serializable {
     }
 
     /**
-     * 获取读取数据超时时间
+     * Retrieves the socket read timeout duration in milliseconds. This specifies how long to wait for data to be read
+     * from the socket before timing out.
      *
-     * @return 读取数据超时时间
+     * @return The socket read timeout duration in milliseconds.
      */
     public long getSoTimeout() {
         return soTimeout;
     }
 
     /**
-     * 设置读取数据超时时间
+     * Sets the socket read timeout duration in milliseconds.
      *
-     * @param soTimeout 读取数据超时时间
-     * @return this
+     * @param soTimeout The socket read timeout duration to set.
+     * @return This {@code FtpConfig} instance, allowing for method chaining.
      */
     public FtpConfig setSoTimeout(final long soTimeout) {
         this.soTimeout = soTimeout;
@@ -178,19 +194,19 @@ public class FtpConfig implements Serializable {
     }
 
     /**
-     * 获取服务器语言
+     * Retrieves the server language code.
      *
-     * @return 服务器语言
+     * @return The server language code as a {@link String}.
      */
     public String getServerLanguageCode() {
         return serverLanguageCode;
     }
 
     /**
-     * 设置服务器语言
+     * Sets the server language code.
      *
-     * @param serverLanguageCode 服务器语言
-     * @return this
+     * @param serverLanguageCode The server language code to set.
+     * @return This {@code FtpConfig} instance, allowing for method chaining.
      */
     public FtpConfig setServerLanguageCode(final String serverLanguageCode) {
         this.serverLanguageCode = serverLanguageCode;
@@ -198,19 +214,19 @@ public class FtpConfig implements Serializable {
     }
 
     /**
-     * 获取服务器系统关键词
+     * Retrieves the server system keyword.
      *
-     * @return 服务器系统关键词
+     * @return The server system keyword as a {@link String}.
      */
     public String getSystemKey() {
         return systemKey;
     }
 
     /**
-     * 设置服务器系统关键词
+     * Sets the server system keyword.
      *
-     * @param systemKey 服务器系统关键词
-     * @return this
+     * @param systemKey The server system keyword to set.
+     * @return This {@code FtpConfig} instance, allowing for method chaining.
      */
     public FtpConfig setSystemKey(final String systemKey) {
         this.systemKey = systemKey;

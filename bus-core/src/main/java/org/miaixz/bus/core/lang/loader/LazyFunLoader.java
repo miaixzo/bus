@@ -33,10 +33,12 @@ import java.util.function.Supplier;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 函数式懒加载加载器 传入用于生成对象的函数，在对象需要使用时调用生成对象，然后抛弃此生成对象的函数。 此加载器常用于对象比较庞大而不一定被使用的情况，用于减少启动时资源占用问题
- * 继承自{@link LazyLoader}，如何实现多线程安全，由LazyLoader完成。
+ * A functional lazy loader. It takes a {@link Supplier} to generate an object. The object is created only when it is
+ * first needed, after which the supplier is discarded. This loader is useful for large objects that may not always be
+ * used, thus reducing resource consumption at startup. It extends {@link LazyLoader}, and thread safety is handled by
+ * the parent class.
  *
- * @param <T> 被加载对象类型
+ * @param <T> The type of the object being loaded.
  * @author Kimi Liu
  * @see LazyLoader
  * @since Java 17+
@@ -47,14 +49,14 @@ public class LazyFunLoader<T> extends LazyLoader<T> {
     private static final long serialVersionUID = 2852267697038L;
 
     /**
-     * 用于生成对象的函数
+     * The supplier function for generating the object.
      */
     private Supplier<T> supplier;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param supplier 用于生成对象的函数
+     * @param supplier The supplier function for generating the object.
      */
     public LazyFunLoader(final Supplier<T> supplier) {
         Assert.notNull(supplier);
@@ -62,21 +64,26 @@ public class LazyFunLoader<T> extends LazyLoader<T> {
     }
 
     /**
-     * 静态工厂方法，提供语义性与编码便利性
+     * Static factory method for creating a {@code LazyFunLoader}.
      *
-     * @param supplier 用于生成对象的函数
-     * @param <T>      对象类型
-     * @return 函数式懒加载加载器对象
+     * @param supplier The supplier function for generating the object.
+     * @param <T>      The type of the object.
+     * @return a new {@code LazyFunLoader} instance.
      */
     public static <T> LazyFunLoader<T> of(final Supplier<T> supplier) {
         Assert.notNull(supplier, "supplier must be not null!");
         return new LazyFunLoader<>(supplier);
     }
 
+    /**
+     * Initializes the object by calling the supplier. The supplier is then set to `null` to be garbage collected.
+     *
+     * @return The initialized object.
+     */
     @Override
     protected T init() {
         final T t = this.supplier.get();
-        this.supplier = null;
+        this.supplier = null; // Discard the supplier to free up memory
         return t;
     }
 

@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.cron.listener;
 
+import org.miaixz.bus.cron.Executor;
+import org.miaixz.bus.logger.Logger;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.cron.Executor;
-import org.miaixz.bus.logger.Logger;
-
 /**
- * 监听调度器，统一管理监听
+ * Manages and dispatches events to a collection of {@link TaskListener} instances. This class provides a centralized
+ * way to handle task lifecycle events.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,10 +50,10 @@ public class TaskListenerManager implements Serializable {
     private final List<TaskListener> listeners = new ArrayList<>();
 
     /**
-     * 增加监听器
+     * Adds a {@link TaskListener} to the manager. The listener will be notified of task execution events.
      *
-     * @param listener {@link TaskListener}
-     * @return this
+     * @param listener The {@link TaskListener} to add.
+     * @return this {@link TaskListenerManager} instance for chaining.
      */
     public TaskListenerManager addListener(final TaskListener listener) {
         synchronized (listeners) {
@@ -62,10 +63,10 @@ public class TaskListenerManager implements Serializable {
     }
 
     /**
-     * 移除监听器
+     * Removes a {@link TaskListener} from the manager. The listener will no longer receive task execution events.
      *
-     * @param listener {@link TaskListener}
-     * @return this
+     * @param listener The {@link TaskListener} to remove.
+     * @return this {@link TaskListenerManager} instance for chaining.
      */
     public TaskListenerManager removeListener(final TaskListener listener) {
         synchronized (listeners) {
@@ -75,15 +76,13 @@ public class TaskListenerManager implements Serializable {
     }
 
     /**
-     * 通知所有监听任务启动器启动
+     * Notifies all registered listeners that a task is about to start.
      *
-     * @param executor {@link Executor}
+     * @param executor The {@link Executor} for the task that is starting.
      */
     public void notifyTaskStart(final Executor executor) {
         synchronized (listeners) {
-            TaskListener listener;
-            for (final TaskListener taskListener : listeners) {
-                listener = taskListener;
+            for (final TaskListener listener : listeners) {
                 if (null != listener) {
                     listener.onStart(executor);
                 }
@@ -92,9 +91,9 @@ public class TaskListenerManager implements Serializable {
     }
 
     /**
-     * 通知所有监听任务启动器成功结束
+     * Notifies all registered listeners that a task has completed successfully.
      *
-     * @param executor {@link Executor}
+     * @param executor The {@link Executor} for the task that has succeeded.
      */
     public void notifyTaskSucceeded(final Executor executor) {
         synchronized (listeners) {
@@ -105,15 +104,15 @@ public class TaskListenerManager implements Serializable {
     }
 
     /**
-     * 通知所有监听任务启动器结束并失败 无监听将打印堆栈到命令行
+     * Notifies all registered listeners that a task has failed. If no listeners are registered, the exception is logged
+     * as an error.
      *
-     * @param executor  {@link Executor}
-     * @param exception 失败原因
+     * @param executor  The {@link Executor} for the task that has failed.
+     * @param exception The exception that caused the failure.
      */
     public void notifyTaskFailed(final Executor executor, final Throwable exception) {
         synchronized (listeners) {
-            final int size = listeners.size();
-            if (size > 0) {
+            if (!listeners.isEmpty()) {
                 for (final TaskListener listener : listeners) {
                     listener.onFailed(executor, exception);
                 }

@@ -36,25 +36,28 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 资源类加载器，可以加载任意类型的资源类
+ * A class loader for resources, capable of loading classes from any type of resource.
  *
- * @param <T> {@link Resource}接口实现类
+ * @param <T> The type of the resource, which must implement the {@link Resource} interface.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ResourceClassLoader<T extends Resource> extends SecureClassLoader {
 
+    /**
+     * The map of resource names to resource objects.
+     */
     private final Map<String, T> resourceMap;
     /**
-     * 缓存已经加载的类
+     * Cache for already loaded classes.
      */
     private final Map<String, Class<?>> cacheClassMap;
 
     /**
-     * 构造
+     * Constructs a new ResourceClassLoader.
      *
-     * @param parentClassLoader 父类加载器，null表示默认当前上下文加载器
-     * @param resourceMap       资源map
+     * @param parentClassLoader The parent class loader. If {@code null}, the context class loader is used.
+     * @param resourceMap       A map of resource names to resource objects.
      */
     public ResourceClassLoader(final ClassLoader parentClassLoader, final Map<String, T> resourceMap) {
         super(ObjectKit.defaultIfNull(parentClassLoader, ClassKit::getClassLoader));
@@ -63,10 +66,10 @@ public class ResourceClassLoader<T extends Resource> extends SecureClassLoader {
     }
 
     /**
-     * 增加需要加载的类资源
+     * Adds a class resource to be loaded.
      *
-     * @param resource 资源，可以是文件、流或者字符串
-     * @return this
+     * @param resource The resource, which can be a file, stream, or string.
+     * @return this {@code ResourceClassLoader} instance.
      */
     public ResourceClassLoader<T> addResource(final T resource) {
         this.resourceMap.put(resource.getName(), resource);
@@ -83,10 +86,11 @@ public class ResourceClassLoader<T extends Resource> extends SecureClassLoader {
     }
 
     /**
-     * 从给定资源中读取class的二进制流，然后生成类 如果这个类资源不存在，返回{@code null}
+     * Reads the class's binary stream from the given resource and then defines the class. Returns {@code null} if the
+     * resource does not exist.
      *
-     * @param name 类名
-     * @return 定义的类
+     * @param name The name of the class.
+     * @return The defined class, or {@code null} if the resource is not found.
      */
     private Class<?> defineByName(final String name) {
         final Resource resource = resourceMap.get(name);

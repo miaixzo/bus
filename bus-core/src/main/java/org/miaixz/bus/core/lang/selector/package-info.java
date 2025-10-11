@@ -26,9 +26,18 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 选择器相关封装，包括：
+ * Provides classes related to selection strategies, often used in load balancing.
+ * <p>
+ * This package includes:
  * <ul>
- * <li>{@link org.miaixz.bus.core.lang.selector.WeightRandomSelector}</li>
+ * <li>{@link org.miaixz.bus.core.lang.selector.Selector}: The core interface for all selectors.</li>
+ * <li>{@link org.miaixz.bus.core.lang.selector.RandomSelector}: A selector that picks an element randomly.</li>
+ * <li>{@link org.miaixz.bus.core.lang.selector.IncrementSelector}: A selector that picks elements in a round-robin
+ * fashion.</li>
+ * <li>{@link org.miaixz.bus.core.lang.selector.WeightRandomSelector}: A selector that uses a weighted random
+ * algorithm.</li>
+ * <li>{@link org.miaixz.bus.core.lang.selector.SmoothWeightSelector}: A selector that uses a smooth weighted
+ * round-robin algorithm.</li>
  * </ul>
  *
  * @author Kimi Liu

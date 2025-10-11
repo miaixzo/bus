@@ -30,11 +30,10 @@ package org.miaixz.bus.socket;
 import java.nio.ByteBuffer;
 
 /**
- * 列举了当前所关注的各类状态枚举
- *
+ * Enumerates the various status events of interest in the session lifecycle.
  * <p>
- * 当前枚举的各状态机事件在发生后都会及时触发{@link Handler#stateEvent(Session, Status, Throwable)}方法。
- * 因此用户在实现的{@linkplain Handler}接口中可对自己关心的状态机事件进行处理。
+ * Each of these state machine events will trigger the {@link Handler#stateEvent(Session, Status, Throwable)} method.
+ * Users can handle the events they are interested in by implementing the {@link Handler} interface.
  * </p>
  *
  * @author Kimi Liu
@@ -43,52 +42,55 @@ import java.nio.ByteBuffer;
  */
 public enum Status {
     /**
-     * 连接已建立并构建Session对象
+     * A new connection has been established and a session object has been built.
      */
     NEW_SESSION,
     /**
-     * 读通道已被关闭。 通常由以下几种情况会触发该状态：
+     * The read channel has been closed. This is usually triggered by:
      * <ol>
-     * <li>对端主动关闭write通道，致使本通常满足了EOF条件</li>
-     * <li>当前Session处理完读操作后检测到自身正处于{@link Status#SESSION_CLOSING}状态</li>
+     * <li>The remote peer actively closing its write channel, causing an EOF condition.</li>
+     * <li>The current session detects it is in the {@link Status#SESSION_CLOSING} state after completing a read
+     * operation.</li>
      * </ol>
      */
     INPUT_SHUTDOWN,
     /**
-     * 业务处理异常 执行{@link Handler#process(Session, Object)}期间发生未捕获的异常
+     * An uncaught exception occurred during business logic processing in {@link Handler#process(Session, Object)}.
      */
     PROCESS_EXCEPTION,
     /**
-     * 协议解码异常 执行{@link Message#decode(ByteBuffer, Session)}期间发生未捕获的异常
+     * An uncaught exception occurred during protocol decoding in {@link Message#decode(ByteBuffer, Session)}.
      */
     DECODE_EXCEPTION,
     /**
-     * 读操作异常 在底层服务执行read操作期间因发生异常情况触发了{@link java.nio.channels.CompletionHandler#failed(Throwable, Object)}
+     * An exception occurred during a low-level read operation, triggering
+     * {@link java.nio.channels.CompletionHandler#failed(Throwable, Object)}.
      */
     INPUT_EXCEPTION,
     /**
-     * 写操作异常。 在底层服务执行write操作期间因发生异常情况触发了{@link java.nio.channels.CompletionHandler#failed(Throwable, Object)}
+     * An exception occurred during a low-level write operation, triggering
+     * {@link java.nio.channels.CompletionHandler#failed(Throwable, Object)}.
      */
     OUTPUT_EXCEPTION,
     /**
-     * 会话正在关闭中 执行了{@link Session#close(boolean immediate)}方法，并且当前还存在待输出的数据
+     * The session is in the process of closing, typically because {@link Session#close(boolean)} was called while there
+     * was still data pending to be written.
      */
     SESSION_CLOSING,
     /**
-     * 会话关闭成功
+     * The session has been successfully closed.
      */
     SESSION_CLOSED,
     /**
-     * 拒绝接受连接,仅Server端有效
+     * A new connection was rejected by the server (Server-side only).
      */
     REJECT_ACCEPT,
     /**
-     * 服务端接受连接异常
+     * An exception occurred on the server while accepting a new connection.
      */
     ACCEPT_EXCEPTION,
     /**
-     * 内部异常
+     * An internal exception occurred within the framework.
      */
     INTERNAL_EXCEPTION
-
 }

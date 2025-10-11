@@ -36,7 +36,8 @@ import org.miaixz.bus.core.center.date.culture.cn.Twenty;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
 
 /**
- * 干支年
+ * Represents a Sixty-Year Cycle Year (干支年), a traditional Chinese calendar unit. This class extends {@link Loops} for
+ * cyclical operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,10 +45,16 @@ import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
 public class SixtyCycleYear extends Loops {
 
     /**
-     * 年
+     * The Gregorian year.
      */
     protected int year;
 
+    /**
+     * Constructs a {@code SixtyCycleYear} instance with the specified Gregorian year.
+     *
+     * @param year The Gregorian year, ranging from -1 to 9999.
+     * @throws IllegalArgumentException if the year is out of the supported range.
+     */
     public SixtyCycleYear(int year) {
         if (year < -1 || year > 9999) {
             throw new IllegalArgumentException(String.format("illegal sixty cycle year: %d", year));
@@ -56,59 +63,64 @@ public class SixtyCycleYear extends Loops {
     }
 
     /**
-     * 从年初始化
+     * Creates a {@code SixtyCycleYear} instance from a Gregorian year.
      *
-     * @param year 年，支持-1到9999年
-     * @return 干支年
+     * @param year The Gregorian year.
+     * @return A new {@code SixtyCycleYear} instance.
      */
     public static SixtyCycleYear fromYear(int year) {
         return new SixtyCycleYear(year);
     }
 
     /**
-     * 年
+     * Gets the Gregorian year.
      *
-     * @return 年
+     * @return The Gregorian year.
      */
     public int getYear() {
         return year;
     }
 
     /**
-     * 干支
+     * Gets the Sixty-Year Cycle (干支) for this year.
      *
-     * @return 干支
+     * @return The {@link SixtyCycle} instance.
      */
     public SixtyCycle getSixtyCycle() {
         return SixtyCycle.fromIndex(year - 4);
     }
 
+    /**
+     * Gets the name of this Sixty-Year Cycle Year.
+     *
+     * @return The name of the year as a formatted string.
+     */
     public String getName() {
         return String.format("%s年", getSixtyCycle());
     }
 
     /**
-     * 运
+     * Gets the Twenty-year Cycle (运) to which this year belongs.
      *
-     * @return 运
+     * @return The {@link Twenty} instance.
      */
     public Twenty getTwenty() {
         return Twenty.fromIndex((int) Math.floor((year - 1864) / 20D));
     }
 
     /**
-     * 九星
+     * Gets the Nine Star (九星) associated with this year.
      *
-     * @return 九星
+     * @return The {@link NineStar} instance.
      */
     public NineStar getNineStar() {
         return NineStar.fromIndex(63 + getTwenty().getSixty().getIndex() * 3 - getSixtyCycle().getIndex());
     }
 
     /**
-     * 太岁方位
+     * Gets the direction of Jupiter (太岁方位) for this year.
      *
-     * @return 方位
+     * @return The {@link Direction} of Jupiter.
      */
     public Direction getJupiterDirection() {
         return Direction.fromIndex(
@@ -116,19 +128,20 @@ public class SixtyCycleYear extends Loops {
     }
 
     /**
-     * 推移
+     * Gets the next {@code SixtyCycleYear} in the cycle.
      *
-     * @param n 推移年数
-     * @return 干支年
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code SixtyCycleYear} instance.
      */
     public SixtyCycleYear next(int n) {
         return fromYear(year + n);
     }
 
     /**
-     * 首月（五虎遁：甲己之年丙作首，乙庚之岁戊为头，丙辛必定寻庚起，丁壬壬位顺行流，若问戊癸何方发，甲寅之上好追求。）
+     * Gets the first Sixty-Year Cycle Month (首月) of this year. (Reference:
+     * 五虎遁：甲己之年丙作首，乙庚之岁戊为头，丙辛必定寻庚起，丁壬壬位顺行流，若问戊癸何方发，甲寅之上好追求。)
      *
-     * @return 干支月
+     * @return The {@link SixtyCycleMonth} instance representing the first month.
      */
     public SixtyCycleMonth getFirstMonth() {
         HeavenStem h = HeavenStem.fromIndex((getSixtyCycle().getHeavenStem().getIndex() + 1) * 2);
@@ -136,9 +149,9 @@ public class SixtyCycleYear extends Loops {
     }
 
     /**
-     * 干支月列表
+     * Gets a list of all Sixty-Year Cycle Months within this year.
      *
-     * @return 干支月列表
+     * @return A list of {@link SixtyCycleMonth} objects.
      */
     public List<SixtyCycleMonth> getMonths() {
         List<SixtyCycleMonth> l = new ArrayList<>();

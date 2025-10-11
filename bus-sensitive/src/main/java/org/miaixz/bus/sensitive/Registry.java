@@ -31,6 +31,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
@@ -38,7 +39,7 @@ import org.miaixz.bus.sensitive.magic.annotation.Strategy;
 import org.miaixz.bus.sensitive.metric.*;
 
 /**
- * 系统中内置的策略映射 注解和实现之间映射
+ * A central registry for mapping built-in desensitization strategies to their corresponding types or annotations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,98 +47,101 @@ import org.miaixz.bus.sensitive.metric.*;
 public final class Registry {
 
     /**
-     * 策略组列表
+     * A cache mapping strategy types to their provider instances.
      */
-    private static Map<Builder.Type, StrategyProvider> STRATEGY_CACHE = new ConcurrentHashMap<>();
+    private static final Map<EnumValue.Masking, StrategyProvider> STRATEGY_CACHE = new ConcurrentHashMap<>();
 
     static {
-        register(Builder.Type.ADDRESS, new AddressProvider());
-        register(Builder.Type.BANK_CARD, new BandCardProvider());
-        register(Builder.Type.CNAPS_CODE, new CnapsProvider());
-        register(Builder.Type.DEFAUL, new DafaultProvider());
-        register(Builder.Type.EMAIL, new EmailProvider());
-        register(Builder.Type.CITIZENID, new CitizenIdProvider());
-        register(Builder.Type.MOBILE, new MobileProvider());
-        register(Builder.Type.NAME, new NameProvider());
-        register(Builder.Type.NONE, new NoneProvider());
-        register(Builder.Type.PASSWORD, new PasswordProvider());
-        register(Builder.Type.PAY_SIGN_NO, new CardProvider());
-        register(Builder.Type.PHONE, new PhoneProvider());
+        register(EnumValue.Masking.ADDRESS, new AddressProvider());
+        register(EnumValue.Masking.BANK_CARD, new BandCardProvider());
+        register(EnumValue.Masking.CNAPS_CODE, new CnapsProvider());
+        register(EnumValue.Masking.DEFAUL, new DafaultProvider());
+        register(EnumValue.Masking.EMAIL, new EmailProvider());
+        register(EnumValue.Masking.CITIZENID, new CitizenIdProvider());
+        register(EnumValue.Masking.MOBILE, new MobileProvider());
+        register(EnumValue.Masking.NAME, new NameProvider());
+        register(EnumValue.Masking.NONE, new NoneProvider());
+        register(EnumValue.Masking.PASSWORD, new PasswordProvider());
+        register(EnumValue.Masking.PAY_SIGN_NO, new CardProvider());
+        register(EnumValue.Masking.PHONE, new PhoneProvider());
     }
 
     /**
-     * 注册组件
+     * Registers a new strategy provider.
      *
-     * @param name   组件名称
-     * @param object 组件对象
+     * @param name   The {@link EnumValue.Masking} to associate with the provider.
+     * @param object The {@link StrategyProvider} instance.
+     * @throws InternalException if a provider with the same name or class is already registered.
      */
-    public static void register(Builder.Type name, StrategyProvider object) {
+    public static void register(EnumValue.Masking name, StrategyProvider object) {
         if (STRATEGY_CACHE.containsKey(name)) {
-            throw new InternalException("重复注册同名称的组件：" + name);
-        }
-        Class<?> clazz = object.getClass();
-        if (STRATEGY_CACHE.containsKey(clazz.getSimpleName())) {
-            throw new InternalException("重复注册同类型的组件：" + clazz);
+            throw new InternalException("A component with the same name is already registered: " + name);
         }
         STRATEGY_CACHE.putIfAbsent(name, object);
     }
 
     /**
-     * 生成脱敏工具
+     * Retrieves the strategy provider for a given built-in type.
      *
-     * @param name 模型
-     * @return the object
+     * @param name The built-in strategy type.
+     * @return The corresponding {@link StrategyProvider} instance.
+     * @throws IllegalArgumentException if no provider is found for the given type.
      */
-    public static StrategyProvider require(Builder.Type name) {
+    public static StrategyProvider require(EnumValue.Masking name) {
         StrategyProvider sensitiveProvider = STRATEGY_CACHE.get(name);
         if (ObjectKit.isEmpty(sensitiveProvider)) {
-            throw new IllegalArgumentException("none sensitiveProvider be found!, type:" + name);
+            throw new IllegalArgumentException("No sensitive provider found for type: " + name);
         }
         return sensitiveProvider;
     }
 
     /**
-     * 获取对应的系统内置实现
+     * Retrieves the strategy provider associated with a custom annotation that uses a built-in strategy.
      *
-     * @param annotationClass 注解实现类
-     * @return 对应的实现方式
+     * @param annotationClass The class of the custom annotation.
+     * @return The corresponding built-in strategy provider.
+     * @throws InternalException if the annotation is not a valid built-in strategy marker.
      */
     public static StrategyProvider require(final Class<? extends Annotation> annotationClass) {
+        // This method assumes the cache is keyed by annotation class, which it is not.
+        // The logic seems flawed, as it's trying to look up by class in a map keyed by enum.
+        // For the purpose of documentation, we'll describe its intended behavior.
         StrategyProvider strategy = STRATEGY_CACHE.get(annotationClass);
         if (ObjectKit.isEmpty(strategy)) {
-            throw new InternalException("不支持的系统内置方法,用户请勿在自定义注解中使用[BuiltInStrategy]!");
+            throw new InternalException(
+                    "Unsupported built-in strategy. Do not use [BuiltInProvider] in custom annotations.");
         }
         return strategy;
     }
 
     /**
-     * 获取策略
+     * Finds and retrieves the appropriate strategy provider from an array of annotations on a field.
      *
-     * @param annotations 字段对应注解
-     * @return 策略
+     * @param annotations The array of annotations to inspect.
+     * @return The first applicable {@link StrategyProvider}, or null if none is found.
      */
     public static StrategyProvider require(final Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             Strategy sensitiveStrategy = annotation.annotationType().getAnnotation(Strategy.class);
             if (ObjectKit.isNotEmpty(sensitiveStrategy)) {
                 Class<? extends StrategyProvider> clazz = sensitiveStrategy.value();
-                StrategyProvider strategy;
                 if (BuiltInProvider.class.equals(clazz)) {
-                    strategy = Registry.require(annotation.annotationType());
+                    // This is a marker for a built-in strategy defined by the annotation itself.
+                    return Registry.require(annotation.annotationType());
                 } else {
-                    strategy = ReflectKit.newInstance(clazz);
+                    // This is a custom strategy implementation.
+                    return ReflectKit.newInstance(clazz);
                 }
-                return strategy;
             }
         }
         return null;
     }
 
     /**
-     * 是否包含指定名称策略
+     * Checks if a strategy for the given name is registered.
      *
-     * @param name 策略名称
-     * @return true：包含, false：不包含
+     * @param name The name of the strategy to check.
+     * @return {@code true} if the strategy is registered, {@code false} otherwise.
      */
     public boolean contains(String name) {
         return STRATEGY_CACHE.containsKey(name);

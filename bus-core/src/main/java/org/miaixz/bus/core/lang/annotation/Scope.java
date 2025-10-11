@@ -33,7 +33,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注解: 注释用于确定作用域的注释.
+ * A meta-annotation that identifies a custom annotation as a scope annotation. Scope annotations are used to define the
+ * lifecycle and visibility of a component, such as a bean in a dependency injection container. For example, a
+ * {@code @Singleton} annotation could be itself annotated with {@code @Scope} to indicate that it defines a singleton
+ * scope.
  *
  * @author Kimi Liu
  * @since Java 17+

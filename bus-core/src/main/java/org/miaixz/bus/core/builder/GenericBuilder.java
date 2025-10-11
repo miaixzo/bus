@@ -38,52 +38,30 @@ import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.center.function.Consumer3X;
 
 /**
- * 通用Builder 参考: <a href="https://blog.csdn.net/weixin_43935907/article/details/105003719">一看就会的java8通用Builder</a>
- * <p>
- * 使用方法如下：
- * </p>
- * 
- * <pre>
- * 
- * Box box = GenericBuilder.of(Box::new).with(Box::setId, 1024L).with(Box::setTitle, "Hello World!")
- *         .with(Box::setLength, 9).with(Box::setWidth, 8).with(Box::setHeight, 7).build();
- *
- * </pre>
+ * A generic builder that uses lambda expressions (method references) to construct objects, inspired by the builder
+ * pattern.
  *
  * <p>
- * 我们也可以对已创建的对象进行修改：
- * </p>
+ * Example of creating a new object:
  * 
- * <pre>
+ * <pre>{@code
  * 
- * Box boxModified = GenericBuilder.of(() -&gt; box).with(Box::setTitle, "Hello Friend!").with(Box::setLength, 3)
- *         .with(Box::setWidth, 4).with(Box::setHeight, 5).build();
- * </pre>
- * <p>
- * 我们还可以对这样调用有参构造，这对于创建一些在有参构造中包含初始化函数的对象是有意义的：
- * </p>
- * 
- * <pre>
- * 
- * Box box1 = GenericBuilder.of(Box::new, 2048L, "Hello Partner!", 222, 333, 444).with(Box::alis).build();
- * </pre>
- * <p>
- * 还可能这样构建Map对象：
- * </p>
- * {@code
- * HashMap<String, String> colorMap = GenericBuilder
- * .of(HashMap<String,String>::new)
- * .with(Map::put, "red", "#FF0000")
- * .with(Map::put, "yellow", "#FFFF00")
- * .with(Map::put, "blue", "#0000FF")
- * .build();
- * }
+ * Box box = GenericBuilder.of(Box::new).with(Box::setId, 1024L).with(Box::setTitle, "Hello World!").build();
+ * }</pre>
  *
  * <p>
- * 注意：本工具类支持调用的构造方法的参数数量不超过5个，一般方法的参数数量不超过2个，更多的参数不利于阅读和维护
- * </p>
+ * Example of modifying an existing object:
+ * 
+ * <pre>{@code
+ * 
+ * Box existingBox = new Box();
+ * Box modifiedBox = GenericBuilder.of(() -> existingBox).with(Box::setTitle, "Hello Friend!").build();
+ * }</pre>
  *
- * @param <T> 构建对象类型
+ * <p>
+ * This builder supports method references for setters or other void methods with up to two arguments.
+ *
+ * @param <T> The type of the object being built.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -93,40 +71,40 @@ public class GenericBuilder<T> implements Builder<T> {
     private static final long serialVersionUID = 2852229897009L;
 
     /**
-     * 实例化器
+     * The supplier that provides the initial instance of the object.
      */
     private final Supplier<T> instant;
 
     /**
-     * 修改器列表
+     * A list of consumers that will be applied to the object to set its properties.
      */
     private final List<Consumer<T>> modifiers = new ArrayList<>();
 
     /**
-     * 构造
+     * Constructs a new {@code GenericBuilder}.
      *
-     * @param instant 实例化器
+     * @param instant The supplier that provides the object instance.
      */
     public GenericBuilder(final Supplier<T> instant) {
         this.instant = instant;
     }
 
     /**
-     * 通过Supplier创建GenericBuilder
+     * Creates a new {@code GenericBuilder} with a supplier for the target object.
      *
-     * @param instant 实例化器
-     * @param <T>     目标类型
-     * @return GenericBuilder对象
+     * @param instant The supplier (e.g., a constructor reference like {@code Box::new}).
+     * @param <T>     The type of the target object.
+     * @return A new {@code GenericBuilder} instance.
      */
     public static <T> GenericBuilder<T> of(final Supplier<T> instant) {
         return new GenericBuilder<>(instant);
     }
 
     /**
-     * 调用无参数方法
+     * Adds a modification step that calls a method with no arguments.
      *
-     * @param consumer 无参数Consumer
-     * @return GenericBuilder对象
+     * @param consumer A consumer representing a method with no arguments (e.g., {@code Box::initialize}).
+     * @return This {@code GenericBuilder} instance for chaining.
      */
     public GenericBuilder<T> with(final Consumer<T> consumer) {
         modifiers.add(consumer);
@@ -134,37 +112,38 @@ public class GenericBuilder<T> implements Builder<T> {
     }
 
     /**
-     * 调用1参数方法
+     * Adds a modification step that calls a method with one argument.
      *
-     * @param consumer 1参数Consumer
-     * @param p1       参数一
-     * @param <P1>     参数一类型
-     * @return GenericBuilder对象
+     * @param consumer A bi-consumer representing a method with one argument (e.g., a setter like {@code Box::setId}).
+     * @param p1       The argument to pass to the method.
+     * @param <P1>     The type of the first argument.
+     * @return This {@code GenericBuilder} instance for chaining.
      */
     public <P1> GenericBuilder<T> with(final BiConsumer<T, P1> consumer, final P1 p1) {
-        modifiers.add(instant -> consumer.accept(instant, p1));
+        modifiers.add(instance -> consumer.accept(instance, p1));
         return this;
     }
 
     /**
-     * 调用2参数方法
+     * Adds a modification step that calls a method with two arguments.
      *
-     * @param consumer 2参数Consumer
-     * @param p1       参数一
-     * @param p2       参数二
-     * @param <P1>     参数一类型
-     * @param <P2>     参数二类型
-     * @return GenericBuilder对象
+     * @param consumer A tri-consumer representing a method with two arguments (e.g., {@code Map::put}).
+     * @param p1       The first argument to pass to the method.
+     * @param p2       The second argument to pass to the method.
+     * @param <P1>     The type of the first argument.
+     * @param <P2>     The type of the second argument.
+     * @return This {@code GenericBuilder} instance for chaining.
      */
     public <P1, P2> GenericBuilder<T> with(final Consumer3X<T, P1, P2> consumer, final P1 p1, final P2 p2) {
-        modifiers.add(instant -> consumer.accept(instant, p1, p2));
+        modifiers.add(instance -> consumer.accept(instance, p1, p2));
         return this;
     }
 
     /**
-     * 构建
+     * Builds the final object by getting an instance from the supplier and applying all the registered modification
+     * steps.
      *
-     * @return 目标对象
+     * @return The constructed or modified target object.
      */
     @Override
     public T build() {

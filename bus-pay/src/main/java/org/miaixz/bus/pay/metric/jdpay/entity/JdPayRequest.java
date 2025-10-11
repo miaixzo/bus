@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 请求参数
+ * Represents the request parameters for JD Pay.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,8 +48,17 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class JdPayRequest extends Material {
 
+    /**
+     * The version number of the interface.
+     */
     private String version;
+    /**
+     * The merchant number.
+     */
     private String merchant;
+    /**
+     * The encrypted request data.
+     */
     private String encrypt;
 
 }

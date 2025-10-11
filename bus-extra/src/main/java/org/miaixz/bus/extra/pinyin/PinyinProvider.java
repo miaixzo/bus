@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 拼音引擎接口，具体的拼音实现通过实现此接口，完成具体实现功能
+ * Pinyin engine interface. Implementations of this interface provide specific Pinyin conversion functionalities.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,61 +46,66 @@ import org.miaixz.bus.core.xyz.StringKit;
 public interface PinyinProvider extends Provider {
 
     /**
-     * 如果c为汉字，则返回大写拼音；如果c不是汉字，则返回String.valueOf(c)
+     * Converts a single character to its Pinyin. If the character is a Chinese character, its uppercase Pinyin is
+     * returned; otherwise, the character itself is returned as a string.
      *
-     * @param c 任意字符，汉字返回拼音，非汉字原样返回
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param c The character to convert.
+     * @return The Pinyin of the Chinese character, or the character itself if not Chinese.
      */
     default String getPinyin(final char c) {
         return getPinyin(c, false);
     }
 
     /**
-     * 如果c为汉字，则返回大写拼音；如果c不是汉字，则返回String.valueOf(c)
+     * Converts a single character to its Pinyin, with an option to retain tone marks. If the character is a Chinese
+     * character, its Pinyin is returned; otherwise, the character itself is returned as a string.
      *
-     * @param c    任意字符，汉字返回拼音，非汉字原样返回
-     * @param tone 是否返回声调
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param c    The character to convert.
+     * @param tone {@code true} to retain tone marks in the Pinyin, {@code false} otherwise.
+     * @return The Pinyin of the Chinese character, or the character itself if not Chinese.
      */
     String getPinyin(char c, boolean tone);
 
     /**
-     * 获取字符串对应的完整拼音，非中文返回原字符
+     * Retrieves the complete Pinyin for a given string. Non-Chinese characters remain as is.
      *
-     * @param text      字符串
-     * @param separator 拼音之间的分隔符
-     * @return 拼音
+     * @param text      The input string.
+     * @param separator The separator to use between each Pinyin character.
+     * @return The Pinyin representation of the string.
      */
     default String getPinyin(final String text, final String separator) {
         return getPinyin(text, separator, false);
     }
 
     /**
-     * 获取字符串对应的完整拼音，非中文返回原字符
+     * Retrieves the complete Pinyin for a given string, with an option to retain tone marks. Non-Chinese characters
+     * remain as is.
      *
-     * @param text      字符串
-     * @param separator 拼音之间的分隔符
-     * @param tone      是否返回声调
-     * @return 拼音
+     * @param text      The input string.
+     * @param separator The separator to use between each Pinyin character.
+     * @param tone      {@code true} to retain tone marks in the Pinyin, {@code false} otherwise.
+     * @return The Pinyin representation of the string.
      */
     String getPinyin(String text, String separator, boolean tone);
 
     /**
-     * 将输入字符串转为拼音首字母，其它字符原样返回
+     * Converts a single character to its Pinyin first letter. If the character is a Chinese character, its Pinyin's
+     * first letter is returned; otherwise, the character itself is returned.
      *
-     * @param c 任意字符，汉字返回拼音，非汉字原样返回
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param c The character to convert.
+     * @return The first letter of the Pinyin for the Chinese character, or the character itself if not Chinese.
      */
     default char getFirstLetter(final char c) {
         return getPinyin(c).charAt(0);
     }
 
     /**
-     * 将输入字符串转为拼音首字母，其它字符原样返回
+     * Converts a string to its Pinyin first letters, with a custom separator. Non-Chinese characters remain as is.
      *
-     * @param str       任意字符，汉字返回拼音，非汉字原样返回
-     * @param separator 分隔符
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param str       The input string.
+     * @param separator The separator to use between each first letter.
+     * @return The string composed of the first letters of Pinyin for Chinese characters, and original characters for
+     *         others.
      */
     default String getFirstLetter(final String str, final String separator) {
         final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.HASH : separator;

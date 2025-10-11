@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.http.plugin.httpv;
 
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Symbol;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.lang.Symbol;
-
 /**
- * 消息转换器接口
+ * An interface for message conversion, handling serialization and deserialization of objects to and from different data
+ * formats.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,77 +45,77 @@ import org.miaixz.bus.core.lang.Symbol;
 public interface Convertor {
 
     /**
-     * 消息的媒体类型
+     * Returns the media type of the messages handled by this converter.
      *
-     * @return 媒体类型
+     * @return The media type string.
      */
     String contentType();
 
     /**
-     * 解析 Mapper
+     * Parses an input stream into a {@link CoverWapper}.
      *
-     * @param in      JSON 输入流
-     * @param charset 编码格式
-     * @return Mapper
+     * @param in      The input stream.
+     * @param charset The character set.
+     * @return A {@link CoverWapper} instance.
      */
     CoverWapper toMapper(InputStream in, Charset charset);
 
     /**
-     * 解析 Array
+     * Parses an input stream into a {@link CoverArray}.
      *
-     * @param in      JSON 输入流
-     * @param charset 编码格式
-     * @return Array
+     * @param in      The input stream.
+     * @param charset The character set.
+     * @return A {@link CoverArray} instance.
      */
     CoverArray toArray(InputStream in, Charset charset);
 
     /**
-     * 将 Java 对象序列化为字节数组
+     * Serializes a Java object into a byte array.
      *
-     * @param object  Java 对象
-     * @param charset 编码格式
-     * @return 字节数组
+     * @param object  The Java object.
+     * @param charset The character set.
+     * @return A byte array.
      */
     byte[] serialize(Object object, Charset charset);
 
     /**
-     * 将 Java 对象序列化为字节数组
+     * Serializes a Java object into a byte array with a specified date format.
      *
-     * @param object     Java 对象
-     * @param dateFormat 日期类的处理格式
-     * @param charset    编码格式
-     * @return 字节数组
+     * @param object     The Java object.
+     * @param dateFormat The date format string.
+     * @param charset    The character set.
+     * @return A byte array.
      */
     byte[] serialize(Object object, String dateFormat, Charset charset);
 
     /**
-     * 解析 Java Bean
+     * Parses an input stream into a Java bean of the specified type.
      *
-     * @param <T>     目标泛型
-     * @param type    目标类型
-     * @param in      JSON 输入流
-     * @param charset 编码格式
-     * @return Java Bean
+     * @param <T>     The target generic type.
+     * @param type    The target class type.
+     * @param in      The input stream.
+     * @param charset The character set.
+     * @return A Java bean instance.
      */
     <T> T toBean(Class<T> type, InputStream in, Charset charset);
 
     /**
-     * 解析为 Java List
+     * Parses an input stream into a list of Java objects of the specified type.
      *
-     * @param <T>     目标泛型
-     * @param type    目标类型
-     * @param in      JSON 输入流
-     * @param charset 编码格式
-     * @return Java List
+     * @param <T>     The target generic type.
+     * @param type    The target class type.
+     * @param in      The input stream.
+     * @param charset The character set.
+     * @return A list of Java objects.
      */
     <T> List<T> toList(Class<T> type, InputStream in, Charset charset);
 
     /**
-     * 表单转换器，可用于自动系列化表单参数
+     * A form converter that can be used to automatically serialize form parameters.
      */
     class FormConvertor implements Convertor {
 
-        private Convertor convertor;
+        private final Convertor convertor;
 
         public FormConvertor(Convertor convertor) {
             this.convertor = convertor;

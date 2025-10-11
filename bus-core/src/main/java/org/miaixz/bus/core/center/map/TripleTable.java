@@ -37,11 +37,15 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * 三值表结构，可重复 用于提供三种值相互查找操作 查找方式为indexOf方式遍历查找，数据越多越慢。
+ * A three-value table structure that stores triplets of (left, middle, right) values. This implementation allows for
+ * duplicate entries and provides lookup operations based on any of the three values.
+ * <p>
+ * It is backed by three parallel {@link List}s, which means lookup operations (e.g., {@code getLeftByMiddle}) involve
+ * linear scans and can be less performant than hash-based structures for large datasets.
  *
- * @param <L> 左值类型
- * @param <M> 中值类型
- * @param <R> 右值类型
+ * @param <L> The type of the left value.
+ * @param <M> The type of the middle value.
+ * @param <R> The type of the right value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -50,43 +54,56 @@ public class TripleTable<L, M, R> implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852276252739L;
 
+    /**
+     * The list storing the left values of the triplets.
+     */
     private final List<L> lefts;
+    /**
+     * The list storing the middle values of the triplets.
+     */
     private final List<M> middles;
+    /**
+     * The list storing the right values of the triplets.
+     */
     private final List<R> rights;
 
     /**
-     * 构造
+     * Constructs a {@code TripleTable} from a list of {@link Triplet} objects.
      *
-     * @param triples 三元组列表
+     * @param triples A list of {@link Triplet} objects to populate the table. Must not be {@code null}.
      */
     public TripleTable(final List<Triplet<L, M, R>> triples) {
-        this(Assert.notNull(triples).size());
+        this(Assert.notNull(triples, "Triplets list must not be null").size());
         for (final Triplet<L, M, R> triplet : triples) {
             put(triplet.getLeft(), triplet.getMiddle(), triplet.getRight());
         }
     }
 
     /**
-     * 构造
+     * Constructs an empty {@code TripleTable} with the specified initial capacity for its internal lists.
      *
-     * @param size 初始容量
+     * @param size The initial capacity for the internal lists.
      */
     public TripleTable(final int size) {
         this(new ArrayList<>(size), new ArrayList<>(size), new ArrayList<>(size));
     }
 
     /**
-     * @param lefts   左列表
-     * @param middles 中列表
-     * @param rights  右列表
+     * Constructs a {@code TripleTable} with pre-existing lists for left, middle, and right values. All three lists must
+     * have the same size, and their elements at corresponding indices form a triplet.
+     *
+     * @param lefts   The list of left values. Must not be {@code null}.
+     * @param middles The list of middle values. Must not be {@code null}.
+     * @param rights  The list of right values. Must not be {@code null}.
+     * @throws IllegalArgumentException if the sizes of the provided lists are not equal.
      */
     public TripleTable(final List<L> lefts, final List<M> middles, final List<R> rights) {
-        Assert.notNull(lefts);
-        Assert.notNull(middles);
-        Assert.notNull(rights);
+        Assert.notNull(lefts, "Lefts list must not be null");
+        Assert.notNull(middles, "Middles list must not be null");
+        Assert.notNull(rights, "Rights list must not be null");
         final int size = lefts.size();
         if (size != middles.size() || size != rights.size()) {
-            throw new IllegalArgumentException("List size must be equals!");
+            throw new IllegalArgumentException("All lists must have the same size!");
         }
 
         this.lefts = lefts;
@@ -95,10 +112,10 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过中间值，查找左边值 如果有多个重复值，只返回找到的第一个值
+     * Retrieves the left value associated with the first occurrence of the specified middle value.
      *
-     * @param mValue 中间值
-     * @return 左边值，未找到返回{@code null}
+     * @param mValue The middle value to search for.
+     * @return The left value, or {@code null} if the middle value is not found.
      */
     public L getLeftByMiddle(final M mValue) {
         final int index = this.middles.indexOf(mValue);
@@ -109,10 +126,10 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过右值，查找左边值 如果有多个重复值，只返回找到的第一个值
+     * Retrieves the left value associated with the first occurrence of the specified right value.
      *
-     * @param rValue 右值
-     * @return 左边值，未找到返回{@code null}
+     * @param rValue The right value to search for.
+     * @return The left value, or {@code null} if the right value is not found.
      */
     public L getLeftByRight(final R rValue) {
         final int index = this.rights.indexOf(rValue);
@@ -123,10 +140,10 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过左值，查找中值 如果有多个重复值，只返回找到的第一个值
+     * Retrieves the middle value associated with the first occurrence of the specified left value.
      *
-     * @param lValue 左值
-     * @return 中值，未找到返回{@code null}
+     * @param lValue The left value to search for.
+     * @return The middle value, or {@code null} if the left value is not found.
      */
     public M getMiddleByLeft(final L lValue) {
         final int index = this.lefts.indexOf(lValue);
@@ -137,10 +154,10 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过右值，查找中值 如果有多个重复值，只返回找到的第一个值
+     * Retrieves the middle value associated with the first occurrence of the specified right value.
      *
-     * @param rValue 右值
-     * @return 中值，未找到返回{@code null}
+     * @param rValue The right value to search for.
+     * @return The middle value, or {@code null} if the right value is not found.
      */
     public M getMiddleByRight(final R rValue) {
         final int index = this.rights.indexOf(rValue);
@@ -151,40 +168,43 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 获取指定index对应的左值
+     * Retrieves the left value at the specified index.
      *
-     * @param index 索引
-     * @return 左值
+     * @param index The index of the triplet.
+     * @return The left value at the given index.
+     * @throws IndexOutOfBoundsException if the index is out of range ({@code index < 0 || index >= size()}).
      */
     public L getLeft(final int index) {
         return this.lefts.get(index);
     }
 
     /**
-     * 获取指定index对应的中值
+     * Retrieves the middle value at the specified index.
      *
-     * @param index 索引
-     * @return 中值
+     * @param index The index of the triplet.
+     * @return The middle value at the given index.
+     * @throws IndexOutOfBoundsException if the index is out of range ({@code index < 0 || index >= size()}).
      */
     public M getMiddle(final int index) {
         return this.middles.get(index);
     }
 
     /**
-     * 获取指定index对应的右值
+     * Retrieves the right value at the specified index.
      *
-     * @param index 索引
-     * @return 右值
+     * @param index The index of the triplet.
+     * @return The right value at the given index.
+     * @throws IndexOutOfBoundsException if the index is out of range ({@code index < 0 || index >= size()}).
      */
     public R getRight(final int index) {
         return this.rights.get(index);
     }
 
     /**
-     * 通过左值，查找右值 如果有多个重复值，只返回找到的第一个值
+     * Retrieves the right value associated with the first occurrence of the specified left value.
      *
-     * @param lValue 左值
-     * @return 右值，未找到返回{@code null}
+     * @param lValue The left value to search for.
+     * @return The right value, or {@code null} if the left value is not found.
      */
     public R getRightByLeft(final L lValue) {
         final int index = this.lefts.indexOf(lValue);
@@ -195,10 +215,10 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过中间值，查找右值 如果有多个重复值，只返回找到的第一个值
+     * Retrieves the right value associated with the first occurrence of the specified middle value.
      *
-     * @param mValue 中间值
-     * @return 右值，未找到返回{@code null}
+     * @param mValue The middle value to search for.
+     * @return The right value, or {@code null} if the middle value is not found.
      */
     public R getRightByMiddle(final M mValue) {
         final int index = this.middles.indexOf(mValue);
@@ -209,70 +229,71 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 是否含有指定左元素
+     * Checks if the table contains the specified left value.
      *
-     * @param left 左元素
-     * @return 是否含有
+     * @param left The left value to check for.
+     * @return {@code true} if the left value is found in the table, {@code false} otherwise.
      */
     public boolean containLeft(final L left) {
         return this.lefts.contains(left);
     }
 
     /**
-     * 是否含有指定中元素
+     * Checks if the table contains the specified middle value.
      *
-     * @param middle 中元素
-     * @return 是否含有
+     * @param middle The middle value to check for.
+     * @return {@code true} if the middle value is found in the table, {@code false} otherwise.
      */
     public boolean containMiddle(final M middle) {
         return this.middles.contains(middle);
     }
 
     /**
-     * 是否含有指定右元素
+     * Checks if the table contains the specified right value.
      *
-     * @param right 右元素
-     * @return 是否含有
+     * @param right The right value to check for.
+     * @return {@code true} if the right value is found in the table, {@code false} otherwise.
      */
     public boolean containRight(final R right) {
         return this.rights.contains(right);
     }
 
     /**
-     * 获取指定左元素的索引
+     * Retrieves the index of the first occurrence of the specified left value.
      *
-     * @param left 左元素
-     * @return 索引，未找到返回-1
+     * @param left The left value to search for.
+     * @return The index of the first occurrence of the left value, or -1 if not found.
      */
     public int indexOfLeft(final L left) {
         return this.lefts.indexOf(left);
     }
 
     /**
-     * 获取指定中元素的索引
+     * Retrieves the index of the first occurrence of the specified middle value.
      *
-     * @param middle 中元素
-     * @return 索引，未找到返回-1
+     * @param middle The middle value to search for.
+     * @return The index of the first occurrence of the middle value, or -1 if not found.
      */
     public int indexOfMiddle(final M middle) {
         return this.middles.indexOf(middle);
     }
 
     /**
-     * 获取指定右元素的索引
+     * Retrieves the index of the first occurrence of the specified right value.
      *
-     * @param right 右元素
-     * @return 索引，未找到返回-1
+     * @param right The right value to search for.
+     * @return The index of the first occurrence of the right value, or -1 if not found.
      */
     public int indexOfRight(final R right) {
         return this.rights.indexOf(right);
     }
 
     /**
-     * 通过左值查找三元组（所有值）
+     * Retrieves the {@link Triplet} associated with the first occurrence of the specified left value.
      *
-     * @param lValue 左值
-     * @return 三元组（所有值）
+     * @param lValue The left value to search for.
+     * @return The {@link Triplet} containing the left, middle, and right values, or {@code null} if the left value is
+     *         not found.
      */
     public Triplet<L, M, R> getByLeft(final L lValue) {
         final int index = this.lefts.indexOf(lValue);
@@ -283,10 +304,11 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过中值查找三元组（所有值）
+     * Retrieves the {@link Triplet} associated with the first occurrence of the specified middle value.
      *
-     * @param mValue 中值
-     * @return 三元组（所有值）
+     * @param mValue The middle value to search for.
+     * @return The {@link Triplet} containing the left, middle, and right values, or {@code null} if the middle value is
+     *         not found.
      */
     public Triplet<L, M, R> getByMiddle(final M mValue) {
         final int index = this.middles.indexOf(mValue);
@@ -297,10 +319,11 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过右值查找三元组（所有值）
+     * Retrieves the {@link Triplet} associated with the first occurrence of the specified right value.
      *
-     * @param rValue 右值
-     * @return 三元组（所有值）
+     * @param rValue The right value to search for.
+     * @return The {@link Triplet} containing the left, middle, and right values, or {@code null} if the right value is
+     *         not found.
      */
     public Triplet<L, M, R> getByRight(final R rValue) {
         final int index = this.rights.indexOf(rValue);
@@ -311,48 +334,48 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 获取左列表，不可修改
+     * Returns an unmodifiable list of all left values in the table.
      *
-     * @return 左列表
+     * @return An unmodifiable {@link List} of left values.
      */
     public List<L> getLefts() {
         return ListKit.view(this.lefts);
     }
 
     /**
-     * 获取中列表，不可修改
+     * Returns an unmodifiable list of all middle values in the table.
      *
-     * @return 中列表
+     * @return An unmodifiable {@link List} of middle values.
      */
     public List<M> getMiddles() {
         return ListKit.view(this.middles);
     }
 
     /**
-     * 获取右列表，不可修改
+     * Returns an unmodifiable list of all right values in the table.
      *
-     * @return 右列表
+     * @return An unmodifiable {@link List} of right values.
      */
     public List<R> getRights() {
         return ListKit.view(this.rights);
     }
 
     /**
-     * 长度
+     * Returns the number of entries (triplets) in this table.
      *
-     * @return this
+     * @return The number of entries.
      */
     public int size() {
         return this.lefts.size();
     }
 
     /**
-     * 加入值
+     * Adds a new triplet (left, middle, right values) to the table.
      *
-     * @param lValue 左值
-     * @param mValue 中值
-     * @param rValue 右值
-     * @return this
+     * @param lValue The left value.
+     * @param mValue The middle value.
+     * @param rValue The right value.
+     * @return This {@code TripleTable} instance for method chaining.
      */
     public TripleTable<L, M, R> put(final L lValue, final M mValue, final R rValue) {
         this.lefts.add(lValue);
@@ -362,11 +385,12 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 修改指定index对应的左值
+     * Sets the left value at the specified index.
      *
-     * @param index  索引
-     * @param lValue 左值
-     * @return this
+     * @param index  The index of the entry to modify.
+     * @param lValue The new left value.
+     * @return This {@code TripleTable} instance for method chaining.
+     * @throws IndexOutOfBoundsException if the index is out of range.
      */
     public TripleTable<L, M, R> setLeft(final int index, final L lValue) {
         this.lefts.set(index, lValue);
@@ -374,11 +398,12 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 修改指定index对应的中值
+     * Sets the middle value at the specified index.
      *
-     * @param index  索引
-     * @param mValue 中值
-     * @return this
+     * @param index  The index of the entry to modify.
+     * @param mValue The new middle value.
+     * @return This {@code TripleTable} instance for method chaining.
+     * @throws IndexOutOfBoundsException if the index is out of range.
      */
     public TripleTable<L, M, R> setMiddle(final int index, final M mValue) {
         this.middles.set(index, mValue);
@@ -386,11 +411,12 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 修改指定index对应的右值
+     * Sets the right value at the specified index.
      *
-     * @param index  索引
-     * @param rValue 左值
-     * @return this
+     * @param index  The index of the entry to modify.
+     * @param rValue The new right value.
+     * @return This {@code TripleTable} instance for method chaining.
+     * @throws IndexOutOfBoundsException if the index is out of range.
      */
     public TripleTable<L, M, R> setRight(final int index, final R rValue) {
         this.rights.set(index, rValue);
@@ -398,9 +424,9 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 清空
+     * Clears all entries from the table.
      *
-     * @return this
+     * @return This {@code TripleTable} instance for method chaining.
      */
     public TripleTable<L, M, R> clear() {
         this.lefts.clear();
@@ -410,10 +436,11 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 移除值
+     * Removes the entry (triplet) at the specified index from the table.
      *
-     * @param index 序号
-     * @return this
+     * @param index The index of the entry to remove.
+     * @return This {@code TripleTable} instance for method chaining.
+     * @throws IndexOutOfBoundsException if the index is out of range.
      */
     public TripleTable<L, M, R> remove(final int index) {
         this.lefts.remove(index);

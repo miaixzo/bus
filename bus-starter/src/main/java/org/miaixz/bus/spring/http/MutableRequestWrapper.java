@@ -27,10 +27,14 @@
 */
 package org.miaixz.bus.spring.http;
 
-import java.io.*;
-import java.util.stream.Collectors;
-
+import jakarta.servlet.ReadListener;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Normal;
@@ -42,45 +46,37 @@ import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 
-import jakarta.servlet.ReadListener;
-import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.http.HttpServletRequest;
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import java.io.*;
+import java.util.stream.Collectors;
 
 /**
- * 请求包装器，用于缓存请求体内容并防止XSS攻击。
- *
+ * Request wrapper that caches the request body content and provides XSS protection.
  * <p>
- * 该类继承自{@link jakarta.servlet.http.HttpServletRequestWrapper}，主要功能包括：
- * </p>
+ * This class extends {@link HttpServletRequestWrapper} and primarily offers the following functionalities:
+ *
  * <ul>
- * <li>缓存请求体内容，使得请求体可以被多次读取</li>
- * <li>对请求参数和请求头进行XSS过滤，防止跨站脚本攻击</li>
- * <li>记录请求参数日志，便于调试和问题排查</li>
+ * <li>Caches the request body content, allowing it to be read multiple times.</li>
+ * <li>Performs XSS filtering on request parameters and headers to prevent cross-site scripting attacks.</li>
+ * <li>Logs request parameters for debugging and troubleshooting.</li>
  * </ul>
  *
  * <p>
- * 使用示例：
- * </p>
- *
- * <pre>
- * // 在过滤器中使用
+ * <strong>Usage Example:</strong>
+ * 
+ * <pre>{@code
+ * // In a Servlet Filter:
  * public class XSSFilter implements Filter {
  *
- *     &#64;Override
+ *     @Override
  *     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
  *             throws IOException, ServletException {
- *         // 包装请求
- *         CacheRequestWrapper wrappedRequest = new CacheRequestWrapper((HttpServletRequest) request);
- *         // 继续过滤器链
+ *         // Wrap the request
+ *         MutableRequestWrapper wrappedRequest = new MutableRequestWrapper((HttpServletRequest) request);
+ *         // Continue the filter chain
  *         chain.doFilter(wrappedRequest, response);
  *     }
  * }
- * </pre>
+ * }</pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -88,86 +84,85 @@ import lombok.Setter;
 public class MutableRequestWrapper extends HttpServletRequestWrapper {
 
     /**
-     * 缓存的请求体类型
+     * The original HTTP servlet request.
      */
     public HttpServletRequest request;
 
     /**
-     * 缓存的请求体类型
+     * The content type of the request.
      */
     public String contentType;
 
     /**
-     * 缓存的请求体内容
+     * The cached request body content as a byte array.
      */
     public byte[] body;
 
     /**
-     * 自定义的Servlet输入流包装器
+     * Custom {@link ServletInputStream} wrapper for the cached body.
      */
     public ServletInputStreamWrapper inputStreamWrapper;
 
     /**
-     * 构造方法，初始化请求包装器。
-     *
+     * Constructs a new {@code MutableRequestWrapper}, initializing the request wrapper.
      * <p>
-     * 该方法会读取并缓存请求体内容，初始化自定义的输入流包装器，并记录请求参数日志。
+     * This constructor reads and caches the request body content, initializes a custom input stream wrapper, and logs
+     * request parameters.
      * </p>
      *
-     * @param request 原始HTTP请求对象
-     * @throws IOException 如果读取请求体时发生I/O错误
+     * @param request The original {@link HttpServletRequest} object.
+     * @throws IOException If an I/O error occurs while reading the request body.
      */
     public MutableRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         this.request = request;
         this.contentType = request.getContentType();
 
-        // 读取并缓存请求体内容
-
-        // 读取输入流
+        // Read and cache the request body content
+        // Read input stream
         this.body = IoKit.readBytes(request.getInputStream());
         if (this.body == null || this.body.length == 0) {
-            // 如果输入流为空且有参数，使用parameterMap
+            // If the input stream is empty and there are parameters, use parameterMap
             if (MapKit.isNotEmpty(request.getParameterMap())) {
                 String paramString = request.getParameterMap().entrySet().stream()
                         .map(entry -> entry.getKey() + Symbol.EQUAL + String.join(Symbol.COMMA, entry.getValue()))
                         .collect(Collectors.joining(Symbol.AND));
                 this.body = paramString.getBytes(Charset.UTF_8);
-                this.contentType = MediaType.APPLICATION_FORM_URLENCODED; // 更新contentType
+                this.contentType = MediaType.APPLICATION_FORM_URLENCODED; // Update contentType
             } else {
-                this.body = new byte[0]; // 确保body不为null
+                this.body = new byte[0]; // Ensure body is not null
             }
         }
 
-        // 记录请求参数日志，优先使用parameterMap
+        // Log request parameters, prioritizing parameterMap
         Object logOut = MapKit.isNotEmpty(request.getParameterMap()) ? request.getParameterMap()
                 : new String(this.body, Charset.UTF_8);
         if (logOut instanceof String) {
-            // 移除换行符、制表符和多余空白
+            // Remove newlines, tabs, and extra whitespace
             logOut = UrlKit.decodeQuery(((String) logOut).replaceAll("\\s+", Normal.EMPTY), Charset.UTF_8);
         }
 
         Logger.info("==> Parameters: {}", JsonKit.toJsonString(logOut));
 
-        // 初始化自定义输入流
+        // Initialize custom input stream
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.body);
         this.inputStreamWrapper = new ServletInputStreamWrapper(byteArrayInputStream);
         this.inputStreamWrapper.setInputStream(byteArrayInputStream);
     }
 
     /**
-     * 获取缓存的请求体内容。
+     * Returns the cached request body content.
      *
-     * @return 请求体内容的字节数组
+     * @return The request body content as a byte array.
      */
     public byte[] getBody() {
         return this.body;
     }
 
     /**
-     * 获取缓存的请求体内容。
+     * Returns the content type of the request.
      *
-     * @return 请求体内容的字节数组
+     * @return The content type string.
      */
     @Override
     public String getContentType() {
@@ -175,9 +170,9 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
     }
 
     /**
-     * 获取自定义的Servlet输入流。
+     * Returns the original HTTP servlet request.
      *
-     * @return 自定义的Servlet输入流
+     * @return The original {@link HttpServletRequest} object.
      */
     @Override
     public HttpServletRequest getRequest() {
@@ -185,30 +180,35 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
     }
 
     /**
-     * 获取自定义的Servlet输入流。
+     * Returns a custom {@link ServletInputStream} that reads from the cached request body.
      *
-     * @return 自定义的Servlet输入流
+     * @return A custom {@link ServletInputStream}.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
-    public ServletInputStream getInputStream() {
+    public ServletInputStream getInputStream() throws IOException {
         return this.inputStreamWrapper;
     }
 
     /**
-     * 获取请求体的BufferedReader。
+     * Returns a {@link BufferedReader} for reading the request body.
      *
-     * @return 请求体的BufferedReader
+     * @return A {@link BufferedReader} for the request body.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
-    public BufferedReader getReader() {
+    public BufferedReader getReader() throws IOException {
         return new BufferedReader(new InputStreamReader(this.inputStreamWrapper, Charset.UTF_8));
     }
 
     /**
-     * 获取指定参数名的所有参数值，并对非JSON格式的参数值进行XSS过滤。
+     * Returns an array of {@code String} values for the specified request parameter.
+     * <p>
+     * This method performs XSS filtering on non-JSON parameter values.
+     * </p>
      *
-     * @param parameter 参数名
-     * @return 过滤后的参数值数组
+     * @param parameter The name of the parameter.
+     * @return An array of filtered parameter values, or {@code null} if the parameter does not exist.
      */
     @Override
     public String[] getParameterValues(String parameter) {
@@ -228,10 +228,13 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
     }
 
     /**
-     * 获取指定参数名的参数值，并对非JSON格式的参数值进行XSS过滤。
+     * Returns the value of a request parameter as a {@code String}.
+     * <p>
+     * This method performs XSS filtering on non-JSON parameter values.
+     * </p>
      *
-     * @param name 参数名
-     * @return 过滤后的参数值
+     * @param name The name of the parameter.
+     * @return The filtered parameter value, or {@code null} if the parameter does not exist.
      */
     @Override
     public String getParameter(String name) {
@@ -243,10 +246,13 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
     }
 
     /**
-     * 获取指定请求头的值，并对非JSON格式的请求头值进行XSS过滤。
+     * Returns the value of the specified request header as a {@code String}.
+     * <p>
+     * This method performs XSS filtering on non-JSON header values.
+     * </p>
      *
-     * @param name 请求头名
-     * @return 过滤后的请求头值
+     * @param name The name of the header.
+     * @return The filtered header value, or {@code null} if the header does not exist.
      */
     @Override
     public String getHeader(String name) {
@@ -258,7 +264,7 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
     }
 
     /**
-     * 自定义的Servlet输入流包装器，用于支持请求体内容的多次读取。
+     * A custom {@link ServletInputStream} wrapper that allows the request body content to be read multiple times.
      */
     @Getter
     @Setter
@@ -267,45 +273,50 @@ public class MutableRequestWrapper extends HttpServletRequestWrapper {
     private static class ServletInputStreamWrapper extends ServletInputStream {
 
         /**
-         * 输入流
+         * The underlying input stream.
          */
         private InputStream inputStream;
 
         /**
-         * 判断输入流是否已经读取完毕。
+         * Checks if the end of the input stream has been reached.
          *
-         * @return 如果输入流已经读取完毕则返回true，否则返回false
+         * @return {@code true} if the end of the stream has been reached, {@code false} otherwise.
          */
         @Override
         public boolean isFinished() {
-            return true;
+            try {
+                return inputStream.available() == 0;
+            } catch (IOException e) {
+                Logger.error("Error checking if input stream is finished", e);
+                return true; // Assume finished on error
+            }
         }
 
         /**
-         * 判断输入流是否准备好被读取。
+         * Checks if the input stream is ready to be read.
          *
-         * @return 如果输入流准备好被读取则返回true，否则返回false
+         * @return {@code true} if the input stream is ready, {@code false} otherwise.
          */
         @Override
         public boolean isReady() {
-            return false;
+            return true; // Always ready as it reads from a ByteArrayInputStream
         }
 
         /**
-         * 设置读取监听器。
+         * Sets the read listener. This method is a no-op as this stream is not asynchronous.
          *
-         * @param readListener 读取监听器
+         * @param readListener The read listener.
          */
         @Override
         public void setReadListener(ReadListener readListener) {
-            // 空实现
+            // No-op for synchronous stream
         }
 
         /**
-         * 从输入流中读取一个字节的数据。
+         * Reads the next byte of data from the input stream.
          *
-         * @return 读取的字节，如果到达流的末尾则返回-1
-         * @throws IOException 如果发生I/O错误
+         * @return The next byte of data, or -1 if the end of the stream is reached.
+         * @throws IOException If an I/O error occurs.
          */
         @Override
         public int read() throws IOException {

@@ -32,7 +32,7 @@ import java.util.*;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 多字符串查询器 底层思路 使用 AC 自动机实现
+ * Multi-string finder. Implemented using the Aho-Corasick automaton algorithm.
  * 
  * @author Kimi Liu
  * @since Java 17+
@@ -40,32 +40,32 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class MultiStringFinder {
 
     /**
-     * 字符索引
+     * Character index map. Maps characters to their integer indices.
      */
     protected final Map<Character, Integer> charIndexMap = new HashMap<>();
     /**
-     * 全部字符数量
+     * Total number of unique characters.
      */
     protected final int allCharSize;
     /**
-     * 根节点
+     * The root node of the Aho-Corasick automaton.
      */
     protected final Node root;
     /**
-     * 全部节点数量
+     * Total number of nodes in the automaton.
      */
     int nodeSize;
 
     /**
-     * 构建多字符串查询器
+     * Constructs a multi-string finder.
      *
-     * @param source 字符串集合
+     * @param source The collection of strings to be searched for.
      */
     public MultiStringFinder(final Collection<String> source) {
-        // 待匹配的字符串
+        // Strings to be matched
         final Set<String> stringSet = new HashSet<>();
 
-        // 所有字符
+        // All unique characters
         final Set<Character> charSet = new HashSet<>();
         for (final String string : source) {
             stringSet.add(string);
@@ -84,22 +84,22 @@ public class MultiStringFinder {
     }
 
     /**
-     * 创建多字符串查询器
+     * Creates a multi-string finder.
      *
-     * @param source 字符串集合
-     * @return 多字符串查询器
+     * @param source The collection of strings to be searched for.
+     * @return A new {@code MultiStringFinder} instance.
      */
     public static MultiStringFinder of(final Collection<String> source) {
         return new MultiStringFinder(source);
     }
 
     /**
-     * 构建前缀树
+     * Builds the prefix tree (Trie) from the given set of strings.
      *
-     * @param stringSst 待匹配的字符串
+     * @param stringSst The set of strings to build the prefix tree from.
      */
     protected void buildPrefixTree(final Collection<String> stringSst) {
-        // 节点编号 根节点已经是0了 所以从 1开始编号
+        // Node numbering. The root node is already 0, so numbering starts from 1.
         int nodeIndex = 1;
         for (final String string : stringSst) {
             Node node = root;
@@ -116,7 +116,8 @@ public class MultiStringFinder {
     }
 
     /**
-     * 构建 fail指针过程 构建 directRouter 直接访问路由表 减少跳fail次数 直接跳 router 边
+     * Builds the failure links (fail pointers) for the Aho-Corasick automaton. This process also builds the direct
+     * routing table to reduce the number of fail jumps.
      */
     protected void buildFail() {
         final LinkedList<Node> nodeQueue = new LinkedList<>();
@@ -130,13 +131,14 @@ public class MultiStringFinder {
             nodeQueue.addLast(nextNode);
         }
 
-        // 进行广度优先遍历
+        // Perform a breadth-first traversal
         while (!nodeQueue.isEmpty()) {
             final Node parent = nodeQueue.removeFirst();
-            // 因为 使用了 charIndex 进行字符到下标的映射 i 可以直接认为就是对应字符 char
+            // Since charIndex is used to map characters to indices, 'i' can be directly considered the corresponding
+            // character.
             for (int i = 0; i < parent.directRouter.length; i++) {
                 final Node child = parent.directRouter[i];
-                // child 为 null 表示没有子节点
+                // If child is null, it means there is no child node.
                 if (child == null) {
                     parent.directRouter[i] = parent.fail.directRouter[i];
                     continue;
@@ -149,13 +151,13 @@ public class MultiStringFinder {
     }
 
     /**
-     * 查询匹配的字符串
+     * Searches for all occurrences of the predefined strings within the given text.
      *
-     * @param text 返回每个匹配的 字符串 value是字符首字母地址
-     * @return 匹配结果
+     * @param text The text to search within.
+     * @return A map where keys are the matched strings and values are lists of their starting indices in the text.
      */
     public Map<String, List<Integer>> findMatch(final String text) {
-        // 节点经过次数 放在方法内部声明变量 希望可以一个构建对象 进行多次匹配
+        // Node traversal count. Declared inside the method to allow multiple matches for a single built object.
         final HashMap<String, List<Integer>> resultMap = new HashMap<>();
 
         final char[] chars = text.toCharArray();
@@ -163,14 +165,15 @@ public class MultiStringFinder {
         for (int i = 0; i < chars.length; i++) {
             final char c = chars[i];
             final Integer index = charIndexMap.get(c);
-            // 找不到字符索引 认为一定不在匹配字符中存在 直接从根节点开始重新计算
+            // If the character index is not found, it is assumed not to be part of any matching string. Restart from
+            // the root node.
             if (index == null) {
                 currentNode = root;
                 continue;
             }
-            // 进入下一跳 可能是正常下一跳 也可能是fail加上后的 下一跳
+            // Move to the next node, which could be a normal transition or a transition via a fail link.
             currentNode = currentNode.directRouter[index];
-            // 判断是否尾部节点 是尾节点 说明已经匹配到了完整的字符串 将匹配结果写入返回对象
+            // If it's an end node, it means a complete string has been matched. Add the match to the result.
             if (currentNode.isEnd) {
                 resultMap.computeIfAbsent(currentNode.tagetString, k -> new ArrayList<>())
                         .add(i - currentNode.tagetString.length() + 1);
@@ -182,10 +185,10 @@ public class MultiStringFinder {
     }
 
     /**
-     * 获取字符 下标
+     * Gets the index of a character.
      *
-     * @param c 字符
-     * @return 下标
+     * @param c The character.
+     * @return The index of the character, or -1 if not found.
      */
     protected int getIndex(final char c) {
         final Integer i = charIndexMap.get(c);
@@ -196,42 +199,60 @@ public class MultiStringFinder {
     }
 
     /**
-     * AC 自动机节点
+     * Represents a node in the Aho-Corasick automaton.
      */
     protected static class Node {
 
-        // 是否是字符串 尾节点
+        /**
+         * Indicates whether this node is the end of a matched string.
+         */
         public boolean isEnd = false;
 
-        // 如果当前节点是尾节点 那么表示 匹配到的字符串 其他情况下 null
+        /**
+         * If this node is an end node, this field stores the matched string. Otherwise, it is null.
+         */
         public String tagetString;
 
-        // 失效节点
+        /**
+         * The failure link (fail pointer) for this node.
+         */
         public Node fail;
 
         /**
-         * 直接路由表 减少挑 fail过程 使用数组 + charIndex 希望库减少 hash复杂度和内存空间 当初始化 stringSet 数量较大时 字符较多可以一定程度上减少 hashMap 底层实现带来的 内存开销
-         * directRouter 大小为 全部字符数量
+         * Direct routing table. This table reduces the fail process by directly jumping to the next node. It uses an
+         * array + charIndex to potentially reduce hash complexity and memory usage. When the number of initial strings
+         * in {@code stringSet} is large, and there are many characters, this can somewhat reduce the memory overhead
+         * caused by HashMap's underlying implementation. The size of {@code directRouter} is equal to the total number
+         * of unique characters.
          */
         public Node[] directRouter;
 
-        // 节点编号 root 为 0
+        /**
+         * The index of this node. The root node has an index of 0.
+         */
         public int nodeIndex;
 
-        // 值
+        /**
+         * The character value represented by this node.
+         */
         public char value;
 
-        // fail指针来源
+        /**
+         * List of nodes that point to this node via their fail links.
+         */
         public List<Node> failPre = new ArrayList<>();
 
+        /**
+         * Default constructor for a Node.
+         */
         public Node() {
         }
 
         /**
-         * 构建根节点
+         * Creates and initializes the root node.
          *
-         * @param allCharSize 全部字符数量
-         * @return 根Node
+         * @param allCharSize The total number of unique characters.
+         * @return The root {@code Node}.
          */
         public static Node createRoot(final int allCharSize) {
             final Node node = new Node();
@@ -242,12 +263,13 @@ public class MultiStringFinder {
         }
 
         /**
-         * 新增子节点
+         * Adds a child node for the given character.
          *
-         * @param c         字符
-         * @param nodeIndex 节点编号
-         * @param charIndex 字符索引
-         * @return 如果已经存在子节点 false 新增 ture
+         * @param c         The character for the new child node.
+         * @param nodeIndex The index to assign to the new node.
+         * @param charIndex A map from characters to their indices.
+         * @return {@code false} if a child node for the character already exists, {@code true} if a new child node was
+         *         added.
          */
         public boolean addValue(final char c, final int nodeIndex, final Map<Character, Integer> charIndex) {
             final Integer index = charIndex.get(c);
@@ -264,9 +286,9 @@ public class MultiStringFinder {
         }
 
         /**
-         * 标记当前节点为 字符串尾节点
+         * Marks the current node as an end node for a matched string.
          *
-         * @param string 字符串
+         * @param string The string that ends at this node.
          */
         public void setEnd(final String string) {
             tagetString = string;
@@ -274,11 +296,11 @@ public class MultiStringFinder {
         }
 
         /**
-         * 获取下一跳
+         * Gets the next node based on the given character.
          *
-         * @param c         字符
-         * @param charIndex 字符索引
-         * @return 下一个Node
+         * @param c         The character to transition on.
+         * @param charIndex A map from characters to their indices.
+         * @return The next {@code Node}, or {@code null} if no transition exists for the character.
          */
         public Node getNext(final char c, final Map<Character, Integer> charIndex) {
             final Integer index = charIndex.get(c);

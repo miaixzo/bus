@@ -42,7 +42,7 @@ import org.miaixz.bus.extra.qrcode.QrConfig;
 import com.google.zxing.common.BitMatrix;
 
 /**
- * SVG渲染器
+ * SVG renderer for QR codes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,9 +52,9 @@ public class SVGRender implements BitMatrixRender {
     private final QrConfig qrConfig;
 
     /**
-     * 构造
+     * Constructs an {@code SVGRender} with the specified QR code configuration.
      *
-     * @param qrConfig 二维码配置
+     * @param qrConfig The QR code configuration.
      */
     public SVGRender(final QrConfig qrConfig) {
         this.qrConfig = qrConfig;
@@ -62,14 +62,16 @@ public class SVGRender implements BitMatrixRender {
 
     @Override
     public void render(final BitMatrix matrix, final OutputStream out) {
+        // Renders the BitMatrix to the given OutputStream, using the configured charset.
         render(matrix, new OutputStreamWriter(out, qrConfig.getCharset()));
     }
 
     /**
-     * 渲染SVG
+     * Renders the given {@link BitMatrix} as SVG to the specified {@link Appendable}.
      *
-     * @param matrix 二维码
-     * @param writer 输出
+     * @param matrix The {@link BitMatrix} representing the QR code.
+     * @param writer The {@link Appendable} to which the SVG will be written.
+     * @throws InternalException if an {@link IOException} occurs during writing.
      */
     public void render(final BitMatrix matrix, final Appendable writer) {
         final Image logoImg = qrConfig.getImg();
@@ -89,7 +91,7 @@ public class SVGRender implements BitMatrixRender {
         int logoY = 0;
         if (logoImg != null) {
             logoBase64 = ImageKit.toBase64DataUri(logoImg, "png");
-            // 按照最短的边做比例缩放
+            // Scale according to the shortest side
             if (qrWidth < qrHeight) {
                 logoWidth = qrWidth / ratio;
                 logoHeight = logoImg.getHeight(null) * logoWidth / logoImg.getWidth(null);
@@ -115,7 +117,7 @@ public class SVGRender implements BitMatrixRender {
             writer.append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" >\n");
             writer.append("<path d=\"");
 
-            // 数据
+            // Data
             for (int y = 0; y < qrHeight; y++) {
                 for (int x = 0; x < qrWidth; x++) {
                     if (matrix.get(x, y)) {

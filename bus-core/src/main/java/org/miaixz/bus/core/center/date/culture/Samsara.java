@@ -28,7 +28,8 @@
 package org.miaixz.bus.core.center.date.culture;
 
 /**
- * 轮回的信息 季度/月/星期/日/小时/分钟等
+ * An abstract class for representing cyclical information, such as days of the week, months of the year, quarters, etc.
+ * It manages a list of names and a current index.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,20 +37,20 @@ package org.miaixz.bus.core.center.date.culture;
 public abstract class Samsara extends Loops {
 
     /**
-     * 名称列表
+     * The list of names in the cycle.
      */
     protected String[] names;
 
     /**
-     * 索引，从0开始
+     * The current index in the cycle (0-based).
      */
     protected int index;
 
     /**
-     * 通过索引初始化
+     * Initializes with a list of names and an index. The index will be normalized.
      *
-     * @param names 名称列表
-     * @param index 索引，支持负数，自动轮转
+     * @param names A list of names for the cycle.
+     * @param index The initial index (supports negative numbers for reverse indexing).
      */
     protected Samsara(String[] names, int index) {
         this.names = names;
@@ -57,10 +58,10 @@ public abstract class Samsara extends Loops {
     }
 
     /**
-     * 通过名称初始化
+     * Initializes with a list of names and a name to find the index for.
      *
-     * @param names 名称列表
-     * @param name  名称
+     * @param names A list of names for the cycle.
+     * @param name  The name to find the initial index of.
      */
     protected Samsara(String[] names, String name) {
         this.names = names;
@@ -68,37 +69,38 @@ public abstract class Samsara extends Loops {
     }
 
     /**
-     * 名称
+     * Gets the name corresponding to the current index.
      *
-     * @return 名称
+     * @return The name.
      */
     public String getName() {
         return names[index];
     }
 
     /**
-     * 索引
+     * Gets the current index (0-based).
      *
-     * @return 索引，从0开始
+     * @return The index.
      */
     public int getIndex() {
         return index;
     }
 
     /**
-     * 数量
+     * Gets the total number of elements in the cycle.
      *
-     * @return 数量
+     * @return The size of the cycle.
      */
     public int getSize() {
         return names.length;
     }
 
     /**
-     * 名称对应的索引
+     * Finds the index corresponding to a given name.
      *
-     * @param name 名称
-     * @return 索引，从0开始
+     * @param name The name to find.
+     * @return The 0-based index.
+     * @throws IllegalArgumentException if the name is not found.
      */
     protected int indexOf(String name) {
         for (int i = 0, j = getSize(); i < j; i++) {
@@ -110,30 +112,30 @@ public abstract class Samsara extends Loops {
     }
 
     /**
-     * 转换为不超范围的索引
+     * Normalizes an index to be within the valid range [0, size-1] using the modulo operator.
      *
-     * @param index 索引
-     * @return 索引，从0开始
+     * @param index The index to normalize.
+     * @return The normalized 0-based index.
      */
     protected int indexOf(int index) {
         return indexOf(index, getSize());
     }
 
     /**
-     * 推移后的索引
+     * Calculates the index after shifting by {@code n} steps, wrapping around the cycle.
      *
-     * @param n 推移步数
-     * @return 索引，从0开始
+     * @param n The number of steps to shift (can be negative).
+     * @return The new 0-based index.
      */
     protected int nextIndex(int n) {
         return indexOf(index + n);
     }
 
     /**
-     * 到目标索引的步数
+     * Calculates the number of steps from the current index to a target index.
      *
-     * @param targetIndex 目标索引
-     * @return 步数
+     * @param targetIndex The target index.
+     * @return The number of steps (can be positive or negative).
      */
     public int stepsTo(int targetIndex) {
         return indexOf(targetIndex - index);

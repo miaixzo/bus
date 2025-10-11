@@ -36,7 +36,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay;
 import org.miaixz.bus.health.unix.driver.Xrandr;
 
 /**
- * A Display
+ * Represents a display on a Unix-like system.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,16 +47,16 @@ public final class UnixDisplay extends AbstractDisplay {
     /**
      * Constructor for UnixDisplay.
      *
-     * @param edid a byte array representing a display EDID
+     * @param edid a byte array representing a display EDID (Extended Display Identification Data).
      */
     UnixDisplay(byte[] edid) {
         super(edid);
     }
 
     /**
-     * Gets Display Information
+     * Gets display information.
      *
-     * @return An array of Display objects representing monitors, etc.
+     * @return A list of {@link Display} objects representing monitors and other display devices.
      */
     public static List<Display> getDisplays() {
         return Xrandr.getEdidArrays().stream().map(UnixDisplay::new).collect(Collectors.toList());

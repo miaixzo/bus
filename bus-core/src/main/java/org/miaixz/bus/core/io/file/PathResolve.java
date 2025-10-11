@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.PredicateKit;
 
 /**
- * NIO中Path对象操作封装
+ * A utility class that encapsulates operations on NIO {@link Path} objects.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,11 +57,11 @@ import org.miaixz.bus.core.xyz.PredicateKit;
 public class PathResolve {
 
     /**
-     * 拼接多个路径
+     * Joins multiple path strings into a single {@link Path}.
      *
-     * @param firstPath 第一个路径
-     * @param paths     其它路径
-     * @return 拼接后的路径
+     * @param firstPath The first path component.
+     * @param paths     Additional path components.
+     * @return The combined {@link Path}.
      * @see Paths#get(String, String...)
      */
     public static Path of(final String firstPath, final String... paths) {
@@ -69,11 +69,11 @@ public class PathResolve {
     }
 
     /**
-     * 拼接多个路径，
+     * Joins multiple {@link Path} objects into a single {@link Path}.
      *
-     * @param firstPath 第一个路径
-     * @param paths     其它路径
-     * @return 拼接后的路径
+     * @param firstPath The first path.
+     * @param paths     Additional paths to resolve against the first path.
+     * @return The combined {@link Path}.
      */
     public static Path of(Path firstPath, final Path... paths) {
         if (ArrayKit.isEmpty(paths)) {
@@ -94,11 +94,11 @@ public class PathResolve {
     }
 
     /**
-     * 目录是否为空
+     * Checks if a directory is empty.
      *
-     * @param dirPath 目录
-     * @return 是否为空
-     * @throws InternalException IOException
+     * @param dirPath The directory path.
+     * @return {@code true} if the directory is empty.
+     * @throws InternalException if an I/O error occurs.
      */
     public static boolean isDirEmpty(final Path dirPath) {
         try (final DirectoryStream<Path> dirStream = Files.newDirectoryStream(dirPath)) {
@@ -109,11 +109,11 @@ public class PathResolve {
     }
 
     /**
-     * 获取目录下所有文件和子目录，此方法不判断是否为目录
+     * Lists all files and subdirectories within a given directory.
      *
-     * @param dirPath 目录路径
-     * @param filter  文件过滤规则，{@code null}表示接收全部文件
-     * @return 文件列表
+     * @param dirPath The directory path.
+     * @param filter  A filter to apply to the files. If {@code null}, all files are accepted.
+     * @return An array of matching paths.
      */
     public static Path[] listFiles(final Path dirPath, Predicate<? super Path> filter) {
         if (null == filter) {
@@ -128,36 +128,36 @@ public class PathResolve {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件 如果提供path为文件，直接返回过滤结果
+     * Recursively traverses a directory to find all files.
      *
-     * @param path       当前遍历文件或目录
-     * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
-     * @return 文件列表
+     * @param path       The starting file or directory.
+     * @param fileFilter A filter to select which files to include.
+     * @return A list of matching files.
      */
     public static List<File> loopFiles(final Path path, final FileFilter fileFilter) {
         return loopFiles(path, -1, fileFilter);
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件 如果提供path为文件，直接返回过滤结果
+     * Recursively traverses a directory to find all files up to a maximum depth.
      *
-     * @param path       当前遍历文件或目录
-     * @param maxDepth   遍历最大深度，-1表示遍历到没有目录为止
-     * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
-     * @return 文件列表
+     * @param path       The starting file or directory.
+     * @param maxDepth   The maximum depth to traverse (-1 for unlimited).
+     * @param fileFilter A filter to select which files to include.
+     * @return A list of matching files.
      */
     public static List<File> loopFiles(final Path path, final int maxDepth, final FileFilter fileFilter) {
         return loopFiles(path, maxDepth, false, fileFilter);
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件 如果提供path为文件，直接返回过滤结果
+     * Recursively traverses a directory to find all files.
      *
-     * @param path          当前遍历文件或目录
-     * @param maxDepth      遍历最大深度，-1表示遍历到没有目录为止
-     * @param isFollowLinks 是否跟踪软链（快捷方式）
-     * @param fileFilter    文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
-     * @return 文件列表
+     * @param path          The starting file or directory.
+     * @param maxDepth      The maximum depth to traverse (-1 for unlimited).
+     * @param isFollowLinks Whether to follow symbolic links.
+     * @param fileFilter    A filter to select which files to include.
+     * @return A list of matching files.
      */
     public static List<File> loopFiles(
             final Path path,
@@ -187,41 +187,37 @@ public class PathResolve {
                 return FileVisitResult.CONTINUE;
             }
         });
-
         return fileList;
     }
 
     /**
-     * 遍历指定path下的文件并做处理
+     * Walks a file tree starting from a given path.
      *
-     * @param start   起始路径，必须为目录
-     * @param visitor {@link FileVisitor} 接口，用于自定义在访问文件时，访问目录前后等节点做的操作
-     * @see Files#walkFileTree(Path, java.util.Set, int, FileVisitor)
+     * @param start   The starting path (must be a directory).
+     * @param visitor The {@link FileVisitor} to apply.
      */
     public static void walkFiles(final Path start, final FileVisitor<? super Path> visitor) {
         walkFiles(start, -1, visitor);
     }
 
     /**
-     * 遍历指定path下的文件并做处理
+     * Walks a file tree up to a maximum depth.
      *
-     * @param start    起始路径，必须为目录
-     * @param maxDepth 最大遍历深度，-1表示不限制深度
-     * @param visitor  {@link FileVisitor} 接口，用于自定义在访问文件时，访问目录前后等节点做的操作
-     * @see Files#walkFileTree(Path, java.util.Set, int, FileVisitor)
+     * @param start    The starting path.
+     * @param maxDepth The maximum depth (-1 for unlimited).
+     * @param visitor  The {@link FileVisitor}.
      */
     public static void walkFiles(final Path start, final int maxDepth, final FileVisitor<? super Path> visitor) {
         walkFiles(start, maxDepth, false, visitor);
     }
 
     /**
-     * 遍历指定path下的文件并做处理
+     * Walks a file tree.
      *
-     * @param start         起始路径，必须为目录
-     * @param maxDepth      最大遍历深度，-1表示不限制深度
-     * @param visitor       {@link FileVisitor} 接口，用于自定义在访问文件时，访问目录前后等节点做的操作
-     * @param isFollowLinks 是否追踪到软链对应的真实地址
-     * @see Files#walkFileTree(Path, java.util.Set, int, FileVisitor)
+     * @param start         The starting path.
+     * @param maxDepth      The maximum depth.
+     * @param visitor       The {@link FileVisitor}.
+     * @param isFollowLinks Whether to follow symbolic links.
      */
     public static void walkFiles(
             final Path start,
@@ -229,7 +225,6 @@ public class PathResolve {
             final boolean isFollowLinks,
             final FileVisitor<? super Path> visitor) {
         if (maxDepth < 0) {
-            // < 0 表示遍历到最底层
             maxDepth = Integer.MAX_VALUE;
         }
 
@@ -241,36 +236,32 @@ public class PathResolve {
     }
 
     /**
-     * 删除文件或者文件夹，不追踪软链 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹 某个文件删除失败会终止删除操作
+     * Deletes a file or directory recursively without following symbolic links.
      *
-     * @param path 文件对象
-     * @throws InternalException IO异常
+     * @param path The path to the file or directory.
+     * @throws InternalException if an I/O error occurs.
      */
     public static void remove(final Path path) throws InternalException {
         PathRemover.of(path).remove();
     }
 
     /**
-     * 清空目录
+     * Clears all content from a directory without deleting the directory itself.
      *
-     * @param path 目录路径
+     * @param path The path to the directory.
      */
     public static void clean(final Path path) {
         PathRemover.of(path).clean();
     }
 
     /**
-     * 拷贝资源到目标文件
-     * <ul>
-     * <li>如果src为{@link FileResource}，调用文件拷贝。</li>
-     * <li>其它，调用JDK7+的 {@link Files#copy(InputStream, Path, CopyOption...)}。</li>
-     * </ul>
+     * Copies a resource to a target path.
      *
-     * @param src     源文件资源{@link Resource}实现
-     * @param target  目标文件或目录，如果为目录使用与源文件相同的文件名
-     * @param options {@link StandardCopyOption}
-     * @return 目标Path
-     * @throws InternalException IO异常
+     * @param src     The source {@link Resource}.
+     * @param target  The target path.
+     * @param options The copy options.
+     * @return The target path.
+     * @throws InternalException if an I/O error occurs.
      */
     public static Path copy(final Resource src, final Path target, final CopyOption... options)
             throws InternalException {
@@ -281,46 +272,41 @@ public class PathResolve {
         try (final InputStream stream = src.getStream()) {
             return copy(stream, target, options);
         } catch (final IOException e) {
-            throw new RuntimeException(e);
+            throw new InternalException(e);
         }
     }
 
     /**
-     * 通过JDK7+的 {@link Files#copy(InputStream, Path, CopyOption...)} 方法拷贝文件
+     * Copies an {@link InputStream} to a target path.
      *
-     * @param src     源文件流，使用后不闭流
-     * @param target  目标文件或目录，如果为目录使用与源文件相同的文件名
-     * @param options {@link StandardCopyOption}
-     * @return 目标Path
-     * @throws InternalException IO异常
+     * @param src     The source stream (not closed after use).
+     * @param target  The target path.
+     * @param options The copy options.
+     * @return The target path.
+     * @throws InternalException if an I/O error occurs.
      */
     public static Path copy(final InputStream src, final Path target, final CopyOption... options)
             throws InternalException {
-        Assert.notNull(target, "Destination File or directory is null !");
-
-        // 创建级联父目录
+        Assert.notNull(target, "Destination path is null !");
         mkParentDirs(target);
-
         try {
             Files.copy(src, target, options);
         } catch (final IOException e) {
             throw new InternalException(e);
         }
-
         return target;
     }
 
     /**
-     * 通过JDK7+的 {@link Files#copy(InputStream, Path, CopyOption...)} 方法拷贝文件
+     * Copies a file to an {@link OutputStream}.
      *
-     * @param src 源文件流，使用后不闭流
-     * @param out 目标流
-     * @return 拷贝bytes数
-     * @throws InternalException IO异常
+     * @param src The source path.
+     * @param out The target stream.
+     * @return The number of bytes copied.
+     * @throws InternalException if an I/O error occurs.
      */
     public static long copy(final Path src, final OutputStream out) throws InternalException {
         Assert.notNull(src, "Source is null !");
-
         try {
             return Files.copy(src, out);
         } catch (final IOException e) {
@@ -329,44 +315,26 @@ public class PathResolve {
     }
 
     /**
-     * 复制src到target中
-     * <ul>
-     * <li>src路径和target路径相同时，不执行操作</li>
-     * <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
-     * <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
-     * <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
-     * <li>src为目录，target为已存在目录，整个src目录连同其目录拷贝到目标目录中</li>
-     * <li>src为目录，target为不存在路径，则自动创建目标为新目录，并只拷贝src内容到目标目录中，相当于重命名目录。</li>
-     * <li>src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     * </ul>
+     * Copies a source file or directory to a target.
      *
-     * @param src     源文件路径，如果为目录会在目标中创建新目录
-     * @param target  目标文件或目录，如果为目录使用与源文件相同的文件名
-     * @param options {@link StandardCopyOption}
-     * @return Path
-     * @throws InternalException IO异常
+     * @param src     The source path.
+     * @param target  The target path.
+     * @param options The copy options.
+     * @return The target path.
+     * @throws InternalException if an I/O error occurs.
      */
     public static Path copy(final Path src, final Path target, final CopyOption... options) throws InternalException {
         return PathCopier.of(src, target, options).copy();
     }
 
     /**
-     * 复制src的内容到target中
-     * <ul>
-     * <li>src路径和target路径相同时，不执行操作</li>
-     * <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
-     * <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
-     * <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
-     * <li>src为目录，target为已存在目录，整个src目录下的内容拷贝到目标目录中</li>
-     * <li>src为目录，target为不存在路径，则自动创建目标为新目录，整个src目录下的内容拷贝到目标目录中，相当于重命名目录。</li>
-     * <li>src为目录，target为文件，抛出IO异常</li>
-     * </ul>
+     * Copies the content of a source file or directory to a target.
      *
-     * @param src     源文件路径，如果为目录只在目标中创建新目录
-     * @param target  目标目录，如果为目录使用与源文件相同的文件名
-     * @param options {@link StandardCopyOption}
-     * @return Path
-     * @throws InternalException IO异常
+     * @param src     The source path.
+     * @param target  The target path.
+     * @param options The copy options.
+     * @return The target path.
+     * @throws InternalException if an I/O error occurs.
      */
     public static Path copyContent(final Path src, final Path target, final CopyOption... options)
             throws InternalException {
@@ -374,36 +342,32 @@ public class PathResolve {
     }
 
     /**
-     * 判断是否为目录，如果file为null，则返回false 此方法不会追踪到软链对应的真实地址，即软链被当作文件
+     * Checks if the given path is a directory. Does not follow symbolic links.
      *
-     * @param path {@link Path}
-     * @return 如果为目录true
+     * @param path The {@link Path}.
+     * @return {@code true} if it is a directory.
      */
     public static boolean isDirectory(final Path path) {
         return isDirectory(path, false);
     }
 
     /**
-     * 判断是否存在且为非目录
-     * <ul>
-     * <li>如果path为{@code null}，返回{@code false}</li>
-     * <li>如果path不存在，返回{@code false}</li>
-     * </ul>
+     * Checks if the path exists and is not a directory.
      *
-     * @param path          {@link Path}
-     * @param isFollowLinks 是否追踪到软链对应的真实地址
-     * @return 如果为目录true
+     * @param path          The {@link Path}.
+     * @param isFollowLinks Whether to follow symbolic links.
+     * @return {@code true} if it exists and is not a directory.
      */
     public static boolean isExistsAndNotDirectory(final Path path, final boolean isFollowLinks) {
         return exists(path, isFollowLinks) && !isDirectory(path, isFollowLinks);
     }
 
     /**
-     * 判断是否为目录，如果file为null，则返回false
+     * Checks if the given path is a directory.
      *
-     * @param path          {@link Path}
-     * @param isFollowLinks 是否追踪到软链对应的真实地址
-     * @return 如果为目录true
+     * @param path          The {@link Path}.
+     * @param isFollowLinks Whether to follow symbolic links.
+     * @return {@code true} if it is a directory.
      */
     public static boolean isDirectory(final Path path, final boolean isFollowLinks) {
         if (null == path) {
@@ -413,33 +377,33 @@ public class PathResolve {
     }
 
     /**
-     * 获取指定位置的子路径部分，支持负数，例如index为-1表示从后数第一个节点位置
+     * Gets a path element (name) at the specified index. Supports negative indices.
      *
-     * @param path  路径
-     * @param index 路径节点位置，支持负数（负数从后向前计数）
-     * @return 获取的子路径
+     * @param path  The path.
+     * @param index The index of the path element.
+     * @return The path element.
      */
     public static Path getPathEle(final Path path, final int index) {
         return subPath(path, index, index == -1 ? path.getNameCount() : index + 1);
     }
 
     /**
-     * 获取指定位置的最后一个子路径部分
+     * Gets the last path element.
      *
-     * @param path 路径
-     * @return 获取的最后一个子路径
+     * @param path The path.
+     * @return The last path element.
      */
     public static Path getLastPathEle(final Path path) {
         return getPathEle(path, path.getNameCount() - 1);
     }
 
     /**
-     * 获取指定位置的子路径部分，支持负数，例如起始为-1表示从后数第一个节点位置
+     * Returns a relative {@code Path} that is a subsequence of the name elements of this path.
      *
-     * @param path      路径
-     * @param fromIndex 起始路径节点（包括）
-     * @param toIndex   结束路径节点（不包括）
-     * @return 获取的子路径
+     * @param path      The path.
+     * @param fromIndex The starting index (inclusive).
+     * @param toIndex   The ending index (exclusive).
+     * @return The subpath.
      */
     public static Path subPath(final Path path, int fromIndex, int toIndex) {
         if (null == path) {
@@ -447,43 +411,33 @@ public class PathResolve {
         }
         final int len = path.getNameCount();
 
-        if (fromIndex < 0) {
+        if (fromIndex < 0)
             fromIndex = len + fromIndex;
-            if (fromIndex < 0) {
-                fromIndex = 0;
-            }
-        } else if (fromIndex > len) {
-            fromIndex = len;
-        }
-
-        if (toIndex < 0) {
+        if (toIndex < 0)
             toIndex = len + toIndex;
-            if (toIndex < 0) {
-                toIndex = len;
-            }
-        } else if (toIndex > len) {
-            toIndex = len;
-        }
-
-        if (toIndex < fromIndex) {
-            final int tmp = fromIndex;
+        if (fromIndex > toIndex) {
+            int tmp = fromIndex;
             fromIndex = toIndex;
             toIndex = tmp;
         }
 
-        if (fromIndex == toIndex) {
+        if (fromIndex >= len)
             return null;
-        }
+        if (toIndex > len)
+            toIndex = len;
+        if (fromIndex >= toIndex)
+            return null;
+
         return path.subpath(fromIndex, toIndex);
     }
 
     /**
-     * 获取文件属性
+     * Gets the basic file attributes for a path.
      *
-     * @param path          文件路径{@link Path}
-     * @param isFollowLinks 是否跟踪到软链对应的真实路径
-     * @return {@link BasicFileAttributes}
-     * @throws InternalException IO异常
+     * @param path          The {@link Path}.
+     * @param isFollowLinks Whether to follow symbolic links.
+     * @return The file attributes.
+     * @throws InternalException if an I/O error occurs.
      */
     public static BasicFileAttributes getAttributes(final Path path, final boolean isFollowLinks)
             throws InternalException {
@@ -491,19 +445,18 @@ public class PathResolve {
     }
 
     /**
-     * 获取文件属性
+     * Gets the basic file attributes for a path.
      *
-     * @param path    文件路径{@link Path}
-     * @param options {@link LinkOption}
-     * @return {@link BasicFileAttributes}
-     * @throws InternalException IO异常
+     * @param path    The {@link Path}.
+     * @param options The link options.
+     * @return The file attributes.
+     * @throws InternalException if an I/O error occurs.
      */
     public static BasicFileAttributes getAttributes(final Path path, final LinkOption... options)
             throws InternalException {
         if (null == path) {
             return null;
         }
-
         try {
             return Files.readAttributes(path, BasicFileAttributes.class, options);
         } catch (final IOException e) {
@@ -512,57 +465,53 @@ public class PathResolve {
     }
 
     /**
-     * 获得输入流
+     * Gets a buffered input stream for a path.
      *
-     * @param path Path
-     * @return 输入流
-     * @throws InternalException 文件未找到
+     * @param path The path.
+     * @return A {@link BufferedInputStream}.
+     * @throws InternalException if an I/O error occurs.
      */
     public static BufferedInputStream getInputStream(final Path path) throws InternalException {
-        final InputStream in;
         try {
-            in = Files.newInputStream(path);
+            return IoKit.toBuffered(Files.newInputStream(path));
         } catch (final IOException e) {
             throw new InternalException(e);
         }
-        return IoKit.toBuffered(in);
     }
 
     /**
-     * 获得输入流
+     * Gets a buffered input stream for a path with open options.
      *
-     * @param path    Path
-     * @param options {@link OpenOption}
-     * @return 输入流
+     * @param path    The path.
+     * @param options The open options.
+     * @return A {@link BufferedInputStream}.
      */
     public static BufferedInputStream getInputStream(final Path path, final OpenOption... options) {
-        final InputStream in;
         try {
-            in = Files.newInputStream(path, options);
+            return IoKit.toBuffered(Files.newInputStream(path, options));
         } catch (final IOException e) {
             throw new InternalException(e);
         }
-        return IoKit.toBuffered(in);
     }
 
     /**
-     * 获得一个文件读取器
+     * Gets a buffered reader for a path using UTF-8 encoding.
      *
-     * @param path 文件Path
-     * @return BufferedReader对象
-     * @throws InternalException IO异常
+     * @param path The path.
+     * @return A {@link BufferedReader}.
+     * @throws InternalException if an I/O error occurs.
      */
     public static BufferedReader getReader(final Path path) throws InternalException {
         return getReader(path, Charset.UTF_8);
     }
 
     /**
-     * 获得一个文件读取器
+     * Gets a buffered reader for a path with a specific charset.
      *
-     * @param path    文件Path
-     * @param charset 字符集
-     * @return BufferedReader对象
-     * @throws InternalException IO异常
+     * @param path    The path.
+     * @param charset The character set.
+     * @return A {@link BufferedReader}.
+     * @throws InternalException if an I/O error occurs.
      */
     public static BufferedReader getReader(final Path path, final java.nio.charset.Charset charset)
             throws InternalException {
@@ -570,13 +519,12 @@ public class PathResolve {
     }
 
     /**
-     * 获得一个文件读取器
+     * Gets a buffered reader for a path with a specific charset and open options.
      *
-     * @param path    文件Path
-     * @param charset 字符集
-     * @param options {@link OpenOption}
-     * @return BufferedReader对象
-     * 
+     * @param path    The path.
+     * @param charset The character set.
+     * @param options The open options.
+     * @return A {@link BufferedReader}.
      */
     public static BufferedReader getReader(
             final Path path,
@@ -586,10 +534,10 @@ public class PathResolve {
     }
 
     /**
-     * 读取文件的所有内容为byte数组
+     * Reads all bytes from a file.
      *
-     * @param path 文件
-     * @return byte数组
+     * @param path The path to the file.
+     * @return A byte array of the file's contents.
      */
     public static byte[] readBytes(final Path path) {
         try {
@@ -600,93 +548,67 @@ public class PathResolve {
     }
 
     /**
-     * 获得输出流
+     * Gets a buffered output stream for a path.
      *
-     * @param path    Path
-     * @param options 选项，如追加模式传{@link java.nio.file.StandardOpenOption#APPEND}
-     * @return 输入流
-     * @throws NotFoundException 文件未找到
+     * @param path    The path.
+     * @param options The open options (e.g., {@link StandardOpenOption#APPEND}).
+     * @return A {@link BufferedOutputStream}.
+     * @throws NotFoundException if the path cannot be opened.
      */
     public static BufferedOutputStream getOutputStream(final Path path, final OpenOption... options)
             throws NotFoundException {
-        final OutputStream in;
         try {
-            in = Files.newOutputStream(path, options);
+            return IoKit.toBuffered(Files.newOutputStream(path, options));
         } catch (final IOException e) {
             throw new NotFoundException(e);
         }
-        return IoKit.toBuffered(in);
     }
 
     /**
-     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名
+     * Renames a file or directory within its current parent directory.
      *
-     * <pre>
-     * FileKit.rename(file, "aaa.jpg", false) xx/xx.png = xx/aaa.jpg
-     * FileKit.rename(dir, "dir2", false) xx/xx/ = xx/dir2/
-     * </pre>
-     *
-     * @param path       被修改的文件
-     * @param newName    新的文件名，包括扩展名
-     * @param isOverride 是否覆盖目标文件
-     * @return 目标文件Path
+     * @param path       The path to rename.
+     * @param newName    The new name (including extension).
+     * @param isOverride Whether to overwrite the destination if it exists.
+     * @return The path to the renamed file or directory.
      */
     public static Path rename(final Path path, final String newName, final boolean isOverride) {
         return move(path, path.resolveSibling(newName), isOverride);
     }
 
     /**
-     * 移动文件或目录到目标中，例如：
-     * <ul>
-     * <li>如果src和target为同一文件或目录，直接返回target。</li>
-     * <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
-     * <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
-     * <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
-     * <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     * <li>如果src为目录，target为目录，则将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
-     * <li>如果src为目录，target为不存在的路径，则重命名src到target，如move("/a/b", "/c/d")，结果为"/c/d/"，相当于b重命名为d</li>
-     * </ul>
+     * Moves a file or directory to a target location.
      *
-     * @param src        源文件或目录路径
-     * @param target     目标路径，如果为目录，则移动到此目录下
-     * @param isOverride 是否覆盖目标文件
-     * @return 目标文件Path
+     * @param src        The source path.
+     * @param target     The target path.
+     * @param isOverride Whether to overwrite the destination if it exists.
+     * @return The target path.
      */
     public static Path move(final Path src, final Path target, final boolean isOverride) {
         return PathMover.of(src, target, isOverride).move();
     }
 
     /**
-     * 移动文件或目录内容到目标中，例如：
-     * <ul>
-     * <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
-     * <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
-     * <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
-     * <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     * <li>如果src为目录，target为目录，则将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
-     * <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
-     * </ul>
+     * Moves the content of a file or directory to a target location.
      *
-     * @param src        源文件或目录路径
-     * @param target     目标路径，如果为目录，则移动到此目录下
-     * @param isOverride 是否覆盖目标文件
-     * @return 目标文件Path
+     * @param src        The source path.
+     * @param target     The target path.
+     * @param isOverride Whether to overwrite the destination if it exists.
+     * @return The target path.
      */
     public static Path moveContent(final Path src, final Path target, final boolean isOverride) {
         return PathMover.of(src, target, isOverride).moveContent();
     }
 
     /**
-     * 检查两个文件是否是同一个文件 所谓文件相同，是指Path对象是否指向同一个文件或文件夹
+     * Checks if two paths refer to the same file or directory.
      *
-     * @param file1 文件1
-     * @param file2 文件2
-     * @return 是否相同
-     * @throws InternalException IO异常
-     * @see Files#isSameFile(Path, Path)
+     * @param file1 The first path.
+     * @param file2 The second path.
+     * @return {@code true} if they refer to the same file.
+     * @throws InternalException if an I/O error occurs.
      */
     public static boolean equals(final Path file1, final Path file2) throws InternalException {
-        // 两者都为null判定为相同
         if (null == file1 || null == file2) {
             return null == file1 && null == file2;
         }
@@ -702,13 +624,12 @@ public class PathResolve {
     }
 
     /**
-     * 检查两个文件是否是同一个文件 所谓文件相同，是指Path对象是否指向同一个文件或文件夹
+     * Checks if two paths refer to the same file.
      *
-     * @param file1 文件1，必须存在
-     * @param file2 文件2，必须存在
-     * @return 是否相同
-     * @throws InternalException IO异常
-     * @see Files#isSameFile(Path, Path)
+     * @param file1 The first path.
+     * @param file2 The second path.
+     * @return {@code true} if they are the same file.
+     * @throws InternalException if an I/O error occurs.
      */
     public static boolean isSameFile(final Path file1, final Path file2) throws InternalException {
         try {
@@ -719,12 +640,11 @@ public class PathResolve {
     }
 
     /**
-     * 判断是否为文件，如果file为null，则返回false
+     * Checks if the path is a regular file.
      *
-     * @param path          文件
-     * @param isFollowLinks 是否跟踪软链（快捷方式）
-     * @return 如果为文件true
-     * @see Files#isRegularFile(Path, LinkOption...)
+     * @param path          The path.
+     * @param isFollowLinks Whether to follow symbolic links.
+     * @return {@code true} if it is a regular file.
      */
     public static boolean isFile(final Path path, final boolean isFollowLinks) {
         if (null == path) {
@@ -734,31 +654,31 @@ public class PathResolve {
     }
 
     /**
-     * 判断是否为符号链接文件
+     * Checks if the path is a symbolic link.
      *
-     * @param path 被检查的文件
-     * @return 是否为符号链接文件
+     * @param path The path to check.
+     * @return {@code true} if it is a symbolic link.
      */
     public static boolean isSymlink(final Path path) {
         return Files.isSymbolicLink(path);
     }
 
     /**
-     * 判断是否为其它类型文件，即非文件、非目录、非链接。
+     * Checks if the path refers to something other than a file, directory, or symbolic link.
      *
-     * @param path 被检查的文件（非空）
-     * @return 是否为其它类型文件
+     * @param path The path to check.
+     * @return {@code true} if it is an "other" type.
      */
     public static boolean isOther(final Path path) {
         return getAttributes(path, false).isOther();
     }
 
     /**
-     * 判断文件或目录是否存在
+     * Checks if a file or directory exists.
      *
-     * @param path          文件，{@code null}返回{@code false}
-     * @param isFollowLinks 是否跟踪软链（快捷方式）
-     * @return 是否存在
+     * @param path          The path to check.
+     * @param isFollowLinks Whether to follow symbolic links.
+     * @return {@code true} if it exists.
      */
     public static boolean exists(final Path path, final boolean isFollowLinks) {
         if (null == path) {
@@ -768,21 +688,21 @@ public class PathResolve {
     }
 
     /**
-     * 判断给定的目录是否为给定文件或文件夹的子目录
+     * Checks if a given path is a subdirectory of a parent path.
      *
-     * @param parent 父目录
-     * @param sub    子目录
-     * @return 子目录是否为父目录的子目录
+     * @param parent The parent path.
+     * @param sub    The potential subdirectory.
+     * @return {@code true} if {@code sub} is a subdirectory of {@code parent}.
      */
     public static boolean isSub(final Path parent, final Path sub) {
         return toAbsNormal(sub).startsWith(toAbsNormal(parent));
     }
 
     /**
-     * 将Path路径转换为标准的绝对路径 如果{@link Path#isAbsolute()}为{@code true}，表示已经是绝对路径，返回本身 如果是相对路径，则返回相对于系统默认目录的路径（一般为项目路径）
+     * Converts a {@link Path} to a normalized, absolute path.
      *
-     * @param path 文件或目录Path
-     * @return 转换后的Path
+     * @param path The path to convert.
+     * @return The normalized absolute path.
      */
     public static Path toAbsNormal(final Path path) {
         if (null == path) {
@@ -792,11 +712,11 @@ public class PathResolve {
     }
 
     /**
-     * 获取实际路径，路径文件必须存在 如果给定Path是软链接（符号链接），则返回指向的实际链接 如果路径不存在，会直接抛出NoSuchFileException异常 无论给定是何种类型的路径，返回都是唯一的路径（总是equals）
+     * Gets the real path of a file, resolving symbolic links.
      *
-     * @param path 路径
-     * @return 实际路径
-     * @throws InternalException IO异常，如文件不存在等
+     * @param path The path.
+     * @return The real path.
+     * @throws InternalException if an I/O error occurs.
      */
     public static Path toRealPath(Path path) throws InternalException {
         if (null != path) {
@@ -810,26 +730,24 @@ public class PathResolve {
     }
 
     /**
-     * 获得文件的MimeType
+     * Probes the content type (MIME type) of a file.
      *
-     * @param file 文件
-     * @return MimeType
-     * @see Files#probeContentType(Path)
+     * @param file The file.
+     * @return The MIME type, or null if it cannot be determined.
      */
     public static String getMimeType(final Path file) {
         try {
             return Files.probeContentType(file);
         } catch (final IOException ignore) {
-            // 使用OpenJDK可能抛出NoSuchFileException，此处返回null
             return null;
         }
     }
 
     /**
-     * 创建所给目录及其父目录
+     * Creates the specified directory, including any necessary parent directories.
      *
-     * @param dir 目录
-     * @return 目录
+     * @param dir The directory to create.
+     * @return The created directory path.
      */
     public static Path mkdir(final Path dir) {
         if (null != dir && !exists(dir, false)) {
@@ -843,20 +761,20 @@ public class PathResolve {
     }
 
     /**
-     * 创建所给文件或目录的父目录
+     * Creates the parent directories for the given path.
      *
-     * @param path 文件或目录
-     * @return 父目录
+     * @param path The file or directory path.
+     * @return The parent directory path.
      */
     public static Path mkParentDirs(final Path path) {
         return mkdir(path.getParent());
     }
 
     /**
-     * 获取{@link Path}文件名
+     * Gets the file name from a {@link Path}.
      *
-     * @param path {@link Path}
-     * @return 文件名
+     * @param path The {@link Path}.
+     * @return The file name.
      */
     public static String getName(final Path path) {
         if (null == path) {
@@ -866,13 +784,13 @@ public class PathResolve {
     }
 
     /**
-     * 创建临时文件
+     * Creates a temporary file.
      *
-     * @param prefix 前缀，至少3个字符
-     * @param suffix 后缀，如果null则使用默认.tmp
-     * @param dir    临时文件创建的所在目录
-     * @return 临时文件
-     * @throws InternalException IO异常
+     * @param prefix The prefix for the file name.
+     * @param suffix The suffix for the file name.
+     * @param dir    The directory to create the file in.
+     * @return The path to the temporary file.
+     * @throws InternalException if an I/O error occurs.
      */
     public static Path createTempFile(final String prefix, final String suffix, final Path dir)
             throws InternalException {
@@ -893,20 +811,20 @@ public class PathResolve {
     }
 
     /**
-     * 构建是否追踪软链的选项
+     * Builds the appropriate link options based on whether symbolic links should be followed.
      *
-     * @param isFollowLinks 是否追踪软链
-     * @return 选项
+     * @param isFollowLinks Whether to follow symbolic links.
+     * @return An array of {@link LinkOption}.
      */
     public static LinkOption[] getLinkOptions(final boolean isFollowLinks) {
         return isFollowLinks ? new LinkOption[0] : new LinkOption[] { LinkOption.NOFOLLOW_LINKS };
     }
 
     /**
-     * 构建是否追踪软链的选项
+     * Builds the appropriate file visit options based on whether symbolic links should be followed.
      *
-     * @param isFollowLinks 是否追踪软链
-     * @return 选项
+     * @param isFollowLinks Whether to follow symbolic links.
+     * @return A set of {@link FileVisitOption}.
      */
     public static Set<FileVisitOption> getFileVisitOption(final boolean isFollowLinks) {
         return isFollowLinks ? EnumSet.of(FileVisitOption.FOLLOW_LINKS) : EnumSet.noneOf(FileVisitOption.class);

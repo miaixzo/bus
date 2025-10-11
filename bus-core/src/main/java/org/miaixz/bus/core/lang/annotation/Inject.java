@@ -30,7 +30,9 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 注释实现类的成员(构造函数、方法和字段)
+ * Marks a constructor, method, or field as an injection point for dependencies. This annotation is a core part of a
+ * dependency injection (DI) framework, indicating where the container should provide instances of required components.
+ * It is conceptually similar to {@code jakarta.inject.Inject}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,9 +43,15 @@ import java.lang.annotation.*;
 public @interface Inject {
 
     /**
-     * 如果为真,且没有找到适当的绑定,则注入器将跳过此方法或字段的注入, 而不会产生错误 当应用到一个字段时,任何已经分配给该字段的默认值将保持不变 当应用于某个方法时,只有在找到的所有参数的绑定时才调用该方法
+     * Specifies whether the dependency is optional. If set to {@code true}, the injector will skip the injection for
+     * this member if a suitable binding is not found, without generating an error.
+     * <p>
+     * When applied to a field, if no dependency is found, the field retains its default assigned value.
+     * <p>
+     * When applied to a method, the method will only be invoked if bindings are found for all of its parameters. If any
+     * parameter cannot be resolved, the method will not be called.
      *
-     * @return the true/false
+     * @return {@code true} if the injection is optional, {@code false} otherwise.
      */
     boolean optional() default false;
 

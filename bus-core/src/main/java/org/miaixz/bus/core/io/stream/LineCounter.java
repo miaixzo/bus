@@ -35,28 +35,44 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 行数计数器
+ * A utility class for counting lines in an {@link InputStream}. This class provides functionality to count lines, with
+ * options to handle line separators at the end of the stream. It implements {@link Closeable} to ensure proper resource
+ * management.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LineCounter implements Closeable {
 
+    /**
+     * The input stream from which lines are to be counted.
+     */
     private final InputStream is;
+    /**
+     * The buffer size used for reading the input stream. A larger buffer size may improve performance.
+     */
     private final int bufferSize;
 
     /**
-     * 是否将最后一行分隔符作为新行，Linux下要求最后一行必须带有换行符，不算一行，此处用户选择
+     * Determines whether a line separator at the very end of the stream should be counted as a new line. For example,
+     * in Linux, a file typically ends with a newline character, which might or might not be considered an additional
+     * line depending on this setting. If {@code true}, a trailing line separator will increment the line count. If
+     * {@code false}, it will not.
      */
     private boolean lastLineSeparatorAsNewLine = true;
 
+    /**
+     * The cached line count. Initialized to -1 to indicate that the count has not yet been computed. The count is
+     * computed only once upon the first call to {@link #getCount()}.
+     */
     private int count = -1;
 
     /**
-     * 构造
+     * Constructs a new {@code LineCounter} with the specified input stream and buffer size.
      *
-     * @param is         输入流
-     * @param bufferSize 缓存大小，小于1则使用默认的1024
+     * @param is         The {@link InputStream} to count lines from. This stream will be read until its end.
+     * @param bufferSize The size of the buffer to use for reading. If {@code bufferSize} is less than 1, a default size
+     *                   of 1024 bytes will be used instead.
      */
     public LineCounter(final InputStream is, final int bufferSize) {
         this.is = is;
@@ -64,10 +80,13 @@ public class LineCounter implements Closeable {
     }
 
     /**
-     * 设置是否将最后一行分隔符作为新行，Linux下要求最后一行必须带有换行符，不算一行，此处用户选择
+     * Sets whether a line separator found at the end of the stream should be treated as a new line. This setting
+     * affects how the total line count is determined, especially for files that may or may not have a trailing newline
+     * character.
      *
-     * @param lastLineSeparatorAsNewLine 是否将最后一行分隔符作为新行
-     * @return this
+     * @param lastLineSeparatorAsNewLine {@code true} to count a trailing line separator as an additional line;
+     *                                   {@code false} otherwise.
+     * @return This {@code LineCounter} instance, allowing for method chaining.
      */
     public LineCounter setLastLineSeparatorAsNewLine(final boolean lastLineSeparatorAsNewLine) {
         this.lastLineSeparatorAsNewLine = lastLineSeparatorAsNewLine;
@@ -75,9 +94,11 @@ public class LineCounter implements Closeable {
     }
 
     /**
-     * 获取行数
+     * Retrieves the total number of lines in the input stream. The line count is computed only once and then cached.
+     * Subsequent calls to this method will return the cached value.
      *
-     * @return 行数
+     * @return The total number of lines in the input stream.
+     * @throws InternalException If an {@link IOException} occurs during the line counting process.
      */
     public int getCount() {
         if (this.count < 0) {
@@ -90,6 +111,12 @@ public class LineCounter implements Closeable {
         return this.count;
     }
 
+    /**
+     * Closes the underlying input stream. This method is idempotent; calling it multiple times has no further effect
+     * after the first call.
+     *
+     * @throws IOException If an I/O error occurs while closing the stream.
+     */
     @Override
     public void close() throws IOException {
         if (null != this.is) {
@@ -97,26 +124,36 @@ public class LineCounter implements Closeable {
         }
     }
 
+    /**
+     * Counts the number of lines in the input stream. This method handles various line ending conventions including LF
+     * ({@code \n}), CR ({@code \r}), and CRLF ({@code \r\n}). The counting logic considers the
+     * {@link #lastLineSeparatorAsNewLine} setting for the final line.
+     *
+     * @return The calculated number of lines in the input stream.
+     * @throws IOException If an I/O error occurs during reading from the input stream.
+     */
     private int count() throws IOException {
         final byte[] buf = new byte[bufferSize];
         int readChars = is.read(buf);
         if (readChars == -1) {
-            // 空文件，返回0
+            // If the file is empty, return 0 lines.
             return 0;
         }
 
-        // 起始行为1
-        // 如果只有一行，无换行符，则读取结束后返回1
-        // 如果多行，最后一行无换行符，最后一行需要单独计数
-        // 如果多行，最后一行有换行符，则空行算作一行
+        // Initialize count to 1, assuming at least one line if the file is not empty.
+        // If there's only one line without a newline character, it will be counted as 1.
+        // If there are multiple lines, and the last line has no newline, it needs separate counting.
+        // If there are multiple lines, and the last line has a newline, an empty line is counted as one line.
         int count = 1;
-        byte pre;
-        byte c = 0;
+        byte pre = 0; // Stores the previous byte read to detect CRLF sequences.
+        byte c = 0; // Stores the current byte read.
+
+        // Process full buffers
         while (readChars == bufferSize) {
             for (int i = 0; i < bufferSize; i++) {
                 pre = c;
                 c = buf[i];
-                // 换行符兼容MAC
+                // Increment count for LF or CR (to handle MAC-style CR line endings).
                 if (c == Symbol.C_LF || pre == Symbol.C_CR) {
                     ++count;
                 }
@@ -124,6 +161,7 @@ public class LineCounter implements Closeable {
             readChars = is.read(buf);
         }
 
+        // Process the last partial buffer (if any)
         while (readChars != -1) {
             for (int i = 0; i < readChars; i++) {
                 pre = c;
@@ -135,13 +173,15 @@ public class LineCounter implements Closeable {
             readChars = is.read(buf);
         }
 
+        // Adjust count based on the last character and the 'lastLineSeparatorAsNewLine' setting.
         if (lastLineSeparatorAsNewLine) {
-            // 最后一个字符为\r，则单独计数行
+            // If the last character is CR, count it as a separate line.
             if (c == Symbol.C_CR) {
                 ++count;
             }
         } else {
-            // 最后一个字符为\n，则可选是否算作新行单独计数行
+            // If the last character is LF, and 'lastLineSeparatorAsNewLine' is false,
+            // decrement count as it implies the previous line already ended with a newline.
             if (c == Symbol.C_LF) {
                 --count;
             }

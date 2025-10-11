@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.starter.i18n;
 
+import jakarta.annotation.Resource;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
-import jakarta.annotation.Resource;
-
 /**
- * 国际化配置
+ * Auto-configuration for internationalization (i18n). This class sets up the {@link ResourceBundleMessageSource} bean
+ * based on the properties defined in {@link I18nProperties}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,11 +43,20 @@ import jakarta.annotation.Resource;
 @EnableConfigurationProperties(value = { I18nProperties.class })
 public class I18nConfiguration {
 
+    /**
+     * Injected i18n configuration properties.
+     */
     @Resource
     I18nProperties properties;
 
+    /**
+     * Creates and configures the {@link ResourceBundleMessageSource} bean. This bean is responsible for resolving
+     * messages from resource bundles for internationalization purposes.
+     *
+     * @return The configured {@link ResourceBundleMessageSource} instance.
+     */
     @Bean
-    private ResourceBundleMessageSource getMessageSource() {
+    public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource bundleMessageSource = new ResourceBundleMessageSource();
         bundleMessageSource.setDefaultEncoding(StringKit.toString(this.properties.getDefaultEncoding()));
         bundleMessageSource.setBasenames(this.properties.getBaseNames());

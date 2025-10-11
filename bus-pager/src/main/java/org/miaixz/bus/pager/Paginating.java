@@ -36,105 +36,108 @@ import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 对Page结果进行包装，新增分页相关属性以支持导航和页面信息展示。
+ * Wraps the {@link Page} result, adding pagination-related properties to support navigation and page information
+ * display.
  *
- * @param <T> 分页数据元素类型
+ * @param <T> the type of elements in the paginated data
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Paginating<T> extends Serialize<T> {
 
     /**
-     * 默认导航页码数
+     * Default number of navigation pages.
      */
     public static final int DEFAULT_NAVIGATE_PAGES = 8;
 
     /**
-     * 当前页码
+     * The current page number.
      */
     private int pageNo;
     /**
-     * 每页记录数
+     * The number of records per page.
      */
     private int pageSize;
     /**
-     * 当前页记录数
+     * The number of records in the current page.
      */
     private int size;
     /**
-     * 当前页面第一个元素在数据库中的行号（从1开始）
+     * The row number of the first element in the current page in the database (starts from 1).
      */
     private long startRow;
     /**
-     * 当前页面最后一个元素在数据库中的行号
+     * The row number of the last element in the current page in the database.
      */
     private long endRow;
     /**
-     * 总页数
+     * The total number of pages.
      */
     private int pages;
     /**
-     * 前一页页码
+     * The page number of the previous page.
      */
     private int prePage;
     /**
-     * 下一页页码
+     * The page number of the next page.
      */
     private int nextPage;
     /**
-     * 是否为第一页
+     * Flag indicating if the current page is the first page.
      */
     private boolean isFirstPage = false;
     /**
-     * 是否为最后一页
+     * Flag indicating if the current page is the last page.
      */
     private boolean isLastPage = false;
     /**
-     * 是否有前一页
+     * Flag indicating if there is a previous page.
      */
     private boolean hasPreviousPage = false;
     /**
-     * 是否有下一页
+     * Flag indicating if there is a next page.
      */
     private boolean hasNextPage = false;
     /**
-     * 导航页码数
+     * The number of navigation pages to display.
      */
     private int navigatePages;
     /**
-     * 导航页码数组
+     * An array of navigation page numbers.
      */
     private int[] navigatepageNo;
     /**
-     * 导航条上的第一页
+     * The first page number in the navigation bar.
      */
     private int navigateFirstPage;
     /**
-     * 导航条上的最后一页
+     * The last page number in the navigation bar.
      */
     private int navigateLastPage;
 
     /**
-     * 默认构造函数。
+     * Default constructor for Paginating.
      */
     public Paginating() {
 
     }
 
     /**
-     * 构造函数，包装分页结果。
+     * Constructs a Paginating object by wrapping a list of paginated results. Uses {@link #DEFAULT_NAVIGATE_PAGES} for
+     * navigation.
      *
-     * @param list 分页结果列表
+     * @param list the list of paginated results
      */
     public Paginating(List<? extends T> list) {
         this(list, DEFAULT_NAVIGATE_PAGES);
     }
 
     /**
-     * 构造函数，包装分页结果并指定导航页码数。
+     * Constructs a Paginating object by wrapping a list of paginated results and specifying the number of navigation
+     * pages.
      *
-     * @param list          分页结果列表
-     * @param navigatePages 导航页码数
+     * @param list          the list of paginated results
+     * @param navigatePages the number of navigation pages to display
      */
     public Paginating(List<? extends T> list, int navigatePages) {
         super(list);
@@ -165,23 +168,23 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     /**
-     * 静态工厂方法，创建Paginating对象。
+     * Static factory method to create a Paginating object.
      *
-     * @param list 分页结果列表
-     * @param <T>  分页数据元素类型
-     * @return Paginating对象
+     * @param list the list of paginated results
+     * @param <T>  the type of elements in the paginated data
+     * @return a new Paginating object
      */
     public static <T> Paginating<T> of(List<? extends T> list) {
         return new Paginating<>(list);
     }
 
     /**
-     * 静态工厂方法，创建Paginating对象并指定总记录数。
+     * Static factory method to create a Paginating object with a specified total number of records.
      *
-     * @param total 总记录数
-     * @param list  分页结果列表
-     * @param <T>   分页数据元素类型
-     * @return Paginating对象
+     * @param total the total number of records
+     * @param list  the list of paginated results
+     * @param <T>   the type of elements in the paginated data
+     * @return a new Paginating object
      */
     public static <T> Paginating<T> of(long total, List<? extends T> list) {
         if (list instanceof Page) {
@@ -192,31 +195,31 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     /**
-     * 静态工厂方法，创建Paginating对象并指定导航页码数。
+     * Static factory method to create a Paginating object with a specified number of navigation pages.
      *
-     * @param list          分页结果列表
-     * @param navigatePages 导航页码数
-     * @param <T>           分页数据元素类型
-     * @return Paginating对象
+     * @param list          the list of paginated results
+     * @param navigatePages the number of navigation pages to display
+     * @param <T>           the type of elements in the paginated data
+     * @return a new Paginating object
      */
     public static <T> Paginating<T> of(List<? extends T> list, int navigatePages) {
         return new Paginating<>(list, navigatePages);
     }
 
     /**
-     * 静态工厂方法，返回空的Paginating对象。
+     * Static factory method to return an empty Paginating object.
      *
-     * @param <T> 分页数据元素类型
-     * @return 空的Paginating对象
+     * @param <T> the type of elements in the paginated data
+     * @return an empty Paginating object
      */
     public static <T> Paginating<T> emptyPageInfo() {
         return new Paginating<>(Collections.emptyList(), 0);
     }
 
     /**
-     * 根据导航页码数计算分页属性。
+     * Calculates pagination properties based on the number of navigation pages.
      *
-     * @param navigatePages 导航页码数
+     * @param navigatePages the number of navigation pages to display
      */
     public void calcByNavigatePages(int navigatePages) {
         setNavigatePages(navigatePages);
@@ -226,7 +229,7 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     /**
-     * 计算导航页码。
+     * Calculates the navigation page numbers.
      */
     private void calcNavigatepageNo() {
         if (pages <= navigatePages) {
@@ -258,7 +261,7 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     /**
-     * 计算前后页、第一页和最后一页。
+     * Calculates the previous page, next page, first navigation page, and last navigation page.
      */
     private void calcPage() {
         if (navigatepageNo != null && navigatepageNo.length > 0) {
@@ -274,7 +277,7 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     /**
-     * 判断页面边界状态。
+     * Determines the boundary status of the page (e.g., isFirstPage, isLastPage).
      */
     private void judgePageBoudary() {
         isFirstPage = pageNo == 1;
@@ -284,11 +287,11 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     /**
-     * 转换分页数据类型。
+     * Converts the paginated data to a different type using a provided function.
      *
-     * @param function 数据转换函数
-     * @param <E>      目标数据类型
-     * @return 转换后的Paginating对象
+     * @param function the data conversion function
+     * @param <E>      the target data type
+     * @return a new Paginating object with converted data
      */
     public <E> Paginating<E> convert(FunctionX<T, E> function) {
         List<E> list = new ArrayList<>(this.list.size());
@@ -317,306 +320,306 @@ public class Paginating<T> extends Serialize<T> {
     }
 
     /**
-     * 检查是否包含数据。
+     * Checks if the paginating object contains any data.
      *
-     * @return 若包含数据返回true，否则返回false
+     * @return true if it contains data, false otherwise
      */
     public boolean hasContent() {
         return this.size > 0;
     }
 
     /**
-     * 获取当前页码。
+     * Retrieves the current page number.
      *
-     * @return 当前页码
+     * @return the current page number
      */
     public int getPageNo() {
         return pageNo;
     }
 
     /**
-     * 设置当前页码。
+     * Sets the current page number.
      *
-     * @param pageNo 当前页码
+     * @param pageNo the current page number to set
      */
     public void setPageNo(int pageNo) {
         this.pageNo = pageNo;
     }
 
     /**
-     * 获取每页记录数。
+     * Retrieves the number of records per page.
      *
-     * @return 每页记录数
+     * @return the number of records per page
      */
     public int getPageSize() {
         return pageSize;
     }
 
     /**
-     * 设置每页记录数。
+     * Sets the number of records per page.
      *
-     * @param pageSize 每页记录数
+     * @param pageSize the number of records per page to set
      */
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
     }
 
     /**
-     * 获取当前页记录数。
+     * Retrieves the number of records in the current page.
      *
-     * @return 当前页记录数
+     * @return the number of records in the current page
      */
     public int getSize() {
         return size;
     }
 
     /**
-     * 设置当前页记录数。
+     * Sets the number of records in the current page.
      *
-     * @param size 当前页记录数
+     * @param size the number of records in the current page to set
      */
     public void setSize(int size) {
         this.size = size;
     }
 
     /**
-     * 获取当前页面第一个元素的行号。
+     * Retrieves the row number of the first element in the current page.
      *
-     * @return 第一个元素的行号
+     * @return the row number of the first element
      */
     public long getStartRow() {
         return startRow;
     }
 
     /**
-     * 设置当前页面第一个元素的行号。
+     * Sets the row number of the first element in the current page.
      *
-     * @param startRow 第一个元素的行号
+     * @param startRow the row number of the first element to set
      */
     public void setStartRow(long startRow) {
         this.startRow = startRow;
     }
 
     /**
-     * 获取当前页面最后一个元素的行号。
+     * Retrieves the row number of the last element in the current page.
      *
-     * @return 最后一个元素的行号
+     * @return the row number of the last element
      */
     public long getEndRow() {
         return endRow;
     }
 
     /**
-     * 设置当前页面最后一个元素的行号。
+     * Sets the row number of the last element in the current page.
      *
-     * @param endRow 最后一个元素的行号
+     * @param endRow the row number of the last element to set
      */
     public void setEndRow(long endRow) {
         this.endRow = endRow;
     }
 
     /**
-     * 获取总页数。
+     * Retrieves the total number of pages.
      *
-     * @return 总页数
+     * @return the total number of pages
      */
     public int getPages() {
         return pages;
     }
 
     /**
-     * 设置总页数。
+     * Sets the total number of pages.
      *
-     * @param pages 总页数
+     * @param pages the total number of pages to set
      */
     public void setPages(int pages) {
         this.pages = pages;
     }
 
     /**
-     * 获取前一页页码。
+     * Retrieves the page number of the previous page.
      *
-     * @return 前一页页码
+     * @return the previous page number
      */
     public int getPrePage() {
         return prePage;
     }
 
     /**
-     * 设置前一页页码。
+     * Sets the page number of the previous page.
      *
-     * @param prePage 前一页页码
+     * @param prePage the previous page number to set
      */
     public void setPrePage(int prePage) {
         this.prePage = prePage;
     }
 
     /**
-     * 获取下一页页码。
+     * Retrieves the page number of the next page.
      *
-     * @return 下一页页码
+     * @return the next page number
      */
     public int getNextPage() {
         return nextPage;
     }
 
     /**
-     * 设置下一页页码。
+     * Sets the page number of the next page.
      *
-     * @param nextPage 下一页页码
+     * @param nextPage the next page number to set
      */
     public void setNextPage(int nextPage) {
         this.nextPage = nextPage;
     }
 
     /**
-     * 是否为第一页。
+     * Checks if the current page is the first page.
      *
-     * @return 若为第一页返回true
+     * @return true if it is the first page, false otherwise
      */
     public boolean isIsFirstPage() {
         return isFirstPage;
     }
 
     /**
-     * 设置是否为第一页。
+     * Sets whether the current page is the first page.
      *
-     * @param isFirstPage 是否为第一页
+     * @param isFirstPage true if it is the first page, false otherwise
      */
     public void setIsFirstPage(boolean isFirstPage) {
         this.isFirstPage = isFirstPage;
     }
 
     /**
-     * 是否为最后一页。
+     * Checks if the current page is the last page.
      *
-     * @return 若为最后一页返回true
+     * @return true if it is the last page, false otherwise
      */
     public boolean isIsLastPage() {
         return isLastPage;
     }
 
     /**
-     * 设置是否为最后一页。
+     * Sets whether the current page is the last page.
      *
-     * @param isLastPage 是否为最后一页
+     * @param isLastPage true if it is the last page, false otherwise
      */
     public void setIsLastPage(boolean isLastPage) {
         this.isLastPage = isLastPage;
     }
 
     /**
-     * 是否有前一页。
+     * Checks if there is a previous page.
      *
-     * @return 若有前一页返回true
+     * @return true if there is a previous page, false otherwise
      */
     public boolean isHasPreviousPage() {
         return hasPreviousPage;
     }
 
     /**
-     * 设置是否有前一页。
+     * Sets whether there is a previous page.
      *
-     * @param hasPreviousPage 是否有前一页
+     * @param hasPreviousPage true if there is a previous page, false otherwise
      */
     public void setHasPreviousPage(boolean hasPreviousPage) {
         this.hasPreviousPage = hasPreviousPage;
     }
 
     /**
-     * 是否有下一页。
+     * Checks if there is a next page.
      *
-     * @return 若有下一页返回true
+     * @return true if there is a next page, false otherwise
      */
     public boolean isHasNextPage() {
         return hasNextPage;
     }
 
     /**
-     * 设置是否有下一页。
+     * Sets whether there is a next page.
      *
-     * @param hasNextPage 是否有下一页
+     * @param hasNextPage true if there is a next page, false otherwise
      */
     public void setHasNextPage(boolean hasNextPage) {
         this.hasNextPage = hasNextPage;
     }
 
     /**
-     * 获取导航页码数。
+     * Retrieves the number of navigation pages to display.
      *
-     * @return 导航页码数
+     * @return the number of navigation pages
      */
     public int getNavigatePages() {
         return navigatePages;
     }
 
     /**
-     * 设置导航页码数。
+     * Sets the number of navigation pages to display.
      *
-     * @param navigatePages 导航页码数
+     * @param navigatePages the number of navigation pages to set
      */
     public void setNavigatePages(int navigatePages) {
         this.navigatePages = navigatePages;
     }
 
     /**
-     * 获取导航页码数组。
+     * Retrieves the array of navigation page numbers.
      *
-     * @return 导航页码数组
+     * @return an array of navigation page numbers
      */
     public int[] getNavigatepageNo() {
         return navigatepageNo;
     }
 
     /**
-     * 设置导航页码数组。
+     * Sets the array of navigation page numbers.
      *
-     * @param navigatepageNo 导航页码数组
+     * @param navigatepageNo the array of navigation page numbers to set
      */
     public void setNavigatepageNo(int[] navigatepageNo) {
         this.navigatepageNo = navigatepageNo;
     }
 
     /**
-     * 获取导航条上的第一页。
+     * Retrieves the first page number in the navigation bar.
      *
-     * @return 导航第一页
+     * @return the first navigation page number
      */
     public int getNavigateFirstPage() {
         return navigateFirstPage;
     }
 
     /**
-     * 设置导航条上的第一页。
+     * Sets the first page number in the navigation bar.
      *
-     * @param navigateFirstPage 导航第一页
+     * @param navigateFirstPage the first navigation page number to set
      */
     public void setNavigateFirstPage(int navigateFirstPage) {
         this.navigateFirstPage = navigateFirstPage;
     }
 
     /**
-     * 获取导航条上的最后一页。
+     * Retrieves the last page number in the navigation bar.
      *
-     * @return 导航最后一页
+     * @return the last navigation page number
      */
     public int getNavigateLastPage() {
         return navigateLastPage;
     }
 
     /**
-     * 设置导航条上的最后一页。
+     * Sets the last page number in the navigation bar.
      *
-     * @param navigateLastPage 导航最后一页
+     * @param navigateLastPage the last navigation page number to set
      */
     public void setNavigateLastPage(int navigateLastPage) {
         this.navigateLastPage = navigateLastPage;
     }
 
     /**
-     * 返回Paginating对象的字符串表示。
+     * Returns a string representation of the Paginating object.
      *
-     * @return 字符串表示
+     * @return a string representation of the object
      */
     @Override
     public String toString() {

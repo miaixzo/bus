@@ -36,6 +36,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Material for Alibaba Cloud notification services.
+ *
+ * @author Justubborn
+ * @since Java 17+
+ */
 @Getter
 @Setter
 @SuperBuilder
@@ -44,12 +50,14 @@ import lombok.experimental.SuperBuilder;
 public class AliyunMaterial extends Material {
 
     /**
-     * 播放次数
+     * The number of times to play the voice message.
      */
     private String playTimes;
 
     /**
-     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
+     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The default API request address for Alibaba Cloud SMS.
      */
     @Override
     public String getUrl() {

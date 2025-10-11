@@ -32,16 +32,36 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 
 /**
- * HTTP header: the name is an ASCII string, but the value can be UTF-8.
+ * An HTTP header: the name is an ASCII string, but the value can be UTF-8.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class Http2Header {
 
-    // Special header names defined in HTTP/2 spec.
+    /**
+     * The ":" prefix used for pseudo-headers.
+     */
     public static final ByteString PSEUDO_PREFIX = ByteString.encodeUtf8(Symbol.COLON);
+    /**
+     * The ":status" pseudo-header.
+     */
     public static final ByteString RESPONSE_STATUS = ByteString.encodeUtf8(HTTP.RESPONSE_STATUS_UTF8);
+    /**
+     * The ":method" pseudo-header.
+     */
     public static final ByteString TARGET_METHOD = ByteString.encodeUtf8(HTTP.TARGET_METHOD_UTF8);
+    /**
+     * The ":path" pseudo-header.
+     */
     public static final ByteString TARGET_PATH = ByteString.encodeUtf8(HTTP.TARGET_PATH_UTF8);
+    /**
+     * The ":scheme" pseudo-header.
+     */
     public static final ByteString TARGET_SCHEME = ByteString.encodeUtf8(HTTP.TARGET_SCHEME_UTF8);
+    /**
+     * The ":authority" pseudo-header.
+     */
     public static final ByteString TARGET_AUTHORITY = ByteString.encodeUtf8(HTTP.TARGET_AUTHORITY_UTF8);
 
     /**
@@ -52,23 +72,49 @@ public class Http2Header {
      * Value in UTF-8 encoding.
      */
     public final ByteString value;
+    /**
+     * The size of this header in HPACK's format.
+     */
     public final int hpackSize;
 
-    // TODO: search for toLowerCase and consider moving logic here.
+    /**
+     * Constructs a new Http2Header with the given name and value.
+     *
+     * @param name  The header name.
+     * @param value The header value.
+     */
     public Http2Header(String name, String value) {
         this(ByteString.encodeUtf8(name), ByteString.encodeUtf8(value));
     }
 
+    /**
+     * Constructs a new Http2Header with the given name and value.
+     *
+     * @param name  The header name as a ByteString.
+     * @param value The header value as a String.
+     */
     public Http2Header(ByteString name, String value) {
         this(name, ByteString.encodeUtf8(value));
     }
 
+    /**
+     * Constructs a new Http2Header with the given name and value.
+     *
+     * @param name  The header name as a ByteString.
+     * @param value The header value as a ByteString.
+     */
     public Http2Header(ByteString name, ByteString value) {
         this.name = name;
         this.value = value;
         this.hpackSize = 32 + name.size() + value.size();
     }
 
+    /**
+     * Compares this Http2Header to another object for equality.
+     *
+     * @param other The object to compare to.
+     * @return true if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof Http2Header) {
@@ -78,6 +124,11 @@ public class Http2Header {
         return false;
     }
 
+    /**
+     * Returns the hash code for this Http2Header.
+     *
+     * @return The hash code.
+     */
     @Override
     public int hashCode() {
         int result = 17;
@@ -86,6 +137,11 @@ public class Http2Header {
         return result;
     }
 
+    /**
+     * Returns a string representation of this Http2Header.
+     *
+     * @return The string representation.
+     */
     @Override
     public String toString() {
         return String.format("%s: %s", name.utf8(), value.utf8());

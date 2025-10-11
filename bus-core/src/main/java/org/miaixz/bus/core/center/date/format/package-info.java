@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供线程安全的日期格式的格式化和解析实现
+ * Provides thread-safe implementations for date format formatting and parsing.
  *
  * @author Kimi Liu
  * @since Java 17+

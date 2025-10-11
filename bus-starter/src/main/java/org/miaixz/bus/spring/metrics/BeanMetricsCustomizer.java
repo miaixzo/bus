@@ -28,26 +28,32 @@
 package org.miaixz.bus.spring.metrics;
 
 /**
- * 用于自定义{@link BeanMetrics}的接口。
+ * Interface for customizing {@link BeanMetrics}.
  * <p>
- * 实现此接口可以对Bean的指标进行自定义处理，例如添加额外的属性或修改现有指标。 该接口允许在Bean初始化过程中对指标进行定制化处理，以满足特定的监控需求。
+ * Implementations of this interface can be used to perform custom processing on bean metrics, such as adding additional
+ * attributes or modifying existing metrics. This allows for tailored monitoring needs during the bean initialization
+ * process.
  * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
+@FunctionalInterface
 public interface BeanMetricsCustomizer {
 
     /**
-     * 自定义Bean的启动指标。
+     * Customizes the startup metrics of a bean.
      * <p>
-     * 此方法在Bean初始化过程中被调用，允许对Bean的指标进行自定义处理。 可以添加额外的属性或修改现有指标，以满足特定的监控需求。
+     * This method is invoked during the bean initialization process, allowing for custom processing of the bean's
+     * metrics. Additional attributes can be added or existing metrics can be modified to meet specific monitoring
+     * requirements.
      * </p>
      *
-     * @param beanName Bean的名称
-     * @param bean     Bean实例
-     * @param beanStat Bean的统计模型
-     * @return 自定义后的BeanMetrics对象，如果返回{@code null}，则不会调用后续的BeanMetricsCustomizer
+     * @param beanName The name of the bean.
+     * @param bean     The bean instance.
+     * @param beanStat The {@link BeanMetrics} object representing the bean's statistics.
+     * @return The customized {@link BeanMetrics} object. If {@code null} is returned, subsequent
+     *         {@code BeanMetricsCustomizer}s will not be called for this bean.
      */
     BeanMetrics customize(String beanName, Object bean, BeanMetrics beanStat);
 

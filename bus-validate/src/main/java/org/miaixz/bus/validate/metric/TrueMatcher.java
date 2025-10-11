@@ -33,13 +33,22 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.True;
 
 /**
- * Boolean true 校验
+ * Validator for the {@link True} annotation. Checks if a Boolean value is {@code true}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TrueMatcher implements Matcher<Boolean, True> {
 
+    /**
+     * Checks if the given Boolean object is {@code true}.
+     *
+     * @param object     The Boolean object to validate.
+     * @param annotation The {@link True} annotation instance, which provides the `nullable` property.
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is `null` and `nullable` is true, or if the object is `Boolean.TRUE`;
+     *         {@code false} otherwise.
+     */
     @Override
     public boolean on(Boolean object, True annotation, Context context) {
         if (BooleanKit.isFalse(object)) {

@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 企业付款到银行卡
+ * Enterprise payment to bank card model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,14 +48,41 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class PayBank extends Material {
 
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Partner trade number.
+     */
     private String partner_trade_no;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Encrypted bank card number.
+     */
     private String enc_bank_no;
+    /**
+     * Encrypted true name.
+     */
     private String enc_true_name;
+    /**
+     * Bank code.
+     */
     private String bank_code;
+    /**
+     * Amount.
+     */
     private String amount;
+    /**
+     * Description.
+     */
     private String desc;
 
 }

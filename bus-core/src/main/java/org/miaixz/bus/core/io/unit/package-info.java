@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 数据单位相关封装，包括DataUnit数据单位和DataSize数据大小
+ * Provides classes for data unit and data size related encapsulations, including
+ * {@link org.miaixz.bus.core.io.unit.DataUnit} for data units and {@link org.miaixz.bus.core.io.unit.DataSize} for data
+ * sizes.
  *
  * @author Kimi Liu
  * @since Java 17+

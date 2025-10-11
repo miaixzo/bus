@@ -48,16 +48,13 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.net.url.UrlQuery;
 
 /**
- * URL（Uniform Resource Locator）统一资源定位符相关工具类
+ * URL (Uniform Resource Locator) related utility class.
  *
  * <p>
- * 统一资源定位符，描述了一台特定服务器上某资源的特定位置。
- * </p>
- * URL组成：
+ * A Uniform Resource Locator describes the specific location of a resource on a particular server. URL composition:
  * 
  * <pre>
- *   协议://主机名[:端口]/ 路径/[:参数] [?查询]#Fragment
- *   protocol :// hostname[:port] / path / [:parameters][?query]#fragment
+ *   protocol://hostname[:port]/path/[:parameters][?query]#Fragment
  * </pre>
  *
  * @author Kimi Liu
@@ -66,11 +63,11 @@ import org.miaixz.bus.core.net.url.UrlQuery;
 public class UrlKit {
 
     /**
-     * 将{@link URI}转换为{@link URL}
+     * Converts a {@link URI} to a {@link URL}.
      *
-     * @param uri {@link URI}
-     * @return URL对象
-     * @throws InternalException {@link MalformedURLException}包装，URI格式有问题时抛出
+     * @param uri The {@link URI} to convert.
+     * @return The converted {@link URL} object.
+     * @throws InternalException If the URI format is invalid, wrapping a {@link MalformedURLException}.
      * @see URI#toURL()
      */
     public static URL url(final URI uri) throws InternalException {
@@ -85,28 +82,31 @@ public class UrlKit {
     }
 
     /**
-     * 通过一个字符串形式的URL地址创建URL对象
+     * Creates a {@link URL} object from a string representation of a URL address.
      *
-     * @param url URL
-     * @return URL对象
+     * @param url The URL string.
+     * @return The {@link URL} object.
      */
     public static URL url(final String url) {
         return url(url, null);
     }
 
     /**
-     * 通过一个字符串形式的URL地址创建URL对象
+     * Creates a {@link URL} object from a string representation of a URL address with a specified
+     * {@link URLStreamHandler}.
      *
-     * @param url     URL
-     * @param handler {@link URLStreamHandler}
-     * @return URL对象
+     * @param url     The URL string.
+     * @param handler The {@link URLStreamHandler} to use.
+     * @return The {@link URL} object.
+     * @throws InternalException If a {@link MalformedURLException} occurs, or if a GraalVM-specific protocol access
+     *                           error occurs.
      */
     public static URL url(String url, final URLStreamHandler handler) {
         if (null == url) {
             return null;
         }
 
-        // 兼容Spring的ClassPath路径
+        // Compatible with Spring's ClassPath path
         if (url.startsWith(Normal.CLASSPATH)) {
             url = url.substring(Normal.CLASSPATH.length());
             return ClassKit.getClassLoader().getResource(url);
@@ -116,13 +116,13 @@ public class UrlKit {
             return new URL(null, url, handler);
         } catch (final MalformedURLException e) {
             if (e.getMessage().contains("Accessing an URL protocol that was not enabled")) {
-                // Graalvm打包需要手动指定参数开启协议：
+                // Graalvm packaging requires manual specification of parameters to enable protocols:
                 // --enable-url-protocols=http
                 // --enable-url-protocols=https
                 throw new InternalException(e);
             }
 
-            // 尝试文件路径
+            // Try file path
             try {
                 return new File(url).toURI().toURL();
             } catch (final MalformedURLException ex2) {
@@ -132,10 +132,10 @@ public class UrlKit {
     }
 
     /**
-     * 获取string协议的URL，类似于string:///xxxxx
+     * Retrieves a string protocol URL, similar to {@code string:///xxxxx}.
      *
-     * @param content 正文
-     * @return URL
+     * @param content The main content.
+     * @return The {@link URI} object.
      */
     public static URI getStringURI(final CharSequence content) {
         if (null == content) {
@@ -145,25 +145,28 @@ public class UrlKit {
     }
 
     /**
-     * 将URL字符串转换为URL对象，并做必要验证
+     * Converts a URL string to a {@link URL} object, performing necessary validation for HTTP/HTTPS protocols.
      *
-     * @param urlStr URL字符串
-     * @return URL
+     * @param urlStr The URL string.
+     * @return The {@link URL} object.
+     * @throws InternalException If a {@link MalformedURLException} occurs.
      */
     public static URL toUrlForHttp(final String urlStr) {
         return toUrlForHttp(urlStr, null);
     }
 
     /**
-     * 将URL字符串转换为URL对象，并做必要验证
+     * Converts a URL string to a {@link URL} object with a specified {@link URLStreamHandler}, performing necessary
+     * validation for HTTP/HTTPS protocols.
      *
-     * @param urlStr  URL字符串
-     * @param handler {@link URLStreamHandler}
-     * @return URL
+     * @param urlStr  The URL string.
+     * @param handler The {@link URLStreamHandler} to use.
+     * @return The {@link URL} object.
+     * @throws InternalException If a {@link MalformedURLException} occurs.
      */
     public static URL toUrlForHttp(String urlStr, final URLStreamHandler handler) {
         Assert.notBlank(urlStr, "Url is blank !");
-        // 编码空白符，防止空格引起的请求异常
+        // Encode whitespace characters to prevent request exceptions caused by spaces
         urlStr = UrlEncoder.encodeBlank(urlStr);
         try {
             return new URL(null, urlStr, handler);
@@ -173,10 +176,10 @@ public class UrlKit {
     }
 
     /**
-     * 获得URL
+     * Retrieves a {@link URL} from the classpath.
      *
-     * @param pathBaseClassLoader 相对路径（相对于classes）
-     * @return URL
+     * @param pathBaseClassLoader The relative path (relative to classes).
+     * @return The {@link URL}.
      * @see ResourceKit#getResourceUrl(String)
      */
     public static URL getURL(final String pathBaseClassLoader) {
@@ -184,11 +187,11 @@ public class UrlKit {
     }
 
     /**
-     * 获得URL
+     * Retrieves a {@link URL} relative to a given class.
      *
-     * @param path  相对给定 class所在的路径
-     * @param clazz 指定class
-     * @return URL
+     * @param path  The path relative to the specified class.
+     * @param clazz The specified class.
+     * @return The {@link URL}.
      * @see ResourceKit#getResourceUrl(String, Class)
      */
     public static URL getURL(final String path, final Class<?> clazz) {
@@ -196,11 +199,11 @@ public class UrlKit {
     }
 
     /**
-     * 获得URL，常用于使用绝对路径时的情况
+     * Retrieves a {@link URL} for a given {@link File} object, commonly used for absolute paths.
      *
-     * @param file URL对应的文件对象
-     * @return URL
-     * @throws InternalException URL格式错误
+     * @param file The {@link File} object corresponding to the URL.
+     * @return The {@link URL}.
+     * @throws InternalException If a {@link MalformedURLException} occurs during URL conversion.
      */
     public static URL getURL(final File file) {
         Assert.notNull(file, "File is null !");
@@ -212,15 +215,16 @@ public class UrlKit {
     }
 
     /**
-     * 获取相对于给定URL的新的URL 来自：org.springframework.core.io.UrlResource#createRelativeURL
+     * Retrieves a new {@link URL} relative to a given base URL. Inspired by:
+     * {@code org.springframework.core.io.UrlResource#createRelativeURL}
      *
-     * @param url          基础URL
-     * @param relativePath 相对路径
-     * @return 相对于URL的子路径URL
-     * @throws InternalException URL格式错误
+     * @param url          The base {@link URL}.
+     * @param relativePath The relative path.
+     * @return The child path {@link URL} relative to the base URL.
+     * @throws InternalException If a {@link MalformedURLException} occurs.
      */
     public static URL getURL(final URL url, String relativePath) throws InternalException {
-        // # 在文件路径中合法，但是在URL中非法，此处转义
+        // # is valid in file paths but invalid in URLs, so escape it here
         relativePath = StringKit.replace(StringKit.removePrefix(relativePath, Symbol.SLASH), Symbol.HASH, "%23");
         try {
             return new URL(url, relativePath);
@@ -230,11 +234,11 @@ public class UrlKit {
     }
 
     /**
-     * 获得URL，常用于使用绝对路径时的情况
+     * Retrieves an array of {@link URL}s for given {@link File} objects, commonly used for absolute paths.
      *
-     * @param files URL对应的文件对象
-     * @return URL
-     * @throws InternalException URL格式错误
+     * @param files An array of {@link File} objects corresponding to the URLs.
+     * @return An array of {@link URL}s.
+     * @throws InternalException If a {@link MalformedURLException} occurs during URL conversion.
      */
     public static URL[] getURLs(final File... files) {
         final URL[] urls = new URL[files.length];
@@ -250,10 +254,12 @@ public class UrlKit {
     }
 
     /**
-     * 获取URL中域名部分，只保留URL中的协议（Protocol）、Host，其它为null。
+     * Extracts the domain part from a {@link URL}, retaining only the protocol and host, with other parts set to
+     * {@code null}.
      *
-     * @param url URL
-     * @return 域名的URI
+     * @param url The {@link URL}.
+     * @return The domain {@link URI}.
+     * @throws InternalException If a {@link URISyntaxException} occurs.
      */
     public static URI getHost(final URL url) {
         if (null == url) {
@@ -268,12 +274,12 @@ public class UrlKit {
     }
 
     /**
-     * 补全相对路径
+     * Completes a relative path to an absolute URL.
      *
-     * @param baseUrl      基准URL
-     * @param relativePath 相对URL
-     * @return 相对路径
-     * @throws InternalException MalformedURLException
+     * @param baseUrl      The base URL.
+     * @param relativePath The relative URL.
+     * @return The absolute URL string.
+     * @throws InternalException If a {@link MalformedURLException} occurs.
      */
     public static String completeUrl(String baseUrl, final String relativePath) {
         baseUrl = normalize(baseUrl, false);
@@ -291,21 +297,23 @@ public class UrlKit {
     }
 
     /**
-     * 获得path部分
+     * Retrieves the path part from a URI string.
      *
-     * @param uriStr URI路径
-     * @return path
-     * @throws InternalException 包装URISyntaxException
+     * @param uriStr The URI path string.
+     * @return The path string.
+     * @throws InternalException Wraps a {@link URISyntaxException}.
      */
     public static String getPath(final String uriStr) {
         return toURI(uriStr).getPath();
     }
 
     /**
-     * 从URL对象中获取不被编码的路径Path 对于本地路径，URL对象的getPath方法对于包含中文或空格时会被编码，导致本读路径读取错误。 此方法将URL转为URI后获取路径用于解决路径被编码的问题
+     * Retrieves the decoded path from a {@link URL} object. For local paths, the {@code getPath} method of {@link URL}
+     * objects may encode Chinese characters or spaces, leading to incorrect path readings. This method converts the URL
+     * to a URI to get the path, solving the encoding issue.
      *
-     * @param url {@link URL}
-     * @return 路径
+     * @param url The {@link URL}.
+     * @return The decoded path string.
      */
     public static String getDecodedPath(final URL url) {
         if (null == url) {
@@ -314,7 +322,7 @@ public class UrlKit {
 
         String path = null;
         try {
-            // URL对象的getPath方法对于包含中文或空格的问题
+            // The getPath method of URL objects has issues with Chinese characters or spaces.
             path = toURI(url).getPath();
         } catch (final InternalException e) {
             // ignore
@@ -323,23 +331,23 @@ public class UrlKit {
     }
 
     /**
-     * 转URL为URI
+     * Converts a {@link URL} to a {@link URI}.
      *
-     * @param url URL
-     * @return URI
-     * @throws InternalException 包装URISyntaxException
+     * @param url The {@link URL}.
+     * @return The {@link URI}.
+     * @throws InternalException Wraps a {@link URISyntaxException}.
      */
     public static URI toURI(final URL url) throws InternalException {
         return toURI(url, false);
     }
 
     /**
-     * 转URL为URI
+     * Converts a {@link URL} to a {@link URI}, with an option to encode special characters in parameters.
      *
-     * @param url      URL
-     * @param isEncode 是否编码参数中的特殊字符（默认UTF-8编码）
-     * @return URI
-     * @throws InternalException 包装URISyntaxException
+     * @param url      The {@link URL}.
+     * @param isEncode Whether to encode special characters in parameters (default UTF-8 encoding).
+     * @return The {@link URI}.
+     * @throws InternalException Wraps a {@link URISyntaxException}.
      */
     public static URI toURI(final URL url, final boolean isEncode) throws InternalException {
         if (null == url) {
@@ -350,23 +358,23 @@ public class UrlKit {
     }
 
     /**
-     * 转字符串为URI
+     * Converts a string path to a {@link URI}.
      *
-     * @param location 字符串路径
-     * @return URI
-     * @throws InternalException 包装URISyntaxException
+     * @param location The string path.
+     * @return The {@link URI}.
+     * @throws InternalException Wraps a {@link URISyntaxException}.
      */
     public static URI toURI(final String location) throws InternalException {
         return toURI(location, false);
     }
 
     /**
-     * 转字符串为URI
+     * Converts a string path to a {@link URI}, with an option to encode special characters in parameters.
      *
-     * @param location 字符串路径
-     * @param isEncode 是否编码参数中的特殊字符（默认UTF-8编码）
-     * @return URI
-     * @throws InternalException 包装URISyntaxException
+     * @param location The string path.
+     * @param isEncode Whether to encode special characters in parameters (default UTF-8 encoding).
+     * @return The {@link URI}.
+     * @throws InternalException Wraps a {@link URISyntaxException}.
      */
     public static URI toURI(String location, final boolean isEncode) throws InternalException {
         if (isEncode) {
@@ -380,10 +388,11 @@ public class UrlKit {
     }
 
     /**
-     * 从URL中获取流
+     * Retrieves an {@link InputStream} from a {@link URL}.
      *
-     * @param url {@link URL}
-     * @return InputStream流
+     * @param url The {@link URL}.
+     * @return The {@link InputStream}.
+     * @throws InternalException If an {@link IOException} occurs.
      */
     public static InputStream getStream(final URL url) {
         Assert.notNull(url, "URL must be not null");
@@ -395,63 +404,62 @@ public class UrlKit {
     }
 
     /**
-     * 获得Reader
+     * Retrieves a {@link BufferedReader} from a {@link URL} with a specified character set.
      *
-     * @param url     {@link URL}
-     * @param charset 编码
-     * @return {@link BufferedReader}
+     * @param url     The {@link URL}.
+     * @param charset The character set.
+     * @return The {@link BufferedReader}.
      */
     public static BufferedReader getReader(final URL url, final java.nio.charset.Charset charset) {
         return IoKit.toReader(getStream(url), charset);
     }
 
     /**
-     * 标准化URL字符串，包括：
-     *
+     * Normalizes a URL string, including:
      * <ol>
-     * <li>自动补齐“http://”头</li>
-     * <li>去除开头的\或者/</li>
-     * <li>替换\为/</li>
+     * <li>Automatically adding "http://" prefix if missing.</li>
+     * <li>Removing leading backslashes or forward slashes.</li>
+     * <li>Replacing backslashes with forward slashes.</li>
      * </ol>
      *
-     * @param url URL字符串
-     * @return 标准化后的URL字符串
+     * @param url The URL string.
+     * @return The normalized URL string.
      */
     public static String normalize(final String url) {
         return normalize(url, false);
     }
 
     /**
-     * 标准化URL字符串，包括：
-     *
+     * Normalizes a URL string, including:
      * <ol>
-     * <li>自动补齐“http://”头</li>
-     * <li>去除开头的\或者/</li>
-     * <li>替换\为/</li>
+     * <li>Automatically adding "http://" prefix if missing.</li>
+     * <li>Removing leading backslashes or forward slashes.</li>
+     * <li>Replacing backslashes with forward slashes.</li>
      * </ol>
+     * Optionally encodes Chinese characters and special characters in the path part (excluding http:, / and domain).
      *
-     * @param url          URL字符串
-     * @param isEncodePath 是否对URL中path部分的中文和特殊字符做转义（不包括 http:, /和域名部分）
-     * @return 标准化后的URL字符串
+     * @param url          The URL string.
+     * @param isEncodePath Whether to escape Chinese characters and special characters in the path part of the URL.
+     * @return The normalized URL string.
      */
     public static String normalize(final String url, final boolean isEncodePath) {
         return normalize(url, isEncodePath, false);
     }
 
     /**
-     * 标准化URL字符串，包括：
-     *
+     * Normalizes a URL string, including:
      * <ol>
-     * <li>自动补齐“http://”头</li>
-     * <li>去除开头的\或者/</li>
-     * <li>替换\为/</li>
-     * <li>如果replaceSlash为true，则替换多个/为一个</li>
+     * <li>Automatically adding "http://" prefix if missing.</li>
+     * <li>Removing leading backslashes or forward slashes.</li>
+     * <li>Replacing backslashes with forward slashes.</li>
+     * <li>If {@code replaceSlash} is true, multiple consecutive slashes in the body are replaced with a single
+     * slash.</li>
      * </ol>
      *
-     * @param url          URL字符串
-     * @param isEncodePath 是否对URL中path部分的中文和特殊字符做转义（不包括 http:, /和域名部分）
-     * @param replaceSlash 是否替换url body中的 //
-     * @return 标准化后的URL字符串
+     * @param url          The URL string.
+     * @param isEncodePath Whether to escape Chinese characters and special characters in the path part of the URL.
+     * @param replaceSlash Whether to replace multiple consecutive slashes in the URL body with a single slash.
+     * @return The normalized URL string.
      */
     public static String normalize(final String url, final boolean isEncodePath, final boolean replaceSlash) {
         if (StringKit.isBlank(url)) {
@@ -476,12 +484,12 @@ public class UrlKit {
         }
 
         if (StringKit.isNotEmpty(body)) {
-            // 去除开头的\或者/
+            // Remove leading backslashes or forward slashes
             body = body.replaceAll("^[\\\\/]+", Normal.EMPTY);
-            // 替换\为/
+            // Replace backslashes with forward slashes
             body = body.replace("\\", "/");
             if (replaceSlash) {
-                // 双斜杠在URL中是允许存在的，默认不做替换
+                // Double slashes are allowed in URLs and are not replaced by default
                 body = body.replaceAll("//+", "/");
             }
         }
@@ -500,66 +508,69 @@ public class UrlKit {
     }
 
     /**
-     * 将Map形式的Form表单数据转换为Url参数形式 paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""） 会自动url编码键和值
+     * Converts a Map of form data into a URL query string format. If a key in {@code paramMap} is empty ({@code null}
+     * or ""), it will be ignored. If a value is {@code null}, it will be treated as an empty string (""). Keys and
+     * values are automatically URL encoded.
      *
      * <pre>
      * key1=v1&amp;key2=&amp;key3=v3
      * </pre>
      *
-     * @param paramMap 表单数据
-     * @param charset  编码，编码为null表示不编码
-     * @return url参数
+     * @param paramMap The form data map.
+     * @param charset  The character set for encoding. If {@code null}, no encoding is performed.
+     * @return The URL query string.
      */
     public static String buildQuery(final Map<String, ?> paramMap, final java.nio.charset.Charset charset) {
         return UrlQuery.of(paramMap).build(charset);
     }
 
     /**
-     * Data URI Scheme封装，数据格式为Base64。data URI scheme 允许我们使用内联（inline-code）的方式在网页中包含数据，
-     * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。 Data URI的格式规范：
+     * Encapsulates the Data URI Scheme, with data in Base64 format. The Data URI scheme allows embedding small data
+     * directly into web pages inline, avoiding external file loading. Commonly used for embedding images in web pages.
+     * Data URI format specification:
      * 
      * <pre>
      *     data:[&lt;mime type&gt;][;charset=&lt;charset&gt;][;&lt;encoding&gt;],&lt;encoded data&gt;
      * </pre>
      *
-     * @param mimeType 可选项（null表示无），数据类型（image/png、text/plain等）
-     * @param data     编码后的数据
-     * @return Data URI字符串
+     * @param mimeType Optional ({@code null} if none), the data type (e.g., image/png, text/plain).
+     * @param data     The encoded data.
+     * @return The Data URI string.
      */
     public static String getDataUriBase64(final String mimeType, final String data) {
         return getDataUri(mimeType, null, "base64", data);
     }
 
     /**
-     * Data URI Scheme封装。data URI scheme 允许我们使用内联（inline-code）的方式在网页中包含数据， 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
-     * Data URI的格式规范：
+     * Encapsulates the Data URI Scheme. The Data URI scheme allows embedding small data directly into web pages inline,
+     * avoiding external file loading. Commonly used for embedding images in web pages. Data URI format specification:
      * 
      * <pre>
      *     data:[&lt;mime type&gt;][;charset=&lt;charset&gt;][;&lt;encoding&gt;],&lt;encoded data&gt;
      * </pre>
      *
-     * @param mimeType 可选项（null表示无），数据类型（image/png、text/plain等）
-     * @param encoding 数据编码方式（US-ASCII，BASE64等）
-     * @param data     编码后的数据
-     * @return Data URI字符串
+     * @param mimeType Optional ({@code null} if none), the data type (e.g., image/png, text/plain).
+     * @param encoding The data encoding method (e.g., US-ASCII, BASE64).
+     * @param data     The encoded data.
+     * @return The Data URI string.
      */
     public static String getDataUri(final String mimeType, final String encoding, final String data) {
         return getDataUri(mimeType, null, encoding, data);
     }
 
     /**
-     * Data URI Scheme封装。data URI scheme 允许我们使用内联（inline-code）的方式在网页中包含数据， 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
-     * Data URI的格式规范：
+     * Encapsulates the Data URI Scheme. The Data URI scheme allows embedding small data directly into web pages inline,
+     * avoiding external file loading. Commonly used for embedding images in web pages. Data URI format specification:
      * 
      * <pre>
      *     data:[&lt;mime type&gt;][;charset=&lt;charset&gt;][;&lt;encoding&gt;],&lt;encoded data&gt;
      * </pre>
      *
-     * @param mimeType 可选项（null表示无），数据类型（image/png、text/plain等）
-     * @param charset  可选项（null表示无），源文本的字符集编码方式
-     * @param encoding 数据编码方式（US-ASCII，BASE64等）
-     * @param data     编码后的数据
-     * @return Data URI字符串
+     * @param mimeType Optional ({@code null} if none), the data type (e.g., image/png, text/plain).
+     * @param charset  Optional ({@code null} if none), the character set encoding of the source text.
+     * @param encoding The data encoding method (e.g., US-ASCII, BASE64).
+     * @param data     The encoded data.
+     * @return The Data URI string.
      */
     public static String getDataUri(
             final String mimeType,
@@ -582,18 +593,19 @@ public class UrlKit {
     }
 
     /**
-     * 获取URL对应数据长度
+     * Retrieves the length of the data corresponding to a URL.
      * <ul>
-     * <li>如果URL为文件，转换为文件获取文件长度。</li>
-     * <li>其它情况获取{@link URLConnection#getContentLengthLong()}</li>
+     * <li>If the URL points to a file, it converts to a file and gets the file length.</li>
+     * <li>Otherwise, it retrieves the {@link URLConnection#getContentLengthLong()}.</li>
      * </ul>
      *
-     * @param url URL
-     * @return 长度
+     * @param url The {@link URL}.
+     * @return The length of the data.
+     * @throws InternalException If an I/O error occurs or the file does not exist/has zero size.
      */
     public static long size(final URL url) {
         if (Normal.isFileOrVfsURL(url)) {
-            // 如果资源以独立文件形式存在，尝试获取文件长度
+            // If the resource exists as an independent file, try to get the file length
             final File file = FileKit.file(url);
             final long length = file.length();
             if (length == 0L && !file.exists()) {
@@ -601,8 +613,8 @@ public class UrlKit {
             }
             return length;
         } else {
-            // 如果资源打在jar包中或来自网络，使用网络请求长度
-            // 来自Spring的AbstractFileResolvingResource
+            // If the resource is in a jar package or from the network, use network request to get length
+            // From Spring's AbstractFileResolvingResource
             URLConnection conn = null;
             try {
                 conn = url.openConnection();
@@ -623,51 +635,55 @@ public class UrlKit {
     }
 
     /**
-     * 如果连接为JNLP方式，则打开缓存
+     * Sets {@code useCaches} to {@code true} for {@link URLConnection} if it's a JNLP connection.
      *
-     * @param con {@link URLConnection}
+     * @param con The {@link URLConnection}.
      */
     public static void useCachesIfNecessary(final URLConnection con) {
         con.setUseCaches(con.getClass().getSimpleName().startsWith("JNLP"));
     }
 
     /**
-     * 将Map形式的Form表单数据转换为Url参数形式，会自动url编码键和值
+     * Converts a Map of form data into a URL query string format, automatically URL encoding keys and values.
      *
-     * @param paramMap 表单数据
-     * @return url参数
+     * @param paramMap The form data map.
+     * @return The URL query string.
      */
     public static String toQuery(final Map<String, ?> paramMap) {
         return toQuery(paramMap, Charset.UTF_8);
     }
 
     /**
-     * 将Map形式的Form表单数据转换为Url参数形式 paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""） 会自动url编码键和值
-     * 此方法用于拼接URL中的Query部分，并不适用于POST请求中的表单
+     * Converts a Map of form data into a URL query string format. If a key in {@code paramMap} is empty ({@code null}
+     * or ""), it will be ignored. If a value is {@code null}, it will be treated as an empty string (""). Keys and
+     * values are automatically URL encoded. This method is used for constructing the query part of a URL and is not
+     * suitable for form data in POST requests.
      *
      * <pre>
      * key1=v1&amp;key2=&amp;key3=v3
      * </pre>
      *
-     * @param paramMap 表单数据
-     * @param charset  编码，{@code null} 表示不encode键值对
-     * @return url参数
+     * @param paramMap The form data map.
+     * @param charset  The character set for encoding. If {@code null}, no encoding is performed for key-value pairs.
+     * @return The URL query string.
      */
     public static String toQuery(final Map<String, ?> paramMap, final java.nio.charset.Charset charset) {
         return toQuery(paramMap, charset, null);
     }
 
     /**
-     * 将Map形式的Form表单数据转换为Url参数形式 paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""） 会自动url编码键和值
+     * Converts a Map of form data into a URL query string format. If a key in {@code paramMap} is empty ({@code null}
+     * or ""), it will be ignored. If a value is {@code null}, it will be treated as an empty string (""). Keys and
+     * values are automatically URL encoded.
      *
      * <pre>
      * key1=v1&amp;key2=&amp;key3=v3
      * </pre>
      *
-     * @param paramMap   表单数据
-     * @param charset    编码，null表示不encode键值对
-     * @param encodeMode 编码模式
-     * @return url参数
+     * @param paramMap   The form data map.
+     * @param charset    The character set for encoding. If {@code null}, no encoding is performed for key-value pairs.
+     * @param encodeMode The encoding mode.
+     * @return The URL query string.
      */
     public static String toQuery(
             final Map<String, ?> paramMap,
@@ -677,37 +693,35 @@ public class UrlKit {
     }
 
     /**
-     * 对URL参数做编码，只编码键和值 提供的值可以是url附带参数，但是不能只是url
-     *
+     * Encodes URL parameters, encoding only the keys and values.
      * <p>
-     * 注意，此方法只能标准化整个URL，并不适合于单独编码参数值
-     * </p>
+     * Note: This method is suitable for standardizing an entire URL, not for individually encoding parameter values.
      *
-     * @param query   url和参数，可以包含url本身，也可以单独参数
-     * @param charset 编码
-     * @return 编码后的url和参数
+     * @param query   The URL and parameters, can include the URL itself or just parameters.
+     * @param charset The character set for encoding.
+     * @return The encoded URL and parameters.
      */
     public static String encodeQuery(final String query, final java.nio.charset.Charset charset) {
         if (StringKit.isBlank(query)) {
             return Normal.EMPTY;
         }
 
-        String urlPart = null; // url部分，不包括问号
-        String paramPart; // 参数部分
+        String urlPart = null; // URL part, excluding the question mark
+        String paramPart; // Parameter part
         final int pathEndPos = query.indexOf(Symbol.C_QUESTION_MARK);
         if (pathEndPos > -1) {
-            // url + 参数
+            // URL + parameters
             urlPart = StringKit.subPre(query, pathEndPos);
             paramPart = StringKit.subSuf(query, pathEndPos + 1);
             if (StringKit.isBlank(paramPart)) {
-                // 无参数，返回url
+                // No parameters, return URL
                 return urlPart;
             }
         } else if (!StringKit.contains(query, Symbol.C_EQUAL)) {
-            // 无参数的URL
+            // URL without parameters
             return query;
         } else {
-            // 无URL的参数
+            // Parameters without URL
             paramPart = query;
         }
 
@@ -717,15 +731,13 @@ public class UrlKit {
     }
 
     /**
-     * 标准化参数字符串，即URL中？后的部分
-     *
+     * Normalizes the parameter string, which is the part after the '?' in a URL.
      * <p>
-     * 注意，此方法只能标准化整个URL，并不适合于单独编码参数值
-     * </p>
+     * Note: This method is suitable for standardizing an entire URL, not for individually encoding parameter values.
      *
-     * @param query   参数字符串
-     * @param charset 编码
-     * @return 标准化的参数字符串
+     * @param query   The parameter string.
+     * @param charset The character set for encoding.
+     * @return The normalized parameter string.
      */
     public static String normalizeQuery(final String query, final java.nio.charset.Charset charset) {
         if (StringKit.isEmpty(query)) {
@@ -734,20 +746,21 @@ public class UrlKit {
         final StringBuilder builder = new StringBuilder(query.length() + 16);
         final int len = query.length();
         String name = null;
-        int pos = 0; // 未处理字符开始位置
-        char c; // 当前字符
-        int i; // 当前字符位置
+        int pos = 0; // Start position of unprocessed characters
+        char c; // Current character
+        int i; // Current character position
         for (i = 0; i < len; i++) {
             c = query.charAt(i);
-            if (c == Symbol.C_EQUAL) { // 键值对的分界点
+            if (c == Symbol.C_EQUAL) { // Key-value pair delimiter
                 if (null == name) {
-                    // 只有=前未定义name时被当作键值分界符，否则做为普通字符
+                    // Only when 'name' is undefined before '=' is it treated as a key-value delimiter, otherwise as a
+                    // normal character
                     name = (pos == i) ? Normal.EMPTY : query.substring(pos, i);
                     pos = i + 1;
                 }
-            } else if (c == Symbol.C_AND) { // 参数对的分界点
+            } else if (c == Symbol.C_AND) { // Parameter pair delimiter
                 if (null == name) {
-                    // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                    // For strings like &a& with no parameter value, we set the value of 'a' to ""
                     if (pos != i) {
                         name = query.substring(pos, i);
                         builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append(Symbol.C_EQUAL);
@@ -762,7 +775,7 @@ public class UrlKit {
             }
         }
 
-        // 结尾处理
+        // End processing
         if (null != name) {
             builder.append(UrlEncoder.encodeQuery(name, charset)).append(Symbol.C_EQUAL);
         }
@@ -773,20 +786,20 @@ public class UrlKit {
             builder.append(UrlEncoder.encodeQuery(query.substring(pos, i), charset));
         }
 
-        // 以&结尾则去除之
+        // Remove trailing '&'
         final int lastIndex = builder.length() - 1;
-        if (Symbol.C_AND == builder.charAt(lastIndex)) {
-            builder.delete(lastIndex, builder.length());
+        if (lastIndex >= 0 && Symbol.C_AND == builder.charAt(lastIndex)) {
+            builder.deleteCharAt(lastIndex);
         }
         return builder.toString();
     }
 
     /**
-     * 将URL参数解析为Map（也可以解析Post中的键值对参数）
+     * Parses URL parameters into a Map (also applicable for key-value pair parameters in POST requests).
      *
-     * @param query   参数字符串（或者带参数的Path）
-     * @param charset 字符集
-     * @return 参数Map
+     * @param query   The parameter string (or path with parameters).
+     * @param charset The character set.
+     * @return The parameter Map.
      */
     public static Map<String, String> decodeQuery(final String query, final java.nio.charset.Charset charset) {
         final Map<CharSequence, CharSequence> queryMap = UrlQuery.of(query, charset).getQueryMap();
@@ -797,11 +810,12 @@ public class UrlKit {
     }
 
     /**
-     * 将URL参数解析为Map（也可以解析Post中的键值对参数）
+     * Parses URL parameters into a Map where values are lists of strings (also applicable for key-value pair parameters
+     * in POST requests).
      *
-     * @param query   参数字符串（或者带参数的Path）
-     * @param charset 字符集
-     * @return 参数Map
+     * @param query   The parameter string (or path with parameters).
+     * @param charset The character set.
+     * @return The parameter Map with list values.
      */
     public static Map<String, List<String>> decodeQueryList(
             final String query,
@@ -815,7 +829,7 @@ public class UrlKit {
         queryMap.forEach((key, value) -> {
             if (null != key) {
                 final List<String> values = map.computeIfAbsent(key.toString(), k -> new ArrayList<>(1));
-                // 一般是一个参数
+                // Usually a single parameter
                 values.add(StringKit.toStringOrNull(value));
             }
         });

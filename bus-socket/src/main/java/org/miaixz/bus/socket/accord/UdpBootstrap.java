@@ -23,13 +23,9 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ a ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.socket.accord;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.channels.DatagramChannel;
 
 import org.miaixz.bus.socket.Context;
 import org.miaixz.bus.socket.Handler;
@@ -37,8 +33,12 @@ import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Worker;
 import org.miaixz.bus.socket.buffer.BufferPagePool;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.channels.DatagramChannel;
+
 /**
- * UDP服务启动类
+ * A bootstrap class for creating and configuring UDP services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,33 +46,33 @@ import org.miaixz.bus.socket.buffer.BufferPagePool;
 public class UdpBootstrap {
 
     /**
-     * 服务上下文
+     * The service context, containing configuration settings.
      */
     private final Context context = new Context();
     /**
-     * 工作者
+     * The worker responsible for handling I/O operations.
      */
     private Worker worker;
     /**
-     * 内部工作者
+     * Flag indicating whether the worker was created internally by this bootstrap.
      */
     private boolean innerWorker = false;
     /**
-     * write 内存池
+     * The buffer pool for write operations.
      */
     private BufferPagePool writeBufferPool = null;
     /**
-     * read 内存池
+     * The buffer pool for read operations.
      */
     private BufferPagePool readBufferPool = null;
 
     /**
-     * 构造
+     * Constructs a UdpBootstrap with a specified message codec, handler, and worker.
      *
-     * @param message   消息处理
-     * @param handler   拦截器
-     * @param worker    工作者
-     * @param <Request> 当前请求
+     * @param <Request> the type of the request message
+     * @param message   the message codec for handling data packets
+     * @param handler   the message handler for processing requests
+     * @param worker    the worker to handle I/O operations
      */
     public <Request> UdpBootstrap(Message<Request> message, Handler<Request> handler, Worker worker) {
         this(message, handler);
@@ -80,11 +80,11 @@ public class UdpBootstrap {
     }
 
     /**
-     * 构造
+     * Constructs a UdpBootstrap with a specified message codec and handler.
      *
-     * @param message   消息处理
-     * @param handler   拦截器
-     * @param <Request> 当前请求
+     * @param <Request> the type of the request message
+     * @param message   the message codec for handling data packets
+     * @param handler   the message handler for processing requests
      */
     public <Request> UdpBootstrap(Message<Request> message, Handler<Request> handler) {
         context.setProtocol(message);
@@ -92,32 +92,36 @@ public class UdpBootstrap {
     }
 
     /**
-     * 开启一个UDP通道，端口号随机
+     * Opens a UDP channel on a random port.
      *
-     * @return UDP通道
+     * @return the newly created {@link UdpChannel}
+     * @throws IOException if an I/O error occurs
      */
     public UdpChannel open() throws IOException {
         return open(0);
     }
 
     /**
-     * 开启一个UDP通道
+     * Opens a UDP channel on a specified port.
      *
-     * @param port 指定绑定端口号,为0则随机指定
+     * @param port the port to bind to; if 0, a random port will be chosen
+     * @return the newly created {@link UdpChannel}
+     * @throws IOException if an I/O error occurs
      */
     public UdpChannel open(int port) throws IOException {
         return open(null, port);
     }
 
     /**
-     * 开启一个UDP通道
+     * Opens a UDP channel on a specified host and port.
      *
-     * @param host 绑定本机地址
-     * @param port 指定绑定端口号,为0则随机指定
+     * @param host the host address to bind to
+     * @param port the port to bind to; if 0, a random port will be chosen
+     * @return the newly created {@link UdpChannel}
+     * @throws IOException if an I/O error occurs
      */
     public UdpChannel open(String host, int port) throws IOException {
-        // 初始化内存池
-        // 初始化内存池
+        // Initialize buffer pools if they are not set
         if (writeBufferPool == null) {
             this.writeBufferPool = BufferPagePool.DEFAULT_BUFFER_PAGE_POOL;
         }
@@ -125,7 +129,7 @@ public class UdpBootstrap {
             this.readBufferPool = BufferPagePool.DEFAULT_BUFFER_PAGE_POOL;
         }
 
-        // 初始化工作线程
+        // Initialize the worker thread if it is not set
         if (worker == null) {
             innerWorker = true;
             worker = new Worker(readBufferPool.allocateBufferPage(), writeBufferPool, this.context.getThreadNum());
@@ -141,12 +145,18 @@ public class UdpBootstrap {
         return new UdpChannel(channel, worker, this.context, writeBufferPool.allocateBufferPage());
     }
 
+    /**
+     * Initializes the worker if it has not been initialized.
+     */
     private synchronized void initWorker() {
         if (worker != null) {
             return;
         }
     }
 
+    /**
+     * Shuts down the bootstrap. If the worker was created internally, it will also be shut down.
+     */
     public void shutdown() {
         if (innerWorker) {
             worker.shutdown();
@@ -154,9 +164,10 @@ public class UdpBootstrap {
     }
 
     /**
-     * 设置读缓存区大小
+     * Sets the read buffer size.
      *
-     * @param size 单位：byte
+     * @param size the size in bytes
+     * @return this {@link UdpBootstrap} instance
      */
     public final UdpBootstrap setReadBufferSize(int size) {
         this.context.setReadBufferSize(size);
@@ -164,9 +175,10 @@ public class UdpBootstrap {
     }
 
     /**
-     * 设置线程大小
+     * Sets the number of threads for the worker.
      *
-     * @param num 线程数
+     * @param num the number of threads
+     * @return this {@link UdpBootstrap} instance
      */
     public final UdpBootstrap setThreadNum(int num) {
         this.context.setThreadNum(num);
@@ -174,11 +186,11 @@ public class UdpBootstrap {
     }
 
     /**
-     * 设置内存池 通过该方法设置的内存池，在AioServer执行shutdown时不会触发内存池的释放。 该方法适用于多个AioServer、AioClient共享内存池的场景。
-     * <b>在启用内存池的情况下会有更好的性能表现</b>
+     * Sets the buffer pool. The buffer pool set by this method will not be released when the server is shut down. This
+     * is suitable for scenarios where multiple servers and clients share a buffer pool for better performance.
      *
-     * @param bufferPool 内存池对象
-     * @return 当前AioServer对象
+     * @param bufferPool the buffer pool to use
+     * @return this {@link UdpBootstrap} instance
      */
     public final UdpBootstrap setBufferPagePool(BufferPagePool bufferPool) {
         this.readBufferPool = bufferPool;

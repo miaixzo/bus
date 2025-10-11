@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 内部实现及规则
+ * Provides internal implementation details for the HTTP client, including connection management, streams, and routing.
  *
  * @author Kimi Liu
  * @since Java 17+

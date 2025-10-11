@@ -39,7 +39,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
 
 /**
- * 数据库方言，针对不同数据库进行实现
+ * Database dialect interface for different database implementations. This interface defines methods for handling
+ * pagination logic specific to various database systems.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,54 +48,57 @@ import org.apache.ibatis.session.RowBounds;
 public interface Dialect {
 
     /**
-     * 跳过 count 和 分页查询
+     * Determines whether to skip the count query and pagination query.
      *
-     * @param ms              MappedStatement
-     * @param parameterObject 方法参数
-     * @param rowBounds       分页参数
-     * @return true 跳过，返回默认查询结果，false 执行分页查询
+     * @param ms              the MappedStatement object
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @return true to skip and return default query results, false to proceed with pagination query
      */
     boolean skip(MappedStatement ms, Object parameterObject, RowBounds rowBounds);
 
     /**
-     * 是否使用异步 count 查询，使用异步后不会根据返回的 count 数来判断是否有必要进行分页查询
+     * Checks if asynchronous count queries should be used. If true, the count will be queried asynchronously and will
+     * not affect the decision to proceed with the pagination query.
      *
-     * @return true 异步，false 同步
+     * @return true for asynchronous count, false for synchronous
      */
     default boolean isAsyncCount() {
         return false;
     }
 
     /**
-     * 执行异步 count 查询
+     * Executes an asynchronous count query task.
      *
-     * @param task 异步查询任务
-     * @param <T>  引用对象
-     * @return the object
+     * @param task the asynchronous query task
+     * @param <T>  the type of the result of the task
+     * @return a Future representing the pending completion of the task
      */
     default <T> Future<T> asyncCountTask(Callable<T> task) {
         return ForkJoinPool.commonPool().submit(task);
     }
 
     /**
-     * 执行分页前，返回 true 会进行 count 查询，false 会继续下面的 beforePage 判断
+     * Called before executing the count query. If this method returns true, a count query will be performed. If it
+     * returns false, the system will proceed to evaluate the {@link #beforePage(MappedStatement, Object, RowBounds)}
+     * method.
      *
-     * @param ms              MappedStatement
-     * @param parameterObject 方法参数
-     * @param rowBounds       分页参数
-     * @return the object
+     * @param ms              the MappedStatement object
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @return true to proceed with count query, false to skip to {@code beforePage}
      */
     boolean beforeCount(MappedStatement ms, Object parameterObject, RowBounds rowBounds);
 
     /**
-     * 生成 count 查询 sql
+     * Generates the SQL for the count query.
      *
-     * @param ms              MappedStatement
-     * @param boundSql        绑定 SQL 对象
-     * @param parameterObject 方法参数
-     * @param rowBounds       分页参数
-     * @param countKey        count 缓存 key
-     * @return the object
+     * @param ms              the MappedStatement object
+     * @param boundSql        the BoundSql object containing the original SQL and parameters
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @param countKey        the CacheKey for the count query
+     * @return the generated count SQL string
      */
     String getCountSql(
             MappedStatement ms,
@@ -104,45 +108,46 @@ public interface Dialect {
             CacheKey countKey);
 
     /**
-     * 执行完 count 查询后
+     * Called after the count query has been executed.
      *
-     * @param count           查询结果总数
-     * @param parameterObject 接口参数
-     * @param rowBounds       分页参数
-     * @return true 继续分页查询，false 直接返回
+     * @param count           the total number of records found by the count query
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @return true to continue with the pagination query, false to return immediately
      */
     boolean afterCount(long count, Object parameterObject, RowBounds rowBounds);
 
     /**
-     * 处理查询参数对象
+     * Processes the parameter object before the query is executed.
      *
-     * @param ms              MappedStatement
-     * @param parameterObject 方法参数
-     * @param boundSql        绑定 SQL 对象
-     * @param pageKey         分页缓存 key
-     * @return the object
+     * @param ms              the MappedStatement object
+     * @param parameterObject the parameter object for the query
+     * @param boundSql        the BoundSql object containing the original SQL and parameters
+     * @param pageKey         the CacheKey for the paginated query
+     * @return the processed parameter object
      */
     Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql, CacheKey pageKey);
 
     /**
-     * 执行分页前，返回 true 会进行分页查询，false 会返回默认查询结果
+     * Called before executing the pagination query. If this method returns true, a pagination query will be performed.
+     * If it returns false, default query results will be returned.
      *
-     * @param ms              MappedStatement
-     * @param parameterObject 方法参数
-     * @param rowBounds       分页参数
-     * @return the object
+     * @param ms              the MappedStatement object
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @return true to proceed with pagination query, false to return default results
      */
     boolean beforePage(MappedStatement ms, Object parameterObject, RowBounds rowBounds);
 
     /**
-     * 生成分页查询 sql
+     * Generates the SQL for the paginated query.
      *
-     * @param ms              MappedStatement
-     * @param boundSql        绑定 SQL 对象
-     * @param parameterObject 方法参数
-     * @param rowBounds       分页参数
-     * @param pageKey         分页缓存 key
-     * @return the object
+     * @param ms              the MappedStatement object
+     * @param boundSql        the BoundSql object containing the original SQL and parameters
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @param pageKey         the CacheKey for the paginated query
+     * @return the generated paginated SQL string
      */
     String getPageSql(
             MappedStatement ms,
@@ -152,24 +157,25 @@ public interface Dialect {
             CacheKey pageKey);
 
     /**
-     * 分页查询后，处理分页结果，拦截器中直接 return 该方法的返回值
+     * Called after the pagination query has been executed to process the results. The return value of this method
+     * should be directly returned by the interceptor.
      *
-     * @param pageList        分页查询结果
-     * @param parameterObject 方法参数
-     * @param rowBounds       分页参数
-     * @return the object
+     * @param pageList        the list of results from the paginated query
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @return the processed paginated results
      */
     Object afterPage(List pageList, Object parameterObject, RowBounds rowBounds);
 
     /**
-     * 完成所有任务后
+     * Called after all pagination tasks are completed.
      */
     void afterAll();
 
     /**
-     * 设置参数
+     * Sets the properties for the dialect implementation.
      *
-     * @param properties 插件属性
+     * @param properties the plugin properties
      */
     void setProperties(Properties properties);
 

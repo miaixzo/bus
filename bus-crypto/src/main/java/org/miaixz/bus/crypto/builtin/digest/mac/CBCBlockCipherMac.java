@@ -31,12 +31,12 @@ import java.security.Key;
 
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
-import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 
 /**
- * {@link org.bouncycastle.crypto.macs.CBCBlockCipherMac}实现的MAC算法，使用CBC Block方式
+ * MAC algorithm implementation using {@link org.bouncycastle.crypto.macs.CBCBlockCipherMac}, which operates in CBC
+ * (Cipher Block Chaining) mode.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,67 +44,69 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
 public class CBCBlockCipherMac extends BCMac {
 
     /**
-     * 构造
+     * Constructs a {@code CBCBlockCipherMac} instance.
      *
-     * @param digest        摘要算法，为{@link Digest} 的接口实现
-     * @param macSizeInBits mac结果的bits长度，必须为8的倍数
-     * @param key           密钥
-     * @param iv            加盐
+     * @param digest        The digest algorithm, an implementation of {@link BlockCipher}.
+     * @param macSizeInBits The desired MAC result length in bits, which must be a multiple of 8.
+     * @param key           The cryptographic key.
+     * @param iv            The initialization vector (IV) as a byte array.
      */
     public CBCBlockCipherMac(final BlockCipher digest, final int macSizeInBits, final Key key, final byte[] iv) {
         this(digest, macSizeInBits, key.getEncoded(), iv);
     }
 
     /**
-     * 构造
+     * Constructs a {@code CBCBlockCipherMac} instance.
      *
-     * @param digest        摘要算法，为{@link Digest} 的接口实现
-     * @param macSizeInBits mac结果的bits长度，必须为8的倍数
-     * @param key           密钥
-     * @param iv            加盐
+     * @param digest        The digest algorithm, an implementation of {@link BlockCipher}.
+     * @param macSizeInBits The desired MAC result length in bits, which must be a multiple of 8.
+     * @param key           The cryptographic key as a byte array.
+     * @param iv            The initialization vector (IV) as a byte array.
      */
     public CBCBlockCipherMac(final BlockCipher digest, final int macSizeInBits, final byte[] key, final byte[] iv) {
         this(digest, macSizeInBits, new ParametersWithIV(new KeyParameter(key), iv));
     }
 
     /**
-     * 构造
+     * Constructs a {@code CBCBlockCipherMac} instance.
      *
-     * @param cipher        算法，为{@link BlockCipher} 的接口实现
-     * @param macSizeInBits mac结果的bits长度，必须为8的倍数
-     * @param key           密钥
+     * @param cipher        The cipher algorithm, an implementation of {@link BlockCipher}.
+     * @param macSizeInBits The desired MAC result length in bits, which must be a multiple of 8.
+     * @param key           The cryptographic key.
      */
     public CBCBlockCipherMac(final BlockCipher cipher, final int macSizeInBits, final Key key) {
         this(cipher, macSizeInBits, key.getEncoded());
     }
 
     /**
-     * 构造
+     * Constructs a {@code CBCBlockCipherMac} instance.
      *
-     * @param cipher        算法，为{@link BlockCipher} 的接口实现
-     * @param macSizeInBits mac结果的bits长度，必须为8的倍数
-     * @param key           密钥
+     * @param cipher        The cipher algorithm, an implementation of {@link BlockCipher}.
+     * @param macSizeInBits The desired MAC result length in bits, which must be a multiple of 8.
+     * @param key           The cryptographic key as a byte array.
      */
     public CBCBlockCipherMac(final BlockCipher cipher, final int macSizeInBits, final byte[] key) {
         this(cipher, macSizeInBits, new KeyParameter(key));
     }
 
     /**
-     * 构造
+     * Constructs a {@code CBCBlockCipherMac} instance.
      *
-     * @param cipher        算法，为{@link BlockCipher} 的接口实现
-     * @param macSizeInBits mac结果的bits长度，必须为8的倍数
-     * @param params        参数，例如密钥可以用{@link KeyParameter}
+     * @param cipher        The cipher algorithm, an implementation of {@link BlockCipher}.
+     * @param macSizeInBits The desired MAC result length in bits, which must be a multiple of 8.
+     * @param params        The {@link CipherParameters} for initializing the MAC, e.g., a {@link KeyParameter} for the
+     *                      key.
      */
     public CBCBlockCipherMac(final BlockCipher cipher, final int macSizeInBits, final CipherParameters params) {
         this(new org.bouncycastle.crypto.macs.CBCBlockCipherMac(cipher, macSizeInBits), params);
     }
 
     /**
-     * 构造
+     * Constructs a {@code CBCBlockCipherMac} instance with an existing BouncyCastle
+     * {@link org.bouncycastle.crypto.macs.CBCBlockCipherMac} and cipher parameters.
      *
-     * @param mac    {@link org.bouncycastle.crypto.macs.CBCBlockCipherMac}
-     * @param params 参数，例如密钥可以用{@link KeyParameter}
+     * @param mac    The BouncyCastle {@link org.bouncycastle.crypto.macs.CBCBlockCipherMac} instance.
+     * @param params The {@link CipherParameters} for initializing the MAC, e.g., a {@link KeyParameter} for the key.
      */
     public CBCBlockCipherMac(final org.bouncycastle.crypto.macs.CBCBlockCipherMac mac, final CipherParameters params) {
         super(mac, params);

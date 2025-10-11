@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 统一下单-单品列表
+ * Model for the Goods Detail object in the V3 Unified Order API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,23 +47,23 @@ import lombok.experimental.SuperBuilder;
 public class GoodsDetail {
 
     /**
-     * 商户侧商品编码
+     * The merchant's internal goods ID.
      */
     private String merchant_goods_id;
     /**
-     * 微信侧商品编码
+     * The WeChat Pay goods ID, used for promotions.
      */
     private String wechatpay_goods_id;
     /**
-     * 商品名称
+     * The name of the goods.
      */
     private String goods_name;
     /**
-     * 商品数量
+     * The quantity of the goods.
      */
     private int quantity;
     /**
-     * 商品单价
+     * The unit price of the goods in cents.
      */
     private int unit_price;
 

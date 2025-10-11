@@ -30,7 +30,7 @@ package org.miaixz.bus.core.basic.normal;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * 错误码，定义全局通用的错误码，可被继承以扩展产品特定错误码
+ * Defines global and common error codes. This class can be extended to include product-specific error codes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,388 +38,438 @@ import org.miaixz.bus.core.lang.Symbol;
 public class ErrorCode {
 
     /**
-     * 通用: 请求成功
+     * Constructs a new AbstractProvider with default settings.
      */
-    public static final Errors _SUCCESS = ErrorRegistry.builder().key(Symbol.ZERO).value("请求成功").build();
+    public ErrorCode() {
 
+    }
+
+    /**
+     * Common: Request was successful.
+     */
+    public static final Errors _SUCCESS = ErrorRegistry.builder().key(Symbol.ZERO).value("Successful").build();
+
+    /**
+     * Common: System is busy, please try again later.
+     */
+    public static final Errors _FAILURE = ErrorRegistry.builder().key("-1")
+            .value("System is busy, please try again later").build();
+
+    /**
+     * Common: Request is too frequent, please try again later.
+     */
+    public static final Errors _LIMITER = ErrorRegistry.builder().key("-2")
+            .value("Request is too frequent, please try again later").build();
+
     /**
-     * 通用: 系统繁忙，请稍后重试
+     * Common: Illegal request, please try again later.
      */
-    public static final Errors _FAILURE = ErrorRegistry.builder().key("-1").value("系统繁忙,请稍后重试").build();
+    public static final Errors _BLOCKED = ErrorRegistry.builder().key("-3")
+            .value("Illegal request, please try again later").build();
 
     /**
-     * 通用: 请求过于频繁，请稍候后再试
+     * Request: Invalid token.
      */
-    public static final Errors _LIMITER = ErrorRegistry.builder().key("-2").value("请求过于频繁，请稍候后再试").build();
+    public static final Errors _100100 = ErrorRegistry.builder().key("100100").value("Invalid token").build();
 
     /**
-     * 通用: 非法请求，请稍候后再试
+     * Request: Invalid parameter.
      */
-    public static final Errors _BLOCKED = ErrorRegistry.builder().key("-3").value("非法请求，请稍候后再试").build();
+    public static final Errors _100101 = ErrorRegistry.builder().key("100101").value("Invalid parameter").build();
 
     /**
-     * 请求：无效的令牌
+     * Request: Invalid version.
      */
-    public static final Errors _100100 = ErrorRegistry.builder().key("100100").value("无效的令牌").build();
+    public static final Errors _100102 = ErrorRegistry.builder().key("100102").value("Invalid version").build();
 
     /**
-     * 请求：无效的参数
+     * Request: Invalid method.
      */
-    public static final Errors _100101 = ErrorRegistry.builder().key("100101").value("无效的参数").build();
+    public static final Errors _100103 = ErrorRegistry.builder().key("100103").value("Invalid method").build();
 
     /**
-     * 请求：无效的版本
+     * Request: Invalid language.
      */
-    public static final Errors _100102 = ErrorRegistry.builder().key("100102").value("无效的版本").build();
+    public static final Errors _100104 = ErrorRegistry.builder().key("100104").value("Invalid language").build();
 
     /**
-     * 请求：无效的方法
+     * Request: Invalid format type.
      */
-    public static final Errors _100103 = ErrorRegistry.builder().key("100103").value("无效的方法").build();
+    public static final Errors _100105 = ErrorRegistry.builder().key("100105").value("Invalid format type").build();
 
     /**
-     * 请求：无效的语言
+     * Request: Missing token.
      */
-    public static final Errors _100104 = ErrorRegistry.builder().key("100104").value("无效的语言").build();
+    public static final Errors _100106 = ErrorRegistry.builder().key("100106").value("Missing token").build();
 
     /**
-     * 请求：无效的格式化类型
+     * Request: Missing version.
      */
-    public static final Errors _100105 = ErrorRegistry.builder().key("100105").value("无效的格式化类型").build();
+    public static final Errors _100107 = ErrorRegistry.builder().key("100107").value("Missing version").build();
 
     /**
-     * 请求：缺少token参数
+     * Request: Missing method.
      */
-    public static final Errors _100106 = ErrorRegistry.builder().key("100106").value("缺少token参数").build();
+    public static final Errors _100108 = ErrorRegistry.builder().key("100108").value("Missing method").build();
 
     /**
-     * 请求：缺少version参数
+     * Request: Missing language.
      */
-    public static final Errors _100107 = ErrorRegistry.builder().key("100107").value("缺少version参数").build();
+    public static final Errors _100109 = ErrorRegistry.builder().key("100109").value("Missing language").build();
 
     /**
-     * 请求：缺少method参数
+     * Request: Missing fields.
      */
-    public static final Errors _100108 = ErrorRegistry.builder().key("100108").value("缺少method参数").build();
+    public static final Errors _100110 = ErrorRegistry.builder().key("100110").value("Missing fields").build();
 
     /**
-     * 请求：缺少language参数
+     * Request: Missing format.
      */
-    public static final Errors _100109 = ErrorRegistry.builder().key("100109").value("缺少language参数").build();
+    public static final Errors _100111 = ErrorRegistry.builder().key("100111").value("Missing format").build();
 
     /**
-     * 请求：缺少fields参数
+     * Request: Missing sign.
      */
-    public static final Errors _100110 = ErrorRegistry.builder().key("100110").value("缺少fields参数").build();
+    public static final Errors _100112 = ErrorRegistry.builder().key("100112").value("Missing sign").build();
 
     /**
-     * 请求：缺少format参数
+     * Request: Missing nonce.
      */
-    public static final Errors _100111 = ErrorRegistry.builder().key("100111").value("缺少format参数").build();
+    public static final Errors _100113 = ErrorRegistry.builder().key("100113").value("Missing nonce").build();
 
     /**
-     * 缺少sign参数
+     * Request: Missing timestamp.
      */
-    public static final Errors _100112 = ErrorRegistry.builder().key("100112").value("缺少sign参数").build();
+    public static final Errors _100114 = ErrorRegistry.builder().key("100114").value("Missing timestamp").build();
 
     /**
-     * 请求：缺少nonce参数
+     * Request: Missing sign (duplicate of 100112, should be reviewed).
      */
-    public static final Errors _100113 = ErrorRegistry.builder().key("100113").value("缺少nonce参数").build();
+    public static final Errors _100115 = ErrorRegistry.builder().key("100115").value("Missing sign").build();
 
     /**
-     * 请求：缺少timestamp参数
+     * Request: Missing sign (duplicate of 100112, should be reviewed).
      */
-    public static final Errors _100114 = ErrorRegistry.builder().key("100114").value("缺少timestamp参数").build();
+    public static final Errors _100116 = ErrorRegistry.builder().key("100116").value("Missing parameters").build();
 
     /**
-     * 请求：缺少sign参数（重复，需检查）
+     * Request: Invalid ApiKey.
      */
-    public static final Errors _100115 = ErrorRegistry.builder().key("100115").value("缺少sign参数").build();
+    public static final Errors _100117 = ErrorRegistry.builder().key("100117").value("Invalid ApiKey").build();
 
     /**
-     * 请使用GET请求
+     * Request: Please use GET request.
      */
-    public static final Errors _100200 = ErrorRegistry.builder().key("100200").value("请使用GET请求").build();
+    public static final Errors _100200 = ErrorRegistry.builder().key("100200").value("Please use GET request").build();
 
     /**
-     * 请使用POST请求
+     * Request: Please use POST request.
      */
-    public static final Errors _100201 = ErrorRegistry.builder().key("100201").value("请使用POST请求").build();
+    public static final Errors _100201 = ErrorRegistry.builder().key("100201").value("Please use POST request").build();
 
     /**
-     * 请使用PUT请求
+     * Request: Please use PUT request.
      */
-    public static final Errors _100202 = ErrorRegistry.builder().key("100202").value("请使用PUT请求").build();
+    public static final Errors _100202 = ErrorRegistry.builder().key("100202").value("Please use PUT request").build();
 
     /**
-     * 请使用DELETE请求
+     * Request: Please use DELETE request.
      */
-    public static final Errors _100203 = ErrorRegistry.builder().key("100203").value("请使用DELETE请求").build();
+    public static final Errors _100203 = ErrorRegistry.builder().key("100203").value("Please use DELETE request")
+            .build();
 
     /**
-     * 请使用OPTIONS请求
+     * Request: Please use OPTIONS request.
      */
-    public static final Errors _100204 = ErrorRegistry.builder().key("100204").value("请使用OPTIONS请求").build();
+    public static final Errors _100204 = ErrorRegistry.builder().key("100204").value("Please use OPTIONS request")
+            .build();
 
     /**
-     * 请使用HEAD请求
+     * Request: Please use HEAD request.
      */
-    public static final Errors _100205 = ErrorRegistry.builder().key("100205").value("请使用HEAD请求").build();
+    public static final Errors _100205 = ErrorRegistry.builder().key("100205").value("Please use HEAD request").build();
 
     /**
-     * 请使用PATCH请求
+     * Request: Please use PATCH request.
      */
-    public static final Errors _100206 = ErrorRegistry.builder().key("100206").value("请使用PATCH请求").build();
+    public static final Errors _100206 = ErrorRegistry.builder().key("100206").value("Please use PATCH request")
+            .build();
 
     /**
-     * 请使用TRACE请求
+     * Request: Please use TRACE request.
      */
-    public static final Errors _100207 = ErrorRegistry.builder().key("100207").value("请使用TRACE请求").build();
+    public static final Errors _100207 = ErrorRegistry.builder().key("100207").value("Please use TRACE request")
+            .build();
 
     /**
-     * 请使用CONNECT请求
+     * Request: Please use CONNECT request.
      */
-    public static final Errors _100208 = ErrorRegistry.builder().key("100208").value("请使用CONNECT请求").build();
+    public static final Errors _100208 = ErrorRegistry.builder().key("100208").value("Please use CONNECT request")
+            .build();
 
     /**
-     * 请使用HTTPS协议
+     * Request: Please use HTTPS protocol.
      */
-    public static final Errors _100209 = ErrorRegistry.builder().key("100209").value("请使用HTTPS协议").build();
+    public static final Errors _100209 = ErrorRegistry.builder().key("100209").value("Please use HTTPS protocol")
+            .build();
 
     /**
-     * 签名信息错误
+     * Request: Invalid signature information.
      */
-    public static final Errors _100300 = ErrorRegistry.builder().key("100300").value("签名信息无效").build();
+    public static final Errors _100300 = ErrorRegistry.builder().key("100300").value("Invalid signature information")
+            .build();
 
     /**
-     * 日期格式化错误
+     * Data: Date formatting error.
      */
-    public static final Errors _100301 = ErrorRegistry.builder().key("100301").value("日期格式化错误").build();
+    public static final Errors _100301 = ErrorRegistry.builder().key("100301").value("Date formatting error").build();
 
     /**
-     * JSON格式错误
+     * Data: JSON format error.
      */
-    public static final Errors _100302 = ErrorRegistry.builder().key("100302").value("JSON格式错误").build();
+    public static final Errors _100302 = ErrorRegistry.builder().key("100302").value("JSON format error").build();
 
     /**
-     * 文件格式错误
+     * Data: File format error.
      */
-    public static final Errors _100303 = ErrorRegistry.builder().key("100303").value("文件格式错误").build();
+    public static final Errors _100303 = ErrorRegistry.builder().key("100303").value("File format error").build();
 
     /**
-     * 转换JSON/XML错误
+     * Data: Error converting JSON/XML.
      */
-    public static final Errors _100304 = ErrorRegistry.builder().key("100304").value("转换JSON/XML错误").build();
+    public static final Errors _100304 = ErrorRegistry.builder().key("100304").value("Error converting JSON/XML")
+            .build();
 
     /**
-     * 暂无数据
+     * Data: No data available.
      */
-    public static final Errors _100500 = ErrorRegistry.builder().key("100500").value("暂无数据").build();
+    public static final Errors _100500 = ErrorRegistry.builder().key("100500").value("No data available").build();
 
     /**
-     * 数据已存在
+     * Data: Data already exists.
      */
-    public static final Errors _100501 = ErrorRegistry.builder().key("100501").value("数据已存在").build();
+    public static final Errors _100501 = ErrorRegistry.builder().key("100501").value("Data already exists").build();
 
     /**
-     * 数据不存在
+     * Data: Data does not exist.
      */
-    public static final Errors _100502 = ErrorRegistry.builder().key("100502").value("数据不存在").build();
+    public static final Errors _100502 = ErrorRegistry.builder().key("100502").value("Data does not exist").build();
 
     /**
-     * 账号已冻结
+     * User: Account is frozen.
      */
-    public static final Errors _100503 = ErrorRegistry.builder().key("100503").value("账号已冻结").build();
+    public static final Errors _100503 = ErrorRegistry.builder().key("100503").value("Account is frozen").build();
 
     /**
-     * 账号已存在
+     * User: Account already exists.
      */
-    public static final Errors _100504 = ErrorRegistry.builder().key("100504").value("账号已存在").build();
+    public static final Errors _100504 = ErrorRegistry.builder().key("100504").value("Account already exists").build();
 
     /**
-     * 账号不存在
+     * User: Account does not exist.
      */
-    public static final Errors _100505 = ErrorRegistry.builder().key("100505").value("账号不存在").build();
+    public static final Errors _100505 = ErrorRegistry.builder().key("100505").value("Account does not exist").build();
 
     /**
-     * 未绑定帐号
+     * User: Account not bound.
      */
-    public static final Errors _100506 = ErrorRegistry.builder().key("100506").value("未绑定帐号").build();
+    public static final Errors _100506 = ErrorRegistry.builder().key("100506").value("Account not bound").build();
 
     /**
-     * 请求：当前令牌已过期
+     * User: Current token has expired.
      */
-    public static final Errors _100507 = ErrorRegistry.builder().key("100507").value("当前令牌已过期").build();
+    public static final Errors _100507 = ErrorRegistry.builder().key("100507").value("Current token has expired")
+            .build();
 
     /**
-     * 用户：当前账号已登录
+     * User: Current account is already logged in.
      */
-    public static final Errors _100508 = ErrorRegistry.builder().key("100508").value("当前账号已登录").build();
+    public static final Errors _100508 = ErrorRegistry.builder().key("100508")
+            .value("Current account is already logged in").build();
 
     /**
-     * 账号异常请联系管理员
+     * User: Account is abnormal, please contact the administrator.
      */
-    public static final Errors _100509 = ErrorRegistry.builder().key("100509").value("账号异常,请联系管理员").build();
+    public static final Errors _100509 = ErrorRegistry.builder().key("100509")
+            .value("Account is abnormal, please contact the administrator").build();
 
     /**
-     * 帐号已锁定,请稍后再试
+     * User: Account is locked, please try again later.
      */
-    public static final Errors _100510 = ErrorRegistry.builder().key("100510").value("帐号已锁定,请稍后再试").build();
+    public static final Errors _100510 = ErrorRegistry.builder().key("100510")
+            .value("Account is locked, please try again later").build();
 
     /**
-     * 用户名或密码错误
+     * User: Incorrect username or password.
      */
-    public static final Errors _100511 = ErrorRegistry.builder().key("100511").value("用户名或密码错误").build();
+    public static final Errors _100511 = ErrorRegistry.builder().key("100511").value("Incorrect username or password")
+            .build();
 
     /**
-     * 发送验证码失败
+     * User: Failed to send verification code.
      */
-    public static final Errors _100512 = ErrorRegistry.builder().key("100512").value("发送验证码失败").build();
+    public static final Errors _100512 = ErrorRegistry.builder().key("100512").value("Failed to send verification code")
+            .build();
 
     /**
-     * 验证码错误
+     * User: Incorrect verification code.
      */
-    public static final Errors _100513 = ErrorRegistry.builder().key("100513").value("验证码错误").build();
+    public static final Errors _100513 = ErrorRegistry.builder().key("100513").value("Incorrect verification code")
+            .build();
 
     /**
-     * 密码长度不符合
+     * User: Password length does not meet requirements.
      */
-    public static final Errors _100514 = ErrorRegistry.builder().key("100514").value("密码长度不符合").build();
+    public static final Errors _100514 = ErrorRegistry.builder().key("100514")
+            .value("Password length does not meet requirements").build();
 
     /**
-     * 密码需要包含大小写
+     * User: Password must contain both uppercase and lowercase letters.
      */
-    public static final Errors _100515 = ErrorRegistry.builder().key("100515").value("密码需要包含大小写").build();
+    public static final Errors _100515 = ErrorRegistry.builder().key("100515")
+            .value("Password must contain both uppercase and lowercase letters").build();
 
     /**
-     * 密码需要包含特殊字符
+     * User: Password must contain special characters.
      */
-    public static final Errors _100516 = ErrorRegistry.builder().key("100516").value("密码需要包含特殊字符").build();
+    public static final Errors _100516 = ErrorRegistry.builder().key("100516")
+            .value("Password must contain special characters").build();
 
     /**
-     * 手机号重复
+     * User: Duplicate mobile number.
      */
-    public static final Errors _100517 = ErrorRegistry.builder().key("100517").value("手机号重复").build();
+    public static final Errors _100517 = ErrorRegistry.builder().key("100517").value("Duplicate mobile number").build();
 
     /**
-     * 名称重复
+     * Data: Duplicate name.
      */
-    public static final Errors _100518 = ErrorRegistry.builder().key("100518").value("名称重复").build();
+    public static final Errors _100518 = ErrorRegistry.builder().key("100518").value("Duplicate name").build();
 
     /**
-     * 无效的凭证
+     * User: Invalid credential.
      */
-    public static final Errors _100519 = ErrorRegistry.builder().key("100519").value("无效的凭证").build();
+    public static final Errors _100519 = ErrorRegistry.builder().key("100519").value("Invalid credential").build();
 
     /**
-     * 部门已存在
+     * Data: Department already exists.
      */
-    public static final Errors _100520 = ErrorRegistry.builder().key("100520").value("部门已存在").build();
+    public static final Errors _100520 = ErrorRegistry.builder().key("100520").value("Department already exists")
+            .build();
 
     /**
-     * 工号已存在
+     * Data: Employee ID already exists.
      */
-    public static final Errors _100521 = ErrorRegistry.builder().key("100521").value("工号已存在").build();
+    public static final Errors _100521 = ErrorRegistry.builder().key("100521").value("Employee ID already exists")
+            .build();
 
     /**
-     * 错误的免登授权码
+     * User: Incorrect login-free authorization code.
      */
-    public static final Errors _100522 = ErrorRegistry.builder().key("100522").value("错误的免登授权码").build();
+    public static final Errors _100522 = ErrorRegistry.builder().key("100522")
+            .value("Incorrect login-free authorization code").build();
 
     /**
-     * 未绑定手机号码
+     * User: Mobile number not bound.
      */
-    public static final Errors _100523 = ErrorRegistry.builder().key("100523").value("未绑定手机号码").build();
+    public static final Errors _100523 = ErrorRegistry.builder().key("100523").value("Mobile number not bound").build();
 
     /**
-     * 许可证无效
+     * License: Invalid license.
      */
-    public static final Errors _100524 = ErrorRegistry.builder().key("100524").value("许可证无效").build();
+    public static final Errors _100524 = ErrorRegistry.builder().key("100524").value("Invalid license").build();
 
     /**
-     * 许可证已过期
+     * License: License has expired.
      */
-    public static final Errors _100525 = ErrorRegistry.builder().key("100525").value("许可证已过期").build();
+    public static final Errors _100525 = ErrorRegistry.builder().key("100525").value("License has expired").build();
 
     /**
-     * 许可证验证失败
+     * License: License verification failed.
      */
-    public static final Errors _100526 = ErrorRegistry.builder().key("100526").value("许可证验证失败").build();
+    public static final Errors _100526 = ErrorRegistry.builder().key("100526").value("License verification failed")
+            .build();
 
     /**
-     * 请联系官方激活
+     * License: Please contact the official provider to activate.
      */
-    public static final Errors _100527 = ErrorRegistry.builder().key("100527").value("请联系官方激活").build();
+    public static final Errors _100527 = ErrorRegistry.builder().key("100527")
+            .value("Please contact the official provider to activate").build();
 
     /**
-     * 许可证签发失败
+     * License: License issuance failed.
      */
-    public static final Errors _100528 = ErrorRegistry.builder().key("100528").value("许可证签发失败").build();
+    public static final Errors _100528 = ErrorRegistry.builder().key("100528").value("License issuance failed").build();
 
     /**
-     * 许可证信息错误
+     * License: Incorrect license information.
      */
-    public static final Errors _100529 = ErrorRegistry.builder().key("100529").value("许可证信息错误").build();
+    public static final Errors _100529 = ErrorRegistry.builder().key("100529").value("Incorrect license information")
+            .build();
 
     /**
-     * 无权操作
+     * Operation: Permission denied.
      */
-    public static final Errors _100800 = ErrorRegistry.builder().key("100800").value("无权操作").build();
+    public static final Errors _100800 = ErrorRegistry.builder().key("100800").value("Permission denied").build();
 
     /**
-     * 不支持的操作
+     * Operation: Unsupported operation.
      */
-    public static final Errors _100801 = ErrorRegistry.builder().key("100801").value("不支持的操作").build();
+    public static final Errors _100801 = ErrorRegistry.builder().key("100801").value("Unsupported operation").build();
 
     /**
-     * 请求方式不支持
+     * Request: Request method not supported.
      */
-    public static final Errors _100802 = ErrorRegistry.builder().key("100802").value("请求方式不支持").build();
+    public static final Errors _100802 = ErrorRegistry.builder().key("100802").value("Request method not supported")
+            .build();
 
     /**
-     * 不支持此类型
+     * Data: This type is not supported.
      */
-    public static final Errors _100803 = ErrorRegistry.builder().key("100803").value("不支持此类型").build();
+    public static final Errors _100803 = ErrorRegistry.builder().key("100803").value("This type is not supported")
+            .build();
 
     /**
-     * 未找到资源
+     * Resource: Resource not found.
      */
-    public static final Errors _100804 = ErrorRegistry.builder().key("100804").value("未找到资源").build();
+    public static final Errors _100804 = ErrorRegistry.builder().key("100804").value("Resource not found").build();
 
     /**
-     * 内部处理异常
+     * System: Internal processing exception.
      */
-    public static final Errors _100805 = ErrorRegistry.builder().key("100805").value("内部处理异常").build();
+    public static final Errors _100805 = ErrorRegistry.builder().key("100805").value("Internal processing exception")
+            .build();
 
     /**
-     * 授权处理异常
+     * System: Authorization processing exception.
      */
-    public static final Errors _100806 = ErrorRegistry.builder().key("100806").value("授权处理异常").build();
+    public static final Errors _100806 = ErrorRegistry.builder().key("100806")
+            .value("Authorization processing exception").build();
 
     /**
-     * 业务处理失败
+     * Business: Business processing failed.
      */
-    public static final Errors _100807 = ErrorRegistry.builder().key("100807").value("业务处理失败").build();
+    public static final Errors _100807 = ErrorRegistry.builder().key("100807").value("Business processing failed")
+            .build();
 
     /**
-     * 任务执行失败
+     * System: Task execution failed.
      */
-    public static final Errors _100808 = ErrorRegistry.builder().key("100808").value("任务执行失败").build();
+    public static final Errors _100808 = ErrorRegistry.builder().key("100808").value("Task execution failed").build();
 
     /**
-     * 参数绑定异常
+     * Request: Parameter binding exception.
      */
-    public static final Errors _100809 = ErrorRegistry.builder().key("100809").value("参数绑定异常").build();
+    public static final Errors _100809 = ErrorRegistry.builder().key("100809").value("Parameter binding exception")
+            .build();
 
     /**
-     * 链接已过期
+     * Request: Link has expired.
      */
-    public static final Errors _100810 = ErrorRegistry.builder().key("100810").value("链接已过期").build();
+    public static final Errors _100810 = ErrorRegistry.builder().key("100810").value("Link has expired").build();
 
     /**
-     * 请求超时
+     * Request: Request timed out.
      */
-    public static final Errors _100811 = ErrorRegistry.builder().key("100811").value("请求超时").build();
+    public static final Errors _100811 = ErrorRegistry.builder().key("100811").value("Request timed out").build();
 
 }

@@ -36,72 +36,86 @@ import org.miaixz.bus.core.lang.Assert;
 
 /**
  * <p>
- * 参考<em>Guava</em>的<em>Range</em>实现，用于描述作为上下界的两个{@link Bound}实例围成的一段区间。
- * 作为{@link Predicate}使用时，可检验指定值是否在区间中，即指定值是否同时满足上下界的{@link Bound#test}方法。
+ * Inspired by Guava's {@code Range} implementation, this class describes a range defined by two {@link Bound} instances
+ * acting as lower and upper bounds. When used as a {@link Predicate}, it can check if a specified value is within the
+ * range, meaning the value satisfies both the lower and upper bound's {@link Bound#test} methods.
  *
  * <p>
- * 区间的类型，支持通过工厂方法创建下述几种类型的区间：
- * </p>
+ * Types of ranges, supported by factory methods:
+ *
  * <table>
- * <caption>区间</caption>
+ * <caption>Range Types</caption>
  * <tr>
- * <th>区间
- * <th>数学定义
- * <th>工厂方法
+ * <th>Range</th>
+ * <th>Mathematical Definition</th>
+ * <th>Factory Method</th>
+ * </tr>
  * <tr>
- * <td>{@code (a, b)}
- * <td>{@code {x | a < x < b}}
- * <td>{@link #open}
+ * <td>{@code (a, b)}</td>
+ * <td>{@code {x | a < x < b}}</td>
+ * <td>{@link #open}</td>
+ * </tr>
  * <tr>
- * <td>{@code [a, b]}
- * <td>{@code {x | a <= x <= b}}
- * <td>{@link #close}
+ * <td>{@code [a, b]}</td>
+ * <td>{@code {x | a <= x <= b}}</td>
+ * <td>{@link #close}</td>
+ * </tr>
  * <tr>
- * <td>{@code (a, b]}
- * <td>{@code {x | a < x <= b}}
- * <td>{@link #openClose}
+ * <td>{@code (a, b]}</td>
+ * <td>{@code {x | a < x <= b}}</td>
+ * <td>{@link #openClose}</td>
+ * </tr>
  * <tr>
- * <td>{@code [a, b)}
- * <td>{@code {x | a <= x < b}}
- * <td>{@link #closeOpen}
+ * <td>{@code [a, b)}</td>
+ * <td>{@code {x | a <= x < b}}</td>
+ * <td>{@link #closeOpen}</td>
+ * </tr>
  * <tr>
- * <td>{@code (a, +∞)}
- * <td>{@code {x | x > a}}
- * <td>{@link #greaterThan}
+ * <td>{@code (a, +∞)}</td>
+ * <td>{@code {x | x > a}}</td>
+ * <td>{@link #greaterThan}</td>
+ * </tr>
  * <tr>
- * <td>{@code [a, +∞)}
- * <td>{@code {x | x >= a}}
- * <td>{@link #atLeast}
+ * <td>{@code [a, +∞)}</td>
+ * <td>{@code {x | x >= a}}</td>
+ * <td>{@link #atLeast}</td>
+ * </tr>
  * <tr>
- * <td>{@code (-∞, b)}
- * <td>{@code {x | x < b}}
- * <td>{@link #lessThan}
+ * <td>{@code (-∞, b)}</td>
+ * <td>{@code {x | x < b}}</td>
+ * <td>{@link #lessThan}</td>
+ * </tr>
  * <tr>
- * <td>{@code (-∞, b]}
- * <td>{@code {x | x <= b}}
- * <td>{@link #atMost}
+ * <td>{@code (-∞, b]}</td>
+ * <td>{@code {x | x <= b}}</td>
+ * <td>{@link #atMost}</td>
+ * </tr>
  * <tr>
- * <td>{@code (-∞, +∞)}
- * <td>{@code {x}}
- * <td>{@link #all}
+ * <td>{@code (-∞, +∞)}</td>
+ * <td>{@code {x}}</td>
+ * <td>{@link #all}</td>
+ * </tr>
  * </table>
  *
  * <p>
- * 空区间
- * </p>
- * <p>
- * 根据数学定义，当区间中无任何实数时，认为该区间 代表的集合为空集， 用户可通过{@link #isEmpty}确认当前实例是否为空区间。
- * 若实例上界<em>a</em>，下界为<em>b</em>，则当实例满足下述任意条件时，认为其为一个空区间：
- * <ul>
- * <li>{@code a > b}；</li>
- * <li>{@code [a, b)}，且{@code a == b}；</li>
- * <li>{@code (a, b)}，且{@code a == b}；</li>
- * <li>{@code (a, b]}，且{@code a == b}；</li>
- * </ul>
- * 当通过工厂方法创建区间时，若区间为空，则会抛出{@link IllegalArgumentException}, 但是通过交并操作仍有可能创建出满足上述描述的空区间。 此时若空区间参与操作可能得到意外的结果，
- * 因此对通过非工厂方法得到的区间，在操作前有必要通过{@link #isEmpty}进行检验。
+ * Empty Ranges:
  *
- * @param <T> 边界值类型
+ * <p>
+ * According to mathematical definitions, a range represents an empty set if it contains no real numbers. Users can
+ * check if the current instance is an empty range using {@link #isEmpty()}. If an instance has a lower bound <em>a</em>
+ * and an upper bound <em>b</em>, it is considered an empty range if it satisfies any of the following conditions:
+ * <ul>
+ * <li>{@code a > b};</li>
+ * <li>{@code [a, b)}, and {@code a == b};</li>
+ * <li>{@code (a, b)}, and {@code a == b};</li>
+ * <li>{@code (a, b]}, and {@code a == b};</li>
+ * </ul>
+ * When creating ranges via factory methods, an {@link IllegalArgumentException} will be thrown if the range is empty.
+ * However, intersection and union operations might still produce empty ranges that satisfy the above description. If an
+ * empty range participates in operations, it might lead to unexpected results. Therefore, for ranges obtained through
+ * non-factory methods, it is necessary to check with {@link #isEmpty()} before performing operations.
+ *
+ * @param <T> the type of the boundary values, which must be comparable
  * @author Kimi Liu
  * @see Bound
  * @since Java 17+
@@ -112,23 +126,23 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     private static final long serialVersionUID = 2852273351363L;
 
     /**
-     * 双向无界的区间
+     * A static instance representing a doubly unbounded range, i.e., {@code {x | -∞ < x < +∞}}.
      */
     private static final BoundedRange ALL = new BoundedRange(Bound.noneLowerBound(), Bound.noneUpperBound());
     /**
-     * 下界
+     * The lower bound of this range.
      */
     private final Bound<T> lowerBound;
     /**
-     * 上界
+     * The upper bound of this range.
      */
     private final Bound<T> upperBound;
 
     /**
-     * 构造
+     * Constructs a new {@code BoundedRange} with the specified lower and upper bounds.
      *
-     * @param lowerBound 下界
-     * @param upperBound 上界
+     * @param lowerBound the lower bound of the range
+     * @param upperBound the upper bound of the range
      */
     BoundedRange(final Bound<T> lowerBound, final Bound<T> upperBound) {
         this.lowerBound = lowerBound;
@@ -136,24 +150,24 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * 构建一个上下界皆无限大的区间，即{@code {x | -∞ < x < +∞}}
+     * Creates a doubly unbounded range, representing all possible values: {@code {x | -∞ < x < +∞}}.
      *
-     * @param <T> 比较对象类型
-     * @return 区间
+     * @param <T> the type of the comparable objects in the range
+     * @return a {@code BoundedRange} instance representing all values
      */
     public static <T extends Comparable<? super T>> BoundedRange<T> all() {
         return ALL;
     }
 
     /**
-     * 构建一个闭区间，即{@code {x | lowerBound <= x <= upperBound}}
+     * Creates a closed range, including both lower and upper bounds: {@code {x | lowerBound <= x <= upperBound}}.
      *
-     * @param lowerBound 下界，不能为空
-     * @param upperBound 上界，不能为空
-     * @param <T>        边界值类型
-     * @return 区间
-     * @throws IllegalArgumentException 当创建的区间表示的集合为空时抛出
-     * @throws NullPointerException     上界或下界为{@code null}时抛出
+     * @param lowerBound the lower bound (inclusive), must not be {@code null}
+     * @param upperBound the upper bound (inclusive), must not be {@code null}
+     * @param <T>        the type of the boundary values
+     * @return a {@code BoundedRange} instance representing the closed range
+     * @throws IllegalArgumentException if the created range represents an empty set
+     * @throws NullPointerException     if {@code lowerBound} or {@code upperBound} is {@code null}
      */
     public static <T extends Comparable<? super T>> BoundedRange<T> close(final T lowerBound, final T upperBound) {
         Objects.requireNonNull(lowerBound);
@@ -162,14 +176,14 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * 构建一个开区间，即{@code {x | lowerBound < x < upperBound}}
+     * Creates an open range, excluding both lower and upper bounds: {@code {x | lowerBound < x < upperBound}}.
      *
-     * @param lowerBound 下界，不能为空
-     * @param upperBound 上界，不能为空
-     * @param <T>        边界值类型
-     * @return 区间
-     * @throws IllegalArgumentException 当创建的区间表示的集合为空时抛出
-     * @throws NullPointerException     上界或下界为{@code null}时抛出
+     * @param lowerBound the lower bound (exclusive), must not be {@code null}
+     * @param upperBound the upper bound (exclusive), must not be {@code null}
+     * @param <T>        the type of the boundary values
+     * @return a {@code BoundedRange} instance representing the open range
+     * @throws IllegalArgumentException if the created range represents an empty set
+     * @throws NullPointerException     if {@code lowerBound} or {@code upperBound} is {@code null}
      */
     public static <T extends Comparable<? super T>> BoundedRange<T> open(final T lowerBound, final T upperBound) {
         Objects.requireNonNull(lowerBound);
@@ -178,14 +192,14 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * 构建一个左闭右开区间，即{@code {x | lowerBound <= x < upperBound}}
+     * Creates a left-closed, right-open range: {@code {x | lowerBound <= x < upperBound}}.
      *
-     * @param lowerBound 下界，不能为空
-     * @param upperBound 上界，不能为空
-     * @param <T>        边界值类型
-     * @return 区间
-     * @throws IllegalArgumentException 当创建的区间表示的集合为空时抛出
-     * @throws NullPointerException     上界或下界为{@code null}时抛出
+     * @param lowerBound the lower bound (inclusive), must not be {@code null}
+     * @param upperBound the upper bound (exclusive), must not be {@code null}
+     * @param <T>        the type of the boundary values
+     * @return a {@code BoundedRange} instance representing the left-closed, right-open range
+     * @throws IllegalArgumentException if the created range represents an empty set
+     * @throws NullPointerException     if {@code lowerBound} or {@code upperBound} is {@code null}
      */
     public static <T extends Comparable<? super T>> BoundedRange<T> closeOpen(final T lowerBound, final T upperBound) {
         Objects.requireNonNull(lowerBound);
@@ -194,14 +208,14 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * 构建一个左闭右开区间，即{@code {x | lowerBound < x <= upperBound}}
+     * Creates a left-open, right-closed range: {@code {x | lowerBound < x <= upperBound}}.
      *
-     * @param lowerBound 下界，不能为空
-     * @param upperBound 上界，不能为空
-     * @param <T>        边界值类型
-     * @return 区间
-     * @throws IllegalArgumentException 当创建的区间表示的集合为空时抛出
-     * @throws NullPointerException     上界或下界为{@code null}时抛出
+     * @param lowerBound the lower bound (exclusive), must not be {@code null}
+     * @param upperBound the upper bound (inclusive), must not be {@code null}
+     * @param <T>        the type of the boundary values
+     * @return a {@code BoundedRange} instance representing the left-open, right-closed range
+     * @throws IllegalArgumentException if the created range represents an empty set
+     * @throws NullPointerException     if {@code lowerBound} or {@code upperBound} is {@code null}
      */
     public static <T extends Comparable<? super T>> BoundedRange<T> openClose(final T lowerBound, final T upperBound) {
         Objects.requireNonNull(lowerBound);
@@ -210,12 +224,12 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * {@code {x | lowerBound < x < +∞}}
+     * Creates a range with an open lower bound and an unbounded upper bound: {@code {x | lowerBound < x < +∞}}.
      *
-     * @param lowerBound 下界，不能为空
-     * @param <T>        边界值类型
-     * @return 区间
-     * @throws NullPointerException 下界为{@code null}时抛出
+     * @param lowerBound the lower bound (exclusive), must not be {@code null}
+     * @param <T>        the type of the boundary values
+     * @return a {@code BoundedRange} instance representing the range
+     * @throws NullPointerException if {@code lowerBound} is {@code null}
      * @see Bound#toRange()
      */
     public static <T extends Comparable<? super T>> BoundedRange<T> greaterThan(final T lowerBound) {
@@ -223,12 +237,12 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * {@code {x | lowerBound < x < +∞}}
+     * Creates a range with a closed lower bound and an unbounded upper bound: {@code {x | lowerBound <= x < +∞}}.
      *
-     * @param lowerBound 下界，不能为空
-     * @param <T>        边界值类型
-     * @return 区间
-     * @throws NullPointerException 下界为{@code null}时抛出
+     * @param lowerBound the lower bound (inclusive), must not be {@code null}
+     * @param <T>        the type of the boundary values
+     * @return a {@code BoundedRange} instance representing the range
+     * @throws NullPointerException if {@code lowerBound} is {@code null}
      * @see Bound#toRange()
      */
     public static <T extends Comparable<? super T>> BoundedRange<T> atLeast(final T lowerBound) {
@@ -236,12 +250,12 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * {@code {x | -∞ < x < upperBound}}
+     * Creates a range with an unbounded lower bound and an open upper bound: {@code {x | -∞ < x < upperBound}}.
      *
-     * @param upperBound 上界，不能为空
-     * @param <T>        边界值类型
-     * @return 区间
-     * @throws NullPointerException 上界为{@code null}时抛出
+     * @param upperBound the upper bound (exclusive), must not be {@code null}
+     * @param <T>        the type of the boundary values
+     * @return a {@code BoundedRange} instance representing the range
+     * @throws NullPointerException if {@code upperBound} is {@code null}
      * @see Bound#toRange()
      */
     public static <T extends Comparable<? super T>> BoundedRange<T> lessThan(final T upperBound) {
@@ -249,72 +263,80 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * {@code {x | -∞ < x <= max}}
+     * Creates a range with an unbounded lower bound and a closed upper bound: {@code {x | -∞ < x <= upperBound}}.
      *
-     * @param upperBound 上界，不能为空
-     * @param <T>        边界值类型
-     * @return 区间
-     * @throws NullPointerException 上界为{@code null}时抛出
+     * @param upperBound the upper bound (inclusive), must not be {@code null}
+     * @param <T>        the type of the boundary values
+     * @return a {@code BoundedRange} instance representing the range
+     * @throws NullPointerException if {@code upperBound} is {@code null}
      * @see Bound#toRange()
      */
     public static <T extends Comparable<? super T>> BoundedRange<T> atMost(final T upperBound) {
         return Bound.atMost(upperBound).toRange();
     }
 
+    /**
+     * Checks if the given range is empty and throws an {@link IllegalArgumentException} if it is.
+     *
+     * @param range the range to check
+     * @param <T>   the type of the boundary values
+     * @return the checked range (if not empty)
+     * @throws IllegalArgumentException if the range is empty
+     */
     private static <T extends Comparable<? super T>> BoundedRange<T> checkEmpty(final BoundedRange<T> range) {
         Assert.isFalse(range.isEmpty(), "{} is a empty range", range);
         return range;
     }
 
     /**
-     * 获取下界
+     * Retrieves the lower bound of this range.
      *
-     * @return 下界
+     * @return the {@link Bound} representing the lower limit of the range
      */
     public Bound<T> getLowerBound() {
         return lowerBound;
     }
 
     /**
-     * 获取下界值
+     * Retrieves the value of the lower bound of this range.
      *
-     * @return 下界值
+     * @return the value of the lower bound, or {@code null} if the lower bound is unbounded
      */
     public T getLowerBoundValue() {
         return getLowerBound().getValue();
     }
 
     /**
-     * 是否有下界
+     * Checks if this range has a finite lower bound.
      *
-     * @return 是否
+     * @return {@code true} if the lower bound is not unbounded (i.e., has a specific value), {@code false} otherwise
      */
     public boolean hasLowerBound() {
         return Objects.nonNull(getLowerBound().getValue());
     }
 
     /**
-     * 获取上界
+     * Retrieves the upper bound of this range.
      *
-     * @return 上界
+     * @return the {@link Bound} representing the upper limit of the range
      */
     public Bound<T> getUpperBound() {
         return upperBound;
     }
 
     /**
-     * 获取上界值
+     * Retrieves the value of the upper bound of this range.
      *
-     * @return 上界值
+     * @return the value of the upper bound, or {@code null} if the upper bound is unbounded
      */
     public T getUpperBoundValue() {
         return getUpperBound().getValue();
     }
 
     /**
-     * 是否有上界
+     * Checks if this range has a finite upper bound.
      *
-     * @return 是否
+     * @return {@code true} if the upper bound is not unbounded (i.e., has a specific value), {@code false} otherwise
      */
     public boolean hasUpperBound() {
         return Objects.nonNull(getUpperBound().getValue());
@@ -322,15 +344,16 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
 
     /**
      * <p>
-     * 当前区间是否为空。 当由下界<em>left</em>与上界<em>right</em>构成的区间， 符合下述任意条件时，认为当前区间为空：
+     * Checks if the current range is empty. A range defined by a lower bound <em>left</em> and an upper bound
+     * <em>right</em> is considered empty if it satisfies any of the following conditions:
      * <ul>
-     * <li>对任何区间，有{@code left > right}；</li>
-     * <li>对半开半闭区间{@code [left, right)}，有{@code left == right}；</li>
-     * <li>对开区间{@code (left, right)}，有{@code left == right}；</li>
-     * <li>对半开半闭区间{@code (left, right]}，有{@code left == right}；</li>
+     * <li>For any range, if {@code left > right};</li>
+     * <li>For a half-open range {@code [left, right)}, if {@code left == right};</li>
+     * <li>For an open range {@code (left, right)}, if {@code left == right};</li>
+     * <li>For a half-open range {@code (left, right]}, if {@code left == right};</li>
      * </ul>
      *
-     * @return 是否
+     * @return {@code true} if the range is empty, {@code false} otherwise
      */
     public boolean isEmpty() {
         final Bound<T> low = getLowerBound();
@@ -342,16 +365,17 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
         if (compareValue < 0) {
             return false;
         }
-        // 上界小于下界时为空
+        // If upper bound is less than lower bound, it's empty
         return compareValue > 0
-                // 上下界的边界值相等，且不为退化区间是为空
+                // If boundary values are equal, and it's not a degenerate closed interval, it's empty
                 || !(low.getType().isClose() && up.getType().isClose());
     }
 
     /**
-     * 输出当前区间的字符串，格式为{@code "[a, b]"}
+     * Returns a string representation of this range, typically in the format {@code "[a, b]"}, where 'a' is the lower
+     * bound and 'b' is the upper bound, with appropriate bracket types.
      *
-     * @return 字符串
+     * @return a string representation of the range
      */
     @Override
     public String toString() {
@@ -359,10 +383,11 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * 比较两个实例是否相等
+     * Indicates whether some other object is "equal to" this one. Two {@code BoundedRange} objects are considered equal
+     * if they have the same lower and upper bounds.
      *
-     * @param o 另一实例
-     * @return 是否
+     * @param o the reference object with which to compare
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise
      */
     @Override
     public boolean equals(final Object o) {
@@ -377,9 +402,9 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * 获取实例哈希值
+     * Returns a hash code value for the object.
      *
-     * @return 哈希值
+     * @return a hash code value for this object
      */
     @Override
     public int hashCode() {
@@ -387,10 +412,11 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * {@code other}是否是当前区间的子集
+     * Checks if the {@code other} range is a superset of the current range. A range A is a superset of range B if B is
+     * contained within A.
      *
-     * @param other 另一个区间
-     * @return 是否
+     * @param other another {@code BoundedRange} to compare with
+     * @return {@code true} if {@code other} is a superset of this range, {@code false} otherwise
      */
     public boolean isSuperset(final BoundedRange<T> other) {
         return getLowerBound().compareTo(other.getLowerBound()) <= 0
@@ -398,10 +424,11 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * {@code other}是否是当前区间的子集
+     * Checks if the {@code other} range is a proper superset of the current range. A range A is a proper superset of
+     * range B if B is contained within A and A is not equal to B.
      *
-     * @param other 另一个区间
-     * @return 是否
+     * @param other another {@code BoundedRange} to compare with
+     * @return {@code true} if {@code other} is a proper superset of this range, {@code false} otherwise
      */
     public boolean isProperSuperset(final BoundedRange<T> other) {
         return getLowerBound().compareTo(other.getLowerBound()) < 0
@@ -409,10 +436,11 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * 当前区间是否是{@code other}的子集
+     * Checks if the current range is a subset of the {@code other} range. A range A is a subset of range B if A is
+     * contained within B.
      *
-     * @param other 另一个区间
-     * @return 是否
+     * @param other another {@code BoundedRange} to compare with
+     * @return {@code true} if this range is a subset of {@code other}, {@code false} otherwise
      */
     public boolean isSubset(final BoundedRange<T> other) {
         return getLowerBound().compareTo(other.getLowerBound()) >= 0
@@ -420,10 +448,11 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * 当前区间是否是{@code other}的真子集
+     * Checks if the current range is a proper subset of the {@code other} range. A range A is a proper subset of range
+     * B if A is contained within B and A is not equal to B.
      *
-     * @param other 另一个区间
-     * @return 是否
+     * @param other another {@code BoundedRange} to compare with
+     * @return {@code true} if this range is a proper subset of {@code other}, {@code false} otherwise
      */
     public boolean isProperSubset(final BoundedRange<T> other) {
         return getLowerBound().compareTo(other.getLowerBound()) > 0
@@ -431,30 +460,32 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * {@code other}是否与当前区间不相交
+     * Checks if the {@code other} range is disjoint from the current range. Two ranges are disjoint if they have no
+     * elements in common.
      *
-     * @param other 另一个区间
-     * @return 是否
+     * @param other another {@code BoundedRange} to compare with
+     * @return {@code true} if {@code other} is disjoint from this range, {@code false} otherwise
      */
     public boolean isDisjoint(final BoundedRange<T> other) {
-        return BoundedRangeOperation.isDisjoint(this, other);
+        return BoundedOperation.isDisjoint(this, other);
     }
 
     /**
-     * {@code other}是否与当前区间相交：
+     * Checks if the {@code other} range intersects with the current range. Two ranges intersect if they have at least
+     * one element in common.
      *
-     * @param other 另一个区间
-     * @return 是否
+     * @param other another {@code BoundedRange} to compare with
+     * @return {@code true} if {@code other} intersects with this range, {@code false} otherwise
      */
     public boolean isIntersected(final BoundedRange<T> other) {
-        return BoundedRangeOperation.isIntersected(this, other);
+        return BoundedOperation.isIntersected(this, other);
     }
 
     /**
-     * 指定值是否在当前区间内
+     * Tests if the specified value is within the current range.
      *
-     * @param value 要检测的值
-     * @return 是否
+     * @param value the value to test
+     * @return {@code true} if the value is within the range, {@code false} otherwise
      */
     @Override
     public boolean testing(final T value) {
@@ -462,83 +493,94 @@ public class BoundedRange<T extends Comparable<? super T>> implements PredicateX
     }
 
     /**
-     * 若{@code other}与当前区间相交，则将其与当前区间合并。
+     * If {@code other} intersects with the current range, this method merges them into a new range that spans both. If
+     * the two ranges do not intersect, the current range is returned.
      *
-     * @param other 另一个区间
-     * @return 合并后的新区间，若两区间不相交则返回当前集合
+     * @param other another {@code BoundedRange} to union with
+     * @return a new {@code BoundedRange} representing the union if intersected, otherwise the current range
      */
     public BoundedRange<T> unionIfIntersected(final BoundedRange<T> other) {
-        return BoundedRangeOperation.unionIfIntersected(this, other);
+        return BoundedOperation.unionIfIntersected(this, other);
     }
 
     /**
-     * 获得包含当前区间与指定区间的最小的区间
+     * Returns the smallest range that encloses both the current range and the specified {@code other} range.
      *
-     * @param other 另一个区间
-     * @return 包含当前区间与指定区间的最小的区间
+     * @param other another {@code BoundedRange} to span with
+     * @return a new {@code BoundedRange} representing the span of both ranges
      */
     public BoundedRange<T> span(final BoundedRange<T> other) {
-        return BoundedRangeOperation.span(this, other);
+        return BoundedOperation.span(this, other);
     }
 
     /**
-     * 若{@code other}与当前区间不相连，则获得两区间中间的间隔部分
+     * If {@code other} is not connected to the current range, this method returns the gap between the two ranges. If
+     * the two ranges intersect, {@code null} is returned.
      *
-     * @param other 另一个区间
-     * @return 代表间隔部分的区间，若两区间相交则返回{@code null}
+     * @param other another {@code BoundedRange} to find the gap with
+     * @return a new {@code BoundedRange} representing the gap, or {@code null} if the ranges intersect
      */
     public BoundedRange<T> gap(final BoundedRange<T> other) {
-        return BoundedRangeOperation.gap(this, other);
+        return BoundedOperation.gap(this, other);
     }
 
     /**
-     * 若{@code other}与当前区间相交，则获得该区间与当前区间的交集
+     * If {@code other} intersects with the current range, this method returns the intersection of the two ranges. If
+     * there is no intersection, {@code null} is returned.
      *
-     * @param other 另一个区间
-     * @return 代表交集的区间，若无交集则返回{@code null}
+     * @param other another {@code BoundedRange} to find the intersection with
+     * @return a new {@code BoundedRange} representing the intersection, or {@code null} if there is no intersection
      */
     public BoundedRange<T> intersection(final BoundedRange<T> other) {
-        return BoundedRangeOperation.intersection(this, other);
+        return BoundedOperation.intersection(this, other);
     }
 
     /**
-     * 截取当前区间中大于{@code min}的部分，若{@code min}不在该区间中，则返回当前区间本身
+     * Truncates the current range to include only the part greater than {@code min}. If {@code min} is not within the
+     * current range, the current range itself is returned.
      *
-     * @param min 最大的左值
-     * @return 区间
+     * @param min the minimum value for truncation
+     * @return a new {@code BoundedRange} representing the truncated portion, or the original range if no truncation
+     *         occurs
      */
     public BoundedRange<T> subGreatThan(final T min) {
-        return BoundedRangeOperation.subGreatThan(this, min);
+        return BoundedOperation.subGreatThan(this, min);
     }
 
     /**
-     * 截取当前区间中大于等于{@code min}的部分，若{@code min}不在该区间中，则返回当前区间本身
+     * Truncates the current range to include only the part greater than or equal to {@code min}. If {@code min} is not
+     * within the current range, the current range itself is returned.
      *
-     * @param min 最大的左值
-     * @return 区间
+     * @param min the minimum value for truncation (inclusive)
+     * @return a new {@code BoundedRange} representing the truncated portion, or the original range if no truncation
+     *         occurs
      */
     public BoundedRange<T> subAtLeast(final T min) {
-        return BoundedRangeOperation.subAtLeast(this, min);
+        return BoundedOperation.subAtLeast(this, min);
     }
 
     /**
-     * 截取当前区间中小于{@code max}的部分，若{@code max}不在该区间中，则返回当前区间本身
+     * Truncates the current range to include only the part less than {@code max}. If {@code max} is not within the
+     * current range, the current range itself is returned.
      *
-     * @param max 最大的左值
-     * @return 区间
+     * @param max the maximum value for truncation (exclusive)
+     * @return a new {@code BoundedRange} representing the truncated portion, or the original range if no truncation
+     *         occurs
      */
     public BoundedRange<T> subLessThan(final T max) {
-        return BoundedRangeOperation.subLessThan(this, max);
+        return BoundedOperation.subLessThan(this, max);
     }
 
     /**
-     * 截取当前区间中小于等于{@code max}的部分，若{@code max}不在该区间中，则返回当前区间本身
+     * Truncates the current range to include only the part less than or equal to {@code max}. If {@code max} is not
+     * within the current range, the current range itself is returned.
      *
-     * @param max 最大的左值
-     * @return 区间
+     * @param max the maximum value for truncation (inclusive)
+     * @return a new {@code BoundedRange} representing the truncated portion, or the original range if no truncation
+     *         occurs
      */
     public BoundedRange<T> subAtMost(final T max) {
-        return BoundedRangeOperation.subAtMost(this, max);
+        return BoundedOperation.subAtMost(this, max);
     }
 
 }

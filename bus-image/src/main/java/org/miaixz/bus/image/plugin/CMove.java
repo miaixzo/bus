@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.text.MessageFormat;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.*;
@@ -38,19 +36,26 @@ import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.QueryOption;
 import org.miaixz.bus.logger.Logger;
 
+import java.text.MessageFormat;
+
 /**
+ * The {@code CMove} class provides a simple way to perform a DICOM C-MOVE operation. It encapsulates the setup and
+ * execution of a {@link MoveSCU} instance.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CMove {
 
     /**
-     * @param callingNode    调用DICOM节点的配置
-     * @param calledNode     被调用的DICOM节点配置
-     * @param destinationAet 目标 aetitle
-     * @param progress       处理的进度
-     * @param keys           匹配和返回键。没有值的Args是返回键
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
+     * Performs a DICOM C-MOVE operation.
+     *
+     * @param callingNode    the configuration of the calling DICOM node.
+     * @param calledNode     the configuration of the called DICOM node.
+     * @param destinationAet the AET of the destination node.
+     * @param progress       the progress handler for the operation.
+     * @param keys           the matching keys for the query. Keys without values are treated as return keys.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and progress.
      */
     public static Status process(
             Node callingNode,
@@ -62,13 +67,15 @@ public class CMove {
     }
 
     /**
-     * @param args           可选的高级参数(代理、身份验证、连接和TLS)
-     * @param callingNode    调用DICOM节点的配置
-     * @param calledNode     被调用的DICOM节点配置
-     * @param destinationAet 目标 aetitle
-     * @param progress       处理的进度
-     * @param keys           匹配和返回键。没有值的Args是返回键
-     * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
+     * Performs a DICOM C-MOVE operation with advanced options.
+     *
+     * @param args           optional advanced parameters (proxy, authentication, connection, and TLS).
+     * @param callingNode    the configuration of the calling DICOM node.
+     * @param calledNode     the configuration of the called DICOM node.
+     * @param destinationAet the AET of the destination node.
+     * @param progress       the progress handler for the operation.
+     * @param keys           the matching keys for the query. Keys without values are treated as return keys.
+     * @return a {@link Status} instance containing the DICOM response, status, error message, and progress.
      */
     public static Status process(
             Args args,
@@ -149,6 +156,12 @@ public class CMove {
         }
     }
 
+    /**
+     * Retrieves the information model from the given options.
+     *
+     * @param options the command-line arguments or options.
+     * @return the {@link MoveSCU.InformationModel}, defaulting to {@code StudyRoot}.
+     */
     private static MoveSCU.InformationModel getInformationModel(Args options) {
         Object model = options.getInformationModel();
         if (model instanceof MoveSCU.InformationModel) {

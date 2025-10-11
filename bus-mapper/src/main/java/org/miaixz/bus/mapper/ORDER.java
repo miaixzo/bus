@@ -30,7 +30,7 @@ package org.miaixz.bus.mapper;
 import org.miaixz.bus.core.Order;
 
 /**
- * 定义排序顺序和优先级的接口，用于控制执行顺序。
+ * An interface that defines sorting order and priority to control execution sequence.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,12 +38,12 @@ import org.miaixz.bus.core.Order;
 public interface ORDER extends Order {
 
     /**
-     * 升序排序
+     * Represents ascending order.
      */
     String ASC = "ASC";
 
     /**
-     * 降序排序
+     * Represents descending order.
      */
     String DESC = "DESC";
 

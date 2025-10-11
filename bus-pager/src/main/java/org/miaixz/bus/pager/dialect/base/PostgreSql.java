@@ -40,13 +40,26 @@ import org.miaixz.bus.pager.binding.MetaObject;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 /**
- * 数据库方言 postgresql
+ * Database dialect for PostgreSQL. This class provides PostgreSQL-specific implementations for pagination SQL
+ * generation and parameter processing.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PostgreSql extends AbstractPaging {
 
+    /**
+     * Processes the pagination parameters for PostgreSQL. It adds {@code PAGEPARAMETER_SECOND} (limit) and
+     * {@code PAGEPARAMETER_FIRST} (offset) to the parameter map and updates the {@link CacheKey}. It also modifies the
+     * {@link BoundSql}'s parameter mappings to include these pagination parameters.
+     *
+     * @param ms       the MappedStatement object
+     * @param paramMap a map containing the query parameters
+     * @param page     the {@link Page} object containing pagination details
+     * @param boundSql the BoundSql object for the query
+     * @param pageKey  the CacheKey for the paginated query
+     * @return the processed parameter map
+     */
     @Override
     public Object processPageParameter(
             MappedStatement ms,
@@ -56,10 +69,10 @@ public class PostgreSql extends AbstractPaging {
             CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
-        // 处理pageKey
+        // Process pageKey
         pageKey.update(page.getPageSize());
         pageKey.update(page.getStartRow());
-        // 处理参数配置
+        // Process parameter configuration
         if (boundSql.getParameterMappings() != null) {
             List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
             if (page.getStartRow() == 0) {
@@ -78,7 +91,14 @@ public class PostgreSql extends AbstractPaging {
     }
 
     /**
-     * 构建 <a href="https://www.postgresql.org/docs/current/queries-limit.html">PostgreSQL</a>分页查询语句
+     * Generates the PostgreSQL-specific pagination SQL. It appends {@code LIMIT ?} or {@code LIMIT ? OFFSET ?} to the
+     * original SQL.
+     *
+     * @param sql     the original SQL string
+     * @param page    the {@link Page} object containing pagination details
+     * @param pageKey the CacheKey for the paginated query
+     * @return the PostgreSQL-specific paginated SQL string
+     * @see <a href="https://www.postgresql.org/docs/current/queries-limit.html">PostgreSQL LIMIT Clause</a>
      */
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {

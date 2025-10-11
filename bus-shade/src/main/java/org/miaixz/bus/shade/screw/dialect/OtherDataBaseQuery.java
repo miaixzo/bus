@@ -40,7 +40,8 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 import org.miaixz.bus.shade.screw.metadata.Table;
 
 /**
- * 其他数据库 暂未支持系列
+ * A placeholder implementation for other, currently unsupported, database types. All methods in this class throw an
+ * {@link InternalException} indicating that the feature is not supported.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,18 +49,19 @@ import org.miaixz.bus.shade.screw.metadata.Table;
 public class OtherDataBaseQuery extends AbstractDatabaseQuery {
 
     /**
-     * 构造函数
+     * Constructs an {@code OtherDataBaseQuery}.
      *
-     * @param dataSource {@link DataSource}
+     * @param dataSource The JDBC data source.
      */
     public OtherDataBaseQuery(DataSource dataSource) {
         super(dataSource);
     }
 
     /**
-     * 获取数据库
+     * This method is not supported for this database type.
      *
-     * @return {@link Database} 数据库信息
+     * @return Never returns, always throws an exception.
+     * @throws InternalException always, as this database type is not supported.
      */
     @Override
     public Database getDataBase() {
@@ -67,9 +69,10 @@ public class OtherDataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 获取表信息
+     * This method is not supported for this database type.
      *
-     * @return {@link List} 所有表信息
+     * @return Never returns, always throws an exception.
+     * @throws InternalException always, as this database type is not supported.
      */
     @Override
     public List<Table> getTables() {
@@ -77,11 +80,11 @@ public class OtherDataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 获取列信息
+     * This method is not supported for this database type.
      *
-     * @param table {@link String} 表名
-     * @return {@link List} 表字段信息
-     * @throws InternalException 异常
+     * @param table The name of the table.
+     * @return Never returns, always throws an exception.
+     * @throws InternalException always, as this database type is not supported.
      */
     @Override
     public List<Column> getTableColumns(String table) throws InternalException {
@@ -90,10 +93,10 @@ public class OtherDataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 获取所有列信息
+     * This method is not supported for this database type.
      *
-     * @return {@link List} 表字段信息
-     * @throws InternalException 异常
+     * @return Never returns, always throws an exception.
+     * @throws InternalException always, as this database type is not supported.
      */
     @Override
     public List<? extends Column> getTableColumns() throws InternalException {
@@ -101,11 +104,11 @@ public class OtherDataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 根据表名获取主键
+     * This method is not supported for this database type.
      *
-     * @param table {@link String}
-     * @return {@link List}
-     * @throws InternalException 异常
+     * @param table The name of the table.
+     * @return Never returns, always throws an exception.
+     * @throws InternalException always, as this database type is not supported.
      */
     @Override
     public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException {

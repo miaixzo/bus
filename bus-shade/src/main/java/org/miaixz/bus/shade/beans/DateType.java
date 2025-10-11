@@ -28,22 +28,22 @@
 package org.miaixz.bus.shade.beans;
 
 /**
- * 数据库时间类型 到 实体类时间类型 对应策略
+ * Strategy for mapping database date types to entity date types.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public enum DateType {
     /**
-     * 只使用 java.util.date 代替
+     * Only use {@link java.util.Date} for date types.
      */
     ONLY_DATE,
     /**
-     * 使用 java.sql 包下的
+     * Use date types from the {@code java.sql} package.
      */
     SQL_PACK,
     /**
-     * 使用 java.time 包下的 java8 新的时间类型
+     * Use new date and time types from the {@code java.time} package (Java 8+).
      */
     TIME_PACK
 

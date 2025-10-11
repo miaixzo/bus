@@ -27,15 +27,18 @@
 */
 package org.miaixz.bus.cron.pattern;
 
-import java.util.Calendar;
-
 import org.miaixz.bus.core.center.date.culture.en.Month;
 import org.miaixz.bus.core.center.date.culture.en.Week;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 
+import java.util.Calendar;
+
 /**
- * 表达式各个部分的枚举，用于限定在表达式中的位置和规则（如最小值和最大值） {@link #ordinal()}表示此部分在表达式中的位置，如0表示秒 表达式各个部分的枚举位置为：
+ * Enumeration of the parts of a cron expression. This enum defines the position and valid value range for each field in
+ * a cron expression. The {@link #ordinal()} of each constant represents its position in the expression.
+ * <p>
+ * The order of the parts is as follows:
  * 
  * <pre>
  *         0       1    2        3         4       5         6
@@ -48,31 +51,32 @@ import org.miaixz.bus.core.lang.exception.CrontabException;
 public enum Part {
 
     /**
-     * 秒[0-59]
+     * The second part of the expression (0-59).
      */
     SECOND(Calendar.SECOND, 0, 59),
     /**
-     * 分[0-59]
+     * The minute part of the expression (0-59).
      */
     MINUTE(Calendar.MINUTE, 0, 59),
     /**
-     * 时[0-23]
+     * The hour part of the expression (0-23).
      */
     HOUR(Calendar.HOUR_OF_DAY, 0, 23),
     /**
-     * 日[1-31]，32表示最后一天
+     * The day of the month part of the expression (1-31). Note: 32 is used internally to represent the last day of the
+     * month.
      */
     DAY_OF_MONTH(Calendar.DAY_OF_MONTH, 1, 32),
     /**
-     * 月[1-12]
+     * The month part of the expression (1-12).
      */
     MONTH(Calendar.MONTH, Month.JANUARY.getIsoValue(), Month.DECEMBER.getIsoValue()),
     /**
-     * 周中的天，如周一、周日等，[0-6]即[SUNDAY-SATURDAY]
+     * The day of the week part of the expression (0-6, where Sunday is 0).
      */
     DAY_OF_WEEK(Calendar.DAY_OF_WEEK, Week.SUNDAY.ordinal(), Week.SATURDAY.ordinal()),
     /**
-     * 年[1970-2099]
+     * The optional year part of the expression (1970-2099).
      */
     YEAR(Calendar.YEAR, 1970, 2099);
 
@@ -83,11 +87,11 @@ public enum Part {
     private final int max;
 
     /**
-     * 构造
+     * Constructs a new Part.
      *
-     * @param calendarField Calendar中对应字段项
-     * @param min           限定最小值（包含）
-     * @param max           限定最大值（包含）
+     * @param calendarField The corresponding field constant from {@link Calendar}.
+     * @param min           The minimum allowed value (inclusive).
+     * @param max           The maximum allowed value (inclusive).
      */
     Part(final int calendarField, final int min, final int max) {
         this.calendarField = calendarField;
@@ -101,48 +105,48 @@ public enum Part {
     }
 
     /**
-     * 根据位置获取Part
+     * Gets the {@code Part} for the given position index.
      *
-     * @param i 位置，从0开始
-     * @return Part
+     * @param i The position index (0-based).
+     * @return The corresponding {@code Part}.
      */
     public static Part of(final int i) {
         return ENUMS[i];
     }
 
     /**
-     * 获取Calendar中对应字段项
+     * Gets the corresponding {@link Calendar} field constant.
      *
-     * @return Calendar中对应字段项
+     * @return The {@link Calendar} field constant.
      */
     public int getCalendarField() {
         return this.calendarField;
     }
 
     /**
-     * 获取最小值
+     * Gets the minimum allowed value for this part.
      *
-     * @return 最小值
+     * @return The minimum value.
      */
     public int getMin() {
         return this.min;
     }
 
     /**
-     * 获取最大值
+     * Gets the maximum allowed value for this part.
      *
-     * @return 最大值
+     * @return The maximum value.
      */
     public int getMax() {
         return this.max;
     }
 
     /**
-     * 检查单个值是否有效
+     * Checks if a given value is within the valid range for this part.
      *
-     * @param value 值
-     * @return 检查后的值
-     * @throws CrontabException 检查无效抛出此异常
+     * @param value The value to check.
+     * @return The validated value.
+     * @throws CrontabException if the value is out of range.
      */
     public int checkValue(final int value) throws CrontabException {
         Assert.checkBetween(

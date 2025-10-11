@@ -36,9 +36,10 @@ import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
- * 中文名称脱敏策略：
+ * A desensitization provider for Chinese names. The rules are as follows:
  * <p>
- * 0. 少于等于1个字 直接返回 1. 两个字 隐藏姓 2. 三个及其以上 只保留第一个和最后一个 其他用星号代替
+ * 1. If the name has 1 character, it is returned as is. 2. If the name has 2 characters, the first character (surname)
+ * is masked. 3. If the name has 3 or more characters, only the first and last characters are kept visible.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,15 +47,17 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 public class NameProvider extends AbstractProvider {
 
     /**
-     * 脱敏中文名称
+     * Masks the given Chinese name according to the defined rules.
      *
-     * @param value 中文名称
-     * @return 脱敏后的结果
+     * @param value  The Chinese name to desensitize.
+     * @param shadow The character to use for masking.
+     * @return The desensitized result.
      */
     private static String name(final String value, final String shadow) {
         if (StringKit.isEmpty(value)) {
             return value;
         }
+        // Do not process strings containing emoji.
         if (CollKit.isNotEmpty(EmojiKit.extractEmojis(value))) {
             return value;
         }
@@ -76,13 +79,20 @@ public class NameProvider extends AbstractProvider {
         return stringBuffer.toString();
     }
 
+    /**
+     * Applies Chinese name-specific desensitization logic to the provided value.
+     *
+     * @param object  The object containing the name string to be desensitized.
+     * @param context The current desensitization context.
+     * @return The desensitized name, or null if the input is empty.
+     */
     @Override
     public Object build(Object object, Context context) {
         if (ObjectKit.isEmpty(object)) {
             return null;
         }
         final Shield shield = context.getShield();
-        return this.name(ObjectKit.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
+        return name(ObjectKit.isNull(object) ? Normal.EMPTY : object.toString(), shield.shadow());
     }
 
 }

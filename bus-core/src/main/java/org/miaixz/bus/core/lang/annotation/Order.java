@@ -33,7 +33,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注解: 字段排序
+ * Defines the sorting criteria for a field or method, which is useful when ordering collections of objects based on
+ * their properties. This annotation allows for specifying both the sort direction and a priority level for multi-level
+ * sorting.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,16 +45,19 @@ import java.lang.annotation.Target;
 public @interface Order {
 
     /**
-     * 升降序
+     * Specifies the sort direction. It can be either "ASC" for ascending order or "DESC" for descending order. The
+     * comparison is case-insensitive.
      *
-     * @return the string
+     * @return The sort direction, defaulting to "ASC".
      */
     String value() default "ASC";
 
     /**
-     * 优先级, 值小的优先
+     * Defines the sorting priority for this field or method when multiple fields are used for ordering. A lower value
+     * indicates a higher priority. For example, a field with {@code priority = 1} will be considered before a field
+     * with {@code priority = 2}.
      *
-     * @return the int
+     * @return The sorting priority, defaulting to 1.
      */
     int priority() default 1;
 

@@ -34,33 +34,49 @@ import org.miaixz.bus.core.codec.binary.provider.Base58Provider;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * Base58编码器
+ * Encodes a byte array into a Base58 string.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Base58Encoder implements Encoder<byte[], String> {
 
+    /**
+     * The default Base58 alphabet used by Bitcoin.
+     */
     public static final String DEFAULT_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
     /**
-     * 编码器
+     * The default Base58 encoder.
      */
     public static final Base58Encoder ENCODER = new Base58Encoder(DEFAULT_ALPHABET.toCharArray());
 
+    /**
+     * The alphabet used for encoding.
+     */
     private final char[] alphabet;
+
+    /**
+     * The character in the alphabet that represents zero.
+     */
     private final char alphabetZero;
 
     /**
-     * 构造
+     * Constructs a new Base58Encoder with a custom alphabet.
      *
-     * @param alphabet 编码字母表
+     * @param alphabet The alphabet to use for encoding.
      */
     public Base58Encoder(final char[] alphabet) {
         this.alphabet = alphabet;
-        alphabetZero = alphabet[0];
+        this.alphabetZero = alphabet[0];
     }
 
+    /**
+     * Encodes a byte array into a Base58 string.
+     *
+     * @param data The byte array to encode.
+     * @return The Base58 encoded string, or {@code null} if the input is null.
+     */
     @Override
     public String encode(byte[] data) {
         if (null == data) {
@@ -69,12 +85,12 @@ public class Base58Encoder implements Encoder<byte[], String> {
         if (data.length == 0) {
             return Normal.EMPTY;
         }
-        // 计算开头0的个数
+        // Count leading zeros.
         int zeroCount = 0;
         while (zeroCount < data.length && data[zeroCount] == 0) {
             ++zeroCount;
         }
-        // 将256位编码转换为58位编码
+        // Convert base-256 digits to base-58 digits.
         data = Arrays.copyOf(data, data.length);
         final char[] encoded = new char[data.length * 2];
         int outputStart = encoded.length;

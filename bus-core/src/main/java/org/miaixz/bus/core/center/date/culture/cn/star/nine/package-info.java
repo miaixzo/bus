@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 九星
+ * Provides classes related to the Nine Stars (九星) in Chinese metaphysics, often associated with Feng Shui and other
+ * divinatory practices.
  *
  * @author Kimi Liu
  * @since Java 17+

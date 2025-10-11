@@ -30,7 +30,7 @@ package org.miaixz.bus.office.excel.reader;
 import org.miaixz.bus.office.excel.ExcelConfig;
 
 /**
- * Excel读取配置
+ * Excel read configuration.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,24 +38,24 @@ import org.miaixz.bus.office.excel.ExcelConfig;
 public class ExcelReadConfig extends ExcelConfig {
 
     /**
-     * 是否忽略空行
+     * Whether to ignore empty rows.
      */
     protected boolean ignoreEmptyRow = true;
 
     /**
-     * 是否忽略空行
-     * 
-     * @return 是否忽略空行
+     * Checks whether empty rows should be ignored.
+     *
+     * @return {@code true} if empty rows are ignored, {@code false} otherwise.
      */
     public boolean isIgnoreEmptyRow() {
         return this.ignoreEmptyRow;
     }
 
     /**
-     * 设置是否忽略空行
+     * Sets whether empty rows should be ignored.
      *
-     * @param ignoreEmptyRow 是否忽略空行
-     * @return this
+     * @param ignoreEmptyRow {@code true} to ignore empty rows, {@code false} otherwise.
+     * @return This {@code ExcelReadConfig} instance, for chaining.
      */
     public ExcelReadConfig setIgnoreEmptyRow(final boolean ignoreEmptyRow) {
         this.ignoreEmptyRow = ignoreEmptyRow;

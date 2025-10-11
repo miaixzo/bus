@@ -35,9 +35,10 @@ import java.util.function.Predicate;
 import org.miaixz.bus.core.xyz.CollKit;
 
 /**
- * 支持处理无向图结构的{@link Map}，本质上是基于{@link SetValueMap}实现的邻接表
+ * A {@link Map} that supports undirected graph structures, essentially an adjacency list implemented on top of
+ * {@link SetValueMap}.
  *
- * @param <T> 节点类型
+ * @param <T> The type of the nodes.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -47,10 +48,10 @@ public class Graph<T> extends SetValueMap<T, T> {
     private static final long serialVersionUID = 2852277389299L;
 
     /**
-     * 添加边
+     * Adds an undirected edge between two nodes.
      *
-     * @param target1 节点
-     * @param target2 节点
+     * @param target1 The first node.
+     * @param target2 The second node.
      */
     public void putEdge(final T target1, final T target2) {
         this.putValue(target1, target2);
@@ -58,21 +59,21 @@ public class Graph<T> extends SetValueMap<T, T> {
     }
 
     /**
-     * 是否存在边
+     * Checks if an undirected edge exists between two nodes.
      *
-     * @param target1 节点
-     * @param target2 节点
-     * @return 是否
+     * @param target1 The first node.
+     * @param target2 The second node.
+     * @return {@code true} if an edge exists, {@code false} otherwise.
      */
     public boolean containsEdge(final T target1, final T target2) {
         return this.getValues(target1).contains(target2) && this.getValues(target2).contains(target1);
     }
 
     /**
-     * 移除边
+     * Removes the undirected edge between two nodes.
      *
-     * @param target1 节点
-     * @param target2 节点
+     * @param target1 The first node.
+     * @param target2 The second node.
      */
     public void removeEdge(final T target1, final T target2) {
         this.removeValue(target1, target2);
@@ -80,9 +81,9 @@ public class Graph<T> extends SetValueMap<T, T> {
     }
 
     /**
-     * 移除节点，并删除该节点与其他节点之间连成的边
+     * Removes a node (point/vertex) and all edges connected to it.
      *
-     * @param target 目标对象
+     * @param target The node to remove.
      */
     public void removePoint(final T target) {
         final Collection<T> associatedPoints = this.remove(target);
@@ -92,11 +93,11 @@ public class Graph<T> extends SetValueMap<T, T> {
     }
 
     /**
-     * 两节点是否存在直接或间接的关联
+     * Checks if two nodes are connected, either directly or indirectly (i.e., if a path exists between them).
      *
-     * @param target1 节点
-     * @param target2 节点
-     * @return 两节点是否存在关联
+     * @param target1 The first node.
+     * @param target2 The second node.
+     * @return {@code true} if the nodes are connected.
      */
     public boolean containsAssociation(final T target1, final T target2) {
         if (!this.containsKey(target1) || !this.containsKey(target2)) {
@@ -106,19 +107,19 @@ public class Graph<T> extends SetValueMap<T, T> {
         visitAssociatedPoints(target1, t -> {
             if (Objects.equals(t, target2)) {
                 flag.set(true);
-                return true;
+                return true; // Break traversal
             }
-            return false;
+            return false; // Continue traversal
         });
         return flag.get();
     }
 
     /**
-     * 按广度优先，获得节点的所有直接或间接关联的节点，节点默认按添加顺序排序
+     * Gets all nodes that are directly or indirectly connected to the target node, using a breadth-first search.
      *
-     * @param target        节点
-     * @param includeTarget 是否包含查询节点
-     * @return 节点的所有关联节点
+     * @param target        The starting node.
+     * @param includeTarget Whether to include the starting node in the result.
+     * @return A collection of all connected nodes.
      */
     public Collection<T> getAssociatedPoints(final T target, final boolean includeTarget) {
         final Set<T> points = visitAssociatedPoints(target, t -> false);
@@ -129,17 +130,22 @@ public class Graph<T> extends SetValueMap<T, T> {
     }
 
     /**
-     * 获取节点的邻接节点
+     * Gets the adjacent nodes (neighbors) of a given node.
      *
-     * @param target 节点
-     * @return 邻接节点
+     * @param target The node.
+     * @return A collection of adjacent nodes.
      */
     public Collection<T> getAdjacentPoints(final T target) {
         return this.getValues(target);
     }
 
     /**
-     * 按广度优先，访问节点的所有关联节点
+     * Performs a breadth-first traversal of all nodes connected to the given key, applying a predicate to break the
+     * traversal if needed.
+     *
+     * @param key     The starting node key.
+     * @param breaker A predicate that, if it returns {@code true}, stops the traversal.
+     * @return A set of all visited nodes.
      */
     private Set<T> visitAssociatedPoints(final T key, final Predicate<T> breaker) {
         if (!this.containsKey(key)) {
@@ -149,17 +155,16 @@ public class Graph<T> extends SetValueMap<T, T> {
         final Deque<T> deque = new LinkedList<>();
         deque.add(key);
         while (!deque.isEmpty()) {
-            // 访问节点
             final T t = deque.removeFirst();
             if (accessed.contains(t)) {
                 continue;
             }
             accessed.add(t);
-            // 若符合条件则中断循环
+
             if (breaker.test(t)) {
                 break;
             }
-            // 获取邻接节点
+
             final Collection<T> neighbours = this.getValues(t);
             if (!neighbours.isEmpty()) {
                 deque.addAll(neighbours);

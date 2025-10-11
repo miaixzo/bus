@@ -46,30 +46,39 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 
 /**
- * Jsch Session封装
+ * JSch Session encapsulation. This class implements the {@link Session} interface and provides a wrapper around the
+ * JSch {@link com.jcraft.jsch.Session}, offering functionalities for command execution, port forwarding, and channel
+ * management.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JschSession implements Session {
 
+    /**
+     * The underlying raw JSch session object.
+     */
     private final com.jcraft.jsch.Session raw;
+    /**
+     * The connection timeout duration in milliseconds.
+     */
     private final long timeout;
 
     /**
-     * 构造
+     * Constructs a {@code JschSession} with the given {@link Connector}. This creates a new JSch session based on the
+     * provided connection and authentication information.
      *
-     * @param connector {@link Connector}，保存连接和验证信息等
+     * @param connector The {@link Connector} holding connection and authentication details.
      */
     public JschSession(final Connector connector) {
         this(JschKit.openSession(connector), connector.getTimeout());
     }
 
     /**
-     * 构造
+     * Constructs a {@code JschSession} by wrapping a raw JSch {@link com.jcraft.jsch.Session} and a timeout.
      *
-     * @param raw     {@link com.jcraft.jsch.Session}
-     * @param timeout 连接超时时常，0表示不限制
+     * @param raw     The raw JSch {@link com.jcraft.jsch.Session} to wrap.
+     * @param timeout The connection timeout duration in milliseconds; 0 indicates no limit.
      */
     public JschSession(final com.jcraft.jsch.Session raw, final long timeout) {
         this.raw = raw;
@@ -138,65 +147,65 @@ public class JschSession implements Session {
     }
 
     /**
-     * 创建Channel连接
+     * Creates an SSH channel but does not connect it.
      *
-     * @param channelType 通道类型，可以是shell或sftp等，见{@link ChannelType}
-     * @return {@link Channel}
+     * @param channelType The type of channel to create (e.g., shell, sftp), see {@link ChannelType}.
+     * @return An unconnected JSch {@link Channel} object.
      */
     public Channel createChannel(final ChannelType channelType) {
         return JschKit.createChannel(this.raw, channelType, this.timeout);
     }
 
     /**
-     * 打开Shell连接
+     * Opens and connects an interactive Shell channel.
      *
-     * @return {@link ChannelShell}
+     * @return A connected {@link ChannelShell} object.
      */
     public ChannelShell openShell() {
         return (ChannelShell) openChannel(ChannelType.SHELL);
     }
 
     /**
-     * 打开Channel连接
+     * Opens and connects an SSH channel of a specified type.
      *
-     * @param channelType 通道类型，可以是shell或sftp等，见{@link ChannelType}
-     * @return {@link Channel}
+     * @param channelType The type of channel to open (e.g., shell, sftp), see {@link ChannelType}.
+     * @return A connected JSch {@link Channel} object.
      */
     public Channel openChannel(final ChannelType channelType) {
         return JschKit.openChannel(this.raw, channelType, this.timeout);
     }
 
     /**
-     * 打开SFTP会话
+     * Opens an SFTP session, returning a wrapper for SFTP operations.
      *
-     * @param charset 编码
-     * @return {@link JschSftp}
+     * @param charset The character set to use for file names.
+     * @return A {@link JschSftp} instance for performing SFTP operations.
      */
     public JschSftp openSftp(final java.nio.charset.Charset charset) {
         return new JschSftp(this.raw, charset, this.timeout);
     }
 
     /**
-     * 执行Shell命令
+     * Executes a command using the 'exec' channel and returns the output.
      *
-     * @param cmd     命令
-     * @param charset 发送和读取内容的编码
-     * @return {@link ChannelExec}
+     * @param cmd     The command to execute.
+     * @param charset The character set for encoding the command and decoding the output.
+     * @return The execution result as a string.
      */
     public String exec(final String cmd, final java.nio.charset.Charset charset) {
         return exec(cmd, charset, System.err);
     }
 
     /**
-     * 执行Shell命令（使用EXEC方式）
-     * <p>
-     * 此方法单次发送一个命令到服务端，不读取环境变量，执行结束后自动关闭channel，不会产生阻塞。
-     * </p>
+     * Executes a command using the 'exec' channel and returns the output. This method is non-interactive, sends a
+     * single command, and does not load the user's shell profile. The channel is automatically closed after execution.
      *
-     * @param cmd       命令
-     * @param charset   发送和读取内容的编码
-     * @param errStream 错误信息输出到的位置
-     * @return 执行结果内容
+     * @param cmd       The command to execute.
+     * @param charset   The character set for encoding the command and decoding the output.
+     * @param errStream The {@link OutputStream} to which error messages will be written.
+     * @return The execution result as a string.
+     * @throws InternalException if an I/O error or JSch exception occurs, or if the command returns a non-zero exit
+     *                           status.
      */
     public String exec(final String cmd, java.nio.charset.Charset charset, final OutputStream errStream) {
         if (null == charset) {
@@ -205,7 +214,6 @@ public class JschSession implements Session {
         final ChannelExec channel = (ChannelExec) createChannel(ChannelType.EXEC);
         channel.setCommand(ByteKit.toBytes(cmd, charset));
         channel.setInputStream(null);
-
         channel.setErrStream(errStream);
 
         String result;
@@ -232,18 +240,17 @@ public class JschSession implements Session {
     }
 
     /**
-     * 执行Shell命令
-     * <p>
-     * 此方法单次发送一个命令到服务端，自动读取环境变量，执行结束后自动关闭channel，不会产生阻塞。
-     * </p>
+     * Executes a command within an interactive 'shell' channel. This method simulates typing a command into a shell,
+     * which means the user's profile and environment variables are loaded. The channel is automatically closed after
+     * execution.
      *
-     * @param cmd     命令
-     * @param charset 发送和读取内容的编码
-     * @return {@link ChannelExec}
+     * @param cmd     The command to execute.
+     * @param charset The character set for sending and reading content.
+     * @return The execution result content.
+     * @throws InternalException if an I/O error occurs.
      */
     public String execByShell(final String cmd, final java.nio.charset.Charset charset) {
         final ChannelShell shell = openShell();
-        // 开始连接
         shell.setPty(true);
         OutputStream out = null;
         InputStream in = null;

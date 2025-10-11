@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.logger.metric.console;
 
-import java.io.Serial;
-import java.util.function.Function;
-
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -37,8 +34,11 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
 
+import java.io.Serial;
+import java.util.function.Function;
+
 /**
- * 利用 System.out.println 打印彩色日志
+ * A console logger that prints colorful messages using {@code System.out.println}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,24 +49,26 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
     private static final long serialVersionUID = 2852286792515L;
 
     /**
-     * 控制台打印类名的颜色代码
+     * The color code for the class name in the console output.
      */
     private static final Ansi4BitColor COLOR_CLASSNAME = Ansi4BitColor.CYAN;
 
     /**
-     * 控制台打印时间的颜色代码
+     * The color code for the timestamp in the console output.
      */
     private static final Ansi4BitColor COLOR_TIME = Ansi4BitColor.WHITE;
 
     /**
-     * 控制台打印正常信息的颜色代码
+     * The default color code for normal information in the console output.
      */
     private static final Ansi4BitColor COLOR_NONE = Ansi4BitColor.DEFAULT;
 
+    /**
+     * A factory function that determines the color based on the logging level.
+     */
     private static Function<Level, Ansi4BitColor> colorFactory = (level -> {
         switch (level) {
-            case DEBUG:
-            case INFO:
+            case DEBUG, INFO:
                 return Ansi4BitColor.GREEN;
 
             case WARN:
@@ -84,27 +86,27 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
     });
 
     /**
-     * 构造
+     * Constructs a new {@code ColorLoggingProvider} for the specified name.
      *
-     * @param name 类名
+     * @param name the name of the logger (usually the class name).
      */
     public ColorLoggingProvider(final String name) {
         super(name);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code ColorLoggingProvider} for the specified class.
      *
-     * @param clazz 类
+     * @param clazz the class for which to create the logger.
      */
     public ColorLoggingProvider(final Class<?> clazz) {
         super(clazz);
     }
 
     /**
-     * 设置颜色工厂，根据日志级别，定义不同的颜色
+     * Sets the color factory, which defines different colors based on the logging level.
      *
-     * @param colorFactory 颜色工厂函数
+     * @param colorFactory the function that provides the color for a given level.
      */
     public static void setColorFactory(final Function<Level, Ansi4BitColor> colorFactory) {
         ColorLoggingProvider.colorFactory = colorFactory;
@@ -121,6 +123,7 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
             return;
         }
 
+        // Format the log message with ANSI color codes.
         final String template = AnsiEncoder.encode(
                 COLOR_TIME,
                 "[%s]",
@@ -130,6 +133,7 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
                 "%-30s: ",
                 COLOR_NONE,
                 "%s%n");
+        // Print the formatted message to the console.
         System.out.format(
                 template,
                 DateKit.formatNow(),
@@ -137,6 +141,7 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
                 " - ",
                 ClassKit.getShortClassName(getName()),
                 StringKit.format(format, args));
+        // Print the stack trace if a throwable is provided.
         if (t != null) {
             t.printStackTrace();
         }

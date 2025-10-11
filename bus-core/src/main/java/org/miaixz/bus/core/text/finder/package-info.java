@@ -26,12 +26,13 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 文本查找实现，包括：
+ * Provides implementations for text searching, including:
  * <ul>
- * <li>查找文本中的字符（正向、反向）</li>
- * <li>查找文本中的匹配字符（正向、反向）</li>
- * <li>查找文本中的字符串（正向、反向）</li>
- * <li>查找文本中匹配正则的字符串（正向）</li>
+ * <li>Searching for single characters within text (forward and reverse).</li>
+ * <li>Searching for specific strings within text (forward and reverse).</li>
+ * <li>Searching for multiple strings within text (forward and reverse).</li>
+ * <li>Searching for text matching regular expressions (forward).</li>
+ * <li>Searching for text based on a fixed length (forward and reverse).</li>
  * </ul>
  *
  * @author Kimi Liu

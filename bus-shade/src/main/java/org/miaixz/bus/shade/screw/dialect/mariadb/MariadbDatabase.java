@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 数据库信息
+ * Represents database information for a MariaDB instance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,7 +44,7 @@ import lombok.Setter;
 public class MariadbDatabase implements Database {
 
     /**
-     * 数据库名称
+     * The name of the database.
      */
     @MappingField(value = "TABLE_CAT")
     private String database;

@@ -27,17 +27,6 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.net.ProtocolException;
-import java.net.Proxy;
-import java.net.SocketTimeoutException;
-import java.security.cert.CertificateException;
-
-import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.SSLPeerUnverifiedException;
-
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
@@ -49,8 +38,19 @@ import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.NewChain;
 
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.ProtocolException;
+import java.net.Proxy;
+import java.net.SocketTimeoutException;
+import java.security.cert.CertificateException;
+
 /**
- * 该拦截器从失败中恢复，并根据需要进行重定向 如果调用被取消，它可能会抛出{@link IOException}
+ * This interceptor recovers from failures and follows redirects as necessary. It may throw an {@link IOException} if
+ * the call is canceled.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,7 +58,8 @@ import org.miaixz.bus.http.metric.NewChain;
 public class RetryAndFollowUp implements Interceptor {
 
     /**
-     * 我们应该尝试多少次重定向和验证挑战?Chrome遵循21重定向; Firefox、curl和wget遵循20;Safari是16;HTTP/1.0建议5
+     * How many redirects and auth challenges should we attempt? Chrome follows 21 redirects; Firefox, curl, and wget
+     * follow 20; Safari is 16; and HTTP/1.0 recommends 5.
      */
     private static final int MAX_FOLLOW_UPS = 20;
 
@@ -146,25 +147,31 @@ public class RetryAndFollowUp implements Interceptor {
      * Report and attempt to recover from a failure to communicate with a server. Returns true if {@code e} is
      * recoverable, or false if the failure is permanent. Requests with a body can only be recovered if the body is
      * buffered or if the failure occurred before the request has been sent.
+     *
+     * @param e                  The exception that occurred.
+     * @param transmitter        The transmitter for the call.
+     * @param requestSendStarted Whether the request has started being sent.
+     * @param userRequest        The user's request.
+     * @return {@code true} if the failure is recoverable.
      */
     private boolean recover(IOException e, Transmitter transmitter, boolean requestSendStarted, Request userRequest) {
-        // 应用层禁止重试
+        // The application layer forbids retries.
         if (!httpd.retryOnConnectionFailure())
             return false;
 
-        // 我们不能再发送请求体了
+        // We can't send the request body again.
         if (requestSendStarted && requestIsOneShot(e, userRequest))
             return false;
 
-        // 这个异常是致命的
+        // This exception is fatal.
         if (!isRecoverable(e, requestSendStarted))
             return false;
 
-        /// 没有更多的路线可以尝试
+        // No more routes to attempt.
         if (!transmitter.canRetry())
             return false;
 
-        // 对于故障恢复，使用与新连接相同的路由选择器
+        // For failure recovery, use the same route selector with a new connection.
         return true;
     }
 
@@ -174,28 +181,33 @@ public class RetryAndFollowUp implements Interceptor {
     }
 
     private boolean isRecoverable(IOException e, boolean requestSendStarted) {
-        // 如果有协议问题，不要恢复
+        // If there was a protocol problem, don't recover.
         if (e instanceof ProtocolException) {
             return false;
         }
 
-        // 如果有一个中断不恢复，但如果有一个超时连接到一个路由，我们应该尝试下一个路由(如果有一个).
+        // If there was an interruption don't recover, but if there was a timeout connecting to a route
+        // we should try the next route (if there is one).
         if (e instanceof InterruptedIOException) {
             return e instanceof SocketTimeoutException && !requestSendStarted;
         }
 
-        // 查找已知的客户端或协商错误，这些错误不太可能通过再次尝试使用不同的路由来修复.
+        // Look for known client-side or negotiation errors that are unlikely to be fixed by trying again
+        // with a different route.
         if (e instanceof SSLHandshakeException) {
-            // 如果问题是来自X509TrustManager的一个证书异常，那么不要重试.
+            // If the problem was a CertificateException from the X509TrustManager,
+            // do not retry.
             if (e.getCause() instanceof CertificateException) {
                 return false;
             }
         }
         if (e instanceof SSLPeerUnverifiedException) {
-            // 例如，证书固定错误.
+            // e.g. a certificate pinning error.
             return false;
         }
 
+        // An SSLHandshakeException is a subclass of SSLException.
+        // Retry all other SSL failures.
         return true;
     }
 
@@ -203,6 +215,11 @@ public class RetryAndFollowUp implements Interceptor {
      * Figures out the HTTP request to make in response to receiving {@code userResponse}. This will either add
      * authentication headers, follow redirects or handle a client request timeout. If a follow-up is either unnecessary
      * or not applicable, this returns null.
+     *
+     * @param userResponse The response to follow-up on.
+     * @param route        The route used to get the response.
+     * @return The follow-up request, or null if no follow-up is necessary.
+     * @throws IOException if an I/O error occurs.
      */
     private Request followUpRequest(Response userResponse, Route route) throws IOException {
         if (userResponse == null)
@@ -238,7 +255,7 @@ public class RetryAndFollowUp implements Interceptor {
                     return null;
 
                 String location = userResponse.header(HTTP.LOCATION);
-                if (null == location)
+                if (location == null)
                     return null;
                 UnoUrl url = userResponse.request().url().resolve(location);
 
@@ -311,7 +328,7 @@ public class RetryAndFollowUp implements Interceptor {
                 }
 
                 if (retryAfter(userResponse, Integer.MAX_VALUE) == 0) {
-                    // specifically received an instruction to retry without delay
+                    // A server may tell us to retry without delay.
                     return userResponse.request();
                 }
 
@@ -322,18 +339,27 @@ public class RetryAndFollowUp implements Interceptor {
         }
     }
 
+    /**
+     * Returns the timeout in seconds to wait for a retry, or -1 if the response doesn't specify a retry-after delay.
+     *
+     * @param userResponse The response.
+     * @param defaultDelay The default delay to use if the header is not present.
+     * @return The retry-after delay in seconds.
+     */
     private int retryAfter(Response userResponse, int defaultDelay) {
         String header = userResponse.header("Retry-After");
 
-        if (null == header) {
+        if (header == null) {
             return defaultDelay;
         }
 
+        // https://tools.ietf.org/html/rfc7231#section-7.1.3
+        // A server can communicate a retry-after value in seconds or as a HTTP-date.
         if (header.matches("\\d+")) {
             return Integer.valueOf(header);
         }
 
-        return Integer.MAX_VALUE;
+        return Integer.MAX_VALUE; // We don't support parsing HTTP-dates.
     }
 
 }

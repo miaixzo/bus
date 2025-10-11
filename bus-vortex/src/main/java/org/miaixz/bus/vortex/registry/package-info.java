@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 流量及资源匹配
+ * Provides registry implementations for managing traffic and resource matching within the Vortex module. This package
+ * contains classes responsible for registering, managing, and retrieving configurations related to assets and rate
+ * limiters, enabling dynamic control over API behavior.
  *
  * @author Kimi Liu
  * @since Java 17+

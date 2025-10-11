@@ -43,37 +43,58 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 合一短信实现
+ * Uni SMS service provider implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class UniSmsProvider extends AbstractProvider<UniMaterial, Context> {
 
+    /**
+     * Constructs a {@code UniSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public UniSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using Uni SMS service.
+     *
+     * @param entity The {@link UniMaterial} containing SMS details like template ID, template name, recipient,
+     *               signature, and parameters.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     * @throws ValidateException if both template ID and template name are empty.
+     */
     @Override
     public Message send(UniMaterial entity) {
         if ("".equals(entity.getTemplate()) && "".equals(entity.getTemplateName())) {
-            throw new ValidateException("配置文件模板id和模板变量不能为空！");
+            throw new ValidateException("Template ID and template variable in the configuration file cannot be empty!");
         }
 
         Map<String, Object> data = MapKit.newHashMap(4, true);
+        // The recipient's mobile number.
         data.put("to", entity.getReceive());
+        // The SMS signature.
         data.put("signature", entity.getSignature());
+        // The template ID for the SMS message.
         data.put("templateId", entity.getTemplate());
         LinkedHashMap<String, String> map = new LinkedHashMap<>(1);
+        // The template name for the SMS message.
         map.put(entity.getTemplateName(), entity.getContent());
+        // The template data for the SMS message.
         data.put("templateData", map);
         return request(entity, "sms.message.send", data);
     }
 
     /**
-     * 向 uni-sms发送请求
+     * Sends a request to the Uni SMS API.
      *
-     * @param action 接口名称
+     * @param entity The {@link UniMaterial} containing request details.
+     * @param action The API action to be performed, e.g., "sms.message.send".
+     * @param bodys  The request body parameters.
+     * @return A {@link Message} indicating the result of the API request.
      */
     public Message request(final UniMaterial entity, final String action, final Map<String, Object> bodys) {
         Map<String, String> headers = new HashMap<>();
@@ -113,7 +134,7 @@ public class UniSmsProvider extends AbstractProvider<UniMaterial, Context> {
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
         String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
+        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }

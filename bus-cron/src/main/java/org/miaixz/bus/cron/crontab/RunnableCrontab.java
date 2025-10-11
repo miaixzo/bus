@@ -28,7 +28,8 @@
 package org.miaixz.bus.cron.crontab;
 
 /**
- * {@link Runnable} 的 {@link Crontab}包装
+ * A {@link Crontab} implementation that wraps a {@link Runnable} instance. This class serves as an adapter to allow any
+ * {@link Runnable} to be used as a cron job.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,14 +39,17 @@ public class RunnableCrontab implements Crontab {
     private final Runnable runnable;
 
     /**
-     * 构造
+     * Constructs a new RunnableCrontab.
      *
-     * @param runnable {@link Runnable}
+     * @param runnable The {@link Runnable} to be executed as a cron job.
      */
     public RunnableCrontab(final Runnable runnable) {
         this.runnable = runnable;
     }
 
+    /**
+     * Executes the wrapped {@link Runnable}'s {@code run} method.
+     */
     @Override
     public void execute() {
         runnable.run();

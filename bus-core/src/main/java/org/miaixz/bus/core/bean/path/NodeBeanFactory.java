@@ -28,40 +28,43 @@
 package org.miaixz.bus.core.bean.path;
 
 /**
- * BeanPath节点对应的Bean工厂，提供Bean的创建、获取和设置接口
+ * A factory interface for creating, getting, and setting Bean objects corresponding to {@link BeanPath} nodes.
  *
- * @param <T> Bean类型
+ * @param <T> The type of the Bean.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface NodeBeanFactory<T> {
 
     /**
-     * 创建Bean beanPath对应当前的路径，即如果父对象为：a，则beanPath为：a.b，则创建的Bean为：a.b.c对应的Bean对象
-     * 给定的a一定存在，但是本路径中b对应的Bean不存在，则创建的对象是b的值，这个值用c表示
+     * Creates a new Bean object for the current path. For example, if the parent object is 'a' and the {@code beanPath}
+     * is 'a.b', then this method creates the Bean corresponding to 'a.b.c'. The given parent 'a' is guaranteed to
+     * exist, but if the Bean corresponding to 'b' in the current path does not exist, the object created is the value
+     * of 'b', which is represented by 'c'.
      *
-     * @param parent   父Bean
-     * @param beanPath 当前路径
-     * @return Bean
+     * @param parent   The parent Bean object.
+     * @param beanPath The current {@link BeanPath} instance.
+     * @return The newly created Bean object.
      */
     T create(final T parent, final BeanPath<T> beanPath);
 
     /**
-     * 获取Bean对应节点的值
+     * Retrieves the value of the node corresponding to the given Bean and {@link BeanPath}.
      *
-     * @param bean     bean对象
-     * @param beanPath 当前路径
-     * @return 节点值
+     * @param bean     The Bean object.
+     * @param beanPath The current {@link BeanPath} instance.
+     * @return The value of the node.
      */
     Object getValue(T bean, final BeanPath<T> beanPath);
 
     /**
-     * 设置节点值
+     * Sets the value of the node corresponding to the given Bean and {@link BeanPath}.
      *
-     * @param bean     bean对象
-     * @param value    节点值
-     * @param beanPath 当前路径
-     * @return bean对象。如果在原Bean对象基础上设置值，返回原Bean，否则返回新的Bean
+     * @param bean     The Bean object.
+     * @param value    The value to set for the node.
+     * @param beanPath The current {@link BeanPath} instance.
+     * @return The Bean object. If the value is set on the original Bean object, the original Bean is returned;
+     *         otherwise, a new Bean is returned.
      */
     T setValue(T bean, Object value, final BeanPath<T> beanPath);
 

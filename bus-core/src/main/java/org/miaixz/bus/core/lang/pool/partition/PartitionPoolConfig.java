@@ -32,7 +32,8 @@ import java.io.Serial;
 import org.miaixz.bus.core.lang.pool.PoolConfig;
 
 /**
- * 分局对象池配置
+ * Configuration class for a partitioned object pool. This extends {@link PoolConfig} to add specific settings for
+ * partitioned pools, such as the number of partitions.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,31 +42,34 @@ public class PartitionPoolConfig extends PoolConfig {
 
     @Serial
     private static final long serialVersionUID = 2852272551279L;
+    /**
+     * The number of partitions in the partitioned object pool. Each partition acts as an independent sub-pool.
+     */
     private int partitionSize = 4;
 
     /**
-     * 创建{@code PartitionPoolConfig}
+     * Creates a new {@code PartitionPoolConfig} instance with default settings.
      *
-     * @return {@code PartitionPoolConfig}
+     * @return a new {@code PartitionPoolConfig} instance
      */
     public static PartitionPoolConfig of() {
         return new PartitionPoolConfig();
     }
 
     /**
-     * 获取分区大小
+     * Retrieves the number of partitions configured for the object pool.
      *
-     * @return 分区大小
+     * @return the partition size
      */
     public int getPartitionSize() {
         return partitionSize;
     }
 
     /**
-     * 设置分区大小
+     * Sets the number of partitions for the object pool.
      *
-     * @param partitionSize 分区大小
-     * @return this
+     * @param partitionSize the new partition size
+     * @return this {@code PartitionPoolConfig} instance for method chaining
      */
     public PartitionPoolConfig setPartitionSize(final int partitionSize) {
         this.partitionSize = partitionSize;

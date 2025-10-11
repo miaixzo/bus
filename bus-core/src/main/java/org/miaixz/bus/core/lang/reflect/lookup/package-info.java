@@ -26,15 +26,17 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 
- * 
- * {@link java.lang.invoke.MethodHandles.Lookup} 创建封装，以根据不同的条件查找{@link java.lang.invoke.MethodHandles}
+ * Provides encapsulation for creating {@link java.lang.invoke.MethodHandles.Lookup} instances, which are used to find
+ * {@link java.lang.invoke.MethodHandles} based on different conditions.
  *
  * <p>
- * jdk8中如果直接调用{@link java.lang.invoke.MethodHandles#lookup()}获取到的{@link java.lang.invoke.MethodHandles.Lookup}在调用findSpecial和unreflectSpecial
- * 时会出现权限不够问题，抛出"no private access for invokespecial"异常，因此针对JDK8及JDK9+分别封装lookup方法。
- * 参考：https://blog.csdn.net/u013202238/article/details/108687086
- * </p>
+ * In JDK 8, directly calling {@link java.lang.invoke.MethodHandles#lookup()} to obtain a
+ * {@link java.lang.invoke.MethodHandles.Lookup} instance may lead to permission issues ("no private access for
+ * invokespecial") when invoking {@code findSpecial} and {@code unreflectSpecial}. Therefore, this package provides
+ * encapsulated lookup methods specifically for JDK 8 and JDK 9+.
+ * <p>
+ * Reference: <a href=
+ * "https://blog.csdn.net/u013202238/article/details/108687086">https://blog.csdn.net/u013202238/article/details/108687086</a>
  *
  * @author Kimi Liu
  * @since Java 17+

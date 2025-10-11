@@ -32,20 +32,23 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 注解: 启用框架扩展和替换组件,服务提供发现机制, 实现方制定接口并完成对接口的实现
- *
+ * Marks an interface as a Service Provider Interface (SPI), enabling a flexible mechanism for framework extension and
+ * component replacement. This annotation facilitates a service provider discovery mechanism where an interface is
+ * defined and third parties can provide implementations.
+ * <p>
+ * This SPI mechanism offers several enhancements over the standard Java {@link java.util.ServiceLoader}:
+ * 
  * <pre>
- *   1.支持自定义实现类为单例/多例
- *   2.支持设置默认的实现类
- *   3.支持实现类order排序
- *   4.支持实现类定义特征属性category，用于区分多维度的不同类别
- *   5.支持根据category属性值来搜索实现类
- *   6.支持自动扫描实现类
- *   7.支持手动添加实现类
- *   8.支持获取所有实现类
- *   9.支持只创建所需实现类，解决JDK原生的全量方式
- *   10.支持自定义ClassLoader来加载class
- *
+ *   1. Supports both singleton and prototype scopes for implementation classes.
+ *   2. Allows setting a default implementation class.
+ *   3. Supports ordering of implementation classes via the {@link Order} annotation.
+ *   4. Supports defining a 'category' attribute to distinguish between different implementation types.
+ *   5. Supports searching for implementations based on their category.
+ *   6. Supports automatic scanning for implementation classes.
+ *   7. Supports manually adding implementation classes.
+ *   8. Supports retrieving all implementation classes.
+ *   9. Supports lazy instantiation (only creating instances as needed), unlike the native JDK SPI which instantiates all found services.
+ *  10. Supports using a custom ClassLoader to load implementation classes.
  * </pre>
  *
  * @author Kimi Liu
@@ -57,16 +60,17 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface SPI {
 
     /**
-     * 默认实现ID
+     * Specifies the name or ID of the default implementation to be used when no specific implementation is requested.
      *
-     * @return 标识
+     * @return The identifier of the default implementation.
      */
     String value() default Normal.EMPTY;
 
     /**
-     * 声明每次获取实现类时是否需要创建 新对象，也就是说，是否为单例对象
+     * Declares whether a single instance of the service implementation should be created and reused (singleton) or if a
+     * new instance should be created for each request (prototype).
      *
-     * @return 是否单例
+     * @return {@code true} for a singleton scope, {@code false} for a prototype scope.
      */
     boolean single() default false;
 

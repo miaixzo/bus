@@ -32,7 +32,7 @@ import java.util.Date;
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * {@link Date} 值单元格设置器
+ * {@link CellSetter} for {@link Date} values.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,9 +42,9 @@ public class DateCellSetter implements CellSetter {
     private final Date value;
 
     /**
-     * 构造
+     * Constructs a {@code DateCellSetter} with the specified {@link Date} value.
      *
-     * @param value 值
+     * @param value The {@link Date} value to set in the cell.
      */
     DateCellSetter(final Date value) {
         this.value = value;

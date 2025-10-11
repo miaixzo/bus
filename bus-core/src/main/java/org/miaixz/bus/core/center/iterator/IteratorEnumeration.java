@@ -31,11 +31,13 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
- * {@link Iterator}对象转{@link Enumeration}
+ * Adapts an {@link Iterator} to the {@link Enumeration} interface. This class allows treating an {@link Iterator} as an
+ * {@link Enumeration}.
  *
- * @param <E> 元素类型
+ * @param <E> the type of elements returned by this enumeration
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -44,22 +46,37 @@ public class IteratorEnumeration<E> implements Enumeration<E>, Serializable {
     @Serial
     private static final long serialVersionUID = 2852266956805L;
 
+    /**
+     * The underlying {@link Iterator} being adapted.
+     */
     private final Iterator<E> iterator;
 
     /**
-     * 构造
+     * Constructs an {@code IteratorEnumeration} from the given {@link Iterator}.
      *
-     * @param iterator {@link Iterator}对象
+     * @param iterator the {@link Iterator} to adapt
      */
     public IteratorEnumeration(final Iterator<E> iterator) {
         this.iterator = iterator;
     }
 
+    /**
+     * Tests if this enumeration contains more elements.
+     *
+     * @return {@code true} if and only if this enumeration object contains at least one more element to provide;
+     *         {@code false} otherwise.
+     */
     @Override
     public boolean hasMoreElements() {
         return iterator.hasNext();
     }
 
+    /**
+     * Returns the next element of this enumeration.
+     *
+     * @return the next element of this enumeration.
+     * @throws NoSuchElementException if this enumeration has no more elements.
+     */
     @Override
     public E nextElement() {
         return iterator.next();

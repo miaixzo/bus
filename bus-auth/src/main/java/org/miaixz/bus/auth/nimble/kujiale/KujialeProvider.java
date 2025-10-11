@@ -45,26 +45,38 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import java.util.Map;
 
 /**
- * 酷家乐 登录
+ * Kujiale login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class KujialeProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code KujialeProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public KujialeProvider(Context context) {
         super(context, Registry.KUJIALE);
     }
 
+    /**
+     * Constructs a {@code KujialeProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public KujialeProvider(Context context, CacheX cache) {
         super(context, Registry.KUJIALE, cache);
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state} 默认只向用户请求用户信息授权
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback. By default, only user information authorization is requested.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -73,12 +85,25 @@ public class KujialeProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * Retrieves the access token from Kujiale's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         return getAuthToken(response);
     }
 
+    /**
+     * Parses the access token response string into an {@link AuthToken} object.
+     *
+     * @param response the response string from the access token endpoint
+     * @return the parsed {@link AuthToken}
+     * @throws AuthorizedException if the response indicates an error or is missing required token information
+     */
     private AuthToken getAuthToken(String response) {
         Map<String, Object> accessTokenObject = checkResponse(response);
         Map<String, Object> resultObject = (Map<String, Object>) accessTokenObject.get("d");
@@ -97,6 +122,13 @@ public class KujialeProvider extends AbstractProvider {
         return AuthToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build();
     }
 
+    /**
+     * Checks the response content for errors.
+     *
+     * @param response the response string to check
+     * @return the parsed response map if successful
+     * @throws AuthorizedException if the response indicates an error or is malformed
+     */
     private Map<String, Object> checkResponse(String response) {
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
@@ -114,6 +146,13 @@ public class KujialeProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from Kujiale's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String openId = this.getOpenId(authToken);
@@ -151,10 +190,11 @@ public class KujialeProvider extends AbstractProvider {
     }
 
     /**
-     * 获取酷家乐的openId，此id在当前client范围内可以唯一识别授权用户
+     * Retrieves the Kujiale OpenId. This ID can uniquely identify the authorized user within the current client scope.
      *
-     * @param authToken 通过{@link KujialeProvider#getAccessToken(Callback)}获取到的{@code accessToken}
-     * @return openId
+     * @param authToken the {@code accessToken} obtained via {@link KujialeProvider#getAccessToken(Callback)}
+     * @return the OpenId
+     * @throws AuthorizedException if the response indicates an error or is missing the OpenId
      */
     private String getOpenId(AuthToken authToken) {
         String response = Httpx.get(
@@ -168,6 +208,12 @@ public class KujialeProvider extends AbstractProvider {
         return openId;
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         String response = Httpx.post(refreshTokenUrl(authToken.getRefreshToken()));

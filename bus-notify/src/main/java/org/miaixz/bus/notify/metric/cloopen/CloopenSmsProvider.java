@@ -30,6 +30,7 @@ package org.miaixz.bus.notify.metric.cloopen;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -39,29 +40,45 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 容联云短信实现
+ * Cloopen Cloud SMS service provider implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CloopenSmsProvider extends AbstractProvider<CloopenMaterial, Context> {
 
+    /**
+     * Constructs a {@code CloopenSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public CloopenSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using Cloopen Cloud SMS service.
+     *
+     * @param entity The {@link CloopenMaterial} containing SMS details like recipient, template ID, and content.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(CloopenMaterial entity) {
         Map<String, String> bodys = MapKit.newHashMap(4, true);
+        // The recipient's mobile number(s), comma-separated.
+
         bodys.put("to", String.join(Symbol.COMMA, entity.getReceive()));
+        // The application ID provided by Cloopen Cloud.
         bodys.put("appId", this.context.getAppKey());
+        // The template ID for the SMS message.
         bodys.put("templateId", entity.getTemplate());
+        // The content of the SMS message, typically parameters for the template.
         bodys.put("datas", entity.getContent());
 
         String response = Httpx.post(this.getUrl(entity), bodys);
-        String errcode = JsonKit.getValue(response, "errcode");
+        String errcode = JsonKit.getValue(response, Consts.ERRCODE);
         return Message.builder().errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
-                .errmsg(JsonKit.getValue(response, "errmsg")).build();
+                .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
     }
 
 }

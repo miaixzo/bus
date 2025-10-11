@@ -38,154 +38,156 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.IteratorKit;
 
 /**
- * A common set of {@link Weigher} and {@link EntryWeigher} implementations.
+ * Provides a collection of common {@link Weigher} and {@link EntryWeigher} implementations. These weighers are useful
+ * for configuring size-bounded caches, allowing capacity to be measured by factors other than just the number of
+ * entries.
  *
  * @author Kimi Liu
- * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">
- *      http://code.google.com/p/concurrentlinkedhashmap/</a>
+ * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">ConcurrentLinkedHashMap Project</a>
  * @since Java 17+
  */
 public final class Weighers {
 
     private Weighers() {
-        throw new AssertionError();
+        throw new AssertionError("No " + Weighers.class.getName() + " instances for you!");
     }
 
     /**
-     * A entry weigher backed by the specified weigher. The selector of the value determines the selector of the entry.
+     * Returns an {@link EntryWeigher} that delegates to the specified {@link Weigher}. The weight of an entry is
+     * determined solely by the weight of its value.
      *
-     * @param weigher the weigher to be "wrapped" in a entry weigher.
-     * @param <K>     键类型
-     * @param <V>     值类型
-     * @return A entry weigher view of the specified weigher.
+     * @param weigher The {@link Weigher} to be wrapped.
+     * @param <K>     The type of keys in the map entry.
+     * @param <V>     The type of values in the map entry.
+     * @return An {@link EntryWeigher} that uses the provided value weigher.
      */
     public static <K, V> EntryWeigher<K, V> asEntryWeigher(final Weigher<? super V> weigher) {
         return (weigher == singleton()) ? Weighers.entrySingleton() : new EntryWeigherView<>(weigher);
     }
 
     /**
-     * A weigher where an entry has a selector of <b>1</b>. A map bounded with this weigher will evict when the number
-     * of data-value pairs exceeds the capacity.
+     * Returns an {@link EntryWeigher} where each entry has a weight of <b>1</b>. A map bounded with this weigher will
+     * evict entries when the number of key-value pairs exceeds the capacity.
      *
-     * @param <K> 键类型
-     * @param <V> 值类型
-     * @return A weigher where a value takes one unit of capacity.
+     * @param <K> The type of keys in the map entry.
+     * @param <V> The type of values in the map entry.
+     * @return An {@link EntryWeigher} where each entry contributes one unit to the total weight.
      */
     public static <K, V> EntryWeigher<K, V> entrySingleton() {
         return (EntryWeigher<K, V>) SingletonEntryWeigher.INSTANCE;
     }
 
     /**
-     * A weigher where a value has a selector of <b>1</b>. A map bounded with this weigher will evict when the number of
-     * data-value pairs exceeds the capacity.
+     * Returns a {@link Weigher} where each value has a weight of <b>1</b>. A map bounded with this weigher will evict
+     * entries when the number of values exceeds the capacity.
      *
-     * @param <V> 值类型
-     * @return A weigher where a value takes one unit of capacity.
+     * @param <V> The type of the value.
+     * @return A {@link Weigher} where each value contributes one unit to the total weight.
      */
     public static <V> Weigher<V> singleton() {
         return (Weigher<V>) SingletonWeigher.INSTANCE;
     }
 
     /**
-     * A weigher where the value is a byte array and its selector is the number of bytes. A map bounded with this
-     * weigher will evict when the number of bytes exceeds the capacity rather than the number of data-value pairs in
-     * the map. This allows for restricting the capacity based on the memory-consumption and is primarily for usage by
-     * dedicated caching servers that hold the serialized data.
+     * Returns a {@link Weigher} where the value is a byte array and its weight is the number of bytes in the array. A
+     * map bounded with this weigher will evict entries when the total byte size exceeds the capacity.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
-     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
-     * be specified on the map to assign an empty value a positive selector.
+     * A value with a weight of <b>0</b> will be rejected by the map. If a value with this weight can occur, the caller
+     * should handle it as a removal operation. Alternatively, a custom weigher may be specified to assign an empty
+     * value a positive weight.
      *
-     * @return A weigher where each byte takes one unit of capacity.
+     * @return A {@link Weigher} where each byte array's weight is its length.
      */
     public static Weigher<byte[]> byteArray() {
         return ByteArrayWeigher.INSTANCE;
     }
 
     /**
-     * A weigher where the value is a {@link Iterable} and its selector is the number of elements. This weigher only
-     * should be used when the alternative {@link #collection()} weigher cannot be, as evaluation takes O(n) time. A map
-     * bounded with this weigher will evict when the total number of elements exceeds the capacity rather than the
-     * number of data-value pairs in the map.
+     * Returns a {@link Weigher} where the value is an {@link Iterable} and its weight is the number of elements. This
+     * weigher should only be used when the {@link #collection()} weigher is not applicable, as evaluation takes O(n)
+     * time for non-{@code Collection} iterables.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
-     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
-     * be specified on the map to assign an empty value a positive selector.
+     * A value with a weight of <b>0</b> will be rejected by the map. If a value with this weight can occur, the caller
+     * should handle it as a removal operation. Alternatively, a custom weigher may be specified to assign an empty
+     * value a positive weight.
      *
-     * @param <E> 元素类型
-     * @return A weigher where each element takes one unit of capacity.
+     * @param <E> The type of elements in the {@link Iterable}.
+     * @return A {@link Weigher} where each {@link Iterable}'s weight is its size.
      */
     public static <E> Weigher<? super Iterable<E>> iterable() {
         return IterableWeigher.INSTANCE;
     }
 
     /**
-     * A weigher where the value is a {@link Collection} and its selector is the number of elements. A map bounded with
-     * this weigher will evict when the total number of elements exceeds the capacity rather than the number of
-     * data-value pairs in the map.
+     * Returns a {@link Weigher} where the value is a {@link Collection} and its weight is the number of elements. A map
+     * bounded with this weigher will evict entries when the total number of elements across all values exceeds the
+     * capacity.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
-     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
-     * be specified on the map to assign an empty value a positive selector.
+     * A value with a weight of <b>0</b> will be rejected by the map. If a value with this weight can occur, the caller
+     * should handle it as a removal operation. Alternatively, a custom weigher may be specified to assign an empty
+     * value a positive weight.
      *
-     * @param <E> 元素类型
-     * @return A weigher where each element takes one unit of capacity.
+     * @param <E> The type of elements in the {@link Collection}.
+     * @return A {@link Weigher} where each {@link Collection}'s weight is its size.
      */
     public static <E> Weigher<? super Collection<E>> collection() {
         return CollectionWeigher.INSTANCE;
     }
 
     /**
-     * A weigher where the value is a {@link List} and its selector is the number of elements. A map bounded with this
-     * weigher will evict when the total number of elements exceeds the capacity rather than the number of data-value
-     * pairs in the map.
+     * Returns a {@link Weigher} where the value is a {@link List} and its weight is the number of elements. A map
+     * bounded with this weigher will evict entries when the total number of elements across all values exceeds the
+     * capacity.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
-     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
-     * be specified on the map to assign an empty value a positive selector.
+     * A value with a weight of <b>0</b> will be rejected by the map. If a value with this weight can occur, the caller
+     * should handle it as a removal operation. Alternatively, a custom weigher may be specified to assign an empty
+     * value a positive weight.
      *
-     * @param <E> 元素类型
-     * @return A weigher where each element takes one unit of capacity.
+     * @param <E> The type of elements in the {@link List}.
+     * @return A {@link Weigher} where each {@link List}'s weight is its size.
      */
     public static <E> Weigher<? super List<E>> list() {
         return ListWeigher.INSTANCE;
     }
 
     /**
-     * A weigher where the value is a {@link Set} and its selector is the number of elements. A map bounded with this
-     * weigher will evict when the total number of elements exceeds the capacity rather than the number of data-value
-     * pairs in the map.
+     * Returns a {@link Weigher} where the value is a {@link Set} and its weight is the number of elements. A map
+     * bounded with this weigher will evict entries when the total number of elements across all values exceeds the
+     * capacity.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
-     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
-     * be specified on the map to assign an empty value a positive selector.
+     * A value with a weight of <b>0</b> will be rejected by the map. If a value with this weight can occur, the caller
+     * should handle it as a removal operation. Alternatively, a custom weigher may be specified to assign an empty
+     * value a positive weight.
      *
-     * @param <E> 元素类型
-     * @return A weigher where each element takes one unit of capacity.
+     * @param <E> The type of elements in the {@link Set}.
+     * @return A {@link Weigher} where each {@link Set}'s weight is its size.
      */
     public static <E> Weigher<? super Set<E>> set() {
         return SetWeigher.INSTANCE;
     }
 
     /**
-     * A weigher where the value is a {@link Map} and its selector is the number of entries. A map bounded with this
-     * weigher will evict when the total number of entries across all values exceeds the capacity rather than the number
-     * of data-value pairs in the map.
+     * Returns a {@link Weigher} where the value is a {@link Map} and its weight is the number of entries. A map bounded
+     * with this weigher will evict entries when the total number of entries across all values exceeds the capacity.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
-     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
-     * be specified on the map to assign an empty value a positive selector.
+     * A value with a weight of <b>0</b> will be rejected by the map. If a value with this weight can occur, the caller
+     * should handle it as a removal operation. Alternatively, a custom weigher may be specified to assign an empty
+     * value a positive weight.
      *
-     * @param <K> 键类型
-     * @param <V> 值类型
-     * @return A weigher where each entry takes one unit of capacity.
+     * @param <K> The type of keys in the inner map.
+     * @param <V> The type of values in the inner map.
+     * @return A {@link Weigher} where each {@link Map}'s weight is its size.
      */
     public static <K, V> Weigher<? super Map<K, V>> map() {
         return MapWeigher.INSTANCE;
     }
 
+    /**
+     * An {@link EntryWeigher} implementation that assigns a weight of 1 to every entry.
+     */
     enum SingletonEntryWeigher implements EntryWeigher<Object, Object> {
 
+        /** Singleton instance. */
         INSTANCE;
 
         @Override
@@ -194,8 +196,12 @@ public final class Weighers {
         }
     }
 
+    /**
+     * A {@link Weigher} implementation that assigns a weight of 1 to every value.
+     */
     enum SingletonWeigher implements Weigher<Object> {
 
+        /** Singleton instance. */
         INSTANCE;
 
         @Override
@@ -204,8 +210,12 @@ public final class Weighers {
         }
     }
 
+    /**
+     * A {@link Weigher} implementation for byte arrays, where the weight is the length of the array.
+     */
     enum ByteArrayWeigher implements Weigher<byte[]> {
 
+        /** Singleton instance. */
         INSTANCE;
 
         @Override
@@ -214,8 +224,12 @@ public final class Weighers {
         }
     }
 
+    /**
+     * A {@link Weigher} implementation for {@link Iterable} objects, where the weight is the number of elements.
+     */
     enum IterableWeigher implements Weigher<Iterable<?>> {
 
+        /** Singleton instance. */
         INSTANCE;
 
         @Override
@@ -227,8 +241,12 @@ public final class Weighers {
         }
     }
 
+    /**
+     * A {@link Weigher} implementation for {@link Collection} objects, where the weight is the number of elements.
+     */
     enum CollectionWeigher implements Weigher<Collection<?>> {
 
+        /** Singleton instance. */
         INSTANCE;
 
         @Override
@@ -237,8 +255,12 @@ public final class Weighers {
         }
     }
 
+    /**
+     * A {@link Weigher} implementation for {@link List} objects, where the weight is the number of elements.
+     */
     enum ListWeigher implements Weigher<List<?>> {
 
+        /** Singleton instance. */
         INSTANCE;
 
         @Override
@@ -247,8 +269,12 @@ public final class Weighers {
         }
     }
 
+    /**
+     * A {@link Weigher} implementation for {@link Set} objects, where the weight is the number of elements.
+     */
     enum SetWeigher implements Weigher<Set<?>> {
 
+        /** Singleton instance. */
         INSTANCE;
 
         @Override
@@ -257,8 +283,12 @@ public final class Weighers {
         }
     }
 
+    /**
+     * A {@link Weigher} implementation for {@link Map} objects, where the weight is the number of entries.
+     */
     enum MapWeigher implements Weigher<Map<?, ?>> {
 
+        /** Singleton instance. */
         INSTANCE;
 
         @Override
@@ -267,6 +297,12 @@ public final class Weighers {
         }
     }
 
+    /**
+     * An {@link EntryWeigher} that wraps a {@link Weigher} for values.
+     *
+     * @param <K> The type of keys.
+     * @param <V> The type of values.
+     */
     static final class EntryWeigherView<K, V> implements EntryWeigher<K, V>, Serializable {
 
         @Serial
@@ -275,7 +311,7 @@ public final class Weighers {
         final Weigher<? super V> weigher;
 
         EntryWeigherView(final Weigher<? super V> weigher) {
-            Assert.notNull(weigher);
+            Assert.notNull(weigher, "Weigher must not be null");
             this.weigher = weigher;
         }
 

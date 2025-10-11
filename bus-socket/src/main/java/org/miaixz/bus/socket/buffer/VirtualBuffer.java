@@ -31,7 +31,12 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.Semaphore;
 
 /**
- * 虚拟ByteBuffer缓冲区
+ * Represents a virtual {@link ByteBuffer} that is a slice of a larger, underlying {@link BufferPage}.
+ * <p>
+ * This class allows for the management of smaller buffer segments without the overhead of allocating and deallocating
+ * individual {@code ByteBuffer} objects. It tracks its position within the parent buffer page and provides a mechanism
+ * for releasing the buffer back to the page for reuse.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,34 +44,42 @@ import java.util.concurrent.Semaphore;
 public final class VirtualBuffer {
 
     /**
-     * 当前虚拟buffer的归属内存页
+     * The {@link BufferPage} to which this virtual buffer belongs.
      */
     private final BufferPage bufferPage;
     /**
-     * 是否已回收
+     * A semaphore to ensure that the buffer is cleaned (released) only once.
      */
     private final Semaphore clean = new Semaphore(1);
     /**
-     * 通过ByteBuffer.slice()隐射出来的虚拟ByteBuffer
+     * The virtual {@link ByteBuffer}, which is a slice of the parent buffer.
      *
      * @see ByteBuffer#slice()
      */
     private ByteBuffer buffer;
     /**
-     * 当前虚拟buffer映射的实际buffer.position
+     * The starting position of this virtual buffer within the parent buffer.
      */
     private int parentPosition;
 
     /**
-     * 当前虚拟buffer映射的实际buffer.limit
+     * The ending limit of this virtual buffer within the parent buffer.
      */
     private int parentLimit;
 
     /**
-     * 缓冲区容量
+     * The capacity of this virtual buffer.
      */
     private int capacity;
 
+    /**
+     * Constructs a new VirtualBuffer.
+     *
+     * @param bufferPage     the parent buffer page
+     * @param buffer         the sliced ByteBuffer
+     * @param parentPosition the starting position in the parent buffer
+     * @param parentLimit    the ending limit in the parent buffer
+     */
     VirtualBuffer(BufferPage bufferPage, ByteBuffer buffer, int parentPosition, int parentLimit) {
         this.bufferPage = bufferPage;
         this.buffer = buffer;
@@ -75,49 +88,86 @@ public final class VirtualBuffer {
         updateCapacity();
     }
 
+    /**
+     * Wraps an existing {@link ByteBuffer} in a VirtualBuffer.
+     * <p>
+     * The resulting VirtualBuffer is not associated with a {@link BufferPage} and cannot be recycled.
+     * </p>
+     *
+     * @param buffer the ByteBuffer to wrap
+     * @return a new VirtualBuffer instance
+     */
     public static VirtualBuffer wrap(ByteBuffer buffer) {
         return new VirtualBuffer(null, buffer, 0, 0);
     }
 
+    /**
+     * Gets the starting position of this virtual buffer within its parent buffer.
+     *
+     * @return the parent position
+     */
     int getParentPosition() {
         return parentPosition;
     }
 
+    /**
+     * Sets the starting position of this virtual buffer within its parent buffer.
+     *
+     * @param parentPosition the new parent position
+     */
     void setParentPosition(int parentPosition) {
         this.parentPosition = parentPosition;
         updateCapacity();
     }
 
+    /**
+     * Gets the ending limit of this virtual buffer within its parent buffer.
+     *
+     * @return the parent limit
+     */
     int getParentLimit() {
         return parentLimit;
     }
 
+    /**
+     * Sets the ending limit of this virtual buffer within its parent buffer.
+     *
+     * @param parentLimit the new parent limit
+     */
     void setParentLimit(int parentLimit) {
         this.parentLimit = parentLimit;
         updateCapacity();
     }
 
+    /**
+     * Updates the capacity of this virtual buffer based on its parent position and limit.
+     */
     private void updateCapacity() {
-        capacity = this.parentLimit - this.parentPosition;
+        this.capacity = this.parentLimit - this.parentPosition;
     }
 
+    /**
+     * Gets the capacity of this virtual buffer.
+     *
+     * @return the capacity in bytes
+     */
     public int getCapacity() {
         return capacity;
     }
 
     /**
-     * 获取真实缓冲区
+     * Gets the underlying {@link ByteBuffer}.
      *
-     * @return 真实缓冲区
+     * @return the actual ByteBuffer
      */
     public ByteBuffer buffer() {
         return buffer;
     }
 
     /**
-     * 设置真实缓冲区
+     * Sets the underlying {@link ByteBuffer} and releases the clean semaphore.
      *
-     * @param buffer 真实缓冲区
+     * @param buffer the new ByteBuffer
      */
     void buffer(ByteBuffer buffer) {
         this.buffer = buffer;
@@ -125,7 +175,12 @@ public final class VirtualBuffer {
     }
 
     /**
-     * 释放虚拟缓冲区
+     * Releases this virtual buffer, allowing its memory to be reused.
+     * <p>
+     * If this buffer belongs to a {@link BufferPage}, it will be returned to the page for recycling.
+     * </p>
+     *
+     * @throws UnsupportedOperationException if the buffer has already been cleaned
      */
     public void clean() {
         if (clean.tryAcquire()) {
@@ -133,13 +188,13 @@ public final class VirtualBuffer {
                 bufferPage.clean(this);
             }
         } else {
-            throw new UnsupportedOperationException("buffer has cleaned");
+            throw new UnsupportedOperationException("buffer has already been cleaned");
         }
     }
 
     @Override
     public String toString() {
-        return "VirtualBuffer{parentPosition=" + parentPosition + ", parentLimit=" + parentLimit + '}';
+        return "VirtualBuffer{" + "parentPosition=" + parentPosition + ", parentLimit=" + parentLimit + '}';
     }
 
 }

@@ -27,81 +27,176 @@
 */
 package org.miaixz.bus.extra.image.gif;
 
+/**
+ * NeuQuant Neural-Net Quantizer.
+ * <p>
+ * This class provides a color quantization algorithm based on a neural network, which is used to reduce the number of
+ * colors in an image to a smaller palette (typically 256 colors for GIFs).
+ * </p>
+ * <p>
+ * The algorithm is based on the work of Anthony Dekker.
+ * </p>
+ *
+ * @author Kimi Liu
+ * @since Java 17+
+ */
 public class NeuQuant {
 
+    /**
+     * The number of colors used in the output palette.
+     */
     protected static final int netsize = 256; /* number of colours used */
 
-    /* four primes near 500 - assume no image has a length so large */
-    /* that it is divisible by all four primes */
+    /**
+     * First of four primes near 500, used for sampling.
+     */
     protected static final int prime1 = 499;
+    /**
+     * Second of four primes near 500, used for sampling.
+     */
     protected static final int prime2 = 491;
+    /**
+     * Third of four primes near 500, used for sampling.
+     */
     protected static final int prime3 = 487;
+    /**
+     * Fourth of four primes near 500, used for sampling.
+     */
     protected static final int prime4 = 503;
 
+    /**
+     * Minimum size for the input image in bytes.
+     */
     protected static final int minpicturebytes = (3 * prime4);
-    /* minimum size for input image */
 
-    /*
-     * Program Skeleton ---------------- [select samplefac in range 1..30] [read image from input file] pic = (unsigned
-     * char*) malloc(3*width*height); initnet(pic,3*width*height,samplefac); learn(); unbiasnet(); [write output image
-     * header, using writecolourmap(f)] inxbuild(); write output image using inxsearch(b,g,r)
+    /**
+     * The maximum network position.
      */
-
-    /*
-     * Network Definitions -------------------
-     */
-
     protected static final int maxnetpos = netsize - 1;
-    protected static final int netbiasshift = 4; /* bias for colour values */
-    protected static final int ncycles = 100; /* no. of learning cycles */
-
-    /* defs for freq and bias */
-    protected static final int intbiasshift = 16; /* bias for fractions */
-    protected static final int intbias = 1 << intbiasshift;
-    protected static final int betashift = 10;
-    protected static final int gammashift = 10; /* gamma = 1024 */
-    protected static final int gamma = 1 << gammashift;
-
-    /* defs for decreasing radius factor */
-    protected static final int initrad = (netsize >> 3); /* for 256 cols, radius starts */
-    protected static final int radiusbiasshift = 6; /* at 32.0 biased by 6 bits */
-    protected static final int radiusbias = 1 << radiusbiasshift;
-    protected static final int initradius = (initrad * radiusbias); /* and decreases by a */
-    protected static final int radiusdec = 30; /* factor of 1/30 each cycle */
-
-    /* defs for decreasing alpha factor */
-    protected static final int alphabiasshift = 10; /* alpha starts at 1.0 */
-    protected static final int initalpha = 1 << alphabiasshift;
-    /* radbias and alpharadbias used for radpower calculation */
-    protected static final int radbiasshift = 8;
-    protected static final int radbias = 1 << radbiasshift;
-    protected static final int alpharadbshift = alphabiasshift + radbiasshift;
-    protected static final int alpharadbias = 1 << alpharadbshift;
-    protected int alphadec; /* biased by 10 bits */
-
-    /*
-     * Types and Global Variables --------------------------
+    /**
+     * Bias for color values.
      */
-    protected byte[] thepicture; /* the input image itself */
-    protected int lengthcount; /* lengthcount = H*W*3 */
+    protected static final int netbiasshift = 4;
+    /**
+     * Number of learning cycles.
+     */
+    protected static final int ncycles = 100;
 
-    protected int samplefac; /* sampling factor 1..30 */
+    /**
+     * Bias for fractions.
+     */
+    protected static final int intbiasshift = 16;
+    /**
+     * Integer bias constant.
+     */
+    protected static final int intbias = 1 << intbiasshift;
+    /**
+     * Gamma shift value.
+     */
+    protected static final int gammashift = 10; /* gamma = 1024 */
+    /**
+     * Gamma constant.
+     */
+    protected static final int gamma = 1 << gammashift;
+    /**
+     * Beta shift value.
+     */
+    protected static final int betashift = 10;
 
-    // typedef int pixel[4]; /* BGRc */
-    protected int[][] network; /* the network itself - [netsize][4] */
+    /**
+     * Initial radius for convergence.
+     */
+    protected static final int initrad = (netsize >> 3);
+    /**
+     * Radius bias shift value.
+     */
+    protected static final int radiusbiasshift = 6;
+    /**
+     * Radius bias constant.
+     */
+    protected static final int radiusbias = 1 << radiusbiasshift;
+    /**
+     * Initial radius value.
+     */
+    protected static final int initradius = (initrad * radiusbias);
+    /**
+     * Radius decrease factor.
+     */
+    protected static final int radiusdec = 30;
 
+    /**
+     * Alpha bias shift value for learning rate.
+     */
+    protected static final int alphabiasshift = 10;
+    /**
+     * Initial alpha (learning rate) value.
+     */
+    protected static final int initalpha = 1 << alphabiasshift;
+    /**
+     * Rad bias shift value.
+     */
+    protected static final int radbiasshift = 8;
+    /**
+     * Rad bias constant.
+     */
+    protected static final int radbias = 1 << radbiasshift;
+    /**
+     * Alpha-rad bias shift value.
+     */
+    protected static final int alpharadbshift = alphabiasshift + radbiasshift;
+    /**
+     * Alpha-rad bias constant.
+     */
+    protected static final int alpharadbias = 1 << alpharadbshift;
+    /**
+     * Biased alpha decrease factor.
+     */
+    protected int alphadec;
+
+    /**
+     * The input image itself as a byte array.
+     */
+    protected byte[] thepicture;
+    /**
+     * The total number of bytes in the input image (H*W*3).
+     */
+    protected int lengthcount;
+
+    /**
+     * The sampling factor (1-30).
+     */
+    protected int samplefac;
+
+    /**
+     * The neural network itself, storing BGR and index values.
+     */
+    protected int[][] network;
+
+    /**
+     * A lookup table for the network.
+     */
     protected int[] netindex = new int[256];
-    /* for network lookup - really 256 */
 
+    /**
+     * Bias array for learning.
+     */
     protected int[] bias = new int[netsize];
-    /* bias and freq arrays for learning */
+    /**
+     * Frequency array for learning.
+     */
     protected int[] freq = new int[netsize];
+    /**
+     * Precomputed values for radpower calculation.
+     */
     protected int[] radpower = new int[initrad];
-    /* radpower for precomputation */
 
-    /*
-     * Initialise network in range (0,0,0) to (255,255,255) and set parameters
-     * -----------------------------------------------------------------------
+    /**
+     * Initializes the neural network with parameters. The network is initialized with colors ranging from (0,0,0) to
+     * (255,255,255).
+     *
+     * @param thepic The input image as a byte array.
+     * @param len    The length of the image byte array.
+     * @param sample The sampling factor (1-30).
      */
     public NeuQuant(byte[] thepic, int len, int sample) {
 
@@ -122,6 +217,11 @@ public class NeuQuant {
         }
     }
 
+    /**
+     * Generates the color map from the trained network.
+     *
+     * @return A byte array representing the color map (palette).
+     */
     public byte[] colorMap() {
         byte[] map = new byte[3 * netsize];
         int[] index = new int[netsize];
@@ -137,9 +237,9 @@ public class NeuQuant {
         return map;
     }
 
-    /*
-     * Insertion sort of network and building of netindex[0..255] (to do after unbias)
-     * -------------------------------------------------------------------------------
+    /**
+     * Performs an insertion sort on the network and builds the `netindex` lookup table. This should be called after
+     * `unbiasnet`.
      */
     public void inxbuild() {
 
@@ -192,8 +292,9 @@ public class NeuQuant {
             netindex[j] = maxnetpos; /* really 256 */
     }
 
-    /*
-     * Main Learning Loop ------------------
+    /**
+     * The main learning loop for the neural network. This method trains the network by adjusting neuron values based on
+     * the input image pixels.
      */
     public void learn() {
 
@@ -267,9 +368,13 @@ public class NeuQuant {
         // fprintf(stderr,"finished 1D learning: final alpha=%f !\n",((float)alpha)/initalpha);
     }
 
-    /*
-     * Search for BGR values 0..255 (after net is unbiased) and return colour index
-     * ----------------------------------------------------------------------------
+    /**
+     * Searches for the BGR values (0-255) after the network is unbiased and returns the color index.
+     *
+     * @param b The blue component.
+     * @param g The green component.
+     * @param r The red component.
+     * @return The index of the closest color in the palette.
      */
     public int map(int b, int g, int r) {
 
@@ -337,6 +442,12 @@ public class NeuQuant {
         return (best);
     }
 
+    /**
+     * Executes the complete quantization process. It learns from the image, unbiases the network, builds the index, and
+     * returns the color map.
+     *
+     * @return The generated color map as a byte array.
+     */
     public byte[] process() {
         learn();
         unbiasnet();
@@ -344,13 +455,12 @@ public class NeuQuant {
         return colorMap();
     }
 
-    /*
-     * Unbias network to give byte values 0..255 and record position i to prepare for sort
-     * -----------------------------------------------------------------------------------
+    /**
+     * Unbiases the network to give byte values from 0 to 255 and records the position `i` to prepare for sorting.
      */
     public void unbiasnet() {
 
-        int i, j;
+        int i;
 
         for (i = 0; i < netsize; i++) {
             network[i][0] >>= netbiasshift;
@@ -360,9 +470,14 @@ public class NeuQuant {
         }
     }
 
-    /*
-     * Move adjacent neurons by precomputed alpha*(1-((i-j)^2/[r]^2)) in radpower[|i-j|]
-     * ---------------------------------------------------------------------------------
+    /**
+     * Moves adjacent neurons by a precomputed alpha factor based on their distance from the winning neuron.
+     *
+     * @param rad The radius of influence.
+     * @param i   The index of the winning neuron.
+     * @param b   The blue component of the input pixel.
+     * @param g   The green component of the input pixel.
+     * @param r   The red component of the input pixel.
      */
     protected void alterneigh(int rad, int i, int b, int g, int r) {
 
@@ -402,8 +517,14 @@ public class NeuQuant {
         }
     }
 
-    /*
-     * Move neuron i towards biased (b,g,r) by factor alpha ----------------------------------------------------
+    /**
+     * Moves neuron `i` towards the biased (b,g,r) color by a factor of alpha.
+     *
+     * @param alpha The learning rate.
+     * @param i     The index of the neuron to alter.
+     * @param b     The blue component of the input pixel.
+     * @param g     The green component of the input pixel.
+     * @param r     The red component of the input pixel.
      */
     protected void altersingle(int alpha, int i, int b, int g, int r) {
 
@@ -414,8 +535,14 @@ public class NeuQuant {
         n[2] -= (alpha * (n[2] - r)) / initalpha;
     }
 
-    /*
-     * Search for biased BGR values ----------------------------
+    /**
+     * Searches for the biased BGR values to find the winning neuron. It finds the closest neuron (minimum distance) and
+     * updates its frequency. It also finds the best neuron (minimum distance-bias) and returns its position.
+     *
+     * @param b The blue component of the input pixel.
+     * @param g The green component of the input pixel.
+     * @param r The red component of the input pixel.
+     * @return The index of the best-matching neuron.
      */
     protected int contest(int b, int g, int r) {
 

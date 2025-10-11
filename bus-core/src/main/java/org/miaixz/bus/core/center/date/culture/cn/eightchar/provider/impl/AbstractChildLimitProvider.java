@@ -33,13 +33,26 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarMonth;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 童限计算抽象
+ * Abstract base class for Child Limit (童限) calculation providers. Provides a common method for calculating the end time
+ * and duration of the Child Limit.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractChildLimitProvider implements ChildLimitProvider {
 
+    /**
+     * Calculates the end time and duration of the Child Limit based on the birth time and added time components.
+     *
+     * @param birthTime The Gregorian birth time.
+     * @param addYear   Years to add.
+     * @param addMonth  Months to add.
+     * @param addDay    Days to add.
+     * @param addHour   Hours to add.
+     * @param addMinute Minutes to add.
+     * @param addSecond Seconds to add.
+     * @return A {@link ChildLimitInfo} object containing the calculated Child Limit details.
+     */
     protected ChildLimitInfo next(
             SolarTime birthTime,
             int addYear,

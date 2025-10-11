@@ -34,21 +34,40 @@ import org.miaixz.bus.shade.safety.Complex;
 import org.miaixz.bus.shade.safety.complex.RegexComplex;
 
 /**
- * Zip记录正则表达式规则
+ * A {@link Complex} implementation that filters {@link ZipArchiveEntry} entries based on regular expression matching.
+ * This class extends {@link RegexComplex} and provides a way to apply regex patterns to the names of ZIP archive
+ * entries.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ZipRegexComplex extends RegexComplex<ZipArchiveEntry> implements Complex<ZipArchiveEntry> {
 
+    /**
+     * Constructs a new {@code ZipRegexComplex} with the specified regular expression string.
+     *
+     * @param regex The regular expression string to use for filtering.
+     */
     public ZipRegexComplex(String regex) {
         super(regex);
     }
 
+    /**
+     * Constructs a new {@code ZipRegexComplex} with the specified compiled {@link Pattern}.
+     *
+     * @param pattern The compiled {@link Pattern} to use for filtering.
+     */
     public ZipRegexComplex(Pattern pattern) {
         super(pattern);
     }
 
+    /**
+     * Converts a {@link ZipArchiveEntry} into a string representation for pattern matching. This implementation returns
+     * the name of the ZIP archive entry.
+     *
+     * @param entry The {@link ZipArchiveEntry} to convert.
+     * @return The name of the ZIP archive entry.
+     */
     @Override
     protected String toText(ZipArchiveEntry entry) {
         return entry.getName();

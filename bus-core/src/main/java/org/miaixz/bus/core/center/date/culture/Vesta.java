@@ -31,157 +31,183 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 
 /**
- * 灶马头(灶神的坐骑)
+ * Represents Zao Ma Tou (the mount of the Kitchen God) in Chinese culture.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Vesta extends Loops {
 
+    /**
+     * Array of Chinese numbers for display.
+     */
     public static final String[] NUMBERS = { "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二" };
 
     /**
-     * 正月初一的干支
+     * The SixtyCycle (Gan Zhi) of the first day of the first lunar month.
      */
     protected SixtyCycle firstDaySixtyCycle;
 
+    /**
+     * Constructs a {@code Vesta} instance for a given lunar year.
+     *
+     * @param lunarYear The lunar year.
+     */
     public Vesta(int lunarYear) {
         firstDaySixtyCycle = LunarDay.fromYmd(lunarYear, 1, 1).getSixtyCycle();
     }
 
+    /**
+     * Creates a {@code Vesta} instance from a lunar year.
+     *
+     * @param lunarYear The lunar year.
+     * @return A new {@code Vesta} instance.
+     */
     public static Vesta fromLunarYear(int lunarYear) {
         return new Vesta(lunarYear);
     }
 
+    /**
+     * Calculates a number based on the Heaven Stem of the first day of the first lunar month.
+     *
+     * @param n The number of steps to move from the Heaven Stem.
+     * @return The Chinese number corresponding to the calculated position.
+     */
     protected String byHeavenStem(int n) {
         return NUMBERS[firstDaySixtyCycle.getHeavenStem().stepsTo(n)];
     }
 
+    /**
+     * Calculates a number based on the Earth Branch of the first day of the first lunar month.
+     *
+     * @param n The number of steps to move from the Earth Branch.
+     * @return The Chinese number corresponding to the calculated position.
+     */
     protected String byEarthBranch(int n) {
         return NUMBERS[firstDaySixtyCycle.getEarthBranch().stepsTo(n)];
     }
 
     /**
-     * 几鼠偷粮
+     * Gets the "Mouse Stealing Grain" saying for the year.
      *
-     * @return 几鼠偷粮
+     * @return The "Mouse Stealing Grain" saying.
      */
     public String getMouse() {
         return String.format("%s鼠偷粮", byEarthBranch(0));
     }
 
     /**
-     * 草子几分
+     * Gets the "Grass Seed Points" saying for the year.
      *
-     * @return 草子几分
+     * @return The "Grass Seed Points" saying.
      */
     public String getGrass() {
         return String.format("草子%s分", byEarthBranch(0));
     }
 
     /**
-     * 几牛耕田（正月第一个丑日是初几，就是几牛耕田）
+     * Gets the "Cattle Plowing Field" saying for the year (based on the first Chou day of the first lunar month).
      *
-     * @return 几牛耕田
+     * @return The "Cattle Plowing Field" saying.
      */
     public String getCattle() {
         return String.format("%s牛耕田", byEarthBranch(1));
     }
 
     /**
-     * 花收几分
+     * Gets the "Flower Harvest Points" saying for the year.
      *
-     * @return 花收几分
+     * @return The "Flower Harvest Points" saying.
      */
     public String getFlower() {
         return String.format("花收%s分", byEarthBranch(3));
     }
 
     /**
-     * 几龙治水（正月第一个辰日是初几，就是几龙治水）
+     * Gets the "Dragon Governing Water" saying for the year (based on the first Chen day of the first lunar month).
      *
-     * @return 几龙治水
+     * @return The "Dragon Governing Water" saying.
      */
     public String getDragon() {
         return String.format("%s龙治水", byEarthBranch(4));
     }
 
     /**
-     * 几马驮谷
+     * Gets the "Horse Carrying Grain" saying for the year.
      *
-     * @return 几马驮谷
+     * @return The "Horse Carrying Grain" saying.
      */
     public String getHorse() {
         return String.format("%s马驮谷", byEarthBranch(6));
     }
 
     /**
-     * 几鸡抢米
+     * Gets the "Chicken Snatching Rice" saying for the year.
      *
-     * @return 几鸡抢米
+     * @return The "Chicken Snatching Rice" saying.
      */
     public String getChicken() {
         return String.format("%s鸡抢米", byEarthBranch(9));
     }
 
     /**
-     * 几姑看蚕
+     * Gets the "Aunt Watching Silkworms" saying for the year.
      *
-     * @return 几姑看蚕
+     * @return The "Aunt Watching Silkworms" saying.
      */
     public String getSilkworm() {
         return String.format("%s姑看蚕", byEarthBranch(9));
     }
 
     /**
-     * 几屠共猪
+     * Gets the "Butcher Sharing Pig" saying for the year.
      *
-     * @return 几屠共猪
+     * @return The "Butcher Sharing Pig" saying.
      */
     public String getPig() {
         return String.format("%s屠共猪", byEarthBranch(11));
     }
 
     /**
-     * 甲田几分
+     * Gets the "Jia Field Points" saying for the year.
      *
-     * @return 甲田几分
+     * @return The "Jia Field Points" saying.
      */
     public String getField() {
         return String.format("甲田%s分", byHeavenStem(0));
     }
 
     /**
-     * 几人分饼（正月第一个丙日是初几，就是几人分饼）
+     * Gets the "People Sharing Cake" saying for the year (based on the first Bing day of the first lunar month).
      *
-     * @return 几人分饼
+     * @return The "People Sharing Cake" saying.
      */
     public String getCake() {
         return String.format("%s人分饼", byHeavenStem(2));
     }
 
     /**
-     * 几日得金（正月第一个辛日是初几，就是几日得金）
+     * Gets the "Days to Get Gold" saying for the year (based on the first Xin day of the first lunar month).
      *
-     * @return 几日得金
+     * @return The "Days to Get Gold" saying.
      */
     public String getGold() {
         return String.format("%s日得金", byHeavenStem(7));
     }
 
     /**
-     * 几人几丙
+     * Gets the "People and Cakes" saying for the year.
      *
-     * @return 几人几丙
+     * @return The "People and Cakes" saying.
      */
     public String getPeopleCakes() {
         return String.format("%s人%s丙", byEarthBranch(2), byHeavenStem(2));
     }
 
     /**
-     * 几人几锄
+     * Gets the "People and Hoes" saying for the year.
      *
-     * @return 几人几锄
+     * @return The "People and Hoes" saying.
      */
     public String getPeopleHoes() {
         return String.format("%s人%s锄", byEarthBranch(2), byHeavenStem(3));

@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 定时任务表达式解析，核心为CronPattern
+ * Provides classes for parsing and matching cron expressions. The core class in this package is
+ * {@link org.miaixz.bus.cron.pattern.CronPattern}.
  *
  * @author Kimi Liu
  * @since Java 17+

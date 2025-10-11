@@ -32,50 +32,90 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * 使用给定的转换函数，转换源{@link Spliterator}为新类型的{@link Spliterator}
+ * A {@link Spliterator} that provides a transformed view of a source spliterator. This implementation wraps an existing
+ * {@code Spliterator} and applies a transformation function to each element as it is consumed. It is a lightweight,
+ * non-interfering way to create a functionally transformed sequence of elements.
  *
- * @param <F> 源元素类型
- * @param <T> 目标元素类型
+ * @param <F> The type of elements in the source spliterator.
+ * @param <T> The type of elements in the transformed spliterator.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TransSpliterator<F, T> implements Spliterator<T> {
 
+    /**
+     * The underlying source spliterator that provides the original elements.
+     */
     private final Spliterator<F> from;
+    /**
+     * The function used to transform each element from the source type {@code F} to the target type {@code T}.
+     */
     private final Function<? super F, ? extends T> function;
 
     /**
-     * 构造
+     * Constructs a new transforming spliterator that wraps the given source spliterator.
      *
-     * @param from     源iterator
-     * @param function 函数
+     * @param from     The source {@link Spliterator} to wrap. Must not be {@code null}.
+     * @param function The function to apply to each element for transformation. Must not be {@code null}.
      */
     public TransSpliterator(final Spliterator<F> from, final Function<? super F, ? extends T> function) {
         this.from = from;
         this.function = function;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Advances the spliterator and consumes the next element after applying the transformation function. The provided
+     * action is performed on the transformed element.
+     */
     @Override
     public boolean tryAdvance(final Consumer<? super T> action) {
         return from.tryAdvance(fromElement -> action.accept(function.apply(fromElement)));
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Applies the transformation function to each remaining element and then performs the given action on each
+     * transformed element.
+     */
     @Override
     public void forEachRemaining(final Consumer<? super T> action) {
         from.forEachRemaining(fromElement -> action.accept(function.apply(fromElement)));
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * If the underlying spliterator can be partitioned, this method returns a new {@code TransSpliterator} covering a
+     * portion of the elements. The new spliterator shares the same transformation function.
+     */
     @Override
     public Spliterator<T> trySplit() {
         final Spliterator<F> fromSplit = from.trySplit();
         return (fromSplit != null) ? new TransSpliterator<>(fromSplit, function) : null;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns an estimate of the number of elements that would be encountered by a traversal, which is delegated to the
+     * underlying source spliterator.
+     */
     @Override
     public long estimateSize() {
         return from.estimateSize();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Returns the characteristics of this spliterator, which are derived from the source spliterator. This
+     * implementation removes characteristics such as {@code DISTINCT}, {@code NONNULL}, and {@code SORTED} because the
+     * transformation function is not guaranteed to preserve these properties. For example, a function might map
+     * distinct elements to the same value or produce nulls from a non-null source.
+     */
     @Override
     public int characteristics() {
         return from.characteristics() & ~(Spliterator.DISTINCT | Spliterator.NONNULL | Spliterator.SORTED);

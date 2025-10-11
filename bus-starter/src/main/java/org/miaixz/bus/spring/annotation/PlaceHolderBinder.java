@@ -27,18 +27,21 @@
 */
 package org.miaixz.bus.spring.annotation;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.Map;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValues;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertyResolver;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.Map;
+
 /**
- * 返回值信息处理
+ * Interface for handling placeholder resolution and binding of environment properties to objects.
+ * <p>
+ * This interface provides methods to bind environment properties to a target class or to resolve placeholders within a
+ * string. It supports both Spring Boot 2.x and 1.x binding mechanisms.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,16 +49,22 @@ import org.springframework.core.env.PropertyResolver;
 public interface PlaceHolderBinder {
 
     /**
-     * 全局资源绑定到指定对象即属性
+     * Binds global resources from the {@link Environment} to a specified target class.
+     * <p>
+     * This static method attempts to bind properties from the environment to an instance of the {@code targetClass}. It
+     * first tries to use the Spring Boot 2.x {@code Binder} mechanism. If that fails (e.g., due to an older Spring Boot
+     * version), it falls back to a Spring Boot 1.x compatible binding mechanism using reflection.
+     * </p>
      *
-     * @param environment 环境配置信息
-     * @param targetClass 目标Class对象
-     * @param prefix      资源前缀
-     * @param <T>         泛型对象
-     * @return the object
+     * @param environment The Spring {@link Environment} containing the configuration properties.
+     * @param targetClass The {@link Class} of the target object to which properties will be bound.
+     * @param prefix      The prefix for the properties to bind (e.g., "bus.cache").
+     * @param <T>         The type of the target object.
+     * @return An instance of the {@code targetClass} with bound properties, or {@code null} if binding fails.
+     * @throws RuntimeException if an unexpected reflection error occurs during binding.
      */
     static <T> T bind(Environment environment, Class<T> targetClass, String prefix) {
-        // 使用 Spring Boot 方式绑定
+        // Attempt to bind using Spring Boot 2.x Binder
         try {
             Class<?> bindClass = Class.forName("org.springframework.boot.context.properties.bind.Binder");
             Method getMethod = bindClass.getDeclaredMethod("get", Environment.class);
@@ -69,47 +78,48 @@ public interface PlaceHolderBinder {
             }
             return null;
         } catch (Exception e) {
-            // 使用 Spring Boot 1.x 方式绑定
+            // Fallback to Spring Boot 1.x binding mechanism
             try {
-                // 反射提取配置信息
+                // Use reflection to extract configuration information via RelaxedPropertyResolver
                 Class<?> resolverClass = Class.forName("org.springframework.boot.bind.RelaxedPropertyResolver");
                 Constructor<?> resolverConstructor = resolverClass.getDeclaredConstructor(PropertyResolver.class);
                 Method getSubPropertiesMethod = resolverClass.getDeclaredMethod("getSubProperties", String.class);
                 Object resolver = resolverConstructor.newInstance(environment);
                 Map<String, Object> properties = (Map<String, Object>) getSubPropertiesMethod
                         .invoke(resolver, Normal.EMPTY);
-                // 创建结果类
+                // Create an instance of the target class
                 T target = targetClass.getConstructor().newInstance();
-                // 反射使用 org.springframework.boot.bind.RelaxedDataBinder
+                // Use reflection for org.springframework.boot.bind.RelaxedDataBinder
                 Class<?> binderClass = Class.forName("org.springframework.boot.bind.RelaxedDataBinder");
                 Constructor<?> binderConstructor = binderClass.getDeclaredConstructor(Object.class, String.class);
                 Method bindMethod = binderClass.getMethod("bind", PropertyValues.class);
-                // 创建 binder 并绑定数据
+                // Create binder and bind data
                 Object binder = binderConstructor.newInstance(target, prefix);
                 bindMethod.invoke(binder, new MutablePropertyValues(properties));
                 return target;
             } catch (Exception ex) {
-                throw new RuntimeException(ex);
+                throw new RuntimeException("Failed to bind properties using Spring Boot 1.x or 2.x binder", ex);
             }
         }
     }
 
     /**
-     * 全局资源绑定到指定对象即属性
+     * Resolves placeholders in a given string against the provided {@link Environment}.
      *
-     * @param environment 环境配置信息
-     * @param string      原始值
-     * @return the string
+     * @param environment The Spring {@link Environment} to use for placeholder resolution.
+     * @param string      The string containing placeholders (e.g., "${my.property}").
+     * @return The string with all placeholders resolved.
      */
     default String bind(Environment environment, String string) {
         return environment.resolvePlaceholders(string);
     }
 
     /**
-     * 全局资源绑定到指定对象即属性
+     * Resolves placeholders in a given string. This default implementation returns an empty string. Implementations
+     * should override this to provide actual placeholder resolution if needed without an explicit Environment.
      *
-     * @param string 原始值
-     * @return the string
+     * @param string The string containing placeholders.
+     * @return The string with placeholders resolved, or an empty string by default.
      */
     default String bind(String string) {
         return Normal.EMPTY;

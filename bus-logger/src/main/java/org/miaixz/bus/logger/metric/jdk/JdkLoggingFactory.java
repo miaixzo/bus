@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.logger.metric.jdk;
 
-import java.io.InputStream;
-import java.util.logging.LogManager;
-
 import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
+import java.io.InputStream;
+import java.util.logging.LogManager;
+
 /**
- * java.util.logging
+ * A factory for creating {@link java.util.logging.Logger} instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,7 +45,9 @@ import org.miaixz.bus.logger.magic.AbstractFactory;
 public class JdkLoggingFactory extends AbstractFactory {
 
     /**
-     * 构造
+     * Constructs a new {@code JdkLoggingFactory}. This factory is responsible for creating loggers based on the
+     * {@code java.util.logging} framework. It also attempts to read a {@code logging.properties} configuration file
+     * from the classpath.
      */
     public JdkLoggingFactory() {
         super("java.util.logging.Logger");
@@ -63,10 +65,12 @@ public class JdkLoggingFactory extends AbstractFactory {
     }
 
     /**
-     * 读取ClassPath下的logging.properties配置文件
+     * Reads the {@code logging.properties} configuration file from the classpath. If the file is not found, a warning
+     * is printed to {@code System.err}, and the default configuration from {@code %JRE_HOME%/lib/logging.properties} is
+     * used.
      */
     private void readConfig() {
-        // 避免循环引用，Log初始化的时候不使用相关工具类
+        // To avoid circular references, do not use related tool classes during log initialization.
         final InputStream in = ResourceKit.getStreamSafe("logging.properties");
         if (null == in) {
             System.err.println(

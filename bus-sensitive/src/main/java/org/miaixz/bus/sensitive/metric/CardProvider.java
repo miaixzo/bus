@@ -33,13 +33,21 @@ import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
- * 签约协议号脱敏方式 19031317273364059018 签约协议号脱敏格式为前6位后6位保留明文,中间脱敏
+ * A desensitization provider for contract agreement numbers. The strategy keeps the first 6 and last 6 characters
+ * visible and masks the characters in between.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CardProvider extends AbstractProvider {
 
+    /**
+     * Applies desensitization logic for contract numbers to the provided value.
+     *
+     * @param object  The object containing the contract number string to be desensitized.
+     * @param context The current desensitization context, providing access to field annotations and other details.
+     * @return The desensitized contract number, or null if the input is empty.
+     */
     @Override
     public Object build(Object object, Context context) {
         if (ObjectKit.isEmpty(object)) {

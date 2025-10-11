@@ -38,7 +38,8 @@ import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.mapper.ORDER;
 
 /**
- * 根据类型和方法等信息获取实体类类型，可通过 SPI 方式替换默认实现
+ * Resolves the entity class type based on information such as the mapper type and method. The default implementation
+ * can be replaced via SPI (Service Provider Interface).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,16 +47,17 @@ import org.miaixz.bus.mapper.ORDER;
 public interface ClassMetaResolver extends ORDER {
 
     /**
-     * 缓存，避免方法执行时每次都查找，键为 MapperTypeMethod，值为对应的实体类
+     * A cache to avoid repeated lookups during method execution. The key is a {@link MapperTypeMethod} and the value is
+     * the corresponding entity class.
      */
     Map<MapperTypeMethod, Optional<Class<?>>> ENTITY_CLASS_MAP = new ConcurrentHashMap<>();
 
     /**
-     * 查找当前方法对应的实体类
+     * Finds the entity class corresponding to the current method.
      *
-     * @param mapperType   Mapper 接口，不能为空
-     * @param mapperMethod Mapper 接口方法，可以为空
-     * @return 实体类类型的 Optional 包装对象
+     * @param mapperType   The Mapper interface, which cannot be null.
+     * @param mapperMethod The Mapper interface method, which can be null.
+     * @return An {@link Optional} containing the entity class type.
      */
     static Optional<Class<?>> find(Class<?> mapperType, Method mapperMethod) {
         Objects.requireNonNull(mapperType);
@@ -71,42 +73,42 @@ public interface ClassMetaResolver extends ORDER {
     }
 
     /**
-     * 查找当前方法对应的实体类
+     * Finds the entity class corresponding to the current method.
      *
-     * @param mapperType   Mapper 接口，不能为空
-     * @param mapperMethod Mapper 接口方法，可以为空
-     * @return 实体类类型的 Optional 包装对象
+     * @param mapperType   The Mapper interface, which cannot be null.
+     * @param mapperMethod The Mapper interface method, which can be null.
+     * @return An {@link Optional} containing the entity class type.
      */
     Optional<Class<?>> findClass(Class<?> mapperType, Method mapperMethod);
 
     /**
-     * 判断指定的类型是否为定义的实体类类型
+     * Determines whether the specified type is a defined entity class type.
      *
-     * @param clazz 类型
-     * @return true 表示是实体类类型，false 表示不是
+     * @param clazz The type to check.
+     * @return {@code true} if it is an entity class type, {@code false} otherwise.
      */
     boolean isClass(Class<?> clazz);
 
     /**
-     * Mapper 接口和方法，用作缓存 Key
+     * Represents a combination of a Mapper interface and a method, used as a cache key.
      */
     class MapperTypeMethod {
 
         /**
-         * Mapper 接口类
+         * The Mapper interface class.
          */
         private final Class<?> mapperType;
 
         /**
-         * Mapper 接口方法
+         * The Mapper interface method.
          */
         private final Method mapperMethod;
 
         /**
-         * 构造函数，初始化 Mapper 接口和方法
+         * Constructs a new MapperTypeMethod.
          *
-         * @param mapperType   Mapper 接口类
-         * @param mapperMethod Mapper 接口方法
+         * @param mapperType   The Mapper interface class.
+         * @param mapperMethod The Mapper interface method.
          */
         public MapperTypeMethod(Class<?> mapperType, Method mapperMethod) {
             this.mapperType = mapperType;
@@ -114,10 +116,10 @@ public interface ClassMetaResolver extends ORDER {
         }
 
         /**
-         * 判断两个 MapperTypeMethod 对象是否相等
+         * Compares this MapperTypeMethod with another object for equality.
          *
-         * @param o 比较对象
-         * @return true 表示相等，false 表示不相等
+         * @param o The object to compare with.
+         * @return {@code true} if the objects are equal, {@code false} otherwise.
          */
         @Override
         public boolean equals(Object o) {
@@ -130,9 +132,9 @@ public interface ClassMetaResolver extends ORDER {
         }
 
         /**
-         * 计算对象的哈希值
+         * Computes the hash code for this object.
          *
-         * @return 哈希值
+         * @return The hash code.
          */
         @Override
         public int hashCode() {
@@ -140,9 +142,9 @@ public interface ClassMetaResolver extends ORDER {
         }
 
         /**
-         * 返回对象的字符串表示形式
+         * Returns a string representation of the object.
          *
-         * @return 字符串表示形式，格式为 "mapperTypeSimpleName.methodName" 或仅 "mapperTypeSimpleName."
+         * @return A string in the format "mapperTypeSimpleName.methodName" or just "mapperTypeSimpleName.".
          */
         @Override
         public String toString() {
@@ -152,19 +154,19 @@ public interface ClassMetaResolver extends ORDER {
     }
 
     /**
-     * 实体类查找器实例管理类
+     * Manages instances of entity class finders.
      */
     class ClassFinderInstance {
 
         /**
-         * 缓存的 ClassFinder 实例列表
+         * A cached list of {@link ClassMetaResolver} instances.
          */
         private static volatile List<ClassMetaResolver> INSTANCES;
 
         /**
-         * 通过 SPI 获取扩展的实现或使用默认实现
+         * Gets extended implementations via SPI or uses the default implementation.
          *
-         * @return ClassFinder 实例列表
+         * @return A list of {@link ClassMetaResolver} instances.
          */
         public static List<ClassMetaResolver> getInstances() {
             if (INSTANCES == null) {

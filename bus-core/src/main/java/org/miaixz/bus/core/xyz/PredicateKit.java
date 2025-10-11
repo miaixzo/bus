@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * 一些{@link Predicate}相关封装
+ * Utility class for {@link Predicate}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,54 +39,54 @@ import java.util.stream.Stream;
 public class PredicateKit {
 
     /**
-     * 创建一个匹配任何方法的方法匹配器
+     * Creates a predicate that always returns true.
      *
-     * @param <T> 参数类型
-     * @return 方法匹配器
+     * @param <T> The parameter type.
+     * @return A predicate that matches everything.
      */
     public static <T> Predicate<T> alwaysTrue() {
         return method -> true;
     }
 
     /**
-     * 强制转换 {@code Predicate<? super T>} 为 {@code Predicate<T>}.
+     * Coerces a {@code Predicate<? super T>} to {@code Predicate<T>}.
      *
-     * @param <T>       参数类型
-     * @param predicate {@link Predicate}
-     * @return 强转后的{@link Predicate}
+     * @param <T>       The parameter type.
+     * @param predicate The {@link Predicate}.
+     * @return The coerced {@link Predicate}.
      */
     static <T> Predicate<T> coerce(final Predicate<? super T> predicate) {
         return (Predicate<T>) predicate;
     }
 
     /**
-     * 反向条件
+     * Negates a predicate.
      *
-     * @param predicate 条件
-     * @param <T>       参数类型
-     * @return 反向条件 {@link Predicate}
+     * @param predicate The predicate.
+     * @param <T>       The parameter type.
+     * @return The negated {@link Predicate}.
      */
     public static <T> Predicate<T> negate(final Predicate<T> predicate) {
         return predicate.negate();
     }
 
     /**
-     * 多个条件转换为”与“复合条件，即所有条件都为true时，才返回true
+     * Combines multiple predicates with a logical AND.
      *
-     * @param <T>        判断条件的对象类型
-     * @param components 多个条件
-     * @return 复合条件
+     * @param <T>        The type of the object being tested.
+     * @param components The predicates to combine.
+     * @return The composite predicate.
      */
     public static <T> Predicate<T> and(final Iterable<Predicate<T>> components) {
         return StreamKit.of(components, false).reduce(Predicate::and).orElseGet(() -> o -> true);
     }
 
     /**
-     * 多个条件转换为”与“复合条件，即所有条件都为true时，才返回true
+     * Combines multiple predicates with a logical AND.
      *
-     * @param <T>        判断条件的对象类型
-     * @param components 多个条件
-     * @return 复合条件
+     * @param <T>        The type of the object being tested.
+     * @param components The predicates to combine.
+     * @return The composite predicate.
      */
     @SafeVarargs
     public static <T> Predicate<T> and(final Predicate<T>... components) {
@@ -94,22 +94,22 @@ public class PredicateKit {
     }
 
     /**
-     * 多个条件转换为”或“复合条件，即任意一个条件都为true时，返回true
+     * Combines multiple predicates with a logical OR.
      *
-     * @param <T>        判断条件的对象类型
-     * @param components 多个条件
-     * @return 复合条件
+     * @param <T>        The type of the object being tested.
+     * @param components The predicates to combine.
+     * @return The composite predicate.
      */
     public static <T> Predicate<T> or(final Iterable<Predicate<T>> components) {
         return StreamKit.of(components, false).reduce(Predicate::or).orElseGet(() -> o -> false);
     }
 
     /**
-     * 多个条件转换为”或“复合条件，即任意一个条件都为true时，返回true
+     * Combines multiple predicates with a logical OR.
      *
-     * @param <T>        判断条件的对象类型
-     * @param components 多个条件
-     * @return 复合条件
+     * @param <T>        The type of the object being tested.
+     * @param components The predicates to combine.
+     * @return The composite predicate.
      */
     @SafeVarargs
     public static <T> Predicate<T> or(final Predicate<T>... components) {
@@ -117,11 +117,11 @@ public class PredicateKit {
     }
 
     /**
-     * 用于组合多个方法匹配器的方法匹配器，即所有条件都为false时，才返回true，也可理解为，任一条件为true时，返回false
+     * Creates a predicate that returns `true` only if none of the component predicates match.
      *
-     * @param <T>        判断条件的对象类型
-     * @param components 多个条件
-     * @return 复合条件
+     * @param <T>        The type of the object being tested.
+     * @param components The predicates to combine.
+     * @return The composite predicate.
      */
     @SafeVarargs
     public static <T> Predicate<T> none(final Predicate<T>... components) {

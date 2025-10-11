@@ -30,7 +30,11 @@ package org.miaixz.bus.core.io.stream;
 import java.io.OutputStream;
 
 /**
- * 此OutputStream写出数据到<b>/dev/null</b>，即忽略所有数据 来自 Apache Commons io
+ * An {@link OutputStream} implementation that discards all data written to it. This stream acts like writing to
+ * {@code /dev/null} on Unix-like systems, effectively ignoring all output. This class is useful for scenarios where
+ * output is required but should be suppressed.
+ * <p>
+ * Inspired by Apache Commons IO.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,19 +42,23 @@ import java.io.OutputStream;
 public class EmptyOutputStream extends OutputStream {
 
     /**
-     * 单例
+     * The singleton instance of {@code EmptyOutputStream}.
      */
     public static final EmptyOutputStream INSTANCE = new EmptyOutputStream();
 
+    /**
+     * Private constructor to enforce the singleton pattern.
+     */
     private EmptyOutputStream() {
     }
 
     /**
-     * 什么也不做，写出到{@code /dev/null}.
+     * Writes {@code len} bytes from the specified byte array starting at offset {@code off} to this output stream. This
+     * method does nothing, effectively discarding the data.
      *
-     * @param b   写出的数据
-     * @param off 开始位置
-     * @param len 长度
+     * @param b   The data.
+     * @param off The start offset in the data.
+     * @param len The number of bytes to write.
      */
     @Override
     public void write(final byte[] b, final int off, final int len) {
@@ -58,9 +66,9 @@ public class EmptyOutputStream extends OutputStream {
     }
 
     /**
-     * 什么也不做，写出到 {@code /dev/null}.
+     * Writes the specified byte to this output stream. This method does nothing, effectively discarding the byte.
      *
-     * @param b 写出的数据
+     * @param b The byte to write.
      */
     @Override
     public void write(final int b) {
@@ -68,9 +76,10 @@ public class EmptyOutputStream extends OutputStream {
     }
 
     /**
-     * 什么也不做，写出到 {@code /dev/null}.
+     * Writes {@code b.length} bytes from the specified byte array to this output stream. This method does nothing,
+     * effectively discarding the data.
      *
-     * @param b 写出的数据
+     * @param b The data to write.
      */
     @Override
     public void write(final byte[] b) {

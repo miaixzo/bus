@@ -37,7 +37,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 上下文配置
+ * Context configuration.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,73 +52,79 @@ public class Context implements Serializable {
     private static final long serialVersionUID = 2852292391971L;
 
     /**
-     * 应用编号
+     * Application ID.
      */
     private String appId;
     /**
-     * 对应各平台的appKey/apiKey
+     * Corresponds to the appKey/apiKey of each platform.
      */
     private String appKey;
     /**
-     * 对应各平台的appSecret
+     * Corresponds to the appSecret of each platform.
      */
     private String appSecret;
     /**
-     * 应用域名，回调中会使用此参数
+     * Application domain name, which will be used in callbacks.
      */
     private String domain;
     /**
-     * 是否为证书模式
+     * Whether it is in certificate mode.
      */
     private boolean certMode;
     /**
-     * 自定义授权平台的 scope 内容
+     * Custom scope content for the authorization platform.
      */
     private List<String> scopes;
 
     /**
-     * API 证书中的 p12
+     * p12 in the API certificate.
      */
     private String p12;
     /**
-     * API 证书中的 key.pem
+     * key.pem in the API certificate.
      */
     private String privateKey;
     /**
-     * API 证书中的 cert.pem
+     * cert.pem in the API certificate.
      */
     private String publicKey;
 
+    /**
+     * Extra parameters.
+     */
     private Object exParams;
 
+    /**
+     * DES key.
+     */
     private String desKey;
 
     /**
-     * 商户号
+     * Merchant ID.
      */
     private String mchId;
     /**
-     * 服务商应用编号
+     * Service provider application ID.
      */
     private String slAppId;
     /**
-     * 服务商商户号
+     * Service provider merchant ID.
      */
     private String slMchId;
     /**
-     * 服务商商户密钥
+     * Service provider merchant key.
      */
     private String partnerKey;
     /**
-     * 连锁商户号
+     * Chain merchant ID.
      */
     private String groupMchId;
     /**
-     * 授权交易机构代码
+     * Authorized transaction institution code.
      */
     private String agentMchId;
     /**
-     * 微信平台证书
+     * WeChat platform certificate path.
      */
     private String certPath;
 

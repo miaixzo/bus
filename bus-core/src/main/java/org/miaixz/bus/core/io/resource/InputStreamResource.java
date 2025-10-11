@@ -35,43 +35,54 @@ import org.miaixz.bus.core.io.stream.ReaderInputStream;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 基于{@link InputStream}的资源获取器 注意：此对象中getUrl方法始终返回null
+ * Resource provider based on an {@link InputStream}. Note: The {@code getUrl} method of this object always returns
+ * {@code null}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class InputStreamResource implements Resource, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852231716055L;
 
+    /**
+     * The underlying {@link InputStream}.
+     */
     private final InputStream in;
+    /**
+     * The name of the resource.
+     */
     private final String name;
 
     /**
-     * 构造
+     * Constructs an {@code InputStreamResource} from a {@link Reader} and a {@link Charset}. The reader's content is
+     * converted to an {@link InputStream} using {@link ReaderInputStream}.
      *
-     * @param reader  {@link Reader}
-     * @param charset 编码
+     * @param reader  The {@link Reader} to wrap.
+     * @param charset The {@link Charset} to use for encoding the reader's content.
      */
     public InputStreamResource(final Reader reader, final Charset charset) {
         this(new ReaderInputStream(reader, charset));
     }
 
     /**
-     * 构造
+     * Constructs an {@code InputStreamResource} from a given {@link InputStream}.
      *
-     * @param in {@link InputStream}
+     * @param in The {@link InputStream} to wrap.
      */
     public InputStreamResource(final InputStream in) {
         this(in, null);
     }
 
     /**
-     * 构造
+     * Constructs an {@code InputStreamResource} from a given {@link InputStream} and a resource name.
      *
-     * @param in   {@link InputStream}
-     * @param name 资源名称
+     * @param in   The {@link InputStream} to wrap.
+     * @param name The name of the resource.
      */
     public InputStreamResource(final InputStream in, final String name) {
         this.in = in;

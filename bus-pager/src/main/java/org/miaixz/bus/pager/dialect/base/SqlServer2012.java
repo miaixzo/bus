@@ -36,13 +36,25 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.pager.Page;
 
 /**
- * 数据库方言 sqlserver2012
+ * Database dialect for SQL Server 2012 and later versions. This class extends {@link SqlServer} to provide specific
+ * implementations for pagination SQL generation using `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY` syntax.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SqlServer2012 extends SqlServer {
 
+    /**
+     * Processes the pagination parameters for SQL Server 2012. It adds {@code PAGEPARAMETER_FIRST} (offset) and
+     * {@code PAGEPARAMETER_SECOND} (limit) to the parameter map and updates the {@link CacheKey}.
+     *
+     * @param ms       the MappedStatement object
+     * @param paramMap a map containing the query parameters
+     * @param page     the {@link Page} object containing pagination details
+     * @param boundSql the BoundSql object for the query
+     * @param pageKey  the CacheKey for the paginated query
+     * @return the processed parameter map
+     */
     @Override
     public Object processPageParameter(
             MappedStatement ms,
@@ -52,14 +64,23 @@ public class SqlServer2012 extends SqlServer {
             CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
         paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
-        // 处理pageKey
+        // Process pageKey
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
-        // 处理参数配置
+        // Process parameter configuration
         handleParameter(boundSql, ms, long.class, int.class);
         return paramMap;
     }
 
+    /**
+     * Generates the SQL Server 2012-specific pagination SQL. It appends {@code OFFSET ? ROWS FETCH NEXT ? ROWS ONLY} to
+     * the original SQL.
+     *
+     * @param sql     the original SQL string
+     * @param page    the {@link Page} object containing pagination details
+     * @param pageKey the CacheKey for the paginated query
+     * @return the SQL Server 2012-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + Normal._64);

@@ -26,10 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 命令行终端中ANSI 转义序列相关封装，如ANSI颜色等
+ * Provides utilities for ANSI escape sequences in command-line terminals, such as ANSI colors.
  * <p>
- * 来自Spring Boot
- * </p>
+ * This package is inspired by Spring Boot's ANSI handling.
  *
  * @author Kimi Liu
  * @since Java 17+

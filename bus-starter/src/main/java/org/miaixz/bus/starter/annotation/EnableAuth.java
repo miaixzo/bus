@@ -27,13 +27,16 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.auth.AuthConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用第三方授权
+ * Enables third-party authorization features.
+ * <p>
+ * This annotation, when placed on a Spring {@code @Configuration} class, imports the {@link AuthConfiguration}, which
+ * in turn sets up all the necessary beans for the third-party authentication and authorization module.
  *
  * @author Kimi Liu
  * @since Java 17+

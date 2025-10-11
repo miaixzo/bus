@@ -28,17 +28,32 @@
 package org.miaixz.bus.pager;
 
 /**
- * 分页接口
+ * Paging interface for defining common paging parameters.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Paging {
 
+    /**
+     * Retrieves the current page number.
+     *
+     * @return the current page number
+     */
     Integer getPageNo();
 
+    /**
+     * Retrieves the size of each page.
+     *
+     * @return the page size
+     */
     Integer getPageSize();
 
+    /**
+     * Retrieves the order by clause for sorting.
+     *
+     * @return the order by clause
+     */
     String getOrderBy();
 
 }

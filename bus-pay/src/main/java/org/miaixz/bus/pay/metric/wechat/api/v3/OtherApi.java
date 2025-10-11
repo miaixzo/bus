@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-其他能力接口
+ * WeChat Pay V3 API interfaces for other capabilities.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,49 +38,56 @@ import org.miaixz.bus.pay.Matcher;
 public enum OtherApi implements Matcher {
 
     /**
-     * 图片上传
+     * Image upload.
      */
-    MERCHANT_UPLOAD_MEDIA("/v3/merchant/media/upload", "图片上传"),
+    MERCHANT_UPLOAD_MEDIA("/v3/merchant/media/upload", "Image upload"),
 
     /**
-     * 视频上传
+     * Video upload.
      */
-    MERCHANT_UPLOAD_VIDEO("/v3/merchant/media/video_upload", "视频上传"),
+    MERCHANT_UPLOAD_VIDEO("/v3/merchant/media/video_upload", "Video upload"),
 
     /**
-     * 图片上传(营销专用)
+     * Image upload (for marketing only).
      */
-    MARKETING_UPLOAD_MEDIA("/v3/marketing/favor/media/image-upload", "图片上传(营销专用)"),
+    MARKETING_UPLOAD_MEDIA("/v3/marketing/favor/media/image-upload", "Image upload (for marketing only)"),
 
     /**
-     * 获取平台证书列表
+     * Get platform certificate list.
      */
-    GET_CERTIFICATES("/v3/certificates", "获取平台证书列表"),
+    GET_CERTIFICATES("/v3/certificates", "Get platform certificate list"),
 
     /**
-     * 获取平台证书列表
+     * Get platform certificate list by algorithm type.
      */
-    GET_CERTIFICATES_BY_ALGORITHM_TYPE("/v3/certificates?algorithm_type=%s", "获取平台证书列表");
+    GET_CERTIFICATES_BY_ALGORITHM_TYPE("/v3/certificates?algorithm_type=%s",
+            "Get platform certificate list by algorithm type");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new OtherApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     OtherApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -88,9 +95,9 @@ public enum OtherApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -98,9 +105,9 @@ public enum OtherApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

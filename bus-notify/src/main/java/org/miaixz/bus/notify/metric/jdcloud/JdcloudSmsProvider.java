@@ -40,24 +40,51 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 京东云短信
+ * JD Cloud SMS service provider implementation.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JdcloudSmsProvider extends AbstractProvider<JdcloudMaterial, Context> {
 
+    /**
+     * Constructs a {@code JdcloudSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public JdcloudSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using JD Cloud SMS service.
+     *
+     * @param entity The {@link JdcloudMaterial} containing SMS details like recipient, template ID, parameters, and
+     *               signature.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(JdcloudMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
+        /**
+         * The region ID where the SMS service is located.
+         */
         bodys.put("regionId", this.getUrl(entity));
+        /**
+         * The ID of the SMS template to be used.
+         */
         bodys.put("templateId", entity.getTemplate());
+        /**
+         * The parameters for the SMS template, typically in JSON format.
+         */
         bodys.put("params", entity.getParams());
+        /**
+         * A comma-separated list of recipient phone numbers.
+         */
         bodys.put("phoneList", entity.getReceive());
+        /**
+         * The ID of the SMS signature.
+         */
         bodys.put("signId", entity.getSignature());
 
         Map<String, String> headers = new HashMap<>();

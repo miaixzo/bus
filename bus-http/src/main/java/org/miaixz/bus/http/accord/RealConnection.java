@@ -27,20 +27,6 @@
 */
 package org.miaixz.bus.http.accord;
 
-import java.io.IOException;
-import java.lang.ref.Reference;
-import java.net.*;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -60,29 +46,43 @@ import org.miaixz.bus.http.secure.CertificatePinner;
 import org.miaixz.bus.http.socket.Handshake;
 import org.miaixz.bus.http.socket.RealWebSocket;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.IOException;
+import java.lang.ref.Reference;
+import java.net.*;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 /**
- * 连接提供
+ * A concrete connection to a target server (either directly or via a proxy). This class handles the low-level details
+ * of establishing and maintaining the connection, including TLS handshakes and HTTP/2 multiplexing.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RealConnection extends Http2Connection.Listener implements Connection {
+public final class RealConnection extends Http2Connection.Listener implements Connection {
 
     private static final String NPE_THROW_WITH_NULL = "throw with null exception";
     private static final int MAX_TUNNEL_ATTEMPTS = 21;
 
     public final RealConnectionPool connectionPool;
     /**
-     * 由该连接传送的当前流
+     * The current streams being carried by this connection.
      */
     final List<Reference<Transmitter>> transmitters = new ArrayList<>();
 
     /**
-     * 下面的字段由connect()初始化，并且从不重新分配
+     * The following fields are initialized by connect() and are never re-allocated.
      */
     private final Route route;
     /**
-     * 如果为真，则不能在此连接上创建新的流
+     * If true, no new streams can be created on this connection.
      */
     boolean noNewExchanges;
     /**
@@ -92,19 +92,20 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     int routeFailureCount;
     int successCount;
     /**
-     * 当{@code allocations.size()}达到0时的Nanotime时间戳
+     * The nanotime timestamp when {@code allocations.size()} became zero.
      */
     long idleAtNanos = Long.MAX_VALUE;
     /**
-     * 低级TCP套接字
+     * The low-level TCP socket.
      */
     private Socket rawSocket;
     /**
-     * 应用层套接字，如果该连接不使用SSL，则可以使用位于 {@link #rawSocket}之上的{@link SSLSocket}或{@link #rawSocket}本身
+     * The application-layer socket. This may be an {@link SSLSocket} layered over {@link #rawSocket}, or
+     * {@link #rawSocket} itself if this connection is not using SSL.
      */
     private Socket socket;
     /**
-     * 下面的字段处于连接状态，并由connectionPool保护
+     * The following fields are in the connected state and are guarded by connectionPool.
      */
     private Handshake handshake;
     private Protocol protocol;
@@ -113,7 +114,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     private BufferSink sink;
     private int refusedStreamCount;
     /**
-     * 此连接可承载的并发流的最大数目如果 {@code allocations.size() < allocationLimit} 则可以在此连接上创建新的流
+     * The maximum number of concurrent streams this connection can carry. New streams can be created on this connection
+     * if {@code allocations.size() < allocationLimit}.
      */
     private int allocationLimit = 1;
 
@@ -122,6 +124,15 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         this.route = route;
     }
 
+    /**
+     * Creates a test connection for internal use.
+     *
+     * @param connectionPool The connection pool.
+     * @param route          The route.
+     * @param socket         The socket.
+     * @param idleAtNanos    The idle timestamp.
+     * @return A new {@code RealConnection} instance.
+     */
     static RealConnection testConnection(
             RealConnectionPool connectionPool,
             Route route,
@@ -134,7 +145,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * Prevent further exchanges from being created on this connection.
+     * Prevents further exchanges from being created on this connection.
      */
     public void noNewExchanges() {
         assert (!Thread.holdsLock(connectionPool));
@@ -143,6 +154,18 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         }
     }
 
+    /**
+     * Establishes a connection to the target server.
+     *
+     * @param connectTimeout         The connect timeout in milliseconds.
+     * @param readTimeout            The read timeout in milliseconds.
+     * @param writeTimeout           The write timeout in milliseconds.
+     * @param pingIntervalMillis     The ping interval in milliseconds for HTTP/2.
+     * @param connectionRetryEnabled Whether connection retries are enabled.
+     * @param call                   The call that initiated this connection.
+     * @param eventListener          The event listener for connection events.
+     * @throws IOException if an I/O error occurs during connection establishment.
+     */
     public void connect(
             int connectTimeout,
             int readTimeout,
@@ -150,7 +173,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             int pingIntervalMillis,
             boolean connectionRetryEnabled,
             NewCall call,
-            EventListener eventListener) {
+            EventListener eventListener) throws IOException {
         if (protocol != null)
             throw new IllegalStateException("already connected");
 
@@ -177,8 +200,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             try {
                 if (route.requiresTunnel()) {
                     connectTunnel(connectTimeout, readTimeout, writeTimeout, call, eventListener);
-                    if (null == rawSocket) {
-                        // 我们无法连接隧道，但适当地关闭了我们的资源
+                    if (rawSocket == null) {
+                        // We failed to connect the tunnel, but closed our resources appropriately.
                         break;
                     }
                 } else {
@@ -200,7 +223,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
 
                 eventListener.connectFailed(call, route.socketAddress(), route.proxy(), null, e);
 
-                if (null == routeException) {
+                if (routeException == null) {
                     routeException = new RouteException(e);
                 } else {
                     routeException.addConnectException(e);
@@ -212,13 +235,13 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             }
         }
 
-        if (route.requiresTunnel() && null == rawSocket) {
+        if (route.requiresTunnel() && rawSocket == null) {
             ProtocolException exception = new ProtocolException(
                     "Too many tunnel connections attempted: " + MAX_TUNNEL_ATTEMPTS);
             throw new RouteException(exception);
         }
 
-        if (null != http2Connection) {
+        if (http2Connection != null) {
             synchronized (connectionPool) {
                 allocationLimit = http2Connection.maxConcurrentStreams();
             }
@@ -226,14 +249,15 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * 完成在代理通道上构建HTTPS连接的所有工作。 这里的问题是，代理服务器可以发出验证请求，然后关闭连接
+     * Completes all work necessary to build an HTTPS connection over a proxy tunnel. The challenge here is that the
+     * proxy server may issue an authentication challenge and then close the connection.
      *
-     * @param connectTimeout 连接超时时间
-     * @param readTimeout    读取超时时间
-     * @param writeTimeout   写入超时时间
-     * @param call           调用者信息
-     * @param eventListener  监听器
-     * @throws IOException 异常
+     * @param connectTimeout The connect timeout in milliseconds.
+     * @param readTimeout    The read timeout in milliseconds.
+     * @param writeTimeout   The write timeout in milliseconds.
+     * @param call           The call that initiated this connection.
+     * @param eventListener  The event listener for connection events.
+     * @throws IOException if an I/O error occurs.
      */
     private void connectTunnel(
             int connectTimeout,
@@ -247,12 +271,13 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             connectSocket(connectTimeout, readTimeout, call, eventListener);
             tunnelRequest = createTunnel(readTimeout, writeTimeout, tunnelRequest, url);
 
-            // 通道成功创建
-            if (null == tunnelRequest) {
+            // The tunnel was successfully created.
+            if (tunnelRequest == null) {
                 break;
             }
 
-            // 代理在验证请求后决定关闭连接。我们需要创建一个新的连接，但这次是使用auth凭据
+            // The proxy decided to close the connection after an authentication challenge. We need to create a new
+            // connection, but this time with auth credentials.
             IoKit.close(rawSocket);
             rawSocket = null;
             sink = null;
@@ -262,13 +287,13 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * 在原始套接字上构建完整的HTTP或HTTPS连接所需的所有工作
+     * Completes all work necessary to build a full HTTP or HTTPS connection over the raw socket.
      *
-     * @param connectTimeout 连接超时时间
-     * @param readTimeout    读取超时时间
-     * @param call           调用者信息
-     * @param eventListener  监听器
-     * @throws IOException 异常
+     * @param connectTimeout The connect timeout in milliseconds.
+     * @param readTimeout    The read timeout in milliseconds.
+     * @param call           The call that initiated this connection.
+     * @param eventListener  The event listener for connection events.
+     * @throws IOException if an I/O error occurs.
      */
     private void connectSocket(int connectTimeout, int readTimeout, NewCall call, EventListener eventListener)
             throws IOException {
@@ -289,7 +314,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             throw ce;
         }
 
-        // 下面的try/catch块是一种避免Android 7.0崩溃的伪代码
+        // The following try/catch block is a pseudo-code to avoid Android 7.0 crashes.
         try {
             source = IoKit.buffer(IoKit.source(rawSocket));
             sink = IoKit.buffer(IoKit.sink(rawSocket));
@@ -305,7 +330,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             int pingIntervalMillis,
             NewCall call,
             EventListener eventListener) throws IOException {
-        if (null == route.address().sslSocketFactory()) {
+        if (route.address().sslSocketFactory() == null) {
             if (route.address().protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE)) {
                 socket = rawSocket;
                 protocol = Protocol.H2_PRIOR_KNOWLEDGE;
@@ -328,7 +353,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     private void startHttp2(int pingIntervalMillis) throws IOException {
-        // HTTP/2连接超时是按流设置的
+        // HTTP/2 connection timeouts are set per stream.
         socket.setSoTimeout(0);
         http2Connection = new Http2Connection.Builder(true).socket(socket, route.address().url().host(), source, sink)
                 .listener(this).pingIntervalMillis(pingIntervalMillis).build();
@@ -341,23 +366,23 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         boolean success = false;
         SSLSocket sslSocket = null;
         try {
-            // 在连接的套接字上创建包装器
+            // Create a wrapper over the connected socket.
             sslSocket = (SSLSocket) sslSocketFactory
                     .createSocket(rawSocket, address.url().host(), address.url().port(), true /* autoClose */);
 
-            // 配置套接字的密码、TLS版本和扩展
+            // Configure the socket's ciphers, TLS versions, and extensions.
             ConnectionSuite connectionSuite = connectionSelector.configureSecureSocket(sslSocket);
             if (connectionSuite.supportsTlsExtensions()) {
                 Platform.get().configureTlsExtensions(sslSocket, address.url().host(), address.protocols());
             }
 
-            // 强制握手，否则抛出异常
+            // Force the handshake to occur, otherwise it may throw an exception later.
             sslSocket.startHandshake();
-            // 建立会话信息
+            // Establish the session information.
             SSLSession sslSocketSession = sslSocket.getSession();
             Handshake unverifiedHandshake = Handshake.get(sslSocketSession);
 
-            // 验证套接字的证书对于目标主机是可接受的
+            // Verify that the socket's certificates are acceptable for the target host.
             if (!address.hostnameVerifier().verify(address.url().host(), sslSocketSession)) {
                 List<Certificate> peerCertificates = unverifiedHandshake.peerCertificates();
                 if (!peerCertificates.isEmpty()) {
@@ -372,10 +397,10 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                 }
             }
 
-            // 检查所提供的证书是否满足
+            // Check that the provided certificates satisfy the certificate pinner.
             address.certificatePinner().check(address.url().host(), unverifiedHandshake.peerCertificates());
 
-            // 成功!保存握手和ALPN协议
+            // Success! Save the handshake and ALPN protocol.
             String maybeProtocol = connectionSuite.supportsTlsExtensions()
                     ? Platform.get().getSelectedProtocol(sslSocket)
                     : null;
@@ -400,17 +425,19 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * 要通过HTTP代理建立HTTPS连接，请发送未加密的连接 请求以创建代理连接。如果代理需要授权，则可能需要重试
+     * To establish an HTTPS connection through an HTTP proxy, send an unencrypted CONNECT request to create the proxy
+     * connection. If the proxy requires authorization, this may need to be retried.
      *
-     * @param readTimeout   读取超时时间
-     * @param writeTimeout  写入超时时间
-     * @param tunnelRequest 请求信息
-     * @param url           请求url
-     * @throws IOException 异常
+     * @param readTimeout   The read timeout in milliseconds.
+     * @param writeTimeout  The write timeout in milliseconds.
+     * @param tunnelRequest The tunnel request.
+     * @param url           The URL.
+     * @return The next tunnel request if authentication is required, or null if the tunnel is established.
+     * @throws IOException if an I/O error occurs.
      */
     private Request createTunnel(int readTimeout, int writeTimeout, Request tunnelRequest, UnoUrl url)
             throws IOException {
-        // 在每个SSL +代理连接的第一个消息对上创建SSL隧道
+        // Create an SSL tunnel over the first message pair of each SSL + proxy connection.
         String requestLine = "CONNECT " + Builder.hostHeader(url, true) + " HTTP/1.1";
         while (true) {
             Http1Codec tunnelCodec = new Http1Codec(null, null, source, sink);
@@ -423,6 +450,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
 
             switch (response.code()) {
                 case HTTP.HTTP_OK:
+                    // The tunnel has been established. Prepare for HTTPS.
                     if (!source.getBuffer().exhausted() || !sink.buffer().exhausted()) {
                         throw new IOException("TLS tunnel buffered too many bytes!");
                     }
@@ -446,10 +474,12 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * 返回通过HTTP代理创建TLS隧道的请求。隧道请求中的所有内容 都以未加密的方式发送到代理服务器，因此隧道只包含最小的报头集。 这避免了向代理发送潜在的敏感数据(如HTTP cookie)
+     * Returns a request that creates a TLS tunnel through an HTTP proxy. All content in the tunnel request is sent
+     * unencrypted to the proxy server, so the tunnel contains only a minimal set of headers. This avoids sending
+     * potentially sensitive data (like HTTP cookies) to the proxy.
      *
-     * @return the request
-     * @throws IOException 异常
+     * @return The tunnel request.
+     * @throws IOException if an I/O error occurs.
      */
     private Request createTunnelRequest() throws IOException {
         Request proxyConnectRequest = new Request.Builder().url(route.address().url()).method(HTTP.CONNECT, null)
@@ -465,46 +495,46 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         Request authenticatedRequest = route.address().proxyAuthenticator()
                 .authenticate(route, fakeAuthChallengeResponse);
 
-        return null != authenticatedRequest ? authenticatedRequest : proxyConnectRequest;
+        return authenticatedRequest != null ? authenticatedRequest : proxyConnectRequest;
     }
 
     /**
-     * 如果此连接可以将流分配到{@code address}，则返回true。如果非空{@code route}是连接的解析路由
+     * Returns true if this connection can carry a stream to {@code address}. If a non-null {@code route} is provided,
+     * it is the resolved route for the connection.
      *
-     * @param address 地址信息
-     * @param routes  路由
-     * @return the true/false
+     * @param address The address to check eligibility for.
+     * @param routes  The list of routes.
+     * @return {@code true} if the connection is eligible.
      */
     boolean isEligible(Address address, List<Route> routes) {
-        // 如果这个连接不接受新的流，我们就完成了
+        // If this connection doesn't accept new streams, we're done.
         if (transmitters.size() >= allocationLimit || noNewExchanges)
             return false;
 
-        // 如果地址的非主机字段没有重叠，我们就完成了
+        // If the address's non-host fields don't overlap, we're done.
         if (!Internal.instance.equalsNonHost(this.route.address(), address))
             return false;
 
-        // 如果主机完全匹配，就完成了:这个连接可以携带地址
+        // If the host is an exact match, we're done: this connection can carry the address.
         if (address.url().host().equals(this.route().address().url().host())) {
             return true;
         }
 
-        // 1. 这个连接必须是 HTTP/2
-        if (null == http2Connection) {
+        // 1. This connection must be HTTP/2.
+        if (http2Connection == null)
             return false;
-        }
 
-        // 2. 这些路由必须共享一个IP地址
+        // 2. These routes must share an IP address.
         if (routes == null || !routeMatchesAny(routes))
             return false;
 
-        // 3. 此连接的服务器证书必须覆盖新主机
+        // 3. The server certificate of this connection must cover the new host.
         if (address.hostnameVerifier() != AnyHostnameVerifier.INSTANCE)
             return false;
         if (!supportsUrl(address.url()))
             return false;
 
-        // 4. 证书固定必须与主机匹配
+        // 4. The certificate pinner must match the host.
         try {
             address.certificatePinner().check(address.url().host(), handshake().peerCertificates());
         } catch (SSLPeerUnverifiedException e) {
@@ -518,6 +548,9 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
      * Returns true if this connection's route has the same address as any of {@code routes}. This requires us to have a
      * DNS address for both hosts, which only happens after route planning. We can't coalesce connections that use a
      * proxy, since proxies don't tell us the origin server's IP address.
+     *
+     * @param candidates The list of candidate routes.
+     * @return {@code true} if a route matches.
      */
     private boolean routeMatchesAny(List<Route> candidates) {
         for (int i = 0, size = candidates.size(); i < size; i++) {
@@ -530,22 +563,35 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         return false;
     }
 
+    /**
+     * Returns true if this connection can be used for {@code url}.
+     *
+     * @param url The URL to check.
+     * @return {@code true} if the connection supports the URL.
+     */
     public boolean supportsUrl(UnoUrl url) {
-        // 端口不匹配
+        // Port doesn't match.
         if (url.port() != route.address().url().port()) {
             return false;
         }
 
-        // 主机不匹配,但是如果证书匹配，仍然是好的。
+        // Host doesn't match, but if the certificate matches, we're still good.
         if (!url.host().equals(route.address().url().host())) {
-            // We have a host mismatch. But if the certificate matches, we're still good.
-            return null != handshake && AnyHostnameVerifier.INSTANCE
+            return handshake != null && AnyHostnameVerifier.INSTANCE
                     .verify(url.host(), (X509Certificate) handshake.peerCertificates().get(0));
         }
 
         return true;
     }
 
+    /**
+     * Creates a new HTTP codec for this connection.
+     *
+     * @param client The HTTP client.
+     * @param chain  The interceptor chain.
+     * @return A new HTTP codec.
+     * @throws SocketException if a socket error occurs.
+     */
     HttpCodec newCodec(Httpd client, NewChain chain) throws SocketException {
         if (http2Connection != null) {
             return new Http2Codec(client, this, chain, http2Connection);
@@ -557,6 +603,13 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         }
     }
 
+    /**
+     * Creates new WebSocket streams for this connection.
+     *
+     * @param exchange The exchange that initiated the WebSocket.
+     * @return The WebSocket streams.
+     * @throws SocketException if a socket error occurs.
+     */
     RealWebSocket.Streams newWebSocketStreams(Exchange exchange) throws SocketException {
         socket.setSoTimeout(0);
         noNewExchanges();
@@ -574,6 +627,9 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         return route;
     }
 
+    /**
+     * Cancels this connection.
+     */
     public void cancel() {
         IoKit.close(rawSocket);
     }
@@ -584,17 +640,17 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * 如果此连接准备托管新流，则返回true
+     * Returns true if this connection is ready to host new streams.
      *
-     * @param doExtensiveChecks 是否检查
-     * @return the true/false
+     * @param doExtensiveChecks Whether to perform extensive health checks.
+     * @return {@code true} if the connection is healthy.
      */
     public boolean isHealthy(boolean doExtensiveChecks) {
         if (socket.isClosed() || socket.isInputShutdown() || socket.isOutputShutdown()) {
             return false;
         }
 
-        if (null != http2Connection) {
+        if (http2Connection != null) {
             return http2Connection.isHealthy(System.nanoTime());
         }
 
@@ -604,7 +660,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                 try {
                     socket.setSoTimeout(1);
                     if (source.exhausted()) {
-                        // Stream耗尽;关闭套接字
+                        // Stream is exhausted; the socket is closed.
                         return false;
                     }
                     return true;
@@ -612,9 +668,9 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                     socket.setSoTimeout(readTimeout);
                 }
             } catch (SocketTimeoutException ignored) {
-                // 读取超时;套接字是好的
+                // Read timed out; the socket is good.
             } catch (IOException e) {
-                // 不能读取;套接字关闭
+                // Unable to read; the socket is closed.
                 return false;
             }
         }
@@ -622,7 +678,10 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * Refuse incoming streams.
+     * Refuses incoming streams.
+     *
+     * @param stream The HTTP/2 stream.
+     * @throws IOException if an I/O error occurs.
      */
     @Override
     public void onStream(Http2Stream stream) throws IOException {
@@ -631,6 +690,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
 
     /**
      * When settings are received, adjust the allocation limit.
+     *
+     * @param connection The HTTP/2 connection.
      */
     @Override
     public void onSettings(Http2Connection connection) {
@@ -647,6 +708,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     /**
      * Returns true if this is an HTTP/2 connection. Such connections can be used in multiple HTTP requests
      * simultaneously.
+     *
+     * @return {@code true} if the connection is multiplexed.
      */
     public boolean isMultiplexed() {
         return http2Connection != null;
@@ -655,6 +718,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     /**
      * Track a failure using this connection. This may prevent both the connection and its route from being used for
      * future exchanges.
+     *
+     * @param e The exception that occurred.
      */
     void trackFailure(IOException e) {
         assert (!Thread.holdsLock(connectionPool));
@@ -696,7 +761,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     public String toString() {
         return "RealConnection{" + route.address().url().host() + Symbol.COLON + route.address().url().port()
                 + ", proxy=" + route.proxy() + " hostAddress=" + route.socketAddress() + " cipherSuite="
-                + (null != handshake ? handshake.cipherSuite() : "none") + " protocol=" + protocol
+                + (handshake != null ? handshake.cipherSuite() : "none") + " protocol=" + protocol
                 + Symbol.C_BRACE_RIGHT;
     }
 

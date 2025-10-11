@@ -33,10 +33,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * {@link AbstractCache} 的CacheObj迭代器.
+ * An iterator for {@link CacheObject} that automatically skips expired entries.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -49,17 +49,20 @@ public class CacheObjectIterator<K, V> implements Iterator<CacheObject<K, V>>, S
     private CacheObject<K, V> nextValue;
 
     /**
-     * 构造
+     * Constructs a new iterator that wraps the original cache object iterator.
      *
-     * @param iterator 原{@link Iterator}
+     * @param iterator The original {@link Iterator}.
      */
     CacheObjectIterator(final Iterator<CacheObject<K, V>> iterator) {
         this.iterator = iterator;
+        // Prime the first non-expired value.
         nextValue();
     }
 
     /**
-     * @return 是否有下一个值
+     * Checks if there is another non-expired object in the cache.
+     *
+     * @return {@code true} if there is a next value, otherwise {@code false}.
      */
     @Override
     public boolean hasNext() {
@@ -67,7 +70,10 @@ public class CacheObjectIterator<K, V> implements Iterator<CacheObject<K, V>>, S
     }
 
     /**
-     * @return 下一个值
+     * Returns the next non-expired object.
+     *
+     * @return The next {@link CacheObject}.
+     * @throws NoSuchElementException if there are no more elements.
      */
     @Override
     public CacheObject<K, V> next() {
@@ -75,25 +81,28 @@ public class CacheObjectIterator<K, V> implements Iterator<CacheObject<K, V>>, S
             throw new NoSuchElementException();
         }
         final CacheObject<K, V> cachedObject = nextValue;
+        // Move to the next non-expired value.
         nextValue();
         return cachedObject;
     }
 
     /**
-     * 从缓存中移除没有过期的当前值，此方法不支持
+     * This operation is not supported and will throw an {@link UnsupportedOperationException}. The cache iterator is
+     * read-only.
      */
     @Override
     public void remove() {
-        throw new UnsupportedOperationException("Cache values Iterator is not support to modify.");
+        throw new UnsupportedOperationException("Cache values Iterator does not support modification.");
     }
 
     /**
-     * 下一个值，当不存在则下一个值为null
+     * Advances to the next non-expired object in the underlying iterator. If no more non-expired objects are found,
+     * {@code nextValue} is set to {@code null}.
      */
     private void nextValue() {
         while (iterator.hasNext()) {
             nextValue = iterator.next();
-            if (nextValue.isExpired() == false) {
+            if (!nextValue.isExpired()) {
                 return;
             }
         }

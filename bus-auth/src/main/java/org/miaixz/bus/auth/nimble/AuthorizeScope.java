@@ -28,7 +28,8 @@
 package org.miaixz.bus.auth.nimble;
 
 /**
- * 各个平台 scope 类的统一接口
+ * Unified interface for scope classes across various platforms. This interface defines methods to retrieve the actual
+ * scope string and check if a scope is enabled by default.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,16 +37,16 @@ package org.miaixz.bus.auth.nimble;
 public interface AuthorizeScope {
 
     /**
-     * 获取字符串 {@code scope}，对应为各平台实际使用的 {@code scope}
+     * Retrieves the {@code scope} string, which corresponds to the actual scope used by each platform.
      *
-     * @return String
+     * @return the scope string
      */
     String getScope();
 
     /**
-     * 判断当前 {@code scope} 是否为各平台默认启用的
+     * Checks if the current {@code scope} is enabled by default for its respective platform.
      *
-     * @return boolean
+     * @return true if the scope is default, false otherwise
      */
     boolean isDefault();
 

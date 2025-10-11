@@ -37,10 +37,14 @@ import org.miaixz.bus.core.lang.ref.StrongObject;
 import org.miaixz.bus.core.lang.ref.WeakObject;
 
 /**
- * 线程安全的WeakMap实现 键为Weak引用，即，在GC时发现弱引用会回收其对象
+ * A thread-safe {@link ReferenceConcurrentMap} implementation where keys are held by {@link WeakObject} references and
+ * values are held by strong references. This means that entries in the map are subject to garbage collection when the
+ * only remaining references to the keys are weak references. This is useful for implementing caches where entries
+ * should be removed as soon as their keys are no longer strongly referenced elsewhere in the application, but the
+ * values themselves should remain accessible as long as the key is present.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys in the map.
+ * @param <V> The type of values in the map.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -50,26 +54,41 @@ public class WeakKeyConcurrentMap<K, V> extends ReferenceConcurrentMap<K, V> {
     private static final long serialVersionUID = 2852278616531L;
 
     /**
-     * 构造
+     * Constructs a new {@code WeakKeyConcurrentMap} with a default {@link ConcurrentHashMap} as its underlying storage.
      */
     public WeakKeyConcurrentMap() {
         this(new ConcurrentHashMap<>());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code WeakKeyConcurrentMap} that wraps the given {@link ConcurrentMap}.
      *
-     * @param raw {@link ConcurrentMap}实现
+     * @param raw The underlying {@link ConcurrentMap} to be wrapped. Must not be {@code null}.
      */
     public WeakKeyConcurrentMap(final ConcurrentMap<Ref<K>, Ref<V>> raw) {
         super(raw);
     }
 
+    /**
+     * Wraps the given key in a {@link WeakObject} reference.
+     *
+     * @param key   The key to wrap.
+     * @param queue The {@link ReferenceQueue} to register the weak reference with.
+     * @return A {@link WeakObject} containing the key.
+     */
     @Override
     Ref<K> wrapKey(final K key, final ReferenceQueue<? super K> queue) {
         return new WeakObject<>(key, queue);
     }
 
+    /**
+     * Wraps the given value in a {@link StrongObject} reference. For {@code WeakKeyConcurrentMap}, values are held by
+     * strong references, so the queue is not used.
+     *
+     * @param value The value to wrap.
+     * @param queue The {@link ReferenceQueue} (ignored for strong references).
+     * @return A {@link StrongObject} containing the value.
+     */
     @Override
     Ref<V> wrapValue(final V value, final ReferenceQueue<? super V> queue) {
         return new StrongObject<>(value);

@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.MathKit;
 
 /**
- * 排列A(n, m) 排列组合相关类 参考：<a href="http://cgs1999.iteye.com/blog/2327664">http://cgs1999.iteye.com/blog/2327664</a>
+ * A class for handling arrangements (permutations), noted as A(n, m).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,33 +47,36 @@ public class Arrangement implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852281592361L;
 
+    /**
+     * The array of data elements to be arranged.
+     */
     private final String[] datas;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param datas 用于排列的数据
+     * @param datas The data to be arranged.
      */
     public Arrangement(final String[] datas) {
         this.datas = datas;
     }
 
     /**
-     * 计算排列数，即A(n, n) = n!
+     * Calculates the number of permutations, i.e., A(n, n) = n!
      *
-     * @param n 总数
-     * @return 排列数
+     * @param n The total number of elements.
+     * @return The number of permutations.
      */
     public static long count(final int n) {
         return count(n, n);
     }
 
     /**
-     * 计算排列数，即A(n, m) = n!/(n-m)!
+     * Calculates the number of permutations, i.e., A(n, m) = n!/(n-m)!
      *
-     * @param n 总数
-     * @param m 选择的个数
-     * @return 排列数
+     * @param n The total number of elements.
+     * @param m The number of elements to select.
+     * @return The number of permutations.
      */
     public static long count(final int n, final int m) {
         if (n == m) {
@@ -83,10 +86,11 @@ public class Arrangement implements Serializable {
     }
 
     /**
-     * 计算排列总数，即A(n, 1) + A(n, 2) + A(n, 3)...
+     * Calculates the total number of permutations for all possible selection sizes, i.e., A(n, 1) + A(n, 2) + A(n, 3) +
+     * ... + A(n, n).
      *
-     * @param n 总数
-     * @return 排列数
+     * @param n The total number of elements.
+     * @return The total number of permutations.
      */
     public static long countAll(final int n) {
         long total = 0;
@@ -97,19 +101,19 @@ public class Arrangement implements Serializable {
     }
 
     /**
-     * 全排列选择（列表全部参与排列）
+     * Selects all permutations (all elements in the list are involved in the permutation).
      *
-     * @return 所有排列列表
+     * @return A list of all permutations.
      */
     public List<String[]> select() {
         return select(this.datas.length);
     }
 
     /**
-     * 排列选择（从列表中选择m个排列）
+     * Selects permutations (selects m elements from the list for permutation).
      *
-     * @param m 选择个数
-     * @return 所有排列列表
+     * @param m The number of elements to select.
+     * @return A list of all permutations.
      */
     public List<String[]> select(final int m) {
         final List<String[]> result = new ArrayList<>((int) count(this.datas.length, m));
@@ -118,9 +122,9 @@ public class Arrangement implements Serializable {
     }
 
     /**
-     * 排列所有组合，即A(n, 1) + A(n, 2) + A(n, 3)...
+     * Selects all permutations for all possible selection sizes, i.e., A(n, 1) + A(n, 2) + A(n, 3) + ... + A(n, n).
      *
-     * @return 全排列结果
+     * @return A list of all permutation results.
      */
     public List<String[]> selectAll() {
         final List<String[]> result = new ArrayList<>((int) countAll(this.datas.length));
@@ -131,26 +135,26 @@ public class Arrangement implements Serializable {
     }
 
     /**
-     * 排列选择 排列方式为先从数据数组中取出一个元素，再把剩余的元素作为新的基数，依次列推，直到选择到足够的元素
+     * Recursively selects elements for permutation.
      *
-     * @param datas       选择的基数
-     * @param resultList  前面（resultIndex-1）个的排列结果
-     * @param resultIndex 选择索引，从0开始
-     * @param result      最终结果
+     * @param datas       The base data for selection.
+     * @param resultList  The permutation result of the previous (resultIndex-1) elements.
+     * @param resultIndex The selection index, starting from 0.
+     * @param result      The final result list.
      */
     private void select(
             final String[] datas,
             final String[] resultList,
             final int resultIndex,
             final List<String[]> result) {
-        if (resultIndex >= resultList.length) { // 全部选择完时，输出排列结果
+        if (resultIndex >= resultList.length) { // When all elements are selected, add the permutation result.
             if (!result.contains(resultList)) {
                 result.add(Arrays.copyOf(resultList, resultList.length));
             }
             return;
         }
 
-        // 递归选择下一个
+        // Recursively select the next element.
         for (int i = 0; i < datas.length; i++) {
             resultList[resultIndex] = datas[i];
             select(ArrayKit.remove(datas, i), resultList, resultIndex + 1, result);

@@ -33,7 +33,8 @@ import java.util.function.Supplier;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
- * 记忆化函数，用于存储与特定输入集对应的输出。后续使用已记忆的输入调用时，将返回记忆的结果，而不是重新计算。
+ * A memoizer function that stores the output corresponding to a particular set of inputs. When called subsequently with
+ * the same memoized inputs, it returns the memoized result instead of recomputing it.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,61 +43,65 @@ import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 public final class Memoizer {
 
     /**
-     * 默认过期时间（纳秒）的供应商，记忆化值的默认过期时间配置
+     * Supplier for the default expiration time (in nanoseconds) for memoized values, configured via {@link Config}.
      */
     private static final Supplier<Long> DEFAULT_EXPIRATION_NANOS = memoize(
             Memoizer::queryExpirationConfig,
             TimeUnit.MINUTES.toNanos(1));
 
     /**
-     * 查询记忆化过期时间配置。
+     * Queries the memoizer expiration configuration.
      *
-     * @return 配置的过期时间（纳秒）
+     * @return The configured expiration time in nanoseconds.
      */
     private static long queryExpirationConfig() {
         return TimeUnit.MILLISECONDS.toNanos(Config.get(Config._UTIL_MEMOIZER_EXPIRATION, 300));
     }
 
     /**
-     * 已安装应用的记忆化过期时间。
+     * Returns the expiration time for installed applications.
      *
-     * @return 1 分钟的纳秒数
+     * @return The expiration time in nanoseconds, currently 1 minute.
      */
     public static long installedAppsExpiration() {
         return TimeUnit.MINUTES.toNanos(1);
     }
 
     /**
-     * 记忆化值的默认过期时间（纳秒），在该时间过去后将刷新。可通过设置 {@link Config} 属性 <code>bus.health.memoizer.expiration</code> 为毫秒值来更新。
+     * Returns the default expiration time (in nanoseconds) for memoized values, after which they will be refreshed.
+     * This can be updated by setting the {@link Config} property {@code bus.health.memoizer.expiration} to a value in
+     * milliseconds.
      *
-     * @return 保持记忆化值的时间（纳秒）在刷新之前
+     * @return The time in nanoseconds that memoized values are held before being refreshed.
      */
     public static long defaultExpiration() {
         return DEFAULT_EXPIRATION_NANOS.get();
     }
 
     /**
-     * 将供应商存储在委托函数中，仅计算一次，且仅在生存时间（ttl）过期后再次计算。
+     * Stores a supplier in a delegate function that computes only once, and then again only after the time-to-live
+     * (ttl) has expired.
      *
-     * @param <T>      提供的对象类型
-     * @param original 要记忆化的 {@link java.util.function.Supplier}
-     * @param ttlNanos 保留计算的时间（纳秒）。如果为负，则无限期保留。
-     * @return 供应商的记忆化版本
+     * @param <T>      The type of object supplied.
+     * @param original The {@link java.util.function.Supplier} to memoize.
+     * @param ttlNanos The time in nanoseconds to retain the computed value. If negative, the value is retained
+     *                 indefinitely.
+     * @return A memoized version of the supplier.
      */
     public static <T> Supplier<T> memoize(Supplier<T> original, long ttlNanos) {
-        // 改编自 Guava 的 ExpiringMemoizingSupplier
+        // Adapted from Guava's ExpiringMemoizingSupplier
         return new Supplier<>() {
 
             /**
-             * 原始供应商
+             * The original supplier.
              */
             private final Supplier<T> delegate = original;
             /**
-             * 记忆化的值，可能为 null
+             * The memoized value, which may be null.
              */
             private volatile T value;
             /**
-             * 过期时间（纳秒）
+             * The expiration time in nanoseconds.
              */
             private volatile long expirationNanos;
 
@@ -106,7 +111,7 @@ public final class Memoizer {
                 long now = System.nanoTime();
                 if (nanos == 0 || (ttlNanos >= 0 && now - nanos >= 0)) {
                     synchronized (this) {
-                        if (nanos == expirationNanos) { // 重新检查以避免竞争条件
+                        if (nanos == expirationNanos) { // Recheck to avoid race condition
                             T t = delegate.get();
                             value = t;
                             nanos = now + ttlNanos;
@@ -121,11 +126,11 @@ public final class Memoizer {
     }
 
     /**
-     * 将供应商存储在委托函数中，仅计算一次。
+     * Stores a supplier in a delegate function that computes only once.
      *
-     * @param <T>      提供的对象类型
-     * @param original 要记忆化的 {@link java.util.function.Supplier}
-     * @return 供应商的记忆化版本
+     * @param <T>      The type of object supplied.
+     * @param original The {@link java.util.function.Supplier} to memoize.
+     * @return A memoized version of the supplier.
      */
     public static <T> Supplier<T> memoize(Supplier<T> original) {
         return memoize(original, -1L);

@@ -38,8 +38,12 @@ import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.*;
 
 /**
- * 多帧提取器类，用于从增强型多帧DICOM图像中提取单帧图像。 该类支持多种DICOM SOP类的多帧图像提取，包括CT、MR、XA、XRF、PET、X射线3D血管造影、
- * 核医学、超声多帧、多帧灰度字节/字词/真色二次捕获、X射线血管造影、X射线透视和放射治疗图像等。 提取过程中会处理功能组序列、像素数据、引用图像序列等，并生成对应的旧式单帧DICOM图像。
+ * The {@code MultiframeExtractor} class is designed to extract single-frame images from enhanced multi-frame DICOM
+ * images. This class supports the extraction of multi-frame images from various DICOM SOP classes, including CT, MR,
+ * XA, XRF, PET, X-Ray 3D Angiographic, Nuclear Medicine, Ultrasound Multi-frame, Multi-frame Grayscale Byte/Word/True
+ * Color Secondary Capture, X-Ray Angiographic, X-Ray Radiofluoroscopic, and RT Image Storage. During the extraction
+ * process, it handles functional group sequences, pixel data, referenced image sequences, and generates corresponding
+ * legacy single-frame DICOM images.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,38 +51,41 @@ import org.miaixz.bus.image.galaxy.data.*;
 public class MultiframeExtractor {
 
     /**
-     * 实现映射表，存储SOP类UID与对应的实现
+     * A map storing the implementations for different SOP Class UIDs.
      */
     private static final HashMap<String, Impl> impls = new HashMap<>(8);
 
     /**
-     * 排除标签数组，这些标签在提取过程中不会被复制到目标图像
+     * An array of tags that should be excluded (not copied) during the extraction process.
      */
     private static final int[] EXCLUDE_TAGS = { Tag.ReferencedImageEvidenceSequence, Tag.SourceImageEvidenceSequence,
             Tag.DimensionIndexSequence, Tag.NumberOfFrames, Tag.SharedFunctionalGroupsSequence,
             Tag.PerFrameFunctionalGroupsSequence, Tag.PixelData };
 
     /**
-     * 是否保留序列实例UID标志
+     * A flag indicating whether the Series Instance UID should be preserved during extraction.
      */
     private boolean preserveSeriesInstanceUID;
 
     /**
-     * 实例编号格式字符串
+     * The format string used to generate instance numbers for extracted single frames.
      */
     private String instanceNumberFormat = "%s%04d";
 
     /**
-     * UID映射器
+     * The UID mapper used to remap UIDs during extraction.
      */
     private UIDMapper uidMapper = new HashUIDMapper();
 
     /**
-     * 帧数访问器
+     * The accessor used to retrieve the number of frames from a DICOM dataset.
      */
     private NumberOfFramesAccessor nofAccessor = new NumberOfFramesAccessor();
 
-    // 初始化实现映射表
+    /**
+     * Static initializer block to populate the {@link #impls} map with supported multi-frame SOP Class UIDs and their
+     * corresponding extraction implementations.
+     */
     static {
         impls.put(UID.EnhancedCTImageStorage.uid, Impl.EnhancedCTImageExtractor);
         impls.put(UID.EnhancedMRImageStorage.uid, Impl.EnhancedMRImageExtractor);
@@ -103,20 +110,20 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 检查指定的SOP类是否支持多帧提取
+     * Checks if the specified SOP Class UID is supported for multi-frame extraction.
      *
-     * @param cuid SOP类UID
-     * @return 如果支持则返回true，否则返回false
+     * @param cuid The SOP Class UID to check.
+     * @return {@code true} if the SOP Class is supported, {@code false} otherwise.
      */
     public static boolean isSupportedSOPClass(String cuid) {
         return impls.containsKey(cuid);
     }
 
     /**
-     * 获取多帧SOP类对应的旧式单帧SOP类UID
+     * Returns the legacy single-frame SOP Class UID corresponding to a given multi-frame SOP Class UID.
      *
-     * @param mfcuid 多帧SOP类UID
-     * @return 旧式单帧SOP类UID，如果不支持则返回null
+     * @param mfcuid The multi-frame SOP Class UID.
+     * @return The legacy single-frame SOP Class UID, or {@code null} if the multi-frame SOP Class is not supported.
      */
     public static String legacySOPClassUID(String mfcuid) {
         Impl impl = impls.get(mfcuid);
@@ -124,11 +131,11 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 获取指定多帧SOP类UID对应的实现
+     * Retrieves the {@link Impl} (implementation) for a given multi-frame SOP Class UID.
      *
-     * @param mfcuid 多帧SOP类UID
-     * @return 对应的实现
-     * @throws IllegalArgumentException 如果不支持的SOP类
+     * @param mfcuid The multi-frame SOP Class UID.
+     * @return The {@link Impl} corresponding to the SOP Class.
+     * @throws IllegalArgumentException if the SOP Class is not supported.
      */
     private static Impl implFor(String mfcuid) {
         Impl impl = impls.get(mfcuid);
@@ -138,37 +145,39 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 获取是否保留序列实例UID
+     * Gets the flag indicating whether the Series Instance UID should be preserved.
      *
-     * @return 如果保留序列实例UID则返回true，否则返回false
+     * @return {@code true} if Series Instance UID is preserved, {@code false} otherwise.
      */
     public final boolean isPreserveSeriesInstanceUID() {
         return preserveSeriesInstanceUID;
     }
 
     /**
-     * 设置是否保留序列实例UID
+     * Sets the flag indicating whether the Series Instance UID should be preserved.
      *
-     * @param preserveSeriesInstanceUID 是否保留序列实例UID
+     * @param preserveSeriesInstanceUID {@code true} to preserve Series Instance UID, {@code false} otherwise.
      */
     public final void setPreserveSeriesInstanceUID(boolean preserveSeriesInstanceUID) {
         this.preserveSeriesInstanceUID = preserveSeriesInstanceUID;
     }
 
     /**
-     * 获取实例编号格式字符串
+     * Gets the format string used for generating instance numbers.
      *
-     * @return 实例编号格式字符串
+     * @return The instance number format string.
      */
     public final String getInstanceNumberFormat() {
         return instanceNumberFormat;
     }
 
     /**
-     * 设置实例编号格式字符串
+     * Sets the format string used for generating instance numbers. The format string must be compatible with
+     * {@link String#format(String, Object...)} and accept two arguments: the original instance number string and the
+     * frame index + 1.
      *
-     * @param instanceNumberFormat 实例编号格式字符串
-     * @throws IllegalArgumentException 如果格式字符串无效
+     * @param instanceNumberFormat The new instance number format string.
+     * @throws IllegalArgumentException if the format string is invalid.
      */
     public final void setInstanceNumberFormat(String instanceNumberFormat) {
         String.format(instanceNumberFormat, "1", 1);
@@ -176,19 +185,19 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 获取UID映射器
+     * Gets the currently configured {@link UIDMapper}.
      *
-     * @return UID映射器
+     * @return The {@link UIDMapper} instance.
      */
     public final UIDMapper getUIDMapper() {
         return uidMapper;
     }
 
     /**
-     * 设置UID映射器
+     * Sets the {@link UIDMapper} to be used for remapping UIDs.
      *
-     * @param uidMapper UID映射器
-     * @throws NullPointerException 如果uidMapper为null
+     * @param uidMapper The new {@link UIDMapper} instance.
+     * @throws NullPointerException if {@code uidMapper} is {@code null}.
      */
     public final void setUIDMapper(UIDMapper uidMapper) {
         if (uidMapper == null)
@@ -197,19 +206,19 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 获取帧数访问器
+     * Gets the currently configured {@link NumberOfFramesAccessor}.
      *
-     * @return 帧数访问器
+     * @return The {@link NumberOfFramesAccessor} instance.
      */
     public final NumberOfFramesAccessor getNumberOfFramesAccessorr() {
         return nofAccessor;
     }
 
     /**
-     * 设置帧数访问器
+     * Sets the {@link NumberOfFramesAccessor} to be used for retrieving the number of frames.
      *
-     * @param accessor 帧数访问器
-     * @throws NullPointerException 如果accessor为null
+     * @param accessor The new {@link NumberOfFramesAccessor} instance.
+     * @throws NullPointerException if {@code accessor} is {@code null}.
      */
     public final void setNumberOfFramesAccessor(NumberOfFramesAccessor accessor) {
         if (accessor == null)
@@ -218,24 +227,26 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 从增强型多帧图像中提取特定帧，并将其作为对应的旧式单帧图像返回。
+     * Extracts a specific frame from an enhanced multi-frame image and returns it as a legacy single-frame image.
      *
-     * @param emf   增强型多帧图像
-     * @param frame 基于0的帧索引
-     * @return 旧式单幅图像
+     * @param emf   The enhanced multi-frame {@link Attributes} from which to extract the frame.
+     * @param frame The 0-based index of the frame to extract.
+     * @return An {@link Attributes} object representing the extracted single-frame image.
      */
     public Attributes extract(Attributes emf, int frame) {
         return implFor(emf.getString(Tag.SOPClassUID)).extract(this, emf, frame);
     }
 
     /**
-     * 从多帧图像中提取指定帧
+     * Extracts a specific frame from a multi-frame image. This private helper method performs the core logic of
+     * extracting a single frame, handling functional groups, pixel data, and updating UIDs and instance numbers.
      *
-     * @param emf      多帧图像
-     * @param frame    帧索引（从0开始）
-     * @param cuid     目标SOP类UID
-     * @param enhanced 是否为增强型多帧图像
-     * @return 提取的单帧图像
+     * @param emf      The multi-frame {@link Attributes} object.
+     * @param frame    The 0-based index of the frame to extract.
+     * @param cuid     The SOP Class UID for the target single-frame image.
+     * @param enhanced A boolean indicating if the source image is an enhanced multi-frame image.
+     * @return An {@link Attributes} object representing the extracted single-frame image.
+     * @throws IllegalArgumentException if required functional group sequences are missing for enhanced images.
      */
     private Attributes extract(Attributes emf, int frame, String cuid, boolean enhanced) {
         Attributes dest = new Attributes(emf.size() * 2);
@@ -271,10 +282,11 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 调整引用图像序列
+     * Adjusts the Referenced Image Sequence or Source Image Sequence in the given attributes. It converts multi-frame
+     * references into multiple single-frame references based on the number of frames.
      *
-     * @param attrs 属性集
-     * @param sqtag 序列标签
+     * @param attrs The {@link Attributes} object containing the sequence to adjust.
+     * @param sqtag The tag of the sequence to adjust (e.g., {@link Tag#ReferencedImageSequence}).
      */
     private void adjustReferencedImages(Attributes attrs, int sqtag) {
         Sequence sq = attrs.getSequence(sqtag);
@@ -306,10 +318,11 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 添加功能组到目标属性集
+     * Adds functional group attributes to the destination attributes. This method copies attributes from shared or
+     * per-frame functional group sequences.
      *
-     * @param dest 目标属性集
-     * @param fgs  功能组
+     * @param dest The destination {@link Attributes} object.
+     * @param fgs  The source {@link Attributes} object representing functional groups.
      */
     private void addFunctionGroups(Attributes dest, Attributes fgs) {
         dest.addSelected(fgs, Tag.ReferencedImageSequence);
@@ -320,11 +333,12 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 添加像素数据到目标属性集
+     * Adds the pixel data for a specific frame to the destination attributes. It handles both byte array and
+     * {@link BulkData} pixel data representations.
      *
-     * @param dest  目标属性集
-     * @param src   源属性集
-     * @param frame 帧索引
+     * @param dest  The destination {@link Attributes} object.
+     * @param src   The source {@link Attributes} object containing the multi-frame pixel data.
+     * @param frame The 0-based index of the frame whose pixel data is to be added.
      */
     private void addPixelData(Attributes dest, Attributes src, int frame) {
         VR.Holder vr = new VR.Holder();
@@ -341,24 +355,24 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 从大数据中提取像素数据
+     * Extracts pixel data for a specific frame from a {@link BulkData} object.
      *
-     * @param src    源大数据
-     * @param frame  帧索引
-     * @param length 帧长度
-     * @return 提取的像素数据
+     * @param src    The source {@link BulkData} object.
+     * @param frame  The 0-based index of the frame to extract.
+     * @param length The length of a single frame's pixel data in bytes.
+     * @return A new {@link BulkData} object representing the extracted frame's pixel data.
      */
     private BulkData extractPixelData(BulkData src, int frame, int length) {
         return new BulkData(src.uriWithoutQuery(), src.offset() + (long) frame * length, length, src.bigEndian());
     }
 
     /**
-     * 从字节数组中提取像素数据
+     * Extracts pixel data for a specific frame from a byte array.
      *
-     * @param src    源字节数组
-     * @param frame  帧索引
-     * @param length 帧长度
-     * @return 提取的像素数据
+     * @param src    The source byte array containing multi-frame pixel data.
+     * @param frame  The 0-based index of the frame to extract.
+     * @param length The length of a single frame's pixel data in bytes.
+     * @return A byte array containing the extracted frame's pixel data.
      */
     private byte[] extractPixelData(byte[] src, int frame, int length) {
         byte[] dest = new byte[length];
@@ -367,10 +381,10 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 计算帧长度
+     * Calculates the length of a single frame's pixel data in bytes.
      *
-     * @param src 源属性集
-     * @return 帧长度（字节数）
+     * @param src The source {@link Attributes} object containing image dimensions and pixel information.
+     * @return The calculated frame length in bytes.
      */
     private int calcFrameLength(Attributes src) {
         return src.getInt(Tag.Rows, 0) * src.getInt(Tag.Columns, 0) * (src.getInt(Tag.BitsAllocated, 8) >> 3)
@@ -378,11 +392,12 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 创建实例编号
+     * Creates an instance number string for a single frame. It formats the instance number using the configured
+     * {@link #instanceNumberFormat}.
      *
-     * @param mfinstno 多帧实例编号
-     * @param frame    帧索引
-     * @return 实例编号字符串
+     * @param mfinstno The original multi-frame instance number string.
+     * @param frame    The 0-based index of the frame.
+     * @return The formatted instance number string.
      */
     private String createInstanceNumber(String mfinstno, int frame) {
         String s = String.format(instanceNumberFormat, mfinstno, frame + 1);
@@ -390,20 +405,29 @@ public class MultiframeExtractor {
     }
 
     /**
-     * 实现枚举，定义了不同SOP类的多帧提取实现
+     * Enumeration defining implementations for extracting single frames from different multi-frame SOP Classes. Each
+     * implementation specifies the target single-frame SOP Class UID and whether it's an enhanced image.
      */
     private enum Impl {
 
         /**
-         * 增强CT图像提取器
+         * Implementation for Enhanced CT Image Storage extraction.
          */
         EnhancedCTImageExtractor(UID.CTImageStorage.uid, true),
 
         /**
-         * 增强MR图像提取器
+         * Implementation for Enhanced MR Image Storage extraction.
          */
         EnhancedMRImageExtractor(UID.MRImageStorage.uid, true) {
 
+            /**
+             * Extracts a single frame from an Enhanced MR Image and applies MR-specific corrections.
+             *
+             * @param mfe   The {@link MultiframeExtractor} instance.
+             * @param emf   The enhanced multi-frame MR image attributes.
+             * @param frame The 0-based index of the frame to extract.
+             * @return The extracted single-frame MR image attributes.
+             */
             @Override
             Attributes extract(MultiframeExtractor mfe, Attributes emf, int frame) {
                 Attributes sf = super.extract(mfe, emf, frame);
@@ -415,9 +439,10 @@ public class MultiframeExtractor {
             }
 
             /**
-             * 设置回波时间
+             * Sets the Echo Time (Tag.EchoTime) in the single-frame MR image attributes. If Effective Echo Time
+             * (Tag.EffectiveEchoTime) is 0, Echo Time is set to null.
              *
-             * @param sf 单帧图像属性
+             * @param sf The single-frame MR image attributes.
              */
             void setEchoTime(Attributes sf) {
                 double echoTime = sf.getDouble(Tag.EffectiveEchoTime, 0);
@@ -428,9 +453,10 @@ public class MultiframeExtractor {
             }
 
             /**
-             * 设置扫描序列
+             * Sets the Scanning Sequence (Tag.ScanningSequence) in the single-frame MR image attributes based on
+             * various pulse sequence related tags.
              *
-             * @param sf 单帧图像属性
+             * @param sf The single-frame MR image attributes.
              */
             void setScanningSequence(Attributes sf) {
                 List<String> list = new ArrayList<>(3);
@@ -447,9 +473,10 @@ public class MultiframeExtractor {
             }
 
             /**
-             * 设置序列变体
+             * Sets the Sequence Variant (Tag.SequenceVariant) in the single-frame MR image attributes based on various
+             * sequence related tags.
              *
-             * @param sf 单帧图像属性
+             * @param sf The single-frame MR image attributes.
              */
             void setSequenceVariant(Attributes sf) {
                 List<String> list = new ArrayList<>(5);
@@ -473,9 +500,10 @@ public class MultiframeExtractor {
             }
 
             /**
-             * 设置扫描选项
+             * Sets the Scan Options (Tag.ScanOptions) in the single-frame MR image attributes based on various
+             * scan-related tags and image type.
              *
-             * @param sf 单帧图像属性
+             * @param sf The single-frame MR image attributes.
              */
             void setScanOptions(Attributes sf) {
                 List<String> list = new ArrayList<>(3);
@@ -508,95 +536,95 @@ public class MultiframeExtractor {
         },
 
         /**
-         * 增强XA图像提取器
+         * Implementation for Enhanced XA Image Storage extraction.
          */
         EnhancedXAImageExtractor(UID.XRayAngiographicImageStorage.uid, true),
 
         /**
-         * 增强XRF图像提取器
+         * Implementation for Enhanced XRF Image Storage extraction.
          */
         EnhancedXRFImageExtractor(UID.XRayRadiofluoroscopicImageStorage.uid, true),
 
         /**
-         * 增强PET图像提取器
+         * Implementation for Enhanced PET Image Storage extraction.
          */
         EnhancedPETImageExtractor(UID.PositronEmissionTomographyImageStorage.uid, true),
 
         /**
-         * X射线3D血管造影图像提取器
+         * Implementation for X-Ray 3D Angiographic Image Storage extraction.
          */
         XRay3DAngiographicImageExtractor(UID.XRay3DAngiographicImageStorage.uid, true),
 
         /**
-         * X射线3D颅面图像提取器
+         * Implementation for X-Ray 3D Craniofacial Image Storage extraction.
          */
         XRay3DCraniofacialImageStorage(UID.XRay3DCraniofacialImageStorage.uid, true),
 
         /**
-         * 乳房断层合成图像提取器
+         * Implementation for Breast Tomosynthesis Image Storage extraction.
          */
         BreastTomosynthesisImageStorage(UID.BreastTomosynthesisImageStorage.uid, true),
 
         /**
-         * 眼科断层图像提取器
+         * Implementation for Ophthalmic Tomography Image Storage extraction.
          */
         OphthalmicTomographyImageStorage(UID.OphthalmicTomographyImageStorage.uid, true),
 
         /**
-         * 核医学图像提取器
+         * Implementation for Nuclear Medicine Image Storage extraction.
          */
         NuclearMedicineImageExtractor(UID.NuclearMedicineImageStorage.uid, false),
 
         /**
-         * 超声多帧图像提取器
+         * Implementation for Ultrasound Multi-Frame Image Storage extraction.
          */
         UltrasoundMultiFrameImageExtractor(UID.UltrasoundImageStorage.uid, false),
 
         /**
-         * 多帧灰度字节二次捕获图像提取器
+         * Implementation for Multi-Frame Grayscale Byte Secondary Capture Image Storage extraction.
          */
         MultiFrameGrayscaleByteSecondaryCaptureImageExtractor(UID.SecondaryCaptureImageStorage.uid, false),
 
         /**
-         * 多帧灰度字词二次捕获图像提取器
+         * Implementation for Multi-Frame Grayscale Word Secondary Capture Image Storage extraction.
          */
         MultiFrameGrayscaleWordSecondaryCaptureImageExtractor(UID.SecondaryCaptureImageStorage.uid, false),
 
         /**
-         * 多帧真色二次捕获图像提取器
+         * Implementation for Multi-Frame True Color Secondary Capture Image Storage extraction.
          */
         MultiFrameTrueColorSecondaryCaptureImageExtractor(UID.SecondaryCaptureImageStorage.uid, false),
 
         /**
-         * X射线血管造影图像提取器
+         * Implementation for X-Ray Angiographic Image Storage extraction.
          */
         XRayAngiographicImageExtractor(UID.XRayAngiographicImageStorage.uid, false),
 
         /**
-         * X射线透视图像提取器
+         * Implementation for X-Ray Radiofluoroscopic Image Storage extraction.
          */
         XRayRadiofluoroscopicImageExtractor(UID.XRayRadiofluoroscopicImageStorage.uid, false),
 
         /**
-         * 放射治疗图像提取器
+         * Implementation for RT Image Storage extraction.
          */
         RTImageExtractor(UID.RTImageStorage.uid, false);
 
         /**
-         * 单帧SOP类UID
+         * The SOP Class UID of the corresponding single-frame image.
          */
         private final String sfcuid;
 
         /**
-         * 是否为增强型多帧图像
+         * Indicates whether the image is an enhanced multi-frame image.
          */
         private final boolean enhanced;
 
         /**
-         * 构造一个实现
+         * Constructs an {@code Impl} with the specified single-frame SOP Class UID and enhanced flag.
          *
-         * @param sfcuid   单帧SOP类UID
-         * @param enhanced 是否为增强型多帧图像
+         * @param sfcuid   The single-frame SOP Class UID.
+         * @param enhanced {@code true} if it's an enhanced multi-frame image, {@code false} otherwise.
          */
         Impl(String sfcuid, boolean enhanced) {
             this.sfcuid = sfcuid;
@@ -604,12 +632,12 @@ public class MultiframeExtractor {
         }
 
         /**
-         * 提取单帧图像
+         * Extracts a single frame from the multi-frame image using the provided {@link MultiframeExtractor}.
          *
-         * @param mfe   多帧提取器
-         * @param emf   增强型多帧图像
-         * @param frame 帧索引
-         * @return 提取的单帧图像
+         * @param mfe   The {@link MultiframeExtractor} instance.
+         * @param emf   The multi-frame image attributes.
+         * @param frame The 0-based index of the frame to extract.
+         * @return The extracted single-frame image attributes.
          */
         Attributes extract(MultiframeExtractor mfe, Attributes emf, int frame) {
             return mfe.extract(emf, frame, sfcuid, enhanced);

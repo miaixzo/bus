@@ -36,7 +36,8 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 import org.miaixz.bus.core.lang.Gender;
 
 /**
- * 童限（从出生到起运的时间段）
+ * Represents the "Child Limit" (童限), the period from birth until the start of the Grand Fortune (大运) in Chinese
+ * astrology.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,34 +45,41 @@ import org.miaixz.bus.core.lang.Gender;
 public class ChildLimit {
 
     /**
-     * 童限计算接口
+     * The provider for calculating Child Limit information.
      */
     public static ChildLimitProvider provider = new DefaultChildLimitProvider();
 
     /**
-     * 八字
+     * The Eight Characters (八字) of the birth.
      */
     protected EightChar eightChar;
 
     /**
-     * 性别
+     * The gender of the person.
      */
     protected Gender gender;
 
     /**
-     * 顺逆
+     * Indicates whether the fortune is calculated forward (顺推) or backward (逆推).
      */
     protected boolean forward;
 
     /**
-     * 童限信息
+     * The detailed information about the Child Limit.
      */
     protected ChildLimitInfo info;
 
+    /**
+     * Constructs a {@code ChildLimit} instance with the specified birth time and gender.
+     *
+     * @param birthTime The Gregorian birth time.
+     * @param gender    The gender of the person.
+     */
     public ChildLimit(SolarTime birthTime, Gender gender) {
         this.gender = gender;
         eightChar = birthTime.getLunarHour().getEightChar();
-        // 阳男阴女顺推，阴男阳女逆推
+        // Determine forward or backward calculation: Yang male, Yin female -> forward; Yin male, Yang female ->
+        // backward
         boolean yang = Opposite.YANG == eightChar.getYear().getHeavenStem().getOpposite();
         boolean man = Gender.MALE == gender;
         forward = (yang && man) || (!yang && !man);
@@ -86,164 +94,164 @@ public class ChildLimit {
     }
 
     /**
-     * 通过出生公历时刻初始化
+     * Creates a {@code ChildLimit} instance from a Gregorian birth time and gender.
      *
-     * @param birthTime 出生公历时刻
-     * @param gender    性别
-     * @return 童限
+     * @param birthTime The Gregorian birth time.
+     * @param gender    The gender of the person.
+     * @return A new {@code ChildLimit} instance.
      */
     public static ChildLimit fromSolarTime(SolarTime birthTime, Gender gender) {
         return new ChildLimit(birthTime, gender);
     }
 
     /**
-     * 八字
+     * Gets the Eight Characters (八字) associated with this Child Limit.
      *
-     * @return 八字
+     * @return The {@link EightChar} instance.
      */
     public EightChar getEightChar() {
         return eightChar;
     }
 
     /**
-     * 性别
+     * Gets the gender of the person.
      *
-     * @return 性别
+     * @return The {@link Gender} of the person.
      */
     public Gender getGender() {
         return gender;
     }
 
     /**
-     * 是否顺推
+     * Checks if the fortune calculation is forward (顺推).
      *
-     * @return true/false
+     * @return {@code true} if forward, {@code false} if backward.
      */
     public boolean isForward() {
         return forward;
     }
 
     /**
-     * 年数
+     * Gets the number of years in the Child Limit.
      *
-     * @return 年数
+     * @return The number of years.
      */
     public int getYearCount() {
         return info.getYearCount();
     }
 
     /**
-     * 月数
+     * Gets the number of months in the Child Limit.
      *
-     * @return 月数
+     * @return The number of months.
      */
     public int getMonthCount() {
         return info.getMonthCount();
     }
 
     /**
-     * 日数
+     * Gets the number of days in the Child Limit.
      *
-     * @return 日数
+     * @return The number of days.
      */
     public int getDayCount() {
         return info.getDayCount();
     }
 
     /**
-     * 小时数
+     * Gets the number of hours in the Child Limit.
      *
-     * @return 小时数
+     * @return The number of hours.
      */
     public int getHourCount() {
         return info.getHourCount();
     }
 
     /**
-     * 分钟数
+     * Gets the number of minutes in the Child Limit.
      *
-     * @return 分钟数
+     * @return The number of minutes.
      */
     public int getMinuteCount() {
         return info.getMinuteCount();
     }
 
     /**
-     * 开始(即出生)的公历时刻
+     * Gets the start time (birth time) of the Child Limit.
      *
-     * @return 公历时刻
+     * @return The {@link SolarTime} instance representing the start time.
      */
     public SolarTime getStartTime() {
         return info.getStartTime();
     }
 
     /**
-     * 结束(即开始起运)的公历时刻
+     * Gets the end time (start of Grand Fortune) of the Child Limit.
      *
-     * @return 公历时刻
+     * @return The {@link SolarTime} instance representing the end time.
      */
     public SolarTime getEndTime() {
         return info.getEndTime();
     }
 
     /**
-     * 起运大运
+     * Gets the starting Grand Fortune (大运) for this Child Limit.
      *
-     * @return 大运
+     * @return The {@link DecadeFortune} instance.
      */
     public DecadeFortune getStartDecadeFortune() {
         return DecadeFortune.fromChildLimit(this, 0);
     }
 
     /**
-     * 所属大运
+     * Gets the Grand Fortune (大运) associated with this Child Limit.
      *
-     * @return 大运
+     * @return The {@link DecadeFortune} instance.
      */
     public DecadeFortune getDecadeFortune() {
         return DecadeFortune.fromChildLimit(this, -1);
     }
 
     /**
-     * 小运
+     * Gets the starting Fortune (小运) for this Child Limit.
      *
-     * @return 小运
+     * @return The {@link Fortune} instance.
      */
     public Fortune getStartFortune() {
         return Fortune.fromChildLimit(this, 0);
     }
 
     /**
-     * 开始(即出生)干支年
+     * Gets the Sixty-Year Cycle Year (干支年) of the start time (birth).
      *
-     * @return 干支年
+     * @return The {@link SixtyCycleYear} instance.
      */
     public SixtyCycleYear getStartSixtyCycleYear() {
         return SixtyCycleYear.fromYear(getStartTime().getYear());
     }
 
     /**
-     * 结束(即起运)干支年
+     * Gets the Sixty-Year Cycle Year (干支年) of the end time (start of Grand Fortune).
      *
-     * @return 干支年
+     * @return The {@link SixtyCycleYear} instance.
      */
     public SixtyCycleYear getEndSixtyCycleYear() {
         return SixtyCycleYear.fromYear(getEndTime().getYear());
     }
 
     /**
-     * 开始年龄
+     * Gets the starting age for the Child Limit (always 1).
      *
-     * @return 开始年龄
+     * @return The starting age.
      */
     public int getStartAge() {
         return 1;
     }
 
     /**
-     * 结束年龄
+     * Gets the ending age for the Child Limit.
      *
-     * @return 结束年龄
+     * @return The ending age.
      */
     public int getEndAge() {
         int n = getEndSixtyCycleYear().getYear() - getStartSixtyCycleYear().getYear();

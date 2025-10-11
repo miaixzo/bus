@@ -29,13 +29,14 @@ package org.miaixz.bus.core.convert.stringer;
 
 import java.io.Reader;
 import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * Clob转String
+ * Converts a {@link Clob} to a String.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,22 +44,23 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class ClobStringer implements Function<Object, String> {
 
     /**
-     * 单例
+     * Singleton instance.
      */
-    public static ClobStringer INSTANCE = new ClobStringer();
+    public static final ClobStringer INSTANCE = new ClobStringer();
 
     /**
-     * Clob字段值转字符串
+     * Converts a {@link Clob} object to a String.
      *
-     * @param clob {@link java.sql.Clob}
-     * @return 字符串
+     * @param clob The {@link Clob} to be converted.
+     * @return The String representation of the Clob.
+     * @throws ConvertException if a {@link SQLException} occurs.
      */
     private static String toString(final Clob clob) {
         Reader reader = null;
         try {
             reader = clob.getCharacterStream();
             return IoKit.read(reader);
-        } catch (final java.sql.SQLException e) {
+        } catch (final SQLException e) {
             throw new ConvertException(e);
         } finally {
             IoKit.closeQuietly(reader);

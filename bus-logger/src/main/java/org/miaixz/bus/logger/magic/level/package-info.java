@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 日志级别打印接口
+ * This package contains interfaces for logging at different levels (e.g., TRACE, DEBUG, INFO, WARN, ERROR).
  *
  * @author Kimi Liu
  * @since Java 17+

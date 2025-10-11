@@ -31,7 +31,9 @@ import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.EnumValue;
 
 /**
- * 分词引擎接口定义，用户通过实现此接口完成特定分词引擎的适配 由于引擎使用单例模式，因此要求实现类保证线程安全
+ * Interface definition for Natural Language Processing (NLP) word segmentation engines. Users implement this interface
+ * to adapt specific word segmentation engines, such as Ansj, HanLP, etc. Since the engine typically uses a singleton
+ * pattern, implementations are required to be thread-safe to handle concurrent requests for word segmentation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,13 +41,19 @@ import org.miaixz.bus.core.lang.EnumValue;
 public interface NLPProvider extends Provider {
 
     /**
-     * 文本分词处理接口，通过实现此接口完成分词，产生分词结果
+     * Performs word segmentation on the given text and returns the result. Implementations should process the input
+     * text and produce a structured result containing the segmented words.
      *
-     * @param text 需要分词的文本
-     * @return {@link NLPResult}分词结果实现
+     * @param text The input text {@link CharSequence} to be segmented.
+     * @return An {@link NLPResult} implementation containing the segmented words.
      */
     NLPResult parse(CharSequence text);
 
+    /**
+     * Returns the type of this NLP provider. By default, it returns {@link EnumValue.Povider#NLP}.
+     *
+     * @return The type of the provider, typically {@link EnumValue.Povider#NLP}.
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.NLP;

@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.ExcelConfig;
 
 /**
- * Excel写出配置
+ * Excel write configuration.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,15 +49,17 @@ import org.miaixz.bus.office.excel.ExcelConfig;
 public class ExcelWriteConfig extends ExcelConfig {
 
     /**
-     * 是否只保留别名对应的字段
+     * Whether to retain only fields corresponding to aliases. If {@code true}, fields without aliases will not be
+     * output.
      */
     protected boolean onlyAlias;
     /**
-     * 是否强制插入行 如果为{@code true}，则写入行以下的已存在行下移，{@code false}则利用填充已有行，不存在再创建行
+     * Whether to force row insertion. If {@code true}, existing rows below the written row will be shifted down. If
+     * {@code false}, existing rows will be filled, and new rows will be created only if necessary.
      */
     protected boolean insertRow = true;
     /**
-     * 标题顺序比较器
+     * Comparator for sorting header names.
      */
     protected Comparator<String> aliasComparator;
 
@@ -80,11 +82,14 @@ public class ExcelWriteConfig extends ExcelConfig {
     }
 
     /**
-     * 设置是否只保留别名中的字段值，如果为true，则不设置alias的字段将不被输出，false表示原样输出
-     * Bean中设置@Alias时，setOnlyAlias是无效的，这个参数只和addHeaderAlias配合使用，原因是注解是Bean内部的操作，而addHeaderAlias是Writer的操作，不互通。
+     * Sets whether to retain only fields corresponding to aliases. If {@code true}, fields without aliases will not be
+     * output. If {@code false}, they will be output as is. When {@code @Alias} is set in a Bean, {@code setOnlyAlias}
+     * is ineffective. This parameter is only used in conjunction with {@code addHeaderAlias}, because annotations are
+     * internal operations of the Bean, while {@code addHeaderAlias} is an operation of the Writer, and they do not
+     * interoperate.
      *
-     * @param isOnlyAlias 是否只保留别名中的字段值
-     * @return this
+     * @param isOnlyAlias {@code true} to retain only aliased fields, {@code false} to output all fields.
+     * @return This {@code ExcelWriteConfig} instance, for chaining.
      */
     public ExcelWriteConfig setOnlyAlias(final boolean isOnlyAlias) {
         this.onlyAlias = isOnlyAlias;
@@ -92,10 +97,11 @@ public class ExcelWriteConfig extends ExcelConfig {
     }
 
     /**
-     * 设置是否插入行，如果为true，则写入行以下的已存在行下移，false则利用填充已有行，不存在时创建行
+     * Sets whether to insert rows. If {@code true}, existing rows below the written row will be shifted down. If
+     * {@code false}, existing rows will be filled, and new rows will be created only if necessary.
      *
-     * @param insertRow 是否插入行
-     * @return this
+     * @param insertRow {@code true} to insert rows, {@code false} to fill existing rows.
+     * @return This {@code ExcelWriteConfig} instance, for chaining.
      */
     public ExcelWriteConfig setInsertRow(final boolean insertRow) {
         this.insertRow = insertRow;
@@ -103,9 +109,9 @@ public class ExcelWriteConfig extends ExcelConfig {
     }
 
     /**
-     * 获取单例的别名比较器，比较器的顺序为别名加入的顺序
+     * Gets the singleton alias comparator. The order of comparison is the order in which aliases were added.
      *
-     * @return {@link Comparator}
+     * @return The {@link Comparator} for aliases.
      */
     public Comparator<String> getCachedAliasComparator() {
         final Map<String, String> headerAlias = this.headerAlias;
@@ -122,10 +128,11 @@ public class ExcelWriteConfig extends ExcelConfig {
     }
 
     /**
-     * 为指定的key列表添加标题别名，如果没有定义key的别名，在onlyAlias为false时使用原key key为别名，value为字段值
+     * Creates an alias table for the specified key list. If no alias is defined for a key, the original key is used
+     * when {@code onlyAlias} is {@code false}. The key of the table is the alias, and the value is the field value.
      *
-     * @param rowMap 一行数据
-     * @return 别名列表
+     * @param rowMap A single row of data.
+     * @return A {@link Table} representing the aliased data.
      */
     public Table<?, ?, ?> aliasTable(final Map<?, ?> rowMap) {
         final Table<Object, Object, Object> filteredTable = new RowKeyTable<>(new LinkedHashMap<>(), TableMap::new);
@@ -135,10 +142,10 @@ public class ExcelWriteConfig extends ExcelConfig {
             rowMap.forEach((key, value) -> {
                 final String aliasName = headerAlias.get(StringKit.toString(key));
                 if (null != aliasName) {
-                    // 别名键值对加入
+                    // Add alias key-value pair.
                     filteredTable.put(key, aliasName, value);
                 } else if (!onlyAlias) {
-                    // 保留无别名设置的键值对
+                    // Retain key-value pairs without alias settings.
                     filteredTable.put(key, key, value);
                 }
             });

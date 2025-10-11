@@ -37,7 +37,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
- * BoundSql的封装类，用于操作MyBatis的BoundSql对象
+ * A wrapper class for {@link BoundSql} to facilitate manipulation of the MyBatis BoundSql object.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,19 +45,19 @@ import org.miaixz.bus.core.xyz.ListKit;
 public class MapperBoundSql {
 
     /**
-     * BoundSql的反射元对象
+     * The meta-object for reflecting on the BoundSql object.
      */
     private final MetaObject boundSql;
 
     /**
-     * 原始BoundSql对象
+     * The original BoundSql object.
      */
     private final BoundSql delegate;
 
     /**
-     * 构造函数，初始化MapperBoundSql
+     * Constructs a new MapperBoundSql.
      * 
-     * @param boundSql 原始BoundSql对象
+     * @param boundSql The original BoundSql object.
      */
     MapperBoundSql(BoundSql boundSql) {
         this.delegate = boundSql;
@@ -65,65 +65,65 @@ public class MapperBoundSql {
     }
 
     /**
-     * 获取SQL语句
+     * Gets the SQL statement.
      * 
-     * @return SQL语句字符串
+     * @return The SQL statement string.
      */
     public String sql() {
         return delegate.getSql();
     }
 
     /**
-     * 设置SQL语句
+     * Sets the SQL statement.
      * 
-     * @param sql 要设置的SQL语句
+     * @param sql The SQL statement to set.
      */
     public void sql(String sql) {
         boundSql.setValue("sql", sql);
     }
 
     /**
-     * 获取参数映射列表
+     * Gets a copy of the parameter mappings.
      * 
-     * @return 参数映射列表的副本
+     * @return A copy of the list of parameter mappings.
      */
     public List<ParameterMapping> parameterMappings() {
         return ListKit.of(delegate.getParameterMappings());
     }
 
     /**
-     * 设置参数映射列表
+     * Sets the parameter mappings.
      * 
-     * @param parameterMappings 要设置的参数映射列表
+     * @param parameterMappings The list of parameter mappings to set.
      */
     public void parameterMappings(List<ParameterMapping> parameterMappings) {
         boundSql.setValue("parameterMappings", Collections.unmodifiableList(parameterMappings));
     }
 
     /**
-     * 获取参数对象
+     * Gets the parameter object.
      * 
-     * @return 参数对象
+     * @return The parameter object.
      */
     public Object parameterObject() {
         return get("parameterObject");
     }
 
     /**
-     * 获取附加参数映射
+     * Gets the map of additional parameters.
      * 
-     * @return 附加参数的Map
+     * @return A map of additional parameters.
      */
     public Map<String, Object> additionalParameters() {
         return get("additionalParameters");
     }
 
     /**
-     * 通用获取属性方法
+     * A generic method to get a property value.
      * 
-     * @param property 属性名称
-     * @return 属性值
-     * @param <T> 返回值类型
+     * @param property The name of the property.
+     * @param <T>      The type of the return value.
+     * @return The value of the property.
      */
     private <T> T get(String property) {
         return (T) boundSql.getValue(property);

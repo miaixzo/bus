@@ -42,23 +42,28 @@ import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.metric.generic.GenericMaterial;
 
 /**
- * 阿里云邮件
+ * Alibaba Cloud Email service provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AliyunEmailProvider extends AliyunProvider<AliyunMaterial, Context> {
 
+    /**
+     * Constructs an {@code AliyunEmailProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public AliyunEmailProvider(Context context) {
         super(context);
     }
 
     /**
-     * 发送邮件逻辑处理
+     * Sends an email notification using Alibaba Cloud Direct Mail service.
      *
-     * @param entity 请求对象
-     * @return 处理结果响应
-     * @throws InternalException 异常信息
+     * @param entity The {@link AliyunMaterial} containing email details like recipient, subject, content, and sender.
+     * @return A {@link Message} indicating the result of the email sending operation.
+     * @throws InternalException if the email content, recipient address, or subject is empty.
      */
     @Override
     public Message send(AliyunMaterial entity) throws InternalException {
@@ -71,33 +76,90 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunMaterial, Context>
         }
 
         Map<String, String> bodys = new HashMap<>();
-        // 1. 系统参数
+        // 1. System parameters
+        /**
+         * The signature method used for authentication.
+         */
         bodys.put("SignatureMethod", "HMAC-SHA1");
+        /**
+         * A unique random number to prevent replay attacks.
+         */
         bodys.put("SignatureNonce", UUID.randomUUID().toString());
+        /**
+         * The AccessKey ID of your Alibaba Cloud account.
+         */
         bodys.put("AccessKeyId", context.getAppKey());
+        /**
+         * The version of the signature algorithm.
+         */
         bodys.put("SignatureVersion", "1.0");
+        /**
+         * The timestamp of the API request in UTC format.
+         */
         bodys.put("Timestamp", DateKit.format(new Date(), Fields.UTC));
+        /**
+         * The format of the response, typically JSON.
+         */
         bodys.put("Format", "JSON");
-        // 2. 业务API参数
+        // 2. Business API parameters
+        /**
+         * The API action to be performed, e.g., SingleSendMail.
+         */
         bodys.put("Action", "SingleSendMail");
+        /**
+         * The API version.
+         */
         bodys.put("Version", "2015-11-23");
+        /**
+         * The region ID of the service, e.g., cn-hangzhou.
+         */
         bodys.put("RegionId", "cn-hangzhou");
 
+        /**
+         * The subject of the email.
+         */
         bodys.put("Subject", entity.getSubject());
+        /**
+         * The sender's alias.
+         */
         bodys.put("FromAlias", entity.getSender());
+        /**
+         * The recipient's email address.
+         */
         bodys.put("ToAddress", entity.getReceive());
 
         if (GenericMaterial.Type.HTML.equals(entity.getType())) {
+            /**
+             * The HTML body of the email.
+             */
             bodys.put("HtmlBody", entity.getContent());
         } else if (GenericMaterial.Type.TEXT.equals(entity.getType())) {
+            /**
+             * The plain text body of the email.
+             */
             bodys.put("TextBody", entity.getContent());
         }
 
+        /**
+         * The reply-to email address.
+         */
         bodys.put("ReplyAddress", entity.getSender());
+        /**
+         * The reply-to email address.
+         */
         bodys.put("ReplyToAddress", entity.getSender());
+        /**
+         * The reply-to address alias.
+         */
         bodys.put("ReplyAddressAlias", entity.getSender());
 
+        /**
+         * Click tracking setting.
+         */
         bodys.put("ClickTrace", getSign(bodys));
+        /**
+         * The signature for the request.
+         */
         bodys.put("Signature", getSign(bodys));
 
         Map<String, String> map = new HashMap<>();

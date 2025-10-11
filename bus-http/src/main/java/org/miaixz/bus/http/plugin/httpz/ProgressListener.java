@@ -28,13 +28,20 @@
 package org.miaixz.bus.http.plugin.httpz;
 
 /**
- * 进度监听
+ * A listener interface for tracking the progress of data transfers (uploads or downloads).
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ProgressListener {
 
-    void updateProgress(long downloadLenth, long totalLength, boolean done);
+    /**
+     * Callback invoked to update the progress of a data transfer.
+     *
+     * @param downloadLength The number of bytes transferred so far.
+     * @param totalLength    The total size of the data in bytes.
+     * @param done           {@code true} if the transfer is complete, {@code false} otherwise.
+     */
+    void updateProgress(long downloadLength, long totalLength, boolean done);
 
 }

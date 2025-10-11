@@ -33,13 +33,20 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleHour;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 
 /**
- * Lunar流派2的八字计算（晚子时日柱算当天）
+ * Implementation of Eight Characters (八字) calculation for Lunar Sect 2. This implementation considers the day pillar
+ * for the late Zi hour (晚子时) to be the same day.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LunarSect2EightCharProvider implements EightCharProvider {
 
+    /**
+     * Calculates the Eight Characters (八字) from a Lunar Hour according to Lunar Sect 2 rules.
+     *
+     * @param hour The Lunar Hour.
+     * @return The {@link EightChar} instance.
+     */
     @Override
     public EightChar getEightChar(LunarHour hour) {
         SixtyCycleHour h = hour.getSixtyCycleHour();

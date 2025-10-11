@@ -34,13 +34,22 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.English;
 
 /**
- * 英文校验
+ * Validator for checking if a string consists only of English letters.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class EnglishMatcher implements Matcher<Object, English> {
 
+    /**
+     * Checks if the given object, when converted to a string, consists only of English letters.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link English} annotation instance (ignored).
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is not empty and its string representation contains only letters,
+     *         {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, English annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {

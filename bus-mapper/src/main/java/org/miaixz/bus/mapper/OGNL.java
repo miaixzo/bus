@@ -48,7 +48,8 @@ import org.miaixz.bus.mapper.support.ClassColumn;
 import org.miaixz.bus.mapper.support.ClassField;
 
 /**
- * OGNL 静态方法工具类，提供类型注册、SPI 实例获取及函数式字段名转换功能。
+ * A utility class providing static methods for OGNL expressions, type registration, SPI instance retrieval, and
+ * functional field name conversion.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,7 +57,7 @@ import org.miaixz.bus.mapper.support.ClassField;
 public class OGNL {
 
     /**
-     * SQL语法检查正则：符合两个关键字（有先后顺序）才算匹配
+     * Regular expression for SQL syntax checking. A match is considered valid only if two keywords are found in order.
      */
     public static final Pattern SQL_SYNTAX_PATTERN = Pattern.compile(
             "(insert|delete|update|select|create|drop|truncate|grant|alter|deny|revoke|call|execute|exec|declare|show|rename|set)"
@@ -64,52 +65,49 @@ public class OGNL {
             Pattern.CASE_INSENSITIVE);
 
     /**
-     * SQL 注释截断检查正则，匹配包含单引号、注释或分号的 SQL 语句
+     * Regular expression to detect SQL comments and potential truncation attacks, matching SQL statements that contain
+     * single quotes, comments, or semicolons.
      */
     public static final Pattern SQL_COMMENT_PATTERN = Pattern
             .compile("'.*(or|union|--|#|/\\*|;)", Pattern.CASE_INSENSITIVE);
 
     /**
-     * SQL 语法关键字
+     * A string containing SQL syntax keywords for injection checks.
      */
     public static final String SQL_SYNTAX_KEYWORD = "and |exec |peformance_schema|information_schema|extractvalue|updatexml|geohash|gtid_subset|gtid_subtract|insert |select |delete |update |drop |count |chr |mid |master |truncate |char |declare |;|or |+|--";
 
     /**
-     * SQL 函数检查正则
+     * An array of regular expression patterns for detecting sensitive SQL functions.
      */
     public static final String[] SQL_FUNCTION_PATTERN = new String[] { "chr\\s*\\(", "mid\\s*\\(", " char\\s*\\(",
             "sleep\\s*\\(", "user\\s*\\(", "show\\s+tables", "user[\\s]*\\([\\s]*\\)", "show\\s+databases",
             "sleep\\(\\d*\\)", "sleep\\(.*\\)", };
 
-    public static final String MESSAGE_TEMPLATE = "SQL 注入检查: 检查值=>{}<=存在 SQL 注入, 关键字=>{}<=";
+    /**
+     * Template for logging SQL injection warning messages.
+     */
+    public static final String MESSAGE_TEMPLATE = "SQL injection check: The value '{}' is suspected of SQL injection, keyword: '{}'";
 
     /**
-     * SQL 字符串去除空白
-     *
-     * <ul>
-     * <li><code>' " &lt; &gt; &amp; * + = # - ;</code> - SQL 注入黑名单字符</li>
-     * <li><code>\n</code> - 回车</li>
-     * <li><code>\t</code> - 水平制表符</li>
-     * <li><code>\s</code> - 空格</li>
-     * <li><code>\r</code> - 换行</li>
-     * </ul>
+     * A pattern to remove whitespace and special characters from a string to prevent SQL injection. This includes
+     * common SQL injection blacklist characters and whitespace characters.
      */
     public static final Pattern REPLACE_BLANK = Pattern.compile("'|\"|\\<|\\>|&|\\*|\\+|=|#|-|;|\\s*|\t|\r|\n");
 
     /**
-     * 注册新的简单类型。
+     * Registers a new class as a "simple type" for the mapper.
      *
-     * @param clazz 要注册的类型
+     * @param clazz The class to register.
      */
     public static void registerSimpleType(Class<?> clazz) {
         Args.SIMPLE_TYPE_SET.add(clazz);
     }
 
     /**
-     * 批量注册简单类型，通过逗号分隔的类名字符串。
+     * Registers multiple simple types from a comma-separated string of fully qualified class names.
      *
-     * @param classes 类名字符串，格式为全限定类名，逗号分隔
-     * @throws RuntimeException 如果类名无效或无法找到
+     * @param classes A comma-separated string of class names.
+     * @throws RuntimeException if a class name is invalid or cannot be found.
      */
     public static void registerSimpleType(String classes) {
         if (StringKit.isNotEmpty(classes)) {
@@ -125,9 +123,9 @@ public class OGNL {
     }
 
     /**
-     * 静默注册简单类型，忽略类不存在的异常。
+     * Registers a simple type silently, ignoring {@link ClassNotFoundException}.
      *
-     * @param clazz 类名
+     * @param clazz The fully qualified name of the class.
      */
     public static void registerSimpleTypeSilence(String clazz) {
         try {
@@ -138,21 +136,22 @@ public class OGNL {
     }
 
     /**
-     * 判断指定类是否为已知的简单类型。
+     * Checks if the specified class is a registered simple type.
      *
-     * @param clazz 要检查的类
-     * @return 如果是简单类型则返回 true，否则返回 false
+     * @param clazz The class to check.
+     * @return {@code true} if the class is a simple type, {@code false} otherwise.
      */
     public static boolean isSimpleType(Class<?> clazz) {
         return Args.SIMPLE_TYPE_SET.contains(clazz);
     }
 
     /**
-     * 获取指定接口或类的所有 SPI 实现实例，并按 ORDER 接口的顺序排序（如果适用）。
+     * Gets all SPI (Service Provider Interface) implementation instances for a given interface or class, sorted by the
+     * {@link ORDER} interface if applicable.
      *
-     * @param clazz 接口或类
-     * @param <T>   类型参数
-     * @return 按顺序排列的实现实例列表
+     * @param clazz The interface or class.
+     * @param <T>   The type parameter.
+     * @return A sorted list of implementation instances.
      */
     public static <T> List<T> getInstances(Class<T> clazz) {
         List<T> list = NormalSpiLoader.loadList(false, clazz);
@@ -163,11 +162,11 @@ public class OGNL {
     }
 
     /**
-     * 将函数式接口 Fn 转换为对应的字段名或列名。
+     * Converts a functional interface {@link Fn} (a serializable lambda) to its corresponding field or column name.
      *
-     * @param fn 函数式接口实例
-     * @return 包含类和字段名/列名的 ClassField 或 ClassColumn 对象
-     * @throws RuntimeException 如果反射操作失败
+     * @param fn The functional interface instance (e.g., {@code User::getName}).
+     * @return A {@link ClassField} or {@link ClassColumn} object containing the class and field/column name.
+     * @throws RuntimeException if the reflection operation fails.
      */
     public static ClassField fnToFieldName(Fn<?, ?> fn) {
         try {
@@ -213,28 +212,30 @@ public class OGNL {
     }
 
     /**
-     * 检查参数是否存在 SQL 注入风险。
+     * Checks if the given parameter value poses a risk of SQL injection.
      *
-     * @param value 要检查的参数
-     * @return 如果存在 SQL 注入风险返回 true，否则返回 false
+     * @param value The parameter value to check.
+     * @return {@code true} if a SQL injection risk is detected, {@code false} otherwise.
      */
     public static boolean validateSql(String value) {
         if (StringKit.isBlank(value)) {
             return false;
         }
-        // 处理是否包含 SQL 注释字符 || 检查是否包含 SQL 注入敏感字符
+        // Check for SQL comment characters or sensitive SQL injection characters
         if (SQL_COMMENT_PATTERN.matcher(value).find() || SQL_SYNTAX_PATTERN.matcher(value).find()) {
-            Logger.warn("SQL 注入检查: 检查值=>{}<=存在 SQL 注释字符或 SQL 注入敏感字符", value);
+            Logger.warn(
+                    "SQL injection check: The value '{}' contains SQL comment characters or sensitive SQL injection characters",
+                    value);
             return true;
         }
-        // 转换成小写再进行比较
+        // Convert to lower case for comparison
         value = value.toLowerCase().trim();
-        // 检查是否包含 SQL 语法关键字
+        // Check for SQL syntax keywords
         if (keywords(value, SQL_SYNTAX_KEYWORD.split("\\|"))) {
             return true;
         }
 
-        // 检查是否包含 SQL 注入敏感字符
+        // Check for sensitive SQL function patterns
         for (String pattern : SQL_FUNCTION_PATTERN) {
             if (Pattern.matches(".*" + pattern + ".*", value)) {
                 Logger.warn(MESSAGE_TEMPLATE, value, pattern);
@@ -245,11 +246,11 @@ public class OGNL {
     }
 
     /**
-     * 检查参数是否存在关键字
+     * Checks if the given value contains any of the specified keywords.
      *
-     * @param value    检查参数
-     * @param keywords 关键字列表
-     * @return true：存在；false：不存在
+     * @param value    The value to check.
+     * @param keywords The array of keywords to look for.
+     * @return {@code true} if a keyword is found, {@code false} otherwise.
      */
     private static boolean keywords(String value, String[] keywords) {
         for (String keyword : keywords) {
@@ -262,28 +263,25 @@ public class OGNL {
     }
 
     /**
-     * 防止 SQL 注入处理
-     * 
-     * @param value 字符串
+     * Sanitizes a string to prevent SQL injection. If a potential injection is detected, it filters out SQL blacklist
+     * characters and whitespace.
+     *
+     * @param value The string to sanitize.
+     * @return The sanitized string.
      */
     public static String injection(String value) {
         if (validateSql(value)) {
-            // 过滤sql黑名单字符，存在 SQL 注入，去除空白内容
+            // Filter SQL blacklist characters and remove whitespace if injection is suspected
             value = replaceAllBlank(value);
         }
         return value;
     }
 
     /**
-     * 字符串去除空白：
-     * <ul>
-     * <li>\n 回车</li>
-     * <li>\t 水平制表符</li>
-     * <li>\s 空格</li>
-     * <li>\r 换行</li>
-     * </ul>
+     * Removes various whitespace characters from a string, including newlines, tabs, and spaces.
      *
-     * @param value 字符串
+     * @param value The string to process.
+     * @return The string with whitespace removed.
      */
     public static String replaceAllBlank(String value) {
         Matcher matcher = REPLACE_BLANK.matcher(value);
@@ -291,11 +289,11 @@ public class OGNL {
     }
 
     /**
-     * 删除字段中的转义字符（单引号和双引号）。
+     * Removes escape characters (single and double quotes) from a string.
      *
-     * @param text 待处理的字段
-     * @return 删除转义字符后的字段值
-     * @throws NullPointerException 如果 text 为 null
+     * @param text The string to process.
+     * @return The string with escape characters removed.
+     * @throws NullPointerException if text is null.
      */
     public static String removeEscapeCharacter(String text) {
         Objects.requireNonNull(text);
@@ -303,12 +301,12 @@ public class OGNL {
     }
 
     /**
-     * 生成包含 if 标签的 SQL 脚本。
+     * Wraps a SQL script fragment in a MyBatis {@code <if>} tag.
      *
-     * @param sqlScript SQL 脚本片段
-     * @param ifTest    if 标签的 test 条件
-     * @param newLine   是否在新行包裹脚本
-     * @return 包含 if 标签的 SQL 脚本
+     * @param sqlScript The SQL script fragment.
+     * @param ifTest    The test condition for the {@code <if>} tag.
+     * @param newLine   Whether to wrap the script in new lines.
+     * @return The SQL script wrapped in an {@code <if>} tag.
      */
     public static String convertIf(final String sqlScript, final String ifTest, boolean newLine) {
         String newSqlScript = sqlScript;
@@ -319,14 +317,14 @@ public class OGNL {
     }
 
     /**
-     * 生成包含 trim 标签的 SQL 脚本。
+     * Wraps a SQL script fragment in a MyBatis {@code <trim>} tag.
      *
-     * @param sqlScript       SQL 脚本片段
-     * @param prefix          前缀
-     * @param suffix          后缀
-     * @param prefixOverrides 要移除的前缀
-     * @param suffixOverrides 要移除的后缀
-     * @return 包含 trim 标签的 SQL 脚本
+     * @param sqlScript       The SQL script fragment.
+     * @param prefix          The prefix to add.
+     * @param suffix          The suffix to add.
+     * @param prefixOverrides The prefixes to override.
+     * @param suffixOverrides The suffixes to override.
+     * @return The SQL script wrapped in a {@code <trim>} tag.
      */
     public static String convertTrim(
             final String sqlScript,
@@ -351,12 +349,12 @@ public class OGNL {
     }
 
     /**
-     * 生成包含 choose 标签的 SQL 脚本。
+     * Creates a MyBatis {@code <choose><when><otherwise>} block.
      *
-     * @param whenTest      when 标签的 test 条件
-     * @param whenSqlScript when 条件成立时的 SQL 脚本
-     * @param otherwise     otherwise 标签的内容
-     * @return 包含 choose 标签的 SQL 脚本
+     * @param whenTest      The test condition for the {@code <when>} tag.
+     * @param whenSqlScript The SQL script for the {@code <when>} block.
+     * @param otherwise     The content for the {@code <otherwise>} block.
+     * @return A string representing the {@code <choose>} block.
      */
     public static String convertChoose(final String whenTest, final String whenSqlScript, final String otherwise) {
         return "<choose>" + Symbol.LF + "<when test=\"" + whenTest + Symbol.SINGLE_QUOTE + Symbol.GT + Symbol.LF
@@ -365,14 +363,14 @@ public class OGNL {
     }
 
     /**
-     * 生成包含 foreach 标签的 SQL 脚本。
+     * Wraps a SQL script fragment in a MyBatis {@code <foreach>} tag.
      *
-     * @param sqlScript  foreach 内部的 SQL 脚本
-     * @param collection 集合名称
-     * @param index      索引名称
-     * @param item       元素名称
-     * @param separator  分隔符
-     * @return 包含 foreach 标签的 SQL 脚本
+     * @param sqlScript  The SQL script fragment inside the loop.
+     * @param collection The collection to iterate over.
+     * @param index      The name for the index variable.
+     * @param item       The name for the item variable.
+     * @param separator  The separator to place between elements.
+     * @return The SQL script wrapped in a {@code <foreach>} tag.
      */
     public static String convertForeach(
             final String sqlScript,
@@ -398,41 +396,42 @@ public class OGNL {
     }
 
     /**
-     * 生成包含 where 标签的 SQL 脚本。
+     * Wraps a SQL script fragment in a MyBatis {@code <where>} tag.
      *
-     * @param sqlScript where 内部的 SQL 脚本
-     * @return 包含 where 标签的 SQL 脚本
+     * @param sqlScript The SQL script to be placed inside the tag.
+     * @return The SQL script wrapped in a {@code <where>} tag.
      */
     public static String convertWhere(final String sqlScript) {
         return "<where>" + Symbol.LF + sqlScript + Symbol.LF + "</where>";
     }
 
     /**
-     * 生成包含 set 标签的 SQL 脚本。
+     * Wraps a SQL script fragment in a MyBatis {@code <set>} tag.
      *
-     * @param sqlScript set 内部的 SQL 脚本
-     * @return 包含 set 标签的 SQL 脚本
+     * @param sqlScript The SQL script to be placed inside the tag.
+     * @return The SQL script wrapped in a {@code <set>} tag.
      */
     public static String convertSet(final String sqlScript) {
         return "<set>" + Symbol.LF + sqlScript + Symbol.LF + "</set>";
     }
 
     /**
-     * 生成安全的 MyBatis 参数占位符（#{param}）。
+     * Generates a safe MyBatis parameter placeholder (e.g., {@code #{param}}).
      *
-     * @param param 参数名称
-     * @return 安全的参数占位符脚本
+     * @param param The parameter name.
+     * @return The safe parameter placeholder script.
      */
     public static String safeParam(final String param) {
         return safeParam(param, null);
     }
 
     /**
-     * 生成安全的 MyBatis 参数占位符（#{param,mapping}）。
+     * Generates a safe MyBatis parameter placeholder with additional mapping attributes (e.g.,
+     * {@code #{param,jdbcType=VARCHAR}}).
      *
-     * @param param   参数名称
-     * @param mapping 参数映射配置
-     * @return 安全的参数占位符脚本
+     * @param param   The parameter name.
+     * @param mapping The parameter mapping configuration (e.g., "jdbcType=VARCHAR").
+     * @return The safe parameter placeholder script.
      */
     public static String safeParam(final String param, final String mapping) {
         String target = Symbol.HASH_LEFT_BRACE + param;
@@ -443,20 +442,21 @@ public class OGNL {
     }
 
     /**
-     * 生成非安全的 MyBatis 参数占位符（${param}）。
+     * Generates an unsafe (raw) MyBatis parameter placeholder (e.g., {@code ${param}}).
      *
-     * @param param 参数名称
-     * @return 非安全的参数占位符脚本
+     * @param param The parameter name.
+     * @return The unsafe parameter placeholder script.
      */
     public static String unSafeParam(final String param) {
         return Symbol.DOLLAR_LEFT_BRACE + param + Symbol.C_BRACE_RIGHT;
     }
 
     /**
-     * 生成 TypeHandler 的映射配置。
+     * Generates a mapping configuration string for a {@link TypeHandler}.
      *
-     * @param typeHandler TypeHandler 类
-     * @return TypeHandler 映射配置字符串，若 typeHandler 为 null 则返回 null
+     * @param typeHandler The TypeHandler class.
+     * @return The TypeHandler mapping string (e.g., "typeHandler=com.example.MyTypeHandler"), or null if the handler is
+     *         null.
      */
     public static String mappingTypeHandler(Class<? extends TypeHandler<?>> typeHandler) {
         if (typeHandler != null) {
@@ -466,10 +466,10 @@ public class OGNL {
     }
 
     /**
-     * 生成 JdbcType 的映射配置。
+     * Generates a mapping configuration string for a {@link JdbcType}.
      *
-     * @param jdbcType JdbcType 类型
-     * @return JdbcType 映射配置字符串，若 jdbcType 为 null 则返回 null
+     * @param jdbcType The JdbcType enum.
+     * @return The JdbcType mapping string (e.g., "jdbcType=VARCHAR"), or null if the type is null.
      */
     public static String mappingJdbcType(JdbcType jdbcType) {
         if (jdbcType != null) {
@@ -479,10 +479,10 @@ public class OGNL {
     }
 
     /**
-     * 生成数字精度的映射配置。
+     * Generates a mapping configuration string for a numeric scale.
      *
-     * @param numericScale 数字精度
-     * @return 数字精度映射配置字符串，若 numericScale 为 null 则返回 null
+     * @param numericScale The numeric scale.
+     * @return The numeric scale mapping string (e.g., "numericScale=2"), or null if the scale is null.
      */
     public static String mappingNumericScale(Integer numericScale) {
         if (numericScale != null) {
@@ -492,12 +492,13 @@ public class OGNL {
     }
 
     /**
-     * 组合 TypeHandler、JdbcType 和数字精度的映射配置。
+     * Combines mapping configurations for {@link TypeHandler}, {@link JdbcType}, and numeric scale into a single
+     * string.
      *
-     * @param typeHandler  TypeHandler 类
-     * @param jdbcType     JdbcType 类型
-     * @param numericScale 数字精度
-     * @return 组合的映射配置字符串，若所有参数为 null 则返回 null
+     * @param typeHandler  The TypeHandler class.
+     * @param jdbcType     The JdbcType enum.
+     * @param numericScale The numeric scale.
+     * @return The combined mapping configuration string, or null if all parameters are null.
      */
     public static String convertParamMapping(
             Class<? extends TypeHandler<?>> typeHandler,
@@ -520,11 +521,11 @@ public class OGNL {
     }
 
     /**
-     * 拼接映射配置项。
+     * Appends a mapping configuration item to an existing mapping string.
      *
-     * @param mapping 当前映射配置
-     * @param other   要追加的映射配置
-     * @return 拼接后的映射配置字符串
+     * @param mapping The current mapping configuration.
+     * @param other   The mapping configuration to append.
+     * @return The concatenated mapping string.
      */
     private static String appendMapping(String mapping, String other) {
         if (mapping != null) {

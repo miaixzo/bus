@@ -40,7 +40,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * {@link CompletableFuture}异步工具类 {@link CompletableFuture} 是 Future 的改进，可以通过传入回调对象，在任务完成后调用之
+ * Asynchronous utility class for {@link CompletableFuture}. {@link CompletableFuture} is an improvement over Future,
+ * allowing callbacks to be registered and invoked upon task completion.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,10 +49,10 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class AsyncKit {
 
     /**
-     * 等待所有任务执行完毕，包裹了异常
+     * Waits for all tasks to complete, wrapping any exceptions.
      *
-     * @param tasks 并行任务
-     * @throws UndeclaredThrowableException 未受检异常
+     * @param tasks The parallel tasks.
+     * @throws UndeclaredThrowableException If an unchecked exception occurs during task execution.
      */
     public static void waitAll(final CompletableFuture<?>... tasks) {
         try {
@@ -62,12 +63,12 @@ public class AsyncKit {
     }
 
     /**
-     * 等待任意一个任务执行完毕，包裹了异常
+     * Waits for any one of the tasks to complete, wrapping any exceptions.
      *
-     * @param <T>   任务返回值类型
-     * @param tasks 并行任务
-     * @return 执行结束的任务返回值
-     * @throws UndeclaredThrowableException 未受检异常
+     * @param <T>   The return type of the task.
+     * @param tasks The parallel tasks.
+     * @return The return value of the completed task.
+     * @throws UndeclaredThrowableException If an unchecked exception occurs during task execution.
      */
     public static <T> T waitAny(final CompletableFuture<?>... tasks) {
         try {
@@ -78,12 +79,12 @@ public class AsyncKit {
     }
 
     /**
-     * 获取异步任务结果，包裹了异常
+     * Retrieves the result of an asynchronous task, wrapping any exceptions.
      *
-     * @param <T>  任务返回值类型
-     * @param task 异步任务
-     * @return 任务返回值
-     * @throws RuntimeException 未受检异常
+     * @param <T>  The return type of the task.
+     * @param task The asynchronous task.
+     * @return The return value of the task.
+     * @throws RuntimeException If an unchecked exception occurs during task execution.
      */
     public static <T> T get(final CompletableFuture<T> task) {
         try {
@@ -94,11 +95,11 @@ public class AsyncKit {
     }
 
     /**
-     * 获取所有任务的返回值
+     * Retrieves the return values of all tasks.
      *
-     * @param <T>   任务返回值类型
-     * @param tasks 任务集合
-     * @return 任务结果集合
+     * @param <T>   The return type of the task.
+     * @param tasks The collection of tasks.
+     * @return A list of task results.
      */
     public static <T> List<T> allOfGet(final List<CompletableFuture<T>> tasks) {
         Assert.notEmpty(tasks);
@@ -107,11 +108,11 @@ public class AsyncKit {
     }
 
     /**
-     * 获取所有任务的返回值，重载方法
+     * Retrieves the return values of all tasks.
      *
-     * @param <T>   任务返回值类型
-     * @param tasks 任务集合
-     * @return 任务结果集合
+     * @param <T>   The return type of the task.
+     * @param tasks The collection of tasks.
+     * @return A list of task results.
      */
     @SafeVarargs
     public static <T> List<T> allOfGet(final CompletableFuture<T>... tasks) {
@@ -121,12 +122,12 @@ public class AsyncKit {
     }
 
     /**
-     * 获取所有任务的返回值，可以为异常任务添加异常处理方法
+     * Retrieves the return values of all tasks, with an optional exception handler for failed tasks.
      *
-     * @param <T>      任务内返回值的类型
-     * @param tasks    任务集合
-     * @param eHandler 异常处理方法
-     * @return 任务结果集合
+     * @param <T>      The return type of the task.
+     * @param tasks    The collection of tasks.
+     * @param eHandler The exception handler method.
+     * @return A list of task results.
      */
     public static <T> List<T> allOfGet(final CompletableFuture<T>[] tasks, final Function<Exception, T> eHandler) {
         Assert.notEmpty(tasks);
@@ -135,12 +136,12 @@ public class AsyncKit {
     }
 
     /**
-     * 获取所有任务的返回值，可以为异常任务添加异常处理方法，重载方法
+     * Retrieves the return values of all tasks, with an optional exception handler for failed tasks.
      *
-     * @param <T>      任务返回值类型
-     * @param tasks    任务集合
-     * @param eHandler 异常处理方法
-     * @return 任务结果集合
+     * @param <T>      The return type of the task.
+     * @param tasks    The collection of tasks.
+     * @param eHandler The exception handler method.
+     * @return A list of task results.
      */
     public static <T> List<T> allOfGet(final List<CompletableFuture<T>> tasks, final Function<Exception, T> eHandler) {
         Assert.notEmpty(tasks);
@@ -149,11 +150,11 @@ public class AsyncKit {
     }
 
     /**
-     * 获取所有任务的返回值，并行执行，重载方法
+     * Retrieves the return values of all tasks, executed in parallel.
      *
-     * @param <T>   任务返回值类型
-     * @param tasks 任务集合
-     * @return 任务结果集合
+     * @param <T>   The return type of the task.
+     * @param tasks The collection of tasks.
+     * @return A list of task results.
      */
     @SafeVarargs
     public static <T> List<T> parallelAllOfGet(final CompletableFuture<T>... tasks) {
@@ -163,11 +164,11 @@ public class AsyncKit {
     }
 
     /**
-     * 获取所有任务的返回值，并行执行
+     * Retrieves the return values of all tasks, executed in parallel.
      *
-     * @param <T>   任务返回值类型
-     * @param tasks 任务集合
-     * @return 任务结果集合
+     * @param <T>   The return type of the task.
+     * @param tasks The collection of tasks.
+     * @return A list of task results.
      */
     public static <T> List<T> parallelAllOfGet(final List<CompletableFuture<T>> tasks) {
         Assert.notEmpty(tasks);
@@ -176,12 +177,13 @@ public class AsyncKit {
     }
 
     /**
-     * 获取所有任务的返回值，并行执行，可以为异常任务添加异常处理方法
+     * Retrieves the return values of all tasks, executed in parallel, with an optional exception handler for failed
+     * tasks.
      *
-     * @param <T>      任务返回值类型
-     * @param tasks    任务集合
-     * @param eHandler 异常处理方法
-     * @return 任务结果集合
+     * @param <T>      The return type of the task.
+     * @param tasks    The collection of tasks.
+     * @param eHandler The exception handler method.
+     * @return A list of task results.
      */
     public static <T> List<T> parallelAllOfGet(
             final CompletableFuture<T>[] tasks,
@@ -192,12 +194,13 @@ public class AsyncKit {
     }
 
     /**
-     * 获取所有任务的返回值，并行执行，可以为异常任务添加异常处理方法，重载方法
+     * Retrieves the return values of all tasks, executed in parallel, with an optional exception handler for failed
+     * tasks.
      *
-     * @param <T>      任务返回值类型
-     * @param tasks    任务集合
-     * @param eHandler 异常处理方法
-     * @return 任务结果集合
+     * @param <T>      The return type of the task.
+     * @param tasks    The collection of tasks.
+     * @param eHandler The exception handler method.
+     * @return A list of task results.
      */
     public static <T> List<T> parallelAllOfGet(
             final List<CompletableFuture<T>> tasks,
@@ -208,13 +211,13 @@ public class AsyncKit {
     }
 
     /**
-     * 处理任务集合
+     * Processes a collection of tasks.
      *
-     * @param <T>        任务返回值类型
-     * @param tasks      任务集合
-     * @param eHandler   异常处理方法
-     * @param isParallel 是否是并行 {@link Stream}
-     * @return 任务结果集合
+     * @param <T>        The return type of the task.
+     * @param tasks      The collection of tasks.
+     * @param eHandler   The exception handler method.
+     * @param isParallel Whether to execute in parallel using {@link Stream}.
+     * @return A list of task results.
      */
     private static <T> List<T> execute(
             final List<CompletableFuture<T>> tasks,

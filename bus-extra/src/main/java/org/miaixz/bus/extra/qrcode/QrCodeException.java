@@ -32,7 +32,7 @@ import java.io.Serial;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Qrcode异常
+ * Exception for QR code related operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,50 +43,51 @@ public class QrCodeException extends InternalException {
     private static final long serialVersionUID = 2852287692888L;
 
     /**
-     * 构造
+     * Constructs a new QrCodeException with the specified cause.
      *
-     * @param e 异常
+     * @param e The cause of the exception.
      */
     public QrCodeException(final Throwable e) {
         super(e);
     }
 
     /**
-     * 构造
+     * Constructs a new QrCodeException with the specified detail message.
      *
-     * @param message 消息
+     * @param message The detail message.
      */
     public QrCodeException(final String message) {
         super(message);
     }
 
     /**
-     * 构造
+     * Constructs a new QrCodeException with a formatted detail message.
      *
-     * @param format 消息模板
-     * @param args   参数
+     * @param format The format string for the detail message.
+     * @param args   The arguments referenced by the format specifiers in the format string.
      */
     public QrCodeException(final String format, final Object... args) {
         super(format, args);
     }
 
     /**
-     * 构造
+     * Constructs a new QrCodeException with the specified detail message and cause.
      *
-     * @param message 消息
-     * @param cause   被包装的子异常
+     * @param message The detail message.
+     * @param cause   The cause of the exception.
      */
     public QrCodeException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * 构造
+     * Constructs a new QrCodeException with the specified detail message, cause, suppression enabled or disabled, and
+     * writable stack trace enabled or disabled.
      *
-     * @param message            消息
-     * @param cause              被包装的子异常
-     * @param enableSuppression  是否启用抑制
-     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     * @param message            The detail message.
+     * @param cause              The cause of the exception.
+     * @param enableSuppression  Whether or not suppression is enabled or disabled.
+     * @param writableStackTrace Whether or not the stack trace should be writable.
      */
     public QrCodeException(final String message, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
@@ -94,11 +95,11 @@ public class QrCodeException extends InternalException {
     }
 
     /**
-     * 构造
+     * Constructs a new QrCodeException with the specified cause and a formatted detail message.
      *
-     * @param cause  被包装的子异常
-     * @param format 消息模板
-     * @param args   参数
+     * @param cause  The cause of the exception.
+     * @param format The format string for the detail message.
+     * @param args   The arguments referenced by the format specifiers in the format string.
      */
     public QrCodeException(final Throwable cause, final String format, final Object... args) {
         super(cause, format, args);

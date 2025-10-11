@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.cron.timings;
 
+import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.cron.crontab.TimerCrontab;
+
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.miaixz.bus.core.xyz.ThreadKit;
-import org.miaixz.bus.cron.crontab.TimerCrontab;
-
 /**
- * 系统计时器
+ * A system timer that manages delayed tasks using a {@link TimingWheel}. It uses a {@link DelayQueue} to efficiently
+ * retrieve expired task lists (buckets) from the timing wheel.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,38 +44,41 @@ import org.miaixz.bus.cron.crontab.TimerCrontab;
 public class SystemTimer {
 
     /**
-     * 底层时间轮
+     * The underlying timing wheel.
      */
     private final TimingWheel timeWheel;
 
     /**
-     * 一个Timer只有一个delayQueue
+     * A single delay queue is used for the timer to hold expired task lists.
      */
     private final DelayQueue<TimerTaskList> delayQueue = new DelayQueue<>();
 
     /**
-     * 执行队列取元素超时时长，单位毫秒，默认100
+     * The timeout for polling the delay queue, in milliseconds. Defaults to 100ms.
      */
     private long delayQueueTimeout = 100;
 
     /**
-     * 轮询delayQueue获取过期任务线程
+     * The thread pool for the boss thread that polls the delay queue for expired tasks.
      */
     private ExecutorService bossThreadPool;
+    /**
+     * A flag to control the running state of the boss thread.
+     */
     private volatile boolean isRunning;
 
     /**
-     * 构造
+     * Constructs a new SystemTimer. Initializes a {@link TimingWheel} with a tick duration of 1ms and 20 slots.
      */
     public SystemTimer() {
         timeWheel = new TimingWheel(1, 20, delayQueue::offer);
     }
 
     /**
-     * 设置执行队列取元素超时时长，单位毫秒
+     * Sets the timeout for polling the delay queue.
      *
-     * @param delayQueueTimeout 执行队列取元素超时时长，单位毫秒
-     * @return this
+     * @param delayQueueTimeout The timeout in milliseconds.
+     * @return this {@link SystemTimer} instance.
      */
     public SystemTimer setDelayQueueTimeout(final long delayQueueTimeout) {
         this.delayQueueTimeout = delayQueueTimeout;
@@ -82,9 +86,10 @@ public class SystemTimer {
     }
 
     /**
-     * 启动，异步
+     * Starts the timer asynchronously. A background thread is started to continuously check for and process expired
+     * tasks.
      *
-     * @return this
+     * @return this {@link SystemTimer} instance.
      */
     public SystemTimer start() {
         bossThreadPool = ThreadKit.newSingleExecutor();
@@ -100,29 +105,33 @@ public class SystemTimer {
     }
 
     /**
-     * 强制结束
+     * Forcibly stops the timer. This will stop the background thread and shut down the executor service.
      */
     public void stop() {
         this.isRunning = false;
-        this.bossThreadPool.shutdown();
+        if (this.bossThreadPool != null) {
+            this.bossThreadPool.shutdown();
+        }
     }
 
     /**
-     * 添加任务
+     * Adds a delayed task to the timer.
      *
-     * @param timerCrontab 任务
+     * @param timerCrontab The {@link TimerCrontab} to add.
      */
     public void addTask(final TimerCrontab timerCrontab) {
-        // 添加失败任务直接执行
+        // If the task cannot be added to the timing wheel (e.g., its delay is in the past),
+        // execute it immediately in a separate thread.
         if (!timeWheel.addTask(timerCrontab)) {
             ThreadKit.execAsync(timerCrontab.getTask());
         }
     }
 
     /**
-     * 指针前进并获取过期任务
+     * Advances the clock of the timing wheel and processes any expired tasks. This method is called repeatedly by the
+     * background thread.
      *
-     * @return 是否结束
+     * @return {@code true} if the timer should continue running, {@code false} if it has been stopped.
      */
     private boolean advanceClock() {
         if (!isRunning) {
@@ -131,22 +140,23 @@ public class SystemTimer {
         try {
             final TimerTaskList timerTaskList = poll();
             if (null != timerTaskList) {
-                // 推进时间
+                // Advance the timing wheel's clock to the expiration time of the retrieved list.
                 timeWheel.advanceClock(timerTaskList.getExpire());
-                // 执行过期任务（包含降级操作）
+                // Execute all tasks in the expired list (this may include cascading to lower-level wheels).
                 timerTaskList.flush(this::addTask);
             }
         } catch (final InterruptedException ignore) {
+            // If interrupted, stop the timer.
             return false;
         }
         return true;
     }
 
     /**
-     * 执行队列取任务列表
+     * Polls the delay queue to retrieve the next expired task list.
      *
-     * @return 任务列表
-     * @throws InterruptedException 中断异常
+     * @return The expired {@link TimerTaskList}, or {@code null} if the poll times out or returns immediately.
+     * @throws InterruptedException if the thread is interrupted while waiting.
      */
     private TimerTaskList poll() throws InterruptedException {
         return this.delayQueueTimeout > 0 ? delayQueue.poll(delayQueueTimeout, TimeUnit.MILLISECONDS)

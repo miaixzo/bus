@@ -34,29 +34,35 @@ import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * char[]包装，提供zero-copy的数组操作
+ * CharArray wrapper, providing zero-copy array operations. This class wraps a char array and provides methods to
+ * manipulate it, implementing {@link CharSequence} and {@link Iterable} for character iteration.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CharArray implements CharSequence, Iterable<Character> {
 
+    /**
+     * The internal character array.
+     */
     private final char[] value;
 
     /**
-     * 构造
+     * Constructs a new {@code CharArray} from a {@link String}. The string's characters are converted into a char
+     * array.
      *
-     * @param value String值
+     * @param value The string value to wrap.
      */
     public CharArray(final String value) {
         this(value.toCharArray(), false);
     }
 
     /**
-     * 构造，注意此方法共享数组
+     * Constructs a new {@code CharArray} from a char array. This constructor allows for optional copying of the input
+     * array.
      *
-     * @param value char数组
-     * @param copy  可选是否拷贝数组，如果为{@code false}则复用数组
+     * @param value The char array to wrap.
+     * @param copy  If {@code true}, the input array is copied; otherwise, the array is reused (zero-copy).
      */
     public CharArray(final char[] value, final boolean copy) {
         this.value = copy ? value.clone() : value;
@@ -76,11 +82,11 @@ public class CharArray implements CharSequence, Iterable<Character> {
     }
 
     /**
-     * 设置字符
+     * Sets the character at the specified index. Supports negative indexing, where -1 refers to the last position.
      *
-     * @param index 位置，支持复数，-1表示最后一个位置
-     * @param c     字符
-     * @return this
+     * @param index The index at which to set the character. Supports negative values (e.g., -1 for the last character).
+     * @param c     The character to set.
+     * @return This {@code CharArray} instance, allowing for method chaining.
      */
     public CharArray set(int index, final char c) {
         if (index < 0) {
@@ -91,9 +97,9 @@ public class CharArray implements CharSequence, Iterable<Character> {
     }
 
     /**
-     * 获取原始数组，不做拷贝
+     * Returns the underlying character array without creating a copy.
      *
-     * @return array
+     * @return The internal char array.
      */
     public char[] array() {
         return this.value;

@@ -48,21 +48,38 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import java.util.Map;
 
 /**
- * 百度 登录
+ * Baidu login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BaiduProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code BaiduProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public BaiduProvider(Context context) {
         super(context, Registry.BAIDU);
     }
 
+    /**
+     * Constructs a {@code BaiduProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public BaiduProvider(Context context, CacheX cache) {
         super(context, Registry.BAIDU, cache);
     }
 
+    /**
+     * Retrieves the access token from Baidu's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
@@ -70,12 +87,18 @@ public class BaiduProvider extends AbstractProvider {
     }
 
     /**
-     * https://openapi.baidu.com/rest/2.0/passport/users/getInfo?access_token=121.c86e87cc0828cc1dabb8faee540531d4.YsUIAWvYbgqVni1VhkgKgyLh8nEyELbDOEZs_OA.OgDgmA
-     * https://openapi.baidu.com/rest/2.0/passport/users/getInfo?access_token=121.2907d9facf9fb97adf7287fa75496eda.Y3NSjR3-3HKt1RgT0HEl7GgxRXT5gOOVdngXezY.OcC_7g
-     * 新旧应用返回的用户信息不一致
+     * Retrieves user information from Baidu's user info endpoint. Note: User information returned by new and old
+     * applications may be inconsistent.
+     * <p>
+     * Example URLs:
+     * <ul>
+     * <li>https://openapi.baidu.com/rest/2.0/passport/users/getInfo?access_token=...</li>
+     * <li>https://openapi.baidu.com/rest/2.0/passport/users/getInfo?access_token=...</li>
+     * </ul>
      *
-     * @param authToken token信息
-     * @return Property
+     * @param authToken the token information
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
     public Material getUserInfo(AuthToken authToken) {
@@ -104,12 +127,25 @@ public class BaiduProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves the user's avatar URL from the response object.
+     *
+     * @param object the map containing user information
+     * @return the avatar URL, or null if not found
+     */
     private String getAvatar(Map<String, Object> object) {
         String portrait = (String) object.get("portrait");
         return StringKit.isEmpty(portrait) ? null
                 : String.format("http://himg.bdimg.com/sys/portrait/item/%s.jpg", portrait);
     }
 
+    /**
+     * Revokes the authorization for the given access token.
+     *
+     * @param authToken the token information to revoke
+     * @return a {@link Message} indicating the result of the revocation
+     * @throws AuthorizedException if parsing the response fails or an error occurs during revocation
+     */
     @Override
     public Message revoke(AuthToken authToken) {
         String response = doGetRevoke(authToken);
@@ -120,7 +156,7 @@ public class BaiduProvider extends AbstractProvider {
             }
             this.checkResponse(object);
 
-            // 返回1表示取消授权成功，否则失败
+            // Returns 1 for successful authorization cancellation, otherwise failed
             Object resultObj = object.get("result");
             int result = resultObj instanceof Number ? ((Number) resultObj).intValue() : 0;
             Errors status = result == 1 ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
@@ -130,6 +166,12 @@ public class BaiduProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         String refreshUrl = Builder.fromUrl(this.complex.refresh()).queryParam("grant_type", "refresh_token")
@@ -141,10 +183,11 @@ public class BaiduProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -154,9 +197,10 @@ public class BaiduProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param object 请求响应内容
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error") || object.containsKey("error_code")) {
@@ -166,6 +210,13 @@ public class BaiduProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Parses the access token response string into an {@link AuthToken} object.
+     *
+     * @param response the response string from the access token endpoint
+     * @return the parsed {@link AuthToken}
+     * @throws AuthorizedException if the response indicates an error or is missing required token information
+     */
     private AuthToken getAuthToken(String response) {
         try {
             Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);

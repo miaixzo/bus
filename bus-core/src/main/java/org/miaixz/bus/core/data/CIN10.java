@@ -38,18 +38,27 @@ import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 10位公民身份号码（Citizen Identification Number）用于台湾、香港、澳门
+ * 10-digit Citizen Identification Number (CIN) for Taiwan, Hong Kong, and Macau.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CIN10 {
 
+    /**
+     * Regex for Taiwan ID card number.
+     */
     private static final Pattern PATTERN_TW = Pattern.compile("^[a-zA-Z][0-9]{9}$");
+    /**
+     * Regex for Macau ID card number.
+     */
     private static final Pattern PATTERN_MC = Pattern.compile("^[157][0-9]{6}\\(?[0-9A-Z]\\)?$");
+    /**
+     * Regex for Hong Kong ID card number.
+     */
     private static final Pattern PATTERN_HK = Pattern.compile("^[A-Z]{1,2}[0-9]{6}\\(?[0-9A]\\)?$");
     /**
-     * 台湾身份首字母对应数字
+     * Mapping of the first letter of a Taiwan ID card to a number.
      */
     private static final Map<Character, Integer> TW_FIRST_CODE = new HashMap<>();
 
@@ -82,26 +91,38 @@ public class CIN10 {
         TW_FIRST_CODE.put('O', 35);
     }
 
+    /**
+     * The ID card number.
+     */
     private final String code;
+    /**
+     * The province.
+     */
     private final String province;
+    /**
+     * The gender.
+     */
     private final Gender gender;
+    /**
+     * Whether the ID card number has been verified.
+     */
     private final boolean verified;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param code 身份证号码
-     * @throws IllegalArgumentException 身份证格式不支持
+     * @param code The ID card number.
+     * @throws IllegalArgumentException if the ID card format is not supported.
      */
     public CIN10(String code) throws IllegalArgumentException {
         this.code = code;
         if (StringKit.isNotBlank(code)) {
-            // 中文空格替换为英文
+            // Replace Chinese parentheses with English ones.
             code = StringKit.replace(code, "（", Symbol.PARENTHESE_LEFT);
             code = StringKit.replace(code, "）", Symbol.PARENTHESE_RIGHT);
-            // 台湾
+            // Taiwan
             if (PatternKit.isMatch(PATTERN_TW, code)) {
-                this.province = "台湾";
+                this.province = "Taiwan";
                 final char char2 = code.charAt(1);
                 if ('1' == char2) {
                     this.gender = Gender.MALE;
@@ -112,15 +133,15 @@ public class CIN10 {
                 }
                 this.verified = verifyTWCard(code);
                 return;
-                // 澳门
+                // Macau
             } else if (PatternKit.isMatch(PATTERN_MC, code)) {
-                this.province = "澳门";
+                this.province = "Macau";
                 this.gender = Gender.UNKNOWN;
                 this.verified = true;
                 return;
-                // 香港
+                // Hong Kong
             } else if (PatternKit.isMatch(PATTERN_HK, code)) {
-                this.province = "香港";
+                this.province = "Hong Kong";
                 this.gender = Gender.UNKNOWN;
                 this.verified = verfyHKCard(code);
                 return;
@@ -131,20 +152,20 @@ public class CIN10 {
     }
 
     /**
-     * 创建并验证台湾、香港、澳门身份证号码
+     * Creates and validates a Taiwan, Hong Kong, or Macau ID card number.
      *
-     * @param code 台湾、香港、澳门身份证号码
-     * @return CIN10
+     * @param code The Taiwan, Hong Kong, or Macau ID card number.
+     * @return A CIN10 object.
      */
     public static CIN10 of(final String code) {
         return new CIN10(code);
     }
 
     /**
-     * 验证台湾身份证号码
+     * Verifies a Taiwan ID card number.
      *
-     * @param code 身份证号码
-     * @return 验证码是否符合
+     * @param code The ID card number.
+     * @return {@code true} if the checksum is valid, {@code false} otherwise.
      */
     private static boolean verifyTWCard(final String code) {
         final Integer iStart = TW_FIRST_CODE.get(code.charAt(0));
@@ -166,11 +187,15 @@ public class CIN10 {
     }
 
     /**
-     * 验证香港身份证号码(目前存在Bug，部份特殊身份证无法检查) 身份证前2位为英文字符，如果只出现一个英文字符则表示第一位是空格，对应数字58 前2位英文字符A-Z分别对应数字10-35
-     * 最后一位校验码为0-9的数字加上字符"A"，"A"代表10 将身份证号码全部转换为数字，分别对应乘9-1相加的总和，整除11则证件号码有效
+     * Verifies a Hong Kong ID card number (currently has a bug, some special ID cards cannot be checked). The first 2
+     * digits of the ID card are English characters. If only one English character appears, it means the first digit is
+     * a space, corresponding to the number 58. The first 2 English characters A-Z correspond to the numbers 10-35. The
+     * last check digit is a number from 0-9 plus the character "A", where "A" represents 10. Convert the entire ID card
+     * number to numbers, multiply by 9-1 respectively, sum them up, and if the sum is divisible by 11, the ID card
+     * number is valid.
      *
-     * @param code 身份证号码
-     * @return 验证码是否符合
+     * @param code The ID card number.
+     * @return {@code true} if the checksum is valid, {@code false} otherwise.
      */
     private static boolean verfyHKCard(final String code) {
         String card = code.replaceAll("[()]", Normal.EMPTY);
@@ -182,7 +207,7 @@ public class CIN10 {
             sum = 522 + (Character.toUpperCase(card.charAt(0)) - 55) * 8;
         }
 
-        // 首字母A-Z，A表示1，以此类推
+        // The first letter A-Z, A represents 1, and so on.
         final String mid = card.substring(1, 7);
         final String end = card.substring(7, 8);
         final char[] chars = mid.toCharArray();
@@ -200,36 +225,36 @@ public class CIN10 {
     }
 
     /**
-     * 获取CIN10码
+     * Gets the CIN10 code.
      *
-     * @return CIN10码
+     * @return The CIN10 code.
      */
     public String getCode() {
         return code;
     }
 
     /**
-     * 获取省份
+     * Gets the province.
      *
-     * @return 省份
+     * @return The province.
      */
     public String getProvince() {
         return province;
     }
 
     /**
-     * 获取性别
+     * Gets the gender.
      *
-     * @return 性别
+     * @return The gender.
      */
     public Gender getGender() {
         return gender;
     }
 
     /**
-     * 是否验证通过
+     * Checks if the ID card number has been verified.
      *
-     * @return 是否验证通过
+     * @return {@code true} if the ID card number has been verified, {@code false} otherwise.
      */
     public boolean isVerified() {
         return verified;

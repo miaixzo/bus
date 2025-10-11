@@ -34,7 +34,7 @@ import org.miaixz.bus.mapper.parsing.SqlSourceEnhancer;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 默认的主键生成器，处理插入前的主键生成逻辑。
+ * The default primary key enhancer, which handles primary key generation logic before insertion.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,13 +42,13 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class PrimaryKeyEnhancer implements SqlSourceEnhancer {
 
     /**
-     * 自定义 SQL 源，根据主键生成器类型进行处理。
+     * Customizes the SQL source based on the primary key generator type.
      *
-     * @param sqlSource 原始 SQL 源
-     * @param entity    实体表信息
-     * @param ms        MappedStatement 对象
-     * @param context   提供者上下文，包含方法和接口信息
-     * @return 自定义后的 SQL 源
+     * @param sqlSource The original SQL source.
+     * @param entity    The entity table information.
+     * @param ms        The {@link MappedStatement} object.
+     * @param context   The provider context, containing method and interface information.
+     * @return The customized SQL source.
      */
     @Override
     public SqlSource customize(SqlSource sqlSource, TableMeta entity, MappedStatement ms, ProviderContext context) {

@@ -28,11 +28,20 @@
 package org.miaixz.bus.image.builtin;
 
 /**
+ * ESoundex is an implementation of the Soundex algorithm, specifically configured for a particular use case by
+ * extending the {@link Soundex} class. It initializes with specific parameters for encoding, including a maximum length
+ * and a mapping table.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ESoundex extends Soundex {
 
+    /**
+     * Constructs a new {@code ESoundex} instance. It calls the superclass constructor with parameters: {@code true} for
+     * retaining the first letter, {@code Integer.MAX_VALUE} for the maximum length of the encoded string, {@code 0} for
+     * the minimum length of the encoded string, and {@code MAP_6} as the character mapping table.
+     */
     public ESoundex() {
         super(true, Integer.MAX_VALUE, 0, MAP_6);
     }

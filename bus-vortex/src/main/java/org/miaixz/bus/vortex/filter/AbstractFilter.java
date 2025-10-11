@@ -38,7 +38,10 @@ import org.miaixz.bus.core.net.PORT;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.*;
+import org.miaixz.bus.vortex.Args;
+import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Filter;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -47,10 +50,13 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
+
 import reactor.core.publisher.Mono;
 
 /**
- * 抽象过滤器基类，提供公共方法和模板方法模式 所有具体过滤器继承此类，实现 doFilterInternal 方法
+ * Abstract base class for filters, providing common methods and implementing the template method pattern. All concrete
+ * filters should extend this class and implement the {@link #doFilter(ServerWebExchange, WebFilterChain, Context)}
+ * method.
  *
  * @author Justubborn
  * @since Java 17+
@@ -58,39 +64,36 @@ import reactor.core.publisher.Mono;
 public abstract class AbstractFilter implements Filter {
 
     /**
-     * 过滤器主逻辑，获取上下文并调用子类的内部过滤方法
+     * The main logic of the filter, which obtains the context and calls the internal filtering method of the subclass.
      *
-     * @param exchange 当前的 ServerWebExchange 对象，包含请求和响应
-     * @param chain    过滤器链，用于继续处理请求
-     * @return {@link Mono<Void>} 表示异步处理完成
+     * @param exchange The current {@link ServerWebExchange} object, containing the request and response.
+     * @param chain    The filter chain, used to continue processing the request.
+     * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
      */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        Format.info(exchange, "FILTER_ENTER", "Entering filter: " + this.getClass().getSimpleName());
-        return doFilter(exchange, chain, getContext(exchange)).doOnTerminate(
-                () -> Format.debug(exchange, "FILTER_EXIT", "Exiting filter: " + this.getClass().getSimpleName()))
-                .doOnError(
-                        e -> Format.error(
-                                exchange,
-                                "FILTER_ERROR",
-                                "Error in " + this.getClass().getSimpleName() + ": " + e.getMessage()));
+        Logger.info("==>     Filter: {}", this.getClass().getSimpleName());
+        return doFilter(exchange, chain, getContext(exchange))
+                .doOnTerminate(() -> Logger.debug("<==     Filter: {}", this.getClass().getSimpleName()))
+                .doOnError(e -> Logger.error("Error in {}: {}", this.getClass().getSimpleName(), e.getMessage()));
     }
 
     /**
-     * 内部过滤方法，由子类实现具体逻辑
+     * Internal filtering method, to be implemented by subclasses for specific logic.
      *
-     * @param exchange 当前的 ServerWebExchange 对象
-     * @param chain    过滤器链
-     * @param context  请求上下文
-     * @return {@link Mono<Void>} 表示异步处理完成
+     * @param exchange The current {@link ServerWebExchange} object.
+     * @param chain    The filter chain.
+     * @param context  The request context.
+     * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
      */
     protected abstract Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context);
 
     /**
-     * 获取请求上下文
+     * Retrieves the request context.
      *
-     * @param exchange ServerWebExchange 对象
-     * @return 请求上下文
+     * @param exchange The {@link ServerWebExchange} object.
+     * @return The request context.
+     * @throws ValidateException if the context is null.
      */
     protected Context getContext(ServerWebExchange exchange) {
         Context context = Context.get(exchange);
@@ -102,10 +105,11 @@ public abstract class AbstractFilter implements Filter {
     }
 
     /**
-     * 获取资产信息
+     * Retrieves the asset information.
      *
-     * @param context 请求上下文
-     * @return 资产信息
+     * @param context The request context.
+     * @return The asset information.
+     * @throws ValidateException if the context is null.
      */
     protected Assets getAssets(Context context) {
         if (context == null) {
@@ -115,10 +119,11 @@ public abstract class AbstractFilter implements Filter {
     }
 
     /**
-     * 获取请求参数映射
+     * Retrieves the request parameter map.
      *
-     * @param context 请求上下文
-     * @return 请求参数映射
+     * @param context The request context.
+     * @return The request parameter map.
+     * @throws ValidateException if the context is null.
      */
     protected Map<String, String> getRequestMap(Context context) {
         if (context == null) {
@@ -128,10 +133,10 @@ public abstract class AbstractFilter implements Filter {
     }
 
     /**
-     * 设置默认 Content-Type（如果请求头缺失）
+     * Sets the default Content-Type if the request header is missing.
      *
-     * @param exchange ServerWebExchange 对象
-     * @return 更新后的 ServerWebExchange
+     * @param exchange The {@link ServerWebExchange} object.
+     * @return The updated {@link ServerWebExchange} with the Content-Type header set if it was missing.
      */
     protected ServerWebExchange setContentType(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
@@ -154,56 +159,61 @@ public abstract class AbstractFilter implements Filter {
     }
 
     /**
-     * 从多个渠道安全地获取请求的原始 Authority（主机+端口），专为代理环境设计。
+     * Safely retrieves the original Authority (host + port) of the request from multiple channels, designed for proxy
+     * environments.
      * <p>
-     * 此方法按照以下优先级顺序查找主机信息，并确保返回结果始终包含端口号：
+     * This method searches for host information in the following priority order, ensuring the returned result always
+     * includes the port number:
      * <ol>
-     * <li><b>Forwarded Header (RFC 7239):</b> 最现代、最标准的头，优先解析。</li>
-     * <li><b>X-Forwarded-Host Header:</b> 最常见的事实标准，广泛用于各类代理。</li>
-     * <li><b>Host Header:</b> HTTP/1.1 标准头，一个正确配置的代理应该会传递它。</li>
-     * <li><b>Request URI Host:</b> 最后的备选方案，直接从请求URI中获取。</li>
+     * <li><b>Forwarded Header (RFC 7239):</b> The most modern and standard header, parsed first.</li>
+     * <li><b>X-Forwarded-Host Header:</b> The most common de facto standard, widely used in various proxies.</li>
+     * <li><b>Host Header:</b> The HTTP/1.1 standard header, which a correctly configured proxy should pass.</li>
+     * <li><b>Request URI Host:</b> The last fallback, directly obtained from the request URI.</li>
      * </ol>
-     * 如果找到的主机信息不包含端口，将根据请求协议（http/https）自动附加默认的 80/443 端口。
+     * If the found host information does not contain a port, the default 80/443 port will be automatically appended
+     * based on the request protocol (http/https).
      *
-     * @param request ServerHttpRequest 对象
-     * @return 包含主机和端口的 {@link Optional} 对象。如果所有渠道都无法找到有效主机，则返回 {@link Optional#empty()}。
+     * @param request The {@link ServerHttpRequest} object.
+     * @return An {@link Optional} object containing the host and port. If no valid host can be found from any source,
+     *         {@link Optional#empty()} is returned.
      */
     public static Optional<String> getOriginalAuthority(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
         String protocol = getOriginalProtocol(request);
 
-        // 优先级 1: 尝试解析 'Forwarded' (RFC 7239)
+        // Priority 1: Try to parse 'Forwarded' (RFC 7239)
         String forwardedHeader = headers.getFirst("Forwarded");
         if (StringKit.hasText(forwardedHeader)) {
             Optional<String> authority = Arrays.stream(forwardedHeader.split(Symbol.SEMICOLON)).map(String::trim)
                     .filter(part -> part.toLowerCase().startsWith("host="))
                     .map(part -> part.substring(5).trim().replace("\"", Normal.EMPTY)).findFirst();
             if (authority.isPresent()) {
-                Logger.debug("Authority '{}' found in 'Forwarded' header.", authority.get());
+                Logger.debug("Authority '{}' found in 'Forwarded' header", authority.get());
                 return authority.map(host -> appendPortIfMissing(host, protocol));
             }
         }
 
-        // 优先级 2: 尝试解析 'X-Forwarded-Host'
+        // Priority 2: Try to parse 'X-Forwarded-Host'
         String forwardedHostHeader = headers.getFirst("X-Forwarded-Host");
         if (StringKit.hasText(forwardedHostHeader)) {
-            // 在多级代理中，此头可能包含多个域名，第一个是原始域名
+            // In multi-level proxies, this header may contain multiple domain names; the first one is the original
+            // domain.
             String authority = forwardedHostHeader.split(Symbol.COMMA)[0].trim();
-            Logger.debug("Authority '{}' found in 'X-Forwarded-Host' header.", authority);
+            Logger.debug("Authority '{}' found in 'X-Forwarded-Host' header", authority);
             return Optional.of(appendPortIfMissing(authority, protocol));
         }
 
-        // 优先级 3: 尝试解析 'Host'
+        // Priority 3: Try to parse 'Host'
         String hostHeader = headers.getFirst("Host");
         if (StringKit.hasText(hostHeader)) {
-            Logger.debug("Authority '{}' found in 'Host' header.", hostHeader);
+            Logger.debug("Authority '{}' found in 'Host' header", hostHeader);
             return Optional.of(appendPortIfMissing(hostHeader, protocol));
         }
 
-        // 优先级 4: 使用 getURI().getHost() 作为最后备选
+        // Priority 4: Use getURI().getHost() as a last fallback
         String uriHost = request.getURI().getHost();
         if (StringKit.hasText(uriHost)) {
-            Logger.debug("Authority host '{}' found via request.getURI().getHost() as fallback.", uriHost);
+            Logger.debug("Authority host '{}' found via request.getURI().getHost() as fallback", uriHost);
             return Optional.of(appendPortIfMissing(uriHost, protocol));
         }
 
@@ -212,17 +222,18 @@ public abstract class AbstractFilter implements Filter {
     }
 
     /**
-     * 获取请求的原始协议（http 或 https）。
+     * Retrieves the original protocol (http or https) of the request.
      * <p>
-     * 优先从代理头中获取，以确保在反向代理后也能得到正确的结果。 查找顺序: 'Forwarded' (proto=) -> 'X-Forwarded-Proto' -> request.getURI().getScheme()
+     * Prioritizes retrieval from proxy headers to ensure correct results even after a reverse proxy. Search order:
+     * 'Forwarded' (proto=) -> 'X-Forwarded-Proto' -> request.getURI().getScheme().
      *
-     * @param request ServerHttpRequest 对象
-     * @return 协议字符串, "https" 或 "http".
+     * @param request The {@link ServerHttpRequest} object.
+     * @return The protocol string, either "https" or "http".
      */
     protected static String getOriginalProtocol(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
 
-        // 尝试从 'Forwarded' 头解析
+        // Try to parse from 'Forwarded' header
         String forwardedHeader = headers.getFirst("Forwarded");
         if (StringKit.hasText(forwardedHeader)) {
             Optional<String> proto = Arrays.stream(forwardedHeader.split(Symbol.SEMICOLON)).map(String::trim)
@@ -233,56 +244,57 @@ public abstract class AbstractFilter implements Filter {
             }
         }
 
-        // 尝试从 'X-Forwarded-Proto' 头解析
+        // Try to parse from 'X-Forwarded-Proto' header
         String forwardedProtoHeader = headers.getFirst("X-Forwarded-Proto");
         if (StringKit.hasText(forwardedProtoHeader)) {
             return forwardedProtoHeader.split(Symbol.COMMA)[0].trim();
         }
 
-        // 使用 URI scheme 作为最后备选
+        // Use URI scheme as a last fallback
         return request.getURI().getScheme();
     }
 
     /**
-     * 校验请求参数，确保必要参数存在且有效
+     * Validates request parameters, ensuring that necessary parameters exist and are valid.
      *
-     * @param exchange ServerWebExchange 对象
-     * @throws ValidateException 如果参数无效或缺失，抛出异常
+     * @param exchange The {@link ServerWebExchange} object.
+     * @throws ValidateException if parameters are invalid or missing.
      */
     protected void validate(ServerWebExchange exchange) {
         Context context = getContext(exchange);
         Map<String, String> params = getRequestMap(context);
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            // 检查键是否为null或undefined
+            // Check if the key is null or undefined
             if (entry.getKey() != null && Normal.UNDEFINED.equals(entry.getKey().toLowerCase())) {
                 throw new ValidateException(ErrorCode._100101);
             }
-            // 检查值是否为字符串且为undefined
+            // Check if the value is a string and is undefined
             if (entry.getValue() instanceof String) {
                 if (Normal.UNDEFINED.equals(entry.getValue().toLowerCase())) {
                     throw new ValidateException(ErrorCode._100101);
                 }
             }
         }
-        if (StringKit.isBlank(params.get(Config.METHOD))) {
+        if (StringKit.isBlank(params.get(Args.METHOD))) {
             throw new ValidateException(ErrorCode._100108);
         }
-        if (StringKit.isBlank(params.get(Config.VERSION))) {
+        if (StringKit.isBlank(params.get(Args.VERSION))) {
             throw new ValidateException(ErrorCode._100107);
         }
-        if (StringKit.isBlank(params.get(Config.FORMAT))) {
+        if (StringKit.isBlank(params.get(Args.FORMAT))) {
             throw new ValidateException(ErrorCode._100111);
         }
-        if (StringKit.isNotBlank(params.get(Config.SIGN))) {
-            context.setSign(Integer.valueOf(params.get(Config.SIGN)));
+        if (StringKit.isNotBlank(params.get(Args.SIGN))) {
+            context.setSign(Integer.valueOf(params.get(Args.SIGN)));
         }
     }
 
     /**
-     * 请求方式转换
+     * Converts an integer type to its corresponding {@link HttpMethod}.
      *
-     * @param type 请求方式
-     * @return {@link HttpMethod}
+     * @param type The integer representation of the request method.
+     * @return The {@link HttpMethod} enum corresponding to the given type.
+     * @throws ValidateException if the type is not a valid HTTP method.
      */
     public HttpMethod valueOf(int type) {
         switch (type) {
@@ -316,15 +328,15 @@ public abstract class AbstractFilter implements Filter {
     }
 
     /**
-     * 为给定的主机（可能包含端口）附加默认端口（如果缺少）。
+     * Appends a default port to the given authority (host, potentially with a port) if the port is missing.
      *
-     * @param authority 主机信息，例如 "example.com" 或 "example.com:8080"
-     * @param protocol  协议, "http" 或 "https"
-     * @return 始终包含端口的主机信息，例如 "example.com:443" 或 "example.com:8080"
+     * @param authority The host information, e.g., "example.com" or "example.com:8080".
+     * @param protocol  The protocol, either "http" or "https".
+     * @return The host information always including a port, e.g., "example.com:443" or "example.com:8080".
      */
     private static String appendPortIfMissing(String authority, String protocol) {
         if (authority.contains(Symbol.COLON)) {
-            return authority; // 端口已存在
+            return authority; // Port already exists
         }
         if (Protocol.HTTPS.name.equalsIgnoreCase(protocol)) {
             return authority + Symbol.COLON + PORT._443;

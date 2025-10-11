@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.center.set;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
@@ -36,9 +37,10 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * 基于Map的Set实现
+ * A {@link Set} implementation backed by a {@link Map}. This class provides a way to create a Set view of the keys of
+ * an underlying Map.
  *
- * @param <E> 元素类型
+ * @param <E> The type of elements in the set.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -47,122 +49,248 @@ public class SetFromMap<E> extends AbstractSet<E> implements Serializable {
     @Serial
     private static final long serialVersionUID = 2852280238812L;
 
-    private final Map<E, Boolean> m; // The backing map
-    private transient Set<E> s; // Its keySet
+    /**
+     * The backing map. The values in this map are always {@link Boolean#TRUE}.
+     */
+    private final Map<E, Boolean> map;
+    /**
+     * The key set of the backing map, which serves as the actual set implementation.
+     */
+    private transient Set<E> set;
 
     /**
-     * 构造
+     * Constructs a new {@code SetFromMap} with the specified backing map.
      *
-     * @param map Map
+     * @param map The map to back this set. Its keys will be the elements of this set.
      */
     public SetFromMap(final Map<E, Boolean> map) {
-        m = map;
-        s = map.keySet();
+        this.map = map;
+        this.set = map.keySet();
     }
 
+    /**
+     * Removes all of the elements from this set. The set will be empty after this call returns.
+     */
     @Override
     public void clear() {
-        m.clear();
+        map.clear();
     }
 
+    /**
+     * Returns the number of elements in this set (its cardinality).
+     *
+     * @return The number of elements in this set.
+     */
     @Override
     public int size() {
-        return m.size();
+        return map.size();
     }
 
+    /**
+     * Returns {@code true} if this set contains no elements.
+     *
+     * @return {@code true} if this set contains no elements.
+     */
     @Override
     public boolean isEmpty() {
-        return m.isEmpty();
+        return map.isEmpty();
     }
 
+    /**
+     * Returns {@code true} if this set contains the specified element.
+     *
+     * @param o The element whose presence in this set is to be tested.
+     * @return {@code true} if this set contains the specified element.
+     */
     @Override
     public boolean contains(final Object o) {
-        return m.containsKey(o);
+        return map.containsKey(o);
     }
 
+    /**
+     * Removes the specified element from this set if it is present.
+     *
+     * @param o The element to be removed from this set, if present.
+     * @return {@code true} if the set contained the specified element.
+     */
     @Override
     public boolean remove(final Object o) {
-        return m.remove(o) != null;
+        return map.remove(o) != null;
     }
 
+    /**
+     * Adds the specified element to this set if it is not already present.
+     *
+     * @param e The element to be added to this set.
+     * @return {@code true} if this set did not already contain the specified element.
+     */
     @Override
     public boolean add(final E e) {
-        return m.put(e, Boolean.TRUE) == null;
+        return map.put(e, Boolean.TRUE) == null;
     }
 
+    /**
+     * Returns an iterator over the elements in this set.
+     *
+     * @return An {@link Iterator} over the elements in this set.
+     */
     @Override
     public Iterator<E> iterator() {
-        return s.iterator();
+        return set.iterator();
     }
 
+    /**
+     * Returns an array containing all of the elements in this set.
+     *
+     * @return An array containing all of the elements in this set.
+     */
     @Override
     public Object[] toArray() {
-        return s.toArray();
+        return set.toArray();
     }
 
+    /**
+     * Returns an array containing all of the elements in this set; the runtime type of the returned array is that of
+     * the specified array.
+     *
+     * @param a   The array into which the elements of this set are to be stored, if it is big enough; otherwise, a new
+     *            array of the same runtime type is allocated for this purpose.
+     * @param <T> The runtime type of the array to contain the collection.
+     * @return An array containing all of the elements in this set.
+     */
     @Override
     public <T> T[] toArray(final T[] a) {
         return super.toArray(a);
     }
 
+    /**
+     * Returns a string representation of this set.
+     *
+     * @return A string representation of this set.
+     */
     @Override
     public String toString() {
-        return s.toString();
+        return set.toString();
     }
 
+    /**
+     * Returns the hash code value for this set.
+     *
+     * @return The hash code value for this set.
+     */
     @Override
     public int hashCode() {
-        return s.hashCode();
+        return set.hashCode();
     }
 
+    /**
+     * Compares the specified object with this set for equality.
+     *
+     * @param o The object to be compared for equality with this set.
+     * @return {@code true} if the specified object is equal to this set.
+     */
     @Override
     public boolean equals(final Object o) {
-        return o == this || s.equals(o);
+        return o == this || set.equals(o);
     }
 
+    /**
+     * Returns {@code true} if this set contains all of the elements of the specified collection.
+     *
+     * @param c Collection to be checked for containment in this set.
+     * @return {@code true} if this set contains all of the elements of the specified collection.
+     */
     @Override
     public boolean containsAll(final Collection<?> c) {
-        return s.containsAll(c);
+        return set.containsAll(c);
     }
 
+    /**
+     * Removes from this set all of its elements that are contained in the specified collection.
+     *
+     * @param c Collection containing elements to be removed from this set.
+     * @return {@code true} if this set changed as a result of the call.
+     */
     @Override
     public boolean removeAll(final Collection<?> c) {
-        return s.removeAll(c);
+        return set.removeAll(c);
     }
 
+    /**
+     * Retains only the elements in this set that are contained in the specified collection. In other words, removes
+     * from this set all of its elements that are not contained in the specified collection.
+     *
+     * @param c Collection containing elements to be retained in this set.
+     * @return {@code true} if this set changed as a result of the call.
+     */
     @Override
     public boolean retainAll(final Collection<?> c) {
-        return s.retainAll(c);
+        return set.retainAll(c);
     }
 
+    /**
+     * Performs the given action for each element of the {@code Iterable} until all elements have been processed or the
+     * action throws an exception.
+     *
+     * @param action The action to be performed for each element.
+     */
     @Override
     public void forEach(final Consumer<? super E> action) {
-        s.forEach(action);
+        set.forEach(action);
     }
 
+    /**
+     * Removes all of the elements of this collection that satisfy the given predicate.
+     *
+     * @param filter A predicate which returns {@code true} for elements to be removed.
+     * @return {@code true} if any elements were removed.
+     */
     @Override
     public boolean removeIf(final Predicate<? super E> filter) {
-        return s.removeIf(filter);
+        return set.removeIf(filter);
     }
 
+    /**
+     * Creates a {@link Spliterator} over the elements in this set.
+     *
+     * @return A {@link Spliterator} over the elements in this set.
+     */
     @Override
     public Spliterator<E> spliterator() {
-        return s.spliterator();
+        return set.spliterator();
     }
 
+    /**
+     * Returns a sequential {@link Stream} with this collection as its source.
+     *
+     * @return A sequential {@link Stream} over the elements in this set.
+     */
     @Override
     public Stream<E> stream() {
-        return s.stream();
+        return set.stream();
     }
 
+    /**
+     * Returns a parallel {@link Stream} with this collection as its source.
+     *
+     * @return A parallel {@link Stream} over the elements in this set.
+     */
     @Override
     public Stream<E> parallelStream() {
-        return s.parallelStream();
+        return set.parallelStream();
     }
 
+    /**
+     * Reconstitutes this {@code SetFromMap} instance from a stream (that is, deserializes it). This method is part of
+     * the Java Serialization mechanism.
+     *
+     * @param stream The {@link ObjectInputStream} from which the state is read.
+     * @throws IOException            if an I/O error occurs during deserialization.
+     * @throws ClassNotFoundException if the class of a serialized object could not be found.
+     */
     private void readObject(final java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        s = m.keySet();
+        set = map.keySet();
     }
 
 }

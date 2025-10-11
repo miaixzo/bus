@@ -38,7 +38,8 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 基于分组的Map 此对象方法线程安全
+ * A thread-safe, group-based map implementation, extending {@link LinkedHashMap}. It organizes key-value pairs into
+ * named groups, where each group is a {@code LinkedHashMap<String, String>}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,17 +49,29 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     @Serial
     private static final long serialVersionUID = 2852227322018L;
 
+    /**
+     * Lock for ensuring thread-safe access.
+     */
     private final ReentrantReadWriteLock cacheLock = new ReentrantReadWriteLock();
+    /**
+     * Read lock.
+     */
     private final ReadLock readLock = cacheLock.readLock();
+    /**
+     * Write lock.
+     */
     private final WriteLock writeLock = cacheLock.writeLock();
+    /**
+     * Cached size of all key-value pairs across all groups. -1 indicates it needs recalculation.
+     */
     private int size = -1;
 
     /**
-     * 获取分组对应的值，如果分组不存在或者值不存在则返回null
+     * Gets a value for a given key within a specific group.
      *
-     * @param group 分组
-     * @param key   键
-     * @return 值，如果分组不存在或者值不存在则返回null
+     * @param group The group name.
+     * @param key   The key within the group.
+     * @return The value, or null if the group or key does not exist.
      */
     public String get(final CharSequence group, final CharSequence key) {
         readLock.lock();
@@ -84,9 +97,9 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 总的键值对数
+     * Returns the total number of key-value pairs across all groups.
      *
-     * @return 总键值对数
+     * @return The total size.
      */
     @Override
     public int size() {
@@ -105,19 +118,19 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 将键值对加入到对应分组中
+     * Puts a key-value pair into a specific group.
      *
-     * @param group 分组
-     * @param key   键
-     * @param value 值
-     * @return 此key之前存在的值，如果没有返回null
+     * @param group The group name. If null or empty, the default group is used.
+     * @param key   The key.
+     * @param value The value.
+     * @return The previous value associated with the key, or null if there was none.
      */
     public String put(String group, final String key, final String value) {
         group = StringKit.toStringOrEmpty(group).trim();
         writeLock.lock();
         try {
             final LinkedHashMap<String, String> valueMap = this.computeIfAbsent(group, k -> new LinkedHashMap<>());
-            this.size = -1;
+            this.size = -1; // Invalidate cached size
             return valueMap.put(key, value);
         } finally {
             writeLock.unlock();
@@ -125,11 +138,11 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 加入多个键值对到某个分组下
+     * Puts all key-value pairs from a map into a specific group.
      *
-     * @param group 分组
-     * @param m     键值对
-     * @return this
+     * @param group The group name.
+     * @param m     The map of key-value pairs to add.
+     * @return This {@code GroupedMap} instance.
      */
     public GroupedMap putAll(final String group, final Map<? extends String, ? extends String> m) {
         for (final Entry<? extends String, ? extends String> entry : m.entrySet()) {
@@ -139,11 +152,11 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 从指定分组中删除指定值
+     * Removes a key-value pair from a specific group.
      *
-     * @param group 分组
-     * @param key   键
-     * @return 被删除的值，如果值不存在，返回null
+     * @param group The group name.
+     * @param key   The key to remove.
+     * @return The value that was removed, or null if the key was not found.
      */
     public String remove(String group, final String key) {
         group = StringKit.toStringOrEmpty(group).trim();
@@ -160,29 +173,26 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 某个分组对应的键值对是否为空
+     * Checks if a specific group is empty.
      *
-     * @param group 分组
-     * @return 是否为空
+     * @param group The group name.
+     * @return {@code true} if the group does not exist or has no entries.
      */
     public boolean isEmpty(String group) {
         group = StringKit.toStringOrEmpty(group).trim();
         readLock.lock();
         try {
             final LinkedHashMap<String, String> valueMap = this.get(group);
-            if (MapKit.isNotEmpty(valueMap)) {
-                return valueMap.isEmpty();
-            }
+            return MapKit.isEmpty(valueMap);
         } finally {
             readLock.unlock();
         }
-        return true;
     }
 
     /**
-     * 是否为空，如果多个分组同时为空，也按照空处理
+     * Checks if this grouped map contains any key-value pairs across all groups.
      *
-     * @return 是否为空，如果多个分组同时为空，也按照空处理
+     * @return {@code true} if this map is empty.
      */
     @Override
     public boolean isEmpty() {
@@ -190,11 +200,11 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 指定分组中是否包含指定key
+     * Checks if a specific group contains a given key.
      *
-     * @param group 分组
-     * @param key   键
-     * @return 是否包含key
+     * @param group The group name.
+     * @param key   The key to check for.
+     * @return {@code true} if the key exists in the group.
      */
     public boolean containsKey(String group, final String key) {
         group = StringKit.toStringOrEmpty(group).trim();
@@ -211,11 +221,11 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 指定分组中是否包含指定值
+     * Checks if a specific group contains a given value.
      *
-     * @param group 分组
-     * @param value 值
-     * @return 是否包含值
+     * @param group The group name.
+     * @param value The value to check for.
+     * @return {@code true} if the value exists in the group.
      */
     public boolean containsValue(String group, final String value) {
         group = StringKit.toStringOrEmpty(group).trim();
@@ -232,10 +242,10 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 清除指定分组下的所有键值对
+     * Clears all key-value pairs from a specific group.
      *
-     * @param group 分组
-     * @return this
+     * @param group The group name to clear.
+     * @return This {@code GroupedMap} instance.
      */
     public GroupedMap clear(String group) {
         group = StringKit.toStringOrEmpty(group).trim();
@@ -262,10 +272,10 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 指定分组所有键的Set
+     * Returns a set of all keys within a specific group.
      *
-     * @param group 分组
-     * @return 键Set
+     * @param group The group name.
+     * @return The set of keys.
      */
     public Set<String> keySet(String group) {
         group = StringKit.toStringOrEmpty(group).trim();
@@ -282,10 +292,10 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 指定分组下所有值
+     * Returns a collection of all values within a specific group.
      *
-     * @param group 分组
-     * @return 值
+     * @param group The group name.
+     * @return The collection of values.
      */
     public Collection<String> values(String group) {
         group = StringKit.toStringOrEmpty(group).trim();
@@ -312,10 +322,10 @@ public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, Stri
     }
 
     /**
-     * 指定分组下所有键值对
+     * Returns a set of all key-value entries within a specific group.
      *
-     * @param group 分组
-     * @return 键值对
+     * @param group The group name.
+     * @return The set of entries.
      */
     public Set<Entry<String, String>> entrySet(String group) {
         group = StringKit.toStringOrEmpty(group).trim();

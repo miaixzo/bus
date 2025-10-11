@@ -36,24 +36,36 @@ import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
- * Lucene-analysis分词抽象结果封装 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis
+ * Abstract result wrapper for Lucene-analysis word segmentation. This class adapts the Lucene {@link TokenStream} to
+ * the common {@link org.miaixz.bus.extra.nlp.NLPResult} interface. Project homepage: <a href=
+ * "https://github.com/apache/lucene-solr/tree/master/lucene/analysis">https://github.com/apache/lucene-solr/tree/master/lucene/analysis</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AnalysisResult extends AbstractResult {
 
+    /**
+     * The underlying Lucene {@link TokenStream}, which provides the segmentation result.
+     */
     private final TokenStream stream;
 
     /**
-     * 构造
+     * Constructs an {@code AnalysisResult} instance by wrapping a Lucene {@link TokenStream}.
      *
-     * @param stream 分词结果
+     * @param stream The {@link TokenStream} obtained from Lucene analysis.
      */
     public AnalysisResult(final TokenStream stream) {
         this.stream = stream;
     }
 
+    /**
+     * Retrieves the next word from the Lucene {@link TokenStream}. This method calls {@code incrementToken()} on the
+     * stream and wraps the resulting {@link CharTermAttribute} in an {@link AnalysisWord}.
+     *
+     * @return The next {@link NLPWord} in the sequence, or {@code null} if the iteration has no more elements.
+     * @throws InternalException if an {@link IOException} occurs during token processing.
+     */
     @Override
     protected NLPWord nextWord() {
         try {

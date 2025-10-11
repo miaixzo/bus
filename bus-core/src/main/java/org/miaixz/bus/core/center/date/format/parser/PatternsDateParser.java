@@ -36,7 +36,8 @@ import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.lang.exception.DateException;
 
 /**
- * 通过给定的日期格式解析日期时间字符串，逐个尝试格式直到解析成功，返回 {@link DateTime} 对象，若失败则抛出 {@link DateException}。
+ * Parses a date-time string using a given array of date formats. It attempts each format until parsing succeeds,
+ * returning a {@link DateTime} object. If all attempts fail, a {@link DateException} is thrown.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,39 +48,39 @@ public class PatternsDateParser implements DateParser, Serializable {
     private static final long serialVersionUID = 2852256632611L;
 
     /**
-     * 日期格式模式数组
+     * Array of date format patterns.
      */
     private String[] patterns;
 
     /**
-     * 地域设置
+     * Locale setting.
      */
     private Locale locale;
 
     /**
-     * 构造，初始化日期格式模式。
+     * Constructs a {@code PatternsDateParser} instance, initializing the date format patterns.
      *
-     * @param args 多个日期格式模式
+     * @param args Multiple date format patterns.
      */
     public PatternsDateParser(final String... args) {
         this.patterns = args;
     }
 
     /**
-     * 创建 PatternsDateParser 实例。
+     * Creates a {@code PatternsDateParser} instance.
      *
-     * @param args 多个日期格式模式
-     * @return PatternsDateParser 实例
+     * @param args Multiple date format patterns.
+     * @return A {@code PatternsDateParser} instance.
      */
     public static PatternsDateParser of(final String... args) {
         return new PatternsDateParser(args);
     }
 
     /**
-     * 设置日期格式模式数组。
+     * Sets the array of date format patterns.
      *
-     * @param patterns 日期格式模式列表
-     * @return 当前实例
+     * @param patterns The list of date format patterns.
+     * @return This instance.
      */
     public PatternsDateParser setPatterns(final String... patterns) {
         this.patterns = patterns;
@@ -87,19 +88,19 @@ public class PatternsDateParser implements DateParser, Serializable {
     }
 
     /**
-     * 获取地域设置。
+     * Gets the locale setting.
      *
-     * @return 地域设置
+     * @return The locale setting.
      */
     public Locale getLocale() {
         return locale;
     }
 
     /**
-     * 设置地域。
+     * Sets the locale.
      *
-     * @param locale 地域设置
-     * @return 当前实例
+     * @param locale The locale setting.
+     * @return This instance.
      */
     public PatternsDateParser setLocale(final Locale locale) {
         this.locale = locale;
@@ -107,11 +108,11 @@ public class PatternsDateParser implements DateParser, Serializable {
     }
 
     /**
-     * 解析日期字符串。
+     * Parses a date string.
      *
-     * @param source 日期字符串
-     * @return 解析后的 DateTime 对象
-     * @throws DateException 如果解析失败
+     * @param source The date string to parse.
+     * @return The parsed {@link DateTime} object.
+     * @throws DateException if parsing fails.
      */
     @Override
     public DateTime parse(final CharSequence source) {

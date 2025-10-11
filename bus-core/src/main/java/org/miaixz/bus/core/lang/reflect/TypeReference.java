@@ -32,48 +32,56 @@ import java.lang.reflect.Type;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * Type类型参考 通过构建一个类型参考子类，可以获取其泛型参数中的Type类型。例如：
- *
- * <pre>
- * 
- * TypeReference&lt;List&lt;String&gt;&gt; list = new TypeReference&lt;List&lt;String&gt;&gt;() {
- * };
- * Type t = tr.getType();
- * </pre>
- * 
- * 此类无法应用于通配符泛型参数（wildcard parameters），比如：{@code Class<?>} 或者 {@code List? extends CharSequence>}
- *
+ * A utility class for obtaining generic type information at runtime. By creating an anonymous subclass of
+ * {@code TypeReference}, the actual generic type arguments can be captured and retrieved.
  * <p>
- * 此类参考FastJSON的TypeReference实现
- * </p>
+ * Example usage:
+ * 
+ * <pre>{@code
+ * 
+ * TypeReference<List<String>> listRef = new TypeReference<List<String>>() {
+ * };
+ * Type type = listRef.getType(); // type will be ParameterizedType representing List<String>
+ * }</pre>
+ * <p>
+ * This class cannot be used with wildcard generic parameters (e.g., {@code Class<?>} or
+ * {@code List<? extends CharSequence>}).
+ * <p>
+ * This implementation is inspired by the {@code TypeReference} in FastJSON.
  *
- * @param <T> 需要自定义的参考类型
+ * @param <T> The custom reference type whose generic information is to be captured.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class TypeReference<T> implements Type {
 
     /**
-     * 泛型参数
+     * The actual generic type captured from the subclass.
      */
     private final Type type;
 
     /**
-     * 构造
+     * Constructs a new {@code TypeReference}. This constructor captures the generic type argument {@code T} from the
+     * anonymous subclass.
      */
     public TypeReference() {
         this.type = TypeKit.getTypeArgument(getClass());
     }
 
     /**
-     * 获取用户定义的泛型参数
+     * Retrieves the actual generic type argument {@code T} that this {@code TypeReference} represents.
      *
-     * @return 泛型参数
+     * @return The {@link Type} representing the generic type argument.
      */
     public Type getType() {
         return this.type;
     }
 
+    /**
+     * Returns a string representation of the generic type captured by this {@code TypeReference}.
+     *
+     * @return A string representation of the captured {@link Type}.
+     */
     @Override
     public String toString() {
         return this.type.toString();

@@ -45,8 +45,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * sheetData标签内容读取处理器
- *
+ * Handler for reading content within the sheetData tag.
+ * 
  * <pre>
  * &lt;sheetData&gt;&lt;/sheetData&gt;
  * </pre>
@@ -56,52 +56,50 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SheetDataSaxHandler extends DefaultHandler {
 
-    // 上一次的内容
+    /** The content of the last parsed element. */
     private final StringBuilder lastContent = new StringBuilder();
-    // 配置项：是否对齐数据，即在行尾补充null cell
+    /** Configuration item: whether to align data by padding with null cells at the end of a row. */
     private final boolean padCellAtEndOfRow;
-    // 上一次的内容
+    /** The content of the last parsed formula element. */
     private final StringBuilder lastFormula = new StringBuilder();
-    /**
-     * 行处理器
-     */
+    /** Row handler. */
     protected RowHandler rowHandler;
-    // 单元格的格式表，对应style.xml
+    /** The cell format table, corresponding to style.xml. */
     protected StylesTable stylesTable;
-    // excel 2007 的共享字符串表,对应sharedString.xml
+    /** The shared strings table for Excel 2007, corresponding to sharedString.xml. */
     protected SharedStrings sharedStrings;
-    // sheet的索引，从0开始
+    /** The 0-based index of the sheet. */
     protected int sheetIndex;
-    // 当前非空行
+    /** The current non-empty row index. */
     protected int index;
-    // 当前列
+    /** The current column index. */
     private int curCell;
-    // 单元数据类型
+    /** The data type of the cell. */
     private CellDataType cellDataType;
-    // 当前行号，从0开始
+    /** The current row number, 0-based. */
     private long rowNumber;
-    // 当前列坐标， 如A1，B5
+    /** The current cell coordinate, e.g., A1, B5. */
     private String curCoordinate;
-    // 当前节点名称
+    /** The name of the current element. */
     private ElementName curElementName;
-    // 前一个列的坐标
+    /** The coordinate of the previous cell. */
     private String preCoordinate;
-    // 行的最大列坐标
+    /** The maximum cell coordinate in a row. */
     private String maxCellCoordinate;
-    // 单元格样式
+    /** The cell style. */
     private XSSFCellStyle xssfCellStyle;
-    // 单元格存储的格式化字符串，nmtFmt的formatCode属性的值
+    /** The format string stored in the cell, the value of the formatCode attribute of numFmt. */
     private String numFmtString;
-    // 是否处于sheetData标签内，sax只解析此标签内的内容，其它标签忽略
+    /** Whether currently inside a sheetData tag. The SAX parser only parses content within this tag. */
     private boolean isInSheetData;
-    // 存储每行的列元素
+    /** Stores the cell elements for each row. */
     private List<Object> rowCellList = new ArrayList<>();
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param rowHandler        行处理器
-     * @param padCellAtEndOfRow 是否对齐数据，即在行尾补充null cell
+     * @param rowHandler        The row handler.
+     * @param padCellAtEndOfRow Whether to align data by padding with null cells at the end of a row.
      */
     public SheetDataSaxHandler(final RowHandler rowHandler, final boolean padCellAtEndOfRow) {
         this.rowHandler = rowHandler;
@@ -109,16 +107,16 @@ public class SheetDataSaxHandler extends DefaultHandler {
     }
 
     /**
-     * 设置行处理器
+     * Sets the row handler.
      *
-     * @param rowHandler 行处理器
+     * @param rowHandler The row handler.
      */
     public void setRowHandler(final RowHandler rowHandler) {
         this.rowHandler = rowHandler;
     }
 
     /**
-     * 读到一个xml开始标签时的回调处理方法
+     * Callback method for handling the start of an XML element.
      */
     @Override
     public void startElement(
@@ -132,7 +130,7 @@ public class SheetDataSaxHandler extends DefaultHandler {
         }
 
         if (!this.isInSheetData) {
-            // 非sheetData标签，忽略解析
+            // Not in a sheetData tag, ignore parsing.
             return;
         }
 
@@ -142,12 +140,12 @@ public class SheetDataSaxHandler extends DefaultHandler {
         if (null != name) {
             switch (name) {
                 case row:
-                    // 行开始
+                    // Start of a row
                     startRow(attributes);
                     break;
 
                 case c:
-                    // 单元格元素
+                    // Cell element
                     startCell(attributes);
                     break;
             }
@@ -155,34 +153,34 @@ public class SheetDataSaxHandler extends DefaultHandler {
     }
 
     /**
-     * 标签结束的回调处理方法
+     * Callback method for handling the end of an XML element.
      */
     @Override
     public void endElement(final String uri, final String localName, final String qName) {
         if ("sheetData".equals(qName)) {
-            // sheetData结束，不再解析别的标签
+            // End of sheetData, no more parsing of other tags.
             this.isInSheetData = false;
             return;
         }
 
         if (!this.isInSheetData) {
-            // 非sheetData标签，忽略解析
+            // Not in a sheetData tag, ignore parsing.
             return;
         }
 
         this.curElementName = null;
-        if (ElementName.c.match(qName)) { // 单元格结束
+        if (ElementName.c.match(qName)) { // End of a cell
             endCell();
-        } else if (ElementName.row.match(qName)) {// 行结束
+        } else if (ElementName.row.match(qName)) { // End of a row
             endRow();
         }
-        // 其它标签忽略
+        // Ignore other tags
     }
 
     @Override
     public void characters(final char[] ch, final int start, final int length) {
         if (!this.isInSheetData) {
-            // 非sheetData标签，忽略解析
+            // Not in a sheetData tag, ignore parsing.
             return;
         }
 
@@ -190,25 +188,26 @@ public class SheetDataSaxHandler extends DefaultHandler {
         if (null != elementName) {
             switch (elementName) {
                 case v:
-                    // 得到单元格内容的值
+                    // Get the value of the cell content.
                     lastContent.append(ch, start, length);
                     break;
 
                 case f:
-                    // 得到单元格内容的值
+                    // Get the value of the cell formula.
                     lastFormula.append(ch, start, length);
                     break;
             }
         } else {
-            // 按理说内容应该为"<v>内容</v>"，但是某些特别的XML内容不在v或f标签中，此处做一些兼容
+            // In theory, the content should be within "<v>content</v>".
+            // However, some special XML content is not in a v or f tag, so we handle it here.
             lastContent.append(ch, start, length);
         }
     }
 
     /**
-     * 行开始
+     * Starts processing a new row.
      *
-     * @param attributes 属性列表
+     * @param attributes The attribute list.
      */
     private void startRow(final Attributes attributes) {
         final String rValue = AttributeName.r.getValue(attributes);
@@ -216,86 +215,87 @@ public class SheetDataSaxHandler extends DefaultHandler {
     }
 
     /**
-     * 单元格开始
+     * Starts processing a new cell.
      *
-     * @param attributes 属性列表
+     * @param attributes The attribute list.
      */
     private void startCell(final Attributes attributes) {
-        // 获取当前列坐标
+        // Get the current cell coordinate.
         final String tempCurCoordinate = AttributeName.r.getValue(attributes);
-        // 前一列为null，则将其设置为"@",A为第一列，ascii码为65，前一列即为@，ascii码64
+        // If the previous coordinate is null, set it to "@". 'A' is the first column with ASCII 65, so the previous one
+        // is '@' with ASCII 64.
         if (preCoordinate == null) {
             preCoordinate = String.valueOf(Symbol.C_AT);
         } else {
-            // 存在，则前一列要设置为上一列的坐标
+            // If it exists, set the previous coordinate to the last cell's coordinate.
             preCoordinate = curCoordinate;
         }
-        // 重置当前列
+        // Reset the current coordinate.
         curCoordinate = tempCurCoordinate;
-        // 设置单元格类型
+        // Set the cell type.
         setCellType(attributes);
 
-        // 清空之前的数据
+        // Clear previous data.
         lastContent.setLength(0);
         lastFormula.setLength(0);
     }
 
     /**
-     * 一行结尾
+     * Ends processing a row.
      */
     private void endRow() {
-        // 最大列坐标以第一个非空行的为准
+        // The maximum cell coordinate is based on the first non-empty row.
         if (index == 0) {
             maxCellCoordinate = curCoordinate;
         }
 
-        // 补全一行尾部可能缺失的单元格
+        // Pad any missing cells at the end of the row.
         if (padCellAtEndOfRow && maxCellCoordinate != null) {
             padCell(curCoordinate, maxCellCoordinate, true);
         }
 
         rowHandler.handle(sheetIndex, rowNumber, rowCellList);
 
-        // 一行结束
-        // 新建一个新列，之前的列抛弃（可能被回收或rowHandler处理）
+        // End of a row.
+        // Create a new list for the next row, discarding the old one.
         rowCellList = new ArrayList<>(curCell + 1);
-        // 行数增加
+        // Increment the row count.
         index++;
-        // 当前列置0
+        // Reset the current cell to 0.
         curCell = 0;
-        // 置空当前列坐标和前一列坐标
+        // Reset the current and previous coordinates.
         curCoordinate = null;
         preCoordinate = null;
     }
 
     /**
-     * 一个单元格结尾
+     * Ends processing a cell.
      */
     private void endCell() {
-        // 补全单元格之间的空格
+        // Pad any empty cells between the previous and current cell.
         padCell(preCoordinate, curCoordinate, false);
 
         final String contentStr = StringKit.trim(lastContent);
         final Object value;
         if (this.lastFormula.length() > 0) {
             if (CellDataType.NULL == this.cellDataType) {
-                // 对于公式，默认值类型为数字
+                // For formulas, the default value type is number.
                 this.cellDataType = CellDataType.NUMBER;
             }
             value = new FormulaCellValue(StringKit.trim(lastFormula),
                     ExcelSaxKit.getDataValue(this.cellDataType, contentStr, this.sharedStrings, this.numFmtString));
         } else {
-            // 默认的cellDataType是NULL而非NUMBER
+            // The default cellDataType is NULL, not NUMBER.
             value = ExcelSaxKit.getDataValue(this.cellDataType, contentStr, this.sharedStrings, this.numFmtString);
         }
         addCellValue(curCell++, value);
     }
 
     /**
-     * 在一行中的指定列增加值
+     * Adds a value to a specified column in the row.
      *
-     * @param index 位置
-     * @param value 值
+     * @param index The position.
+     * @param value The value.
      */
     private void addCellValue(final int index, final Object value) {
         this.rowCellList.add(index, value);
@@ -303,14 +303,14 @@ public class SheetDataSaxHandler extends DefaultHandler {
     }
 
     /**
-     * 填充空白单元格，如果前一个单元格大于后一个，不需要填充
+     * Fills empty cells. If the previous cell is greater than the current one, no filling is needed.
      *
-     * @param preCoordinate 前一个单元格坐标
-     * @param curCoordinate 当前单元格坐标
-     * @param isEnd         是否为最后一个单元格
+     * @param preCoordinate The coordinate of the previous cell.
+     * @param curCoordinate The coordinate of the current cell.
+     * @param isEnd         Whether this is the last cell.
      */
     private void padCell(final String preCoordinate, final String curCoordinate, final boolean isEnd) {
-        if (!curCoordinate.equals(preCoordinate)) {
+        if (null != curCoordinate && !curCoordinate.equals(preCoordinate)) {
             int len = ExcelSaxKit.countNullCell(preCoordinate, curCoordinate);
             if (isEnd) {
                 len++;
@@ -322,34 +322,33 @@ public class SheetDataSaxHandler extends DefaultHandler {
     }
 
     /**
-     * 设置单元格的类型
+     * Sets the cell type.
      *
-     * @param attributes 属性
+     * @param attributes The attributes.
      */
     private void setCellType(final Attributes attributes) {
-        // numFmtString的值
+        // Value of numFmtString
         numFmtString = Normal.EMPTY;
         this.cellDataType = CellDataType.of(AttributeName.t.getValue(attributes));
 
-        // 获取单元格的xf索引，对应style.xml中cellXfs的子元素xf
+        // Get the xf index of the cell, corresponding to the xf sub-element of cellXfs in style.xml.
         if (null != this.stylesTable) {
             final String xfIndexStr = AttributeName.s.getValue(attributes);
             if (null != xfIndexStr) {
                 this.xssfCellStyle = stylesTable.getStyleAt(Integer.parseInt(xfIndexStr));
-                // 单元格存储格式的索引，对应style.xml中的numFmts元素的子元素索引
+                // The index of the cell's storage format, corresponding to the sub-element index of numFmts in
+                // style.xml.
                 final int numFmtIndex = xssfCellStyle.getDataFormat();
                 this.numFmtString = ObjectKit.defaultIfNull(
                         xssfCellStyle.getDataFormatString(),
                         () -> BuiltinFormats.getBuiltinFormat(numFmtIndex));
 
-                // 日期格式的单元格可能没有t元素
+                // Date-formatted cells may not have a 't' element.
                 if ((CellDataType.NUMBER == this.cellDataType || CellDataType.NULL == this.cellDataType)
                         && ExcelSaxKit.isDateFormat(numFmtIndex, numFmtString)) {
                     cellDataType = CellDataType.DATE;
                 }
             }
         }
-
     }
-
 }

@@ -34,7 +34,7 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.rabjung.RabjungYear;
 
 /**
- * 公历年
+ * Represents a year in the Gregorian calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,10 +42,16 @@ import org.miaixz.bus.core.center.date.culture.rabjung.RabjungYear;
 public class SolarYear extends Loops {
 
     /**
-     * 年
+     * The year number.
      */
     protected int year;
 
+    /**
+     * Constructs a {@code SolarYear} with the given year.
+     *
+     * @param year The year, supporting 1 to 9999.
+     * @throws IllegalArgumentException if the year is out of the supported range.
+     */
     public SolarYear(int year) {
         if (year < 1 || year > 9999) {
             throw new IllegalArgumentException(String.format("illegal solar year: %d", year));
@@ -54,28 +60,28 @@ public class SolarYear extends Loops {
     }
 
     /**
-     * 从年初始化
+     * Creates a {@code SolarYear} instance from the given year.
      *
-     * @param year 年，支持1到9999年
-     * @return 公历年
+     * @param year The year, supporting 1 to 9999.
+     * @return A new {@link SolarYear} instance.
      */
     public static SolarYear fromYear(int year) {
         return new SolarYear(year);
     }
 
     /**
-     * 年
+     * Gets the year number.
      *
-     * @return 年
+     * @return The year number.
      */
     public int getYear() {
         return year;
     }
 
     /**
-     * 天数（1582年355天，平年365天，闰年366天）
+     * Gets the total number of days in this solar year (355 days for 1582, 365 for common years, 366 for leap years).
      *
-     * @return 天数
+     * @return The total number of days.
      */
     public int getDayCount() {
         if (1582 == year) {
@@ -85,9 +91,11 @@ public class SolarYear extends Loops {
     }
 
     /**
-     * 是否闰年(1582年以前，使用儒略历，能被4整除即为闰年。以后采用格里历，四年一闰，百年不闰，四百年再闰。)
+     * Checks if this solar year is a leap year. (Before 1582, the Julian calendar was used, where a year divisible by 4
+     * was a leap year. After that, the Gregorian calendar is used, where a leap year occurs every four years, except
+     * for years divisible by 100 but not by 400).
      *
-     * @return true/false
+     * @return {@code true} if it's a leap year, {@code false} otherwise.
      */
     public boolean isLeap() {
         if (year < 1600) {
@@ -96,18 +104,29 @@ public class SolarYear extends Loops {
         return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }
 
+    /**
+     * Gets the name of this solar year.
+     *
+     * @return The name of this solar year.
+     */
     public String getName() {
         return String.format("%d年", year);
     }
 
+    /**
+     * Gets the solar year after a specified number of years.
+     *
+     * @param n The number of years to add.
+     * @return The {@link SolarYear} after {@code n} years.
+     */
     public SolarYear next(int n) {
         return fromYear(year + n);
     }
 
     /**
-     * 月份列表，1年有12个月。
+     * Gets a list of all months in this solar year. A year has 12 months.
      *
-     * @return 月份列表
+     * @return A list of {@link SolarMonth} objects for this year.
      */
     public List<SolarMonth> getMonths() {
         List<SolarMonth> l = new ArrayList<>(12);
@@ -118,9 +137,9 @@ public class SolarYear extends Loops {
     }
 
     /**
-     * 季度列表，1年有4个季度。
+     * Gets a list of all quarters in this solar year. A year has 4 quarters.
      *
-     * @return 季度列表
+     * @return A list of {@link SolarQuarter} objects for this year.
      */
     public List<SolarQuarter> getQuarter() {
         List<SolarQuarter> l = new ArrayList<>(4);
@@ -131,9 +150,9 @@ public class SolarYear extends Loops {
     }
 
     /**
-     * 半年列表，1年有2个半年。
+     * Gets a list of all half-years in this solar year. A year has 2 half-years.
      *
-     * @return 半年列表
+     * @return A list of {@link SolarHalfYear} objects for this year.
      */
     public List<SolarHalfYear> getHalfYears() {
         List<SolarHalfYear> l = new ArrayList<>(2);
@@ -144,9 +163,9 @@ public class SolarYear extends Loops {
     }
 
     /**
-     * 藏历年
+     * Gets the Tibetan year corresponding to this solar year.
      *
-     * @return 藏历年
+     * @return The {@link RabjungYear} for this solar year.
      */
     public RabjungYear getRabByungYear() {
         return RabjungYear.fromYear(year);

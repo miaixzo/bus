@@ -36,57 +36,64 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 
 /**
- * 尝试方式对象实例化器 通过判断类型或调用可能的构造，构建对象，支持：
+ * An object instantiator that attempts to create objects by judging the type or calling possible constructors. It
+ * supports:
  * <ul>
- * <li>原始类型</li>
- * <li>接口或抽象类型</li>
- * <li>枚举</li>
- * <li>数组</li>
- * <li>使用默认参数的构造方法</li>
+ * <li>Primitive types</li>
+ * <li>Interface or abstract types (with default implementations)</li>
+ * <li>Enums</li>
+ * <li>Arrays</li>
+ * <li>Constructors with default parameters</li>
  * </ul>
  * <p>
- * 对于接口或抽象类型，构造其默认实现：
+ * For interfaces or abstract types, it constructs their default implementations:
  * 
  * <pre>
  *     Map       - HashMap
- *     Collction - ArrayList
+ *     Collection - ArrayList
  *     List      - ArrayList
  *     Set       - HashSet
+ *     SortedSet - TreeSet
  * </pre>
  *
- * @param <T> 对象类型
+ * @param <T> The type of the object to be created.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PossibleObjectCreator<T> implements ObjectCreator<T> {
 
+    /**
+     * The class to be instantiated.
+     */
     final Class<T> clazz;
 
     /**
-     * 构造
+     * Constructs a new {@code PossibleObjectCreator} for the given class.
      *
-     * @param clazz 实例化的类
+     * @param clazz The class to be instantiated. Must not be {@code null}.
+     * @throws IllegalArgumentException if {@code clazz} is {@code null}.
      */
     public PossibleObjectCreator(final Class<T> clazz) {
         this.clazz = Assert.notNull(clazz);
     }
 
     /**
-     * 创建默认的对象实例化器
+     * Creates a new {@code PossibleObjectCreator} instance for the given class.
      *
-     * @param clazz 实例化的类
-     * @param <T>   对象类型
-     * @return DefaultObjectCreator
+     * @param clazz The class to be instantiated.
+     * @param <T>   The type of the object to be created.
+     * @return A new {@code PossibleObjectCreator} instance.
      */
     public static <T> PossibleObjectCreator<T> of(final Class<T> clazz) {
         return new PossibleObjectCreator<>(clazz);
     }
 
     /**
-     * 某些特殊接口的实例化按照默认实现进行
+     * Resolves certain special interfaces to their default concrete implementations.
      *
-     * @param type 类型
-     * @return 默认类型
+     * @param type The type to resolve.
+     * @return The default concrete implementation class for the given interface type, or the original type if no
+     *         default is found.
      */
     private static Class<?> resolveType(final Class<?> type) {
         if (type.isAssignableFrom(AbstractMap.class)) {
@@ -102,37 +109,52 @@ public class PossibleObjectCreator<T> implements ObjectCreator<T> {
         return type;
     }
 
+    /**
+     * Creates a new instance of the object based on its type and available constructors. This method attempts to create
+     * an instance in the following order:
+     * <ol>
+     * <li>If it's a primitive type, return its default value.</li>
+     * <li>If it's an interface or abstract class, resolve to a default concrete implementation (e.g., {@code List} to
+     * {@code ArrayList}).</li>
+     * <li>Attempt to instantiate using a no-argument constructor.</li>
+     * <li>If it's an enum, return the first enum constant.</li>
+     * <li>If it's an array, return an empty array of that component type.</li>
+     * <li>Iterate through all available constructors and attempt to instantiate using default values for
+     * parameters.</li>
+     * </ol>
+     *
+     * @return A new instance of type {@code T}, or {@code null} if instantiation fails.
+     */
     @Override
     public T create() {
         Class<T> type = this.clazz;
 
-        // 原始类型
+        // Primitive types
         if (type.isPrimitive()) {
             return (T) ClassKit.getPrimitiveDefaultValue(type);
         }
 
-        // 处理接口和抽象类的默认值
+        // Handle default implementations for interfaces and abstract classes
         type = (Class<T>) resolveType(type);
 
-        // 尝试默认构造实例化
+        // Attempt instantiation using a default (no-arg) constructor
         try {
             return DefaultObjectCreator.of(type).create();
         } catch (final Exception e) {
             // ignore
-            // 默认构造不存在的情况下查找其它构造
         }
 
-        // 枚举
+        // Enums
         if (type.isEnum()) {
             return type.getEnumConstants()[0];
         }
 
-        // 数组
+        // Arrays
         if (type.isArray()) {
             return (T) Array.newInstance(type.getComponentType(), 0);
         }
 
-        // 查找合适构造
+        // Find a suitable constructor
         final Constructor<T>[] constructors = ReflectKit.getConstructors(type);
         Class<?>[] parameterTypes;
         for (final Constructor<T> constructor : constructors) {
@@ -144,7 +166,7 @@ public class PossibleObjectCreator<T> implements ObjectCreator<T> {
             try {
                 return constructor.newInstance(ClassKit.getDefaultValues(parameterTypes));
             } catch (final Exception ignore) {
-                // 构造出错时继续尝试下一种构造方式
+                // If constructor fails, continue to try the next one.
             }
         }
         return null;

@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.cron;
 
-import java.io.Serial;
-import java.io.Serializable;
-import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.miaixz.bus.core.center.map.TripleTable;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -41,8 +34,17 @@ import org.miaixz.bus.cron.crontab.CronCrontab;
 import org.miaixz.bus.cron.crontab.Crontab;
 import org.miaixz.bus.cron.pattern.CronPattern;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
- * 定时任务表 任务表将ID、表达式、任务一一对应，定时任务执行过程中，会周期性检查定时任务表中的所有任务表达式匹配情况，从而执行其对应的任务 任务的添加、移除使用读写锁保证线程安全性
+ * Task table for cron jobs. This class holds a mapping between task IDs, cron patterns, and the tasks themselves. The
+ * scheduler periodically checks all tasks in this table to see if their patterns match the current time, and if so,
+ * executes the corresponding task. Read-write locks are used to ensure thread safety for adding and removing tasks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,37 +55,37 @@ public class Repertoire implements Serializable {
     private static final long serialVersionUID = 2852287269608L;
 
     /**
-     * 默认任务表大小：10
+     * Default initial capacity for the task table.
      */
     public static final int DEFAULT_CAPACITY = 10;
     private final ReadWriteLock lock;
     private final TripleTable<String, CronPattern, Crontab> table;
 
     /**
-     * 构造
+     * Constructs a new Repertoire with the default capacity.
      */
     public Repertoire() {
         this(DEFAULT_CAPACITY);
     }
 
     /**
-     * 构造
+     * Constructs a new Repertoire with the specified initial capacity.
      *
-     * @param initialCapacity 容量，即预估的最大任务数
+     * @param initialCapacity The initial capacity, representing the estimated maximum number of tasks.
      */
     public Repertoire(final int initialCapacity) {
         lock = new ReentrantReadWriteLock();
-
         this.table = new TripleTable<>(initialCapacity);
     }
 
     /**
-     * 新增Task
+     * Adds a new task to the table.
      *
-     * @param id      ID
-     * @param pattern {@link CronPattern}
-     * @param crontab {@link Crontab}
-     * @return this
+     * @param id      The task ID.
+     * @param pattern The {@link CronPattern}.
+     * @param crontab The {@link Crontab} task.
+     * @return this {@link Repertoire} instance.
+     * @throws CrontabException if the ID already exists.
      */
     public Repertoire add(final String id, final CronPattern pattern, final Crontab crontab) {
         final Lock writeLock = lock.writeLock();
@@ -100,9 +102,9 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 获取所有ID，返回不可变列表，即列表不可修改
+     * Gets an unmodifiable list of all task IDs.
      *
-     * @return ID列表
+     * @return The list of task IDs.
      */
     public List<String> getIds() {
         final Lock readLock = lock.readLock();
@@ -115,9 +117,9 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 获取所有定时任务表达式，返回不可变列表，即列表不可修改
+     * Gets an unmodifiable list of all cron patterns.
      *
-     * @return 定时任务表达式列表
+     * @return The list of cron patterns.
      */
     public List<CronPattern> getPatterns() {
         final Lock readLock = lock.readLock();
@@ -130,9 +132,9 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 获取所有定时任务，返回不可变列表，即列表不可修改
+     * Gets an unmodifiable list of all tasks.
      *
-     * @return 定时任务列表
+     * @return The list of tasks.
      */
     public List<Crontab> getTasks() {
         final Lock readLock = lock.readLock();
@@ -145,10 +147,10 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 移除Task
+     * Removes a task by its ID.
      *
-     * @param id Task的ID
-     * @return 是否成功移除，{@code false}表示未找到对应ID的任务
+     * @param id The ID of the task to remove.
+     * @return {@code true} if the task was successfully removed, {@code false} if no task with the given ID was found.
      */
     public boolean remove(final String id) {
         final Lock writeLock = lock.writeLock();
@@ -166,11 +168,11 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 更新某个Task的定时规则
+     * Updates the cron pattern for a specific task.
      *
-     * @param id      Task的ID
-     * @param pattern 新的表达式
-     * @return 是否更新成功，如果id对应的规则不存在则不更新
+     * @param id      The ID of the task.
+     * @param pattern The new cron pattern.
+     * @return {@code true} if the update was successful, {@code false} if no task with the given ID was found.
      */
     public boolean updatePattern(final String id, final CronPattern pattern) {
         final Lock writeLock = lock.writeLock();
@@ -188,10 +190,10 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 获得指定位置的{@link Crontab}
+     * Gets the {@link Crontab} at the specified index.
      *
-     * @param index 位置
-     * @return {@link Crontab}
+     * @param index The index.
+     * @return The {@link Crontab} at the given index.
      */
     public Crontab getTask(final int index) {
         final Lock readLock = lock.readLock();
@@ -204,10 +206,10 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 获得指定id的{@link Crontab}
+     * Gets the {@link Crontab} for the specified ID.
      *
-     * @param id ID
-     * @return {@link Crontab}
+     * @param id The task ID.
+     * @return The {@link Crontab}, or {@code null} if not found.
      */
     public Crontab getTask(final String id) {
         final Lock readLock = lock.readLock();
@@ -220,10 +222,10 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 获得指定id的{@link CronPattern}
+     * Gets the {@link CronPattern} for the specified ID.
      *
-     * @param id ID
-     * @return {@link CronPattern}
+     * @param id The task ID.
+     * @return The {@link CronPattern}, or {@code null} if not found.
      */
     public CronPattern getPattern(final String id) {
         final Lock readLock = lock.readLock();
@@ -236,10 +238,10 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 获得指定位置的{@link CronPattern}
+     * Gets the {@link CronPattern} at the specified index.
      *
-     * @param index 位置
-     * @return {@link CronPattern}
+     * @param index The index.
+     * @return The {@link CronPattern} at the given index.
      */
     public CronPattern getPattern(final int index) {
         final Lock readLock = lock.readLock();
@@ -252,28 +254,28 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 任务表大小，加入的任务数
+     * Returns the number of tasks in the table.
      *
-     * @return 任务表大小，加入的任务数
+     * @return The number of scheduled tasks.
      */
     public int size() {
         return this.table.size();
     }
 
     /**
-     * 任务表是否为空
+     * Checks if the task table is empty.
      *
-     * @return true为空
+     * @return {@code true} if the table is empty, {@code false} otherwise.
      */
     public boolean isEmpty() {
         return size() < 1;
     }
 
     /**
-     * 如果时间匹配则执行相应的Task，带读锁
+     * Executes all tasks that match the given time. This method acquires a read lock.
      *
-     * @param scheduler {@link Scheduler}
-     * @param millis    时间毫秒
+     * @param scheduler The {@link Scheduler}.
+     * @param millis    The current time in milliseconds.
      */
     public void executeTaskIfMatch(final Scheduler scheduler, final long millis) {
         final Lock readLock = lock.readLock();
@@ -301,10 +303,10 @@ public class Repertoire implements Serializable {
     }
 
     /**
-     * 如果时间匹配则执行相应的Task，无锁
+     * Internal method to execute matching tasks without acquiring a lock. The caller is responsible for locking.
      *
-     * @param scheduler {@link Scheduler}
-     * @param millis    时间毫秒
+     * @param scheduler The {@link Scheduler}.
+     * @param millis    The current time in milliseconds.
      */
     protected void executeTaskIfMatchInternal(final Scheduler scheduler, final long millis) {
         final int size = size();

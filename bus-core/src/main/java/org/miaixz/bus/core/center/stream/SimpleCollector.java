@@ -35,51 +35,61 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 /**
- * 简单{@link Collector}接口实现
+ * A simple implementation of the {@link Collector} interface.
  *
- * @param <T> 输入数据类型
- * @param <A> 累积结果的容器类型
- * @param <R> 数据结果类型
+ * @param <T> the type of input elements to the reduction operation
+ * @param <A> the mutable accumulation type of the reduction operation (often hidden as an implementation detail)
+ * @param <R> the result type of the reduction operation
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SimpleCollector<T, A, R> implements Collector<T, A, R> {
 
     /**
-     * 创建新的结果容器，容器类型为A
+     * A function that creates a new mutable result container.
      */
     private final Supplier<A> supplier;
     /**
-     * 将输入元素合并到结果容器中
+     * A function that folds a value into a mutable result container.
      */
     private final BiConsumer<A, T> accumulator;
     /**
-     * 合并两个结果容器（并行流使用，将多个线程产生的结果容器合并）
+     * A function that accepts two partial results and merges them. This is used in parallel streams to combine results
+     * from different threads.
      */
     private final BinaryOperator<A> combiner;
     /**
-     * 将结果容器转换成最终的表示
+     * A function that performs the final transformation from the intermediate accumulation type A to the final result
+     * type R.
      */
     private final Function<A, R> finisher;
     /**
-     * 特征值枚举，见{@link Characteristics}
+     * A {@code Set} of {@link Characteristics} indicating properties of the Collector.
      * <ul>
-     * <li>CONCURRENT： 表示结果容器只有一个（即使是在并行流的情况下）。 只有在并行流且收集器不具备此特性的情况下，combiner()返回的lambda表达式才会执行（中间结果容器只有一个就无需合并）。
-     * 设置此特性时意味着多个线程可以对同一个结果容器调用，因此结果容器必须是线程安全的。</li>
-     * <li>UNORDERED： 表示流中的元素无序</li>
-     * <li>IDENTITY_FINISH：表示中间结果容器类型与最终结果类型一致。设置此特性时finisher()方法不会被调用</li>
+     * <li>{@code CONCURRENT}: Indicates that this collector is concurrent, meaning that the result container can be
+     * modified by multiple threads simultaneously. If a collector is concurrent, then the combiner function may be
+     * called to merge results from different threads. If a collector is concurrent and not {@code UNORDERED}, then it
+     * is only guaranteed to preserve the encounter order of input elements if the collector is also
+     * {@code IDENTITY_FINISH}.</li>
+     * <li>{@code UNORDERED}: Indicates that the collection performed by this collector does not enforce any encounter
+     * order of the input elements.</li>
+     * <li>{@code IDENTITY_FINISH}: Indicates that the finisher function is an identity function and can be omitted. In
+     * this case, the accumulator also serves as the finisher, and the intermediate accumulation type A is the same as
+     * the result type R.</li>
      * </ul>
      */
     private final Set<Characteristics> characteristics;
 
     /**
-     * 构造
+     * Constructs a {@code SimpleCollector} with the specified supplier, accumulator, combiner, finisher, and
+     * characteristics.
      *
-     * @param supplier        创建新的结果容器函数
-     * @param accumulator     将输入元素合并到结果容器中函数
-     * @param combiner        合并两个结果容器函数（并行流使用，将多个线程产生的结果容器合并）
-     * @param finisher        将结果容器转换成最终的表示函数
-     * @param characteristics 特征值枚举
+     * @param supplier        a function that creates a new mutable result container
+     * @param accumulator     a function that folds a value into a mutable result container
+     * @param combiner        a function that accepts two partial results and merges them
+     * @param finisher        a function that performs the final transformation from the intermediate accumulation type
+     *                        A to the final result type R
+     * @param characteristics a {@code Set} of {@link Characteristics} indicating properties of the Collector
      */
     public SimpleCollector(final Supplier<A> supplier, final BiConsumer<A, T> accumulator,
             final BinaryOperator<A> combiner, final Function<A, R> finisher,
@@ -92,38 +102,65 @@ public class SimpleCollector<T, A, R> implements Collector<T, A, R> {
     }
 
     /**
-     * 构造
+     * Constructs a {@code SimpleCollector} with the specified supplier, accumulator, combiner, and characteristics. The
+     * finisher function is assumed to be an identity function ({@code IDENTITY_FINISH}).
      *
-     * @param supplier        创建新的结果容器函数
-     * @param accumulator     将输入元素合并到结果容器中函数
-     * @param combiner        合并两个结果容器函数（并行流使用，将多个线程产生的结果容器合并）
-     * @param characteristics 特征值枚举
+     * @param supplier        a function that creates a new mutable result container
+     * @param accumulator     a function that folds a value into a mutable result container
+     * @param combiner        a function that accepts two partial results and merges them
+     * @param characteristics a {@code Set} of {@link Characteristics} indicating properties of the Collector
      */
     public SimpleCollector(final Supplier<A> supplier, final BiConsumer<A, T> accumulator,
             final BinaryOperator<A> combiner, final Set<Characteristics> characteristics) {
         this(supplier, accumulator, combiner, i -> (R) i, characteristics);
     }
 
+    /**
+     * Returns a {@code BiConsumer} that folds a value into a mutable result container.
+     *
+     * @return the accumulator function
+     */
     @Override
     public BiConsumer<A, T> accumulator() {
         return accumulator;
     }
 
+    /**
+     * Returns a {@code Supplier} that creates and returns a new mutable result container.
+     *
+     * @return the supplier function
+     */
     @Override
     public Supplier<A> supplier() {
         return supplier;
     }
 
+    /**
+     * Returns a {@code BinaryOperator} that accepts two partial results and merges them.
+     *
+     * @return the combiner function
+     */
     @Override
     public BinaryOperator<A> combiner() {
         return combiner;
     }
 
+    /**
+     * Returns a {@code Function} that performs the final transformation from the intermediate accumulation type A to
+     * the final result type R.
+     *
+     * @return the finisher function
+     */
     @Override
     public Function<A, R> finisher() {
         return finisher;
     }
 
+    /**
+     * Returns a {@code Set} of {@link Characteristics} indicating properties of the Collector.
+     *
+     * @return the characteristics of this collector
+     */
     @Override
     public Set<Characteristics> characteristics() {
         return characteristics;

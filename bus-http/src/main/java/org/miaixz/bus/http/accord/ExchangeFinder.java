@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.http.accord;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.util.List;
-
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.metric.EventListener;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.util.List;
 
 /**
  * Attempts to find the connections for a sequence of exchanges. This uses the following strategies:
@@ -57,6 +57,9 @@ import org.miaixz.bus.http.metric.http.HttpCodec;
  *
  * <p>
  * It is possible to cancel the finding process.
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 final class ExchangeFinder {
 
@@ -82,6 +85,15 @@ final class ExchangeFinder {
         this.routeSelector = new RouteSelector(address, connectionPool.routeDatabase, call, eventListener);
     }
 
+    /**
+     * Finds a connection to host a new stream.
+     *
+     * @param client                  The HTTP client.
+     * @param chain                   The interceptor chain.
+     * @param doExtensiveHealthChecks Whether to perform extensive health checks.
+     * @return The HTTP codec for the new stream.
+     * @throws IOException if an I/O error occurs.
+     */
     public HttpCodec find(Httpd client, NewChain chain, boolean doExtensiveHealthChecks) {
         int connectTimeout = chain.connectTimeoutMillis();
         int readTimeout = chain.readTimeoutMillis();
@@ -110,6 +122,15 @@ final class ExchangeFinder {
     /**
      * Finds a connection and returns it if it is healthy. If it is unhealthy the process is repeated until a healthy
      * connection is found.
+     *
+     * @param connectTimeout          The connection timeout.
+     * @param readTimeout             The read timeout.
+     * @param writeTimeout            The write timeout.
+     * @param pingIntervalMillis      The ping interval.
+     * @param connectionRetryEnabled  Whether to retry on connection failure.
+     * @param doExtensiveHealthChecks Whether to perform extensive health checks.
+     * @return A healthy connection.
+     * @throws IOException if an I/O error occurs.
      */
     private RealConnection findHealthyConnection(
             int connectTimeout,
@@ -147,6 +168,14 @@ final class ExchangeFinder {
     /**
      * Returns a connection to host a new stream. This prefers the existing connection if it exists, then the pool,
      * finally building a new connection.
+     *
+     * @param connectTimeout         The connection timeout.
+     * @param readTimeout            The read timeout.
+     * @param writeTimeout           The write timeout.
+     * @param pingIntervalMillis     The ping interval.
+     * @param connectionRetryEnabled Whether to retry on connection failure.
+     * @return A connection.
+     * @throws IOException if an I/O error occurs.
      */
     private RealConnection findConnection(
             int connectTimeout,
@@ -279,11 +308,19 @@ final class ExchangeFinder {
         return result;
     }
 
+    /**
+     * Returns the connection that is currently being connected, or null if there is no such connection.
+     *
+     * @return The connecting connection, or null.
+     */
     RealConnection connectingConnection() {
         assert (Thread.holdsLock(connectionPool));
         return connectingConnection;
     }
 
+    /**
+     * Tracks a failure for this finder.
+     */
     void trackFailure() {
         assert (!Thread.holdsLock(connectionPool));
         synchronized (connectionPool) {
@@ -293,6 +330,8 @@ final class ExchangeFinder {
 
     /**
      * Returns true if there is a failure that retrying might fix.
+     *
+     * @return {@code true} if there is a stream failure.
      */
     boolean hasStreamFailure() {
         synchronized (connectionPool) {
@@ -302,6 +341,8 @@ final class ExchangeFinder {
 
     /**
      * Returns true if a current route is still good or if there are routes we haven't tried yet.
+     *
+     * @return {@code true} if there is a route to try.
      */
     boolean hasRouteToTry() {
         synchronized (connectionPool) {
@@ -320,6 +361,8 @@ final class ExchangeFinder {
     /**
      * Return true if the route used for the current connection should be retried, even if the connection itself is
      * unhealthy. The biggest gotcha here is that we shouldn't reuse routes from coalesced connections.
+     *
+     * @return {@code true} if the current route should be retried.
      */
     private boolean retryCurrentRoute() {
         return transmitter.connection != null && transmitter.connection.routeFailureCount == 0

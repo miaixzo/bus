@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * Stack Overflow 授权范围
+ * Stack Overflow authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,15 +42,33 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum StackoverflowScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Access a user's global inbox. The meaning of {@code scope} is subject to {@code description}.
      */
     read_inbox("read_inbox", "access a user's global inbox", true),
+    /**
+     * Access tokens with this scope do not expire.
+     */
     NO_EXPIRY("no_expiry", "access_token's with this scope do not expire", false),
+    /**
+     * Perform write operations as a user.
+     */
     WRITE_ACCESS("write_access", "perform write operations as a user", false),
+    /**
+     * Access full history of a user's private actions on the site.
+     */
     PRIVATE_INFO("private_info", "access full history of a user's private actions on the site", false);
 
+    /**
+     * The scope string as defined by Stack Overflow.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

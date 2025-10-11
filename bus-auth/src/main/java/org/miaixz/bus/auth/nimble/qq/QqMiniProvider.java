@@ -30,6 +30,7 @@ package org.miaixz.bus.auth.nimble.qq;
 import lombok.Data;
 import org.miaixz.bus.auth.magic.AuthToken;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -44,53 +45,86 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import java.util.Map;
 
 /**
- * QQ 登录
+ * QQ Mini Program login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class QqMiniProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code QqMiniProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public QqMiniProvider(Context context) {
         super(context, Registry.QQ_MINI);
     }
 
+    /**
+     * Constructs a {@code QqMiniProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public QqMiniProvider(Context context, CacheX cache) {
         super(context, Registry.QQ_MINI, cache);
     }
 
+    /**
+     * Retrieves the access token for the QQ Mini Program. This method uses the authorization code to obtain the openId,
+     * unionId, and session_key.
+     *
+     * @param authCallback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if the response indicates an error or is missing required token information
+     */
     @Override
     public AuthToken getAccessToken(Callback authCallback) {
-        // 使用 code 获取对应的 openId、unionId 等字段
+        // Use the code to get the corresponding openId, unionId, etc.
         String response = Httpx.get(accessTokenUrl(authCallback.getCode()));
 
         Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         checkResponse(accessTokenObject);
 
-        // 拼装结果
+        // Assemble the result
         return AuthToken.builder().openId((String) accessTokenObject.get("openid"))
                 .unionId((String) accessTokenObject.get("unionid"))
                 .accessToken((String) accessTokenObject.get("session_key")).build();
     }
 
+    /**
+     * Retrieves user information for the QQ Mini Program. Note: If user information is required, it needs to be passed
+     * to the backend after the Mini Program calls a function.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
-        // 如果需要用户信息，需要在小程序调用函数后传给后端
+        // If user information is required, it needs to be passed to the backend after the Mini Program calls a function
         return Material.builder().rawJson(JsonKit.toJsonString(authToken)).username("").nickname("").avatar("")
                 .uuid(authToken.getOpenId()).token(authToken).source(complex.toString()).build();
     }
 
     /**
-     * 检查响应内容是否正确
+     * Checks if the response content is correct.
      *
-     * @param response 请求响应内容
+     * @param response the response content from the request
+     * @throws AuthorizedException if the response indicates an error
      */
     private void checkResponse(Map<String, Object> response) {
-        if (!Symbol.ZERO.equals(response.get("errcode"))) {
-            throw new AuthorizedException((String) response.get("errmsg"));
+        if (!Symbol.ZERO.equals(response.get(Consts.ERRCODE))) {
+            throw new AuthorizedException((String) response.get(Consts.ERRMSG));
         }
     }
 
+    /**
+     * Constructs the access token URL for the QQ Mini Program.
+     *
+     * @param code the authorization code
+     * @return the access token URL
+     */
     @Override
     protected String accessTokenUrl(String code) {
         return Builder.fromUrl(this.complex.accessToken()).queryParam("appid", context.getAppKey())
@@ -98,13 +132,31 @@ public class QqMiniProvider extends AbstractProvider {
                 .queryParam("grant_type", "authorization_code").build();
     }
 
+    /**
+     * Data class representing the response from QQ Mini Program's jscode2session API.
+     */
     @Data
     private static class JSCode2SessionResponse {
 
+        /**
+         * Error code returned by the API.
+         */
         private String errcode;
+        /**
+         * Error message returned by the API.
+         */
         private String errmsg;
+        /**
+         * Session key for the user.
+         */
         private String session_key;
+        /**
+         * User's OpenID.
+         */
         private String openid;
+        /**
+         * User's UnionID.
+         */
         private String unionid;
 
     }

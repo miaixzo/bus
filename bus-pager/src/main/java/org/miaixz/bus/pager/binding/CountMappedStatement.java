@@ -36,21 +36,26 @@ import org.apache.ibatis.mapping.ResultMapping;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * 创建新的MappedStatement,主要是Count返回值int
+ * Utility class for creating new {@link MappedStatement} objects, primarily for count queries. This class helps in
+ * constructing a MappedStatement that returns an integer (long) count.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CountMappedStatement {
 
+    /**
+     * An empty list of {@link ResultMapping} used for building the result map of the count query.
+     */
     private static final List<ResultMapping> EMPTY_RESULTMAPPING = new ArrayList<>(0);
 
     /**
-     * 新建count查询的MappedStatement
+     * Creates a new {@link MappedStatement} for a count query. This new MappedStatement will have a result type of
+     * {@code Long.class} to return the count.
      *
-     * @param ms      MappedStatement
-     * @param newMsId 标识
-     * @return the mappedStatement
+     * @param ms      the original MappedStatement from which to derive properties
+     * @param newMsId the ID for the new count MappedStatement
+     * @return a new MappedStatement configured for a count query
      */
     public static MappedStatement newCountMappedStatement(MappedStatement ms, String newMsId) {
         MappedStatement.Builder builder = new MappedStatement.Builder(ms.getConfiguration(), newMsId, ms.getSqlSource(),
@@ -69,7 +74,7 @@ public class CountMappedStatement {
         }
         builder.timeout(ms.getTimeout());
         builder.parameterMap(ms.getParameterMap());
-        // count查询返回值int
+        // count query returns int (long)
         List<ResultMap> resultMaps = new ArrayList<>();
         ResultMap resultMap = new ResultMap.Builder(ms.getConfiguration(), ms.getId(), Long.class, EMPTY_RESULTMAPPING)
                 .build();

@@ -31,115 +31,125 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 缓存接口
+ * Cache Interface.
  * <p>
- * 定义缓存系统的核心操作，包括读取、写入、检查、移除和清空缓存。 支持泛型，适用于不同类型的键值对，可实现内存缓存、分布式缓存等多种缓存机制。
+ * Defines the core operations for a caching system, including reading, writing, checking, removing, and clearing the
+ * cache. Supports generics for different types of key-value pairs and can be implemented for various caching mechanisms
+ * such as in-memory cache, distributed cache, etc.
  * </p>
  *
- * @param <K> 键的类型
- * @param <V> 值的类型
+ * @param <K> the type of keys
+ * @param <V> the type of values
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface CacheX<K, V> {
 
     /**
-     * 从缓存中读取单个对象
+     * Reads a single object from the cache.
      * <p>
-     * 根据指定键获取缓存中的值。如果键不存在或值已过期，返回 <code>null</code>。 示例代码：
+     * Retrieves the value from the cache based on the specified key. Returns <code>null</code> if the key does not
+     * exist or the value has expired. Example code:
      * </p>
      * 
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * User user = cache.read("user123");
      * if (user != null) {
-     *     System.out.println("用户: " + user.getName());
+     *     System.out.println("User: " + user.getName());
      * }
      * }</pre>
      *
-     * @param key 缓存键
-     * @return 键对应的值，或 <code>null</code> 如果键不存在或值已过期
+     * @param key the cache key
+     * @return the value corresponding to the key, or <code>null</code> if the key does not exist or the value has
+     *         expired
      */
     V read(K key);
 
     /**
-     * 从缓存中批量读取多个对象
+     * Reads multiple objects from the cache in a batch.
      * <p>
-     * 根据指定键集合批量获取缓存中的值，返回包含键值对的映射。 不存在的键或已过期的值不会包含在返回的映射中。 示例代码：
+     * Retrieves values from the cache based on the specified collection of keys, returning a map of key-value pairs.
+     * Keys that do not exist or have expired values will not be included in the returned map. Example code:
      * </p>
      * 
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * List<String> userIds = Arrays.asList("user123", "user456");
      * Map<String, User> users = cache.read(userIds);
-     * users.forEach((id, user) -> System.out.println("ID: " + id + ", 名称: " + user.getName()));
+     * users.forEach((id, user) -> System.out.println("ID: " + id + ", Name: " + user.getName()));
      * }</pre>
      *
-     * @param keys 键的集合
-     * @return 包含键及其对应值的映射，可能为空
+     * @param keys a collection of keys
+     * @return a map containing the keys and their corresponding values, which may be empty
      */
     Map<K, V> read(Collection<K> keys);
 
     /**
-     * 将对象写入缓存，使用默认过期时间
+     * Writes an object to the cache with the default expiration time.
      * <p>
-     * 将键值对写入缓存，采用默认过期时间（1小时，3600秒）。 如果键已存在，更新其值并重置过期时间。 示例代码：
+     * Writes a key-value pair to the cache with a default expiration time (1 hour, 3600 seconds). If the key already
+     * exists, its value is updated and the expiration time is reset. Example code:
      * </p>
      * 
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
-     * User user = new User("user123", "张三");
+     * User user = new User("user123", "John Doe");
      * cache.write(user.getId(), user);
      * }</pre>
      *
-     * @param key   缓存键
-     * @param value 缓存值
+     * @param key   the cache key
+     * @param value the cache value
      */
     default void write(K key, V value) {
         write(key, value, 3600_000);
     }
 
     /**
-     * 将对象写入缓存，指定过期时间
+     * Writes an object to the cache with a specified expiration time.
      * <p>
-     * 将键值对写入缓存，并设置指定的过期时间（单位：毫秒）。 如果键已存在，更新其值并重置过期时间。 示例代码：
+     * Writes a key-value pair to the cache and sets a specified expiration time in milliseconds. If the key already
+     * exists, its value is updated and the expiration time is reset. Example code:
      * </p>
      * 
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
-     * User user = new User("user123", "张三");
-     * cache.write(user.getId(), user, 30 * 60 * 1000); // 30分钟
+     * User user = new User("user123", "John Doe");
+     * cache.write(user.getId(), user, 30 * 60 * 1000); // 30 minutes
      * }</pre>
      *
-     * @param key    缓存键
-     * @param value  缓存值
-     * @param expire 过期时间（毫秒）
+     * @param key    the cache key
+     * @param value  the cache value
+     * @param expire the expiration time in milliseconds
      */
     void write(K key, V value, long expire);
 
     /**
-     * 批量写入多个对象到缓存，指定过期时间
+     * Writes multiple objects to the cache in a batch with a specified expiration time.
      * <p>
-     * 将多个键值对批量写入缓存，设置相同的过期时间（单位：毫秒）。 对于已存在的键，更新其值并重置过期时间。 示例代码：
+     * Writes multiple key-value pairs to the cache in a batch, setting the same expiration time in milliseconds for
+     * all. For existing keys, their values are updated and the expiration time is reset. Example code:
      * </p>
      * 
      * <pre>{@code
      * CacheX<String, User> cache = new SomeCacheImpl<>();
      * Map<String, User> userMap = new HashMap<>();
-     * userMap.put("user123", new User("user123", "张三"));
-     * userMap.put("user456", new User("user456", "李四"));
-     * cache.write(userMap, 60 * 60 * 1000); // 1小时
+     * userMap.put("user123", new User("user123", "John Doe"));
+     * userMap.put("user456", new User("user456", "Jane Smith"));
+     * cache.write(userMap, 60 * 60 * 1000); // 1 hour
      * }</pre>
      *
-     * @param map    包含键值对的映射
-     * @param expire 过期时间（毫秒）
+     * @param map    a map containing key-value pairs
+     * @param expire the expiration time in milliseconds
      */
     void write(Map<K, V> map, long expire);
 
     /**
-     * 检查缓存中是否存在未过期的键
+     * Checks if an unexpired key exists in the cache.
      * <p>
-     * 判断缓存中是否存在指定键且对应的值未过期。 默认实现返回 <code>true</code>，实现类应重写以提供具体逻辑。 示例代码：
+     * Determines if the specified key exists in the cache and its corresponding value has not expired. The default
+     * implementation returns <code>true</code>; implementing classes should override this to provide specific logic.
+     * Example code:
      * </p>
      * 
      * <pre>{@code
@@ -147,21 +157,22 @@ public interface CacheX<K, V> {
      * String userId = "user123";
      * if (cache.containsKey(userId)) {
      *     User user = cache.read(userId);
-     *     System.out.println("缓存命中: " + user.getName());
+     *     System.out.println("Cache hit: " + user.getName());
      * }
      * }</pre>
      *
-     * @param key 缓存键
-     * @return <code>true</code> 如果键存在且值未过期；否则返回 <code>false</code>
+     * @param key the cache key
+     * @return <code>true</code> if the key exists and its value is not expired; otherwise, returns <code>false</code>
      */
     default boolean containsKey(K key) {
         return true;
     }
 
     /**
-     * 从缓存中移除指定键
+     * Removes specified keys from the cache.
      * <p>
-     * 移除一个或多个指定键的缓存数据。对于不存在的键，操作将忽略。 支持可变参数以移除多个键。 示例代码：
+     * Removes the cached data for one or more specified keys. The operation is ignored for keys that do not exist.
+     * Supports varargs to remove multiple keys. Example code:
      * </p>
      * 
      * <pre>{@code
@@ -170,14 +181,14 @@ public interface CacheX<K, V> {
      * cache.remove("user456", "user789");
      * }</pre>
      *
-     * @param keys 要移除的键
+     * @param keys the keys to be removed
      */
     void remove(K... keys);
 
     /**
-     * 清空缓存中的所有数据
+     * Clears all data from the cache.
      * <p>
-     * 移除缓存中的所有键值对，使缓存变为空。 示例代码：
+     * Removes all key-value pairs from the cache, making it empty. Example code:
      * </p>
      * 
      * <pre>{@code

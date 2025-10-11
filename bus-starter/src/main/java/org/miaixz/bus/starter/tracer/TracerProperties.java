@@ -27,10 +27,23 @@
 */
 package org.miaixz.bus.starter.tracer;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 /**
+ * Configuration properties for distributed tracing.
+ * <p>
+ * This class is a placeholder for future properties related to distributed tracing, such as trace propagation formats,
+ * sampling rates, and exporter configurations.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
+@Getter
+@Setter
+@ConfigurationProperties(prefix = GeniusBuilder.TRACER)
 public class TracerProperties {
 
 }

@@ -38,26 +38,44 @@ import org.miaixz.bus.auth.magic.Callback;
 import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * 爱发电 登录
+ * AfDian login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AfDianProvider extends AbstractProvider {
 
+    /**
+     * Constructs an {@code AfDianProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public AfDianProvider(Context context) {
         super(context, Registry.AFDIAN);
     }
 
+    /**
+     * Constructs an {@code AfDianProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public AfDianProvider(Context context, CacheX cache) {
         super(context, Registry.AFDIAN, cache);
     }
 
+    /**
+     * Retrieves the access token from AfDian's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
@@ -69,10 +87,17 @@ public class AfDianProvider extends AbstractProvider {
 
         String response = Httpx.post(this.complex.accessToken(), params);
 
-        String userId = JsonKit.getValue(JsonKit.getValue(response, "data"), ("user_id"));
+        String userId = JsonKit.getValue(JsonKit.getValue(response, Consts.DATA), ("user_id"));
         return AuthToken.builder().userId(userId).build();
     }
 
+    /**
+     * Retrieves user information from AfDian's user info endpoint. Note: AfDian does not provide a direct user info
+     * endpoint. User ID is extracted from the access token response.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         return Material.builder().uuid(authToken.getUserId()).gender(Gender.UNKNOWN).token(authToken)
@@ -80,10 +105,11 @@ public class AfDianProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {

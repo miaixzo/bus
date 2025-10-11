@@ -33,139 +33,141 @@ import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Base32 - encodes and decodes RFC4648 Base32 (see <a href=
- * "https://datatracker.ietf.org/doc/html/rfc4648#section-6">https://datatracker.ietf.org/doc/html/rfc4648#section-6</a>
- * ) base32就是用32（2的5次方）个特定ASCII码来表示256个ASCII码。 所以，5个ASCII字符经过base32编码后会变为8个字符（公约数为40），长度增加3/5.不足8n用“=”补足。 根据RFC4648
- * Base32规范，支持两种模式：
- * <ul>
- * <li>Base 32 Alphabet (ABCDEFGHIJKLMNOPQRSTUVWXYZ234567)</li>
- * <li>"Extended Hex" Base 32 Alphabet (0123456789ABCDEFGHIJKLMNOPQRSTUV)</li>
- * </ul>
+ * Provides Base32 encoding and decoding as per RFC 4648.
+ * <p>
+ * Base32 uses a 32-character set to represent binary data. It is more space-efficient than Base16 but less so than
+ * Base64. Each 5 bits of the input data are mapped to a Base32 character.
+ *
+ * <p>
+ * This class supports both the standard Base32 alphabet and the "Extended Hex" alphabet. See
+ * <a href="https://datatracker.ietf.org/doc/html/rfc4648#section-6">RFC 4648 Section 6</a>.
  *
  * @author Kimi Liu
+ * @see Base32Provider
  * @since Java 17+
  */
 public class Base32 {
 
     /**
-     * 编码
+     * Encodes a byte array into a Base32 string using the standard alphabet.
      *
-     * @param bytes 数据
-     * @return base32
+     * @param bytes The byte array to encode.
+     * @return The Base32-encoded string.
      */
     public static String encode(final byte[] bytes) {
         return Base32Provider.INSTANCE.encode(bytes);
     }
 
     /**
-     * base32编码
+     * Encodes a string into a Base32 string using the standard alphabet and UTF-8 charset.
      *
-     * @param source 被编码的base32字符串
-     * @return 被加密后的字符串
+     * @param source The string to encode.
+     * @return The Base32-encoded string.
      */
     public static String encode(final String source) {
         return encode(source, Charset.UTF_8);
     }
 
     /**
-     * base32编码
+     * Encodes a string into a Base32 string using the standard alphabet and a specified charset.
      *
-     * @param source  被编码的base32字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
+     * @param source  The string to encode.
+     * @param charset The character set to use for encoding the string.
+     * @return The Base32-encoded string.
      */
     public static String encode(final String source, final java.nio.charset.Charset charset) {
         return encode(ByteKit.toBytes(source, charset));
     }
 
     /**
-     * 编码
+     * Encodes a byte array into a Base32 string using the "Extended Hex" alphabet.
      *
-     * @param bytes 数据（Hex模式）
-     * @return base32
+     * @param bytes The byte array to encode.
+     * @return The Base32-encoded string with the hex alphabet.
      */
     public static String encodeHex(final byte[] bytes) {
         return Base32Provider.INSTANCE.encode(bytes, true);
     }
 
     /**
-     * base32编码（Hex模式）
+     * Encodes a string into a Base32 string using the "Extended Hex" alphabet and UTF-8 charset.
      *
-     * @param source 被编码的base32字符串
-     * @return 被加密后的字符串
+     * @param source The string to encode.
+     * @return The Base32-encoded string with the hex alphabet.
      */
     public static String encodeHex(final String source) {
         return encodeHex(source, Charset.UTF_8);
     }
 
     /**
-     * base32编码（Hex模式）
+     * Encodes a string into a Base32 string using the "Extended Hex" alphabet and a specified charset.
      *
-     * @param source  被编码的base32字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
+     * @param source  The string to encode.
+     * @param charset The character set to use for encoding the string.
+     * @return The Base32-encoded string with the hex alphabet.
      */
     public static String encodeHex(final String source, final java.nio.charset.Charset charset) {
         return encodeHex(ByteKit.toBytes(source, charset));
     }
 
     /**
-     * 解码
+     * Decodes a Base32 string (standard or hex alphabet) into a byte array. The decoder is case-insensitive and ignores
+     * whitespace.
      *
-     * @param base32 base32编码
-     * @return 数据
+     * @param base32 The Base32 string to decode.
+     * @return The decoded byte array.
      */
     public static byte[] decode(final String base32) {
         return Base32Provider.INSTANCE.decode(base32);
     }
 
     /**
-     * base32解码
+     * Decodes a Base32 string into a string using the UTF-8 charset.
      *
-     * @param source 被解码的base32字符串
-     * @return 被加密后的字符串
+     * @param source The Base32 string to decode.
+     * @return The decoded string.
      */
     public static String decodeString(final String source) {
         return decodeString(source, Charset.UTF_8);
     }
 
     /**
-     * base32解码
+     * Decodes a Base32 string into a string using a specified charset.
      *
-     * @param source  被解码的base32字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
+     * @param source  The Base32 string to decode.
+     * @param charset The character set to use for the decoded string.
+     * @return The decoded string.
      */
     public static String decodeString(final String source, final java.nio.charset.Charset charset) {
         return StringKit.toString(decode(source), charset);
     }
 
     /**
-     * 解码
+     * Decodes a Base32 string with the "Extended Hex" alphabet into a byte array.
      *
-     * @param base32 base32编码
-     * @return 数据
+     * @param base32 The Base32 string with the hex alphabet to decode.
+     * @return The decoded byte array.
      */
     public static byte[] decodeHex(final String base32) {
         return Base32Provider.INSTANCE.decode(base32, true);
     }
 
     /**
-     * base32解码
+     * Decodes a Base32 string with the "Extended Hex" alphabet into a string using the UTF-8 charset.
      *
-     * @param source 被解码的base32字符串
-     * @return 被加密后的字符串
+     * @param source The Base32 string with the hex alphabet to decode.
+     * @return The decoded string.
      */
     public static String decodeStrHex(final String source) {
         return decodeStrHex(source, Charset.UTF_8);
     }
 
     /**
-     * base32解码
+     * Decodes a Base32 string with the "Extended Hex" alphabet into a string using a specified charset.
      *
-     * @param source  被解码的base32字符串
-     * @param charset 字符集
-     * @return 被加密后的字符串
+     * @param source  The Base32 string with the hex alphabet to decode.
+     * @param charset The character set to use for the decoded string.
+     * @return The decoded string.
      */
     public static String decodeStrHex(final String source, final java.nio.charset.Charset charset) {
         return StringKit.toString(decodeHex(source), charset);

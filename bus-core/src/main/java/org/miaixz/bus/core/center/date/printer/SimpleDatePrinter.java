@@ -35,7 +35,7 @@ import java.util.TimeZone;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * 抽象日期基本信息类，提供日期格式、时区和地域信息。
+ * Abstract base class for date information, providing date format, time zone, and locale information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,26 +46,26 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
     private static final long serialVersionUID = 2852258036368L;
 
     /**
-     * 日期格式模式
+     * The date format pattern.
      */
     protected final String pattern;
 
     /**
-     * 时区
+     * The time zone.
      */
     protected final TimeZone timeZone;
 
     /**
-     * 地域
+     * The locale.
      */
     protected final Locale locale;
 
     /**
-     * 构造方法，初始化日期格式化信息。
+     * Constructs a {@code SimpleDatePrinter} with the given pattern, time zone, and locale.
      *
-     * @param pattern  {@link java.text.SimpleDateFormat} 兼容的日期格式
-     * @param timeZone 非空时区对象
-     * @param locale   非空地域对象
+     * @param pattern  The date format pattern compatible with {@link java.text.SimpleDateFormat}.
+     * @param timeZone The non-null time zone object.
+     * @param locale   The non-null locale object.
      */
     protected SimpleDatePrinter(final String pattern, final TimeZone timeZone, final Locale locale) {
         this.pattern = pattern;
@@ -74,9 +74,9 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
     }
 
     /**
-     * 获取日期格式模式。
+     * Gets the date format pattern.
      *
-     * @return 日期格式模式字符串
+     * @return The date format pattern string.
      */
     @Override
     public String getPattern() {
@@ -84,9 +84,9 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
     }
 
     /**
-     * 获取时区。
+     * Gets the time zone.
      *
-     * @return 时区对象
+     * @return The {@link TimeZone} object.
      */
     @Override
     public TimeZone getTimeZone() {
@@ -94,9 +94,9 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
     }
 
     /**
-     * 获取地域。
+     * Gets the locale.
      *
-     * @return 地域对象
+     * @return The {@link Locale} object.
      */
     @Override
     public Locale getLocale() {
@@ -104,10 +104,10 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
     }
 
     /**
-     * 判断是否与另一个对象相等。
+     * Checks if this object is equal to another object.
      *
-     * @param object 要比较的对象
-     * @return 如果相等返回 true
+     * @param object The object to compare.
+     * @return {@code true} if the objects are equal.
      */
     @Override
     public boolean equals(final Object object) {
@@ -119,9 +119,9 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
     }
 
     /**
-     * 获取对象的哈希码。
+     * Gets the hash code of this object.
      *
-     * @return 哈希码
+     * @return The hash code.
      */
     @Override
     public int hashCode() {
@@ -129,9 +129,9 @@ public class SimpleDatePrinter implements DatePrinter, Serializable {
     }
 
     /**
-     * 返回对象的字符串表示。
+     * Returns the string representation of this object.
      *
-     * @return 字符串表示
+     * @return The string representation.
      */
     @Override
     public String toString() {

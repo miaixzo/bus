@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.socket.plugin;
 
-import java.lang.reflect.Field;
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.socket.accord.AioServer;
 import org.miaixz.bus.socket.buffer.BufferPage;
@@ -37,29 +34,56 @@ import org.miaixz.bus.socket.buffer.BufferPagePool;
 import org.miaixz.bus.socket.metric.HashedWheelTimer;
 import org.miaixz.bus.socket.metric.SocketTask;
 
+import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
+
 /**
- * 内存页监测插件
+ * A plugin for monitoring {@link BufferPage} usage within {@link BufferPagePool}s.
+ * <p>
+ * This plugin periodically dumps the status of the write and read buffer pools of an {@link AioServer} to the log,
+ * providing insights into memory allocation and usage.
+ * </p>
  *
+ * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
 
     /**
-     * 任务执行频率
+     * The frequency (in seconds) at which the monitoring task is executed.
      */
     private int seconds;
 
+    /**
+     * The {@link AioServer} instance whose buffer pools are being monitored.
+     */
     private AioServer server;
 
+    /**
+     * The scheduled task for monitoring buffer pages.
+     */
     private SocketTask future;
 
+    /**
+     * Constructs a {@code BufferPageMonitorPlugin}.
+     *
+     * @param server  the {@link AioServer} to monitor
+     * @param seconds the monitoring frequency in seconds
+     */
     public BufferPageMonitorPlugin(AioServer server, int seconds) {
         this.seconds = seconds;
         this.server = server;
         init();
     }
 
+    /**
+     * Dumps the current state of a {@link BufferPagePool} to the log.
+     *
+     * @param writeBufferPool the {@link BufferPagePool} to dump
+     * @throws NoSuchFieldException   if the 'bufferPages' field is not found via reflection
+     * @throws IllegalAccessException if access to the 'bufferPages' field is denied
+     */
     private static void dumpBufferPool(BufferPagePool writeBufferPool)
             throws NoSuchFieldException, IllegalAccessException {
         Field field = BufferPagePool.class.getDeclaredField("bufferPages");
@@ -72,11 +96,14 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
         Logger.info(logger);
     }
 
+    /**
+     * Initializes the scheduled monitoring task.
+     */
     private void init() {
         future = HashedWheelTimer.DEFAULT_TIMER.scheduleWithFixedDelay(() -> {
             {
                 if (server == null) {
-                    Logger.error("unKnow server or client need to monitor!");
+                    Logger.error("Unknown server or client needs to be monitored!");
                     shutdown();
                     return;
                 }
@@ -85,7 +112,7 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
                     bufferPoolField.setAccessible(true);
                     BufferPagePool writeBufferPool = (BufferPagePool) bufferPoolField.get(server);
                     if (writeBufferPool == null) {
-                        Logger.error("server maybe has not started!");
+                        Logger.error("Server may not have started yet!");
                         shutdown();
                         return;
                     }
@@ -94,20 +121,24 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
                     BufferPagePool readBufferPool = (BufferPagePool) readBufferPoolField.get(server);
 
                     if (readBufferPool != null && readBufferPool != writeBufferPool) {
-                        Logger.info("dump writeBuffer");
+                        Logger.info("Dumping writeBufferPool:");
                         dumpBufferPool(writeBufferPool);
-                        Logger.info("dump readBuffer");
+                        Logger.info("Dumping readBufferPool:");
                         dumpBufferPool(readBufferPool);
                     } else {
+                        Logger.info("Dumping bufferPool:");
                         dumpBufferPool(writeBufferPool);
                     }
                 } catch (Exception e) {
-                    Logger.error("", e);
+                    Logger.error("Error during buffer pool monitoring", e);
                 }
             }
         }, seconds, TimeUnit.SECONDS);
     }
 
+    /**
+     * Shuts down the monitoring task.
+     */
     private void shutdown() {
         if (future != null) {
             future.cancel();

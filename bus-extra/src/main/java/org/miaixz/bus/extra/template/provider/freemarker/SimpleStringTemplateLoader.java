@@ -33,7 +33,8 @@ import java.io.StringReader;
 import freemarker.cache.TemplateLoader;
 
 /**
- * {@link TemplateLoader} 字符串实现形式 用于直接获取字符串模板
+ * A {@link TemplateLoader} implementation that loads templates directly from a string. This is useful for situations
+ * where the template content is provided as a string rather than from a file or other resource.
  *
  * @author Kimi Liu
  * @since Java 17+

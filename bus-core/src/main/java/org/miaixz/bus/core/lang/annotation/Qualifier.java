@@ -30,7 +30,22 @@ package org.miaixz.bus.core.lang.annotation;
 import java.lang.annotation.*;
 
 /**
- * 注解: 标识qualifier注解
+ * A meta-annotation that identifies a custom annotation as a "qualifier" annotation.
+ * <p>
+ * In dependency injection frameworks, qualifier annotations are used to resolve ambiguity when multiple beans of the
+ * same type are available for injection. By creating a custom annotation and marking it with {@code @Qualifier}, you
+ * can provide a distinct identifier for a specific bean implementation.
+ * <p>
+ * For example:
+ * 
+ * <pre>
+ *   {@code @Qualifier}
+ *   {@code @Retention(RetentionPolicy.RUNTIME)}
+ *   public @interface Offline {}
+ * </pre>
+ * 
+ * This {@code @Offline} annotation can then be used at an injection point to request a specific "offline"
+ * implementation of a service. This concept is central to standards like JSR-330 ({@code jakarta.inject.Qualifier}).
  *
  * @author Kimi Liu
  * @since Java 17+

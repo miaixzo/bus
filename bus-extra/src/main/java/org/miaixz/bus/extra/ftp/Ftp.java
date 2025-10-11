@@ -36,7 +36,9 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * FTP的统一规范接口
+ * Unified interface for FTP (File Transfer Protocol) operations. This interface defines a set of common file transfer
+ * and management operations that can be performed on a remote FTP server, abstracting away the specifics of different
+ * FTP client implementations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,66 +46,67 @@ import org.miaixz.bus.core.lang.Symbol;
 public interface Ftp extends Closeable {
 
     /**
-     * 默认编码
+     * The default character set used for FTP operations, typically UTF-8.
      */
     java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
 
     /**
-     * 获取FTP配置
+     * Retrieves the FTP configuration associated with this FTP client instance.
      *
-     * @return FTP配置
+     * @return The {@link FtpConfig} object containing connection and operational settings.
      */
     FtpConfig getConfig();
 
     /**
-     * 如果连接超时的话，重新进行连接
+     * Reconnects to the FTP server if the current connection has timed out or become stale. Implementations should
+     * handle the logic for checking connection validity and re-establishing it.
      *
-     * @return this
+     * @return This {@code Ftp} instance, allowing for method chaining.
      */
     Ftp reconnectIfTimeout();
 
     /**
-     * 远程当前目录（工作目录）
+     * Retrieves the current remote directory (working directory) on the FTP server.
      *
-     * @return 远程当前目录
+     * @return The absolute path of the current working directory as a {@link String}.
      */
     String pwd();
 
     /**
-     * 打开指定目录，具体逻辑取决于实现，例如在FTP中，进入失败返回{@code false}， SFTP中则抛出异常
+     * Changes the current working directory on the remote FTP server to the specified directory. The behavior for
+     * invalid directories (e.g., non-existent) may vary between implementations.
      *
-     * @param directory directory
-     * @return 是否打开目录
+     * @param directory The path to the directory to change to.
+     * @return {@code true} if the directory was successfully changed; {@code false} otherwise.
      */
     boolean cd(String directory);
 
     /**
-     * 打开上级目录
+     * Changes the current working directory to the parent directory. This is a convenience method that calls
+     * {@link #cd(String)} with {@link Symbol#DOUBLE_DOT}.
      *
-     * @return 是否打开目录
+     * @return {@code true} if the parent directory was successfully changed; {@code false} otherwise.
      */
     default boolean toParent() {
         return cd(Symbol.DOUBLE_DOT);
     }
 
     /**
-     * 文件或目录是否存在
-     * <ul>
-     * <li>提供路径为空则返回{@code false}</li>
-     * <li>提供路径非目录但是以'/'或'\'结尾返回{@code false}</li>
-     * <li>文件名是'.'或者'..'返回{@code false}</li>
-     * </ul>
+     * Checks if a file or directory exists at the specified path on the remote server. Special handling is provided for
+     * empty paths, and paths ending with directory separators but not representing actual directories, or special
+     * directory names like "." or "..".
      *
-     * @param path 目录
-     * @return 是否存在
+     * @param path The path to the file or directory to check.
+     * @return {@code true} if the file or directory exists; {@code false} otherwise.
      */
     boolean exist(final String path);
 
     /**
-     * 判断给定路径是否为目录
+     * Determines if the given path on the remote server refers to a directory. This method temporarily changes the
+     * directory to the given path to verify if it's a directory, then reverts to the original working directory.
      *
-     * @param dir 被判断的路径
-     * @return 是否为目录
+     * @param dir The path to check.
+     * @return {@code true} if the path is a directory; {@code false} otherwise.
      */
     default boolean isDir(final String dir) {
         final String workDir = pwd();
@@ -115,83 +118,90 @@ public interface Ftp extends Closeable {
     }
 
     /**
-     * 重命名文件
+     * Renames a file or directory on the remote FTP server.
      *
-     * @param oldPath 旧文件名（或路径）
-     * @param newPath 新文件名（或路径）
-     * @return 是否重命名成功
+     * @param oldPath The current path or name of the file/directory to rename.
+     * @param newPath The new path or name for the file/directory.
+     * @return {@code true} if the rename operation was successful; {@code false} otherwise.
      */
     boolean rename(String oldPath, String newPath);
 
     /**
-     * 在当前远程目录（工作目录）下创建新的目录
+     * Creates a new directory in the current remote working directory.
      *
-     * @param dir 目录名
-     * @return 是否创建成功
+     * @param dir The name of the directory to create.
+     * @return {@code true} if the directory was created successfully; {@code false} otherwise.
      */
     boolean mkdir(String dir);
 
     /**
-     * 创建指定文件夹及其父目录，从根目录开始创建，创建完成后回到默认的工作目录
+     * Creates the specified folder and any necessary parent directories on the remote server. This method ensures that
+     * the full path exists. After creation, the working directory is reset to its default or initial state.
      *
-     * @param dir 文件夹路径，绝对路径
+     * @param dir The absolute path of the folder to create.
      */
     void mkDirs(final String dir);
 
     /**
-     * 遍历某个目录下所有文件和目录，不会递归遍历
+     * Lists all file and directory names within a specified remote directory (non-recursive).
      *
-     * @param path 需要遍历的目录
-     * @return 文件和目录列表
+     * @param path The path to the directory to list.
+     * @return A {@link List} of {@link String}s, where each string is the name of a file or directory.
      */
     List<String> ls(String path);
 
     /**
-     * 删除指定目录下的指定文件
+     * Deletes a specified file on the remote FTP server.
      *
-     * @param path 目录路径
-     * @return 是否存在
+     * @param path The path to the file to delete.
+     * @return {@code true} if the file was deleted successfully; {@code false} otherwise.
      */
     boolean delFile(String path);
 
     /**
-     * 删除文件夹及其文件夹下的所有文件
+     * Deletes a directory and all its contents (files and subdirectories) recursively on the remote FTP server.
      *
-     * @param dirPath 文件夹路径
-     * @return boolean 是否删除成功
+     * @param dirPath The path to the directory to delete.
+     * @return {@code true} if the directory and its contents were deleted successfully; {@code false} otherwise.
      */
     boolean delDir(String dirPath);
 
     /**
-     * 将本地文件上传到目标服务器，目标文件名为destPath，若destPath为目录，则目标文件名将与file文件名相同。 覆盖模式
+     * Uploads a local file to the target server. The destination path on the server can be specified. If
+     * {@code destPath} is a directory, the file will be uploaded with its original name into that directory. This
+     * operation typically overwrites existing files with the same name.
      *
-     * @param destPath 服务端路径，可以为{@code null} 或者相对路径或绝对路径
-     * @param file     需要上传的文件
-     * @return 是否成功
+     * @param destPath The destination path on the server. Can be {@code null} (uploads to current working directory), a
+     *                 relative path, or an absolute path. If it's a directory, the file's original name is used.
+     * @param file     The local {@link File} object to upload.
+     * @return {@code true} if the upload was successful; {@code false} otherwise.
      */
     boolean uploadFile(String destPath, File file);
 
     /**
-     * 下载文件
+     * Downloads a file from the remote FTP server to a specified local file or directory. If {@code outFile} is a
+     * directory, the downloaded file will be saved into it with its original name.
      *
-     * @param path    文件路径
-     * @param outFile 输出文件或目录
+     * @param path    The path to the file on the remote FTP server.
+     * @param outFile The local {@link File} or directory where the downloaded file should be saved.
      */
     void download(String path, File outFile);
 
     /**
-     * 递归下载FTP服务器上文件到本地(文件目录和服务器同步), 服务器上有新文件会覆盖本地文件
+     * Recursively downloads files and directories from the FTP server to the local machine, synchronizing the file
+     * structures. Existing local files will be overwritten by newer files from the server.
      *
-     * @param sourceDir ftp服务器目录
-     * @param targetDir 本地目录
+     * @param sourceDir The source directory on the FTP server to download from.
+     * @param targetDir The target directory on the local machine where files will be saved.
      */
     void recursiveDownloadFolder(String sourceDir, File targetDir);
 
     /**
-     * 读取FTP服务器上的文件为输入流
+     * Reads a file from the FTP server and provides its content as an {@link InputStream}. This allows for streaming
+     * processing of remote file content.
      *
-     * @param path 文件路径
-     * @return {@link InputStream}
+     * @param path The path to the file on the FTP server.
+     * @return An {@link InputStream} providing access to the file's content.
      */
     InputStream getFileStream(String path);
 

@@ -45,7 +45,8 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
- * freemarker
+ * A {@link TemplateEngine} implementation that uses the Freemarker template engine. This class is responsible for
+ * processing data models with Freemarker templates to generate documentation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,44 +54,54 @@ import freemarker.template.TemplateException;
 public class FreemarkerEngine extends AbstractEngine {
 
     /**
-     * freemarker 配置实例化
+     * The Freemarker configuration instance.
      */
     private final Configuration configuration = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
 
+    /**
+     * Initializes the Freemarker configuration. This block sets up the template loader based on whether a custom
+     * template path is provided. It also configures the default encoding and locale.
+     */
     {
         try {
             String path = getEngineConfig().getCustomTemplate();
-            // 自定义模板
+            // If a custom template path is provided and the file exists
             if (StringKit.isNotBlank(path) && FileKit.exists(path)) {
-                // 获取父目录
+                // Get the parent directory of the custom template
                 String parent = Objects.requireNonNull(FileKit.file(path)).getParent();
-                // 设置模板加载路径
+                // Set the template loading directory
                 configuration.setDirectoryForTemplateLoading(new File(parent));
             }
-            // 加载自带模板
+            // Otherwise, load the built-in templates from the classpath
             else {
-                // 模板存放路径
+                // Set the template loader to load from the classpath
                 configuration.setTemplateLoader(
                         new ClassTemplateLoader(this.getClass(), TemplateType.FREEMARKER.getTemplateDir()));
             }
-            // 编码
+            // Set the default encoding
             configuration.setDefaultEncoding(Charset.DEFAULT_UTF_8);
-            // 国际化
+            // Set the locale for internationalization
             configuration.setLocale(new Locale(Builder.DEFAULT_LOCALE));
         } catch (Exception e) {
             throw new InternalException(e);
         }
     }
 
+    /**
+     * Constructs a new {@code FreemarkerEngine} with the specified engine configuration.
+     *
+     * @param templateConfig The {@link EngineConfig} for this engine.
+     */
     public FreemarkerEngine(EngineConfig templateConfig) {
         super(templateConfig);
     }
 
     /**
-     * 生成文档
+     * Generates the documentation by processing the data model with a Freemarker template.
      *
-     * @param info {@link DataSchema}
-     * @throws InternalException 异常
+     * @param info    The {@link DataSchema} data model to be processed.
+     * @param docName The base name for the output document.
+     * @throws InternalException if an error occurs during template processing or file I/O.
      */
     @Override
     public void produce(DataSchema info, String docName) throws InternalException {
@@ -98,25 +109,24 @@ public class FreemarkerEngine extends AbstractEngine {
         String path = getEngineConfig().getCustomTemplate();
         try {
             Template template;
-            // freemarker template
-            // 如果自定义路径不为空文件也存在
+            // If a custom template path is provided and the file exists
             if (StringKit.isNotBlank(path) && FileKit.exists(path)) {
-                // 文件名称
+                // Get the template from the custom file
                 String fileName = new File(path).getName();
                 template = configuration.getTemplate(fileName);
             }
-            // 获取系统默认的模板
+            // Otherwise, get the default template from the system
             else {
                 template = configuration.getTemplate(
                         getEngineConfig().getFileType().getTemplateNamePrefix() + TemplateType.FREEMARKER.getSuffix());
             }
-            // create file
+            // Create the output file
             File file = getFile(docName);
-            // writer freemarker
+            // Write the processed template to the file
             try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), Charset.UTF_8))) {
-                // process
+                // Process the template with the data model
                 template.process(info, out);
-                // open the output directory
+                // Open the output directory if configured to do so
                 openOutputDir();
             }
         } catch (IOException | TemplateException e) {

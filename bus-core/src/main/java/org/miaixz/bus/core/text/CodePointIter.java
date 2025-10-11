@@ -30,19 +30,23 @@ package org.miaixz.bus.core.text;
 import java.util.Iterator;
 
 /**
- * Unicode字符遍历器 参考：http://stackoverflow.com/a/21791059/6030888
+ * Unicode character iterator. Reference:
+ * <a href="http://stackoverflow.com/a/21791059/6030888">http://stackoverflow.com/a/21791059/6030888</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CodePointIter implements Iterable<Integer> {
 
+    /**
+     * The string to iterate over.
+     */
     final String text;
 
     /**
-     * 构造
+     * Constructs a new {@code CodePointIter} with the specified string.
      *
-     * @param text 字符串
+     * @param text The string to iterate over.
      */
     public CodePointIter(final String text) {
         this.text = text;
@@ -52,7 +56,13 @@ public class CodePointIter implements Iterable<Integer> {
     public Iterator<Integer> iterator() {
         return new Iterator<>() {
 
+            /**
+             * The total length of the string in characters.
+             */
             private final int length = text.length();
+            /**
+             * The index of the next code point to be returned.
+             */
             private int nextIndex = 0;
 
             @Override

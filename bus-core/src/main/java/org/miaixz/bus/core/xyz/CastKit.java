@@ -35,7 +35,7 @@ import java.util.Set;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 转换工具类，提供集合、Map等向上向下转换工具
+ * Type casting utility. Provides methods for up-casting and down-casting generic collections, maps, etc.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,113 +43,115 @@ import org.miaixz.bus.core.lang.Assert;
 public class CastKit {
 
     /**
-     * 将指定对象强制转换为指定类型
+     * Forcefully casts an object to a specified type.
      *
-     * @param <T>   目标类型
-     * @param value 被转换的对象
-     * @return 转换后的对象
+     * @param <T>   The target type.
+     * @param value The object to be cast.
+     * @return The cast object.
      */
     public static <T> T cast(final Object value) {
         return (T) value;
     }
 
     /**
-     * 将指定对象强制转换为指定类型
+     * Forcefully casts an object to a specified type.
      *
-     * @param <T>        目标类型
-     * @param targetType 指定目标类型
-     * @param value      被转换的对象
-     * @return 转换后的对象
+     * @param <T>        The target type.
+     * @param targetType The target class to cast to.
+     * @param value      The object to be cast.
+     * @return The cast object.
      */
     public static <T> T castTo(final Class<T> targetType, final Object value) {
         return Assert.notNull(targetType).cast(value);
     }
 
     /**
-     * 泛型集合向上转型。例如将Collection&lt;Integer&gt;转换为Collection&lt;Number&gt;
+     * Up-casts a generic collection. For example, converts a {@code Collection<Integer>} to a
+     * {@code Collection<Number>}.
      *
-     * @param collection 集合
-     * @param <T>        元素类型
-     * @return 转换后的集合
+     * @param <T>        The target element type (superclass).
+     * @param collection The collection to cast.
+     * @return The cast collection.
      */
     public static <T> Collection<T> castUp(final Collection<? extends T> collection) {
         return (Collection<T>) collection;
     }
 
     /**
-     * 泛型集合向下转型。例如将Collection&lt;Number&gt;转换为Collection&lt;Integer&gt;
+     * Down-casts a generic collection. For example, converts a {@code Collection<Number>} to a
+     * {@code Collection<Integer>}.
      *
-     * @param collection 集合
-     * @param <T>        元素类型
-     * @return 转换后的集合
+     * @param <T>        The target element type (subclass).
+     * @param collection The collection to cast.
+     * @return The cast collection.
      */
     public static <T> Collection<T> castDown(final Collection<? super T> collection) {
         return (Collection<T>) collection;
     }
 
     /**
-     * 泛型集合向上转型。例如将Set&lt;Integer&gt;转换为Set&lt;Number&gt;
+     * Up-casts a generic set. For example, converts a {@code Set<Integer>} to a {@code Set<Number>}.
      *
-     * @param set 集合
-     * @param <T> 泛型
-     * @return 泛化集合
+     * @param <T> The target element type (superclass).
+     * @param set The set to cast.
+     * @return The cast set.
      */
     public static <T> Set<T> castUp(final Set<? extends T> set) {
         return (Set<T>) set;
     }
 
     /**
-     * 泛型集合向下转型。例如将Set&lt;Number&gt;转换为Set&lt;Integer&gt;
+     * Down-casts a generic set. For example, converts a {@code Set<Number>} to a {@code Set<Integer>}.
      *
-     * @param set 集合
-     * @param <T> 泛型子类
-     * @return 泛化集合
+     * @param <T> The target element type (subclass).
+     * @param set The set to cast.
+     * @return The cast set.
      */
     public static <T> Set<T> castDown(final Set<? super T> set) {
         return (Set<T>) set;
     }
 
     /**
-     * 泛型接口向上转型。例如将List&lt;Integer&gt;转换为List&lt;Number&gt;
+     * Up-casts a generic list. For example, converts a {@code List<Integer>} to a {@code List<Number>}.
      *
-     * @param list 集合
-     * @param <T>  泛型的父类
-     * @return 泛化集合
+     * @param <T>  The target element type (superclass).
+     * @param list The list to cast.
+     * @return The cast list.
      */
     public static <T> List<T> castUp(final List<? extends T> list) {
         return (List<T>) list;
     }
 
     /**
-     * 泛型集合向下转型。例如将List&lt;Number&gt;转换为List&lt;Integer&gt;
+     * Down-casts a generic list. For example, converts a {@code List<Number>} to a {@code List<Integer>}.
      *
-     * @param list 集合
-     * @param <T>  泛型的子类
-     * @return 泛化集合
+     * @param <T>  The target element type (subclass).
+     * @param list The list to cast.
+     * @return The cast list.
      */
     public static <T> List<T> castDown(final List<? super T> list) {
         return (List<T>) list;
     }
 
     /**
-     * 泛型集合向下转型。例如将Map&lt;Integer, Integer&gt;转换为Map&lt;Number,Number&gt;
+     * Up-casts a generic map. For example, converts a {@code Map<Integer, Integer>} to a {@code Map<Number, Number>}.
      *
-     * @param map 集合
-     * @param <K> 泛型父类
-     * @param <V> 泛型父类
-     * @return 泛化集合
+     * @param <K> The target key type (superclass).
+     * @param <V> The target value type (superclass).
+     * @param map The map to cast.
+     * @return The cast map.
      */
     public static <K, V> Map<K, V> castUp(final Map<? extends K, ? extends V> map) {
         return (Map<K, V>) map;
     }
 
     /**
-     * 泛型集合向下转型。例如将Map&lt;Number,Number&gt;转换为Map&lt;Integer, Integer&gt;
+     * Down-casts a generic map. For example, converts a {@code Map<Number, Number>} to a {@code Map<Integer, Integer>}.
      *
-     * @param map 集合
-     * @param <K> 泛型子类
-     * @param <V> 泛型子类
-     * @return 泛化集合
+     * @param <K> The target key type (subclass).
+     * @param <V> The target value type (subclass).
+     * @param map The map to cast.
+     * @return The cast map.
      */
     public static <K, V> Map<K, V> castDown(final Map<? super K, ? super V> map) {
         return (Map<K, V>) map;

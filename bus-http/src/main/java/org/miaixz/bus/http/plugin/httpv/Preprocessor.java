@@ -30,7 +30,8 @@ package org.miaixz.bus.http.plugin.httpv;
 import org.miaixz.bus.http.Httpv;
 
 /**
- * 预处理器，支持异步 在HTTP请求任务正式开始之前执行
+ * An interface for a preprocessor that executes before an HTTP request is sent. Preprocessors can operate
+ * asynchronously and are ideal for tasks like adding authentication tokens, modifying headers, or logging requests.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,26 +39,36 @@ import org.miaixz.bus.http.Httpv;
 public interface Preprocessor {
 
     /**
-     * 在HTTP请求开始之前执行
+     * Performs the preprocessing logic. After processing, {@link PreChain#proceed()} must be called to continue the
+     * request execution, unless the request is to be intentionally blocked.
      *
-     * @param chain 预处理器链
+     * @param chain The processing chain, which provides context and a way to continue the request.
      */
     void doProcess(PreChain chain);
 
+    /**
+     * Represents a chain of preprocessors. It provides access to the current HTTP task and allows the chain to proceed
+     * to the next preprocessor or to the final request execution.
+     */
     interface PreChain {
 
         /**
-         * @return 当前的请求任务
+         * Gets the current HTTP task being processed.
+         *
+         * @return The current {@link CoverHttp} task.
          */
         CoverHttp<?> getTask();
 
         /**
-         * @return HTTP
+         * Gets the HTTP client instance.
+         *
+         * @return The {@link Httpv} client instance.
          */
         Httpv getHttp();
 
         /**
-         * 继续HTTP请求任务
+         * Passes control to the next preprocessor in the chain. If this is the last preprocessor, it will trigger the
+         * execution of the actual HTTP request.
          */
         void proceed();
 

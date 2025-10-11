@@ -27,16 +27,6 @@
 */
 package org.miaixz.bus.http.cache;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.Flushable;
-import java.io.IOException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.util.*;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.AssignSink;
@@ -61,8 +51,18 @@ import org.miaixz.bus.http.metric.http.StatusLine;
 import org.miaixz.bus.http.secure.CipherSuite;
 import org.miaixz.bus.http.socket.Handshake;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.Flushable;
+import java.io.IOException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.util.*;
+
 /**
- * 缓存HTTP和HTTPS对文件系统的响应，以便可以重用它们，从而节省时间和带宽.
+ * Caches HTTP and HTTPS responses to the filesystem so they can be reused, saving time and bandwidth.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -79,7 +79,9 @@ public class Cache implements Closeable, Flushable {
     private int networkCount;
     private int hitCount;
     private int requestCount;
-
+    /**
+     * The internal cache implementation for use by the HTTP client.
+     */
     public final InternalCache internalCache = new InternalCache() {
 
         @Override
@@ -114,23 +116,43 @@ public class Cache implements Closeable, Flushable {
     };
 
     /**
-     * 在{@code directory}中创建最多{@code maxSize}字节的缓存
+     * Creates a cache in the specified {@code directory} with a maximum size of {@code maxSize} bytes.
      *
-     * @param directory 目录
-     * @param maxSize   缓存的最大大小(以字节为单位)
+     * @param directory The directory to store the cache in.
+     * @param maxSize   The maximum size of the cache in bytes.
      */
     public Cache(File directory, long maxSize) {
         this(directory, maxSize, DiskLruCache.DiskFile.SYSTEM);
     }
 
+    /**
+     * Creates a cache with the specified directory, max size, and disk file system.
+     *
+     * @param directory The directory to store the cache in.
+     * @param maxSize   The maximum size of the cache in bytes.
+     * @param diskFile  The disk file system to use.
+     */
     public Cache(File directory, long maxSize, DiskLruCache.DiskFile diskFile) {
         this.cache = DiskLruCache.create(diskFile, directory, VERSION, ENTRY_COUNT, maxSize);
     }
 
+    /**
+     * Generates a unique and safe key for the cache from a URL.
+     *
+     * @param url The URL to generate a key for.
+     * @return The cache key.
+     */
     public static String key(UnoUrl url) {
         return ByteString.encodeUtf8(url.toString()).md5().hex();
     }
 
+    /**
+     * Reads an integer from a buffered source.
+     *
+     * @param source The buffered source to read from.
+     * @return The integer value.
+     * @throws IOException if an I/O error occurs or the format is invalid.
+     */
     static int readInt(BufferSource source) throws IOException {
         try {
             long result = source.readDecimalLong();
@@ -144,6 +166,12 @@ public class Cache implements Closeable, Flushable {
         }
     }
 
+    /**
+     * Retrieves a response from the cache for a given request.
+     *
+     * @param request The request to get the cached response for.
+     * @return The cached response, or null if not found or invalid.
+     */
     Response get(Request request) {
         String key = key(request.url());
         DiskLruCache.Snapshot snapshot;
@@ -154,7 +182,7 @@ public class Cache implements Closeable, Flushable {
                 return null;
             }
         } catch (IOException e) {
-            // 放弃，因为缓存无法读取
+            // Give up because the cache cannot be read.
             return null;
         }
 
@@ -175,6 +203,12 @@ public class Cache implements Closeable, Flushable {
         return response;
     }
 
+    /**
+     * Stores a response in the cache and returns a {@link CacheRequest} to write the body.
+     *
+     * @param response The response to store.
+     * @return A {@link CacheRequest} to write the response body, or null if the response cannot be cached.
+     */
     CacheRequest put(Response response) {
         String requestMethod = response.request().method();
 
@@ -182,12 +216,13 @@ public class Cache implements Closeable, Flushable {
             try {
                 remove(response.request());
             } catch (IOException ignored) {
-                // 无法写入缓存
+                // Unable to write to cache.
             }
             return null;
         }
         if (!HTTP.GET.equals(requestMethod)) {
-            // 不要缓存非get响应。从技术上讲，我们可以缓存HEAD请求和POST请求，但是这样做的复杂性很高，好处很少
+            // Don't cache non-GET responses. We could technically cache HEAD requests and POST requests that
+            // have a 200 OK response, but the complexity of doing so is high and the benefit is low.
             return null;
         }
 
@@ -210,16 +245,27 @@ public class Cache implements Closeable, Flushable {
         }
     }
 
+    /**
+     * Removes an entry from the cache for a given request.
+     *
+     * @param request The request to remove from the cache.
+     * @throws IOException if an I/O error occurs.
+     */
     void remove(Request request) throws IOException {
         cache.remove(key(request.url()));
     }
 
+    /**
+     * Updates a stale cached entry with a new network response.
+     *
+     * @param cached  The stale cached response.
+     * @param network The new network response.
+     */
     void update(Response cached, Response network) {
         Entry entry = new Entry(network);
         DiskLruCache.Snapshot snapshot = ((CacheResponseBody) cached.body()).snapshot;
         DiskLruCache.Editor editor = null;
         try {
-            // 如果快照不是当前的，则返回null
             editor = snapshot.edit(); // Returns null if snapshot is not current.
             if (editor != null) {
                 entry.writeTo(editor);
@@ -230,8 +276,13 @@ public class Cache implements Closeable, Flushable {
         }
     }
 
+    /**
+     * Safely aborts a cache edit.
+     *
+     * @param editor The editor to abort.
+     */
     private void abortQuietly(DiskLruCache.Editor editor) {
-        // 放弃，因为缓存无法写入
+        // Give up because the cache cannot be written.
         try {
             if (null != editor) {
                 editor.abort();
@@ -241,61 +292,65 @@ public class Cache implements Closeable, Flushable {
     }
 
     /**
-     * 始化缓存。这将包括从存储器中读取日志文件并构建必要的内存缓存信息 注意，如果应用程序选择不调用此方法来初始化缓存。默认情况下，将在第一次使用缓存时执行延迟初始化
+     * Initializes the cache. This will include reading the journal file from storage and building up the necessary
+     * in-memory cache information. Note that if the application chooses not to call this method to initialize the
+     * cache, it will be initialized lazily on the first use of the cache.
      *
-     * @throws IOException 初始化异常
+     * @throws IOException if an I/O error occurs during initialization.
      */
     public void initialize() throws IOException {
         cache.initialize();
     }
 
     /**
-     * 关闭缓存并删除其所有存储值。这将删除缓存目录中的所有文件，包括没有由缓存创建的文件
+     * Closes the cache and deletes all of its stored values. This will delete all files in the cache directory,
+     * including files that were not created by the cache.
      *
-     * @throws IOException 删除异常
+     * @throws IOException if an I/O error occurs during deletion.
      */
     public void delete() throws IOException {
         cache.delete();
     }
 
     /**
-     * 删除缓存中存储的所有值。缓存中的写操作将正常完成，但不会存储相应的响应
+     * Deletes all values stored in the cache. Writes to the cache will still complete normally, but the corresponding
+     * responses will not be stored.
      *
-     * @throws IOException 清除异常
+     * @throws IOException if an I/O error occurs during eviction.
      */
     public void evictAll() throws IOException {
         cache.evictAll();
     }
 
     /**
-     * 在此缓存中的url上返回一个迭代器,该迭代器支持{@linkplain Iterator#remove}。 从迭代器中删除URL将从缓存中删除相应的响应。使用此来清除选定的响应
+     * Returns an iterator over the URLs in this cache. This iterator supports {@linkplain Iterator#remove}. Removing a
+     * URL from the iterator will remove the corresponding response from the cache. Use this to clear selected
+     * responses.
      *
-     * @return 迭代器
-     * @throws IOException 异常
+     * @return An iterator over the URLs in the cache.
+     * @throws IOException if an I/O error occurs.
      */
     public Iterator<String> urls() throws IOException {
         return new Iterator<>() {
 
             final Iterator<DiskLruCache.Snapshot> delegate = cache.snapshots();
-
             String nextUrl;
             boolean canRemove;
 
             @Override
             public boolean hasNext() {
-                if (null != nextUrl) {
+                if (null != nextUrl)
                     return true;
-                }
 
-                canRemove = false;
-                // 删除()在错误的内容
+                canRemove = false; // Prevent remove() on bogus content.
                 while (delegate.hasNext()) {
                     try (DiskLruCache.Snapshot snapshot = delegate.next()) {
                         BufferSource metadata = IoKit.buffer(snapshot.getSource(ENTRY_METADATA));
                         nextUrl = metadata.readUtf8LineStrict();
                         return true;
                     } catch (IOException ignored) {
-                        // 无法读取此快照的元数据;可能是因为主机文件系统已经消失了!跳过它
+                        // Could not read the metadata for this snapshot; possibly because the host filesystem has
+                        // disappeared! Skip it.
                     }
                 }
 
@@ -321,77 +376,144 @@ public class Cache implements Closeable, Flushable {
         };
     }
 
+    /**
+     * Returns the number of writes to the cache that were aborted.
+     *
+     * @return The number of aborted writes.
+     */
     public synchronized int writeAbortCount() {
         return writeAbortCount;
     }
 
+    /**
+     * Returns the number of writes to the cache that were successful.
+     *
+     * @return The number of successful writes.
+     */
     public synchronized int writeSuccessCount() {
         return writeSuccessCount;
     }
 
+    /**
+     * Returns the current size of the cache in bytes.
+     *
+     * @return The current size of the cache.
+     * @throws IOException if an I/O error occurs.
+     */
     public long size() throws IOException {
         return cache.size();
     }
 
+    /**
+     * Returns the maximum size of the cache in bytes.
+     *
+     * @return The maximum size of the cache.
+     */
     public long maxSize() {
         return cache.getMaxSize();
     }
 
+    /**
+     * Flushes the cache to disk.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public void flush() throws IOException {
         cache.flush();
     }
 
+    /**
+     * Closes the cache.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public void close() throws IOException {
         cache.close();
     }
 
+    /**
+     * Returns the directory where the cache is stored.
+     *
+     * @return The cache directory.
+     */
     public File directory() {
         return cache.getDirectory();
     }
 
+    /**
+     * Returns whether the cache is closed.
+     *
+     * @return {@code true} if the cache is closed.
+     */
     public boolean isClosed() {
         return cache.isClosed();
     }
 
+    /**
+     * Tracks a response, updating cache statistics.
+     *
+     * @param cacheStrategy The cache strategy used for the response.
+     */
     synchronized void trackResponse(CacheStrategy cacheStrategy) {
         requestCount++;
 
         if (null != cacheStrategy.networkRequest) {
-            // 如果这是一个条件请求，我们将增加hitCount如果/当它命中。
+            // If this is a conditional request, we'll increment hitCount if/when it hits.
             networkCount++;
         } else if (null != cacheStrategy.cacheResponse) {
-            // 此响应使用缓存而不是网络。这就是缓存命中
+            // This response uses the cache and not the network. That's a cache hit.
             hitCount++;
         }
     }
 
+    /**
+     * Tracks a conditional cache hit.
+     */
     synchronized void trackConditionalCacheHit() {
         hitCount++;
     }
 
+    /**
+     * Returns the number of network requests made.
+     *
+     * @return The network request count.
+     */
     public synchronized int networkCount() {
         return networkCount;
     }
 
+    /**
+     * Returns the number of cache hits.
+     *
+     * @return The cache hit count.
+     */
     public synchronized int hitCount() {
         return hitCount;
     }
 
+    /**
+     * Returns the total number of requests made.
+     *
+     * @return The total request count.
+     */
     public synchronized int requestCount() {
         return requestCount;
     }
 
-    private static class Entry {
+    /**
+     * An immutable snapshot of the metadata of a cached response.
+     */
+    private static final class Entry {
 
         /**
-         * 合成响应标头:请求发送时的本地时间
+         * Synthetic response header: the local time when the request was sent.
          */
         private static final String SENT_MILLIS = Platform.get().getPrefix() + "-Sent-Millis";
 
         /**
-         * 合成响应标头:接收到响应的本地时间
+         * Synthetic response header: the local time when the response was received.
          */
         private static final String RECEIVED_MILLIS = Platform.get().getPrefix() + "-Received-Millis";
 
@@ -407,46 +529,10 @@ public class Cache implements Closeable, Flushable {
         private final long receivedResponseMillis;
 
         /**
-         * 从输入流中读取项。一个典型的案例:
-         * 
-         * <pre>{@code
-         *   http://google.com/foo
-         *   GET
-         *   2
-         *   Accept-Language: fr-CA
-         *   Accept-Charset: UTF-8
-         *   HTTP/1.1 200 OK
-         *   3
-         *   Content-Type: image/png
-         *   Content-Length: 100
-         *   Cache-Control: max-age=600
-         * }</pre>
+         * Reads an entry from an input stream.
          *
-         * <p>
-         * HTTPS文件是这样的:
-         * 
-         * <pre>{@code
-         *   https://google.com/foo
-         *   GET
-         *   2
-         *   Accept-Language: fr-CA
-         *   Accept-Charset: UTF-8
-         *   HTTP/1.1 200 OK
-         *   3
-         *   Content-Type: image/png
-         *   Content-Length: 100
-         *   Cache-Control: max-age=600
-         *
-         *   AES_256_WITH_MD5
-         *   2
-         *   base64-encoded peerCertificate[0]
-         *   base64-encoded peerCertificate[1]
-         *   -1
-         *   TLSv1.2
-         * }</pre>
-         *
-         * @param in 输入流
-         * @throws IOException 异常
+         * @param in The input source.
+         * @throws IOException if an I/O error occurs.
          */
         Entry(Source in) throws IOException {
             try {
@@ -499,6 +585,11 @@ public class Cache implements Closeable, Flushable {
             }
         }
 
+        /**
+         * Creates a new entry from a response.
+         *
+         * @param response The response to create an entry from.
+         */
         Entry(Response response) {
             this.url = response.request().url().toString();
             this.varyHeaders = Headers.varyHeaders(response);
@@ -512,6 +603,12 @@ public class Cache implements Closeable, Flushable {
             this.receivedResponseMillis = response.receivedResponseAtMillis();
         }
 
+        /**
+         * Writes this entry to a cache editor.
+         *
+         * @param editor The editor to write to.
+         * @throws IOException if an I/O error occurs.
+         */
         public void writeTo(DiskLruCache.Editor editor) throws IOException {
             BufferSink sink = IoKit.buffer(editor.newSink(ENTRY_METADATA));
 
@@ -543,14 +640,26 @@ public class Cache implements Closeable, Flushable {
             sink.close();
         }
 
+        /**
+         * Returns whether this entry is for an HTTPS response.
+         *
+         * @return {@code true} if the entry is for an HTTPS response.
+         */
         private boolean isHttps() {
             return url.startsWith(Protocol.HTTPS_PREFIX);
         }
 
+        /**
+         * Reads a list of certificates from a buffered source.
+         *
+         * @param source The source to read from.
+         * @return A list of certificates.
+         * @throws IOException if an I/O error occurs.
+         */
         private List<Certificate> readCertificateList(BufferSource source) throws IOException {
             int length = readInt(source);
             if (length == -1)
-                return Collections.emptyList();
+                return Collections.emptyList(); // Empty list.
 
             try {
                 CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
@@ -567,6 +676,13 @@ public class Cache implements Closeable, Flushable {
             }
         }
 
+        /**
+         * Writes a list of certificates to a buffered sink.
+         *
+         * @param sink         The sink to write to.
+         * @param certificates The list of certificates.
+         * @throws IOException if an I/O error occurs.
+         */
         private void writeCertList(BufferSink sink, List<Certificate> certificates) throws IOException {
             try {
                 sink.writeDecimalLong(certificates.size()).writeByte(Symbol.C_LF);
@@ -580,34 +696,57 @@ public class Cache implements Closeable, Flushable {
             }
         }
 
+        /**
+         * Returns whether this cache entry matches the given request.
+         *
+         * @param request  The request to match.
+         * @param response The response to match.
+         * @return {@code true} if the entry matches the request.
+         */
         public boolean matches(Request request, Response response) {
             return url.equals(request.url().toString()) && requestMethod.equals(request.method())
                     && Headers.varyMatches(response, varyHeaders, request);
         }
 
+        /**
+         * Creates a response from this entry and a snapshot.
+         *
+         * @param snapshot The snapshot to create the response from.
+         * @return The response.
+         */
         public Response response(DiskLruCache.Snapshot snapshot) {
-            Request request = new Request.Builder().url(url).method(requestMethod, null).headers(varyHeaders).build();
-            return new Response.Builder().request(request).protocol(protocol).code(code).message(message)
-                    .headers(responseHeaders)
-                    .body(
-                            new CacheResponseBody(snapshot, responseHeaders.get(HTTP.CONTENT_TYPE),
-                                    responseHeaders.get(HTTP.CONTENT_LENGTH)))
+            String contentType = responseHeaders.get("Content-Type");
+            String contentLength = responseHeaders.get("Content-Length");
+            Request cacheRequest = new Request.Builder().url(url).method(requestMethod, null).headers(varyHeaders)
+                    .build();
+            return new Response.Builder().request(cacheRequest).protocol(protocol).code(code).message(message)
+                    .headers(responseHeaders).body(new CacheResponseBody(snapshot, contentType, contentLength))
                     .handshake(handshake).sentRequestAtMillis(sentRequestMillis)
                     .receivedResponseAtMillis(receivedResponseMillis).build();
         }
     }
 
+    /**
+     * A response body sourced from the cache.
+     */
     private static class CacheResponseBody extends ResponseBody {
 
         final DiskLruCache.Snapshot snapshot;
         private final BufferSource bodySource;
         private final String contentType;
-        private final String length;
+        private final String contentLength;
 
-        CacheResponseBody(final DiskLruCache.Snapshot snapshot, String contentType, String length) {
+        /**
+         * Constructs a new cache response body.
+         *
+         * @param snapshot      The snapshot of the cache entry.
+         * @param contentType   The content type.
+         * @param contentLength The content length.
+         */
+        CacheResponseBody(final DiskLruCache.Snapshot snapshot, String contentType, String contentLength) {
             this.snapshot = snapshot;
             this.contentType = contentType;
-            this.length = length;
+            this.contentLength = contentLength;
 
             Source source = snapshot.getSource(ENTRY_BODY);
             bodySource = IoKit.buffer(new AssignSource(source) {
@@ -626,9 +765,9 @@ public class Cache implements Closeable, Flushable {
         }
 
         @Override
-        public long length() {
+        public long contentLength() {
             try {
-                return null != length ? Long.parseLong(length) : -1;
+                return null != contentLength ? Long.parseLong(contentLength) : -1;
             } catch (NumberFormatException e) {
                 return -1;
             }
@@ -640,13 +779,21 @@ public class Cache implements Closeable, Flushable {
         }
     }
 
-    private class CacheRequestImpl implements CacheRequest {
+    /**
+     * A cache request that writes to the cache.
+     */
+    private final class CacheRequestImpl implements CacheRequest {
 
         private final DiskLruCache.Editor editor;
-        boolean done;
         private Sink cacheOut;
+        private boolean done;
         private Sink body;
 
+        /**
+         * Constructs a new cache request.
+         *
+         * @param editor The editor for the cache entry.
+         */
         CacheRequestImpl(final DiskLruCache.Editor editor) {
             this.editor = editor;
             this.cacheOut = editor.newSink(ENTRY_BODY);

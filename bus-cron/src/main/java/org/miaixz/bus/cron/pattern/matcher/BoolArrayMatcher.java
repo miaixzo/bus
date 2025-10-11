@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.cron.pattern.matcher;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
- * 将表达式中的数字值列表转换为Boolean数组，匹配时匹配相应数组位
+ * A {@link PartMatcher} that uses a boolean array to represent a list of integer values from a cron expression.
+ * Matching is performed by checking the corresponding index in the array.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,18 +44,18 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class BoolArrayMatcher implements PartMatcher {
 
     /**
-     * 用户定义此字段的最小值
+     * The minimum value defined in the cron expression for this part.
      */
     protected final int minValue;
     /**
-     * 匹配值列表
+     * A boolean array where the index represents the value and {@code true} indicates a match.
      */
     protected final boolean[] bValues;
 
     /**
-     * 构造
+     * Constructs a new BoolArrayMatcher.
      *
-     * @param intValueList 匹配值列表
+     * @param intValueList The list of integer values to match.
      */
     public BoolArrayMatcher(final List<Integer> intValueList) {
         Assert.isTrue(CollKit.isNotEmpty(intValueList), "Values must be not empty!");
@@ -89,16 +90,17 @@ public class BoolArrayMatcher implements PartMatcher {
             }
         }
 
-        // 两种情况返回最小值
-        // 一是给定值小于最小值，那下一个匹配值就是最小值
-        // 二是给定值大于最大值，那下一个匹配值也是下一轮的最小值
+        // Returns the minimum value in two cases:
+        // 1. The given value is less than the minimum value, so the next match is the minimum value.
+        // 2. The given value is greater than the maximum value in the array, so the next match is the minimum value of
+        // the next cycle.
         return minValue;
     }
 
     /**
-     * 获取表达式定义的最小值
+     * Gets the minimum value defined in the expression.
      *
-     * @return 最小值
+     * @return The minimum value.
      */
     public int getMinValue() {
         return this.minValue;

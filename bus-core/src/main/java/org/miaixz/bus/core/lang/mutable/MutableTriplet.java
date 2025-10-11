@@ -32,11 +32,11 @@ import java.io.Serial;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 
 /**
- * 可变三元组对象
+ * A mutable triplet object.
  *
- * @param <L> 左值类型
- * @param <M> 中值类型
- * @param <R> 右值类型
+ * @param <L> The type of the left value.
+ * @param <M> The type of the middle value.
+ * @param <R> The type of the right value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,26 +46,26 @@ public class MutableTriplet<L, M, R> extends Triplet<L, M, R> implements Mutable
     private static final long serialVersionUID = 2852271951206L;
 
     /**
-     * 构造
+     * Constructs a new {@code MutableTriplet} with the specified left, middle, and right values.
      *
-     * @param left   左值
-     * @param middle 中值
-     * @param right  右值
+     * @param left   The initial left value.
+     * @param middle The initial middle value.
+     * @param right  The initial right value.
      */
     public MutableTriplet(final L left, final M middle, final R right) {
         super(left, middle, right);
     }
 
     /**
-     * 构建MutableTriple对象
+     * Creates a new {@code MutableTriplet}.
      *
-     * @param <L>    左值类型
-     * @param <M>    中值类型
-     * @param <R>    右值类型
-     * @param left   左值
-     * @param middle 中值
-     * @param right  右值
-     * @return MutableTriplet
+     * @param <L>    The type of the left value.
+     * @param <M>    The type of the middle value.
+     * @param <R>    The type of the right value.
+     * @param left   The initial left value.
+     * @param middle The initial middle value.
+     * @param right  The initial right value.
+     * @return A new {@code MutableTriplet} instance.
      */
     public static <L, M, R> MutableTriplet<L, M, R> of(final L left, final M middle, final R right) {
         return new MutableTriplet<>(left, middle, right);
@@ -84,27 +84,27 @@ public class MutableTriplet<L, M, R> extends Triplet<L, M, R> implements Mutable
     }
 
     /**
-     * 设置左值
+     * Sets the left value.
      *
-     * @param left 左值
+     * @param left The new left value.
      */
     public void setLeft(final L left) {
         this.left = left;
     }
 
     /**
-     * 设置中值
+     * Sets the middle value.
      *
-     * @param middle 中值
+     * @param middle The new middle value.
      */
     public void setMiddle(final M middle) {
         this.middle = middle;
     }
 
     /**
-     * 设置右值
+     * Sets the right value.
      *
-     * @param right 右值
+     * @param right The new right value.
      */
     public void setRight(final R right) {
         this.right = right;

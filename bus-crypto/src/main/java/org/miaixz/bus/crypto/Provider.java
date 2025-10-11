@@ -30,26 +30,40 @@ package org.miaixz.bus.crypto;
 import org.miaixz.bus.core.lang.EnumValue;
 
 /**
+ * Represents a cryptographic service provider that extends the core {@link org.miaixz.bus.core.Provider} interface.
+ * This interface defines methods for encrypting and decrypting data using various cryptographic keys.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Provider extends org.miaixz.bus.core.Provider {
 
     /**
-     * 数据加密 1. 私钥加密 2. 公钥加密
+     * Encrypts data using the specified key. This method supports two main scenarios for encryption:
+     * <ol>
+     * <li>Private key encryption</li>
+     * <li>Public key encryption</li>
+     * </ol>
      *
-     * @param key     密钥,字符串,分割 示例: 5c3,5c3,PrivateKey
-     * @param content 需要加密的内容
-     * @return 加密结果
+     * @param key     The key used for encryption, provided as a comma-separated string. Example format:
+     *                "privateKey,publicKey,type".
+     * @param content The data to be encrypted.
+     * @return The encrypted data as a byte array.
      */
     byte[] encrypt(String key, byte[] content);
 
     /**
-     * 数据解密 1. 公钥解密 2. 私钥解密
+     * Decrypts data using the specified key. This method supports two main scenarios for decryption:
+     * <ol>
+     * <li>Public key decryption (when data was encrypted with a private key)</li>
+     * <li>Private key decryption (when data was encrypted with a public key)</li>
+     * </ol>
      *
-     * @param key     密钥, 字符串使用,分割 格式: 私钥,公钥,类型 示例: 5c3,5c3,PrivateKey 1. 私钥加密,公钥解密 2. 公钥加密,私钥解密
-     * @param content 需要解密的内容
-     * @return 解密结果
+     * @param key     The key used for decryption, provided as a comma-separated string. Example format:
+     *                "privateKey,publicKey,type". For instance, "5c3,5c3,PrivateKey" could imply decryption with a
+     *                private key.
+     * @param content The data to be decrypted.
+     * @return The decrypted data as a byte array.
      */
     byte[] decrypt(String key, byte[] content);
 

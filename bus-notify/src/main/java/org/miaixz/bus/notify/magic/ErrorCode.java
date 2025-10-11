@@ -28,7 +28,7 @@
 package org.miaixz.bus.notify.magic;
 
 /**
- * 通知错误码 : 111xxx
+ * Notification error codes, typically in the format 111xxx.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -35,9 +35,10 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
- * CSV基础配置项，此配置项可用于读取和写出CSV，定义了包括字段分隔符、文本包装符等符号
+ * Base CSV configuration options. These options can be used for both reading and writing CSV, defining symbols such as
+ * field separators and text delimiters.
  *
- * @param <T> 继承子类类型，用于this返回
+ * @param <T> The type of the subclass, used for returning {@code this}.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -47,27 +48,27 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
     private static final long serialVersionUID = 2852282577197L;
 
     /**
-     * 字段分隔符，默认逗号','
+     * Field separator, default is comma ','.
      */
     protected char fieldSeparator = Symbol.C_COMMA;
     /**
-     * 文本包装符，默认双引号'"'
+     * Text delimiter, default is double quotes '"'
      */
     protected char textDelimiter = Symbol.C_DOUBLE_QUOTES;
     /**
-     * 注释符号，用于区分注释行，默认'#'
+     * Comment character, used to distinguish comment lines, default is '#'.
      */
     protected Character commentCharacter = Symbol.C_HASH;
     /**
-     * 标题别名
+     * Header alias map.
      */
     protected Map<String, String> headerAlias = new LinkedHashMap<>();
 
     /**
-     * 设置字段分隔符，默认逗号','
+     * Sets the field separator. Default is comma ','.
      *
-     * @param fieldSeparator 字段分隔符，默认逗号','
-     * @return this
+     * @param fieldSeparator The field separator character.
+     * @return This configuration object, for chaining.
      */
     public T setFieldSeparator(final char fieldSeparator) {
         this.fieldSeparator = fieldSeparator;
@@ -75,10 +76,10 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
     }
 
     /**
-     * 设置 文本分隔符，文本包装符，默认双引号'"'
+     * Sets the text delimiter. Default is double quotes '"'
      *
-     * @param textDelimiter 文本分隔符，文本包装符，默认双引号'"'
-     * @return this
+     * @param textDelimiter The text delimiter character.
+     * @return This configuration object, for chaining.
      */
     public T setTextDelimiter(final char textDelimiter) {
         this.textDelimiter = textDelimiter;
@@ -86,19 +87,21 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
     }
 
     /**
-     * 设置注释无效 当写出CSV时，{@link CsvWriter#writeComment(String)}将抛出异常 当读取CSV时，注释行按照正常行读取
+     * Disables comment handling. When writing CSV, {@link CsvWriter#writeComment(String)} will throw an exception. When
+     * reading CSV, comment lines will be read as normal lines.
      *
-     * @return this
+     * @return This configuration object, for chaining.
      */
     public T disableComment() {
         return setCommentCharacter(null);
     }
 
     /**
-     * 设置 注释符号，用于区分注释行，{@code null}表示忽略注释
+     * Sets the comment character, used to distinguish comment lines. {@code null} indicates that comments should be
+     * ignored.
      *
-     * @param commentCharacter 注释符号，用于区分注释行
-     * @return this
+     * @param commentCharacter The comment character.
+     * @return This configuration object, for chaining.
      */
     public T setCommentCharacter(final Character commentCharacter) {
         this.commentCharacter = commentCharacter;
@@ -106,10 +109,10 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
     }
 
     /**
-     * 设置标题行的别名Map
+     * Sets the header alias map.
      *
-     * @param headerAlias 别名Map
-     * @return this
+     * @param headerAlias The map of header aliases.
+     * @return This configuration object, for chaining.
      */
     public T setHeaderAlias(final Map<String, String> headerAlias) {
         this.headerAlias = headerAlias;
@@ -117,11 +120,11 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
     }
 
     /**
-     * 增加标题别名
+     * Adds a header alias.
      *
-     * @param header 标题
-     * @param alias  别名
-     * @return this
+     * @param header The original header name.
+     * @param alias  The alias for the header.
+     * @return This configuration object, for chaining.
      */
     public T addHeaderAlias(final String header, final String alias) {
         this.headerAlias.put(header, alias);
@@ -129,10 +132,10 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
     }
 
     /**
-     * 去除标题别名
+     * Removes a header alias.
      *
-     * @param header 标题
-     * @return this
+     * @param header The header name whose alias is to be removed.
+     * @return This configuration object, for chaining.
      */
     public T removeHeaderAlias(final String header) {
         this.headerAlias.remove(header);

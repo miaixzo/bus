@@ -32,17 +32,29 @@ import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 小程序-订阅消息
+ * WeChat Mini Program subscription message provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WechatMiniProvider extends AbstractProvider<WechatMaterial, Context> {
 
+    /**
+     * Constructs a {@code WechatMiniProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public WechatMiniProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends a WeChat Mini Program subscription message. Implementations should override this method to provide specific
+     * sending logic.
+     *
+     * @param entity The {@link WechatMaterial} containing message details.
+     * @return A {@link Message} indicating the result of the sending operation, or {@code null} if not implemented.
+     */
     @Override
     public Message send(WechatMaterial entity) {
         return null;

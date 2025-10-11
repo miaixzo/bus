@@ -28,6 +28,8 @@
 package org.miaixz.bus.core.center.map;
 
 import java.io.Serial;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -35,84 +37,98 @@ import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.xyz.MapKit;
 
 /**
- * Map创建类
+ * A fluent builder for creating and populating {@link Map} instances. This class provides a chainable API to simplify
+ * map creation and initialization.
+ * <p>
+ * Example:
+ * 
+ * <pre>{@code
+ * 
+ * Map<String, Integer> map = MapBuilder.<String, Integer>of().put("one", 1).put("two", 2).build();
+ * }</pre>
  *
- * @param <K> Key类型
- * @param <V> Value类型
+ * @param <K> The type of keys in the map.
+ * @param <V> The type of values in the map.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 
+    /**
+     * The serialization version identifier for this class.
+     */
     @Serial
     private static final long serialVersionUID = 2852275393666L;
 
+    /**
+     * The internal map instance being built.
+     */
     private final Map<K, V> map;
 
     /**
-     * 链式Map创建类
+     * Constructs a new {@code MapBuilder} that wraps the given map instance.
      *
-     * @param map 要使用的Map实现类
+     * @param map The {@link Map} implementation to use as the backing store.
      */
     public MapBuilder(final Map<K, V> map) {
         this.map = map;
     }
 
     /**
-     * 创建Builder，默认HashMap实现
+     * Creates a new {@code MapBuilder} with a {@link HashMap} and adds an initial key-value pair.
      *
-     * @param <K>   Key类型
-     * @param <V>   Value类型
-     * @param key   键
-     * @param value 值
-     * @return MapBuilder
+     * @param <K>   The type of keys.
+     * @param <V>   The type of values.
+     * @param key   The initial key.
+     * @param value The initial value.
+     * @return A new {@code MapBuilder} instance.
      */
     public static <K, V> MapBuilder<K, V> of(final K key, final V value) {
-        final MapBuilder<K, V> builder = of();
-        return builder.put(key, value);
+        return MapBuilder.<K, V>of().put(key, value);
     }
 
     /**
-     * 创建Builder，默认HashMap实现
+     * Creates a new {@code MapBuilder} with a default {@link HashMap}.
      *
-     * @param <K> Key类型
-     * @param <V> Value类型
-     * @return MapBuilder
+     * @param <K> The type of keys.
+     * @param <V> The type of values.
+     * @return A new {@code MapBuilder} instance.
      */
     public static <K, V> MapBuilder<K, V> of() {
         return of(false);
     }
 
     /**
-     * 创建Builder
+     * Creates a new {@code MapBuilder} with a specified map implementation.
      *
-     * @param <K>      Key类型
-     * @param <V>      Value类型
-     * @param isLinked true创建LinkedHashMap，false创建HashMap
-     * @return MapBuilder
+     * @param <K>      The type of keys.
+     * @param <V>      The type of values.
+     * @param isLinked If {@code true}, a {@link LinkedHashMap} is used to preserve insertion order; otherwise, a
+     *                 {@link HashMap} is used.
+     * @return A new {@code MapBuilder} instance.
      */
     public static <K, V> MapBuilder<K, V> of(final boolean isLinked) {
         return of(MapKit.newHashMap(isLinked));
     }
 
     /**
-     * 创建Builder
+     * Creates a new {@code MapBuilder} that wraps an existing {@link Map} instance.
      *
-     * @param <K> Key类型
-     * @param <V> Value类型
-     * @param map Map实体类
-     * @return MapBuilder
+     * @param <K> The type of keys.
+     * @param <V> The type of values.
+     * @param map The map instance to wrap.
+     * @return A new {@code MapBuilder} instance.
      */
     public static <K, V> MapBuilder<K, V> of(final Map<K, V> map) {
         return new MapBuilder<>(map);
     }
 
     /**
-     * 链式Map创建
+     * Adds a key-value pair to the map.
      *
-     * @param k Key类型
-     * @param v Value类型
-     * @return 当前类
+     * @param k The key.
+     * @param v The value.
+     * @return This {@code MapBuilder} instance for method chaining.
      */
     public MapBuilder<K, V> put(final K k, final V v) {
         map.put(k, v);
@@ -120,12 +136,12 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
     }
 
     /**
-     * 链式Map创建
+     * Adds a key-value pair to the map only if the given condition is {@code true}.
      *
-     * @param condition put条件
-     * @param k         Key类型
-     * @param v         Value类型
-     * @return 当前类
+     * @param condition The boolean condition to evaluate.
+     * @param k         The key to add if the condition is true.
+     * @param v         The value to add if the condition is true.
+     * @return This {@code MapBuilder} instance for method chaining.
      */
     public MapBuilder<K, V> put(final boolean condition, final K k, final V v) {
         if (condition) {
@@ -135,12 +151,13 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
     }
 
     /**
-     * 链式Map创建
+     * Adds a key-value pair to the map only if the given condition is {@code true}, with the value provided by a
+     * {@link Supplier}. The supplier is only invoked if the condition is met.
      *
-     * @param condition put条件
-     * @param k         Key类型
-     * @param supplier  Value类型结果提供方
-     * @return 当前类
+     * @param condition The boolean condition to evaluate.
+     * @param k         The key to add if the condition is true.
+     * @param supplier  A {@link Supplier} that provides the value.
+     * @return This {@code MapBuilder} instance for method chaining.
      */
     public MapBuilder<K, V> put(final boolean condition, final K k, final Supplier<V> supplier) {
         if (condition) {
@@ -150,10 +167,10 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
     }
 
     /**
-     * 链式Map创建
+     * Copies all mappings from the specified map into the map being built.
      *
-     * @param map 合并map
-     * @return 当前类
+     * @param map The map whose mappings are to be added.
+     * @return This {@code MapBuilder} instance for method chaining.
      */
     public MapBuilder<K, V> putAll(final Map<K, V> map) {
         this.map.putAll(map);
@@ -161,9 +178,9 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
     }
 
     /**
-     * 清空Map
+     * Removes all mappings from the map being built.
      *
-     * @return this
+     * @return This {@code MapBuilder} instance for method chaining.
      */
     public MapBuilder<K, V> clear() {
         this.map.clear();
@@ -171,18 +188,18 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
     }
 
     /**
-     * 创建后的map
+     * Returns the underlying map instance that is being built.
      *
-     * @return 创建后的map
+     * @return The built {@link Map}.
      */
     public Map<K, V> map() {
         return map;
     }
 
     /**
-     * 创建后的map
+     * Builds and returns the final map instance.
      *
-     * @return 创建后的map
+     * @return The built {@link Map}.
      */
     @Override
     public Map<K, V> build() {
@@ -190,34 +207,34 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
     }
 
     /**
-     * 将map转成字符串
+     * Joins the map entries into a string using the specified separators.
      *
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @return 连接字符串
+     * @param separator         The separator to use between each entry.
+     * @param keyValueSeparator The separator to use between each key and its value.
+     * @return The joined string.
      */
     public String join(final String separator, final String keyValueSeparator) {
         return MapKit.join(this.map, separator, keyValueSeparator);
     }
 
     /**
-     * 将map转成字符串
+     * Joins the map entries into a string, ignoring entries where the key or value is {@code null}.
      *
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @return 连接后的字符串
+     * @param separator         The separator to use between each entry.
+     * @param keyValueSeparator The separator to use between each key and its value.
+     * @return The joined string.
      */
     public String joinIgnoreNull(final String separator, final String keyValueSeparator) {
         return MapKit.joinIgnoreNull(this.map, separator, keyValueSeparator);
     }
 
     /**
-     * 将map转成字符串
+     * Joins the map entries into a string with an option to ignore nulls.
      *
-     * @param separator         entry之间的连接符
-     * @param keyValueSeparator kv之间的连接符
-     * @param isIgnoreNull      是否忽略null的键和值
-     * @return 连接后的字符串
+     * @param separator         The separator to use between each entry.
+     * @param keyValueSeparator The separator to use between each key and its value.
+     * @param isIgnoreNull      If {@code true}, entries with a {@code null} key or value are skipped.
+     * @return The joined string.
      */
     public String join(final String separator, final String keyValueSeparator, final boolean isIgnoreNull) {
         return MapKit.join(this.map, separator, keyValueSeparator, isIgnoreNull);

@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.core.io.file;
 
-import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -40,14 +35,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.StringKit;
+
 /**
- * 虚拟路径类，实现Path接口，用于在内存中模拟文件路径。
+ * A virtual path class that implements {@link Path} to simulate a file path in memory.
  * <p>
- * 该类提供了一种在内存中表示文件系统路径的方式，无需实际访问物理文件系统。 它可以用于测试、模拟文件系统操作或在内存中处理文件路径。
- * </p>
+ * This class provides a way to represent a file system path in memory without needing to access the physical file
+ * system. It can be used for testing, simulating file system operations, or handling file paths in memory.
+ * 
  * <p>
- * 虚拟路径可以关联一个{@link Resource}对象，表示该路径下的内容资源。
- * </p>
+ * A virtual path can be associated with a {@link Resource} object, which represents the content at that path.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,21 +55,21 @@ import java.util.NoSuchElementException;
 public class VirtualPath implements Path {
 
     /**
-     * 路径字符串
+     * The path string.
      */
     private final String path;
 
     /**
-     * 路径对应的内容资源
+     * The resource representing the content at this path.
      */
     private final Resource content;
 
     /**
-     * 构造一个虚拟路径。
+     * Constructs a new virtual path.
      *
-     * @param path    路径字符串，不能为null
-     * @param content 路径对应的内容资源，可以为null
-     * @throws IllegalArgumentException 如果path为null
+     * @param path    The path string, cannot be null.
+     * @param content The resource for the path's content, which can be null.
+     * @throws IllegalArgumentException if the path is null.
      */
     public VirtualPath(final String path, final Resource content) {
         if (path == null) {
@@ -80,34 +80,28 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 获取路径内容资源。
+     * Gets the resource representing the path's content.
      *
-     * @return 路径对应的内容资源，可能为null
+     * @return The content resource, which may be null.
      */
     public Resource getContent() {
         return this.content;
     }
 
     /**
-     * 获取文件内容字节数组。
-     * <p>
-     * 如果内容资源不为null，则返回资源内容的字节数组；否则返回null表示无此文件。
-     * </p>
+     * Gets the file content as a byte array.
      *
-     * @return 文件内容的字节数组，如果没有内容则返回null
+     * @return A byte array of the content, or null if there is no content.
      */
     public byte[] getBytes() {
         return null != this.content ? this.content.readBytes() : null;
     }
 
     /**
-     * 获取与此路径关联的文件系统。
+     * {@inheritDoc}
      * <p>
-     * 虚拟路径不支持文件系统操作，因此此方法会抛出UnsupportedOperationException。
-     * </p>
-     *
-     * @return 与此路径关联的文件系统
-     * @throws UnsupportedOperationException 总是抛出，因为虚拟路径不支持文件系统操作
+     * Virtual paths do not support file system operations, so this method throws an
+     * {@link UnsupportedOperationException}.
      */
     @Override
     public FileSystem getFileSystem() {
@@ -115,12 +109,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 判断此路径是否为绝对路径。
+     * {@inheritDoc}
      * <p>
-     * 虚拟路径总是返回false，表示不是绝对路径。
-     * </p>
-     *
-     * @return 如果此路径是绝对路径则返回true，否则返回false
+     * Virtual paths are always considered relative, so this method always returns {@code false}.
      */
     @Override
     public boolean isAbsolute() {
@@ -128,12 +119,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 获取此路径的根组件。
+     * {@inheritDoc}
      * <p>
-     * 虚拟路径没有根组件，因此返回null。
-     * </p>
-     *
-     * @return 表示此路径根组件的路径，如果没有根组件则返回null
+     * Virtual paths do not have a root component, so this method returns {@code null}.
      */
     @Override
     public Path getRoot() {
@@ -141,12 +129,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 获取此路径的文件名组件。
-     * <p>
-     * 文件名是路径中最远的层次结构组件。如果路径为空，则返回空路径。
-     * </p>
-     *
-     * @return 表示此路径文件名组件的路径
+     * {@inheritDoc}
      */
     @Override
     public Path getFileName() {
@@ -158,12 +141,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 获取此路径的父路径，如果此路径没有父路径则返回null。
-     * <p>
-     * 父路径由路径的根组件和除最远组件外的所有组件组成。如果此路径没有父路径， 则返回null。
-     * </p>
-     *
-     * @return 表示此路径父路径的路径，如果没有父路径则返回null
+     * {@inheritDoc}
      */
     @Override
     public Path getParent() {
@@ -175,53 +153,36 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 获取路径中的名称元素数量。
-     * <p>
-     * 空路径("")有一个名称元素。根路径("/")没有名称元素。
-     * </p>
-     *
-     * @return 路径中的元素数量，如果路径为空则返回1
+     * {@inheritDoc}
      */
     @Override
     public int getNameCount() {
         if (StringKit.isEmpty(path)) {
-            // ""表示一个有效名称
             return 1;
         }
         if (StringKit.equals(path, Symbol.SLASH)) {
-            // /表示根路径，无名称
             return 0;
         }
-        // 根路径不算名称
-        return StringKit.count(path, Symbol.SLASH);
+        return StringKit.count(path, Symbol.SLASH) + 1;
     }
 
     /**
-     * 获取指定索引处的名称元素。
-     *
-     * @param index 名称元素的索引
-     * @return 名称元素
-     * @throws IllegalArgumentException 如果index为负数或大于等于名称元素数量
+     * {@inheritDoc}
      */
     @Override
     public Path getName(final int index) {
         if (index < 0) {
-            throw new IllegalArgumentException("index must be >= 0");
+            throw new IllegalArgumentException("Index must be >= 0");
         }
         final List<String> parts = CharsBacker.splitTrim(path, Symbol.SLASH);
         if (index >= parts.size()) {
-            throw new IllegalArgumentException("index exceeds name count");
+            throw new IllegalArgumentException("Index exceeds name count");
         }
         return new VirtualPath(parts.get(index), index == parts.size() - 1 ? content : null);
     }
 
     /**
-     * 获取此路径的子路径，它是从beginIndex到endIndex-1的名称元素的序列。
-     *
-     * @param beginIndex 第一个元素的索引（包含）
-     * @param endIndex   最后一个元素的索引（不包含）
-     * @return 新的子路径
-     * @throws IllegalArgumentException 如果beginIndex或endIndex为负数、beginIndex大于等于endIndex或endIndex大于名称元素数量
+     * {@inheritDoc}
      */
     @Override
     public Path subpath(final int beginIndex, final int endIndex) {
@@ -243,11 +204,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 测试此路径是否以给定路径开头。
-     *
-     * @param other 要测试的路径
-     * @return 如果此路径以给定路径开头则返回true，否则返回false
-     * @throws ClassCastException 如果other不是VirtualPath实例
+     * {@inheritDoc}
      */
     @Override
     public boolean startsWith(final Path other) {
@@ -258,10 +215,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 测试此路径是否以给定路径字符串开头。
-     *
-     * @param other 要测试的路径字符串
-     * @return 如果此路径以给定路径字符串开头则返回true，否则返回false
+     * {@inheritDoc}
      */
     @Override
     public boolean startsWith(final String other) {
@@ -269,11 +223,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 测试此路径是否以给定路径结尾。
-     *
-     * @param other 要测试的路径
-     * @return 如果此路径以给定路径结尾则返回true，否则返回false
-     * @throws ClassCastException 如果other不是VirtualPath实例
+     * {@inheritDoc}
      */
     @Override
     public boolean endsWith(final Path other) {
@@ -284,10 +234,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 测试此路径是否以给定路径字符串结尾。
-     *
-     * @param other 要测试的路径字符串
-     * @return 如果此路径以给定路径字符串结尾则返回true，否则返回false
+     * {@inheritDoc}
      */
     @Override
     public boolean endsWith(final String other) {
@@ -295,12 +242,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 返回此路径的规范化形式。
-     * <p>
-     * 虚拟路径的规范化形式就是其自身。
-     * </p>
-     *
-     * @return 规范化路径
+     * {@inheritDoc}
      */
     @Override
     public Path normalize() {
@@ -308,13 +250,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 根据此路径解析给定路径。
-     * <p>
-     * 如果给定路径是绝对路径，则返回给定路径。否则，返回此路径与给定路径的连接。
-     * </p>
-     *
-     * @param other 要解析的路径
-     * @return 结果路径
+     * {@inheritDoc}
      */
     @Override
     public Path resolve(final Path other) {
@@ -329,13 +265,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 根据此路径解析给定路径字符串。
-     * <p>
-     * 如果给定路径字符串为空，则返回此路径。否则，返回此路径与给定路径字符串的连接。
-     * </p>
-     *
-     * @param other 要解析的路径字符串
-     * @return 结果路径
+     * {@inheritDoc}
      */
     @Override
     public Path resolve(final String other) {
@@ -347,14 +277,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 根据此路径的父路径解析给定路径。
-     * <p>
-     * 如果此路径没有父路径，则返回给定路径。否则，返回此路径的父路径与给定路径的解析结果。
-     * </p>
-     *
-     * @param other 要解析的路径
-     * @return 结果路径
-     * @throws NullPointerException 如果other为null
+     * {@inheritDoc}
      */
     @Override
     public Path resolveSibling(final Path other) {
@@ -366,14 +289,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 根据此路径的父路径解析给定路径字符串。
-     * <p>
-     * 如果此路径没有父路径，则返回给定路径字符串表示的路径。否则，返回此路径的父路径与给定路径字符串的解析结果。
-     * </p>
-     *
-     * @param other 要解析的路径字符串
-     * @return 结果路径
-     * @throws NullPointerException 如果other为null
+     * {@inheritDoc}
      */
     @Override
     public Path resolveSibling(final String other) {
@@ -385,14 +301,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 构造此路径与给定路径之间的相对路径。
-     * <p>
-     * 如果此路径为空，则返回给定路径。如果给定路径以此路径开头，则返回剩余部分。
-     * </p>
-     *
-     * @param other 要相对化的路径
-     * @return 相对路径
-     * @throws IllegalArgumentException 如果other不是VirtualPath实例
+     * {@inheritDoc}
      */
     @Override
     public Path relativize(final Path other) {
@@ -409,13 +318,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 返回表示此路径的URI。
+     * {@inheritDoc}
      * <p>
-     * 虚拟路径不支持URI转换，因此此方法会抛出UnsupportedOperationException。
-     * </p>
-     *
-     * @return 表示此路径的URI
-     * @throws UnsupportedOperationException 总是抛出，因为虚拟路径不支持URI转换
+     * Virtual paths do not support URI conversion, so this method throws an {@link UnsupportedOperationException}.
      */
     @Override
     public URI toUri() {
@@ -423,12 +328,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 返回此路径的绝对路径。
+     * {@inheritDoc}
      * <p>
-     * 虚拟路径的绝对路径就是其自身。
-     * </p>
-     *
-     * @return 表示此路径的绝对路径
+     * For a virtual path, this returns the path itself.
      */
     @Override
     public Path toAbsolutePath() {
@@ -436,13 +338,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 返回此路径的实际路径。
+     * {@inheritDoc}
      * <p>
-     * 虚拟路径的实际路径就是其自身。
-     * </p>
-     *
-     * @param options 链接选项，指示如何处理符号链接
-     * @return 表示此路径的实际路径
+     * For a virtual path, this returns the path itself.
      */
     @Override
     public Path toRealPath(final LinkOption... options) {
@@ -450,9 +348,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 返回表示此路径的File对象。
-     *
-     * @return 表示此路径的File对象
+     * {@inheritDoc}
      */
     @Override
     public File toFile() {
@@ -460,17 +356,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 使用监视服务注册此路径。
+     * {@inheritDoc}
      * <p>
-     * 虚拟路径不支持监视服务，因此此方法会抛出UnsupportedOperationException。
-     * </p>
-     *
-     * @param watcher   监视服务
-     * @param events    要监视的事件
-     * @param modifiers 监视修饰符
-     * @return 表示此路径注册的监视键
-     * @throws UnsupportedOperationException 总是抛出，因为虚拟路径不支持监视服务
-     * @throws IOException                   如果发生I/O错误
+     * Virtual paths do not support watch services, so this method throws an {@link UnsupportedOperationException}.
      */
     @Override
     public WatchKey register(
@@ -481,16 +369,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 使用监视服务注册此路径。
+     * {@inheritDoc}
      * <p>
-     * 虚拟路径不支持监视服务，因此此方法会抛出UnsupportedOperationException。
-     * </p>
-     *
-     * @param watcher 监视服务
-     * @param events  要监视的事件
-     * @return 表示此路径注册的监视键
-     * @throws UnsupportedOperationException 总是抛出，因为虚拟路径不支持监视服务
-     * @throws IOException                   如果发生I/O错误
+     * Virtual paths do not support watch services, so this method throws an {@link UnsupportedOperationException}.
      */
     @Override
     public WatchKey register(final WatchService watcher, final WatchEvent.Kind<?>... events) throws IOException {
@@ -498,12 +379,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 返回此路径的名称元素的迭代器。
-     * <p>
-     * 迭代器的第一个元素是路径中最接近根目录的元素，最后一个元素是路径中最远离根目录的元素。
-     * </p>
-     *
-     * @return 此路径的名称元素的迭代器
+     * {@inheritDoc}
      */
     @Override
     public Iterator<Path> iterator() {
@@ -528,11 +404,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 比较此路径与给定路径的字典顺序。
-     *
-     * @param other 要比较的路径
-     * @return 如果此路径等于给定路径则返回0；如果此路径小于给定路径则返回小于0的值；如果此路径大于给定路径则返回大于0的值
-     * @throws ClassCastException 如果other不是VirtualPath实例
+     * {@inheritDoc}
      */
     @Override
     public int compareTo(final Path other) {
@@ -543,13 +415,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 测试此路径与给定对象是否相等。
-     * <p>
-     * 如果给定对象也是VirtualPath，并且两个路径的字符串表示形式相同，则返回true。
-     * </p>
-     *
-     * @param other 要比较的对象
-     * @return 如果给定对象也是VirtualPath，并且两个路径的字符串表示形式相同则返回true，否则返回false
+     * {@inheritDoc}
      */
     @Override
     public boolean equals(final Object other) {
@@ -563,12 +429,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 返回此路径的哈希码。
-     * <p>
-     * 哈希码基于路径字符串的哈希码。
-     * </p>
-     *
-     * @return 此路径的哈希码
+     * {@inheritDoc}
      */
     @Override
     public int hashCode() {
@@ -576,12 +437,7 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * 返回此路径的字符串表示形式。
-     * <p>
-     * 字符串表示形式就是路径字符串。
-     * </p>
-     *
-     * @return 此路径的字符串表示形式
+     * {@inheritDoc}
      */
     @Override
     public String toString() {

@@ -34,10 +34,10 @@ import java.util.Map;
 import org.miaixz.bus.core.center.map.AbstractEntry;
 
 /**
- * 可变键和值的{@link Map.Entry}实现，可以修改键和值
+ * A mutable {@link Map.Entry} implementation that allows modification of both the key and the value.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -47,19 +47,19 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
     private static final long serialVersionUID = 2852270155831L;
 
     /**
-     * 键
+     * The mutable key of this entry.
      */
     protected K key;
     /**
-     * 值
+     * The mutable value of this entry.
      */
     protected V value;
 
     /**
-     * 构造
+     * Constructs a new {@code MutableEntry} with the specified key and value.
      *
-     * @param key   键
-     * @param value 值
+     * @param key   The initial key.
+     * @param value The initial value.
      */
     public MutableEntry(final K key, final V value) {
         this.key = key;
@@ -67,22 +67,22 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
     }
 
     /**
-     * 创建{@code MutableEntry}
+     * Creates a new {@code MutableEntry}.
      *
-     * @param key   键
-     * @param value 值
-     * @param <K>   键类型
-     * @param <V>   值类型
-     * @return {@code MutableEntry}
+     * @param key   The initial key.
+     * @param value The initial value.
+     * @param <K>   The type of the key.
+     * @param <V>   The type of the value.
+     * @return A new {@code MutableEntry} instance.
      */
     public static <K, V> MutableEntry<K, V> of(final K key, final V value) {
         return new MutableEntry<>(key, value);
     }
 
     /**
-     * 获取键
+     * Returns the key of this entry.
      *
-     * @return 键
+     * @return The key.
      */
     @Override
     public K getKey() {
@@ -90,9 +90,9 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
     }
 
     /**
-     * 获取值
+     * Returns the value of this entry.
      *
-     * @return 值
+     * @return The value.
      */
     @Override
     public V getValue() {
@@ -100,10 +100,10 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
     }
 
     /**
-     * 设置键
+     * Sets the key of this entry.
      *
-     * @param key 新键
-     * @return old data
+     * @param key The new key.
+     * @return The old key.
      */
     public K setKey(final K key) {
         final K oldKey = this.key;
@@ -112,10 +112,10 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
     }
 
     /**
-     * 设置值
+     * Sets the value of this entry.
      *
-     * @param value 新值
-     * @return old value
+     * @param value The new value.
+     * @return The old value.
      */
     @Override
     public V setValue(final V value) {

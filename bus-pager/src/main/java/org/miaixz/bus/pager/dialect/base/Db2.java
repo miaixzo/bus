@@ -36,13 +36,25 @@ import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 /**
- * 数据库方言 db2
+ * Database dialect for DB2. This class provides DB2-specific implementations for pagination SQL generation and
+ * parameter processing.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Db2 extends AbstractPaging {
 
+    /**
+     * Processes the pagination parameters for DB2. It adds {@code PAGEPARAMETER_FIRST} and {@code PAGEPARAMETER_SECOND}
+     * to the parameter map and updates the {@link CacheKey}.
+     *
+     * @param ms       the MappedStatement object
+     * @param paramMap a map containing the query parameters
+     * @param page     the {@link Page} object containing pagination details
+     * @param boundSql the BoundSql object for the query
+     * @param pageKey  the CacheKey for the paginated query
+     * @return the processed parameter map
+     */
     @Override
     public Object processPageParameter(
             MappedStatement ms,
@@ -52,14 +64,23 @@ public class Db2 extends AbstractPaging {
             CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow() + 1);
         paramMap.put(PAGEPARAMETER_SECOND, page.getEndRow());
-        // 处理pageKey
+        // Process pageKey
         pageKey.update(page.getStartRow() + 1);
         pageKey.update(page.getEndRow());
-        // 处理参数配置
+        // Process parameter configuration
         handleParameter(boundSql, ms, long.class, long.class);
         return paramMap;
     }
 
+    /**
+     * Generates the DB2-specific pagination SQL. It wraps the original SQL with a subquery that uses
+     * {@code ROWNUMBER() OVER()} to achieve pagination.
+     *
+     * @param sql     the original SQL string
+     * @param page    the {@link Page} object containing pagination details
+     * @param pageKey the CacheKey for the paginated query
+     * @return the DB2-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 140);

@@ -33,7 +33,8 @@ import org.miaixz.bus.http.metric.sse.RealEventSource;
 import org.miaixz.bus.http.metric.sse.ServerSentEventReader;
 
 /**
- * 服务器推送事件（Server-Sent Events, SSE）的工具类，提供创建事件源工厂和处理事件响应的静态方法。 用于简化 SSE 连接的创建和事件流解析。
+ * A utility class for Server-Sent Events (SSE), providing static methods for creating event source factories and
+ * processing event responses. This simplifies the creation of SSE connections and the parsing of event streams.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,20 +42,22 @@ import org.miaixz.bus.http.metric.sse.ServerSentEventReader;
 public final class EventSources {
 
     /**
-     * 使用提供的调用工厂创建事件源工厂。
+     * Creates an event source factory using the provided call factory.
      *
-     * @param callFactory 用于创建 HTTP 调用的工厂
-     * @return 事件源工厂，用于生成 {@link EventSource} 实例
+     * @param callFactory The factory used to create HTTP calls.
+     * @return An event source factory for creating {@link EventSource} instances.
      */
     public static EventSource.Factory createFactory(NewCall.Factory callFactory) {
         return new FactoryImpl(callFactory);
     }
 
     /**
-     * 处理服务器推送事件的响应，通知监听器处理事件或失败。 验证响应状态和内容类型，解析事件流，并触发监听器的相应回调。
+     * Processes a server-sent event response, notifying the listener to handle events or failures. Validates the
+     * response status and content type, parses the event stream, and triggers the appropriate callbacks on the
+     * listener.
      *
-     * @param response 服务器返回的 HTTP 响应
-     * @param listener 事件监听器，用于接收事件和状态更新
+     * @param response The HTTP response from the server.
+     * @param listener The event listener to receive events and status updates.
      */
     public static void processResponse(Response response, EventSourceListener listener) {
         try (Response ignored = response) {
@@ -77,7 +80,7 @@ public final class EventSources {
                 return;
             }
 
-            // 用空响应体替换原始响应体，防止回调访问实际数据
+            // Replace the original response body with an empty one to prevent callbacks from accessing actual data.
             Response modifiedResponse = response.newBuilder().body(Builder.EMPTY_RESPONSE).build();
 
             ServerSentEventReader reader = new ServerSentEventReader(body.source(),
@@ -90,14 +93,14 @@ public final class EventSources {
 
                         @Override
                         public void onRetryChange(long timeMs) {
-                            // 忽略，不执行自动重试
+                            // Ignored, no automatic retries are performed.
                         }
                     });
 
             try {
                 listener.onOpen(null, modifiedResponse);
                 while (reader.processNextEvent()) {
-                    // 持续处理事件
+                    // Continue processing events.
                 }
             } catch (Exception e) {
                 listener.onFailure(null, e, modifiedResponse);
@@ -108,10 +111,10 @@ public final class EventSources {
     }
 
     /**
-     * 检查响应体是否为服务器推送事件流（Content-Type: text/event-stream）。
+     * Checks if the response body's content type is {@code text/event-stream}.
      *
-     * @param body 响应体
-     * @return 如果是事件流返回 true，否则返回 false
+     * @param body The response body.
+     * @return {@code true} if the content type is {@code text/event-stream}, {@code false} otherwise.
      */
     private static boolean isEventStream(ResponseBody body) {
         if (body.contentType() == null) {
@@ -121,30 +124,31 @@ public final class EventSources {
     }
 
     /**
-     * 事件源工厂实现类，负责创建 {@link RealEventSource} 实例并发起连接。
+     * An implementation of the event source factory, responsible for creating {@link RealEventSource} instances and
+     * initiating connections.
      */
     private static class FactoryImpl implements EventSource.Factory {
 
         /**
-         * 用于创建 HTTP 调用的工厂
+         * The factory used to create HTTP calls.
          */
         private final NewCall.Factory callFactory;
 
         /**
-         * 构造工厂实例。
+         * Constructs a new factory instance.
          *
-         * @param callFactory 用于创建 HTTP 调用的工厂
+         * @param callFactory The factory for creating HTTP calls.
          */
         FactoryImpl(NewCall.Factory callFactory) {
             this.callFactory = callFactory;
         }
 
         /**
-         * 创建新的 {@link EventSource} 实例并启动异步连接。
+         * Creates a new {@link EventSource} instance and starts an asynchronous connection.
          *
-         * @param request  用于发起事件源的 HTTP 请求
-         * @param listener 事件监听器，用于接收事件和状态更新
-         * @return 新创建的 {@link EventSource} 实例
+         * @param request  The HTTP request to initiate the event source.
+         * @param listener The event listener to receive events and status updates.
+         * @return A new {@link EventSource} instance.
          */
         @Override
         public EventSource newEventSource(Request request, EventSourceListener listener) {

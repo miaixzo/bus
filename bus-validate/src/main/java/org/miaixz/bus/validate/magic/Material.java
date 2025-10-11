@@ -27,22 +27,22 @@
 */
 package org.miaixz.bus.validate.magic;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.text.replacer.HighMultiReplacer;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.MapKit;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.text.replacer.HighMultiReplacer;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.MapKit;
-
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 校验注解所包含的通用属性
+ * Represents the common properties extracted from a validation annotation. This class acts as a data carrier for a
+ * single validation rule, holding all necessary information for the validation process.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,55 +51,65 @@ import lombok.Setter;
 @Setter
 public class Material {
 
+    /**
+     * Indicates if the validation should be applied to each element of an array or collection.
+     */
     private boolean array = false;
     /**
-     * 错误码
+     * The error code to be used when validation fails.
      */
     private String errcode;
     /**
-     * 错误提示信息
+     * The error message template.
      */
     private String errmsg;
     /**
-     * 错误属性名称
+     * The name of the field being validated.
      */
     private String field;
 
+    /**
+     * The name of the validator.
+     */
     private String name;
     /**
-     * 校验组信息
+     * The validation groups this rule belongs to.
      */
     private String[] group;
     /**
-     * 当前注解
+     * The actual annotation instance from which this material was built.
      */
     private Annotation annotation;
     /**
-     * 校验类
+     * The class of the {@link Matcher} that will perform the validation.
      */
     private Class<?> clazz;
     /**
-     * 异常信息
+     * A custom exception class to be thrown on validation failure.
      */
     private Class<? extends ValidateException> exception;
     /**
-     * 校验参数
+     * Parameters for interpolating the error message.
      */
     private Map<String, Object> param;
     /**
-     * 校验属性信息
+     * A list of nested validation materials, used for handling meta-annotations.
      */
     private List<Material> list;
 
+    /**
+     * Default constructor. Initializes the parameter map and material list.
+     */
     public Material() {
         this.list = new ArrayList<>();
         this.param = new HashMap<>();
     }
 
     /**
-     * 添加父级校验注解属性
+     * Adds a parent validation annotation's properties. This is used for handling meta-annotations where one validation
+     * annotation is composed of others.
      *
-     * @param material 属性
+     * @param material The parent validation material to add.
      */
     public void addParentProperty(Material material) {
         if (CollKit.isEmpty(this.list)) {
@@ -109,10 +119,11 @@ public class Material {
     }
 
     /**
-     * 添加错误信息的字符串插值参数
+     * Adds a parameter for string interpolation in the error message.
      *
-     * @param name  插值名称
-     * @param value 插值
+     * @param name  The name of the placeholder in the message template.
+     * @param value The value to be substituted for the placeholder.
+     * @throws ValidateException if a parameter with the same name already exists.
      */
     public void addParam(String name, Object value) {
         if (MapKit.isEmpty(this.param)) {
@@ -125,9 +136,9 @@ public class Material {
     }
 
     /**
-     * 获取字符串插值后的验证信息
+     * Gets the final validation message after string interpolation.
      *
-     * @return the string
+     * @return The interpolated error message string.
      */
     public String getMessage() {
         StringBuilder text = new StringBuilder();

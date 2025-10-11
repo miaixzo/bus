@@ -30,10 +30,20 @@ package org.miaixz.bus.starter.jdbc;
 import org.miaixz.bus.mapper.Holder;
 
 /**
- * 数据源持有类
+ * A thread-local holder for the key of the current data source.
+ * <p>
+ * This class extends {@link Holder} to provide a specific context for managing the data source key on a per-thread
+ * basis. It is used by the dynamic data source routing mechanism to determine which data source to use for the current
+ * operation.
  *
- * 可继承/重写方法进行扩展
- * 
+ * <p>
+ * The key is set by an aspect (e.g., {@link AspectjJdbcProxy}) before a method execution and cleared afterward. The
+ * {@link DynamicDataSource} then retrieves this key to select the appropriate data source.
+ *
+ * <p>
+ * This class can be extended for further customization if needed.
+ *
+ * @param <T> The generic type parameter, which is part of the extended {@link Holder} class.
  * @author Kimi Liu
  * @since Java 17+
  */

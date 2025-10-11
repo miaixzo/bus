@@ -33,11 +33,14 @@ import org.miaixz.bus.core.codec.No128;
 import org.miaixz.bus.core.xyz.ByteKit;
 
 /**
- * Google发布的Hash计算算法：CityHash64 与 CityHash128。 它们分别根据字串计算 64 和 128 位的散列值。这些算法不适用于加密，但适合用在散列表等处。
+ * An implementation of Google's CityHash algorithms (CityHash32, CityHash64, and CityHash128). These functions compute
+ * 32-bit, 64-bit, and 128-bit hash values for byte arrays. These algorithms are not suitable for cryptography, but are
+ * designed for use in hash tables.
  *
  * <p>
- * 代码来自：https://github.com/rolandhe/string-tools 原始算法：https://github.com/google/cityhash
- * </p>
+ * Original C++ implementation: <a href="https://github.com/google/cityhash">https://github.com/google/cityhash</a><br>
+ * This Java port is adapted from:
+ * <a href="https://github.com/rolandhe/string-tools">https://github.com/rolandhe/string-tools</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,18 +55,40 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     private static final int c1 = 0xcc9e2d51;
     private static final int c2 = 0x1b873593;
     /**
-     * 单例
+     * Singleton instance of the CityHash.
      */
-    public static CityHash INSTANCE = new CityHash();
+    public static final CityHash INSTANCE = new CityHash();
 
+    /**
+     * Fetches a 64-bit long value from a byte array in little-endian order.
+     *
+     * @param byteArray The source byte array.
+     * @param start     The starting index.
+     * @return The 64-bit long value.
+     */
     private static long fetch64(final byte[] byteArray, final int start) {
         return ByteKit.toLong(byteArray, start, ByteKit.CPU_ENDIAN);
     }
 
+    /**
+     * Fetches a 32-bit integer value from a byte array in little-endian order.
+     *
+     * @param byteArray The source byte array.
+     * @param start     The starting index.
+     * @return The 32-bit integer value.
+     */
     private static int fetch32(final byte[] byteArray, final int start) {
         return ByteKit.toInt(byteArray, start, ByteKit.CPU_ENDIAN);
     }
 
+    /**
+     * A Murmur-inspired hashing function for 16 bytes.
+     *
+     * @param u   The first 64-bit value.
+     * @param v   The second 64-bit value.
+     * @param mul A multiplier constant.
+     * @return The 64-bit hash value.
+     */
     private static long hashLen16(final long u, final long v, final long mul) {
         // Murmur-inspired hashing.
         long a = (u ^ v) * mul;
@@ -74,10 +99,22 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         return b;
     }
 
+    /**
+     * A mixing function for 64-bit values.
+     *
+     * @param val The value to mix.
+     * @return The mixed value.
+     */
     private static long shiftMix(final long val) {
         return val ^ (val >>> 47);
     }
 
+    /**
+     * A final mixing function for 32-bit values, adapted from Murmur3.
+     *
+     * @param h The hash value to finalize.
+     * @return The final mixed hash value.
+     */
     private static int fmix(int h) {
         h ^= h >>> 16;
         h *= 0x85ebca6b;
@@ -87,6 +124,17 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         return h;
     }
 
+    /**
+     * A weak hash function for 32 bytes with seeds.
+     *
+     * @param w The first 64-bit chunk.
+     * @param x The second 64-bit chunk.
+     * @param y The third 64-bit chunk.
+     * @param z The fourth 64-bit chunk.
+     * @param a The first seed.
+     * @param b The second seed.
+     * @return A 128-bit hash value.
+     */
     private static No128 weakHashLen32WithSeeds(
             final long w,
             final long x,
@@ -103,7 +151,15 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         return new No128(b + c, a + z);
     }
 
-    // Return a 16-byte hash for s[0] ... s[31], a, and b. Quick and dirty.
+    /**
+     * Return a 16-byte hash for s[0] ... s[31], a, and b. Quick and dirty.
+     *
+     * @param byteArray The byte array containing the data.
+     * @param start     The starting index of the 32-byte chunk.
+     * @param a         The first seed.
+     * @param b         The second seed.
+     * @return A 128-bit hash value.
+     */
     private static No128 weakHashLen32WithSeeds(final byte[] byteArray, final int start, final long a, final long b) {
         return weakHashLen32WithSeeds(
                 fetch64(byteArray, start),
@@ -114,16 +170,22 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
                 b);
     }
 
+    /**
+     * Computes a 64-bit hash value and returns it as a {@link Number}.
+     *
+     * @param bytes The input byte array.
+     * @return The 64-bit hash as a {@code Long}.
+     */
     @Override
     public Number encode(final byte[] bytes) {
         return hash64(bytes);
     }
 
     /**
-     * 计算32位City Hash值
+     * Computes the 32-bit CityHash of the given data.
      *
-     * @param data 数据
-     * @return hash值
+     * @param data The data to hash.
+     * @return The 32-bit hash value.
      */
     @Override
     public int hash32(final byte[] data) {
@@ -202,10 +264,10 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     }
 
     /**
-     * 计算64位City Hash值
+     * Computes the 64-bit CityHash of the given data.
      *
-     * @param data 数据
-     * @return hash值
+     * @param data The data to hash.
+     * @return The 64-bit hash value.
      */
     @Override
     public long hash64(final byte[] data) {
@@ -220,8 +282,6 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
             return hashLen33to64(data);
         }
 
-        // For strings over 64 bytes we hash the end first, and then as we
-        // loop we keep 56 bytes of state: v, w, x, y, and z.
         long x = fetch64(data, len - 40);
         long y = fetch64(data, len - 16) + fetch64(data, len - 56);
         long z = hashLen16(fetch64(data, len - 48) + len, fetch64(data, len - 24));
@@ -229,7 +289,6 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         No128 w = weakHashLen32WithSeeds(data, len - 32, y + k1, x);
         x = x * k1 + fetch64(data, 0);
 
-        // Decrease len to the nearest multiple of 64, and operate on 64-byte chunks.
         len = (len - 1) & ~63;
         int pos = 0;
         do {
@@ -240,7 +299,6 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
             z = Long.rotateRight(z + w.getLeastSigBits(), 33) * k1;
             v = weakHashLen32WithSeeds(data, pos, v.getMostSigBits() * k1, x + w.getLeastSigBits());
             w = weakHashLen32WithSeeds(data, pos + 32, z + w.getMostSigBits(), y + fetch64(data, pos + 16));
-            // swap z,x value
             final long swapValue = x;
             x = z;
             z = swapValue;
@@ -253,33 +311,33 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     }
 
     /**
-     * 计算64位City Hash值
+     * Computes the 64-bit CityHash of the given data using two seeds.
      *
-     * @param data  数据
-     * @param seed0 种子1
-     * @param seed1 种子2
-     * @return hash值
+     * @param data  The data to hash.
+     * @param seed0 The first seed.
+     * @param seed1 The second seed.
+     * @return The 64-bit hash value.
      */
     public long hash64(final byte[] data, final long seed0, final long seed1) {
         return hashLen16(hash64(data) - seed0, seed1);
     }
 
     /**
-     * 计算64位City Hash值，种子1使用默认的{@link #k2}
+     * Computes the 64-bit CityHash of the given data using a single seed. The first seed defaults to {@link #k2}.
      *
-     * @param data 数据
-     * @param seed 种子2
-     * @return hash值
+     * @param data The data to hash.
+     * @param seed The second seed.
+     * @return The 64-bit hash value.
      */
     public long hash64(final byte[] data, final long seed) {
         return hash64(data, k2, seed);
     }
 
     /**
-     * 计算128位City Hash值
+     * Computes the 128-bit CityHash of the given data.
      *
-     * @param data 数据
-     * @return hash值
+     * @param data The data to hash.
+     * @return The 128-bit hash value as a {@link No128}.
      */
     @Override
     public No128 hash128(final byte[] data) {
@@ -289,36 +347,40 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     }
 
     /**
-     * 计算128位City Hash值
+     * Computes the 128-bit CityHash of the given data using a seed.
      *
-     * @param data 数据
-     * @param seed 种子
-     * @return hash值
+     * @param data The data to hash.
+     * @param seed The 128-bit seed.
+     * @return The 128-bit hash value.
      */
     public No128 hash128(final byte[] data, final No128 seed) {
         return hash128(data, 0, seed);
     }
 
+    /**
+     * Computes the 128-bit CityHash for a byte array segment with a seed.
+     *
+     * @param byteArray The byte array.
+     * @param start     The starting offset.
+     * @param seed      The 128-bit seed.
+     * @return The 128-bit hash value.
+     */
     private No128 hash128(final byte[] byteArray, final int start, final No128 seed) {
         int len = byteArray.length - start;
-
         if (len < 128) {
             return cityMurmur(Arrays.copyOfRange(byteArray, start, byteArray.length), seed);
         }
 
-        // We expect len >= 128 to be the common case. Keep 56 bytes of state:
-        // v, w, x, y, and z.
         No128 v = new No128(0L, 0L);
         No128 w = new No128(0L, 0L);
         long x = seed.getLeastSigBits();
         long y = seed.getMostSigBits();
-        long z = len * k1;
+        long z = (long) len * k1;
         v.setLeastSigBits(Long.rotateRight(y ^ k1, 49) * k1 + fetch64(byteArray, start));
         v.setMostSigBits(Long.rotateRight(v.getLeastSigBits(), 42) * k1 + fetch64(byteArray, start + 8));
         w.setLeastSigBits(Long.rotateRight(y + z, 35) * k1 + x);
         w.setMostSigBits(Long.rotateRight(x + fetch64(byteArray, start + 88), 53) * k1);
 
-        // This is the same inner loop as CityHash64(), manually unrolled.
         int pos = start;
         do {
             x = Long.rotateRight(x + y + v.getLeastSigBits() + fetch64(byteArray, pos + 8), 37) * k1;
@@ -328,7 +390,6 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
             z = Long.rotateRight(z + w.getLeastSigBits(), 33) * k1;
             v = weakHashLen32WithSeeds(byteArray, pos, v.getMostSigBits() * k1, x + w.getLeastSigBits());
             w = weakHashLen32WithSeeds(byteArray, pos + 32, z + w.getMostSigBits(), y + fetch64(byteArray, pos + 16));
-
             long swapValue = x;
             x = z;
             z = swapValue;
@@ -352,7 +413,6 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         w.setLeastSigBits(w.getLeastSigBits() * 9);
         v.setLeastSigBits(v.getLeastSigBits() * k0);
 
-        // If 0 < len < 128, hash up to 4 chunks of 32 bytes each from the end of s.
         for (int tail_done = 0; tail_done < len;) {
             tail_done += 32;
             y = Long.rotateRight(x + y, 42) * k0 + v.getMostSigBits();
@@ -363,39 +423,50 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
             v = weakHashLen32WithSeeds(byteArray, pos + len - tail_done, v.getLeastSigBits() + z, v.getMostSigBits());
             v.setLeastSigBits(v.getLeastSigBits() * k0);
         }
-        // At this point our 56 bytes of state should contain more than
-        // enough information for a strong 128-bit hash. We use two
-        // different 56-byte-to-8-byte hashes to get a 16-byte final result.
         x = hashLen16(x, v.getLeastSigBits());
         y = hashLen16(y + z, w.getLeastSigBits());
         return new No128(hashLen16(x + w.getMostSigBits(), y + v.getMostSigBits()),
                 hashLen16(x + v.getMostSigBits(), w.getMostSigBits()) + y);
-
     }
 
+    /**
+     * Hashes a byte array with a length between 0 and 4 bytes (32-bit).
+     *
+     * @param byteArray The byte array.
+     * @return The 32-bit hash value.
+     */
     private int hash32Len0to4(final byte[] byteArray) {
         int b = 0;
         int c = 9;
         final int len = byteArray.length;
-        for (final int v : byteArray) {
-            b = b * c1 + v;
+        for (final byte value : byteArray) {
+            b = b * c1 + value;
             c ^= b;
         }
         return fmix(mur(b, mur(len, c)));
     }
 
+    /**
+     * Hashes a byte array with a length between 5 and 12 bytes (32-bit).
+     *
+     * @param byteArray The byte array.
+     * @return The 32-bit hash value.
+     */
     private int hash32Len5to12(final byte[] byteArray) {
         final int len = byteArray.length;
-        int a = len;
-        int b = len * 5;
-        int c = 9;
-        final int d = b;
+        int a = len, b = len * 5, c = 9, d = b;
         a += fetch32(byteArray, 0);
         b += fetch32(byteArray, len - 4);
         c += fetch32(byteArray, ((len >>> 1) & 4));
         return fmix(mur(c, mur(b, mur(a, d))));
     }
 
+    /**
+     * Hashes a byte array with a length between 13 and 24 bytes (32-bit).
+     *
+     * @param byteArray The byte array.
+     * @return The 32-bit hash value.
+     */
     private int hash32Len13to24(final byte[] byteArray) {
         final int len = byteArray.length;
         final int a = fetch32(byteArray, (len >>> 1) - 4);
@@ -405,10 +476,15 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         final int e = fetch32(byteArray, 0);
         final int f = fetch32(byteArray, len - 4);
         final int h = len;
-
         return fmix(mur(f, mur(e, mur(d, mur(c, mur(b, mur(a, h)))))));
     }
 
+    /**
+     * Hashes a byte array with a length between 0 and 16 bytes (64-bit).
+     *
+     * @param byteArray The byte array.
+     * @return The 64-bit hash value.
+     */
     private long hashLen0to16(final byte[] byteArray) {
         final int len = byteArray.length;
         if (len >= 8) {
@@ -435,7 +511,12 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         return k2;
     }
 
-    // This probably works well for 16-byte strings as well, but it may be overkill in that case.
+    /**
+     * Hashes a byte array with a length between 17 and 32 bytes (64-bit).
+     *
+     * @param byteArray The byte array.
+     * @return The 64-bit hash value.
+     */
     private long hashLen17to32(final byte[] byteArray) {
         final int len = byteArray.length;
         final long mul = k2 + len * 2L;
@@ -449,6 +530,12 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
                 mul);
     }
 
+    /**
+     * Hashes a byte array with a length between 33 and 64 bytes (64-bit).
+     *
+     * @param byteArray The byte array.
+     * @return The 64-bit hash value.
+     */
     private long hashLen33to64(final byte[] byteArray) {
         final int len = byteArray.length;
         final long mul = k2 + len * 2L;
@@ -471,12 +558,24 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         return b + x;
     }
 
+    /**
+     * Combines two 64-bit values into a single 64-bit hash.
+     *
+     * @param u The first value.
+     * @param v The second value.
+     * @return The combined 64-bit hash.
+     */
     private long hashLen16(final long u, final long v) {
         return hash128to64(new No128(v, u));
     }
 
+    /**
+     * Converts a 128-bit hash value to a 64-bit hash value.
+     *
+     * @param no128 The 128-bit value.
+     * @return The 64-bit hash value.
+     */
     private long hash128to64(final No128 no128) {
-        // Murmur-inspired hashing.
         final long kMul = 0x9ddfea08eb382d69L;
         long a = (no128.getLeastSigBits() ^ no128.getMostSigBits()) * kMul;
         a ^= (a >>> 47);
@@ -486,8 +585,14 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         return b;
     }
 
+    /**
+     * A helper mixing function from Murmur3 for combining two 32-bit values.
+     *
+     * @param a The first value.
+     * @param h The second value.
+     * @return The mixed 32-bit value.
+     */
     private int mur(int a, int h) {
-        // Helper from Murmur3 for combining two 32-bit values.
         a *= c1;
         a = Integer.rotateRight(a, 17);
         a *= c2;
@@ -496,6 +601,13 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         return h * 5 + 0xe6546b64;
     }
 
+    /**
+     * A Murmur-style hash function for byte arrays shorter than 128 bytes, used within the 128-bit CityHash algorithm.
+     *
+     * @param byteArray The byte array to hash.
+     * @param seed      The 128-bit seed.
+     * @return The 128-bit hash value.
+     */
     private No128 cityMurmur(final byte[] byteArray, final No128 seed) {
         final int len = byteArray.length;
         long a = seed.getLeastSigBits();

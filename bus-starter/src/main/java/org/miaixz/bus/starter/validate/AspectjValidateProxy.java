@@ -34,41 +34,41 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.Order;
 
 /**
- * AOP验证代理切面类，用于对控制器方法参数进行自动验证。
+ * An AOP aspect that provides a proxy for automatic validation of controller method parameters.
+ * <p>
+ * This class uses Spring AOP to validate parameters annotated with validation constraints before the controller method
+ * is executed. If validation fails, an exception is thrown, preventing the method from being called.
  *
  * <p>
- * 该类使用Spring AOP技术，在控制器方法执行前对带有验证注解的参数进行验证， 如果验证失败则抛出异常，阻止方法继续执行。
- * </p>
- *
- * <p>
- * 该切面匹配以下类型的方法：
+ * This aspect matches methods of the following types:
  * </p>
  * <ul>
- * <li>带有Spring Web注解的方法：@RequestMapping、@GetMapping、@PostMapping等</li>
- * <li>带有@CrossOrigin注解的方法</li>
- * <li>带有@Valid注解参数的方法</li>
+ * <li>Methods annotated with Spring Web annotations: {@code @RequestMapping}, {@code @GetMapping},
+ * {@code @PostMapping}, etc.</li>
+ * <li>Methods annotated with {@code @CrossOrigin}.</li>
+ * <li>Methods with parameters annotated with {@code @Valid}.</li>
  * </ul>
  *
  * <p>
- * 使用示例：
- * </p>
+ * <strong>Usage Example:</strong>
  * 
- * <pre>
+ * <pre>{@code
  * &#64;RestController
  * &#64;RequestMapping("/user")
  * public class UserController {
  *
  *     &#64;PostMapping("/register")
  *     public UserDTO register(&#64;Valid UserRegisterDTO userDTO) {
- *         // 如果userDTO验证失败，方法不会执行，直接抛出异常
+ *         // If userDTO validation fails, this method will not be executed; an exception will be thrown directly.
  *         return userService.register(userDTO);
  *     }
  * }
- * </pre>
+ * }</pre>
  *
  * <p>
- * 在上述示例中，当调用{@code /user/register}接口时，{@code AspectjValidateProxy}会自动对 {@code userDTO}参数进行验证，如果验证失败则抛出异常，方法不会执行。
- * </p>
+ * In the example above, when the {@code /user/register} endpoint is called, {@code AspectjValidateProxy} automatically
+ * validates the {@code userDTO} parameter. If validation fails, an exception is thrown, and the method body is not
+ * executed.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -78,21 +78,21 @@ import org.springframework.core.annotation.Order;
 public class AspectjValidateProxy {
 
     /**
-     * 定义切点，匹配所有带有Spring Web注解的方法或带有@Valid注解参数的方法。
-     *
+     * Defines the pointcut that matches all methods annotated with Spring Web annotations or methods with parameters
+     * annotated with {@code @Valid}.
      * <p>
-     * 切点表达式匹配以下注解或方法：
-     * </p>
+     * The pointcut expression matches methods with the following annotations:
+     *
      * <ul>
-     * <li>@RequestMapping</li>
-     * <li>@PutMapping</li>
-     * <li>@PostMapping</li>
-     * <li>@PatchMapping</li>
-     * <li>@ModelAttribute</li>
-     * <li>@GetMapping</li>
-     * <li>@DeleteMapping</li>
-     * <li>@CrossOrigin</li>
-     * <li>带有@Valid注解参数的方法</li>
+     * <li>{@code @RequestMapping}</li>
+     * <li>{@code @PutMapping}</li>
+     * <li>{@code @PostMapping}</li>
+     * <li>{@code @PatchMapping}</li>
+     * <li>{@code @ModelAttribute}</li>
+     * <li>{@code @GetMapping}</li>
+     * <li>{@code @DeleteMapping}</li>
+     * <li>{@code @CrossOrigin}</li>
+     * <li>Methods with a parameter annotated with {@code @org.miaixz.bus.validate.magic.annotation.Valid}</li>
      * </ul>
      */
     @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping)"
@@ -105,19 +105,19 @@ public class AspectjValidateProxy {
             + "||@annotation(org.springframework.web.bind.annotation.CrossOrigin)"
             + "||execution(* *(@org.miaixz.bus.validate.magic.annotation.Valid (*), ..))")
     public void match() {
-        // 空方法体，仅用于定义切点
+        // This method is empty as it's just for defining the pointcut.
     }
 
     /**
-     * 环绕通知，在匹配的方法执行前后进行验证处理。
-     *
+     * Around advice that applies validation logic before and after the matched method execution.
      * <p>
-     * 该方法在目标方法执行前，调用{@link AutoValidateAdvice}对方法参数进行验证， 验证通过后继续执行目标方法，验证失败则抛出异常。
+     * This method invokes the {@link AutoValidateAdvice} to perform parameter validation before the target method is
+     * executed. If validation passes, the target method proceeds; otherwise, an exception is thrown.
      * </p>
      *
-     * @param point 切点，包含目标方法的信息
-     * @return 目标方法的执行结果
-     * @throws Throwable 如果验证失败或目标方法执行抛出异常
+     * @param point The join point, which contains information about the target method.
+     * @return The result of the target method's execution.
+     * @throws Throwable if validation fails or the target method throws an exception.
      */
     @Around("match()")
     public Object around(ProceedingJoinPoint point) throws Throwable {

@@ -40,46 +40,52 @@ import org.miaixz.bus.extra.template.TemplateConfig;
 import org.miaixz.bus.extra.template.TemplateProvider;
 
 /**
- * Beetl模板引擎封装
+ * Beetl template engine encapsulation. This class provides an implementation of {@link TemplateProvider} for the Beetl
+ * template engine, allowing for configuration and retrieval of Beetl templates.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BeetlProvider implements TemplateProvider {
 
+    /**
+     * The underlying Beetl GroupTemplate engine.
+     */
     private GroupTemplate engine;
 
     /**
-     * 默认构造
+     * Default constructor for BeetlProvider. Checks if the Beetl library is available (via {@link GroupTemplate}
+     * class).
      */
     public BeetlProvider() {
-        // SPI方式加载时检查库是否引入
+        // Check if the library is introduced when loading via SPI
         Assert.notNull(GroupTemplate.class);
     }
 
     /**
-     * 构造
+     * Constructs a new BeetlProvider with the given template configuration.
      *
-     * @param config 模板配置
+     * @param config The {@link TemplateConfig} for initializing the Beetl engine.
      */
     public BeetlProvider(final TemplateConfig config) {
         init(config);
     }
 
     /**
-     * 构造
+     * Constructs a new BeetlProvider with an existing Beetl {@link GroupTemplate} instance.
      *
-     * @param engine {@link GroupTemplate}
+     * @param engine The pre-initialized {@link GroupTemplate} instance.
      */
     public BeetlProvider(final GroupTemplate engine) {
         init(engine);
     }
 
     /**
-     * 创建引擎
+     * Creates a new {@link GroupTemplate} instance based on the provided {@link TemplateConfig}. This method determines
+     * the appropriate {@link ResourceLoader} based on the resource mode in the config.
      *
-     * @param config 模板配置
-     * @return {@link GroupTemplate}
+     * @param config The {@link TemplateConfig} containing settings for the template engine.
+     * @return A new {@link GroupTemplate} instance.
      */
     private static GroupTemplate create(TemplateConfig config) {
         if (null == config) {
@@ -100,7 +106,7 @@ public class BeetlProvider implements TemplateProvider {
                 return createGroupTemplate(new StringTemplateResourceLoader());
 
             case COMPOSITE:
-                // TODO 需要定义复合资源加载器
+                // TODO Need to define a composite resource loader
                 return createGroupTemplate(new CompositeResourceLoader());
 
             default:
@@ -109,10 +115,12 @@ public class BeetlProvider implements TemplateProvider {
     }
 
     /**
-     * 创建自定义的模板组 {@link GroupTemplate}，配置文件使用全局默认 此时自定义的配置文件可在ClassPath中放入beetl.properties配置
+     * Creates a custom {@link GroupTemplate} with the given {@link ResourceLoader} and default configuration. Custom
+     * Beetl configuration can be provided via a `beetl.properties` file in the ClassPath.
      *
-     * @param loader {@link ResourceLoader}，资源加载器
-     * @return {@link GroupTemplate}
+     * @param loader The {@link ResourceLoader} to use for loading template resources.
+     * @return A new {@link GroupTemplate} instance.
+     * @throws InternalException if an {@link IOException} occurs during configuration.
      */
     private static GroupTemplate createGroupTemplate(final ResourceLoader<?> loader) {
         try {
@@ -123,11 +131,11 @@ public class BeetlProvider implements TemplateProvider {
     }
 
     /**
-     * 创建自定义的 {@link GroupTemplate}
+     * Creates a custom {@link GroupTemplate} with the given {@link ResourceLoader} and {@link Configuration}.
      *
-     * @param loader {@link ResourceLoader}，资源加载器
-     * @param conf   {@link Configuration} 配置文件
-     * @return {@link GroupTemplate}
+     * @param loader The {@link ResourceLoader} to use for loading template resources.
+     * @param conf   The {@link Configuration} for the Beetl engine.
+     * @return A new {@link GroupTemplate} instance.
      */
     private static GroupTemplate createGroupTemplate(final ResourceLoader<?> loader, final Configuration conf) {
         return new GroupTemplate(loader, conf);
@@ -140,9 +148,9 @@ public class BeetlProvider implements TemplateProvider {
     }
 
     /**
-     * 初始化引擎
+     * Initializes the Beetl engine with a pre-configured {@link GroupTemplate}.
      *
-     * @param engine 引擎
+     * @param engine The {@link GroupTemplate} instance to use.
      */
     private void init(final GroupTemplate engine) {
         this.engine = engine;
@@ -157,9 +165,10 @@ public class BeetlProvider implements TemplateProvider {
     }
 
     /**
-     * 获取原始引擎的钩子方法，用于自定义特殊属性，如插件等
+     * Provides a hook to access the raw Beetl {@link GroupTemplate} engine. This can be used for custom configurations
+     * or accessing specific Beetl functionalities, such as plugins.
      *
-     * @return {@link GroupTemplate}
+     * @return The raw {@link GroupTemplate} instance.
      */
     @Override
     public GroupTemplate getRaw() {

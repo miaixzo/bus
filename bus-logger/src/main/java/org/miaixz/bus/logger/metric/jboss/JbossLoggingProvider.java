@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.logger.metric.jboss;
 
-import java.io.Serial;
-
 import org.jboss.logging.Logger;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
 import org.miaixz.bus.logger.magic.AbstractProvider;
 
+import java.io.Serial;
+
 /**
- * jboss-logging
+ * A logger provider implementation that wraps a {@link org.jboss.logging.Logger} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,32 +47,32 @@ public class JbossLoggingProvider extends AbstractProvider {
     private static final long serialVersionUID = 2852287115767L;
 
     /**
-     * 日志门面
+     * The underlying JBoss Logging logger instance.
      */
     private final transient Logger logger;
 
     /**
-     * 构造
+     * Constructs a new {@code JbossLoggingProvider} with the specified logger.
      *
-     * @param logger 日志对象
+     * @param logger the {@link Logger} instance to use.
      */
     public JbossLoggingProvider(final Logger logger) {
         this.logger = logger;
     }
 
     /**
-     * 构造
+     * Constructs a new {@code JbossLoggingProvider} for the specified class.
      *
-     * @param clazz 日志打印所在类
+     * @param clazz the class for which to create the logger.
      */
     public JbossLoggingProvider(final Class<?> clazz) {
         this((null == clazz) ? Normal.NULL : clazz.getName());
     }
 
     /**
-     * 构造
+     * Constructs a new {@code JbossLoggingProvider} for the specified name.
      *
-     * @param name 日志打印所在类名
+     * @param name the name of the logger.
      */
     public JbossLoggingProvider(final String name) {
         this(Logger.getLogger(name));
@@ -178,22 +178,19 @@ public class JbossLoggingProvider extends AbstractProvider {
 
     @Override
     public Level getLevel() {
-        // JBoss Logging 不直接提供 getLevel() 方法，尝试检查底层实现
-        if (logger instanceof org.jboss.logging.Logger) {
-            // 检查常见的 JBoss Logging 级别
-            if (logger.isTraceEnabled()) {
-                return Level.TRACE;
-            } else if (logger.isDebugEnabled()) {
-                return Level.DEBUG;
-            } else if (logger.isInfoEnabled()) {
-                return Level.INFO;
-            } else if (logger.isEnabled(Logger.Level.WARN)) {
-                return Level.WARN;
-            } else if (logger.isEnabled(Logger.Level.ERROR)) {
-                return Level.ERROR;
-            }
+        // JBoss Logging does not directly provide a getLevel() method, try checking the underlying implementation
+        if (logger.isTraceEnabled()) {
+            return Level.TRACE;
+        } else if (logger.isDebugEnabled()) {
+            return Level.DEBUG;
+        } else if (logger.isInfoEnabled()) {
+            return Level.INFO;
+        } else if (logger.isEnabled(Logger.Level.WARN)) {
+            return Level.WARN;
+        } else if (logger.isEnabled(Logger.Level.ERROR)) {
+            return Level.ERROR;
         }
-        // 回退到默认实现
+        // Fallback to the default implementation
         return super.getLevel();
     }
 

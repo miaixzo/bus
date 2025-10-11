@@ -39,8 +39,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 数据结果
+ * Represents the result of a data query, typically used for pagination.
  *
+ * @param <T> The type of data in the result list.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -55,40 +56,45 @@ public class Result<T> implements Serializable {
     private static final long serialVersionUID = 2852291039338L;
 
     /**
-     * 总数据
+     * The total number of records.
      */
     protected long total;
     /**
-     * 查询记录数
+     * The list of records for the current query.
      */
     protected List<T> rows;
 
     /**
-     * 分页页码
+     * The current page number for pagination.
      */
     protected transient Integer pageNo;
 
     /**
-     * 分页大小
+     * The number of records per page for pagination.
      */
     protected transient Integer pageSize;
 
     /**
-     * 得到分页后的数据
+     * Retrieves a sublist of data for a specific page number.
      *
-     * @param pageNo 页码
-     * @return 分页后结果
+     * @param pageNo The page number to retrieve.
+     * @return A list of data for the specified page, or an empty list if the page is out of bounds.
      */
     public List<T> get(int pageNo) {
+        // Calculate the starting index for the sublist.
         int fromIndex = (pageNo - 1) * this.pageSize;
+        // If the starting index is beyond the list size, return an empty list.
         if (fromIndex >= this.rows.size()) {
             return Collections.emptyList();
         }
 
+        // Calculate the ending index for the sublist.
         int toIndex = pageNo * this.pageSize;
+        // If the ending index is beyond the list size, adjust it to the end of the list.
         if (toIndex >= this.rows.size()) {
             toIndex = this.rows.size();
         }
+        // Return the sublist for the requested page.
         return this.rows.subList(fromIndex, toIndex);
     }
 

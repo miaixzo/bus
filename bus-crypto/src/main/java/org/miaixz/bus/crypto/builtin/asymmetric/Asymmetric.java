@@ -44,9 +44,9 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.crypto.Keeper;
 
 /**
- * 非对称基础，提供锁、私钥和公钥的持有
+ * Base class for asymmetric cryptography, providing lock and key pair holders.
  *
- * @param <T> this类型
+ * @param <T> The type of this class.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -56,38 +56,44 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     private static final long serialVersionUID = 2852288538932L;
 
     /**
-     * 算法
+     * The algorithm.
      */
     protected String algorithm;
     /**
-     * 公钥
+     * The public key.
      */
     protected PublicKey publicKey;
     /**
-     * 私钥
+     * The private key.
      */
     protected PrivateKey privateKey;
     /**
-     * 锁
+     * The lock for thread safety.
      */
     protected Lock lock = new ReentrantLock();
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructor.
+     * <p>
+     * If both private and public keys are null, a new key pair is generated. A single key can be provided, in which
+     * case the instance can only be used for encryption or decryption with that key.
      *
-     * @param algorithm 算法
-     * @param keyPair   密钥对，包括私钥和公钥
+     * @param algorithm The algorithm to use.
+     * @param keyPair   The key pair, which includes the private and public key.
      */
     public Asymmetric(final String algorithm, final KeyPair keyPair) {
         init(algorithm, keyPair);
     }
 
     /**
-     * 初始化 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
+     * Initializes the object.
+     * <p>
+     * If both private and public keys in the key pair are null, a new key pair is generated. If only one key is
+     * provided, it can only be used for encryption (signing) or decryption (verification) with that specific key.
      *
-     * @param algorithm 算法
-     * @param keyPair   密钥对，包括私钥和公钥
-     * @return this
+     * @param algorithm The algorithm to use.
+     * @param keyPair   The key pair, which includes the private and public key.
+     * @return this instance.
      */
     protected T init(final String algorithm, final KeyPair keyPair) {
         this.algorithm = algorithm;
@@ -108,9 +114,9 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     }
 
     /**
-     * 生成随机公钥和私钥
+     * Generates a random public and private key pair.
      *
-     * @return this
+     * @return this instance.
      */
     public T initKeys() {
         final KeyPair keyPair = Keeper.generateKeyPair(this.algorithm);
@@ -120,10 +126,10 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     }
 
     /**
-     * 自定义锁，无需锁使用{@link NoLock}
+     * Sets a custom lock. Use {@link NoLock} for no locking.
      *
-     * @param lock 自定义锁
-     * @return this
+     * @param lock The custom lock.
+     * @return this instance.
      */
     public T setLock(final Lock lock) {
         this.lock = lock;
@@ -131,19 +137,19 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     }
 
     /**
-     * 获得公钥
+     * Gets the public key.
      *
-     * @return 获得公钥
+     * @return The public key.
      */
     public PublicKey getPublicKey() {
         return this.publicKey;
     }
 
     /**
-     * 设置公钥
+     * Sets the public key.
      *
-     * @param publicKey 公钥
-     * @return this
+     * @param publicKey The public key.
+     * @return this instance.
      */
     public T setPublicKey(final PublicKey publicKey) {
         this.publicKey = publicKey;
@@ -151,9 +157,9 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     }
 
     /**
-     * 获得公钥
+     * Gets the public key as a Base64 encoded string.
      *
-     * @return 获得公钥
+     * @return The Base64 encoded public key string.
      */
     public String getPublicKeyBase64() {
         final PublicKey publicKey = getPublicKey();
@@ -161,19 +167,19 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     }
 
     /**
-     * 获得私钥
+     * Gets the private key.
      *
-     * @return 获得私钥
+     * @return The private key.
      */
     public PrivateKey getPrivateKey() {
         return this.privateKey;
     }
 
     /**
-     * 设置私钥
+     * Sets the private key.
      *
-     * @param privateKey 私钥
-     * @return this
+     * @param privateKey The private key.
+     * @return this instance.
      */
     public T setPrivateKey(final PrivateKey privateKey) {
         this.privateKey = privateKey;
@@ -181,9 +187,9 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     }
 
     /**
-     * 获得私钥
+     * Gets the private key as a Base64 encoded string.
      *
-     * @return 获得私钥
+     * @return The Base64 encoded private key string.
      */
     public String getPrivateKeyBase64() {
         final PrivateKey privateKey = getPrivateKey();
@@ -191,10 +197,10 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     }
 
     /**
-     * 设置密钥，可以是公钥{@link PublicKey}或者私钥{@link PrivateKey}
+     * Sets the key, which can be a {@link PublicKey} or a {@link PrivateKey}.
      *
-     * @param key 密钥，可以是公钥{@link PublicKey}或者私钥{@link PrivateKey}
-     * @return this
+     * @param key The key, which can be a {@link PublicKey} or a {@link PrivateKey}.
+     * @return this instance.
      */
     public T setKey(final Key key) {
         Assert.notNull(key, "data must be not null !");
@@ -208,22 +214,22 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     }
 
     /**
-     * 根据密钥类型获得相应密钥
+     * Gets the key by its type.
      *
-     * @param type 类型 {@link KeyType}
-     * @return {@link Key}
+     * @param type The key type, see {@link KeyType}.
+     * @return The {@link Key}.
      */
     protected Key getKeyByType(final KeyType type) {
         switch (type) {
             case PrivateKey:
                 if (null == this.privateKey) {
-                    throw new NullPointerException("Private data must not null when use it !");
+                    throw new NullPointerException("Private data must not be null when used!");
                 }
                 return this.privateKey;
 
             case PublicKey:
                 if (null == this.publicKey) {
-                    throw new NullPointerException("Public data must not null when use it !");
+                    throw new NullPointerException("Public data must not be null when used!");
                 }
                 return this.publicKey;
         }

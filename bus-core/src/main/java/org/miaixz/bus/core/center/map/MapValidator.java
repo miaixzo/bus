@@ -31,11 +31,9 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Map检查工具类，提供字对象的blank和empty等检查
- * <ul>
- * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
- * </ul>
+ * Utility class for validating {@link Map} objects, primarily providing convenient checks for their empty state.
+ * <p>
+ * A map is considered <b>empty</b> if it is {@code null} or contains no key-value mappings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,35 +41,37 @@ import java.util.Map;
 public class MapValidator {
 
     /**
-     * Map是否为空
+     * Checks if the given {@link Map} is empty.
      *
-     * @param map 集合
-     * @return 是否为空
+     * @param map The map to check.
+     * @return {@code true} if the map is {@code null} or has no key-value mappings; {@code false} otherwise.
      */
     public static boolean isEmpty(final Map<?, ?> map) {
         return null == map || map.isEmpty();
     }
 
     /**
-     * Map是否为非空
+     * Checks if the given {@link Map} is not empty.
      *
-     * @param map 集合
-     * @return 是否为非空
+     * @param map The map to check.
+     * @return {@code true} if the map is not {@code null} and contains at least one key-value mapping; {@code false}
+     *         otherwise.
      */
     public static boolean isNotEmpty(final Map<?, ?> map) {
         return !isEmpty(map);
     }
 
     /**
-     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合 空集合使用{@link Collections#emptyMap()}
+     * Returns an unmodifiable empty map if the provided map is {@code null}, otherwise returns the original map. This
+     * is useful for safely handling potentially {@code null} map inputs without creating new empty maps unnecessarily.
      *
-     * @param <K> 键类型
-     * @param <V> 值类型
-     * @param set 提供的集合，可能为null
-     * @return 原集合，若为null返回空集合
+     * @param <K> The type of keys in the map.
+     * @param <V> The type of values in the map.
+     * @param map The map to check, may be {@code null}.
+     * @return The original map if it's not {@code null}, or an unmodifiable empty map if it is {@code null}.
      */
-    public static <K, V> Map<K, V> emptyIfNull(final Map<K, V> set) {
-        return (null == set) ? Collections.emptyMap() : set;
+    public static <K, V> Map<K, V> emptyIfNull(final Map<K, V> map) {
+        return (null == map) ? Collections.emptyMap() : map;
     }
 
 }

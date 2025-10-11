@@ -48,51 +48,110 @@ import com.sun.jna.platform.mac.CoreFoundation.CFDictionaryRef;
  */
 public interface CoreGraphics extends Library {
 
+    /**
+     * Singleton instance of the CoreGraphics library.
+     */
     CoreGraphics INSTANCE = Native.load("CoreGraphics", CoreGraphics.class);
 
+    /**
+     * A constant representing a null window ID.
+     */
     int kCGNullWindowID = 0;
 
+    /**
+     * Option to include all windows in the window list.
+     */
     int kCGWindowListOptionAll = 0;
+    /**
+     * Option to include only on-screen windows in the window list.
+     */
     int kCGWindowListOptionOnScreenOnly = 1 << 0;
+    /**
+     * Option to include on-screen windows above a specified window in the window list.
+     */
     int kCGWindowListOptionOnScreenAboveWindow = 1 << 1;
+    /**
+     * Option to include on-screen windows below a specified window in the window list.
+     */
     int kCGWindowListOptionOnScreenBelowWindow = 1 << 2;
+    /**
+     * Option to include a specific window in the window list.
+     */
     int kCGWindowListOptionIncludingWindow = 1 << 3;
+    /**
+     * Option to exclude desktop elements from the window list.
+     */
     int kCGWindowListExcludeDesktopElements = 1 << 4;
 
+    /**
+     * Returns an array of dictionaries, where each dictionary describes a window in the current window list.
+     *
+     * @param option           A bit mask of options for specifying which windows to include in the list.
+     * @param relativeToWindow The ID of a window to which the options relate.
+     * @return A CFArrayRef containing CFDictionaryRef objects, each describing a window.
+     */
     CFArrayRef CGWindowListCopyWindowInfo(int option, int relativeToWindow);
 
+    /**
+     * Creates a CGRect structure from a dictionary representation.
+     *
+     * @param dict The dictionary representation of the CGRect.
+     * @param rect The CGRect structure to populate.
+     * @return True if the CGRect was successfully created, false otherwise.
+     */
     boolean CGRectMakeWithDictionaryRepresentation(CFDictionaryRef dict, CGRect rect);
 
     /**
-     * A point with X and Y coordinates
+     * A point with X and Y coordinates.
      */
     @FieldOrder({ "x", "y" })
     class CGPoint extends Structure {
 
+        /**
+         * The x-coordinate of the point.
+         */
         public double x;
+        /**
+         * The y-coordinate of the point.
+         */
         public double y;
 
     }
 
     /**
-     * A size with width and height
+     * A size with width and height.
      */
     @FieldOrder({ "width", "height" })
     class CGSize extends Structure {
 
+        /**
+         * The width component of the size.
+         */
         public double width;
+        /**
+         * The height component of the size.
+         */
         public double height;
     }
 
     /**
-     * A rectangle with origin and size
+     * A rectangle with origin and size.
      */
     @FieldOrder({ "origin", "size" })
     class CGRect extends Structure implements AutoCloseable {
 
+        /**
+         * The origin point (x, y) of the rectangle.
+         */
         public CGPoint origin;
+        /**
+         * The size (width, height) of the rectangle.
+         */
         public CGSize size;
 
+        /**
+         * Closes the memory associated with this structure.
+         */
         @Override
         public void close() {
             Builder.freeMemory(getPointer());

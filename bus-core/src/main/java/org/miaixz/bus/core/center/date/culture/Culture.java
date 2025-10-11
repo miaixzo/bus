@@ -30,7 +30,7 @@ package org.miaixz.bus.core.center.date.culture;
 import org.miaixz.bus.core.center.date.Almanac;
 
 /**
- * 区域文化
+ * Represents a cultural or regional aspect of a calendar system.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,10 +38,11 @@ import org.miaixz.bus.core.center.date.Almanac;
 public interface Culture extends Almanac {
 
     /**
-     * 推移
+     * Returns a new instance that is {@code n} units after this one. The specific unit (e.g., day, month) depends on
+     * the implementing class.
      *
-     * @param n 推移步数
-     * @return this
+     * @param n The number of units to advance.
+     * @return The new instance. The default implementation returns {@code this}.
      */
     default Culture next(int n) {
         return this;

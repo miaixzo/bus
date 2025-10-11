@@ -27,11 +27,13 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.caller.Caller;
 import org.miaixz.bus.core.lang.caller.StackTraceCaller;
 
 /**
- * 调用者。可以通过此类的方法获取调用者、多级调用者以及判断是否被调用
+ * Caller utility. This class provides methods to get the caller class at different stack depths and to check if a
+ * method was invoked by a specific class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,55 +47,55 @@ public class CallerKit {
     }
 
     /**
-     * 获得调用者
+     * Gets the caller class.
      *
-     * @return 调用者
+     * @return The caller class.
      */
     public static Class<?> getCaller() {
         return INSTANCE.getCaller();
     }
 
     /**
-     * 获得调用者的调用者
+     * Gets the caller of the caller.
      *
-     * @return 调用者的调用者
+     * @return The caller of the caller.
      */
     public static Class<?> getCallers() {
         return INSTANCE.getCallers();
     }
 
     /**
-     * 获得调用者，指定第几级调用者 调用者层级关系：
+     * Gets the caller class at a specified stack depth. The hierarchy is as follows:
      *
      * <pre>
-     * 0 CallerKit
-     * 1 调用CallerKit中方法的类
-     * 2 调用者的调用者
+     * 0: CallerKit
+     * 1: The class that calls a method in CallerKit
+     * 2: The caller of the class at depth 1
      * ...
      * </pre>
      *
-     * @param depth 层级。0表示本身，1表示调用CallerKit的类，2表示调用者的调用者，依次类推
-     * @return 第几级调用者
+     * @param depth The stack depth. 0 is this class, 1 is the class that called a method in this class, and so on.
+     * @return The caller class at the specified depth.
      */
     public static Class<?> getCaller(final int depth) {
         return INSTANCE.getCaller(depth);
     }
 
     /**
-     * 是否被指定类调用
+     * Checks if the current method was invoked by a specific class.
      *
-     * @param clazz 调用者类
-     * @return 是否被调用
+     * @param clazz The class to check against.
+     * @return {@code true} if called by the specified class, {@code false} otherwise.
      */
     public static boolean isCalledBy(final Class<?> clazz) {
         return INSTANCE.isCalledBy(clazz);
     }
 
     /**
-     * 获取调用此方法的方法名
+     * Gets the name of the method that called this method.
      *
-     * @param isFullName 是否返回全名，全名包括方法所在类的全路径名
-     * @return 调用此方法的方法名
+     * @param isFullName If true, returns the fully qualified method name (including the class path).
+     * @return The name of the calling method.
      */
     public static String getCallerMethodName(final boolean isFullName) {
         final StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[2];
@@ -102,13 +104,13 @@ public class CallerKit {
             return methodName;
         }
 
-        return stackTraceElement.getClassName() + "." + methodName;
+        return stackTraceElement.getClassName() + Symbol.DOT + methodName;
     }
 
     /**
-     * 尝试创建{@link Caller}实现
+     * Tries to create a {@link Caller} implementation.
      *
-     * @return {@link Caller}实现
+     * @return A {@link Caller} implementation.
      */
     private static Caller tryCreateCaller() {
         return new StackTraceCaller();

@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
- * 原始类型数组工具类
+ * A utility class for working with primitive type arrays.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,11 +46,12 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class PrimitiveArray extends ArrayValidator {
 
     /**
-     * 生成一个新的重新设置大小的数组 调整大小后拷贝原数组到新数组下。扩大则占位前N个位置，其它位置补充0，缩小则截断
+     * Creates a new array of a specified size, copying elements from the original array. If the new size is larger, the
+     * new array is padded with default values (0). If smaller, the array is truncated.
      *
-     * @param bytes   原数组
-     * @param newSize 新的数组大小
-     * @return 调整后的新数组
+     * @param bytes   The original array.
+     * @param newSize The size of the new array.
+     * @return The resized new array.
      */
     public static byte[] resize(final byte[] bytes, final int newSize) {
         if (newSize < 0) {
@@ -64,17 +65,17 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起 忽略null的数组
+     * Merges multiple primitive arrays into a single new array. Null or empty arrays in the input are ignored.
      *
-     * @param arrays 数组集合
-     * @return 合并后的数组
+     * @param arrays The collection of arrays to merge.
+     * @return The merged array.
      */
     public static byte[] addAll(final byte[]... arrays) {
         if (arrays.length == 1) {
             return arrays[0];
         }
 
-        // 计算总长度
+        // Total
         int length = 0;
         for (final byte[] array : arrays) {
             if (isNotEmpty(array)) {
@@ -94,17 +95,17 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起 忽略null的数组
+     * Merges multiple primitive arrays into a single new array.
      *
-     * @param arrays 数组集合
-     * @return 合并后的数组
+     * @param arrays The collection of arrays to merge.
+     * @return The merged array.
      */
     public static int[] addAll(final int[]... arrays) {
         if (arrays.length == 1) {
             return arrays[0];
         }
 
-        // 计算总长度
+        // Total
         int length = 0;
         for (final int[] array : arrays) {
             if (isNotEmpty(array)) {
@@ -124,17 +125,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起 忽略null的数组
+     * Merges multiple primitive arrays into a single new array.
      *
-     * @param arrays 数组集合
-     * @return 合并后的数组
+     * @param arrays The collection of arrays to merge.
+     * @return The merged array.
      */
     public static long[] addAll(final long[]... arrays) {
         if (arrays.length == 1) {
             return arrays[0];
         }
 
-        // 计算总长度
         int length = 0;
         for (final long[] array : arrays) {
             if (isNotEmpty(array)) {
@@ -154,17 +154,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起 忽略null的数组
+     * Merges multiple primitive arrays into a single new array.
      *
-     * @param arrays 数组集合
-     * @return 合并后的数组
+     * @param arrays The collection of arrays to merge.
+     * @return The merged array.
      */
     public static double[] addAll(final double[]... arrays) {
         if (arrays.length == 1) {
             return arrays[0];
         }
 
-        // 计算总长度
         int length = 0;
         for (final double[] array : arrays) {
             if (isNotEmpty(array)) {
@@ -184,17 +183,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起 忽略null的数组
+     * Merges multiple primitive arrays into a single new array.
      *
-     * @param arrays 数组集合
-     * @return 合并后的数组
+     * @param arrays The collection of arrays to merge.
+     * @return The merged array.
      */
     public static float[] addAll(final float[]... arrays) {
         if (arrays.length == 1) {
             return arrays[0];
         }
 
-        // 计算总长度
         int length = 0;
         for (final float[] array : arrays) {
             if (isNotEmpty(array)) {
@@ -214,17 +212,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起 忽略null的数组
+     * Merges multiple primitive arrays into a single new array.
      *
-     * @param arrays 数组集合
-     * @return 合并后的数组
+     * @param arrays The collection of arrays to merge.
+     * @return The merged array.
      */
     public static char[] addAll(final char[]... arrays) {
         if (arrays.length == 1) {
             return arrays[0];
         }
 
-        // 计算总长度
         int length = 0;
         for (final char[] array : arrays) {
             if (isNotEmpty(array)) {
@@ -244,17 +241,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起 忽略null的数组
+     * Merges multiple primitive arrays into a single new array.
      *
-     * @param arrays 数组集合
-     * @return 合并后的数组
+     * @param arrays The collection of arrays to merge.
+     * @return The merged array.
      */
     public static boolean[] addAll(final boolean[]... arrays) {
         if (arrays.length == 1) {
             return arrays[0];
         }
 
-        // 计算总长度
         int length = 0;
         for (final boolean[] array : arrays) {
             if (isNotEmpty(array)) {
@@ -274,17 +270,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起 忽略null的数组
+     * Merges multiple primitive arrays into a single new array.
      *
-     * @param arrays 数组集合
-     * @return 合并后的数组
+     * @param arrays The collection of arrays to merge.
+     * @return The merged array.
      */
     public static short[] addAll(final short[]... arrays) {
         if (arrays.length == 1) {
             return arrays[0];
         }
 
-        // 计算总长度
         int length = 0;
         for (final short[] array : arrays) {
             if (isNotEmpty(array)) {
@@ -304,29 +299,27 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 拆分byte数组为几个等份（最后一份按照剩余长度分配空间）
+     * Splits a byte array into a two-dimensional array of smaller arrays of a specified size. The last chunk may be
+     * smaller than the specified size if the original array's length is not a multiple of the size.
      *
-     * @param array 数组
-     * @param len   每个小节的长度
-     * @return 拆分后的数组
+     * @param array The array to split.
+     * @param len   The size of each smaller array.
+     * @return The split array.
      */
     public static byte[][] split(final byte[] array, final int len) {
         final int amount = array.length / len;
         final int remainder = array.length % len;
-        // 兼容切片长度大于原数组长度的情况
         final boolean hasRemainder = remainder > 0;
         final byte[][] arrays = new byte[hasRemainder ? (amount + 1) : amount][];
-        byte[] arr;
         int start = 0;
         for (int i = 0; i < amount; i++) {
-            arr = new byte[len];
+            byte[] arr = new byte[len];
             System.arraycopy(array, start, arr, 0, len);
             arrays[i] = arr;
             start += len;
         }
         if (hasRemainder) {
-            // 有剩余，按照实际长度创建
-            arr = new byte[remainder];
+            byte[] arr = new byte[remainder];
             System.arraycopy(array, start, arr, 0, remainder);
             arrays[amount] = arr;
         }
@@ -334,11 +327,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * Finds the first index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The index of the value, or -1 if not found.
      */
     public static int indexOf(final long[] array, final long value) {
         if (isNotEmpty(array)) {
@@ -352,11 +345,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * Finds the last index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The last index of the value, or -1 if not found.
      */
     public static int lastIndexOf(final long[] array, final long value) {
         if (isNotEmpty(array)) {
@@ -370,22 +363,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 数组中是否包含元素
+     * Checks if the array contains the given value.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 是否包含
+     * @param array The array to check.
+     * @param value The value to check for.
+     * @return {@code true} if the value is found, {@code false} otherwise.
      */
     public static boolean contains(final long[] array, final long value) {
         return indexOf(array, value) > Normal.__1;
     }
 
     /**
-     * 返回数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * Finds the first index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The index of the value, or -1 if not found.
      */
     public static int indexOf(final int[] array, final int value) {
         if (isNotEmpty(array)) {
@@ -399,11 +392,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * Finds the last index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The last index of the value, or -1 if not found.
      */
     public static int lastIndexOf(final int[] array, final int value) {
         if (isNotEmpty(array)) {
@@ -417,22 +410,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 数组中是否包含元素
+     * Checks if the array contains the given value.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 是否包含
+     * @param array The array to check.
+     * @param value The value to check for.
+     * @return {@code true} if the value is found, {@code false} otherwise.
      */
     public static boolean contains(final int[] array, final int value) {
         return indexOf(array, value) > Normal.__1;
     }
 
     /**
-     * 返回数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * Finds the first index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The index of the value, or -1 if not found.
      */
     public static int indexOf(final short[] array, final short value) {
         if (isNotEmpty(array)) {
@@ -446,11 +439,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * Finds the last index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The last index of the value, or -1 if not found.
      */
     public static int lastIndexOf(final short[] array, final short value) {
         if (isNotEmpty(array)) {
@@ -464,22 +457,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 数组中是否包含元素
+     * Checks if the array contains the given value.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 是否包含
+     * @param array The array to check.
+     * @param value The value to check for.
+     * @return {@code true} if the value is found, {@code false} otherwise.
      */
     public static boolean contains(final short[] array, final short value) {
         return indexOf(array, value) > Normal.__1;
     }
 
     /**
-     * 返回数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * Finds the first index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The index of the value, or -1 if not found.
      */
     public static int indexOf(final char[] array, final char value) {
         if (isNotEmpty(array)) {
@@ -493,11 +486,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * Finds the last index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The last index of the value, or -1 if not found.
      */
     public static int lastIndexOf(final char[] array, final char value) {
         if (isNotEmpty(array)) {
@@ -511,22 +504,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 数组中是否包含元素
+     * Checks if the array contains the given value.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 是否包含
+     * @param array The array to check.
+     * @param value The value to check for.
+     * @return {@code true} if the value is found, {@code false} otherwise.
      */
     public static boolean contains(final char[] array, final char value) {
         return indexOf(array, value) > Normal.__1;
     }
 
     /**
-     * 返回数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * Finds the first index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The index of the value, or -1 if not found.
      */
     public static int indexOf(final byte[] array, final byte value) {
         if (isNotEmpty(array)) {
@@ -540,11 +533,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * Finds the last index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The last index of the value, or -1 if not found.
      */
     public static int lastIndexOf(final byte[] array, final byte value) {
         if (isNotEmpty(array)) {
@@ -558,22 +551,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 数组中是否包含元素
+     * Checks if the array contains the given value.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 是否包含
+     * @param array The array to check.
+     * @param value The value to check for.
+     * @return {@code true} if the value is found, {@code false} otherwise.
      */
     public static boolean contains(final byte[] array, final byte value) {
         return indexOf(array, value) > Normal.__1;
     }
 
     /**
-     * 返回数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * Finds the first index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The index of the value, or -1 if not found.
      */
     public static int indexOf(final double[] array, final double value) {
         if (isNotEmpty(array)) {
@@ -587,11 +580,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * Finds the last index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The last index of the value, or -1 if not found.
      */
     public static int lastIndexOf(final double[] array, final double value) {
         if (isNotEmpty(array)) {
@@ -605,22 +598,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 数组中是否包含元素
+     * Checks if the array contains the given value.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 是否包含
+     * @param array The array to check.
+     * @param value The value to check for.
+     * @return {@code true} if the value is found, {@code false} otherwise.
      */
     public static boolean contains(final double[] array, final double value) {
         return indexOf(array, value) > Normal.__1;
     }
 
     /**
-     * 返回数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * Finds the first index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The index of the value, or -1 if not found.
      */
     public static int indexOf(final float[] array, final float value) {
         if (isNotEmpty(array)) {
@@ -634,11 +627,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * Finds the last index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The last index of the value, or -1 if not found.
      */
     public static int lastIndexOf(final float[] array, final float value) {
         if (isNotEmpty(array)) {
@@ -652,22 +645,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 数组中是否包含元素
+     * Checks if the array contains the given value.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 是否包含
+     * @param array The array to check.
+     * @param value The value to check for.
+     * @return {@code true} if the value is found, {@code false} otherwise.
      */
     public static boolean contains(final float[] array, final float value) {
         return indexOf(array, value) > Normal.__1;
     }
 
     /**
-     * 返回数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * Finds the first index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The index of the value, or -1 if not found.
      */
     public static int indexOf(final boolean[] array, final boolean value) {
         if (isNotEmpty(array)) {
@@ -681,11 +674,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 返回数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * Finds the last index of the given value in the array.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
+     * @param array The array to search in.
+     * @param value The value to search for.
+     * @return The last index of the value, or -1 if not found.
      */
     public static int lastIndexOf(final boolean[] array, final boolean value) {
         if (isNotEmpty(array)) {
@@ -699,21 +692,21 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 数组中是否包含元素
+     * Checks if the array contains the given value.
      *
-     * @param array 数组
-     * @param value 被检查的元素
-     * @return 是否包含
+     * @param array The array to check.
+     * @param value The value to check for.
+     * @return {@code true} if the value is found, {@code false} otherwise.
      */
     public static boolean contains(final boolean[] array, final boolean value) {
         return indexOf(array, value) > Normal.__1;
     }
 
     /**
-     * 将原始类型数组包装为包装类型
+     * Converts a primitive {@code int[]} array to its corresponding wrapper {@code Integer[]} array.
      *
-     * @param values 原始类型数组
-     * @return 包装类型数组
+     * @param values The primitive array.
+     * @return The wrapper array.
      */
     public static Integer[] wrap(final int... values) {
         if (null == values) {
@@ -732,10 +725,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 包装类数组转为原始类型数组，null转为0
+     * Converts a wrapper {@code Integer[]} array to its corresponding primitive {@code int[]} array. Null values in the
+     * wrapper array are converted to 0.
      *
-     * @param values 包装类型数组
-     * @return 原始类型数组
+     * @param values The wrapper array.
+     * @return The primitive array.
      */
     public static int[] unWrap(final Integer... values) {
         if (null == values) {
@@ -754,10 +748,10 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将原始类型数组包装为包装类型
+     * Converts a primitive {@code long[]} array to its corresponding wrapper {@code Long[]} array.
      *
-     * @param values 原始类型数组
-     * @return 包装类型数组
+     * @param values The primitive array.
+     * @return The wrapper array.
      */
     public static Long[] wrap(final long... values) {
         if (null == values) {
@@ -776,10 +770,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 包装类数组转为原始类型数组
+     * Converts a wrapper {@code Long[]} array to its corresponding primitive {@code long[]} array. Null values are
+     * converted to 0L.
      *
-     * @param values 包装类型数组
-     * @return 原始类型数组
+     * @param values The wrapper array.
+     * @return The primitive array.
      */
     public static long[] unWrap(final Long... values) {
         if (null == values) {
@@ -798,10 +793,10 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将原始类型数组包装为包装类型
+     * Converts a primitive {@code char[]} array to its corresponding wrapper {@code Character[]} array.
      *
-     * @param values 原始类型数组
-     * @return 包装类型数组
+     * @param values The primitive array.
+     * @return The wrapper array.
      */
     public static Character[] wrap(final char... values) {
         if (null == values) {
@@ -820,10 +815,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 包装类数组转为原始类型数组
+     * Converts a wrapper {@code Character[]} array to its corresponding primitive {@code char[]} array. Null values are
+     * converted to the null character.
      *
-     * @param values 包装类型数组
-     * @return 原始类型数组
+     * @param values The wrapper array.
+     * @return The primitive array.
      */
     public static char[] unWrap(final Character... values) {
         if (null == values) {
@@ -842,10 +838,10 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将原始类型数组包装为包装类型
+     * Converts a primitive {@code byte[]} array to its corresponding wrapper {@code Byte[]} array.
      *
-     * @param values 原始类型数组
-     * @return 包装类型数组
+     * @param values The primitive array.
+     * @return The wrapper array.
      */
     public static Byte[] wrap(final byte... values) {
         if (null == values) {
@@ -864,10 +860,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 包装类数组转为原始类型数组
+     * Converts a wrapper {@code Byte[]} array to its corresponding primitive {@code byte[]} array. Null values are
+     * converted to 0.
      *
-     * @param values 包装类型数组
-     * @return 原始类型数组
+     * @param values The wrapper array.
+     * @return The primitive array.
      */
     public static byte[] unWrap(final Byte... values) {
         if (null == values) {
@@ -886,10 +883,10 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将原始类型数组包装为包装类型
+     * Converts a primitive {@code short[]} array to its corresponding wrapper {@code Short[]} array.
      *
-     * @param values 原始类型数组
-     * @return 包装类型数组
+     * @param values The primitive array.
+     * @return The wrapper array.
      */
     public static Short[] wrap(final short... values) {
         if (null == values) {
@@ -908,10 +905,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 包装类数组转为原始类型数组
+     * Converts a wrapper {@code Short[]} array to its corresponding primitive {@code short[]} array. Null values are
+     * converted to 0.
      *
-     * @param values 包装类型数组
-     * @return 原始类型数组
+     * @param values The wrapper array.
+     * @return The primitive array.
      */
     public static short[] unWrap(final Short... values) {
         if (null == values) {
@@ -930,10 +928,10 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将原始类型数组包装为包装类型
+     * Converts a primitive {@code float[]} array to its corresponding wrapper {@code Float[]} array.
      *
-     * @param values 原始类型数组
-     * @return 包装类型数组
+     * @param values The primitive array.
+     * @return The wrapper array.
      */
     public static Float[] wrap(final float... values) {
         if (null == values) {
@@ -952,10 +950,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 包装类数组转为原始类型数组
+     * Converts a wrapper {@code Float[]} array to its corresponding primitive {@code float[]} array. Null values are
+     * converted to 0F.
      *
-     * @param values 包装类型数组
-     * @return 原始类型数组
+     * @param values The wrapper array.
+     * @return The primitive array.
      */
     public static float[] unWrap(final Float... values) {
         if (null == values) {
@@ -974,10 +973,10 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将原始类型数组包装为包装类型
+     * Converts a primitive {@code double[]} array to its corresponding wrapper {@code Double[]} array.
      *
-     * @param values 原始类型数组
-     * @return 包装类型数组
+     * @param values The primitive array.
+     * @return The wrapper array.
      */
     public static Double[] wrap(final double... values) {
         if (null == values) {
@@ -996,10 +995,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 包装类数组转为原始类型数组
+     * Converts a wrapper {@code Double[]} array to its corresponding primitive {@code double[]} array. Null values are
+     * converted to 0D.
      *
-     * @param values 包装类型数组
-     * @return 原始类型数组
+     * @param values The wrapper array.
+     * @return The primitive array.
      */
     public static double[] unWrap(final Double... values) {
         if (null == values) {
@@ -1018,10 +1018,10 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将原始类型数组包装为包装类型
+     * Converts a primitive {@code boolean[]} array to its corresponding wrapper {@code Boolean[]} array.
      *
-     * @param values 原始类型数组
-     * @return 包装类型数组
+     * @param values The primitive array.
+     * @return The wrapper array.
      */
     public static Boolean[] wrap(final boolean... values) {
         if (null == values) {
@@ -1040,10 +1040,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 包装类数组转为原始类型数组 {@code null} 按照 {@code false} 对待
+     * Converts a wrapper {@code Boolean[]} array to its corresponding primitive {@code boolean[]} array. Null values
+     * are treated as {@code false}.
      *
-     * @param values 包装类型数组
-     * @return 原始类型数组
+     * @param values The wrapper array.
+     * @return The primitive array.
      */
     public static boolean[] unWrap(final Boolean... values) {
         if (null == values) {
@@ -1062,404 +1063,317 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 获取子数组
-     * <ul>
-     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
-     * </ul>
+     * Creates a subarray from the given array.
      *
-     * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
-     * @return 新的数组
-     * @see Arrays#copyOfRange(Object[], int, int)
+     * @param array The array.
+     * @param start The starting index (inclusive).
+     * @param end   The ending index (exclusive).
+     * @return The new subarray.
      */
     public static byte[] sub(final byte[] array, int start, int end) {
         Assert.notNull(array, "array must be not null !");
-        final int length = Array.getLength(array);
-        if (start < 0) {
+        final int length = array.length;
+        if (start < 0)
             start += length;
-        }
-        if (end < 0) {
+        if (end < 0)
             end += length;
-        }
         if (start > end) {
-            final int tmp = start;
+            int tmp = start;
             start = end;
             end = tmp;
         }
-        if (start >= length) {
+        if (start >= length)
             return new byte[0];
-        }
-        if (end > length) {
+        if (end > length)
             end = length;
-        }
         return Arrays.copyOfRange(array, start, end);
     }
 
     /**
-     * 获取子数组
-     * <ul>
-     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
-     * </ul>
+     * Creates a subarray from the given array.
      *
-     * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
-     * @return 新的数组
-     * @see Arrays#copyOfRange(Object[], int, int)
+     * @param array The array.
+     * @param start The starting index (inclusive).
+     * @param end   The ending index (exclusive).
+     * @return The new subarray.
      */
     public static int[] sub(final int[] array, int start, int end) {
         Assert.notNull(array, "array must be not null !");
-        final int length = Array.getLength(array);
-        if (start < 0) {
+        final int length = array.length;
+        if (start < 0)
             start += length;
-        }
-        if (end < 0) {
+        if (end < 0)
             end += length;
-        }
         if (start > end) {
-            final int tmp = start;
+            int tmp = start;
             start = end;
             end = tmp;
         }
-        if (start >= length) {
+        if (start >= length)
             return new int[0];
-        }
-        if (end > length) {
+        if (end > length)
             end = length;
-        }
         return Arrays.copyOfRange(array, start, end);
     }
 
     /**
-     * 获取子数组
-     * <ul>
-     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
-     * </ul>
+     * Creates a subarray from the given array.
      *
-     * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
-     * @return 新的数组
-     * @see Arrays#copyOfRange(Object[], int, int)
+     * @param array The array.
+     * @param start The starting index (inclusive).
+     * @param end   The ending index (exclusive).
+     * @return The new subarray.
      */
     public static long[] sub(final long[] array, int start, int end) {
         Assert.notNull(array, "array must be not null !");
-        final int length = Array.getLength(array);
-        if (start < 0) {
+        final int length = array.length;
+        if (start < 0)
             start += length;
-        }
-        if (end < 0) {
+        if (end < 0)
             end += length;
-        }
         if (start > end) {
-            final int tmp = start;
+            int tmp = start;
             start = end;
             end = tmp;
         }
-        if (start >= length) {
+        if (start >= length)
             return new long[0];
-        }
-        if (end > length) {
+        if (end > length)
             end = length;
-        }
         return Arrays.copyOfRange(array, start, end);
     }
 
     /**
-     * 获取子数组
-     * <ul>
-     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
-     * </ul>
+     * Creates a subarray from the given array.
      *
-     * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
-     * @return 新的数组
-     * @see Arrays#copyOfRange(Object[], int, int)
+     * @param array The array.
+     * @param start The starting index (inclusive).
+     * @param end   The ending index (exclusive).
+     * @return The new subarray.
      */
     public static short[] sub(final short[] array, int start, int end) {
         Assert.notNull(array, "array must be not null !");
-        final int length = Array.getLength(array);
-        if (start < 0) {
+        final int length = array.length;
+        if (start < 0)
             start += length;
-        }
-        if (end < 0) {
+        if (end < 0)
             end += length;
-        }
         if (start > end) {
-            final int tmp = start;
+            int tmp = start;
             start = end;
             end = tmp;
         }
-        if (start >= length) {
+        if (start >= length)
             return new short[0];
-        }
-        if (end > length) {
+        if (end > length)
             end = length;
-        }
         return Arrays.copyOfRange(array, start, end);
     }
 
     /**
-     * 获取子数组
-     * <ul>
-     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
-     * </ul>
+     * Creates a subarray from the given array.
      *
-     * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
-     * @return 新的数组
-     * @see Arrays#copyOfRange(Object[], int, int)
+     * @param array The array.
+     * @param start The starting index (inclusive).
+     * @param end   The ending index (exclusive).
+     * @return The new subarray.
      */
     public static char[] sub(final char[] array, int start, int end) {
         Assert.notNull(array, "array must be not null !");
-        final int length = Array.getLength(array);
-        if (start < 0) {
+        final int length = array.length;
+        if (start < 0)
             start += length;
-        }
-        if (end < 0) {
+        if (end < 0)
             end += length;
-        }
         if (start > end) {
-            final int tmp = start;
+            int tmp = start;
             start = end;
             end = tmp;
         }
-        if (start >= length) {
+        if (start >= length)
             return new char[0];
-        }
-        if (end > length) {
+        if (end > length)
             end = length;
-        }
         return Arrays.copyOfRange(array, start, end);
     }
 
     /**
-     * 获取子数组
-     * <ul>
-     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
-     * </ul>
+     * Creates a subarray from the given array.
      *
-     * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
-     * @return 新的数组
-     * @see Arrays#copyOfRange(Object[], int, int)
+     * @param array The array.
+     * @param start The starting index (inclusive).
+     * @param end   The ending index (exclusive).
+     * @return The new subarray.
      */
     public static double[] sub(final double[] array, int start, int end) {
         Assert.notNull(array, "array must be not null !");
-        final int length = Array.getLength(array);
-        if (start < 0) {
+        final int length = array.length;
+        if (start < 0)
             start += length;
-        }
-        if (end < 0) {
+        if (end < 0)
             end += length;
-        }
         if (start > end) {
-            final int tmp = start;
+            int tmp = start;
             start = end;
             end = tmp;
         }
-        if (start >= length) {
+        if (start >= length)
             return new double[0];
-        }
-        if (end > length) {
+        if (end > length)
             end = length;
-        }
         return Arrays.copyOfRange(array, start, end);
     }
 
     /**
-     * 获取子数组
-     * <ul>
-     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
-     * </ul>
+     * Creates a subarray from the given array.
      *
-     * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
-     * @return 新的数组
-     * @see Arrays#copyOfRange(Object[], int, int)
+     * @param array The array.
+     * @param start The starting index (inclusive).
+     * @param end   The ending index (exclusive).
+     * @return The new subarray.
      */
     public static float[] sub(final float[] array, int start, int end) {
         Assert.notNull(array, "array must be not null !");
-        final int length = Array.getLength(array);
-        if (start < 0) {
+        final int length = array.length;
+        if (start < 0)
             start += length;
-        }
-        if (end < 0) {
+        if (end < 0)
             end += length;
-        }
         if (start > end) {
-            final int tmp = start;
+            int tmp = start;
             start = end;
             end = tmp;
         }
-        if (start >= length) {
+        if (start >= length)
             return new float[0];
-        }
-        if (end > length) {
+        if (end > length)
             end = length;
-        }
         return Arrays.copyOfRange(array, start, end);
     }
 
     /**
-     * 获取子数组
-     * <ul>
-     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
-     * </ul>
+     * Creates a subarray from the given array.
      *
-     * @param array 数组
-     * @param start 开始位置（包括）
-     * @param end   结束位置（不包括）
-     * @return 新的数组
-     * @see Arrays#copyOfRange(Object[], int, int)
+     * @param array The array.
+     * @param start The starting index (inclusive).
+     * @param end   The ending index (exclusive).
+     * @return The new subarray.
      */
     public static boolean[] sub(final boolean[] array, int start, int end) {
         Assert.notNull(array, "array must be not null !");
-        final int length = Array.getLength(array);
-        if (start < 0) {
+        final int length = array.length;
+        if (start < 0)
             start += length;
-        }
-        if (end < 0) {
+        if (end < 0)
             end += length;
-        }
         if (start > end) {
-            final int tmp = start;
+            int tmp = start;
             start = end;
             end = tmp;
         }
-        if (start >= length) {
+        if (start >= length)
             return new boolean[0];
-        }
-        if (end > length) {
+        if (end > length)
             end = length;
-        }
         return Arrays.copyOfRange(array, start, end);
     }
 
     /**
-     * 移除数组中对应位置的元素 copier from commons-lang
+     * Removes an element at a specified index from an array, creating a new, smaller array.
      *
-     * @param array 数组对象
-     * @param index 位置，如果位置小于0或者大于长度，返回原数组
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * @param array The source array.
+     * @param index The index of the element to remove.
+     * @return The new array without the specified element.
+     * @throws IllegalArgumentException if the array is null.
      */
     public static long[] remove(final long[] array, final int index) throws IllegalArgumentException {
         return (long[]) remove((Object) array, index);
     }
 
     /**
-     * 移除数组中对应位置的元素 copier from commons-lang
-     *
-     * @param array 数组对象
-     * @param index 位置，如果位置小于0或者大于长度，返回原数组
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes an element at a specified index.
+     * 
+     * @param array The source array.
+     * @param index The index to remove.
+     * @return The new array.
      */
     public static int[] remove(final int[] array, final int index) throws IllegalArgumentException {
         return (int[]) remove((Object) array, index);
     }
 
     /**
-     * 移除数组中对应位置的元素 copier from commons-lang
-     *
-     * @param array 数组对象
-     * @param index 位置，如果位置小于0或者大于长度，返回原数组
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes an element at a specified index.
+     * 
+     * @param array The source array.
+     * @param index The index to remove.
+     * @return The new array.
      */
     public static short[] remove(final short[] array, final int index) throws IllegalArgumentException {
         return (short[]) remove((Object) array, index);
     }
 
     /**
-     * 移除数组中对应位置的元素 copier from commons-lang
-     *
-     * @param array 数组对象
-     * @param index 位置，如果位置小于0或者大于长度，返回原数组
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes an element at a specified index.
+     * 
+     * @param array The source array.
+     * @param index The index to remove.
+     * @return The new array.
      */
     public static char[] remove(final char[] array, final int index) throws IllegalArgumentException {
         return (char[]) remove((Object) array, index);
     }
 
     /**
-     * 移除数组中对应位置的元素 copier from commons-lang
-     *
-     * @param array 数组对象
-     * @param index 位置，如果位置小于0或者大于长度，返回原数组
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes an element at a specified index.
+     * 
+     * @param array The source array.
+     * @param index The index to remove.
+     * @return The new array.
      */
     public static byte[] remove(final byte[] array, final int index) throws IllegalArgumentException {
         return (byte[]) remove((Object) array, index);
     }
 
     /**
-     * 移除数组中对应位置的元素 copier from commons-lang
-     *
-     * @param array 数组对象
-     * @param index 位置，如果位置小于0或者大于长度，返回原数组
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes an element at a specified index.
+     * 
+     * @param array The source array.
+     * @param index The index to remove.
+     * @return The new array.
      */
     public static double[] remove(final double[] array, final int index) throws IllegalArgumentException {
         return (double[]) remove((Object) array, index);
     }
 
     /**
-     * 移除数组中对应位置的元素 copier from commons-lang
-     *
-     * @param array 数组对象
-     * @param index 位置，如果位置小于0或者大于长度，返回原数组
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes an element at a specified index.
+     * 
+     * @param array The source array.
+     * @param index The index to remove.
+     * @return The new array.
      */
     public static float[] remove(final float[] array, final int index) throws IllegalArgumentException {
         return (float[]) remove((Object) array, index);
     }
 
     /**
-     * 移除数组中对应位置的元素 copier from commons-lang
-     *
-     * @param array 数组对象
-     * @param index 位置，如果位置小于0或者大于长度，返回原数组
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes an element at a specified index.
+     * 
+     * @param array The source array.
+     * @param index The index to remove.
+     * @return The new array.
      */
     public static boolean[] remove(final boolean[] array, final int index) throws IllegalArgumentException {
         return (boolean[]) remove((Object) array, index);
     }
 
     /**
-     * 移除数组中对应位置的元素 copier from commons-lang
+     * Removes an element at a specified index from a generic array (primitive or object).
      *
-     * @param array 数组对象，可以是对象数组，也可以原始类型数组
-     * @param index 位置，如果位置小于0或者大于长度，返回原数组
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * @param array The source array.
+     * @param index The index of the element to remove.
+     * @return The new array without the specified element, or the original array if the index is out of bounds.
+     * @throws IllegalArgumentException if the provided object is not an array.
      */
     public static Object remove(final Object array, final int index) throws IllegalArgumentException {
         if (null == array) {
@@ -1473,7 +1387,6 @@ public class PrimitiveArray extends ArrayValidator {
         final Object result = Array.newInstance(array.getClass().getComponentType(), length - 1);
         System.arraycopy(array, 0, result, 0, index);
         if (index < length - 1) {
-            // 后半部分
             System.arraycopy(array, index + 1, result, index, length - index - 1);
         }
 
@@ -1481,108 +1394,101 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
+     * Removes the first occurrence of a specified element from an array.
      *
-     * @param array   数组对象
-     * @param element 要移除的元素
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * @param array   The source array.
+     * @param element The element to remove.
+     * @return The new array without the first occurrence of the element.
+     * @throws IllegalArgumentException if the object is not an array.
      */
     public static long[] removeEle(final long[] array, final long element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
     }
 
     /**
-     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
-     *
-     * @param array   数组对象
-     * @param element 要移除的元素
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes the first occurrence of a specified element.
+     * 
+     * @param array   The source array.
+     * @param element The element to remove.
+     * @return The new array.
      */
     public static int[] removeEle(final int[] array, final int element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
     }
 
     /**
-     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
-     *
-     * @param array   数组对象
-     * @param element 要移除的元素
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes the first occurrence of a specified element.
+     * 
+     * @param array   The source array.
+     * @param element The element to remove.
+     * @return The new array.
      */
     public static short[] removeEle(final short[] array, final short element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
     }
 
     /**
-     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
-     *
-     * @param array   数组对象
-     * @param element 要移除的元素
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes the first occurrence of a specified element.
+     * 
+     * @param array   The source array.
+     * @param element The element to remove.
+     * @return The new array.
      */
     public static char[] removeEle(final char[] array, final char element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
     }
 
     /**
-     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
-     *
-     * @param array   数组对象
-     * @param element 要移除的元素
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes the first occurrence of a specified element.
+     * 
+     * @param array   The source array.
+     * @param element The element to remove.
+     * @return The new array.
      */
     public static byte[] removeEle(final byte[] array, final byte element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
     }
 
     /**
-     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
-     *
-     * @param array   数组对象
-     * @param element 要移除的元素
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes the first occurrence of a specified element.
+     * 
+     * @param array   The source array.
+     * @param element The element to remove.
+     * @return The new array.
      */
     public static double[] removeEle(final double[] array, final double element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
     }
 
     /**
-     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
-     *
-     * @param array   数组对象
-     * @param element 要移除的元素
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes the first occurrence of a specified element.
+     * 
+     * @param array   The source array.
+     * @param element The element to remove.
+     * @return The new array.
      */
     public static float[] removeEle(final float[] array, final float element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
     }
 
     /**
-     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
-     *
-     * @param array   数组对象
-     * @param element 要移除的元素
-     * @return 去掉指定元素后的新数组或原数组
-     * @throws IllegalArgumentException 参数对象不为数组对象
+     * Removes the first occurrence of a specified element.
+     * 
+     * @param array   The source array.
+     * @param element The element to remove.
+     * @return The new array.
      */
     public static boolean[] removeEle(final boolean[] array, final boolean element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
     }
 
     /**
-     * 反转数组，会变更原数组
+     * Reverses the order of elements in a portion of an array in-place.
      *
-     * @param array               数组，会变更
-     * @param startIndexInclusive 起始位置（包含）
-     * @param endIndexExclusive   结束位置（不包含）
-     * @return 变更后的原数组
+     * @param array               The array to reverse.
+     * @param startIndexInclusive The starting index (inclusive).
+     * @param endIndexExclusive   The ending index (exclusive).
+     * @return The modified array.
      */
     public static long[] reverse(final long[] array, final int startIndexInclusive, final int endIndexExclusive) {
         if (isEmpty(array)) {
@@ -1599,22 +1505,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 反转数组，会变更原数组
+     * Reverses the order of elements in an array in-place.
      *
-     * @param array 数组，会变更
-     * @return 变更后的原数组
+     * @param array The array to reverse.
+     * @return The modified array.
      */
     public static long[] reverse(final long[] array) {
         return reverse(array, 0, array.length);
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array               数组，会变更
-     * @param startIndexInclusive 起始位置（包含）
-     * @param endIndexExclusive   结束位置（不包含）
-     * @return 变更后的原数组
+     * Reverses the order of elements in a portion of an array in-place.
+     * 
+     * @param array               The array to reverse.
+     * @param startIndexInclusive The starting index (inclusive).
+     * @param endIndexExclusive   The ending index (exclusive).
+     * @return The modified array.
      */
     public static int[] reverse(final int[] array, final int startIndexInclusive, final int endIndexExclusive) {
         if (isEmpty(array)) {
@@ -1631,22 +1537,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 变更后的原数组
+     * Reverses the order of elements in an array in-place.
+     * 
+     * @param array The array to reverse.
+     * @return The modified array.
      */
     public static int[] reverse(final int[] array) {
         return reverse(array, 0, array.length);
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array               数组，会变更
-     * @param startIndexInclusive 起始位置（包含）
-     * @param endIndexExclusive   结束位置（不包含）
-     * @return 变更后的原数组
+     * Reverses the order of elements in a portion of an array in-place.
+     * 
+     * @param array               The array to reverse.
+     * @param startIndexInclusive The starting index (inclusive).
+     * @param endIndexExclusive   The ending index (exclusive).
+     * @return The modified array.
      */
     public static short[] reverse(final short[] array, final int startIndexInclusive, final int endIndexExclusive) {
         if (isEmpty(array)) {
@@ -1663,22 +1569,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 变更后的原数组
+     * Reverses the order of elements in an array in-place.
+     * 
+     * @param array The array to reverse.
+     * @return The modified array.
      */
     public static short[] reverse(final short[] array) {
         return reverse(array, 0, array.length);
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array               数组，会变更
-     * @param startIndexInclusive 起始位置（包含）
-     * @param endIndexExclusive   结束位置（不包含）
-     * @return 变更后的原数组
+     * Reverses the order of elements in a portion of an array in-place.
+     * 
+     * @param array               The array to reverse.
+     * @param startIndexInclusive The starting index (inclusive).
+     * @param endIndexExclusive   The ending index (exclusive).
+     * @return The modified array.
      */
     public static char[] reverse(final char[] array, final int startIndexInclusive, final int endIndexExclusive) {
         if (isEmpty(array)) {
@@ -1695,22 +1601,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 变更后的原数组
+     * Reverses the order of elements in an array in-place.
+     * 
+     * @param array The array to reverse.
+     * @return The modified array.
      */
     public static char[] reverse(final char[] array) {
         return reverse(array, 0, array.length);
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array               数组，会变更
-     * @param startIndexInclusive 起始位置（包含）
-     * @param endIndexExclusive   结束位置（不包含）
-     * @return 变更后的原数组
+     * Reverses the order of elements in a portion of an array in-place.
+     * 
+     * @param array               The array to reverse.
+     * @param startIndexInclusive The starting index (inclusive).
+     * @param endIndexExclusive   The ending index (exclusive).
+     * @return The modified array.
      */
     public static byte[] reverse(final byte[] array, final int startIndexInclusive, final int endIndexExclusive) {
         if (isEmpty(array)) {
@@ -1727,22 +1633,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 变更后的原数组
+     * Reverses the order of elements in an array in-place.
+     * 
+     * @param array The array to reverse.
+     * @return The modified array.
      */
     public static byte[] reverse(final byte[] array) {
         return reverse(array, 0, array.length);
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array               数组，会变更
-     * @param startIndexInclusive 起始位置（包含）
-     * @param endIndexExclusive   结束位置（不包含）
-     * @return 变更后的原数组
+     * Reverses the order of elements in a portion of an array in-place.
+     * 
+     * @param array               The array to reverse.
+     * @param startIndexInclusive The starting index (inclusive).
+     * @param endIndexExclusive   The ending index (exclusive).
+     * @return The modified array.
      */
     public static double[] reverse(final double[] array, final int startIndexInclusive, final int endIndexExclusive) {
         if (isEmpty(array)) {
@@ -1759,22 +1665,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 变更后的原数组
+     * Reverses the order of elements in an array in-place.
+     * 
+     * @param array The array to reverse.
+     * @return The modified array.
      */
     public static double[] reverse(final double[] array) {
         return reverse(array, 0, array.length);
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array               数组，会变更
-     * @param startIndexInclusive 起始位置（包含）
-     * @param endIndexExclusive   结束位置（不包含）
-     * @return 变更后的原数组
+     * Reverses the order of elements in a portion of an array in-place.
+     * 
+     * @param array               The array to reverse.
+     * @param startIndexInclusive The starting index (inclusive).
+     * @param endIndexExclusive   The ending index (exclusive).
+     * @return The modified array.
      */
     public static float[] reverse(final float[] array, final int startIndexInclusive, final int endIndexExclusive) {
         if (isEmpty(array)) {
@@ -1791,22 +1697,22 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 变更后的原数组
+     * Reverses the order of elements in an array in-place.
+     * 
+     * @param array The array to reverse.
+     * @return The modified array.
      */
     public static float[] reverse(final float[] array) {
         return reverse(array, 0, array.length);
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array               数组，会变更
-     * @param startIndexInclusive 起始位置（包含）
-     * @param endIndexExclusive   结束位置（不包含）
-     * @return 变更后的原数组
+     * Reverses the order of elements in a portion of an array in-place.
+     * 
+     * @param array               The array to reverse.
+     * @param startIndexInclusive The starting index (inclusive).
+     * @param endIndexExclusive   The ending index (exclusive).
+     * @return The modified array.
      */
     public static boolean[] reverse(final boolean[] array, final int startIndexInclusive, final int endIndexExclusive) {
         if (isEmpty(array)) {
@@ -1823,24 +1729,24 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 反转数组，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 变更后的原数组
+     * Reverses the order of elements in an array in-place.
+     * 
+     * @param array The array to reverse.
+     * @return The modified array.
      */
     public static boolean[] reverse(final boolean[] array) {
         return reverse(array, 0, array.length);
     }
 
     /**
-     * 取最小值
+     * Finds the minimum value in a primitive number array.
      *
-     * @param numberArray 数字数组
-     * @return 最小值
+     * @param numberArray The array of numbers.
+     * @return The minimum value.
      */
     public static long min(final long... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         long min = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
@@ -1852,14 +1758,14 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最小值
-     *
-     * @param numberArray 数字数组
-     * @return 最小值
+     * Finds the minimum value in a primitive number array.
+     * 
+     * @param numberArray The array of numbers.
+     * @return The minimum value.
      */
     public static int min(final int... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         int min = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
@@ -1871,14 +1777,14 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最小值
-     *
-     * @param numberArray 数字数组
-     * @return 最小值
+     * Finds the minimum value in a primitive number array.
+     * 
+     * @param numberArray The array of numbers.
+     * @return The minimum value.
      */
     public static short min(final short... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         short min = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
@@ -1890,14 +1796,14 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最小值
-     *
-     * @param numberArray 数字数组
-     * @return 最小值
+     * Finds the minimum value in a primitive character array.
+     * 
+     * @param numberArray The array of characters.
+     * @return The minimum value.
      */
     public static char min(final char... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         char min = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
@@ -1909,14 +1815,14 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最小值
-     *
-     * @param numberArray 数字数组
-     * @return 最小值
+     * Finds the minimum value in a primitive number array.
+     * 
+     * @param numberArray The array of numbers.
+     * @return The minimum value.
      */
     public static byte min(final byte... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         byte min = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
@@ -1928,18 +1834,18 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最小值
-     *
-     * @param numberArray 数字数组
-     * @return 最小值
+     * Finds the minimum value in a primitive number array.
+     * 
+     * @param numberArray The array of numbers.
+     * @return The minimum value.
      */
     public static double min(final double... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         double min = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
-            if (min > numberArray[i]) {
+            if (Double.compare(min, numberArray[i]) > 0) {
                 min = numberArray[i];
             }
         }
@@ -1947,18 +1853,18 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最小值
-     *
-     * @param numberArray 数字数组
-     * @return 最小值
+     * Finds the minimum value in a primitive number array.
+     * 
+     * @param numberArray The array of numbers.
+     * @return The minimum value.
      */
     public static float min(final float... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         float min = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
-            if (min > numberArray[i]) {
+            if (Float.compare(min, numberArray[i]) > 0) {
                 min = numberArray[i];
             }
         }
@@ -1966,14 +1872,14 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最大值
+     * Finds the maximum value in a primitive number array.
      *
-     * @param numberArray 数字数组
-     * @return 最大值
+     * @param numberArray The array of numbers.
+     * @return The maximum value.
      */
     public static long max(final long... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         long max = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
@@ -1985,14 +1891,14 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最大值
-     *
-     * @param numberArray 数字数组
-     * @return 最大值
+     * Finds the maximum value in a primitive number array.
+     * 
+     * @param numberArray The array of numbers.
+     * @return The maximum value.
      */
     public static int max(final int... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         int max = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
@@ -2004,14 +1910,14 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最大值
-     *
-     * @param numberArray 数字数组
-     * @return 最大值
+     * Finds the maximum value in a primitive number array.
+     * 
+     * @param numberArray The array of numbers.
+     * @return The maximum value.
      */
     public static short max(final short... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         short max = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
@@ -2023,14 +1929,14 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最大值
-     *
-     * @param numberArray 数字数组
-     * @return 最大值
+     * Finds the maximum value in a primitive character array.
+     * 
+     * @param numberArray The array of characters.
+     * @return The maximum value.
      */
     public static char max(final char... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         char max = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
@@ -2042,14 +1948,14 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最大值
-     *
-     * @param numberArray 数字数组
-     * @return 最大值
+     * Finds the maximum value in a primitive number array.
+     * 
+     * @param numberArray The array of numbers.
+     * @return The maximum value.
      */
     public static byte max(final byte... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         byte max = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
@@ -2061,18 +1967,18 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最大值
-     *
-     * @param numberArray 数字数组
-     * @return 最大值
+     * Finds the maximum value in a primitive number array.
+     * 
+     * @param numberArray The array of numbers.
+     * @return The maximum value.
      */
     public static double max(final double... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         double max = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
-            if (max < numberArray[i]) {
+            if (Double.compare(max, numberArray[i]) < 0) {
                 max = numberArray[i];
             }
         }
@@ -2080,18 +1986,18 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 取最大值
-     *
-     * @param numberArray 数字数组
-     * @return 最大值
+     * Finds the maximum value in a primitive number array.
+     * 
+     * @param numberArray The array of numbers.
+     * @return The maximum value.
      */
     public static float max(final float... numberArray) {
         if (isEmpty(numberArray)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Number array must not be empty!");
         }
         float max = numberArray[0];
         for (int i = 1; i < numberArray.length; i++) {
-            if (max < numberArray[i]) {
+            if (Float.compare(max, numberArray[i]) < 0) {
                 max = numberArray[i];
             }
         }
@@ -2099,248 +2005,232 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
+     * Shuffles the elements of an array in-place using the Fisher-Yates algorithm.
      *
-     * @param array 数组，会变更
-     * @return 打乱后的数组
+     * @param array The array to shuffle.
+     * @return The shuffled array (the same instance as the input).
      */
     public static int[] shuffle(final int[] array) {
         return shuffle(array, RandomKit.getRandom());
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
+     * Shuffles the elements of an array in-place using the Fisher-Yates algorithm.
      *
-     * @param array  数组，会变更
-     * @param random 随机数生成器
-     * @return 打乱后的数组
+     * @param array  The array to shuffle.
+     * @param random The random number generator to use.
+     * @return The shuffled array (the same instance as the input).
      */
     public static int[] shuffle(final int[] array, final Random random) {
         if (array == null || random == null || array.length <= 1) {
             return array;
         }
-
         for (int i = array.length; i > 1; i--) {
             swap(array, i - 1, random.nextInt(i));
         }
-
         return array;
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array The array to shuffle.
+     * @return The shuffled array.
      */
     public static long[] shuffle(final long[] array) {
         return shuffle(array, RandomKit.getRandom());
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array  数组，会变更
-     * @param random 随机数生成器
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array  The array to shuffle.
+     * @param random The random number generator.
+     * @return The shuffled array.
      */
     public static long[] shuffle(final long[] array, final Random random) {
         if (array == null || random == null || array.length <= 1) {
             return array;
         }
-
         for (int i = array.length; i > 1; i--) {
             swap(array, i - 1, random.nextInt(i));
         }
-
         return array;
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array The array to shuffle.
+     * @return The shuffled array.
      */
     public static double[] shuffle(final double[] array) {
         return shuffle(array, RandomKit.getRandom());
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array  数组，会变更
-     * @param random 随机数生成器
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array  The array to shuffle.
+     * @param random The random number generator.
+     * @return The shuffled array.
      */
     public static double[] shuffle(final double[] array, final Random random) {
         if (array == null || random == null || array.length <= 1) {
             return array;
         }
-
         for (int i = array.length; i > 1; i--) {
             swap(array, i - 1, random.nextInt(i));
         }
-
         return array;
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array The array to shuffle.
+     * @return The shuffled array.
      */
     public static float[] shuffle(final float[] array) {
         return shuffle(array, RandomKit.getRandom());
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array  数组，会变更
-     * @param random 随机数生成器
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array  The array to shuffle.
+     * @param random The random number generator.
+     * @return The shuffled array.
      */
     public static float[] shuffle(final float[] array, final Random random) {
         if (array == null || random == null || array.length <= 1) {
             return array;
         }
-
         for (int i = array.length; i > 1; i--) {
             swap(array, i - 1, random.nextInt(i));
         }
-
         return array;
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array The array to shuffle.
+     * @return The shuffled array.
      */
     public static boolean[] shuffle(final boolean[] array) {
         return shuffle(array, RandomKit.getRandom());
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array  数组，会变更
-     * @param random 随机数生成器
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array  The array to shuffle.
+     * @param random The random number generator.
+     * @return The shuffled array.
      */
     public static boolean[] shuffle(final boolean[] array, final Random random) {
         if (array == null || random == null || array.length <= 1) {
             return array;
         }
-
         for (int i = array.length; i > 1; i--) {
             swap(array, i - 1, random.nextInt(i));
         }
-
         return array;
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array The array to shuffle.
+     * @return The shuffled array.
      */
     public static byte[] shuffle(final byte[] array) {
         return shuffle(array, RandomKit.getRandom());
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array  数组，会变更
-     * @param random 随机数生成器
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array  The array to shuffle.
+     * @param random The random number generator.
+     * @return The shuffled array.
      */
     public static byte[] shuffle(final byte[] array, final Random random) {
         if (array == null || random == null || array.length <= 1) {
             return array;
         }
-
         for (int i = array.length; i > 1; i--) {
             swap(array, i - 1, random.nextInt(i));
         }
-
         return array;
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array The array to shuffle.
+     * @return The shuffled array.
      */
     public static char[] shuffle(final char[] array) {
         return shuffle(array, RandomKit.getRandom());
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array  数组，会变更
-     * @param random 随机数生成器
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array  The array to shuffle.
+     * @param random The random number generator.
+     * @return The shuffled array.
      */
     public static char[] shuffle(final char[] array, final Random random) {
         if (array == null || random == null || array.length <= 1) {
             return array;
         }
-
         for (int i = array.length; i > 1; i--) {
             swap(array, i - 1, random.nextInt(i));
         }
-
         return array;
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array 数组，会变更
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array The array to shuffle.
+     * @return The shuffled array.
      */
     public static short[] shuffle(final short[] array) {
         return shuffle(array, RandomKit.getRandom());
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     *
-     * @param array  数组，会变更
-     * @param random 随机数生成器
-     * @return 打乱后的数组
+     * Shuffles the elements of an array in-place.
+     * 
+     * @param array  The array to shuffle.
+     * @param random The random number generator.
+     * @return The shuffled array.
      */
     public static short[] shuffle(final short[] array, final Random random) {
         if (array == null || random == null || array.length <= 1) {
             return array;
         }
-
         for (int i = array.length; i > 1; i--) {
             swap(array, i - 1, random.nextInt(i));
         }
-
         return array;
     }
 
     /**
-     * 交换数组中两个位置的值
+     * Swaps two elements in an array at the specified indices.
      *
-     * @param array  数组
-     * @param index1 位置1
-     * @param index2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
+     * @param array  The array.
+     * @param index1 The index of the first element.
+     * @param index2 The index of the second element.
+     * @return The modified array.
      */
     public static int[] swap(final int[] array, final int index1, final int index2) {
         if (isEmpty(array)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Array must not be empty!");
         }
         final int tmp = array[index1];
         array[index1] = array[index2];
@@ -2349,16 +2239,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 交换数组中两个位置的值
-     *
-     * @param array  数组
-     * @param index1 位置1
-     * @param index2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
+     * Swaps two elements in an array.
+     * 
+     * @param array  The array.
+     * @param index1 The first index.
+     * @param index2 The second index.
+     * @return The modified array.
      */
     public static long[] swap(final long[] array, final int index1, final int index2) {
         if (isEmpty(array)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Array must not be empty!");
         }
         final long tmp = array[index1];
         array[index1] = array[index2];
@@ -2367,16 +2257,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 交换数组中两个位置的值
-     *
-     * @param array  数组
-     * @param index1 位置1
-     * @param index2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
+     * Swaps two elements in an array.
+     * 
+     * @param array  The array.
+     * @param index1 The first index.
+     * @param index2 The second index.
+     * @return The modified array.
      */
     public static double[] swap(final double[] array, final int index1, final int index2) {
         if (isEmpty(array)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Array must not be empty!");
         }
         final double tmp = array[index1];
         array[index1] = array[index2];
@@ -2385,16 +2275,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 交换数组中两个位置的值
-     *
-     * @param array  数组
-     * @param index1 位置1
-     * @param index2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
+     * Swaps two elements in an array.
+     * 
+     * @param array  The array.
+     * @param index1 The first index.
+     * @param index2 The second index.
+     * @return The modified array.
      */
     public static float[] swap(final float[] array, final int index1, final int index2) {
         if (isEmpty(array)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Array must not be empty!");
         }
         final float tmp = array[index1];
         array[index1] = array[index2];
@@ -2403,16 +2293,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 交换数组中两个位置的值
-     *
-     * @param array  数组
-     * @param index1 位置1
-     * @param index2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
+     * Swaps two elements in an array.
+     * 
+     * @param array  The array.
+     * @param index1 The first index.
+     * @param index2 The second index.
+     * @return The modified array.
      */
     public static boolean[] swap(final boolean[] array, final int index1, final int index2) {
         if (isEmpty(array)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Array must not be empty!");
         }
         final boolean tmp = array[index1];
         array[index1] = array[index2];
@@ -2421,16 +2311,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 交换数组中两个位置的值
-     *
-     * @param array  数组
-     * @param index1 位置1
-     * @param index2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
+     * Swaps two elements in an array.
+     * 
+     * @param array  The array.
+     * @param index1 The first index.
+     * @param index2 The second index.
+     * @return The modified array.
      */
     public static byte[] swap(final byte[] array, final int index1, final int index2) {
         if (isEmpty(array)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Array must not be empty!");
         }
         final byte tmp = array[index1];
         array[index1] = array[index2];
@@ -2439,16 +2329,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 交换数组中两个位置的值
-     *
-     * @param array  数组
-     * @param index1 位置1
-     * @param index2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
+     * Swaps two elements in an array.
+     * 
+     * @param array  The array.
+     * @param index1 The first index.
+     * @param index2 The second index.
+     * @return The modified array.
      */
     public static char[] swap(final char[] array, final int index1, final int index2) {
         if (isEmpty(array)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Array must not be empty!");
         }
         final char tmp = array[index1];
         array[index1] = array[index2];
@@ -2457,16 +2347,16 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 交换数组中两个位置的值
-     *
-     * @param array  数组
-     * @param index1 位置1
-     * @param index2 位置2
-     * @return 交换后的数组，与传入数组为同一对象
+     * Swaps two elements in an array.
+     * 
+     * @param array  The array.
+     * @param index1 The first index.
+     * @param index2 The second index.
+     * @return The modified array.
      */
     public static short[] swap(final short[] array, final int index1, final int index2) {
         if (isEmpty(array)) {
-            throw new IllegalArgumentException("Number array must not empty !");
+            throw new IllegalArgumentException("Array must not be empty!");
         }
         final short tmp = array[index1];
         array[index1] = array[index2];
@@ -2475,16 +2365,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * array数组是否以prefix开头
-     * <ul>
-     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     * <li>prefix长度大于array，返回{@code false}</li>
-     * </ul>
+     * Checks if an array starts with the given prefix array.
      *
-     * @param array  数组
-     * @param prefix 前缀
-     * @return 是否开头
+     * @param array  The array to check.
+     * @param prefix The prefix to look for.
+     * @return {@code true} if the array starts with the prefix.
      */
     public static boolean startWith(final boolean[] array, final boolean... prefix) {
         if (array == prefix) {
@@ -2496,7 +2381,6 @@ public class PrimitiveArray extends ArrayValidator {
         if (prefix.length > array.length) {
             return false;
         }
-
         for (int i = 0; i < prefix.length; i++) {
             if (array[i] != prefix[i]) {
                 return false;
@@ -2506,16 +2390,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * array数组是否以prefix开头
-     * <ul>
-     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     * <li>prefix长度大于array，返回{@code false}</li>
-     * </ul>
+     * Checks if an array starts with the given prefix array.
      *
-     * @param array  数组
-     * @param prefix 前缀
-     * @return 是否开头
+     * @param array  The array to check.
+     * @param prefix The prefix to look for.
+     * @return {@code true} if the array starts with the prefix.
      */
     public static boolean startWith(final byte[] array, final byte... prefix) {
         if (array == prefix) {
@@ -2527,21 +2406,15 @@ public class PrimitiveArray extends ArrayValidator {
         if (prefix.length > array.length) {
             return false;
         }
-
         return isSubEquals(array, 0, prefix);
     }
 
     /**
-     * array数组是否以prefix开头
-     * <ul>
-     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     * <li>prefix长度大于array，返回{@code false}</li>
-     * </ul>
+     * Checks if an array starts with the given prefix array.
      *
-     * @param array  数组
-     * @param prefix 前缀
-     * @return 是否开头
+     * @param array  The array to check.
+     * @param prefix The prefix to look for.
+     * @return {@code true} if the array starts with the prefix.
      */
     public static boolean startWith(final char[] array, final char... prefix) {
         if (array == prefix) {
@@ -2553,7 +2426,6 @@ public class PrimitiveArray extends ArrayValidator {
         if (prefix.length > array.length) {
             return false;
         }
-
         for (int i = 0; i < prefix.length; i++) {
             if (array[i] != prefix[i]) {
                 return false;
@@ -2563,16 +2435,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * array数组是否以prefix开头
-     * <ul>
-     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     * <li>prefix长度大于array，返回{@code false}</li>
-     * </ul>
+     * Checks if an array starts with the given prefix array.
      *
-     * @param array  数组
-     * @param prefix 前缀
-     * @return 是否开头
+     * @param array  The array to check.
+     * @param prefix The prefix to look for.
+     * @return {@code true} if the array starts with the prefix.
      */
     public static boolean startWith(final double[] array, final double... prefix) {
         if (array == prefix) {
@@ -2584,7 +2451,6 @@ public class PrimitiveArray extends ArrayValidator {
         if (prefix.length > array.length) {
             return false;
         }
-
         for (int i = 0; i < prefix.length; i++) {
             if (array[i] != prefix[i]) {
                 return false;
@@ -2594,16 +2460,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * array数组是否以prefix开头
-     * <ul>
-     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     * <li>prefix长度大于array，返回{@code false}</li>
-     * </ul>
+     * Checks if an array starts with the given prefix array.
      *
-     * @param array  数组
-     * @param prefix 前缀
-     * @return 是否开头
+     * @param array  The array to check.
+     * @param prefix The prefix to look for.
+     * @return {@code true} if the array starts with the prefix.
      */
     public static boolean startWith(final float[] array, final float... prefix) {
         if (array == prefix) {
@@ -2615,7 +2476,6 @@ public class PrimitiveArray extends ArrayValidator {
         if (prefix.length > array.length) {
             return false;
         }
-
         for (int i = 0; i < prefix.length; i++) {
             if (array[i] != prefix[i]) {
                 return false;
@@ -2625,16 +2485,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * array数组是否以prefix开头
-     * <ul>
-     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     * <li>prefix长度大于array，返回{@code false}</li>
-     * </ul>
+     * Checks if an array starts with the given prefix array.
      *
-     * @param array  数组
-     * @param prefix 前缀
-     * @return 是否开头
+     * @param array  The array to check.
+     * @param prefix The prefix to look for.
+     * @return {@code true} if the array starts with the prefix.
      */
     public static boolean startWith(final int[] array, final int... prefix) {
         if (array == prefix) {
@@ -2646,7 +2501,6 @@ public class PrimitiveArray extends ArrayValidator {
         if (prefix.length > array.length) {
             return false;
         }
-
         for (int i = 0; i < prefix.length; i++) {
             if (array[i] != prefix[i]) {
                 return false;
@@ -2656,16 +2510,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * array数组是否以prefix开头
-     * <ul>
-     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     * <li>prefix长度大于array，返回{@code false}</li>
-     * </ul>
+     * Checks if an array starts with the given prefix array.
      *
-     * @param array  数组
-     * @param prefix 前缀
-     * @return 是否开头
+     * @param array  The array to check.
+     * @param prefix The prefix to look for.
+     * @return {@code true} if the array starts with the prefix.
      */
     public static boolean startWith(final long[] array, final long... prefix) {
         if (array == prefix) {
@@ -2677,7 +2526,6 @@ public class PrimitiveArray extends ArrayValidator {
         if (prefix.length > array.length) {
             return false;
         }
-
         for (int i = 0; i < prefix.length; i++) {
             if (array[i] != prefix[i]) {
                 return false;
@@ -2687,16 +2535,11 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * array数组是否以prefix开头
-     * <ul>
-     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     * <li>prefix长度大于array，返回{@code false}</li>
-     * </ul>
+     * Checks if an array starts with the given prefix array.
      *
-     * @param array  数组
-     * @param prefix 前缀
-     * @return 是否开头
+     * @param array  The array to check.
+     * @param prefix The prefix to look for.
+     * @return {@code true} if the array starts with the prefix.
      */
     public static boolean startWith(final short[] array, final short... prefix) {
         if (array == prefix) {
@@ -2708,7 +2551,6 @@ public class PrimitiveArray extends ArrayValidator {
         if (prefix.length > array.length) {
             return false;
         }
-
         for (int i = 0; i < prefix.length; i++) {
             if (array[i] != prefix[i]) {
                 return false;

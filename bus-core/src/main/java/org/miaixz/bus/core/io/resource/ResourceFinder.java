@@ -44,20 +44,27 @@ import org.miaixz.bus.core.text.AntPathMatcher;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 资源查找器 参考Spring的PathMatchingResourcePatternResolver，实现classpath资源查找，利用{@link AntPathMatcher}筛选资源
+ * Resource finder, inspired by Spring's PathMatchingResourcePatternResolver. This class implements classpath resource
+ * lookup and uses {@link AntPathMatcher} to filter resources.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ResourceFinder {
 
+    /**
+     * The class loader used to define the scope of resource lookup.
+     */
     private final ClassLoader classLoader;
+    /**
+     * The Ant-style path matcher used for filtering resources.
+     */
     private final AntPathMatcher pathMatcher;
 
     /**
-     * 构造
+     * Constructs a {@code ResourceFinder} with the specified class loader.
      *
-     * @param classLoader 类加载器，用于定义查找资源的范围
+     * @param classLoader The class loader to use for finding resources.
      */
     public ResourceFinder(final ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -65,58 +72,59 @@ public class ResourceFinder {
     }
 
     /**
-     * 构建新的ResourceFinder，使用当前环境的类加载器
+     * Builds a new {@code ResourceFinder} using the current environment's class loader.
      *
-     * @return ResourceFinder
+     * @return A new {@code ResourceFinder} instance.
      */
     public static ResourceFinder of() {
         return of(ClassKit.getClassLoader());
     }
 
     /**
-     * 构建新的ResourceFinder
+     * Builds a new {@code ResourceFinder} with the specified class loader.
      *
-     * @param classLoader 类加载器，用于限定查找范围
-     * @return ResourceFinder
+     * @param classLoader The class loader to use for limiting the search scope.
+     * @return A new {@code ResourceFinder} instance.
      */
     public static ResourceFinder of(final ClassLoader classLoader) {
         return new ResourceFinder(classLoader);
     }
 
     /**
-     * 替换'\'为'/'
+     * Replaces backslashes ('\') with forward slashes ('/') in the given path.
      *
-     * @param path 路径
-     * @return 替换后的路径
+     * @param path The path string to process.
+     * @return The path with backslashes replaced by forward slashes, or the original path if empty.
      */
     private static String replaceBackSlash(final String path) {
         return StringKit.isEmpty(path) ? path : path.replace(Symbol.C_BACKSLASH, Symbol.C_SLASH);
     }
 
     /**
-     * 查找给定表达式对应的资源
+     * Finds resources corresponding to the given location pattern.
      *
-     * @param locationPattern 路径表达式
-     * @return {@link MultiResource}
+     * @param locationPattern The Ant-style path pattern for resource lookup.
+     * @return A {@link MultiResource} containing all matching resources.
+     * @throws InternalException if an I/O error occurs or an unsupported resource type is encountered.
      */
     public MultiResource find(final String locationPattern) {
-        // 根目录，如 "/WEB-INF/*.xml" 返回 "/WEB-INF/"
+        // Determine the root directory, e.g., "/WEB-INF/*.xml" returns "/WEB-INF/"
         final String rootDirPath = determineRootDir(locationPattern);
-        // 子表达式，如"/WEB-INF/*.xml" 返回 "*.xml"
+        // Determine the sub-pattern, e.g., "/WEB-INF/*.xml" returns "*.xml"
         final String subPattern = locationPattern.substring(rootDirPath.length());
 
         final MultiResource result = new MultiResource();
-        // 遍历根目录下所有资源，并过滤保留符合条件的资源
+        // Iterate through all resources in the root directory and filter to keep only matching resources
         for (final Resource rootResource : ResourceKit.getResources(rootDirPath, classLoader)) {
             if (rootResource instanceof JarResource) {
-                // 在jar包中
+                // Resource is in a JAR package
                 try {
                     result.addAll(findInJar((JarResource) rootResource, subPattern));
                 } catch (final IOException e) {
                     throw new InternalException(e);
                 }
             } else if (rootResource instanceof FileResource) {
-                // 文件夹中
+                // Resource is in a folder
                 result.addAll(findInDir((FileResource) rootResource, subPattern));
             } else {
                 throw new InternalException("Unsupported resource type: {}", rootResource.getClass().getName());
@@ -127,12 +135,12 @@ public class ResourceFinder {
     }
 
     /**
-     * 查找jar包中的资源
+     * Finds resources within a JAR package that match the given sub-pattern.
      *
-     * @param rootResource 根资源，为jar包文件
-     * @param subPattern   子表达式，如 *.xml
-     * @return 符合条件的资源
-     * @throws IOException IO异常
+     * @param rootResource The root resource, which should be a {@link JarResource} representing the JAR file.
+     * @param subPattern   The sub-pattern to match against entries within the JAR, e.g., "*.xml".
+     * @return A {@link MultiResource} containing all matching resources within the JAR.
+     * @throws IOException If an I/O error occurs while accessing the JAR file.
      */
     protected MultiResource findInJar(final JarResource rootResource, final String subPattern) throws IOException {
         final URL rootDirURL = rootResource.getUrl();
@@ -150,7 +158,7 @@ public class ResourceFinder {
             rootEntryPath = (jarEntry != null ? jarEntry.getName() : Normal.EMPTY);
             closeJarFile = !jarCon.getUseCaches();
         } else {
-            // 去除子路径后重新获取jar文件
+            // Re-obtain the JAR file after removing sub-paths
             final String urlFile = rootDirURL.getFile();
             try {
                 int separatorIndex = urlFile.indexOf(Normal.WAR_URL_SEPARATOR);
@@ -172,7 +180,7 @@ public class ResourceFinder {
         }
 
         rootEntryPath = StringKit.addSuffixIfNot(rootEntryPath, Symbol.SLASH);
-        // 遍历jar中的entry，筛选之
+        // Iterate through entries in the JAR and filter them
         final MultiResource result = new MultiResource();
 
         try {
@@ -196,17 +204,17 @@ public class ResourceFinder {
     }
 
     /**
-     * 遍历目录查找指定表达式匹配的文件列表
+     * Traverses a directory to find files matching the specified sub-pattern.
      *
-     * @param resource   文件资源
-     * @param subPattern 子表达式
-     * @return 满足条件的文件
+     * @param resource   The file resource representing the root directory.
+     * @param subPattern The sub-pattern to match against files within the directory.
+     * @return A {@link MultiResource} containing all matching files.
      */
     protected MultiResource findInDir(final FileResource resource, final String subPattern) {
         final MultiResource result = new MultiResource();
         final File rootDir = resource.getFile();
         if (!rootDir.exists() || !rootDir.isDirectory() || !rootDir.canRead()) {
-            // 保证给定文件存在、为目录且可读
+            // Ensure the given file exists, is a directory, and is readable
             return result;
         }
 
@@ -215,7 +223,8 @@ public class ResourceFinder {
         FileKit.walkFiles(rootDir, (file -> {
             final String currentPath = replaceBackSlash(file.getAbsolutePath());
             if (file.isDirectory()) {
-                // 检查目录是否满足表达式开始规则，满足则继续向下查找，否则跳过
+                // Check if the directory satisfies the pattern's starting rule; if so, continue searching, otherwise
+                // skip.
                 return pathMatcher.matchStart(fullPattern, StringKit.addSuffixIfNot(currentPath, Symbol.SLASH));
             }
 
@@ -231,10 +240,11 @@ public class ResourceFinder {
     }
 
     /**
-     * 根据给定的路径表达式，找到跟路径 根路径即不包含表达式的路径，如 "/WEB-INF/*.xml" 返回 "/WEB-INF/"
+     * Determines the root directory from a given location pattern. The root directory is the part of the path that does
+     * not contain any pattern characters. For example, "/WEB-INF/*.xml" returns "/WEB-INF/".
      *
-     * @param location 路径表达式
-     * @return root dir
+     * @param location The location pattern.
+     * @return The root directory path.
      */
     protected String determineRootDir(final String location) {
         final int prefixEnd = location.indexOf(Symbol.C_COLON) + 1;

@@ -33,29 +33,30 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 由一个有限值构成的边界
+ * Represents a finite boundary, defined by a specific value and a {@link BoundType}. This class implements the
+ * {@link Bound} interface for comparable types.
  *
- * @param <T> 边界值类型
+ * @param <T> the type of the boundary value, which must be comparable
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
 
     /**
-     * 边界值
+     * The finite value that defines this boundary.
      */
     private final T value;
 
     /**
-     * 边界类型
+     * The type of this boundary, indicating whether it's an open/closed lower/upper bound.
      */
     private final BoundType type;
 
     /**
-     * 构造
+     * Constructs a new {@code FiniteBound} with the specified value and bound type.
      *
-     * @param value 边界值
-     * @param type  边界类型
+     * @param value the boundary value
+     * @param type  the {@link BoundType} of this boundary
      */
     FiniteBound(final T value, final BoundType type) {
         this.value = value;
@@ -63,9 +64,9 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
     }
 
     /**
-     * 获取边界值
+     * Retrieves the finite value of this boundary.
      *
-     * @return 边界值
+     * @return the boundary value
      */
     @Override
     public T getValue() {
@@ -73,9 +74,9 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
     }
 
     /**
-     * 获取边界类型
+     * Retrieves the type of this boundary.
      *
-     * @return 边界类型
+     * @return the {@link BoundType} of this boundary
      */
     @Override
     public BoundType getType() {
@@ -83,57 +84,62 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
     }
 
     /**
-     * 检验指定值是否在当前边界表示的范围内
+     * Tests if the given value satisfies the condition defined by this boundary. For example, if this bound represents
+     * {@code x > t}, it returns {@code true} if the given value is greater than {@code t}.
      *
-     * @param t 要检验的值，不允许为{@code null}
-     * @return 是否
+     * @param t the value to test, must not be {@code null}
+     * @return {@code true} if the value satisfies the boundary condition, {@code false} otherwise
+     * @throws NullPointerException if {@code t} is {@code null}
      */
     @Override
     public boolean test(final T t) {
         final BoundType bt = this.getType();
         final int compareValue = getValue().compareTo(t);
-        // 与边界值相等
+        // If equal to the boundary value
         if (compareValue == 0) {
             return bt.isClose();
         }
-        // 小于或大于边界值
+        // Less than or greater than the boundary value
         return compareValue > 0 ? bt.isUpperBound() : bt.isLowerBound();
     }
 
     /**
      * <p>
-     * 比较另一边界与当前边界在坐标轴上位置的先后顺序。 若令当前边界为<em>t1</em>，另一边界为<em>t2</em>，则有
+     * Compares the position of another boundary relative to this boundary on the coordinate axis. If the current
+     * boundary is <em>t1</em> and the other boundary is <em>t2</em>, then:
      * <ul>
-     * <li>-1：<em>t1</em>在<em>t2</em>的左侧；</li>
-     * <li>0：<em>t1</em>与<em>t2</em>的重合；</li>
-     * <li>-1：<em>t1</em>在<em>t2</em>的右侧；</li>
+     * <li>-1: <em>t1</em> is to the left of <em>t2</em>;</li>
+     * <li>0: <em>t1</em> coincides with <em>t2</em>;</li>
+     * <li>1: <em>t1</em> is to the right of <em>t2</em>;</li>
      * </ul>
      *
-     * @param bound 边界
-     * @return 位置
+     * @param bound the other boundary to compare with
+     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than
+     *         the specified object.
      */
     @Override
     public int compareTo(final Bound<T> bound) {
-        // 另一边界为无限小的左边界，则当前边界必然靠后
+        // If the other bound is an infinite lower bound, this bound is necessarily to its right
         if (bound instanceof NoneLowerBound) {
             return 1;
         }
-        // 另一边界为无限大的右边界，则当前边界必然靠前
+        // If the other bound is an infinite upper bound, this bound is necessarily to its left
         if (bound instanceof NoneUpperBound) {
             return -1;
         }
-        // 两值不相等，直接比较边界值
+        // If values are not equal, compare the boundary values directly
         if (ObjectKit.notEquals(getValue(), bound.getValue())) {
             return getValue().compareTo(bound.getValue());
         }
-        // 两边界值相等
+        // If boundary values are equal, compare based on bound type
         return compareIfSameBoundValue(bound);
     }
 
     /**
-     * 获取{@code "[value"}或{@code "(value"}格式的字符串
+     * Returns a string representation of the bound in the format {@code "[value"} or {@code "(value"} for lower bounds,
+     * or {@code "value]"} or {@code "value)"} for upper bounds.
      *
-     * @return 字符串
+     * @return a string representation of the bound
      */
     @Override
     public String descBound() {
@@ -142,9 +148,10 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
     }
 
     /**
-     * 对当前边界取反
+     * Returns a new {@code Bound} instance that represents the negation of this bound. For example, if this bound is
+     * {@code x > t}, its negation would be {@code x <= t}.
      *
-     * @return 取反后的边界
+     * @return a new {@code Bound} instance representing the negation of this bound
      */
     @Override
     public Bound<T> negate() {
@@ -152,9 +159,10 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
     }
 
     /**
-     * 将当前实例转为一个区间
+     * Converts this single-sided finite bound into a {@link BoundedRange} instance. The resulting range will be
+     * unbounded on one side and bounded by this instance on the other.
      *
-     * @return 区间
+     * @return a {@link BoundedRange} representing this bound as part of a range
      */
     @Override
     public BoundedRange<T> toRange() {
@@ -163,10 +171,11 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
     }
 
     /**
-     * 两实例是否相等
+     * Indicates whether some other object is "equal to" this one. Two {@code FiniteBound} objects are considered equal
+     * if they have the same value and {@link BoundType}.
      *
-     * @param o 另一实例
-     * @return 是否
+     * @param o the reference object with which to compare
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise
      */
     @Override
     public boolean equals(final Object o) {
@@ -181,9 +190,9 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
     }
 
     /**
-     * 获取哈希值
+     * Returns a hash code value for the object.
      *
-     * @return 哈希值
+     * @return a hash code value for this object
      */
     @Override
     public int hashCode() {
@@ -191,9 +200,10 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
     }
 
     /**
-     * 获得当前实例对应的{@code {x| x >= xxx}}格式的不等式字符串
+     * Returns a string representation of the inequality corresponding to this instance, for example, {@code "{x | x >=
+     * value}"} or {@code "{x | x < value}"} .
      *
-     * @return 字符串
+     * @return a string representation of the inequality
      */
     @Override
     public String toString() {
@@ -201,20 +211,28 @@ public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
     }
 
     /**
-     * 当两个边界的值不相等时，判断它们在坐标轴上位置的先后顺序
+     * Compares two bounds that have the same boundary value to determine their relative order. This method resolves the
+     * order based on their {@link BoundType}.
+     *
+     * @param bound the other bound with the same value to compare
+     * @return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than
+     *         the specified object.
      */
     private int compareIfSameBoundValue(final Bound<T> bound) {
         final BoundType bt1 = this.getType();
         final BoundType bt2 = bound.getType();
-        // 两边界类型相同，说明连边界重合
+        // If both bounds have the same type, they coincide
         if (bt1 == bt2) {
             return 0;
         }
-        // 一为左边界，一为右边界，则左边界恒在右边界后
+        // If one is a lower bound and the other is an upper bound, they are dislocated.
+        // A lower bound is considered to the right of an upper bound if their values are the same.
         if (bt1.isDislocated(bt2)) {
             return bt1.isLowerBound() ? 1 : -1;
         }
-        // 都为左边界，则封闭边界在前，若都为右边界，则封闭边界在后
+        // If both are lower bounds, a closed bound comes before an open bound.
+        // If both are upper bounds, an open bound comes before a closed bound.
+        // This is handled by comparing their codes.
         return Integer.compare(bt1.getCode(), bt2.getCode());
     }
 

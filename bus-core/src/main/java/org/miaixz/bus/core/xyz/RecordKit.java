@@ -35,7 +35,7 @@ import java.util.Map;
 import org.miaixz.bus.core.bean.copier.ValueProvider;
 
 /**
- * java.lang.Record 相关工具类封装 来自于FastJSON2
+ * Utility class for `java.lang.Record`.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,20 +43,20 @@ import org.miaixz.bus.core.bean.copier.ValueProvider;
 public class RecordKit {
 
     /**
-     * 判断给定类是否为Record类
+     * Checks if the given class is a Record.
      *
-     * @param clazz 类
-     * @return 是否为Record类
+     * @param clazz The class.
+     * @return `true` if it is a Record class.
      */
     public static boolean isRecord(final Class<?> clazz) {
         return null != clazz && clazz.isRecord();
     }
 
     /**
-     * 获取Record类中所有字段名称，getter方法名与字段同名
+     * Gets all record components (name and type) of a Record class.
      *
-     * @param recordClass Record类
-     * @return 字段数组
+     * @param recordClass The Record class.
+     * @return An array of map entries representing the components.
      */
     public static Map.Entry<String, Type>[] getRecordComponents(final Class<?> recordClass) {
         final RecordComponent[] components = recordClass.getRecordComponents();
@@ -68,11 +68,11 @@ public class RecordKit {
     }
 
     /**
-     * 实例化Record类
+     * Instantiates a Record class.
      *
-     * @param recordClass   类
-     * @param valueProvider 参数值提供器
-     * @return Record类
+     * @param recordClass   The Record class.
+     * @param valueProvider A provider for the constructor arguments.
+     * @return A new instance of the Record.
      */
     public static Object newInstance(final Class<?> recordClass, final ValueProvider<String> valueProvider) {
         final Map.Entry<String, Type>[] recordComponents = getRecordComponents(recordClass);

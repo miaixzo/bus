@@ -41,84 +41,90 @@ import com.google.zxing.datamatrix.encoder.SymbolShapeHint;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 /**
- * 二维码设置
+ * QR code configuration.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class QrConfig {
 
+    /**
+     * The color black.
+     */
     private static final int BLACK = 0xFF000000;
+    /**
+     * The color white.
+     */
     private static final int WHITE = 0xFFFFFFFF;
 
     /**
-     * 宽度
+     * Width.
      */
     protected int width;
     /**
-     * 高度
+     * Height.
      */
     protected int height;
     /**
-     * 前景色（二维码颜色）
+     * Foreground color (QR code color).
      */
     protected Integer foreColor = BLACK;
     /**
-     * 背景色，默认白色，null表示透明
+     * Background color, defaults to white, null means transparent.
      */
     protected Integer backColor = WHITE;
     /**
-     * 边距0~4
+     * Margin, 0-4.
      */
     protected Integer margin = 2;
     /**
-     * 设置二维码中的信息量，可设置0-40的整数
+     * Sets the amount of information in the QR code, can be set to an integer from 0-40.
      */
     protected Integer qrVersion;
     /**
-     * 纠错级别
+     * Error correction level.
      */
     protected ErrorCorrectionLevel errorCorrection = ErrorCorrectionLevel.M;
 
     /**
-     * 编码
+     * Character encoding.
      */
     protected java.nio.charset.Charset charset = Charset.UTF_8;
     /**
-     * 二维码中的Logo
+     * Logo in the QR code.
      */
     protected Image img;
 
     /**
-     * 二维码logo圆角弧度，0~1，为长宽占比
+     * Corner radius of the QR code logo, 0-1, as a ratio of width/height.
      */
     protected double imgRound = 0.3;
     /**
-     * 二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     * Scaling ratio for the logo in the QR code, e.g., 5 means 1/5 of the smaller dimension (width or height).
      */
     protected int ratio = 6;
     /**
-     * DATA_MATRIX的符号形状
+     * Symbol shape for DATA_MATRIX.
      */
     protected SymbolShapeHint shapeHint = SymbolShapeHint.FORCE_NONE;
 
     /**
-     * 生成码的格式，默认为二维码
+     * Format of the generated code, defaults to QR code.
      */
     protected BarcodeFormat format = BarcodeFormat.QR_CODE;
 
     /**
-     * 构造，默认长宽为300
+     * Constructor, default width and height are 300.
      */
     public QrConfig() {
         this(300, 300);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width  宽
-     * @param height 高
+     * @param width  Width.
+     * @param height Height.
      */
     public QrConfig(final int width, final int height) {
         this.width = width;
@@ -126,38 +132,38 @@ public class QrConfig {
     }
 
     /**
-     * 创建QrConfig
+     * Creates a QrConfig.
      *
-     * @return QrConfig
+     * @return A new QrConfig instance.
      */
     public static QrConfig of() {
         return new QrConfig();
     }
 
     /**
-     * 创建QrConfig
+     * Creates a QrConfig.
      *
-     * @param width  宽
-     * @param height 高
-     * @return QrConfig
+     * @param width  Width.
+     * @param height Height.
+     * @return A new QrConfig instance.
      */
     public static QrConfig of(final int width, final int height) {
         return new QrConfig(width, height);
     }
 
     /**
-     * 获取宽度
+     * Gets the width.
      *
-     * @return 宽度
+     * @return The width.
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * 设置宽度
+     * Sets the width.
      *
-     * @param width 宽度
+     * @param width The width.
      * @return this
      */
     public QrConfig setWidth(final int width) {
@@ -166,19 +172,19 @@ public class QrConfig {
     }
 
     /**
-     * 获取高度
+     * Gets the height.
      *
-     * @return 高度
+     * @return The height.
      */
     public int getHeight() {
         return height;
     }
 
     /**
-     * 设置高度
+     * Sets the height.
      *
-     * @param height 高度
-     * @return this;
+     * @param height The height.
+     * @return this
      */
     public QrConfig setHeight(final int height) {
         this.height = height;
@@ -186,18 +192,18 @@ public class QrConfig {
     }
 
     /**
-     * 获取前景色
+     * Gets the foreground color.
      *
-     * @return 前景色
+     * @return The foreground color.
      */
     public Integer getForeColor() {
         return foreColor;
     }
 
     /**
-     * 设置前景色，例如：Color.BLUE.getRGB()
+     * Sets the foreground color, e.g., Color.BLUE.getRGB().
      *
-     * @param foreColor 前景色
+     * @param foreColor The foreground color.
      * @return this
      */
     public QrConfig setForeColor(final Color foreColor) {
@@ -210,18 +216,18 @@ public class QrConfig {
     }
 
     /**
-     * 获取背景色
+     * Gets the background color.
      *
-     * @return 背景色
+     * @return The background color.
      */
     public Integer getBackColor() {
         return backColor;
     }
 
     /**
-     * 设置背景色，例如：Color.BLUE
+     * Sets the background color, e.g., Color.BLUE. Null means transparent background.
      *
-     * @param backColor 背景色,null表示透明背景
+     * @param backColor The background color.
      * @return this
      */
     public QrConfig setBackColor(final Color backColor) {
@@ -234,18 +240,18 @@ public class QrConfig {
     }
 
     /**
-     * 获取边距
+     * Gets the margin.
      *
-     * @return 边距
+     * @return The margin.
      */
     public Integer getMargin() {
         return margin;
     }
 
     /**
-     * 设置边距
+     * Sets the margin.
      *
-     * @param margin 边距
+     * @param margin The margin.
      * @return this
      */
     public QrConfig setMargin(final Integer margin) {
@@ -254,18 +260,20 @@ public class QrConfig {
     }
 
     /**
-     * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
+     * Gets the amount of information in the QR code. Can be an integer from 0-40. The QR code image will also change
+     * based on the qrVersion. 0 means it changes automatically based on the input information.
      *
-     * @return 二维码中的信息量
+     * @return The amount of information in the QR code.
      */
     public Integer getQrVersion() {
         return qrVersion;
     }
 
     /**
-     * 设置二维码中的信息量，可设置0-40的整数，二维码图片也会根据qrVersion而变化，0表示根据传入信息自动变化
+     * Sets the amount of information in the QR code. Can be an integer from 0-40. The QR code image will also change
+     * based on the qrVersion. 0 means it changes automatically based on the input information.
      *
-     * @param qrVersion 二维码中的信息量
+     * @param qrVersion The amount of information in the QR code.
      * @return this
      */
     public QrConfig setQrVersion(final Integer qrVersion) {
@@ -274,18 +282,18 @@ public class QrConfig {
     }
 
     /**
-     * 获取纠错级别
+     * Gets the error correction level.
      *
-     * @return 纠错级别
+     * @return The error correction level.
      */
     public ErrorCorrectionLevel getErrorCorrection() {
         return errorCorrection;
     }
 
     /**
-     * 设置纠错级别
+     * Sets the error correction level.
      *
-     * @param errorCorrection 纠错级别
+     * @param errorCorrection The error correction level.
      * @return this
      */
     public QrConfig setErrorCorrection(final ErrorCorrectionLevel errorCorrection) {
@@ -294,31 +302,38 @@ public class QrConfig {
     }
 
     /**
-     * 是否开启ECI编码 如果enableEci=false,则二维码中不包含ECI信息，即：{@link #charset}字符编码设置为{@code null}, 二维码为英文字符，保持false最佳
-     * 如果enableEci=true,则二维码中包含ECI信息，即：按照{@link #charset}编码进行设置, 二维码为包含中文，保持true最佳，否则会中文乱码
+     * Enables or disables ECI encoding. If enableEci=false, the QR code will not contain ECI information, meaning the
+     * {@link #charset} character encoding is set to {@code null}. This is best for English characters. If
+     * enableEci=true, the QR code will contain ECI information, set according to the {@link #charset} encoding. This is
+     * best for including Chinese characters, otherwise they will be garbled.
      *
      * <ul>
-     * <li>参考1：<a href="https://github.com/nutzam/nutz-qrcode/issues/6">关于\000026的问题</a></li>
-     * <li>参考2：<a href=
-     * "https://en.wikipedia.org/wiki/Extended_Channel_Interpretation">ECI（Extended_Channel_Interpretation）模式</a></li>
-     * <li>参考3：<a href="https://www.51cto.com/article/414082.html">二维码的生成细节和原理</a></li>
+     * <li>Reference 1: <a href="https://github.com/nutzam/nutz-qrcode/issues/6">About the \000026 issue</a></li>
+     * <li>Reference 2: <a href="https://en.wikipedia.org/wiki/Extended_Channel_Interpretation">ECI
+     * (Extended_Channel_Interpretation) mode</a></li>
+     * <li>Reference 3: <a href="https://www.51cto.com/article/414082.html">QR code generation details and
+     * principles</a></li>
      * </ul>
      *
      * <p>
-     * 二维码编码有ECI模式和非ECI模式的情况之分，在ECI模式下第一个字节是用作编码标识，而非ECI模式下直接就是数据流。
-     * ECI模式其实是更好的方案，这样子解码的时候可以根据标识采用不同的编码方式。而非ECI模式只能按照一种统一的方式处理了。 但是由于部分设备不支持ECI模式，所以就出现了无法识别的情况。
-     * 使用扫码桩/扫码枪，可能会出现\000026的字符。使用手机扫描、其他二维码解析软件扫描，则不会出现。
+     * QR code encoding can be in ECI mode or non-ECI mode. In ECI mode, the first byte is used as an encoding
+     * identifier, whereas in non-ECI mode, it is the data stream directly. ECI mode is actually a better solution, as
+     * it allows for different encoding methods to be used during decoding based on the identifier. Non-ECI mode can
+     * only be processed in a single, unified way. However, some devices do not support ECI mode, which can lead to
+     * recognition failures. Using barcode scanners/guns might result in a "\000026" character. Using a mobile phone or
+     * other QR code parsing software will not have this issue.
      * </p>
      *
      * <p>
-     * ECI编码表可以看出UTF-8就是对应"\000026"（对应数字22）
+     * The ECI encoding table shows that UTF-8 corresponds to "\000026" (or the number 22).
      * </p>
      *
      * <p>
-     * 总结建议：如果二维码内容全是字符，没有中文，就不用使用UTF-8等格式进行编码，只有使用中文等特殊符号才需要编码
+     * In summary: If the QR code content is entirely characters without Chinese, there is no need to encode using
+     * UTF-8. Encoding is only necessary for special symbols like Chinese.
      * </p>
      *
-     * @param enableEci 是否开启ECI
+     * @param enableEci Whether to enable ECI.
      * @see EncodeHintType#PDF417_AUTO_ECI
      */
     public void setEnableEci(final boolean enableEci) {
@@ -332,18 +347,18 @@ public class QrConfig {
     }
 
     /**
-     * 获取编码
+     * Gets the character encoding.
      *
-     * @return 编码
+     * @return The character encoding.
      */
     public java.nio.charset.Charset getCharset() {
         return charset;
     }
 
     /**
-     * 设置编码
+     * Sets the character encoding.
      *
-     * @param charset 编码
+     * @param charset The character encoding.
      * @return this
      */
     public QrConfig setCharset(final java.nio.charset.Charset charset) {
@@ -352,49 +367,49 @@ public class QrConfig {
     }
 
     /**
-     * 获取二维码中的Logo
+     * Gets the logo in the QR code.
      *
-     * @return Logo图片
+     * @return The logo image.
      */
     public Image getImg() {
         return img;
     }
 
     /**
-     * 设置二维码中的Logo文件
+     * Sets the logo file for the QR code.
      *
-     * @param imgPath 二维码中的Logo路径
-     * @return this;
+     * @param imgPath The path to the logo in the QR code.
+     * @return this
      */
     public QrConfig setImg(final String imgPath) {
         return setImg(FileKit.file(imgPath));
     }
 
     /**
-     * 设置二维码中的Logo文件
+     * Sets the logo file for the QR code from a byte array.
      *
-     * @param imageBytes 二维码中的Logo图片bytes表示形式
-     * @return this;
+     * @param imageBytes The byte array representation of the logo image.
+     * @return this
      */
     public QrConfig setImg(final byte[] imageBytes) {
         return setImg(ImageKit.toImage(imageBytes));
     }
 
     /**
-     * 设置二维码中的Logo文件
+     * Sets the logo file for the QR code.
      *
-     * @param imgFile 二维码中的Logo
-     * @return this;
+     * @param imgFile The logo file for the QR code.
+     * @return this
      */
     public QrConfig setImg(final File imgFile) {
         return setImg(ImageKit.read(imgFile));
     }
 
     /**
-     * 设置二维码中的Logo
+     * Sets the logo for the QR code.
      *
-     * @param img 二维码中的Logo
-     * @return this;
+     * @param img The logo for the QR code.
+     * @return this
      */
     public QrConfig setImg(final Image img) {
         this.img = img;
@@ -402,18 +417,18 @@ public class QrConfig {
     }
 
     /**
-     * 获取二维码logo圆角弧度，0~1，为长宽占比
+     * Gets the corner radius of the QR code logo, from 0 to 1, as a ratio of width/height.
      *
-     * @return 二维码logo圆角弧度，0~1，为长宽占比
+     * @return The corner radius of the QR code logo.
      */
     public double getImgRound() {
         return imgRound;
     }
 
     /**
-     * 设置二维码logo圆角弧度，0~1，为长宽占比
+     * Sets the corner radius of the QR code logo, from 0 to 1, as a ratio of width/height.
      *
-     * @param imgRound 二维码logo圆角弧度，0~1，为长宽占比
+     * @param imgRound The corner radius of the QR code logo.
      * @return this
      */
     public QrConfig setImgRound(final double imgRound) {
@@ -422,19 +437,19 @@ public class QrConfig {
     }
 
     /**
-     * 获取二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     * Gets the scaling ratio of the logo in the QR code, e.g., 5 means 1/5 of the smaller dimension (width or height).
      *
-     * @return 二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     * @return The scaling ratio of the logo in the QR code.
      */
     public int getRatio() {
         return this.ratio;
     }
 
     /**
-     * 设置二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
+     * Sets the scaling ratio of the logo in the QR code, e.g., 5 means 1/5 of the smaller dimension (width or height).
      *
-     * @param ratio 二维码中的Logo缩放的比例系数，如5表示长宽最小值的1/5
-     * @return this;
+     * @param ratio The scaling ratio of the logo in the QR code.
+     * @return this
      */
     public QrConfig setRatio(final int ratio) {
         this.ratio = ratio;
@@ -442,9 +457,9 @@ public class QrConfig {
     }
 
     /**
-     * 设置DATA_MATRIX的符号形状
+     * Sets the symbol shape for DATA_MATRIX.
      *
-     * @param shapeHint DATA_MATRIX的符号形状
+     * @param shapeHint The symbol shape for DATA_MATRIX.
      * @return this
      */
     public QrConfig setShapeHint(final SymbolShapeHint shapeHint) {
@@ -453,18 +468,18 @@ public class QrConfig {
     }
 
     /**
-     * 获取码格式
+     * Gets the code format.
      *
-     * @return 码格式，默认为二维码
+     * @return The code format, defaults to QR code.
      */
     public BarcodeFormat getFormat() {
         return format;
     }
 
     /**
-     * 设置码格式，默认二维码
+     * Sets the code format, defaults to QR code.
      *
-     * @param format 码格式
+     * @param format The code format.
      * @return this
      */
     public QrConfig setFormat(final BarcodeFormat format) {
@@ -473,15 +488,16 @@ public class QrConfig {
     }
 
     /**
-     * 转换为Zxing的二维码配置
+     * Converts to Zxing's QR code configuration.
      *
-     * @return 配置
+     * @return The configuration.
      */
     public HashMap<EncodeHintType, Object> toHints() {
-        // 配置
+        // Configuration
         final HashMap<EncodeHintType, Object> hints = new HashMap<>();
-        // 只有不禁用（即开启）ECI编码功能，才使用自定义的字符编码
-        // 二维码内容就是英文字符，建议不设置编码，没有任何问题；对于中文来说，会乱码
+        // Use custom character encoding only if ECI encoding is not disabled (i.e., enabled)
+        // If the QR code content is just English characters, it's recommended not to set the encoding; it works fine.
+        // For Chinese, it will be garbled.
         if (null != this.charset) {
             hints.put(EncodeHintType.CHARACTER_SET, charset.toString().toLowerCase());
         }

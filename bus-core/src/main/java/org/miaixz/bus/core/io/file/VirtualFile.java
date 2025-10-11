@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.core.io.file;
 
-import org.miaixz.bus.core.io.resource.Resource;
-
 import java.io.File;
 import java.io.Serial;
 
+import org.miaixz.bus.core.io.resource.Resource;
+
 /**
- * 虚拟文件类，继承自File，用于在内存中模拟文件。
+ * A virtual file class that extends {@link File} to simulate a file in memory.
  * <p>
- * 该类提供了一种在内存中表示文件的方式，无需实际访问物理文件系统。 它可以用于测试、模拟文件操作或在内存中处理文件内容。
- * </p>
+ * This class provides a way to represent a file in memory without needing to access the physical file system. It can be
+ * used for testing, simulating file operations, or handling file content in memory.
+ *
  * <p>
- * 虚拟文件可以关联一个{@link Resource}对象，表示文件的内容资源。 如果内容资源为null，则表示文件不存在。
- * </p>
+ * A virtual file can be associated with a {@link Resource} object, which represents the file's content. If the content
+ * resource is null, the file is considered non-existent.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,16 +51,16 @@ public class VirtualFile extends File {
     private static final long serialVersionUID = 2852285580251L;
 
     /**
-     * 文件内容资源
+     * The resource representing the file's content.
      */
     private final Resource content;
 
     /**
-     * 构造一个虚拟文件。
+     * Constructs a new virtual file.
      *
-     * @param pathname 文件路径，不能为null
-     * @param content  文件内容资源，可以为null（表示文件不存在）
-     * @throws IllegalArgumentException 如果pathname为null
+     * @param pathname The file path, cannot be null.
+     * @param content  The resource for the file's content, which can be null (indicating the file does not exist).
+     * @throws IllegalArgumentException if the pathname is null.
      */
     public VirtualFile(final String pathname, final Resource content) {
         super(pathname);
@@ -70,12 +71,12 @@ public class VirtualFile extends File {
     }
 
     /**
-     * 构造一个虚拟文件。
+     * Constructs a new virtual file.
      *
-     * @param parent  父路径字符串，不能为null
-     * @param child   子文件名，不能为null
-     * @param content 文件内容资源，可以为null（表示文件不存在）
-     * @throws IllegalArgumentException 如果parent或child为null
+     * @param parent  The parent path string, cannot be null.
+     * @param child   The child file name, cannot be null.
+     * @param content The resource for the file's content, which can be null.
+     * @throws IllegalArgumentException if parent or child is null.
      */
     public VirtualFile(final String parent, final String child, final Resource content) {
         super(parent, child);
@@ -86,12 +87,12 @@ public class VirtualFile extends File {
     }
 
     /**
-     * 构造一个虚拟文件。
+     * Constructs a new virtual file.
      *
-     * @param parent  父文件对象，不能为null
-     * @param child   子文件名，不能为null
-     * @param content 文件内容资源，可以为null（表示文件不存在）
-     * @throws IllegalArgumentException 如果parent或child为null
+     * @param parent  The parent file object, cannot be null.
+     * @param child   The child file name, cannot be null.
+     * @param content The resource for the file's content, which can be null.
+     * @throws IllegalArgumentException if parent or child is null.
      */
     public VirtualFile(final File parent, final String child, final Resource content) {
         super(parent, child);
@@ -102,33 +103,27 @@ public class VirtualFile extends File {
     }
 
     /**
-     * 获取文件内容资源。
+     * Gets the resource representing the file's content.
      *
-     * @return 文件内容资源，可能为null（表示文件不存在）
+     * @return The content resource, which may be null.
      */
     public Resource getContent() {
         return this.content;
     }
 
     /**
-     * 获取文件内容的字节数组。
-     * <p>
-     * 如果内容资源不为null，则返回资源内容的字节数组；否则返回null表示无此文件。
-     * </p>
+     * Gets the file's content as a byte array.
      *
-     * @return 文件内容的字节数组，如果没有内容则返回null
+     * @return A byte array of the file's content, or null if there is no content.
      */
     public byte[] getBytes() {
         return null != this.content ? this.content.readBytes() : null;
     }
 
     /**
-     * 测试此文件是否存在。
-     * <p>
-     * 如果内容资源不为null，则返回true表示文件存在；否则返回false。
-     * </p>
+     * Tests if this file exists.
      *
-     * @return 如果文件存在则返回true，否则返回false
+     * @return {@code true} if the content resource is not null, {@code false} otherwise.
      */
     @Override
     public boolean exists() {
@@ -136,12 +131,9 @@ public class VirtualFile extends File {
     }
 
     /**
-     * 测试此文件是否为普通文件。
-     * <p>
-     * 虚拟文件总是返回true，表示是普通文件。
-     * </p>
+     * Tests if this is a regular file.
      *
-     * @return 如果文件是普通文件则返回true
+     * @return always {@code true}.
      */
     @Override
     public boolean isFile() {
@@ -149,12 +141,9 @@ public class VirtualFile extends File {
     }
 
     /**
-     * 测试此文件是否为目录。
-     * <p>
-     * 虚拟文件总是返回false，表示不是目录。
-     * </p>
+     * Tests if this is a directory.
      *
-     * @return 如果文件是目录则返回true，否则返回false
+     * @return always {@code false}.
      */
     @Override
     public boolean isDirectory() {
@@ -162,12 +151,9 @@ public class VirtualFile extends File {
     }
 
     /**
-     * 获取文件长度（字节数）。
-     * <p>
-     * 如果内容资源不为null，则返回资源内容的大小；否则返回0。
-     * </p>
+     * Gets the length of the file's content in bytes.
      *
-     * @return 文件长度（字节数），如果文件不存在则返回0
+     * @return The file length in bytes, or 0 if the file does not exist.
      */
     @Override
     public long length() {
@@ -175,12 +161,9 @@ public class VirtualFile extends File {
     }
 
     /**
-     * 测试应用程序是否可以读取此文件。
-     * <p>
-     * 如果文件存在（即内容资源不为null），则返回true；否则返回false。
-     * </p>
+     * Tests if the application can read this file.
      *
-     * @return 如果应用程序可以读取此文件则返回true，否则返回false
+     * @return {@code true} if the file exists, {@code false} otherwise.
      */
     @Override
     public boolean canRead() {
@@ -188,12 +171,9 @@ public class VirtualFile extends File {
     }
 
     /**
-     * 测试应用程序是否可以修改此文件。
-     * <p>
-     * 虚拟文件总是返回false，表示不可写。
-     * </p>
+     * Tests if the application can modify this file.
      *
-     * @return 如果应用程序可以修改此文件则返回true，否则返回false
+     * @return always {@code false}.
      */
     @Override
     public boolean canWrite() {
@@ -201,12 +181,9 @@ public class VirtualFile extends File {
     }
 
     /**
-     * 测试应用程序是否可以执行此文件。
-     * <p>
-     * 虚拟文件总是返回false，表示不可执行。
-     * </p>
+     * Tests if the application can execute this file.
      *
-     * @return 如果应用程序可以执行此文件则返回true，否则返回false
+     * @return always {@code false}.
      */
     @Override
     public boolean canExecute() {
@@ -214,12 +191,9 @@ public class VirtualFile extends File {
     }
 
     /**
-     * 获取文件最后修改时间。
-     * <p>
-     * 虚拟文件总是返回当前系统时间。
-     * </p>
+     * Gets the last modified time.
      *
-     * @return 文件最后修改时间（自1970年1月1日UTC以来的毫秒数）
+     * @return always returns the current system time.
      */
     @Override
     public long lastModified() {

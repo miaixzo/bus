@@ -30,7 +30,7 @@ package org.miaixz.bus.office.excel.sax;
 import org.xml.sax.Attributes;
 
 /**
- * Excel的XML中属性名枚举
+ * Enumeration of attribute names used in Excel XML for SAX parsing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,33 +38,34 @@ import org.xml.sax.Attributes;
 public enum AttributeName {
 
     /**
-     * 行列号属性，行标签下此为行号属性名，cell标签下下为列号属性名
+     * Row and column number attribute. For row tags, this is the row number attribute name; for cell tags, it is the
+     * column number attribute name.
      */
     r,
     /**
-     * ST（StylesTable） 的索引，样式index，用于获取行或单元格样式
+     * Index of the StylesTable (ST), used to get row or cell styles.
      */
     s,
     /**
-     * Type类型，单元格类型属性，见{@link CellDataType}
+     * Type attribute for cells, see {@link CellDataType}.
      */
     t;
 
     /**
-     * 是否匹配给定属性
+     * Checks if the given attribute name string matches this enum instance.
      *
-     * @param attributeName 属性
-     * @return 是否匹配
+     * @param attributeName The attribute name string to match.
+     * @return {@code true} if the attribute name matches, {@code false} otherwise.
      */
     public boolean match(final String attributeName) {
         return this.name().equals(attributeName);
     }
 
     /**
-     * 从属性里列表中获取对应属性值
+     * Retrieves the value of the attribute corresponding to this enum from the given {@link Attributes} list.
      *
-     * @param attributes 属性列表
-     * @return 属性值
+     * @param attributes The list of attributes.
+     * @return The attribute value, or {@code null} if the attribute is not found.
      */
     public String getValue(final Attributes attributes) {
         return attributes.getValue(name());

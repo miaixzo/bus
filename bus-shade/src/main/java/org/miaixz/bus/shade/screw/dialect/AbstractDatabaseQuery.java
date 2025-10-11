@@ -45,7 +45,8 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 import lombok.Getter;
 
 /**
- * 抽象查询
+ * Abstract base class for database query implementations. Provides common functionality such as connection management,
+ * resource handling, and metadata access.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,28 +54,34 @@ import lombok.Getter;
 public abstract class AbstractDatabaseQuery implements DatabaseQuery {
 
     /**
-     * 缓存
+     * Cache for storing retrieved column information to avoid redundant database queries.
      */
     protected final Map<String, List<Column>> columnsCaching = new ConcurrentHashMap<>();
     /**
-     * DataSource
+     * The JDBC data source used to obtain database connections.
      */
     @Getter
     private final DataSource dataSource;
 
     /**
-     * Connection 双重锁，线程安全
+     * The database connection, managed with double-checked locking for thread safety.
      */
     volatile protected Connection connection;
 
+    /**
+     * Constructs an {@code AbstractDatabaseQuery} with the given data source.
+     *
+     * @param dataSource The JDBC data source.
+     */
     public AbstractDatabaseQuery(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     /**
-     * 释放资源
+     * Safely closes a {@link ResultSet} resource.
      *
-     * @param rs {@link ResultSet}
+     * @param rs The {@link ResultSet} to close.
+     * @throws InternalException if a {@link SQLException} occurs during closing.
      */
     public static void close(ResultSet rs) {
         if (!Objects.isNull(rs)) {
@@ -87,9 +94,10 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     }
 
     /**
-     * 释放资源
+     * Safely closes a {@link Connection} resource.
      *
-     * @param conn {@link Connection}
+     * @param conn The {@link Connection} to close.
+     * @throws InternalException if a {@link SQLException} occurs during closing.
      */
     public static void close(Connection conn) {
         if (!Objects.isNull(conn)) {
@@ -102,43 +110,27 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     }
 
     /**
-     * 释放资源
+     * Safely closes a {@link ResultSet} and a {@link Connection} resource.
      *
-     * @param rs   {@link ResultSet}
-     * @param conn {@link Connection}
+     * @param rs   The {@link ResultSet} to close.
+     * @param conn The {@link Connection} to close.
+     * @throws InternalException if a {@link SQLException} occurs during closing.
      */
     public static void close(ResultSet rs, Connection conn) {
-        if (!Objects.isNull(rs)) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                throw new InternalException(e);
-            }
-        }
-        if (!Objects.isNull(conn)) {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new InternalException(e);
-            }
-        }
+        close(rs);
+        close(conn);
     }
 
     /**
-     * 释放资源
+     * Safely closes a {@link ResultSet}, a {@link Statement}, and a {@link Connection} resource.
      *
-     * @param rs   {@link ResultSet}
-     * @param st   {@link Statement}
-     * @param conn {@link Connection}
+     * @param rs   The {@link ResultSet} to close.
+     * @param st   The {@link Statement} to close.
+     * @param conn The {@link Connection} to close.
+     * @throws InternalException if a {@link SQLException} occurs during closing.
      */
     public static void close(ResultSet rs, Statement st, Connection conn) {
-        if (!Objects.isNull(rs)) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                throw new InternalException(e);
-            }
-        }
+        close(rs);
         if (!Objects.isNull(st)) {
             try {
                 st.close();
@@ -146,31 +138,23 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
                 throw new InternalException(e);
             }
         }
-        if (!Objects.isNull(conn)) {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                throw new InternalException(e);
-            }
-        }
+        close(conn);
     }
 
     /**
-     * 获取连接对象，单例模式，采用双重锁检查
+     * Retrieves a database connection using a thread-safe, double-checked locking pattern. If the connection is null or
+     * closed, a new one is obtained from the data source.
      *
-     * @return {@link Connection}
-     * @throws InternalException 异常
+     * @return A valid {@link Connection} object.
+     * @throws InternalException if a {@link SQLException} occurs while getting the connection.
      */
     private Connection getConnection() throws InternalException {
         try {
-            // 不为空
-            if (!Objects.isNull(connection) && !connection.isClosed()) {
+            if (connection != null && !connection.isClosed()) {
                 return connection;
             }
-            // 同步代码块
             synchronized (AbstractDatabaseQuery.class) {
-                // 为空或者已经关闭
-                if (Objects.isNull(connection) || connection.isClosed()) {
+                if (connection == null || connection.isClosed()) {
                     this.connection = this.getDataSource().getConnection();
                 }
             }
@@ -181,10 +165,10 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     }
 
     /**
-     * 获取 getCatalog
+     * Retrieves the catalog name for this database connection.
      *
-     * @return {@link String}
-     * @throws InternalException 异常
+     * @return The catalog name, or {@code null} if it is blank.
+     * @throws InternalException if a {@link SQLException} occurs.
      */
     protected String getCatalog() throws InternalException {
         try {
@@ -199,17 +183,16 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     }
 
     /**
-     * 获取 getSchema
+     * Retrieves the schema name for this database connection. This method includes special handling for different
+     * database types, such as CacheDB.
      *
-     * @return {@link String}
-     * @throws InternalException 异常
+     * @return The schema name, or {@code null} if it is blank.
+     * @throws InternalException if a {@link SQLException} occurs.
      */
     protected String getSchema() throws InternalException {
         try {
             String schema;
-            // 获取数据库URL 用于判断数据库类型
             String url = this.getDataSource().getConnection().getMetaData().getURL();
-            // 获取数据库名称
             String name = DatabaseType.getDbType(url).getName();
             if (DatabaseType.CACHEDB.getName().equals(name)) {
                 schema = verifySchema(this.getDataSource());
@@ -227,15 +210,15 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     }
 
     /**
-     * 验证Schema
+     * Verifies the existence of the schema from the data source, particularly for databases like CacheDB.
      *
-     * @param dataSource {@link DataSource}
-     * @return Schema
+     * @param dataSource The {@link DataSource} to use for verification.
+     * @return The schema name if it exists; otherwise, {@code null}.
+     * @throws SQLException if a database access error occurs.
      */
     private String verifySchema(DataSource dataSource) throws SQLException {
         String schema = dataSource.getConnection().getSchema();
 
-        // 验证是否有此Schema
         ResultSet resultSet = this.getConnection().getMetaData().getSchemas();
         while (resultSet.next()) {
             int columnCount = resultSet.getMetaData().getColumnCount();
@@ -250,10 +233,10 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     }
 
     /**
-     * 获取 DatabaseMetaData
+     * Retrieves the {@link DatabaseMetaData} for this database connection.
      *
-     * @return {@link DatabaseMetaData}
-     * @throws InternalException 异常
+     * @return The {@link DatabaseMetaData} object.
+     * @throws InternalException if a {@link SQLException} occurs.
      */
     protected DatabaseMetaData getMetaData() throws InternalException {
         try {
@@ -264,11 +247,11 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     }
 
     /**
-     * 准备声明
+     * Creates a {@link PreparedStatement} for the given SQL string.
      *
-     * @param sql {@link String} SQL
-     * @return {@link PreparedStatement}
-     * @throws InternalException 异常
+     * @param sql The SQL query string.
+     * @return A new {@link PreparedStatement} object.
+     * @throws InternalException if a {@link SQLException} occurs.
      */
     protected PreparedStatement prepareStatement(String sql) throws InternalException {
         Assert.notEmpty(sql, "Sql can not be empty!");
@@ -280,10 +263,11 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     }
 
     /**
-     * 根据表名获取主键
+     * Retrieves the primary keys for a table. This method is not supported in the abstract class and must be
+     * implemented by subclasses.
      *
-     * @return {@link List}
-     * @throws InternalException 异常
+     * @return A list of primary keys.
+     * @throws InternalException always, as this method is not implemented in the base class.
      */
     @Override
     public List<? extends PrimaryKey> getPrimaryKeys() throws InternalException {

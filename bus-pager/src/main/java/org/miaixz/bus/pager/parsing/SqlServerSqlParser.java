@@ -28,13 +28,21 @@
 package org.miaixz.bus.pager.parsing;
 
 /**
- * 针对 sqlserver 的分页解析
+ * Interface for parsing and converting SQL for SQL Server pagination.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface SqlServerSqlParser {
 
+    /**
+     * Converts a SQL statement into a paginated SQL statement for SQL Server.
+     *
+     * @param sql    the original SQL statement
+     * @param offset the offset of the first row to return
+     * @param limit  the maximum number of rows to return
+     * @return the paginated SQL statement
+     */
     String convertToPageSql(String sql, Integer offset, Integer limit);
 
 }

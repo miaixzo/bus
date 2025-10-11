@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符集工具类
+ * Utility class for character set operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,72 +47,109 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Charset {
 
     /**
-     * 默认字符集信息
+     * The default character set of the Java virtual machine.
      */
     public static final java.nio.charset.Charset DEFAULT = java.nio.charset.Charset.defaultCharset();
+    /**
+     * The display name of the default character set.
+     */
     public static final String DEFAULT_CHARSET = DEFAULT.displayName();
     /**
-     * ISO拉丁字母第1号，即ISO- Latin -1
+     * ISO Latin Alphabet No. 1, also known as ISO-8859-1.
      */
     public static final String DEFAULT_ISO_8859_1 = "ISO-8859-1";
+    /**
+     * {@link java.nio.charset.Charset} instance for ISO-8859-1.
+     */
     public static final java.nio.charset.Charset ISO_8859_1 = java.nio.charset.Charset.forName(DEFAULT_ISO_8859_1);
     /**
-     * 7位ASCII码，即ISO646-US，也就是Unicode字符集的基本拉丁字符块
+     * 7-bit ASCII, also known as ISO646-US, which is the basic Latin character block of the Unicode character set.
      */
     public static final String DEFAULT_US_ASCII = "US-ASCII";
+    /**
+     * {@link java.nio.charset.Charset} instance for US-ASCII.
+     */
     public static final java.nio.charset.Charset US_ASCII = java.nio.charset.Charset.forName(DEFAULT_US_ASCII);
     /**
-     * GBK UCS 转换格式
+     * GBK character set, used for Chinese characters.
      */
     public static final String DEFAULT_GBK = "GBK";
+    /**
+     * {@link java.nio.charset.Charset} instance for GBK.
+     */
     public static final java.nio.charset.Charset GBK = java.nio.charset.Charset.forName(DEFAULT_GBK);
     /**
-     * GB2312 转换格式
+     * GB2312 character set, used for simplified Chinese characters.
      */
     public static final String DEFAULT_GB_2312 = "GB2312";
+    /**
+     * {@link java.nio.charset.Charset} instance for GB2312.
+     */
     public static final java.nio.charset.Charset GB_2312 = java.nio.charset.Charset.forName(DEFAULT_GB_2312);
     /**
-     * GB18030 编码
+     * GB18030 character set, a Chinese national standard for character encoding.
      */
     public static final String DEFAULT_GB_18030 = "GB18030";
+    /**
+     * {@link java.nio.charset.Charset} instance for GB18030.
+     */
     public static final java.nio.charset.Charset GB_18030 = java.nio.charset.Charset.forName(DEFAULT_GB_18030);
     /**
-     * 8位UCS转换格式
+     * 8-bit UCS Transformation Format, commonly used for Unicode.
      */
     public static final String DEFAULT_UTF_8 = "UTF-8";
+    /**
+     * {@link java.nio.charset.Charset} instance for UTF-8.
+     */
     public static final java.nio.charset.Charset UTF_8 = java.nio.charset.Charset.forName(DEFAULT_UTF_8);
     /**
-     * 16位UCS转换格式，字节顺序由可选的字节顺序标记标识
+     * 16-bit UCS Transformation Format, byte order identified by an optional byte order mark.
      */
     public static final String DEFAULT_UTF_16 = "UTF-16";
+    /**
+     * {@link java.nio.charset.Charset} instance for UTF-16.
+     */
     public static final java.nio.charset.Charset UTF_16 = java.nio.charset.Charset.forName(DEFAULT_UTF_16);
     /**
-     * 16位UCS转换格式，大写字节顺序
+     * 16-bit UCS Transformation Format, big-endian byte order.
      */
     public static final String DEFAULT_UTF_16_BE = "UTF-16BE";
+    /**
+     * {@link java.nio.charset.Charset} instance for UTF-16BE.
+     */
     public static final java.nio.charset.Charset UTF_16_BE = java.nio.charset.Charset.forName(DEFAULT_UTF_16_BE);
     /**
-     * 16位UCS转换格式，小写字节顺序
+     * 16-bit UCS Transformation Format, little-endian byte order.
      */
     public static final String DEFAULT_UTF_16_LE = "UTF-16LE";
+    /**
+     * {@link java.nio.charset.Charset} instance for UTF-16LE.
+     */
     public static final java.nio.charset.Charset UTF_16_LE = java.nio.charset.Charset.forName(DEFAULT_UTF_16_LE);
     /**
-     * 32位UCS转换格式，大写字节顺序
+     * 32-bit UCS Transformation Format, big-endian byte order.
      */
     public static final String DEFAULT_UTF_32_BE = "UTF-32BE";
+    /**
+     * {@link java.nio.charset.Charset} instance for UTF-32BE.
+     */
     public static final java.nio.charset.Charset UTF_32_BE = java.nio.charset.Charset.forName(DEFAULT_UTF_32_BE);
     /**
-     * 32位UCS转换格式，小写字节顺序
+     * 32-bit UCS Transformation Format, little-endian byte order.
      */
     public static final String DEFAULT_UTF_32_LE = "UTF-32LE";
+    /**
+     * {@link java.nio.charset.Charset} instance for UTF-32LE.
+     */
     public static final java.nio.charset.Charset UTF_32_LE = java.nio.charset.Charset.forName(DEFAULT_UTF_32_LE);
 
     /**
-     * 转换为Charset对象
+     * Converts a character set name to a {@link java.nio.charset.Charset} object. If the character set name is blank,
+     * the default character set is returned.
      *
-     * @param charsetName 字符集，为空则返回默认字符集
-     * @return Charset
-     * @throws UnsupportedCharsetException 编码不支持
+     * @param charsetName The name of the character set. If {@code null} or empty, the default character set is used.
+     * @return A {@link java.nio.charset.Charset} object.
+     * @throws UnsupportedCharsetException If the named character set is not supported.
      */
     public static java.nio.charset.Charset charset(final String charsetName) throws UnsupportedCharsetException {
         return StringKit.isBlank(charsetName) ? java.nio.charset.Charset.defaultCharset()
@@ -120,21 +157,23 @@ public class Charset {
     }
 
     /**
-     * 解析字符串编码为Charset对象，解析失败返回系统默认编码
+     * Parses a character set name into a {@link java.nio.charset.Charset} object. If parsing fails or the name is
+     * blank, the system's default character set is returned.
      *
-     * @param charsetName 字符集，为空则返回默认字符集
-     * @return Charset
+     * @param charsetName The name of the character set. If {@code null} or empty, the default character set is used.
+     * @return A {@link java.nio.charset.Charset} object.
      */
     public static java.nio.charset.Charset parse(final String charsetName) {
         return parse(charsetName, java.nio.charset.Charset.defaultCharset());
     }
 
     /**
-     * 解析字符串编码为Charset对象，解析失败返回默认编码
+     * Parses a character set name into a {@link java.nio.charset.Charset} object. If parsing fails or the name is
+     * blank, the specified default character set is returned.
      *
-     * @param charsetName    字符集，为空则返回默认字符集
-     * @param defaultCharset 解析失败使用的默认编码
-     * @return Charset
+     * @param charsetName    The name of the character set. If {@code null} or empty, the default character set is used.
+     * @param defaultCharset The default character set to use if parsing fails.
+     * @return A {@link java.nio.charset.Charset} object.
      */
     public static java.nio.charset.Charset parse(
             final String charsetName,
@@ -154,12 +193,12 @@ public class Charset {
     }
 
     /**
-     * 转换字符串的字符集编码
+     * Converts the character set encoding of a string.
      *
-     * @param source      字符串
-     * @param srcCharset  源字符集，默认ISO-8859-1
-     * @param destCharset 目标字符集，默认UTF-8
-     * @return 转换后的字符集
+     * @param source      The input string.
+     * @param srcCharset  The source character set. Defaults to ISO-8859-1 if {@code null}.
+     * @param destCharset The destination character set. Defaults to UTF-8 if {@code null}.
+     * @return The string with the converted character set.
      */
     public static String convert(final String source, final String srcCharset, final String destCharset) {
         return convert(
@@ -169,18 +208,19 @@ public class Charset {
     }
 
     /**
-     * 转换字符串的字符集编码 当以错误的编码读取为字符串时，打印字符串将出现乱码。 此方法用于纠正因读取使用编码错误导致的乱码问题。
-     * 例如，在Servlet请求中客户端用GBK编码了请求参数，我们使用UTF-8读取到的是乱码，此时，使用此方法即可还原原编码的内容
+     * Converts the character set encoding of a string. This method is used to correct garbled characters caused by
+     * incorrect encoding when reading a string. For example, if a client encodes request parameters with GBK in a
+     * Servlet request, and we read it with UTF-8, it will be garbled. This method can restore the original content.
      * 
      * <pre>
-     * 客户端 - GBK编码 - Servlet容器 - UTF-8解码 - 乱码
-     * 乱码 - UTF-8编码 - GBK解码 - 正确内容
+     * Client - GBK encoding - Servlet container - UTF-8 decoding - garbled characters
+     * Garbled characters - UTF-8 encoding - GBK decoding - correct content
      * </pre>
      *
-     * @param source      字符串
-     * @param srcCharset  源字符集，默认ISO-8859-1
-     * @param destCharset 目标字符集，默认UTF-8
-     * @return 转换后的字符集
+     * @param source      The input string.
+     * @param srcCharset  The source character set. Defaults to ISO-8859-1 if {@code null}.
+     * @param destCharset The destination character set. Defaults to UTF-8 if {@code null}.
+     * @return The string with the converted character set.
      */
     public static String convert(
             final String source,
@@ -201,65 +241,68 @@ public class Charset {
     }
 
     /**
-     * 转换文件编码 此方法用于转换文件编码，读取的文件实际编码必须与指定的srcCharset编码一致，否则导致乱码
+     * Converts the character set encoding of a file. This method assumes that the actual encoding of the file to be
+     * read matches the specified {@code srcCharset}, otherwise it may lead to garbled characters.
      *
-     * @param file        文件
-     * @param srcCharset  原文件的编码，必须与文件内容的编码保持一致
-     * @param destCharset 转码后的编码
-     * @return 被转换编码的文件
+     * @param file        The file to convert.
+     * @param srcCharset  The source character set of the file. Must be consistent with the file content's encoding.
+     * @param destCharset The target character set for conversion.
+     * @return The file with the converted encoding.
      */
     public static File convert(
             final File file,
             final java.nio.charset.Charset srcCharset,
             final java.nio.charset.Charset destCharset) {
-        ;
         return FileKit.writeString(FileKit.readString(file, srcCharset), file, destCharset);
     }
 
     /**
-     * 系统字符集编码，如果是Windows，则默认为GBK编码，否则取 {@link Charset#defaultCharsetName()}
+     * Returns the name of the system's default character set. If the operating system is Windows, it defaults to GBK;
+     * otherwise, it uses the value from {@link java.nio.charset.Charset#defaultCharset()}.
      *
-     * @return 系统字符集编码
-     * @see Charset#defaultCharsetName()
+     * @return The name of the system's default character set.
+     * @see java.nio.charset.Charset#defaultCharset()
      */
     public static String systemCharsetName() {
         return systemCharset().name();
     }
 
     /**
-     * 系统字符集编码，如果是Windows，则默认为GBK编码，否则取 {@link Charset#defaultCharsetName()}
+     * Returns the system's default character set. If the operating system is Windows, it defaults to GBK; otherwise, it
+     * uses the value from {@link java.nio.charset.Charset#defaultCharset()}.
      *
-     * @return 系统字符集编码
-     * @see Charset#defaultCharsetName()
+     * @return The system's default character set.
+     * @see java.nio.charset.Charset#defaultCharset()
      */
     public static java.nio.charset.Charset systemCharset() {
         return FileKit.isWindows() ? GBK : defaultCharset();
     }
 
     /**
-     * 系统默认字符集编码
+     * Returns the name of the system's default character set.
      *
-     * @return 系统字符集编码
+     * @return The name of the system's default character set.
      */
     public static String defaultCharsetName() {
         return defaultCharset().name();
     }
 
     /**
-     * 系统默认字符集编码
+     * Returns the system's default character set.
      *
-     * @return 系统字符集编码
+     * @return The system's default character set.
      */
     public static java.nio.charset.Charset defaultCharset() {
         return java.nio.charset.Charset.defaultCharset();
     }
 
     /**
-     * 探测编码 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用使用支持reset方法的流
+     * Detects the character set of an input stream. Note: This method reads a portion of the stream and then closes it.
+     * If the stream needs to be reused, ensure it supports the {@code reset} method.
      *
-     * @param in       流，使用后关闭此流
-     * @param charsets 需要测试用的编码，null或空使用默认的编码数组
-     * @return 编码
+     * @param in       The input stream to detect the character set from. This stream will be closed after use.
+     * @param charsets Optional character sets to test. If {@code null} or empty, a default array of encodings is used.
+     * @return The detected character set.
      * @see CharsetDetector#detect(InputStream, java.nio.charset.Charset...)
      */
     public static java.nio.charset.Charset detect(final InputStream in, final java.nio.charset.Charset... charsets) {
@@ -267,12 +310,14 @@ public class Charset {
     }
 
     /**
-     * 探测编码 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用使用支持reset方法的流
+     * Detects the character set of an input stream with a specified buffer size. Note: This method reads a portion of
+     * the stream and then closes it. If the stream needs to be reused, ensure it supports the {@code reset} method.
      *
-     * @param bufferSize 自定义缓存大小，即每次检查的长度
-     * @param in         流，使用后关闭此流
-     * @param charsets   需要测试用的编码，null或空使用默认的编码数组
-     * @return 编码
+     * @param bufferSize The custom buffer size, i.e., the length to check each time.
+     * @param in         The input stream to detect the character set from. This stream will be closed after use.
+     * @param charsets   Optional character sets to test. If {@code null} or empty, a default array of encodings is
+     *                   used.
+     * @return The detected character set.
      * @see CharsetDetector#detect(int, InputStream, java.nio.charset.Charset...)
      */
     public static java.nio.charset.Charset detect(
@@ -283,26 +328,29 @@ public class Charset {
     }
 
     /**
-     * 创建一个新的CharsetEncoder实例，配置指定的字符集和错误处理策略。
+     * Creates a new {@link CharsetEncoder} instance configured with the specified character set and error handling
+     * action.
      *
-     * @param charset 指定的字符集，不允许为null。
-     * @param action  对于不合法的字符或无法映射的字符的处理策略，不允许为null
-     * @return 配置好的CharsetEncoder实例
+     * @param charset The character set to use, must not be {@code null}.
+     * @param action  The action to take for malformed input and unmappable characters, must not be {@code null}.
+     * @return A configured {@link CharsetEncoder} instance.
      */
     public static CharsetEncoder newEncoder(final java.nio.charset.Charset charset, final CodingErrorAction action) {
         return Assert.notNull(charset).newEncoder().onMalformedInput(action).onUnmappableCharacter(action);
     }
 
     /**
-     * 创建一个新的CharsetDecoder实例，配置指定的字符集和错误处理行为。
+     * Creates a new {@link CharsetDecoder} instance configured with the specified character set and error handling
+     * action.
      *
-     * @param charset 指定的字符集，不允许为null。
-     * @param action  当遇到不合法的字符编码或不可映射字符时采取的行动，例如忽略、替换等。
-     * @return 配置好的CharsetDecoder实例，用于解码字符。
+     * @param charset The character set to use, must not be {@code null}.
+     * @param action  The action to take when encountering malformed input or unmappable characters (e.g., ignore,
+     *                replace).
+     * @return A configured {@link CharsetDecoder} instance for decoding characters.
      */
     public static CharsetDecoder newDecoder(final java.nio.charset.Charset charset, final CodingErrorAction action) {
         return Assert.notNull(charset).newDecoder().onMalformedInput(action).onUnmappableCharacter(action)
-                // 设置遇到无法解码的字符时的替换字符串
+                // Sets the replacement string when an undecodable character is encountered
                 .replaceWith("?");
     }
 

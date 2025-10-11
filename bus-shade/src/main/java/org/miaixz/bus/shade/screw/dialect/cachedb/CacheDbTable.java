@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 表信息
+ * Represents table information for a CacheDB database.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,52 +44,52 @@ import lombok.Setter;
 public class CacheDbTable implements Table {
 
     /**
-     *
+     * The table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
     /**
-     * TABLE_NAME
+     * The name of the table.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
     /**
-     *
+     * The name of the designated "identifier" column of a typed table (may be {@code null}).
      */
     @MappingField(value = "SELF_REFERENCING_COL_NAME")
     private String selfReferencingColName;
     /**
-     * TABLE_SCHEM
+     * The schema of the table.
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
     /**
-     *
+     * The schema of the typed table (may be {@code null}).
      */
     @MappingField(value = "TYPE_SCHEM")
     private String typeSchem;
     /**
-     *
+     * The catalog of the typed table (may be {@code null}).
      */
     @MappingField(value = "TYPE_CAT")
     private Object typeCat;
     /**
-     * TABLE_TYPE
+     * The type of the table (e.g., "TABLE", "VIEW", etc.).
      */
     @MappingField(value = "TABLE_TYPE")
     private String tableType;
     /**
-     * REMARKS
+     * The explanatory comment on the table.
      */
     @MappingField(value = "REMARKS")
     private String remarks;
     /**
-     *
+     * Specifies how values in SELF_REFERENCING_COL_NAME are created.
      */
     @MappingField(value = "REF_GENERATION")
     private String refGeneration;
     /**
-     *
+     * The type name of the typed table (may be {@code null}).
      */
     @MappingField(value = "TYPE_NAME")
     private String typeName;

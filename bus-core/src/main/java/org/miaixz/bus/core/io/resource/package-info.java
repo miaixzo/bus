@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 针对ClassPath和文件中资源读取的封装
+ * Provides encapsulation for reading resources from the ClassPath and files.
  *
  * @author Kimi Liu
  * @since Java 17+

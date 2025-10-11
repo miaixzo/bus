@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.xyz.RowKit;
 
 /**
- * 读取{@link Sheet}为Map的List列表形式
+ * Reads an {@link Sheet} into a list of maps.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,11 +49,12 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<Object, Object>
     private final int headerRowIndex;
 
     /**
-     * 构造
+     * Constructs a new {@code MapSheetReader}.
      *
-     * @param headerRowIndex 标题所在行，如果标题行在读取的内容行中间，这行做为数据将忽略
-     * @param startRowIndex  起始行（包含，从0开始计数）
-     * @param endRowIndex    结束行（包含，从0开始计数）
+     * @param headerRowIndex The row index where the header is located. If the header row is in the middle of the
+     *                       content rows to be read, this row will be ignored as data.
+     * @param startRowIndex  The starting row index (inclusive, 0-based).
+     * @param endRowIndex    The ending row index (inclusive, 0-based).
      */
     public MapSheetReader(final int headerRowIndex, final int startRowIndex, final int endRowIndex) {
         super(startRowIndex, endRowIndex);
@@ -62,7 +63,7 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<Object, Object>
 
     @Override
     public List<Map<Object, Object>> read(final Sheet sheet) {
-        // 边界判断
+        // Boundary check.
         final int firstRowNum = sheet.getFirstRowNum();
         final int lastRowNum = sheet.getLastRowNum();
         if (lastRowNum < 0) {
@@ -79,22 +80,22 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<Object, Object>
 
         int startRowIndex = this.cellRangeAddress.getFirstRow();
         if (startRowIndex > lastRowNum) {
-            // 只有标题行的Excel，起始行是1，标题行（最后的行号是0）
+            // If only header row exists, starting row is 1, header row (last row number is 0).
             return ListKit.empty();
         }
-        // 读取起始行（包含）
+        // Read starting row (inclusive).
         startRowIndex = Math.max(startRowIndex, firstRowNum);
-        // 读取结束行（包含）
+        // Read ending row (inclusive).
         final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), lastRowNum);
 
-        // 读取header
+        // Read header.
         final List<Object> headerList = this.config.aliasHeader(readRow(sheet, headerRowIndex));
 
         final List<Map<Object, Object>> result = new ArrayList<>(endRowIndex - startRowIndex + 1);
         final boolean ignoreEmptyRow = this.config.isIgnoreEmptyRow();
         List<Object> rowList;
         for (int i = startRowIndex; i <= endRowIndex; i++) {
-            // 跳过标题行
+            // Skip header row.
             if (i != headerRowIndex) {
                 rowList = readRow(sheet, i);
                 if (CollKit.isNotEmpty(rowList) || !ignoreEmptyRow) {
@@ -106,11 +107,11 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<Object, Object>
     }
 
     /**
-     * 读取某一行数据
+     * Reads a single row of data.
      *
-     * @param sheet    {@link Sheet}
-     * @param rowIndex 行号，从0开始
-     * @return 一行数据
+     * @param sheet    The {@link Sheet}.
+     * @param rowIndex The row index, 0-based.
+     * @return A list of data for the row.
      */
     private List<Object> readRow(final Sheet sheet, final int rowIndex) {
         return RowKit.readRow(sheet.getRow(rowIndex), this.config.getCellEditor());

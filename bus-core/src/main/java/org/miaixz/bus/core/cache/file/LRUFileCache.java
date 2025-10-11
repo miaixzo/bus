@@ -34,7 +34,8 @@ import org.miaixz.bus.core.cache.Cache;
 import org.miaixz.bus.core.cache.provider.LRUCache;
 
 /**
- * 使用LRU缓存文件，以解决频繁读取文件引起的性能问题
+ * A file cache implementation that uses the LRU (Least Recently Used) strategy to manage cached files and mitigate
+ * performance issues from frequent file reads.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,47 +46,66 @@ public class LRUFileCache extends AbstractFileCache {
     private static final long serialVersionUID = 2852230517893L;
 
     /**
-     * 构造 最大文件大小为缓存容量的一半 默认无超时
+     * Constructs an LRU file cache with a default max file size (half of the capacity) and no timeout.
      *
-     * @param capacity 缓存容量
+     * @param capacity The cache capacity in bytes.
      */
     public LRUFileCache(final int capacity) {
         this(capacity, capacity / 2, 0);
     }
 
     /**
-     * 构造 默认无超时
+     * Constructs an LRU file cache with a specified max file size and no timeout.
      *
-     * @param capacity    缓存容量
-     * @param maxFileSize 最大文件大小
+     * @param capacity    The cache capacity in bytes.
+     * @param maxFileSize The maximum file size in bytes.
      */
     public LRUFileCache(final int capacity, final int maxFileSize) {
         this(capacity, maxFileSize, 0);
     }
 
     /**
-     * 构造
+     * Constructs an LRU file cache with specified capacity, max file size, and timeout.
      *
-     * @param capacity    缓存容量
-     * @param maxFileSize 文件最大大小
-     * @param timeout     默认超时时间，0表示无默认超时
+     * @param capacity    The cache capacity in bytes.
+     * @param maxFileSize The maximum file size in bytes.
+     * @param timeout     The default timeout in milliseconds (0 for no timeout).
      */
     public LRUFileCache(final int capacity, final int maxFileSize, final long timeout) {
         super(capacity, maxFileSize, timeout);
     }
 
+    /**
+     * Initializes the underlying LRU cache. This implementation uses a custom {@link LRUCache} that tracks memory usage
+     * in bytes.
+     *
+     * @return A new {@link LRUCache} instance.
+     */
     @Override
     protected Cache<File, byte[]> initCache() {
-        return new LRUCache<>(LRUFileCache.this.capacity, super.timeout) {
+        // The cache capacity is managed by the parent class in terms of byte size,
+        // while the underlying LRUCache manages the number of items.
+        return new LRUCache<>(this.capacity, super.timeout) {
 
             @Serial
             private static final long serialVersionUID = 2852551020813L;
 
+            /**
+             * Determines if the cache is full by comparing the used byte size against the capacity.
+             *
+             * @return {@code true} if the used size exceeds the capacity.
+             */
             @Override
             public boolean isFull() {
                 return LRUFileCache.this.usedSize > this.capacity;
             }
 
+            /**
+             * Updates the used size when an item is removed from the cache.
+             *
+             * @param key          The file being removed.
+             * @param cachedObject The byte content of the file being removed.
+             */
             @Override
             protected void onRemove(final File key, final byte[] cachedObject) {
                 usedSize -= cachedObject.length;

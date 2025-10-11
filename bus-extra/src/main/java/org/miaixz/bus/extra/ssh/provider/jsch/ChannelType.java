@@ -28,7 +28,8 @@
 package org.miaixz.bus.extra.ssh.provider.jsch;
 
 /**
- * Jsch支持的Channel类型
+ * Enumeration of channel types supported by JSch (Java Secure Channel). Each enum constant corresponds to a specific
+ * type of SSH channel that can be opened.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,60 +37,61 @@ package org.miaixz.bus.extra.ssh.provider.jsch;
 public enum ChannelType {
 
     /**
-     * Session
+     * Session channel type, a general-purpose channel.
      */
     SESSION("session"),
     /**
-     * shell
+     * Shell channel type, used for interactive shell sessions.
      */
     SHELL("shell"),
     /**
-     * exec
+     * Exec channel type, used for executing a single remote command.
      */
     EXEC("exec"),
     /**
-     * x11
+     * X11 forwarding channel type, used for forwarding X11 graphical user interface sessions.
      */
     X11("x11"),
     /**
-     * agent forwarding
+     * Agent forwarding channel type, used for forwarding authentication agent connections.
      */
     AGENT_FORWARDING("auth-agent@openssh.com"),
     /**
-     * direct tcpip
+     * Direct TCP/IP forwarding channel type, used for local port forwarding.
      */
     DIRECT_TCPIP("direct-tcpip"),
     /**
-     * forwarded tcpip
+     * Forwarded TCP/IP channel type, used for remote port forwarding.
      */
     FORWARDED_TCPIP("forwarded-tcpip"),
     /**
-     * sftp
+     * SFTP channel type, used for Secure File Transfer Protocol sessions.
      */
     SFTP("sftp"),
     /**
-     * subsystem
+     * Subsystem channel type, used for accessing predefined subsystems on the server (e.g., sftp).
      */
     SUBSYSTEM("subsystem");
 
     /**
-     * channel值
+     * The string value representing the channel type, as used by the JSch library.
      */
     private final String value;
 
     /**
-     * 构造
+     * Constructs a {@code ChannelType} with the specified string value.
      *
-     * @param value 类型值
+     * @param value The string representation of the channel type.
      */
     ChannelType(final String value) {
         this.value = value;
     }
 
     /**
-     * 获取值
+     * Retrieves the string value of the channel type. This value is used when opening a channel with JSch's
+     * {@code openChannel} method.
      *
-     * @return 值
+     * @return The string value of the channel type.
      */
     public String getValue() {
         return this.value;

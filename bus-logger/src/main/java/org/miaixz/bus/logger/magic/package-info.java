@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 日志级别级相关
+ * This package provides abstract classes for the logging framework, which can be extended to support different logging
+ * implementations.
  *
  * @author Kimi Liu
  * @since Java 17+

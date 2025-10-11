@@ -26,13 +26,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * TOML（Tom's Obvious, Minimal Language）配置文件解析和生成
- *
+ * Provides classes for parsing and generating TOML (Tom's Obvious, Minimal Language) configuration files.
  * <p>
- * 规范：https://toml.io/cn/
+ * Specification: https://toml.io/
  * </p>
  * <p>
- * 参考实现：https://github.com/TheElectronWill/TOML-javalib
+ * Based on the implementation from: https://github.com/TheElectronWill/TOML-javalib
  * </p>
  *
  * @author Kimi Liu

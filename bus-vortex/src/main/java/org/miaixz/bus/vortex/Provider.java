@@ -28,7 +28,7 @@
 package org.miaixz.bus.vortex;
 
 /**
- * 数据序列化接口，定义对象序列化为字符串的通用方法
+ * Data serialization interface, defining a common method for serializing objects into strings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,10 +36,10 @@ package org.miaixz.bus.vortex;
 public interface Provider {
 
     /**
-     * 将对象序列化为字符串
+     * Serializes an object into a string.
      *
-     * @param object 待序列化的对象
-     * @return 序列化后的字符串结果
+     * @param object The object to be serialized.
+     * @return The serialized string result.
      */
     String serialize(Object object);
 

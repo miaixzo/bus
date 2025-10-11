@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 图片写出封装
+ * Image writer wrapper.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,10 +59,10 @@ public class ImageWriter implements Flushable {
     private ImageWriteParam writeParam;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param image     {@link Image}
-     * @param imageType 图片类型（图片扩展名），{@code null}表示使用RGB模式（JPG）
+     * @param image     The {@link Image}.
+     * @param imageType The image type (extension), or {@code null} for RGB mode (JPG).
      */
     public ImageWriter(final Image image, final String imageType) {
         this.image = ImageKit.castToRenderedImage(image, imageType);
@@ -70,48 +70,48 @@ public class ImageWriter implements Flushable {
     }
 
     /**
-     * 创建图片写出器
+     * Creates an ImageWriter.
      *
-     * @param image           图片
-     * @param imageType       图片类型（图片扩展名），{@code null}表示使用RGB模式（JPG）
-     * @param backgroundColor 背景色{@link Color}，{@code null}表示黑色或透明
-     * @return {@code ImgWriter}
+     * @param image           The image.
+     * @param imageType       The image type (extension), or {@code null} for RGB mode (JPG).
+     * @param backgroundColor The background color {@link Color}, or {@code null} for black or transparent.
+     * @return An {@code ImageWriter}.
      */
     public static ImageWriter of(final Image image, final String imageType, final Color backgroundColor) {
         return of(ImageKit.toBufferedImage(image, imageType, backgroundColor), imageType);
     }
 
     /**
-     * 创建图片写出器
+     * Creates an ImageWriter.
      *
-     * @param image     图片
-     * @param imageType 图片类型（图片扩展名），{@code null}表示使用RGB模式（JPG）
-     * @return {@code ImgWriter}
+     * @param image     The image.
+     * @param imageType The image type (extension), or {@code null} for RGB mode (JPG).
+     * @return An {@code ImageWriter}.
      */
     public static ImageWriter of(final Image image, final String imageType) {
         return new ImageWriter(image, imageType);
     }
 
     /**
-     * 构建图片写出参数
+     * Builds image write parameters.
      *
-     * @param renderedImage 图片
-     * @param writer        {@link javax.imageio.ImageWriter}
-     * @param quality       质量，范围0~1
-     * @return {@link ImageWriteParam} or {@code null}
+     * @param renderedImage The image.
+     * @param writer        The {@link javax.imageio.ImageWriter}.
+     * @param quality       The quality, from 0 to 1.
+     * @return An {@link ImageWriteParam} or {@code null}.
      */
     private static ImageWriteParam buildParam(
             final RenderedImage renderedImage,
             final javax.imageio.ImageWriter writer,
             final float quality) {
-        // 设置质量
+        // Set quality
         ImageWriteParam imgWriteParams = null;
         if (quality > 0 && quality < 1) {
             imgWriteParams = writer.getDefaultWriteParam();
             if (imgWriteParams.canWriteCompressed()) {
                 imgWriteParams.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
                 imgWriteParams.setCompressionQuality(quality);
-                final ColorModel colorModel = renderedImage.getColorModel();// ColorModel.getRGBdefault();
+                final ColorModel colorModel = renderedImage.getColorModel();
                 imgWriteParams.setDestinationType(
                         new ImageTypeSpecifier(colorModel, colorModel.createCompatibleSampleModel(16, 16)));
             }
@@ -120,9 +120,10 @@ public class ImageWriter implements Flushable {
     }
 
     /**
-     * 设置写出质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
+     * Sets the write quality. A value between 0 and 1 (exclusive) indicates a compression ratio; other values indicate
+     * no compression.
      *
-     * @param quality 写出质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
+     * @param quality The write quality, a value between 0 and 1 (exclusive) for compression.
      * @return this
      */
     public ImageWriter setQuality(final float quality) {
@@ -131,20 +132,20 @@ public class ImageWriter implements Flushable {
     }
 
     /**
-     * 写出图像：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG 此方法并不关闭流
+     * Writes the image. This method does not close the stream.
      *
-     * @param out 写出到的目标流
-     * @throws InternalException IO异常
+     * @param out The target output stream.
+     * @throws InternalException if an I/O error occurs.
      */
     public void write(final OutputStream out) throws InternalException {
         write(ImageKit.getImageOutputStream(out));
     }
 
     /**
-     * 写出图像为目标文件扩展名对应的格式
+     * Writes the image in the format corresponding to the destination file's extension.
      *
-     * @param destFile 目标文件
-     * @throws InternalException IO异常
+     * @param destFile The destination file.
+     * @throws InternalException if an I/O error occurs.
      */
     public void write(final File destFile) throws InternalException {
         FileKit.touch(destFile);
@@ -158,9 +159,9 @@ public class ImageWriter implements Flushable {
     }
 
     /**
-     * 通过{@link javax.imageio.ImageWriter}写出图片到输出流
+     * Writes the image to an output stream using an {@link javax.imageio.ImageWriter}.
      *
-     * @param output 输出的Image流{@link ImageOutputStream}， 非空
+     * @param output The {@link ImageOutputStream} to write to (not null).
      */
     public void write(final ImageOutputStream output) {
         Assert.notNull(output);
@@ -168,7 +169,7 @@ public class ImageWriter implements Flushable {
         final javax.imageio.ImageWriter writer = this.writer;
         final RenderedImage image = this.image;
         writer.setOutput(output);
-        // 设置质量
+        // Set quality
         try {
             if (null != this.writeParam) {
                 writer.write(null, new IIOImage(image, null, null), this.writeParam);
@@ -180,7 +181,7 @@ public class ImageWriter implements Flushable {
             throw new InternalException(e);
         } finally {
             writer.dispose();
-            // FileCacheImageOutputStream 会产生临时文件，此处关闭清除
+            // FileCacheImageOutputStream creates a temporary file, which is cleaned up here
             IoKit.closeQuietly(output);
         }
     }

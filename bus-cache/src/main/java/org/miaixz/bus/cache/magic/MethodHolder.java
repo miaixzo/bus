@@ -31,9 +31,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 方法持有者类
+ * A container for metadata about a method's return type.
  * <p>
- * 用于存储方法的相关信息，包括返回类型、内部返回类型和是否返回集合类型。 使用Lombok注解简化getter和setter方法的编写。
+ * This class stores information such as the return type, the generic type of a collection if applicable, and a flag
+ * indicating whether the return type is a collection. It uses Lombok annotations to simplify the creation of getter and
+ * setter methods.
  * </p>
  *
  * @author Kimi Liu
@@ -44,69 +46,69 @@ import lombok.Setter;
 public class MethodHolder {
 
     /**
-     * 内部返回类型，用于集合类型时表示集合元素的类型
+     * The generic type of the collection if the return type is a collection.
      */
     private Class<?> innerReturnType;
 
     /**
-     * 方法返回类型
+     * The return type of the method.
      */
     private Class<?> returnType;
 
     /**
-     * 是否返回集合类型
+     * A flag indicating whether the return type is a collection.
      */
     private boolean collection;
 
     /**
-     * 构造方法
+     * Constructs a new {@code MethodHolder}.
      *
-     * @param collection 是否返回集合类型
+     * @param collection {@code true} if the method's return type is a collection, otherwise {@code false}.
      */
     public MethodHolder(boolean collection) {
         this.collection = collection;
     }
 
     /**
-     * 判断是否返回集合类型
+     * Checks if the method's return type is a collection.
      *
-     * @return 如果返回集合类型则返回true，否则返回false
+     * @return {@code true} if the return type is a collection, otherwise {@code false}.
      */
     public boolean isCollection() {
         return collection;
     }
 
     /**
-     * 获取方法返回类型
+     * Gets the return type of the method.
      *
-     * @return 方法返回类型
+     * @return The method's return type.
      */
     public Class<?> getReturnType() {
         return returnType;
     }
 
     /**
-     * 设置方法返回类型
+     * Sets the return type of the method.
      *
-     * @param returnType 方法返回类型
+     * @param returnType The method's return type.
      */
     public void setReturnType(Class<?> returnType) {
         this.returnType = returnType;
     }
 
     /**
-     * 获取内部返回类型
+     * Gets the inner return type, which is the element type for collections.
      *
-     * @return 内部返回类型
+     * @return The inner return type, or {@code null} if not applicable.
      */
     public Class<?> getInnerReturnType() {
         return innerReturnType;
     }
 
     /**
-     * 设置内部返回类型
+     * Sets the inner return type, which is the element type for collections.
      *
-     * @param innerReturnType 内部返回类型
+     * @param innerReturnType The inner return type.
      */
     public void setInnerReturnType(Class<?> innerReturnType) {
         this.innerReturnType = innerReturnType;

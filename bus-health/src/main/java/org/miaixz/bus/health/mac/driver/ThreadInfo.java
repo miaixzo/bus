@@ -41,7 +41,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 
 /**
- * Utility to query threads for a process
+ * Utility to query threads for a process on macOS.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,9 +49,19 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
 @ThreadSafe
 public final class ThreadInfo {
 
+    /**
+     * Pattern for parsing `ps -awwxM` output for thread information. Groups: 1: PID 2: CPU usage 3: State 4: Priority
+     * 5: System time 6: User time
+     */
     private static final Pattern PS_M = Pattern.compile(
             "\\D+(\\d+).+(\\d+\\.\\d)\\s+(\\w)\\s+(\\d+)\\D+(\\d+:\\d{2}\\.\\d{2})\\s+(\\d+:\\d{2}\\.\\d{2}).+");
 
+    /**
+     * Queries thread statistics for a given process ID.
+     *
+     * @param pid The process ID to query.
+     * @return A list of {@link ThreadStats} objects for the threads of the specified process.
+     */
     public static List<ThreadStats> queryTaskThreads(int pid) {
         String pidStr = Symbol.SPACE + pid + Symbol.SPACE;
         List<ThreadStats> taskThreads = new ArrayList<>();
@@ -75,7 +85,7 @@ public final class ThreadInfo {
     }
 
     /**
-     * Class to encapsulate mach thread info
+     * Class to encapsulate mach thread information.
      */
     @Immutable
     public static class ThreadStats {
@@ -87,6 +97,16 @@ public final class ThreadInfo {
         private final OSProcess.State state;
         private final int priority;
 
+        /**
+         * Constructs a {@code ThreadStats} object.
+         *
+         * @param tid   The thread ID.
+         * @param cpu   The CPU usage of the thread.
+         * @param state The state of the thread (e.g., 'R' for running, 'S' for sleeping).
+         * @param sTime The system time used by the thread.
+         * @param uTime The user time used by the thread.
+         * @param pri   The priority of the thread.
+         */
         public ThreadStats(int tid, double cpu, char state, long sTime, long uTime, int pri) {
             this.threadId = tid;
             this.userTime = uTime;
@@ -124,42 +144,54 @@ public final class ThreadInfo {
         }
 
         /**
-         * @return the threadId
+         * Gets the thread ID.
+         *
+         * @return The thread ID.
          */
         public int getThreadId() {
             return threadId;
         }
 
         /**
-         * @return the userTime
+         * Gets the user time used by the thread.
+         *
+         * @return The user time.
          */
         public long getUserTime() {
             return userTime;
         }
 
         /**
-         * @return the systemTime
+         * Gets the system time used by the thread.
+         *
+         * @return The system time.
          */
         public long getSystemTime() {
             return systemTime;
         }
 
         /**
-         * @return the upTime
+         * Gets the uptime of the thread.
+         *
+         * @return The uptime.
          */
         public long getUpTime() {
             return upTime;
         }
 
         /**
-         * @return the state
+         * Gets the state of the thread.
+         *
+         * @return The state.
          */
         public OSProcess.State getState() {
             return state;
         }
 
         /**
-         * @return the priority
+         * Gets the priority of the thread.
+         *
+         * @return The priority.
          */
         public int getPriority() {
             return priority;

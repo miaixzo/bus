@@ -40,13 +40,26 @@ import org.miaixz.bus.pager.binding.MetaObject;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 /**
- * 数据库方言 informix
+ * Database dialect for Informix. This class provides Informix-specific implementations for pagination SQL generation
+ * and parameter processing.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Informix extends AbstractPaging {
 
+    /**
+     * Processes the pagination parameters for Informix. It adds {@code PAGEPARAMETER_FIRST} (offset) and
+     * {@code PAGEPARAMETER_SECOND} (limit) to the parameter map and updates the {@link CacheKey}. It also modifies the
+     * {@link BoundSql}'s parameter mappings to include these pagination parameters.
+     *
+     * @param ms       the MappedStatement object
+     * @param paramMap a map containing the query parameters
+     * @param page     the {@link Page} object containing pagination details
+     * @param boundSql the BoundSql object for the query
+     * @param pageKey  the CacheKey for the paginated query
+     * @return the processed parameter map
+     */
     @Override
     public Object processPageParameter(
             MappedStatement ms,
@@ -56,10 +69,10 @@ public class Informix extends AbstractPaging {
             CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
         paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
-        // 处理pageKey
+        // Process pageKey
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
-        // 处理参数配置
+        // Process parameter configuration
         if (boundSql.getParameterMappings() != null) {
             List<ParameterMapping> newParameterMappings = new ArrayList<>();
             if (page.getStartRow() > 0) {
@@ -77,6 +90,14 @@ public class Informix extends AbstractPaging {
         return paramMap;
     }
 
+    /**
+     * Generates the Informix-specific pagination SQL. It uses {@code SKIP ? FIRST ?} syntax to achieve pagination.
+     *
+     * @param sql     the original SQL string
+     * @param page    the {@link Page} object containing pagination details
+     * @param pageKey the CacheKey for the paginated query
+     * @return the Informix-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 40);

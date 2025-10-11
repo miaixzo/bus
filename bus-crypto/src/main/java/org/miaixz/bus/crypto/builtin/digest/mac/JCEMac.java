@@ -30,7 +30,6 @@ package org.miaixz.bus.crypto.builtin.digest.mac;
 import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
 
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.miaixz.bus.core.lang.exception.CryptoException;
@@ -39,7 +38,8 @@ import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Keeper;
 
 /**
- * JDK提供的的MAC算法实现引擎，使用{@link javax.crypto.Mac} 实现摘要 当引入BouncyCastle库时自动使用其作为Provider
+ * JCE (Java Cryptography Extension) MAC algorithm implementation engine. This class wraps a {@link javax.crypto.Mac}
+ * instance to provide MAC functionality. It uses the JDK's default provider for MAC algorithms.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,44 +47,46 @@ import org.miaixz.bus.crypto.Keeper;
 public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
 
     /**
-     * 构造
+     * Constructs a {@code JCEMac} instance with the specified algorithm and key material.
      *
-     * @param algorithm 算法
-     * @param key       密钥
+     * @param algorithm The MAC algorithm name (e.g., "HmacSHA256").
+     * @param key       The key material as a byte array. If {@code null}, a random key is generated.
      */
     public JCEMac(final String algorithm, final byte[] key) {
         this(algorithm, (null == key) ? null : new SecretKeySpec(key, algorithm));
     }
 
     /**
-     * 构造
+     * Constructs a {@code JCEMac} instance with the specified algorithm and {@link Key}.
      *
-     * @param algorithm 算法
-     * @param key       密钥
+     * @param algorithm The MAC algorithm name.
+     * @param key       The {@link Key} to use. If {@code null}, a random key is generated.
      */
     public JCEMac(final String algorithm, final Key key) {
         this(algorithm, key, null);
     }
 
     /**
-     * 构造
+     * Constructs a {@code JCEMac} instance with the specified algorithm, {@link Key}, and
+     * {@link AlgorithmParameterSpec}.
      *
-     * @param algorithm 算法
-     * @param key       密钥
-     * @param spec      {@link AlgorithmParameterSpec}
+     * @param algorithm The MAC algorithm name.
+     * @param key       The {@link Key} to use. If {@code null}, a random key is generated.
+     * @param spec      The {@link AlgorithmParameterSpec} for initializing the MAC.
      */
     public JCEMac(final String algorithm, final Key key, final AlgorithmParameterSpec spec) {
         super(initMac(algorithm, key, spec));
     }
 
     /**
-     * 初始化
+     * Initializes the {@link javax.crypto.Mac} instance.
      *
-     * @param algorithm 算法
-     * @param key       密钥 {@link SecretKey}
-     * @param spec      {@link AlgorithmParameterSpec}
-     * @return this
-     * @throws CryptoException Cause by IOException
+     * @param algorithm The MAC algorithm name.
+     * @param key       The {@link Key} to use. If {@code null}, a random key is generated using
+     *                  {@link Keeper#generateKey(String)}.
+     * @param spec      The {@link AlgorithmParameterSpec} for initialization. Can be {@code null}.
+     * @return The initialized {@link javax.crypto.Mac} instance.
+     * @throws CryptoException if initialization fails.
      */
     private static javax.crypto.Mac initMac(final String algorithm, Key key, final AlgorithmParameterSpec spec) {
         final javax.crypto.Mac mac;

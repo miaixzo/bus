@@ -36,7 +36,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
 
 /**
- * 用于操作MyBatis的StatementHandler对象
+ * A utility class for manipulating MyBatis {@link org.apache.ibatis.executor.statement.StatementHandler} objects.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,79 +44,79 @@ import org.apache.ibatis.session.Configuration;
 public class MapperStatementHandler {
 
     /**
-     * StatementHandler的反射元对象
+     * The meta-object for reflecting on the StatementHandler.
      */
     private final MetaObject statementHandler;
 
     /**
-     * 构造函数，初始化MapperStatementHandler
+     * Constructs a new MapperStatementHandler.
      * 
-     * @param statementHandler StatementHandler的MetaObject对象
+     * @param statementHandler The MetaObject for the StatementHandler.
      */
     MapperStatementHandler(MetaObject statementHandler) {
         this.statementHandler = statementHandler;
     }
 
     /**
-     * 获取参数处理器
+     * Gets the parameter handler.
      * 
-     * @return ParameterHandler对象
+     * @return The {@link ParameterHandler} object.
      */
     public ParameterHandler parameterHandler() {
         return get("parameterHandler");
     }
 
     /**
-     * 获取映射语句
+     * Gets the mapped statement.
      * 
-     * @return MappedStatement对象
+     * @return The {@link MappedStatement} object.
      */
     public MappedStatement mappedStatement() {
         return get("mappedStatement");
     }
 
     /**
-     * 获取执行器
+     * Gets the executor.
      * 
-     * @return Executor对象
+     * @return The {@link Executor} object.
      */
     public Executor executor() {
         return get("executor");
     }
 
     /**
-     * 获取MapperBoundSql对象
+     * Gets the {@link MapperBoundSql} object.
      * 
-     * @return MapperBoundSql对象
+     * @return The {@link MapperBoundSql} object.
      */
     public MapperBoundSql mapperBoundSql() {
         return new MapperBoundSql(boundSql());
     }
 
     /**
-     * 获取BoundSql对象
+     * Gets the {@link BoundSql} object.
      * 
-     * @return BoundSql对象
+     * @return The {@link BoundSql} object.
      */
     public BoundSql boundSql() {
         return get("boundSql");
     }
 
     /**
-     * 获取配置对象
+     * Gets the configuration object.
      * 
-     * @return Configuration对象
+     * @return The {@link Configuration} object.
      */
     public Configuration configuration() {
         return get("configuration");
     }
 
     /**
-     * 通用获取属性方法
+     * A generic method to get a property value.
      * 
-     * @param property 属性名称
-     * @return 属性值
-     * @param <T> 返回值类型
+     * @param property The name of the property.
+     * @param <T>      The type of the return value.
+     * @return The value of the property.
      */
     private <T> T get(String property) {
         return (T) statementHandler.getValue(property);

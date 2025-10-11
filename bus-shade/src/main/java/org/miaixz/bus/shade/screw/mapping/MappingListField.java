@@ -35,7 +35,7 @@ import java.lang.annotation.Target;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 数据结构列表属性注解
+ * Annotation used to map a list-type field in a data structure to a source list property.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,9 +45,9 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface MappingListField {
 
     /**
-     * JSON列表属性映射名称
+     * The name of the source list property to map to this annotated field.
      *
-     * @return {@link String}
+     * @return The name of the mapping.
      */
     String value() default Normal.EMPTY;
 

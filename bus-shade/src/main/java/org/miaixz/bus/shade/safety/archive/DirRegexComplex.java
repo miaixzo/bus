@@ -34,21 +34,39 @@ import org.miaixz.bus.shade.safety.Complex;
 import org.miaixz.bus.shade.safety.complex.RegexComplex;
 
 /**
- * 文件记录正则表达式规则
+ * A {@link Complex} implementation that filters {@link File} entries based on regular expression matching. This class
+ * extends {@link RegexComplex} and provides a way to apply regex patterns to file names.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DirRegexComplex extends RegexComplex<File> implements Complex<File> {
 
+    /**
+     * Constructs a new {@code DirRegexComplex} with the specified regular expression string.
+     *
+     * @param regex The regular expression string to use for filtering.
+     */
     public DirRegexComplex(String regex) {
         super(regex);
     }
 
+    /**
+     * Constructs a new {@code DirRegexComplex} with the specified compiled {@link Pattern}.
+     *
+     * @param pattern The compiled {@link Pattern} to use for filtering.
+     */
     public DirRegexComplex(Pattern pattern) {
         super(pattern);
     }
 
+    /**
+     * Converts a {@link File} entry into a string representation for pattern matching. This implementation returns the
+     * name of the file.
+     *
+     * @param entry The {@link File} entry to convert.
+     * @return The name of the file.
+     */
     @Override
     protected String toText(File entry) {
         return entry.getName();

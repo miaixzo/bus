@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.cache.support.metrics;
 
+import jakarta.annotation.PreDestroy;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.*;
@@ -41,12 +42,13 @@ import org.miaixz.bus.cache.magic.CachePair;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.setting.Builder;
 import org.springframework.jdbc.core.JdbcOperations;
-import jakarta.annotation.PreDestroy;
 
 /**
- * 抽象缓存命中率统计实现
+ * An abstract base class for database-backed cache metrics implementations.
  * <p>
- * 基于数据库存储的缓存命中率统计实现，使用队列异步写入数据库， 支持并发更新和乐观锁机制，确保数据一致性。
+ * This class provides a framework for storing cache hit rate statistics in a relational database. It uses a
+ * non-blocking queue to asynchronously write metrics to the database, minimizing performance impact on the application
+ * threads. It also employs an optimistic locking strategy to handle concurrent updates and ensure data consistency.
  * </p>
  *
  * @author Kimi Liu
@@ -55,7 +57,7 @@ import jakarta.annotation.PreDestroy;
 public abstract class AbstractMetrics implements Metrics {
 
     /**
-     * 单线程执行器，用于异步写入数据库
+     * A single-threaded executor for asynchronously writing metrics to the database.
      */
     private static final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r);
@@ -65,39 +67,39 @@ public abstract class AbstractMetrics implements Metrics {
     });
 
     /**
-     * 可重入锁，用于保证数据一致性
+     * A lock to ensure consistency during the initial insertion of a new pattern record.
      */
     private static final Lock lock = new ReentrantLock();
 
     /**
-     * 是否已关闭标志
+     * A flag to indicate whether the metrics service has been shut down.
      */
     private volatile boolean isShutdown = false;
 
     /**
-     * 命中次数队列
+     * A queue for pending hit count increments.
      */
-    private BlockingQueue<CachePair<String, Integer>> hitQueue = new LinkedTransferQueue<>();
+    private final BlockingQueue<CachePair<String, Integer>> hitQueue = new LinkedTransferQueue<>();
 
     /**
-     * 请求次数队列
+     * A queue for pending request count increments.
      */
-    private BlockingQueue<CachePair<String, Integer>> requireQueue = new LinkedTransferQueue<>();
+    private final BlockingQueue<CachePair<String, Integer>> requireQueue = new LinkedTransferQueue<>();
 
     /**
-     * JDBC操作模板
+     * The Spring JDBC template for database operations.
      */
-    private JdbcOperations jdbcOperations;
+    private final JdbcOperations jdbcOperations;
 
     /**
-     * SQL语句集合
+     * A collection of SQL statements loaded from a configuration file.
      */
-    private Properties sqls;
+    private final Properties sqls;
 
     /**
-     * 构造方法
+     * Initializes the metrics service with database connection details.
      *
-     * @param context 上下文参数
+     * @param context A map containing database connection parameters.
      */
     protected AbstractMetrics(Map<String, Object> context) {
         InputStream in = this.getClass().getClassLoader()
@@ -113,21 +115,21 @@ public abstract class AbstractMetrics implements Metrics {
     }
 
     /**
-     * 构造方法
+     * A convenience constructor with explicit database connection details.
      *
-     * @param url      数据库URL
-     * @param username 用户名
-     * @param password 密码
+     * @param url      The database JDBC URL.
+     * @param username The database username.
+     * @param password The database password.
      */
     public AbstractMetrics(String url, String username, String password) {
         this(newHashMap("url", url, "username", username, "password", password));
     }
 
     /**
-     * 创建新的HashMap
+     * A utility method to create a HashMap from a series of key-value pairs.
      *
-     * @param keyValues 键值对数组
-     * @return HashMap实例
+     * @param keyValues An array of alternating keys and values.
+     * @return A new {@link HashMap} instance.
      */
     public static Map<String, Object> newHashMap(Object... keyValues) {
         Map<String, Object> map = new HashMap<>(keyValues.length / 2);
@@ -140,92 +142,97 @@ public abstract class AbstractMetrics implements Metrics {
     }
 
     /**
-     * 创建JdbcOperations并初始化数据库
+     * Creates a {@link JdbcOperations} instance and initializes the database.
      * <p>
-     * 1. 创建JdbcOperations实例 2. 初始化数据库（如加载SQL脚本、创建表、初始化表等）
+     * Subclasses must implement this method to provide a configured {@code JdbcOperations} instance and to perform any
+     * necessary database initialization (e.g., creating tables).
      * </p>
      *
-     * @param context 构造函数中的其他参数
-     * @return 初始化完成的JdbcOperations对象
+     * @param context A map of configuration parameters.
+     * @return A supplier that provides the initialized {@link JdbcOperations} object.
      */
     protected abstract Supplier<JdbcOperations> jdbcOperationsSupplier(Map<String, Object> context);
 
     /**
-     * 将数据库查询结果转换为DataDO流
+     * Transforms a list of database query results into a stream of {@link DataDO} objects.
      *
-     * @param map 数据库查询结果
-     * @return DataDO流
+     * @param map A list of maps, where each map represents a row from the database.
+     * @return A stream of {@link DataDO} objects.
      */
     protected abstract Stream<DataDO> transferResults(List<Map<String, Object>> map);
 
     /**
-     * 将队列数据转储到数据库
+     * Drains the metrics queue and writes the aggregated counts to the database.
      *
-     * @param queue  队列
-     * @param column 列名
+     * @param queue  The queue to drain (either hit or request queue).
+     * @param column The name of the database column to update (e.g., "hit_count").
      */
     private void dumpToDB(BlockingQueue<CachePair<String, Integer>> queue, String column) {
         long times = 0;
         CachePair<String, Integer> head;
-        // 收集队列中的全部或前100条数据到一个Map中
+        // Collect up to 100 items from the queue into an aggregated map.
         Map<String, AtomicLong> holdMap = new HashMap<>();
         while (null != (head = queue.poll()) && times <= 100) {
             holdMap.computeIfAbsent(head.getLeft(), (key) -> new AtomicLong(0L)).addAndGet(head.getRight());
             ++times;
         }
-        // 批量写入数据库
+        // Write the aggregated counts to the database.
         holdMap.forEach((pattern, count) -> countAddCas(column, pattern, count.get()));
     }
 
     /**
-     * 增加命中次数
+     * Adds a hit count to the queue for a specific pattern.
      *
-     * @param pattern 缓存模式/分组名称
-     * @param count   增加的命中数量
+     * @param pattern The cache pattern name.
+     * @param count   The number of hits to add.
      */
     @Override
     public void hitIncr(String pattern, int count) {
-        if (count != 0)
+        if (count != 0) {
             hitQueue.add(CachePair.of(pattern, count));
+        }
     }
 
     /**
-     * 增加请求次数
+     * Adds a request count to the queue for a specific pattern.
      *
-     * @param pattern 缓存模式/分组名称
-     * @param count   增加的请求数量
+     * @param pattern The cache pattern name.
+     * @param count   The number of requests to add.
      */
     @Override
     public void reqIncr(String pattern, int count) {
-        if (count != 0)
+        if (count != 0) {
             requireQueue.add(CachePair.of(pattern, count));
+        }
     }
 
     /**
-     * 获取缓存命中率统计信息
+     * Retrieves the current cache hit rate statistics from the database.
      *
-     * @return 缓存命中率统计映射，键为缓存模式/分组名称，值为HittingDO对象
+     * @return A map where keys are pattern names and values are {@link Snapshot} objects.
      */
     @Override
     public Map<String, Snapshot> getHitting() {
         List<DataDO> dataDOS = queryAll();
         AtomicLong statisticsHit = new AtomicLong(0);
         AtomicLong statisticsRequired = new AtomicLong(0);
-        // 收集各模式的命中率
+
+        // Collect hit rates for each pattern.
         Map<String, Snapshot> result = dataDOS.stream().collect(Collectors.toMap(DataDO::getPattern, (dataDO) -> {
             statisticsHit.addAndGet(dataDO.hitCount);
             statisticsRequired.addAndGet(dataDO.requireCount);
             return Snapshot.newInstance(dataDO.hitCount, dataDO.requireCount);
         }, Snapshot::mergeShootingDO, LinkedHashMap::new));
-        // 收集应用所有模式的命中率
+
+        // Add a summary for all patterns.
         result.put(summaryName(), Snapshot.newInstance(statisticsHit.get(), statisticsRequired.get()));
         return result;
     }
 
     /**
-     * 重置指定缓存模式的命中率统计
+     * Resets the statistics for a specific cache pattern by deleting its record from the database.
      *
-     * @param pattern 缓存模式/分组名称
+     * @param pattern The cache pattern name.
      */
     @Override
     public void reset(String pattern) {
@@ -233,7 +240,7 @@ public abstract class AbstractMetrics implements Metrics {
     }
 
     /**
-     * 重置所有缓存模式的命中率统计
+     * Resets all statistics by truncating the database table.
      */
     @Override
     public void resetAll() {
@@ -241,24 +248,25 @@ public abstract class AbstractMetrics implements Metrics {
     }
 
     /**
-     * 使用CAS（Compare And Swap）方式增加计数
+     * Atomically increments a counter in the database using a Compare-And-Swap (CAS) approach.
      *
-     * @param column  列名
-     * @param pattern 缓存模式/分组名称
-     * @param count   计数增量
+     * @param column  The name of the column to update.
+     * @param pattern The cache pattern name.
+     * @param count   The value to add to the counter.
      */
     private void countAddCas(String column, String pattern, long count) {
         Optional<DataDO> dataOptional = queryObject(pattern);
-        // 如果存在模式记录，则更新它
         if (dataOptional.isPresent()) {
+            // If the record exists, attempt to update it in a loop until the CAS operation succeeds.
             DataDO dataDO = dataOptional.get();
             while (update(column, pattern, getObjectCount(dataDO, column, count), dataDO.version) <= 0) {
-                dataDO = queryObject(pattern).get();
+                dataDO = queryObject(pattern).get(); // Re-fetch the latest version
             }
         } else {
+            // If the record does not exist, insert it.
             lock.lock();
             try {
-                // 双重检查
+                // Double-check to prevent race conditions.
                 dataOptional = queryObject(pattern);
                 if (dataOptional.isPresent()) {
                     update(column, pattern, count, dataOptional.get().version);
@@ -272,10 +280,10 @@ public abstract class AbstractMetrics implements Metrics {
     }
 
     /**
-     * 查询单个对象
+     * Queries the database for a single statistics record.
      *
-     * @param pattern 缓存模式/分组名称
-     * @return DataDO对象
+     * @param pattern The cache pattern name.
+     * @return An {@link Optional} containing the {@link DataDO} if found.
      */
     private Optional<DataDO> queryObject(String pattern) {
         String selectSql = sqls.getProperty("select");
@@ -284,9 +292,9 @@ public abstract class AbstractMetrics implements Metrics {
     }
 
     /**
-     * 查询所有对象
+     * Queries the database for all statistics records.
      *
-     * @return DataDO列表
+     * @return A list of all {@link DataDO} records.
      */
     private List<DataDO> queryAll() {
         String selectAllQuery = sqls.getProperty("select_all");
@@ -295,12 +303,12 @@ public abstract class AbstractMetrics implements Metrics {
     }
 
     /**
-     * 插入记录
+     * Inserts a new statistics record into the database.
      *
-     * @param column  列名
-     * @param pattern 缓存模式/分组名称
-     * @param count   计数值
-     * @return 影响行数
+     * @param column  The name of the column to set the initial count for.
+     * @param pattern The cache pattern name.
+     * @param count   The initial count.
+     * @return The number of affected rows.
      */
     private int insert(String column, String pattern, long count) {
         String insertSql = String.format(sqls.getProperty("insert"), column);
@@ -308,13 +316,13 @@ public abstract class AbstractMetrics implements Metrics {
     }
 
     /**
-     * 更新记录
+     * Updates an existing statistics record in the database.
      *
-     * @param column  列名
-     * @param pattern 缓存模式/分组名称
-     * @param count   计数值
-     * @param version 版本号
-     * @return 影响行数
+     * @param column  The name of the column to update.
+     * @param pattern The cache pattern name.
+     * @param count   The new total count.
+     * @param version The expected version for optimistic locking.
+     * @return The number of affected rows.
      */
     private int update(String column, String pattern, long count, long version) {
         String updateSql = String.format(sqls.getProperty("update"), column);
@@ -322,22 +330,22 @@ public abstract class AbstractMetrics implements Metrics {
     }
 
     /**
-     * 获取对象计数值
+     * Calculates the new count for a specific column.
      *
-     * @param data        数据对象
-     * @param column      列名
-     * @param countOffset 计数偏移量
-     * @return 计数值
+     * @param data        The current data object.
+     * @param column      The name of the column.
+     * @param countOffset The value to add.
+     * @return The new total count.
      */
     private long getObjectCount(DataDO data, String column, long countOffset) {
-        long lastCount = column.equals("hit_count") ? data.hitCount : data.requireCount;
+        long lastCount = "hit_count".equals(column) ? data.hitCount : data.requireCount;
         return lastCount + countOffset;
     }
 
     /**
-     * 销毁方法
+     * A lifecycle method to gracefully shut down the metrics service.
      * <p>
-     * 使用@PreDestroy注解，在Bean销毁时等待队列处理完毕并关闭执行器
+     * This method waits for the processing queues to be empty before stopping the background thread.
      * </p>
      */
     @PreDestroy
@@ -346,80 +354,38 @@ public abstract class AbstractMetrics implements Metrics {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
             }
         }
         isShutdown = true;
     }
 
     /**
-     * 数据对象
-     * <p>
-     * 用于存储缓存命中率统计数据的内部类
-     * </p>
+     * An internal Data Transfer Object (DTO) for storing cache statistics.
      */
     protected static final class DataDO {
 
-        /**
-         * 缓存模式/分组名称
-         */
         private String pattern;
-
-        /**
-         * 命中次数
-         */
         private long hitCount;
-
-        /**
-         * 请求次数
-         */
         private long requireCount;
-
-        /**
-         * 版本号，用于乐观锁
-         */
         private long version;
 
-        /**
-         * 获取缓存模式/分组名称
-         *
-         * @return 缓存模式/分组名称
-         */
         public String getPattern() {
             return pattern;
         }
 
-        /**
-         * 设置缓存模式/分组名称
-         *
-         * @param pattern 缓存模式/分组名称
-         */
         public void setPattern(String pattern) {
             this.pattern = pattern;
         }
 
-        /**
-         * 设置命中次数
-         *
-         * @param hitCount 命中次数
-         */
         public void setHitCount(long hitCount) {
             this.hitCount = hitCount;
         }
 
-        /**
-         * 设置请求次数
-         *
-         * @param requireCount 请求次数
-         */
         public void setRequireCount(long requireCount) {
             this.requireCount = requireCount;
         }
 
-        /**
-         * 设置版本号
-         *
-         * @param version 版本号
-         */
         public void setVersion(long version) {
             this.version = version;
         }

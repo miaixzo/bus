@@ -28,34 +28,25 @@
 package org.miaixz.bus.cron;
 
 /**
- * 作业启动器 负责检查 {@link Repertoire} 是否有匹配到此时运行的Task 检查完毕后启动器结束
+ * Task launcher responsible for checking if the {@link Repertoire} has any tasks that match the current execution time.
+ * The launcher's thread terminates after the check is complete.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Launcher implements Runnable {
-
-    private final Scheduler scheduler;
-    private final long millis;
+public record Launcher(Scheduler scheduler, long millis) implements Runnable {
 
     /**
-     * 构造
-     *
-     * @param scheduler {@link Scheduler}
-     * @param millis    毫秒数
+     * Executes the check for matching tasks and notifies the manager upon completion. The second-matching behavior is
+     * determined by the scheduler's configuration, while the year is never matched.
      */
-    public Launcher(final Scheduler scheduler, final long millis) {
-        this.scheduler = scheduler;
-        this.millis = millis;
-    }
-
     @Override
     public void run() {
-        // 匹配秒部分由用户定义决定，始终不匹配年
+        // Execute tasks that match the given millisecond timestamp.
         scheduler.repertoire.executeTaskIfMatch(this.scheduler, this.millis);
 
-        // 结束通知
-        scheduler.supervisor.notifyLauncherCompleted(this);
+        // Notify the manager that this launcher has completed its run.
+        scheduler.manager.notifyLauncherCompleted(this);
     }
 
 }

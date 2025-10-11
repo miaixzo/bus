@@ -30,29 +30,43 @@ package org.miaixz.bus.core.center.date.culture;
 import org.miaixz.bus.core.center.date.Almanac;
 
 /**
- * 中国传统文化
+ * An abstract base class for traditional cultural elements, such as festivals or holidays.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class Tradition implements Culture {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return The name of the traditional element.
+     */
     @Override
     public String toString() {
         return getName();
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Compares this object with another based on their string representation.
+     * 
+     *
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal.
+     */
     @Override
     public boolean equals(Object o) {
         return o instanceof Almanac && toString().equals(o.toString());
     }
 
     /**
-     * 转换为不超范围的索引
+     * Normalizes an index to be within the valid range [0, size-1] using the modulo operator.
      *
-     * @param index 索引
-     * @param size  数量
-     * @return 索引，从0开始
+     * @param index The index to normalize.
+     * @param size  The size of the cycle or range.
+     * @return The normalized 0-based index.
      */
     protected int indexOf(int index, int size) {
         int i = index % size;

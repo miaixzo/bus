@@ -30,10 +30,11 @@ package org.miaixz.bus.core.lang.thread;
 import java.util.concurrent.Semaphore;
 
 /**
- * 带有信号量控制的{@link Runnable} 接口抽象实现
+ * An abstract implementation of the {@link Runnable} interface that incorporates {@link Semaphore} control.
  * <p>
- * 通过设置信号量，可以限制可以访问某些资源（物理或逻辑的）线程数目。 例如：设置信号量为2，表示最多有两个线程可以同时执行方法逻辑，其余线程等待，直到此线程逻辑执行完毕
- * </p>
+ * By using a semaphore, the number of threads that can access certain resources (physical or logical) can be limited.
+ * For example, if the semaphore is set to 2, a maximum of two threads can execute the logic concurrently, while other
+ * threads will wait until the current threads complete their execution.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,19 +42,19 @@ import java.util.concurrent.Semaphore;
 public class SemaphoreRunnable implements Runnable {
 
     /**
-     * 实际执行的逻辑
+     * The actual {@link Runnable} logic to be executed.
      */
     private final Runnable runnable;
     /**
-     * 信号量
+     * The {@link Semaphore} used to control concurrent access.
      */
     private final Semaphore semaphore;
 
     /**
-     * 构造
+     * Constructs a new {@code SemaphoreRunnable} with the specified runnable task and semaphore.
      *
-     * @param runnable  实际执行的线程逻辑
-     * @param semaphore 信号量，多个线程必须共享同一信号量
+     * @param runnable  The actual {@link Runnable} task to be executed.
+     * @param semaphore The {@link Semaphore} instance. Multiple threads must share the same semaphore instance.
      */
     public SemaphoreRunnable(final Runnable runnable, final Semaphore semaphore) {
         this.runnable = runnable;
@@ -61,14 +62,18 @@ public class SemaphoreRunnable implements Runnable {
     }
 
     /**
-     * 获得信号量
+     * Retrieves the {@link Semaphore} instance associated with this runnable.
      *
-     * @return {@link Semaphore}
+     * @return The {@link Semaphore} instance.
      */
     public Semaphore getSemaphore() {
         return this.semaphore;
     }
 
+    /**
+     * Executes the wrapped runnable task, acquiring a permit from the semaphore before execution and releasing it
+     * afterwards. If the thread is interrupted while acquiring a permit, its interrupted status is set.
+     */
     @Override
     public void run() {
         if (null != this.semaphore) {

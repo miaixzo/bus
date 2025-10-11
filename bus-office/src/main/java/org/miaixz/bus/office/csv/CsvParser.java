@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * CSV行解析器，参考：FastCSV
+ * CSV row parser, inspired by FastCSV.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,58 +49,61 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     @Serial
     private static final long serialVersionUID = 2852282936732L;
 
+    /**
+     * Default capacity for a row, used to initialize field lists.
+     */
     private static final int DEFAULT_ROW_CAPACITY = 10;
 
     /**
-     * 读取配置
+     * The CSV read configuration.
      */
     private final CsvReadConfig config;
     /**
-     * Tokener
+     * The CSV tokener used to read characters from the input stream.
      */
     private final CsvTokener tokener;
     /**
-     * 当前读取字段
+     * The current field being built.
      */
     private final StringBuilder currentField = new StringBuilder(512);
     /**
-     * 前一个特殊分界字符
+     * The previous special delimiter character encountered.
      */
     private int preChar = -1;
     /**
-     * 是否在引号包装内
+     * Flag indicating whether the parser is currently inside a quoted field.
      */
     private boolean inQuotes;
     /**
-     * 标题行
+     * The header row of the CSV data.
      */
     private CsvRow header;
     /**
-     * 当前行号
+     * The current line number being parsed.
      */
     private long lineNo = -1;
     /**
-     * 引号内的行数
+     * The number of lines consumed while inside a quoted field.
      */
     private long inQuotesLineCount;
     /**
-     * 第一行字段数，用于检查每行字段数是否一致
+     * The number of fields in the first data line, used to check for consistent field counts across rows.
      */
     private int firstLineFieldCount = -1;
     /**
-     * 最大字段数量，用于初始化行，减少扩容
+     * The maximum number of fields found in any row so far, used for initial row capacity.
      */
     private int maxFieldCount;
     /**
-     * 是否读取结束
+     * Flag indicating whether the parsing is finished.
      */
     private boolean finished;
 
     /**
-     * CSV解析器
+     * Constructs a new {@code CsvParser}.
      *
-     * @param reader Reader
-     * @param config 配置，null则为默认配置
+     * @param reader The {@link Reader} to read CSV data from.
+     * @param config The CSV read configuration. If {@code null}, default configuration will be used.
      */
     public CsvParser(final Reader reader, final CsvReadConfig config) {
         this.config = ObjectKit.defaultIfNull(config, CsvReadConfig::of);
@@ -108,10 +111,10 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     }
 
     /**
-     * 获取头部字段列表，如果headerLineNo &lt; 0，抛出异常
+     * Gets the header fields list. If {@code headerLineNo} in the configuration is less than 0, an exception is thrown.
      *
-     * @return 头部列表
-     * @throws IllegalStateException 如果不解析头部或者没有调用nextRow()方法
+     * @return The list of header fields.
+     * @throws IllegalStateException If header parsing is disabled or {@code nextRow()} has not been called yet.
      */
     public List<String> getHeader() {
         if (config.headerLineNo < 0) {
@@ -129,10 +132,11 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     }
 
     /**
-     * 读取下一行数据
+     * Reads the next row of data from the CSV. This method handles skipping empty rows, checking field counts, and
+     * initializing the header row based on the configuration.
      *
-     * @return CsvRow
-     * @throws InternalException IO读取异常
+     * @return The next {@link CsvRow}, or {@code null} if the end of the CSV data is reached.
+     * @throws InternalException If an I/O error occurs during reading or if field count consistency check fails.
      */
     public CsvRow nextRow() throws InternalException {
         List<String> currentFields;
@@ -141,27 +145,27 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
             currentFields = readLine();
             fieldCount = currentFields.size();
             if (fieldCount < 1) {
-                // 空List表示读取结束
+                // An empty list indicates the end of reading.
                 break;
             }
 
-            // 读取范围校验
+            // Check read range
             if (lineNo < config.beginLineNo) {
-                // 未达到读取起始行，继续
+                // Not yet reached the starting line for reading, continue.
                 continue;
             }
             if (lineNo > config.endLineNo) {
-                // 超出结束行，读取结束
+                // Exceeded the end line, reading finished.
                 break;
             }
 
-            // 跳过空行
+            // Skip empty rows
             if (config.skipEmptyRows && fieldCount == 1 && currentFields.get(0).isEmpty()) {
-                // [""]表示空行
+                // [""] represents an empty row.
                 continue;
             }
 
-            // 检查每行的字段数是否一致
+            // Check if the number of fields in each row is consistent.
             if (config.errorOnDifferentFieldCount) {
                 if (firstLineFieldCount < 0) {
                     firstLineFieldCount = fieldCount;
@@ -174,15 +178,15 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                 }
             }
 
-            // 记录最大字段数
+            // Record the maximum number of fields.
             if (fieldCount > maxFieldCount) {
                 maxFieldCount = fieldCount;
             }
 
-            // 初始化标题
+            // Initialize header
             if (lineNo == config.headerLineNo && null == header) {
                 initHeader(currentFields);
-                // 作为标题行后，此行跳过，下一行做为第一行
+                // After being used as a header row, this row is skipped, and the next row becomes the first data row.
                 continue;
             }
 
@@ -193,16 +197,16 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     }
 
     /**
-     * 当前行做为标题行
+     * Initializes the current line as the header row.
      *
-     * @param currentFields 当前行字段列表
+     * @param currentFields The list of fields in the current line.
      */
     private void initHeader(final List<String> currentFields) {
         final Map<String, Integer> localHeaderMap = new LinkedHashMap<>(currentFields.size());
         for (int i = 0; i < currentFields.size(); i++) {
             String field = currentFields.get(i);
             if (MapKit.isNotEmpty(this.config.headerAlias)) {
-                // 自定义别名
+                // Custom alias
                 field = ObjectKit.defaultIfNull(this.config.headerAlias.get(field), field);
             }
             if (StringKit.isNotEmpty(field) && !localHeaderMap.containsKey(field)) {
@@ -215,18 +219,20 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     }
 
     /**
-     * 读取一行数据，如果读取结束，返回size为0的List 空行是size为1的List，唯一元素是""
+     * Reads a single line of data from the CSV. If the end of the stream is reached, an empty list is returned. An
+     * empty line is represented by a list with one empty string element (e.g., {@code [""]}).
      *
      * <p>
-     * 行号要考虑注释行和引号包装的内容中的换行
+     * Line numbers account for comment lines and newlines within quoted content.
      * </p>
      *
-     * @return 一行数据
-     * @throws InternalException IO异常
+     * @return A list of strings representing the fields in the line.
+     * @throws InternalException If an I/O error occurs.
      */
     private List<String> readLine() throws InternalException {
-        // 矫正行号
-        // 当一行内容包含多行数据时，记录首行行号，但是读取下一行时，需要把多行内容的行数加上
+        // Correct the line number
+        // When a line contains multiple lines of data, the line number of the first line is recorded,
+        // but when reading the next line, the number of lines in the multi-line content needs to be added.
         if (inQuotesLineCount > 0) {
             this.lineNo += this.inQuotesLineCount;
             this.inQuotesLineCount = 0;
@@ -235,7 +241,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
         final List<String> currentFields = new ArrayList<>(maxFieldCount > 0 ? maxFieldCount : DEFAULT_ROW_CAPACITY);
 
         final StringBuilder currentField = this.currentField;
-        int preChar = this.preChar;// 前一个特殊分界字符
+        int preChar = this.preChar; // Previous special delimiter character
         boolean inComment = false;
 
         int c;
@@ -244,66 +250,69 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
             if (c < 0) {
                 if (currentField.length() > 0 || preChar == config.fieldSeparator) {
                     if (this.inQuotes) {
-                        // 未闭合的文本包装，在末尾补充包装符
+                        // Unclosed text delimiter, append delimiter at the end.
                         currentField.append(config.textDelimiter);
                     }
 
-                    // 剩余部分作为一个字段
+                    // Remaining part as a field
                     addField(currentFields, currentField.toString());
                     currentField.setLength(0);
                 }
-                // 读取结束
+                // End of reading
                 this.finished = true;
                 break;
             }
 
-            // 注释行标记
+            // Comment line marker
             if (preChar < 0 || preChar == Symbol.C_CR || preChar == Symbol.C_LF) {
-                // 判断行首字符为指定注释字符的注释开始，直到遇到换行符
-                // 行首分两种，1是preChar < 0表示文本开始，2是换行符后紧跟就是下一行的开始
-                // 如果注释符出现在包装符内，被认为是普通字符
+                // Determine if a comment starts with the specified comment character at the beginning of a line,
+                // until a newline character is encountered.
+                // The beginning of a line has two cases: 1. preChar < 0 indicates the beginning of the text,
+                // 2. a newline character is immediately followed by the beginning of the next line.
+                // If the comment character appears within a text delimiter, it is treated as a normal character.
                 if (!inQuotes && null != this.config.commentCharacter && c == this.config.commentCharacter) {
                     inComment = true;
                 }
             }
-            // 注释行处理
+            // Comment line handling
             if (inComment) {
                 if (c == Symbol.C_CR || c == Symbol.C_LF) {
-                    // 注释行以换行符为结尾
+                    // Comment line ends with a newline character.
                     lineNo++;
                     inComment = false;
                 }
-                // 跳过注释行中的任何字符
+                // Skip any characters within the comment line.
                 continue;
             }
 
             if (inQuotes) {
-                // 引号内，作为内容，直到引号结束
+                // Inside quotes, treat as content until quotes end.
                 if (c == config.textDelimiter) {
-                    // 文本包装符转义
+                    // Escaped text delimiter
                     final int next = tokener.next();
                     if (next != config.textDelimiter) {
-                        // 包装结束
+                        // End of quoting
                         inQuotes = false;
                         tokener.back();
                     }
-                    // https://datatracker.ietf.org/doc/html/rfc4180#section-2 跳过转义符，只保留被转义的包装符
+                    // https://datatracker.ietf.org/doc/html/rfc4180#section-2 Skip the escape character, only keep the
+                    // escaped delimiter.
                 } else {
-                    // 字段内容中新行
+                    // Newline within field content.
                     if (isLineEnd(c, preChar)) {
                         inQuotesLineCount++;
                     }
                 }
-                // 普通字段字符
+                // Normal field character
                 currentField.append((char) c);
             } else {
-                // 非引号内
+                // Not inside quotes
                 if (c == config.fieldSeparator) {
-                    // 一个字段结束
+                    // End of a field
                     addField(currentFields, currentField.toString());
                     currentField.setLength(0);
                 } else if (c == config.textDelimiter && isFieldBegin(preChar)) {
-                    // 引号开始且出现在字段开头
+                    // Quote starts and appears at the beginning of a field.
                     inQuotes = true;
                     currentField.append((char) c);
                 } else if (c == Symbol.C_CR) {
@@ -320,7 +329,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                         preChar = c;
                         break;
                     }
-                    // 前一个字符是\r，已经处理过这个字段了，此处直接跳过
+                    // If the previous character was \r, this field has already been processed, so skip it.
                 } else {
                     currentField.append((char) c);
                 }
@@ -342,15 +351,15 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     }
 
     /**
-     * 将字段加入字段列表并自动去包装和去转义
+     * Adds a field to the list of current fields, automatically removing delimiters and unescaping.
      *
-     * @param currentFields 当前的字段列表（即为行）
-     * @param field         字段
+     * @param currentFields The list of current fields (representing a row).
+     * @param field         The field string to add.
      */
     private void addField(final List<String> currentFields, String field) {
         final char textDelimiter = this.config.textDelimiter;
 
-        // 忽略多余引号后的换行符
+        // Ignore newline characters after redundant quotes.
         field = StringKit.trim(field, StringTrimer.TrimMode.SUFFIX, (c -> c == Symbol.C_LF || c == Symbol.C_CR));
 
         if (StringKit.isWrap(field, textDelimiter)) {
@@ -363,26 +372,27 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
     }
 
     /**
-     * 是否行结束符
+     * Checks if the given character and previous character form a line end.
      *
-     * @param c       符号
-     * @param preChar 前一个字符
-     * @return 是否结束
+     * @param c       The current character.
+     * @param preChar The previous character.
+     * @return {@code true} if it's a line end, {@code false} otherwise.
      */
     private boolean isLineEnd(final int c, final int preChar) {
         return (c == Symbol.C_CR || c == Symbol.C_LF) && preChar != Symbol.C_CR;
     }
 
     /**
-     * 通过前一个字符，判断是否字段开始，几种情况：
+     * Determines if the current position is the beginning of a field based on the previous character. This includes
+     * several scenarios:
      * <ul>
-     * <li>正文开头，无前字符</li>
-     * <li>字段分隔符，即上个字段结束</li>
-     * <li>换行符，即新行开始</li>
+     * <li>Beginning of the document (no previous character).</li>
+     * <li>After a field separator (end of the previous field).</li>
+     * <li>After a newline character (start of a new line).</li>
      * </ul>
      *
-     * @param preChar 前字符
-     * @return 是否字段开始
+     * @param preChar The previous character.
+     * @return {@code true} if it's the beginning of a field, {@code false} otherwise.
      */
     private boolean isFieldBegin(final int preChar) {
         return preChar == -1 || preChar == config.fieldSeparator || preChar == Symbol.C_LF || preChar == Symbol.C_CR;

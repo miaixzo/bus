@@ -36,8 +36,8 @@ import org.miaixz.bus.vortex.Handler;
 import org.miaixz.bus.vortex.Vortex;
 import org.miaixz.bus.vortex.filter.*;
 import org.miaixz.bus.vortex.handler.AccessHandler;
-import org.miaixz.bus.vortex.handler.VortexHandler;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
+import org.miaixz.bus.vortex.handler.VortexHandler;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.provider.LicenseProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
@@ -59,7 +59,7 @@ import jakarta.annotation.Resource;
 import reactor.netty.http.server.HttpServer;
 
 /**
- * 路由自动配置类，负责配置 WebFlux 路由和拦截器
+ * Auto-configuration class for the Vortex gateway, responsible for setting up WebFlux routing, filters, and handlers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -68,24 +68,25 @@ import reactor.netty.http.server.HttpServer;
 public class VortexConfiguration {
 
     @Resource
-    VortexProperties properties;
+    private VortexProperties properties;
 
     /**
-     * 自动注入所有 filter 实现
+     * Automatically injects all beans that implement the {@link Filter} interface.
      */
     @Resource
-    List<Filter> filters;
+    private List<Filter> filters;
 
     /**
-     * 自动注入所有 Handler 实现
+     * Automatically injects all beans that implement the {@link Handler} interface.
      */
     @Resource
-    List<Handler> handlers;
+    private List<Handler> handlers;
 
     /**
-     * 配置格式化过滤器
+     * Configures the license filter.
      *
-     * @return WebFilter 格式化过滤器实例
+     * @param provider The provider for license validation.
+     * @return A {@link LicenseFilter} instance.
      */
     @Bean
     public Filter licenseFilter(LicenseProvider provider) {
@@ -93,9 +94,9 @@ public class VortexConfiguration {
     }
 
     /**
-     * 配置主过滤器
+     * Configures the primary filter.
      *
-     * @return WebFilter 主过滤器实例
+     * @return A {@link PrimaryFilter} instance.
      */
     @Bean
     public Filter primaryFilter() {
@@ -103,9 +104,9 @@ public class VortexConfiguration {
     }
 
     /**
-     * 配置格式化过滤器
+     * Configures the format filter.
      *
-     * @return WebFilter 格式化过滤器实例
+     * @return A {@link FormatFilter} instance.
      */
     @Bean
     public Filter formatFilter() {
@@ -113,24 +114,22 @@ public class VortexConfiguration {
     }
 
     /**
-     * 创建安全加解密过滤器
-     * <p>
-     * 当解密或加密任一功能启用时创建该Bean
-     * </p>
+     * Creates the security cipher filter for encryption and decryption. This bean is created when either decryption or
+     * encryption is enabled.
      *
-     * @return 安全加解密过滤器实例
+     * @return A {@link CipherFilter} instance.
      */
     @Bean
     public Filter cipherFilter() {
-        return new CipherFilter(this.properties.getServer().getDecrypt(), this.properties.getServer().getEncrypt());
+        return new CipherFilter(this.properties.getDecrypt(), this.properties.getEncrypt());
     }
 
     /**
-     * 配置授权过滤器
+     * Configures the authorization filter.
      *
-     * @param provider 授权提供者
-     * @param registry 资产注册表
-     * @return WebFilter 授权过滤器实例
+     * @param provider The authorization provider.
+     * @param registry The assets registry.
+     * @return An {@link AuthorizeFilter} instance.
      */
     @Bean
     public Filter authorizeFilter(AuthorizeProvider provider, AssetsRegistry registry) {
@@ -138,20 +137,20 @@ public class VortexConfiguration {
     }
 
     /**
-     * 配置限流过滤器，根据配置决定是否启用
+     * Configures the rate-limiting filter, enabled based on properties.
      *
-     * @param registry 限流注册表
-     * @return WebFilter 限流过滤器实例，若未启用返回 null
+     * @param registry The limiter registry.
+     * @return A {@link LimitFilter} instance if enabled, otherwise {@code null}.
      */
     @Bean
     public Filter limitFilter(LimiterRegistry registry) {
-        return this.properties.getServer().getLimit().isEnabled() ? new LimitFilter(registry) : null;
+        return this.properties.getLimit().isEnabled() ? new LimitFilter(registry) : null;
     }
 
     /**
-     * 业务处理类
+     * Creates the access handler for pre-processing business logic.
      *
-     * @return Handler 前置逻辑处理
+     * @return An {@link AccessHandler} instance.
      */
     @Bean
     public Handler accessHandler() {
@@ -159,35 +158,35 @@ public class VortexConfiguration {
     }
 
     /**
-     * 配置 Vortex 请求处理核心组件
+     * Configures the core Vortex request processing component.
      *
-     * @return Vortex 核心组件实例，包含 HTTP 服务器
+     * @return A {@link Vortex} core component instance, including the HTTP server.
      */
     @Bean(initMethod = "init", destroyMethod = "destroy")
-    public Vortex athlete() {
-        // 使用注入的所有 Handler 实例创建 VortexHandler
+    public Vortex vortex() {
+        // Create the main Vortex handler with all injected Handler instances.
         VortexHandler vortexHandler = new VortexHandler(handlers);
 
-        // 配置路由，处理指定路径的请求
+        // Configure the router to handle requests at the specified path.
         RouterFunction<ServerResponse> routerFunction = RouterFunctions.route(
-                RequestPredicates.path(properties.getServer().getPath()).and(
+                RequestPredicates.path(this.properties.getPath()).and(
                         RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON)),
                 vortexHandler::handle);
 
-        // 配置编解码器，设置最大内存大小
+        // Configure codecs, setting the maximum in-memory size.
         ServerCodecConfigurer configurer = ServerCodecConfigurer.create();
         configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128));
 
-        // 构建 WebHandler，集成过滤器和异常处理器
+        // Build the WebHandler, integrating filters and exception handlers.
         WebHandler webHandler = RouterFunctions.toWebHandler(routerFunction);
-        HttpHandler handler = WebHttpHandlerBuilder.webHandler(webHandler).filters(list -> list.addAll(filters))
-                .exceptionHandlers(list -> list.add(new ErrorsHandler())).codecConfigurer(configurer).build();
+        HttpHandler httpHandler = WebHttpHandlerBuilder.webHandler(webHandler)
+                .filters(list -> list.addAll(this.filters)).exceptionHandlers(list -> list.add(new ErrorsHandler()))
+                .codecConfigurer(configurer).build();
 
-        // 创建 HTTP 服务器适配器
-        ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
+        // Create the Reactor Netty HTTP server adapter.
+        ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
         HttpServer server = HttpServer.create()
-                .port(properties.getServer().getPort() != 0 ? properties.getServer().getPort() : PORT._8765)
-                .handle(adapter);
+                .port(this.properties.getPort() != 0 ? this.properties.getPort() : PORT._8765).handle(adapter);
 
         return new Vortex(server);
     }

@@ -34,44 +34,45 @@ import org.miaixz.bus.vortex.Registry;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
- * 抽象注册类，提供通用的注册表功能，用于管理和存储键值对数据
+ * Abstract registry class, providing generic registry functionality for managing and storing key-value pair data.
  *
- * @param <T> 注册表中存储的值的类型
+ * @param <T> The type of value stored in the registry.
  * @author Justubborn
  * @since Java 17+
  */
 public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBean {
 
     /**
-     * 线程安全的缓存，用于存储键值对数据
+     * A thread-safe cache, used to store key-value pair data.
      */
     private final Map<String, T> cache = new ConcurrentHashMap<>();
 
     /**
-     * 键生成策略
+     * The key generation strategy.
      */
     protected RegistryKey<T> registryKey;
 
     /**
-     * 设置键生成策略
+     * Sets the key generation strategy.
      *
-     * @param registryKey 键生成策略
+     * @param registryKey The key generation strategy.
      */
     protected void setKeyGenerator(RegistryKey<T> registryKey) {
         this.registryKey = registryKey;
     }
 
     /**
-     * 初始化注册表，子类需实现具体初始化逻辑
+     * Initializes the registry. Subclasses must implement specific initialization logic.
      */
     public abstract void init();
 
     /**
-     * 添加键值对到注册表
+     * Adds a key-value pair to the registry.
      *
-     * @param key 键
-     * @param reg 值
-     * @return 如果键不存在且添加成功返回 true，否则返回 false
+     * @param key The key.
+     * @param reg The value to register.
+     * @return {@code true} if the key did not previously exist and the addition was successful, {@code false}
+     *         otherwise.
      */
     @Override
     public boolean add(String key, T reg) {
@@ -83,10 +84,11 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     }
 
     /**
-     * 添加对象到注册表，使用键生成策略生成键
+     * Adds an object to the registry, using the key generation strategy to generate the key.
      *
-     * @param item 要添加的对象
-     * @return 如果添加成功返回 true，否则返回 false
+     * @param item The object to add.
+     * @return {@code true} if the addition was successful, {@code false} otherwise.
+     * @throws IllegalStateException if the key generator is not set.
      */
     public boolean add(T item) {
         if (registryKey == null) {
@@ -96,21 +98,21 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     }
 
     /**
-     * 从注册表中移除指定键的记录
+     * Removes a record with the specified key from the registry.
      *
-     * @param id 键
-     * @return 如果移除成功返回 true，否则返回 false
+     * @param id The key.
+     * @return {@code true} if the removal was successful, {@code false} otherwise.
      */
     public boolean remove(String id) {
         return null != this.cache.remove(id);
     }
 
     /**
-     * 更新注册表中的键值对，先移除后添加
+     * Modifies a key-value pair in the registry by first removing and then adding it.
      *
-     * @param key 键
-     * @param reg 新值
-     * @return 如果更新成功返回 true，否则返回 false
+     * @param key The key.
+     * @param reg The new value.
+     * @return {@code true} if the modification was successful, {@code false} otherwise.
      */
     public boolean amend(String key, T reg) {
         cache.remove(key);
@@ -118,10 +120,11 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     }
 
     /**
-     * 更新注册表中的对象，使用键生成策略生成键
+     * Updates an object in the registry, using the key generation strategy to generate the key.
      *
-     * @param item 要更新的对象
-     * @return 如果更新成功返回 true，否则返回 false
+     * @param item The object to update.
+     * @return {@code true} if the update was successful, {@code false} otherwise.
+     * @throws IllegalStateException if the key generator is not set.
      */
     public boolean amend(T item) {
         if (registryKey == null) {
@@ -131,7 +134,7 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     }
 
     /**
-     * 刷新注册表，清空缓存并重新初始化
+     * Refreshes the registry by clearing the cache and reinitializing it.
      */
     public void refresh() {
         cache.clear();
@@ -139,17 +142,17 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     }
 
     /**
-     * 获取指定键对应的值
+     * Retrieves the value corresponding to the specified key.
      *
-     * @param key 键
-     * @return 对应的值，若不存在返回 null
+     * @param key The key.
+     * @return The corresponding value, or {@code null} if not found.
      */
     public T get(String key) {
         return cache.get(key);
     }
 
     /**
-     * Spring 初始化回调，在 bean 属性设置后调用，触发注册表刷新
+     * Spring initialization callback, invoked after bean properties are set, triggering a registry refresh.
      */
     @Override
     public void afterPropertiesSet() {
@@ -157,18 +160,18 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     }
 
     /**
-     * 键生成策略接口
+     * Interface for key generation strategy.
      *
-     * @param <T> 对象类型
+     * @param <T> The type of object.
      */
     @FunctionalInterface
     public interface RegistryKey<T> {
 
         /**
-         * 根据对象生成键
+         * Generates a key based on the given object.
          *
-         * @param item 对象
-         * @return 生成的键
+         * @param item The object.
+         * @return The generated key.
          */
         String keys(T item);
     }

@@ -36,16 +36,19 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.copier.Copier;
 
 /**
- * Bean拷贝，提供：
+ * A utility class for copying properties between different types of objects, including:
  *
  * <pre>
- *     1. Bean 转 Bean
- *     2. Bean 转 Map
- *     3. Map  转 Bean
- *     4. Map  转 Map
+ *     1. Bean to Bean
+ *     2. Bean to Map
+ *     3. Map to Bean
+ *     4. Map to Map
  * </pre>
  *
- * @param <T> 目标对象类型
+ * This class acts as a facade, delegating the actual copying logic to specific copier implementations based on the
+ * source and target types.
+ *
+ * @param <T> The type of the target object.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -54,15 +57,21 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
     @Serial
     private static final long serialVersionUID = 2852291373181L;
 
+    /**
+     * The internal copier instance that performs the actual property copying.
+     */
     private final Copier<T> copier;
 
     /**
-     * 构造
+     * Constructs a new {@code BeanCopier} instance. It determines the appropriate copier implementation based on the
+     * types of the source and target objects.
      *
-     * @param source      来源对象，可以是Bean或者Map，不能为{@code null}
-     * @param target      目标Bean对象，不能为{@code null}
-     * @param targetType  目标的泛型类型，用于标注有泛型参数的Bean对象
-     * @param copyOptions 拷贝属性选项
+     * @param source      The source object, which can be a Bean, a Map, or a {@link ValueProvider}. Must not be
+     *                    {@code null}.
+     * @param target      The target object, which can be a Bean or a Map. Must not be {@code null}.
+     * @param targetType  The generic type of the target object, used for beans with generic parameters.
+     * @param copyOptions The options to configure the copying process.
+     * @throws NullPointerException if {@code source} or {@code target} is {@code null}.
      */
     public BeanCopier(final Object source, final T target, final Type targetType, final CopyOptions copyOptions) {
         Assert.notNull(source, "Source beans must be not null!");
@@ -89,27 +98,27 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
     }
 
     /**
-     * 创建BeanCopier
+     * Creates a {@code BeanCopier} instance with the target class's type as the generic type.
      *
-     * @param <T>         目标Bean类型
-     * @param source      来源对象，可以是Bean或者Map
-     * @param target      目标Bean对象
-     * @param copyOptions 拷贝属性选项
-     * @return BeanCopier
+     * @param <T>         The type of the target Bean.
+     * @param source      The source object, which can be a Bean or a Map.
+     * @param target      The target Bean object.
+     * @param copyOptions The options to configure the copying process.
+     * @return A new {@code BeanCopier} instance.
      */
     public static <T> BeanCopier<T> of(final Object source, final T target, final CopyOptions copyOptions) {
         return of(source, target, target.getClass(), copyOptions);
     }
 
     /**
-     * 创建BeanCopier
+     * Creates a {@code BeanCopier} instance with a specified target generic type.
      *
-     * @param <T>         目标Bean类型
-     * @param source      来源对象，可以是Bean或者Map
-     * @param target      目标Bean对象
-     * @param destType    目标的泛型类型，用于标注有泛型参数的Bean对象
-     * @param copyOptions 拷贝属性选项
-     * @return BeanCopier
+     * @param <T>         The type of the target Bean.
+     * @param source      The source object, which can be a Bean or a Map.
+     * @param target      The target Bean object.
+     * @param destType    The generic type of the target, used for beans with generic parameters.
+     * @param copyOptions The options to configure the copying process.
+     * @return A new {@code BeanCopier} instance.
      */
     public static <T> BeanCopier<T> of(
             final Object source,
@@ -119,6 +128,11 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
         return new BeanCopier<>(source, target, destType, copyOptions);
     }
 
+    /**
+     * Performs the property copying operation.
+     *
+     * @return The target object with copied properties.
+     */
     @Override
     public T copy() {
         return copier.copy();

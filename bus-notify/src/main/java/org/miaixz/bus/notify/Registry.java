@@ -28,7 +28,7 @@
 package org.miaixz.bus.notify;
 
 /**
- * 通知注册器
+ * Enumerates various notification service providers for registration and identification.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,95 +36,95 @@ package org.miaixz.bus.notify;
 public enum Registry {
 
     /**
-     * 阿里云短信
+     * Alibaba Cloud SMS service.
      */
     ALIYUN_SMS,
     /**
-     * 阿里云语音
+     * Alibaba Cloud Voice Messaging Service.
      */
     ALIYUN_VMS,
     /**
-     * 阿里云邮件
+     * Alibaba Cloud Email Direct Mail service.
      */
     ALIYUN_EDM,
     /**
-     * 阿里云语音
+     * Baidu Cloud SMS service.
      */
     BAIDU_SMS,
     /**
-     * 容连云
+     * Cloopen Cloud SMS service.
      */
     CLOOPEN_SMS,
     /**
-     * 天翼云
+     * China Telecom Cloud SMS service.
      */
     CTYUN_SMS,
     /**
-     * 企业钉钉
+     * DingTalk enterprise messaging service.
      */
     DINGTALK,
     /**
-     * 亿美软通
+     * Emay Softcom SMS service.
      */
     EMAY_SMS,
     /**
-     * 系统邮件
+     * Generic email service.
      */
     GENERIC_EDM,
     /**
-     * 华为云短信
+     * Huawei Cloud SMS service.
      */
     HUAWEI_SMS,
     /**
-     * 京东云短信
+     * JD Cloud SMS service.
      */
     JDCLOUD_SMS,
     /**
-     * 极光短信
+     * JPush SMS service.
      */
     JPUSH_SMS,
     /**
-     * 网易云短信
+     * NetEase Cloud SMS service.
      */
     NETEASE_SMS,
     /**
-     * 七牛云短信
+     * Qiniu Cloud SMS service.
      */
     QINIU_SMS,
     /**
-     * 腾讯云短信
+     * Tencent Cloud SMS service.
      */
     TENCENT_SMS,
     /**
-     * 合一
+     * Uni SMS service.
      */
     UNI_SMS,
     /**
-     * 又拍云短信
+     * UPYUN Cloud SMS service.
      */
     UPYUN_SMS,
     /**
-     * 微信企业号/企业微信消息
+     * WeChat Enterprise Account/WeCom messaging service.
      */
     WECHAT_CP,
     /**
-     * 微信客服消息
+     * WeChat Customer Service messaging service.
      */
     WECHAT_KF,
     /**
-     * 微信小程序-订阅消息
+     * WeChat Mini Program subscription messages.
      */
     WECHAT_MINI,
     /**
-     * 微信公众号-订阅/模板消息
+     * WeChat Official Account subscription/template messages.
      */
     WECHAT_MP,
     /**
-     * 云片短信
+     * Yunpian SMS service.
      */
     YUNPIAN_SMS,
     /**
-     * 助通
+     * Zhutong SMS service.
      */
     ZHUTONG_SMS
 

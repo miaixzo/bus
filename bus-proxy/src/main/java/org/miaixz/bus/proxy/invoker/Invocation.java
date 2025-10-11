@@ -30,7 +30,8 @@ package org.miaixz.bus.proxy.invoker;
 import java.lang.reflect.Method;
 
 /**
- * 调用者方法
+ * Represents an invocation of a method on a proxy instance. This is a central concept in AOP, providing access to the
+ * method, its arguments, and a way to proceed with the original invocation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,31 +39,31 @@ import java.lang.reflect.Method;
 public interface Invocation {
 
     /**
-     * 获取目标实例
+     * Gets the proxy instance that the method was invoked on.
      *
-     * @return 目标实例
+     * @return The proxy instance.
      */
     Object getProxy();
 
     /**
-     * 获取方法
+     * Gets the {@link Method} object for the method that was invoked.
      *
-     * @return Method
+     * @return The invoked method.
      */
     Method getMethod();
 
     /**
-     * 获取参数值
+     * Gets the array of arguments that were passed to the method.
      *
-     * @return 参数
+     * @return The method arguments.
      */
     Object[] getArguments();
 
     /**
-     * 执行方法
+     * Proceeds with the invocation of the original method on the target object.
      *
-     * @return 执行结果
-     * @throws Throwable Throwable
+     * @return The result of the method invocation.
+     * @throws Throwable if the underlying method throws an exception.
      */
     Object proceed() throws Throwable;
 

@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-商户违规通知回调相关接口
+ * WeChat Pay V3 API interfaces related to merchant violation notification callbacks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,29 +38,36 @@ import org.miaixz.bus.pay.Matcher;
 public enum ViolationNotificationApi implements Matcher {
 
     /**
-     * 创建/查询/修改/删除商户违规通知回调地址
+     * Create/query/modify/delete merchant violation notification callback address.
      */
-    VIOLATION_NOTIFY_URL("/v3/merchant-risk-manage/violation-notifications", "创建/查询/修改/删除商户违规通知回调地址");
+    VIOLATION_NOTIFY_URL("/v3/merchant-risk-manage/violation-notifications",
+            "Create/query/modify/delete merchant violation notification callback address");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new ViolationNotificationApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     ViolationNotificationApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -68,9 +75,9 @@ public enum ViolationNotificationApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -78,9 +85,9 @@ public enum ViolationNotificationApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

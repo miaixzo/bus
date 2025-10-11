@@ -32,7 +32,7 @@ import java.io.Serial;
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
- * 可变 {@code float} 类型
+ * A mutable {@code float} wrapper.
  *
  * @author Kimi Liu
  * @see Float
@@ -43,38 +43,41 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     @Serial
     private static final long serialVersionUID = 2852270352052L;
 
+    /**
+     * The mutable value.
+     */
     private float value;
 
     /**
-     * 构造，默认值0
+     * Constructs a new MutableFloat with a default value of 0.
      */
     public MutableFloat() {
 
     }
 
     /**
-     * 构造
+     * Constructs a new MutableFloat with the specified value.
      *
-     * @param value 值
+     * @param value The initial value.
      */
     public MutableFloat(final float value) {
         this.value = value;
     }
 
     /**
-     * 构造
+     * Constructs a new MutableFloat with the value from the specified Number.
      *
-     * @param value 值
+     * @param value The initial value as a Number.
      */
     public MutableFloat(final Number value) {
         this(value.floatValue());
     }
 
     /**
-     * 构造
+     * Constructs a new MutableFloat with the value parsed from the specified String.
      *
-     * @param value String值
-     * @throws NumberFormatException 数字转换错误
+     * @param value The initial value as a String.
+     * @throws NumberFormatException if the String cannot be parsed to a float.
      */
     public MutableFloat(final String value) throws NumberFormatException {
         this.value = Float.parseFloat(value);
@@ -86,9 +89,9 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     }
 
     /**
-     * 设置值
+     * Sets the value.
      *
-     * @param value 值
+     * @param value The new value.
      */
     public void set(final float value) {
         this.value = value;
@@ -100,9 +103,9 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     }
 
     /**
-     * 值+1
+     * Increments the value by one.
      *
-     * @return this
+     * @return This MutableFloat instance.
      */
     public MutableFloat increment() {
         value++;
@@ -110,9 +113,9 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     }
 
     /**
-     * 值减一
+     * Decrements the value by one.
      *
-     * @return this
+     * @return This MutableFloat instance.
      */
     public MutableFloat decrement() {
         value--;
@@ -120,10 +123,10 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     }
 
     /**
-     * 增加值
+     * Adds the specified value to this MutableFloat.
      *
-     * @param operand 被增加的值
-     * @return this
+     * @param operand The value to add.
+     * @return This MutableFloat instance.
      */
     public MutableFloat add(final float operand) {
         this.value += operand;
@@ -131,11 +134,11 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     }
 
     /**
-     * 增加值
+     * Adds the value of the specified Number to this MutableFloat.
      *
-     * @param operand 被增加的值，非空
-     * @return this
-     * @throws NullPointerException if the object is null
+     * @param operand The value to add, must not be null.
+     * @return This MutableFloat instance.
+     * @throws NullPointerException if the operand is null.
      */
     public MutableFloat add(final Number operand) {
         this.value += operand.floatValue();
@@ -143,10 +146,10 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     }
 
     /**
-     * 减去值
+     * Subtracts the specified value from this MutableFloat.
      *
-     * @param operand 被减的值
-     * @return this
+     * @param operand The value to subtract.
+     * @return This MutableFloat instance.
      */
     public MutableFloat subtract(final float operand) {
         this.value -= operand;
@@ -154,11 +157,11 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     }
 
     /**
-     * 减去值
+     * Subtracts the value of the specified Number from this MutableFloat.
      *
-     * @param operand 被减的值，非空
-     * @return this
-     * @throws NullPointerException if the object is null
+     * @param operand The value to subtract, must not be null.
+     * @return This MutableFloat instance.
+     * @throws NullPointerException if the operand is null.
      */
     public MutableFloat subtract(final Number operand) {
         this.value -= operand.floatValue();
@@ -186,15 +189,16 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     }
 
     /**
-     * 相等需同时满足如下条件：
+     * Compares this object to the specified object. The objects are considered equal if all of the following conditions
+     * are met:
      * <ol>
-     * <li>非空</li>
-     * <li>类型为 {@code MutableFloat}</li>
-     * <li>值相等</li>
+     * <li>The other object is not null.</li>
+     * <li>The other object is an instance of {@code MutableFloat}.</li>
+     * <li>The float value of the other object is equal to this object's value.</li>
      * </ol>
      *
-     * @param object 比对的对象
-     * @return 相同返回<code>true</code>，否则 {@code false}
+     * @param object The object to compare against.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object object) {
@@ -210,10 +214,11 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
     }
 
     /**
-     * 比较
+     * Compares this {@code MutableFloat} object with the specified {@code MutableFloat} object.
      *
-     * @param other 其它 {@code MutableFloat} 对象
-     * @return x==y返回0，x&lt;y返回-1，x&gt;y返回1
+     * @param other The other {@code MutableFloat} object to compare against.
+     * @return 0 if the values are equal, a negative integer if this value is less than the other value, or a positive
+     *         integer if this value is greater than the other value.
      */
     @Override
     public int compareTo(final MutableFloat other) {

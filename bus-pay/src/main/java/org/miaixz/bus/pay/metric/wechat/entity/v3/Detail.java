@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 统一下单-优惠功能
+ * V3 Unified Order - Discount details.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,15 +49,15 @@ import lombok.experimental.SuperBuilder;
 public class Detail {
 
     /**
-     * 订单原价
+     * Original price of the order.
      */
     private int cost_price;
     /**
-     * 商品小票ID
+     * Product receipt ID.
      */
     private String invoice_id;
     /**
-     * 单品列表
+     * List of single products.
      */
     private List<GoodsDetail> goods_detail;
 

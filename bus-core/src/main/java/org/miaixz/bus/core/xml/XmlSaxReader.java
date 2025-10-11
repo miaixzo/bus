@@ -40,7 +40,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * XML SAX方式读取器
+ * XML SAX reader for parsing XML documents.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,10 +51,10 @@ public class XmlSaxReader {
     private final InputSource source;
 
     /**
-     * 构造
+     * Constructs a new XmlSaxReader.
      *
-     * @param factory {@link javax.xml.parsers.SAXParserFactory}
-     * @param source  XML源，可以是文件、流、路径等
+     * @param factory The {@link javax.xml.parsers.SAXParserFactory} to use.
+     * @param source  The XML source, which can be a file, stream, path, etc.
      */
     public XmlSaxReader(final javax.xml.parsers.SAXParserFactory factory, final InputSource source) {
         this.factory = factory;
@@ -62,30 +62,32 @@ public class XmlSaxReader {
     }
 
     /**
-     * 创建XmlSaxReader，使用全局{@link javax.xml.parsers.SAXParserFactory}
+     * Creates a new XmlSaxReader using the global default {@link javax.xml.parsers.SAXParserFactory}.
      *
-     * @param source XML源，可以是文件、流、路径等
-     * @return XmlSaxReader
+     * @param source The XML source, which can be a file, stream, path, etc.
+     * @return A new {@link XmlSaxReader} instance.
      */
     public static XmlSaxReader of(final InputSource source) {
         return of(SAXParserFactory.getFactory(), source);
     }
 
     /**
-     * 创建XmlSaxReader
+     * Creates a new XmlSaxReader.
      *
-     * @param factory {@link javax.xml.parsers.SAXParserFactory}
-     * @param source  XML源，可以是文件、流、路径等
-     * @return XmlSaxReader
+     * @param factory The {@link javax.xml.parsers.SAXParserFactory} to use.
+     * @param source  The XML source, which can be a file, stream, path, etc.
+     * @return A new {@link XmlSaxReader} instance.
      */
     public static XmlSaxReader of(final javax.xml.parsers.SAXParserFactory factory, final InputSource source) {
         return new XmlSaxReader(factory, source);
     }
 
     /**
-     * 读取内容
+     * Reads the XML content using the provided {@link ContentHandler}.
      *
-     * @param contentHandler XML流处理器，用于按照Element处理xml
+     * @param contentHandler The XML stream handler for processing XML elements.
+     * @throws InternalException if a {@link ParserConfigurationException}, {@link SAXException}, or {@link IOException}
+     *                           occurs.
      */
     public void read(final ContentHandler contentHandler) {
         final SAXParser parse;
@@ -97,7 +99,7 @@ public class XmlSaxReader {
                 return;
             }
 
-            // 得到解读器
+            // Get the XML reader
             reader = XXE.disableXXE(parse.getXMLReader());
             reader.setContentHandler(contentHandler);
             reader.parse(source);

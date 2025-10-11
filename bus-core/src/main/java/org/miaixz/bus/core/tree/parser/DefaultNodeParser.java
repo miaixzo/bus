@@ -34,14 +34,21 @@ import org.miaixz.bus.core.tree.TreeNode;
 import org.miaixz.bus.core.xyz.MapKit;
 
 /**
- * 默认的简单转换器
+ * The default, simple converter for turning a {@link TreeNode} into a {@link MapTree}.
  *
- * @param <T> ID类型
+ * @param <T> The type of the node's identifier.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DefaultNodeParser<T> implements NodeParser<TreeNode<T>, T> {
 
+    /**
+     * Converts a {@link TreeNode} object to a {@link MapTree} object. It maps the basic properties (ID, parent ID,
+     * weight, name) and any extended properties.
+     *
+     * @param treeNode The source {@link TreeNode} object.
+     * @param tree     The target {@link MapTree} object to populate.
+     */
     @Override
     public void parse(final TreeNode<T> treeNode, final MapTree<T> tree) {
         tree.setId(treeNode.getId());
@@ -49,7 +56,7 @@ public class DefaultNodeParser<T> implements NodeParser<TreeNode<T>, T> {
         tree.setWeight(treeNode.getWeight());
         tree.setName(treeNode.getName());
 
-        // 扩展字段
+        // Copy extended fields
         final Map<String, Object> extra = treeNode.getExtra();
         if (MapKit.isNotEmpty(extra)) {
             extra.forEach(tree::putExtra);

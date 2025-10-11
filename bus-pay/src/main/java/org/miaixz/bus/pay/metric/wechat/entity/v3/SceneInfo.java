@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 统一下单-场景信息
+ * Model for the Scene Info object in the V3 Unified Order API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,19 +47,19 @@ import lombok.experimental.SuperBuilder;
 public class SceneInfo {
 
     /**
-     * 用户终端IP
+     * The payer's client IP address.
      */
     private String payer_client_ip;
     /**
-     * 商户端设备号
+     * The merchant's terminal device ID.
      */
     private String device_id;
     /**
-     * 商户门店信息
+     * Information about the merchant's store.
      */
     private StoreInfo store_info;
     /**
-     * H5 场景信息
+     * Information for H5 payment scenarios.
      */
     private H5Info h5_info;
 

@@ -27,47 +27,49 @@
 */
 package org.miaixz.bus.http.accord;
 
+import org.miaixz.bus.http.Route;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.miaixz.bus.http.Route;
-
 /**
- * 创建到目标地址的新连接时要避免的失败路由的黑名单 如果尝试连接到特定IP地址或代理服务器时出现故障， 则会记住该故障并首选备用路由
+ * A blacklist of failed routes to avoid when creating new connections to a target address. If a failure occurs when
+ * attempting to connect to a specific IP address or proxy server, that failure is remembered and alternate routes will
+ * be preferred.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RouteDatabase {
+public final class RouteDatabase {
 
     /**
-     * 路由记录
+     * The set of failed routes.
      */
     private final Set<Route> failedRoutes = new LinkedHashSet<>();
 
     /**
-     * 记录连接到{@code route}的失败
+     * Records a failure connecting to {@code route}.
      *
-     * @param route 错误路由信息
+     * @param route The route that failed.
      */
     public synchronized void failed(Route route) {
         failedRoutes.add(route);
     }
 
     /**
-     * 成功连接到{@code route}
+     * Records a successful connection to {@code route}.
      *
-     * @param route 正确的路由
+     * @param route The route that successfully connected.
      */
     public synchronized void connected(Route route) {
         failedRoutes.remove(route);
     }
 
     /**
-     * 如果{@code route}最近失败，应该避免返回true
+     * Returns true if {@code route} has recently failed and should be avoided.
      *
-     * @param route 路由
-     * @return the true/false
+     * @param route The route to check.
+     * @return {@code true} if the route should be postponed.
      */
     public synchronized boolean shouldPostpone(Route route) {
         return failedRoutes.contains(route);

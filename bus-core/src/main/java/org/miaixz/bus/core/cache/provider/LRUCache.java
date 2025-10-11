@@ -34,11 +34,23 @@ import org.miaixz.bus.core.center.map.FixedLinkedHashMap;
 import org.miaixz.bus.core.lang.mutable.Mutable;
 
 /**
- * LRU (least recently used)最近最久未使用缓存 根据使用时间来判定对象是否被持续缓存 当对象被访问时放入缓存，当缓存满了，最久未被使用的对象将被移除。
- * 此缓存基于LinkedHashMap，因此当被缓存的对象每被访问一次，这个对象的key就到链表头部。 这个算法简单并且非常快，他比FIFO有一个显著优势是经常使用的对象不太可能被移除缓存。 缺点是当缓存满时，不能被很快的访问。
+ * LRU (Least Recently Used) cache.
+ * <p>
+ * This cache evicts the least recently used items first. When an object is accessed, it is moved to the head of a
+ * linked list. When the cache is full, the object at the tail of the list (the least recently used) is removed.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * <p>
+ * This implementation is based on {@link FixedLinkedHashMap}, which provides an efficient LRU mechanism.
+ *
+ * <p>
+ * <strong>Advantages:</strong> Simple, fast, and frequently used objects are less likely to be evicted.
+ *
+ * <p>
+ * <strong>Disadvantages:</strong> Performance can degrade if the cache is frequently full and access patterns are
+ * random.
+ *
+ * @param <K> The type of the key.
+ * @param <V> The type of the value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -48,30 +60,33 @@ public class LRUCache<K, V> extends LockedCache<K, V> {
     private static final long serialVersionUID = 2852231786866L;
 
     /**
-     * 构造 默认无超时
+     * Constructs an LRU cache with a specified capacity and no default timeout.
      *
-     * @param capacity 容量
+     * @param capacity The cache capacity.
      */
     public LRUCache(final int capacity) {
         this(capacity, 0);
     }
 
     /**
-     * 构造
+     * Constructs an LRU cache with a specified capacity and timeout.
      *
-     * @param capacity 容量
-     * @param timeout  默认超时时间，单位：毫秒
+     * @param capacity The cache capacity.
+     * @param timeout  The default timeout for cache entries in milliseconds.
      */
     public LRUCache(int capacity, final long timeout) {
         if (Integer.MAX_VALUE == capacity) {
+            // Prevent potential overflow issues.
             capacity -= 1;
         }
 
         this.capacity = capacity;
         this.timeout = timeout;
 
-        // 链表key按照访问顺序排序，调用get方法后，会将这次访问的元素移至头部
+        // The underlying map is a FixedLinkedHashMap, which automatically handles LRU eviction.
+        // When an item is accessed, it is moved to the head of the list.
         final FixedLinkedHashMap<Mutable<K>, CacheObject<K, V>> fixedLinkedHashMap = new FixedLinkedHashMap<>(capacity);
+        // Set a listener to propagate removal events to the main cache listener.
         fixedLinkedHashMap.setRemoveListener(entry -> {
             if (null != listener) {
                 listener.onRemove(entry.getKey().get(), entry.getValue().getValue());
@@ -81,18 +96,20 @@ public class LRUCache<K, V> extends LockedCache<K, V> {
     }
 
     /**
-     * 只清理超时对象，LRU的实现会交给{@code LinkedHashMap}
+     * Prunes the cache by removing only expired objects. The LRU eviction logic is handled automatically by the
+     * underlying {@link FixedLinkedHashMap}.
+     *
+     * @return The number of expired items removed.
      */
     @Override
     protected int pruneCache() {
-        if (isPruneExpiredActive() == false) {
+        if (!isPruneExpiredActive()) {
             return 0;
         }
         int count = 0;
         final Iterator<CacheObject<K, V>> values = cacheObjIter();
-        CacheObject<K, V> co;
         while (values.hasNext()) {
-            co = values.next();
+            CacheObject<K, V> co = values.next();
             if (co.isExpired()) {
                 values.remove();
                 onRemove(co.key, co.object);

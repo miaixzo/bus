@@ -69,7 +69,9 @@ import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * IO工具类 IO工具类只是辅助流的读写，并不负责关闭流。原因是流可能被多次读写，读写关闭后容易造成问题。
+ * IO utility class. This class provides helper methods for reading and writing streams, but does not handle stream
+ * closing. This is because streams may be read and written multiple times, and closing them prematurely can lead to
+ * issues.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -77,39 +79,40 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class IoKit {
 
     /**
-     * 将Reader中的内容复制到Writer中 使用默认缓存大小，拷贝后不关闭Reader
+     * Copies content from a {@link Reader} to a {@link Writer} using the default buffer size. The Reader is not closed
+     * after copying.
      *
-     * @param reader Reader
-     * @param writer Writer
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
+     * @param reader The source Reader.
+     * @param writer The destination Writer.
+     * @return The number of characters copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(final Reader reader, final Writer writer) throws InternalException {
         return copy(reader, writer, Normal._8192);
     }
 
     /**
-     * 将Reader中的内容复制到Writer中，拷贝后不关闭Reader
+     * Copies content from a {@link Reader} to a {@link Writer}. The Reader is not closed after copying.
      *
-     * @param reader     Reader
-     * @param writer     Writer
-     * @param bufferSize 缓存大小
-     * @return 传输的byte数
-     * @throws InternalException IO异常
+     * @param reader     The source Reader.
+     * @param writer     The destination Writer.
+     * @param bufferSize The size of the buffer to use for copying.
+     * @return The number of characters copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(final Reader reader, final Writer writer, final int bufferSize) throws InternalException {
         return copy(reader, writer, bufferSize, null);
     }
 
     /**
-     * 将Reader中的内容复制到Writer中，拷贝后不关闭Reader
+     * Copies content from a {@link Reader} to a {@link Writer}. The Reader is not closed after copying.
      *
-     * @param reader         Reader
-     * @param writer         Writer
-     * @param bufferSize     缓存大小
-     * @param streamProgress 进度处理器
-     * @return 传输的byte数
-     * @throws InternalException IO异常
+     * @param reader         The source Reader.
+     * @param writer         The destination Writer.
+     * @param bufferSize     The size of the buffer to use for copying.
+     * @param streamProgress The progress handler for monitoring the copy operation, can be {@code null}.
+     * @return The number of characters copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(
             final Reader reader,
@@ -120,15 +123,15 @@ public class IoKit {
     }
 
     /**
-     * 将Reader中的内容复制到Writer中，拷贝后不关闭Reader
+     * Copies content from a {@link Reader} to a {@link Writer}. The Reader is not closed after copying.
      *
-     * @param reader         Reader，非空
-     * @param writer         Writer，非空
-     * @param bufferSize     缓存大小，-1表示默认
-     * @param count          最大长度，-1表示无限制
-     * @param streamProgress 进度处理器，{@code null}表示无
-     * @return 传输的byte数
-     * @throws InternalException IO异常
+     * @param reader         The source Reader, must not be {@code null}.
+     * @param writer         The destination Writer, must not be {@code null}.
+     * @param bufferSize     The size of the buffer to use for copying. Use -1 for default size.
+     * @param count          The maximum number of characters to copy. Use -1 for unlimited.
+     * @param streamProgress The progress handler for monitoring the copy operation, can be {@code null}.
+     * @return The number of characters copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(
             final Reader reader,
@@ -142,25 +145,26 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，使用默认Buffer大小，拷贝后不关闭流
+     * Copies content from an {@link InputStream} to an {@link OutputStream} using the default buffer size. The streams
+     * are not closed after copying.
      *
-     * @param in  输入流
-     * @param out 输出流
-     * @return 传输的byte数
-     * @throws InternalException IO异常
+     * @param in  The source InputStream.
+     * @param out The destination OutputStream.
+     * @return The number of bytes copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(final InputStream in, final OutputStream out) throws InternalException {
         return copy(in, out, Normal._8192);
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies content from an {@link InputStream} to an {@link OutputStream}. The streams are not closed after copying.
      *
-     * @param in         输入流
-     * @param out        输出流
-     * @param bufferSize 缓存大小
-     * @return 传输的byte数
-     * @throws InternalException IO异常
+     * @param in         The source InputStream.
+     * @param out        The destination OutputStream.
+     * @param bufferSize The size of the buffer to use for copying.
+     * @return The number of bytes copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(final InputStream in, final OutputStream out, final int bufferSize)
             throws InternalException {
@@ -168,14 +172,14 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies content from an {@link InputStream} to an {@link OutputStream}. The streams are not closed after copying.
      *
-     * @param in             输入流
-     * @param out            输出流
-     * @param bufferSize     缓存大小
-     * @param streamProgress 进度条
-     * @return 传输的byte数
-     * @throws InternalException IO异常
+     * @param in             The source InputStream.
+     * @param out            The destination OutputStream.
+     * @param bufferSize     The size of the buffer to use for copying.
+     * @param streamProgress The progress handler for monitoring the copy operation, can be {@code null}.
+     * @return The number of bytes copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(
             final InputStream in,
@@ -186,15 +190,15 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies content from an {@link InputStream} to an {@link OutputStream}. The streams are not closed after copying.
      *
-     * @param in             输入流
-     * @param out            输出流
-     * @param bufferSize     缓存大小
-     * @param count          总拷贝长度，-1表示无限制
-     * @param streamProgress 进度条
-     * @return 传输的byte数
-     * @throws InternalException IO异常
+     * @param in             The source InputStream.
+     * @param out            The destination OutputStream.
+     * @param bufferSize     The size of the buffer to use for copying.
+     * @param count          The total number of bytes to copy. Use -1 for unlimited.
+     * @param streamProgress The progress handler for monitoring the copy operation, can be {@code null}.
+     * @return The number of bytes copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(
             final InputStream in,
@@ -208,12 +212,13 @@ public class IoKit {
     }
 
     /**
-     * 拷贝文件流，使用NIO
+     * Copies content from a {@link FileInputStream} to a {@link FileOutputStream} using NIO. The streams are not closed
+     * after copying.
      *
-     * @param in  输入
-     * @param out 输出
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
+     * @param in  The source FileInputStream.
+     * @param out The destination FileOutputStream.
+     * @return The number of bytes copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(final FileInputStream in, final FileOutputStream out) throws InternalException {
         Assert.notNull(in, "FileInputStream is null!");
@@ -223,11 +228,13 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies content from an {@link InputStream} to an {@link OutputStream} using a provided buffer. The streams are
+     * not closed after copying.
      *
-     * @param in     输入流
-     * @param out    输出流
-     * @param buffer 缓存
+     * @param in     The source InputStream.
+     * @param out    The destination OutputStream.
+     * @param buffer The byte array buffer to use for copying.
+     * @throws IOException If an I/O error occurs.
      */
     public static void copy(InputStream in, OutputStream out, byte[] buffer) throws IOException {
         int count;
@@ -237,62 +244,69 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies a specified length of content from an {@link InputStream} to an {@link OutputStream}, potentially swapping
+     * bytes. The streams are not closed after copying.
      *
-     * @param in        输入流
-     * @param out       输出流
-     * @param swapBytes 交换字节
-     * @throws InternalException IO异常
+     * @param in        The source InputStream.
+     * @param out       The destination OutputStream.
+     * @param len       The number of bytes to copy.
+     * @param swapBytes The number of bytes to swap (e.g., 2 for short, 4 for int).
+     * @throws InternalException If an I/O error occurs.
      */
     public static void copy(InputStream in, OutputStream out, int len, int swapBytes) throws InternalException {
         copy(in, out, len & 0xffffffffL, swapBytes);
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies a specified length of content from an {@link InputStream} to an {@link OutputStream}, potentially swapping
+     * bytes. The streams are not closed after copying.
      *
-     * @param in        输入流
-     * @param out       输出流
-     * @param swapBytes 交换字节
-     * @throws InternalException IO异常
+     * @param in        The source InputStream.
+     * @param out       The destination OutputStream.
+     * @param len       The number of bytes to copy.
+     * @param swapBytes The number of bytes to swap (e.g., 2 for short, 4 for int).
+     * @throws InternalException If an I/O error occurs.
      */
     public static void copy(InputStream in, OutputStream out, long len, int swapBytes) throws InternalException {
         copy(in, out, len, swapBytes, new byte[(int) Math.min(len, Normal._2048)]);
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies a specified length of content from an {@link InputStream} to an {@link OutputStream} using a given buffer
+     * size. The streams are not closed after copying.
      *
-     * @param in         输入流
-     * @param out        输出流
-     * @param bufferSize 缓存大小
-     * @throws InternalException IO异常
+     * @param in         The source InputStream.
+     * @param out        The destination OutputStream.
+     * @param bufferSize The size of the buffer to use for copying.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void copy(InputStream in, OutputStream out, long bufferSize) throws InternalException {
         copy(in, out, bufferSize & 0xffffffffL, new byte[(int) Math.min(bufferSize, Normal._2048)]);
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies a specified length of content from an {@link InputStream} to an {@link OutputStream} using a provided
+     * buffer. The streams are not closed after copying.
      *
-     * @param in         输入流
-     * @param out        输出流
-     * @param bufferSize 缓存大小
-     * @param buffer     缓存
-     * @throws InternalException IO异常
+     * @param in         The source InputStream.
+     * @param out        The destination OutputStream.
+     * @param bufferSize The size of the buffer to use for copying.
+     * @param buffer     The byte array buffer to use for copying.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void copy(InputStream in, OutputStream out, int bufferSize, byte[] buffer) throws InternalException {
         copy(in, out, bufferSize & 0xffffffffL, buffer);
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies a specified length of content from an {@link InputStream} to an {@link OutputStream} using a provided
+     * buffer. The streams are not closed after copying.
      *
-     * @param in         输入流
-     * @param out        输出流
-     * @param bufferSize 缓存大小
-     * @param buffer     缓存
-     * @throws InternalException IO异常
+     * @param in         The source InputStream.
+     * @param out        The destination OutputStream.
+     * @param bufferSize The size of the buffer to use for copying.
+     * @param buffer     The byte array buffer to use for copying.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void copy(InputStream in, OutputStream out, long bufferSize, byte[] buffer) throws InternalException {
         if (bufferSize < 0)
@@ -311,14 +325,15 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies a specified length of content from an {@link InputStream} to an {@link OutputStream}, potentially swapping
+     * bytes, using a provided buffer. The streams are not closed after copying.
      *
-     * @param in         输入流
-     * @param out        输出流
-     * @param bufferSize 缓存大小
-     * @param swapBytes  交换字节
-     * @param buffer     缓存
-     * @throws InternalException IO异常
+     * @param in         The source InputStream.
+     * @param out        The destination OutputStream.
+     * @param bufferSize The size of the buffer to use for copying.
+     * @param swapBytes  The number of bytes to swap (e.g., 2 for short, 4 for int).
+     * @param buffer     The byte array buffer to use for copying.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void copy(InputStream in, OutputStream out, int bufferSize, int swapBytes, byte[] buffer)
             throws InternalException {
@@ -326,14 +341,15 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，拷贝后不关闭流
+     * Copies a specified length of content from an {@link InputStream} to an {@link OutputStream}, potentially swapping
+     * bytes, using a provided buffer. The streams are not closed after copying.
      *
-     * @param in         输入流
-     * @param out        输出流
-     * @param bufferSize 缓存大小
-     * @param swapBytes  交换字节
-     * @param buffer     缓存
-     * @throws InternalException IO异常
+     * @param in         The source InputStream.
+     * @param out        The destination OutputStream.
+     * @param bufferSize The size of the buffer to use for copying.
+     * @param swapBytes  The number of bytes to swap (e.g., 2 for short, 4 for int).
+     * @param buffer     The byte array buffer to use for copying.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void copy(InputStream in, OutputStream out, long bufferSize, int swapBytes, byte[] buffer)
             throws InternalException {
@@ -378,31 +394,31 @@ public class IoKit {
     }
 
     /**
-     * 获得一个文件读取器，默认使用 UTF-8 编码
+     * Creates a {@link BufferedReader} from an {@link InputStream} using UTF-8 encoding by default.
      *
-     * @param in 输入流
-     * @return BufferedReader对象
+     * @param in The input stream.
+     * @return A new {@link BufferedReader} object, or {@code null} if the input stream is {@code null}.
      */
     public static BufferedReader toUtf8Reader(final InputStream in) {
         return toReader(in, Charset.UTF_8);
     }
 
     /**
-     * 从{@link InputStream}中获取{@link BomReader}
+     * Creates a {@link BomReader} from an {@link InputStream}.
      *
-     * @param in {@link InputStream}
-     * @return {@link BomReader}
+     * @param in The input stream.
+     * @return A new {@link BomReader}.
      */
     public static BomReader toBomReader(final InputStream in) {
         return new BomReader(in);
     }
 
     /**
-     * 获得一个Reader
+     * Creates a {@link BufferedReader} from an {@link InputStream} with a specified charset.
      *
-     * @param in      输入流
-     * @param charset 字符集
-     * @return BufferedReader对象
+     * @param in      The input stream.
+     * @param charset The character set to use. If {@code null}, the default charset is used.
+     * @return A new {@link BufferedReader} object, or {@code null} if the input stream is {@code null}.
      */
     public static BufferedReader toReader(final InputStream in, final java.nio.charset.Charset charset) {
         if (null == in) {
@@ -420,21 +436,21 @@ public class IoKit {
     }
 
     /**
-     * 获得一个Writer，默认编码UTF-8
+     * Creates an {@link OutputStreamWriter} from an {@link OutputStream} using UTF-8 encoding by default.
      *
-     * @param out 输入流
-     * @return OutputStreamWriter对象
+     * @param out The output stream.
+     * @return A new {@link OutputStreamWriter} object, or {@code null} if the output stream is {@code null}.
      */
     public static OutputStreamWriter toUtf8Writer(final OutputStream out) {
         return toWriter(out, Charset.UTF_8);
     }
 
     /**
-     * 获得一个Writer
+     * Creates an {@link OutputStreamWriter} from an {@link OutputStream} with a specified charset.
      *
-     * @param out     输入流
-     * @param charset 字符集
-     * @return OutputStreamWriter对象
+     * @param out     The output stream.
+     * @param charset The character set to use. If {@code null}, the default charset is used.
+     * @return A new {@link OutputStreamWriter} object, or {@code null} if the output stream is {@code null}.
      */
     public static OutputStreamWriter toWriter(final OutputStream out, final java.nio.charset.Charset charset) {
         if (null == out) {
@@ -449,69 +465,70 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取UTF8编码的内容
+     * Reads the content from an {@link InputStream} as a UTF-8 encoded string. The stream is closed after reading.
      *
-     * @param in 输入流
-     * @return 内容
-     * @throws InternalException IO异常
+     * @param in The input stream.
+     * @return The content of the stream as a string.
+     * @throws InternalException If an I/O error occurs.
      */
     public static String readUtf8(final InputStream in) throws InternalException {
         return read(in, Charset.UTF_8);
     }
 
     /**
-     * 从流中读取内容，读取完毕后关闭流
+     * Reads the content from an {@link InputStream} with a specified charset. The stream is closed after reading.
      *
-     * @param in      输入流，读取完毕后关闭流
-     * @param charset 字符集
-     * @return 内容
-     * @throws InternalException IO异常
+     * @param in      The input stream, which will be closed after reading.
+     * @param charset The character set to use for decoding the bytes.
+     * @return The content of the stream as a string.
+     * @throws InternalException If an I/O error occurs.
      */
     public static String read(final InputStream in, final java.nio.charset.Charset charset) throws InternalException {
         return StringKit.toString(readBytes(in), charset);
     }
 
     /**
-     * 从流中读取内容，读到输出流中，读取完毕后关闭流
+     * Reads the content from an {@link InputStream} into a {@link FastByteArrayOutputStream}. The input stream is
+     * closed after reading.
      *
-     * @param in 输入流
-     * @return 输出流
-     * @throws InternalException IO异常
+     * @param in The input stream.
+     * @return A {@link FastByteArrayOutputStream} containing the read content.
+     * @throws InternalException If an I/O error occurs.
      */
     public static FastByteArrayOutputStream read(final InputStream in) throws InternalException {
         return read(in, true);
     }
 
     /**
-     * 从流中读取内容，读到输出流中，读取完毕后可选是否关闭流
+     * Reads the content from an {@link InputStream} into a {@link FastByteArrayOutputStream}.
      *
-     * @param in      输入流
-     * @param isClose 读取完毕后是否关闭流
-     * @return 输出流
-     * @throws InternalException IO异常
+     * @param in      The input stream.
+     * @param isClose Whether to close the input stream after reading.
+     * @return A {@link FastByteArrayOutputStream} containing the read content.
+     * @throws InternalException If an I/O error occurs.
      */
     public static FastByteArrayOutputStream read(final InputStream in, final boolean isClose) throws InternalException {
         return StreamReader.of(in, isClose).read();
     }
 
     /**
-     * 从Reader中读取String，读取完毕后关闭Reader
+     * Reads the content from a {@link Reader} into a String. The Reader is closed after reading.
      *
-     * @param reader Reader
-     * @return String
-     * @throws InternalException IO异常
+     * @param reader The source Reader.
+     * @return The content of the Reader as a string.
+     * @throws InternalException If an I/O error occurs.
      */
     public static String read(final Reader reader) throws InternalException {
         return read(reader, true);
     }
 
     /**
-     * 从{@link Reader}中读取String
+     * Reads the content from a {@link Reader} into a String.
      *
-     * @param reader  {@link Reader}
-     * @param isClose 是否关闭{@link Reader}
-     * @return String
-     * @throws InternalException IO异常
+     * @param reader  The source {@link Reader}.
+     * @param isClose Whether to close the {@link Reader} after reading.
+     * @return The content of the Reader as a string.
+     * @throws InternalException If an I/O error occurs.
      */
     public static String read(final Reader reader, final boolean isClose) throws InternalException {
         final StringBuilder builder = StringKit.builder();
@@ -531,48 +548,48 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取bytes，读取完毕后关闭流
+     * Reads all bytes from an {@link InputStream}. The input stream is closed after reading.
      *
-     * @param in {@link InputStream}
-     * @return bytes
-     * @throws InternalException IO异常
+     * @param in The {@link InputStream}.
+     * @return A byte array containing the read bytes.
+     * @throws InternalException If an I/O error occurs.
      */
     public static byte[] readBytes(final InputStream in) throws InternalException {
         return readBytes(in, true);
     }
 
     /**
-     * 从流中读取bytes
+     * Reads all bytes from an {@link InputStream}.
      *
-     * @param in      {@link InputStream}
-     * @param isClose 是否关闭输入流
-     * @return bytes
-     * @throws InternalException IO异常
+     * @param in      The {@link InputStream}.
+     * @param isClose Whether to close the input stream after reading.
+     * @return A byte array containing the read bytes.
+     * @throws InternalException If an I/O error occurs.
      */
     public static byte[] readBytes(final InputStream in, final boolean isClose) throws InternalException {
         return StreamReader.of(in, isClose).readBytes();
     }
 
     /**
-     * 读取指定长度的byte数组，不关闭流
+     * Reads a specified length of bytes from an {@link InputStream}. The stream is not closed after reading.
      *
-     * @param in     {@link InputStream}，为{@code null}返回{@code null}
-     * @param length 长度，小于等于0返回空byte数组
-     * @return bytes
-     * @throws InternalException IO异常
+     * @param in     The {@link InputStream}. Returns {@code null} if the input stream is {@code null}.
+     * @param length The number of bytes to read. If less than or equal to 0, an empty byte array is returned.
+     * @return A byte array containing the read bytes.
+     * @throws InternalException If an I/O error occurs.
      */
     public static byte[] readBytes(final InputStream in, final int length) throws InternalException {
         return StreamReader.of(in, false).readBytes(length);
     }
 
     /**
-     * 读取16进制字符串
+     * Reads a specified length of bytes from an {@link InputStream} and converts them to a hexadecimal string.
      *
-     * @param in          {@link InputStream}
-     * @param length      长度
-     * @param toLowerCase true 传换成小写格式 ， false 传换成大写格式
-     * @return 16进制字符串
-     * @throws InternalException IO异常
+     * @param in          The {@link InputStream}.
+     * @param length      The number of bytes to read.
+     * @param toLowerCase If {@code true}, the hexadecimal string will be in lowercase; otherwise, uppercase.
+     * @return A hexadecimal string representation of the read bytes.
+     * @throws InternalException If an I/O error occurs.
      */
     public static String readHex(final InputStream in, final int length, final boolean toLowerCase)
             throws InternalException {
@@ -580,31 +597,29 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取对象，即对象的反序列化，读取后不关闭流
-     *
+     * Reads an object from an {@link InputStream} by deserialization. The stream is not closed after reading.
      * <p>
-     * 注意！！！ 此方法不会检查反序列化安全，可能存在反序列化漏洞风险！！！
-     * </p>
+     * WARNING: This method does not check for deserialization security and may be vulnerable to deserialization
+     * attacks!
      *
-     * @param <T>           读取对象的类型
-     * @param in            输入流
-     * @param acceptClasses 读取对象类型
-     * @return 输出流
-     * @throws InternalException IO异常
-     * @throws InternalException ClassNotFoundException包装
+     * @param <T>           The type of the object to read.
+     * @param in            The input stream.
+     * @param acceptClasses The classes that are allowed to be deserialized.
+     * @return The deserialized object.
+     * @throws InternalException If an I/O error occurs or a {@link ClassNotFoundException} is wrapped.
      */
     public static <T> T readObject(final InputStream in, final Class<?>... acceptClasses) throws InternalException {
         return StreamReader.of(in, false).readObject(acceptClasses);
     }
 
     /**
-     * 从流中读取内容，使用UTF-8编码
+     * Reads lines from an {@link InputStream} using UTF-8 encoding and adds them to a {@link Collection}.
      *
-     * @param <T>        集合类型
-     * @param in         输入流
-     * @param collection 返回集合
-     * @return 内容
-     * @throws InternalException IO异常
+     * @param <T>        The type of the collection.
+     * @param in         The input stream.
+     * @param collection The collection to which the lines will be added.
+     * @return The collection containing the read lines.
+     * @throws InternalException If an I/O error occurs.
      */
     public static <T extends Collection<String>> T readLines(final InputStream in, final T collection)
             throws InternalException {
@@ -612,14 +627,14 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取内容
+     * Reads lines from an {@link InputStream} with a specified charset and adds them to a {@link Collection}.
      *
-     * @param <T>        集合类型
-     * @param in         输入流
-     * @param charset    字符集
-     * @param collection 返回集合
-     * @return 内容
-     * @throws InternalException IO异常
+     * @param <T>        The type of the collection.
+     * @param in         The input stream.
+     * @param charset    The character set to use for decoding the bytes.
+     * @param collection The collection to which the lines will be added.
+     * @return The collection containing the read lines.
+     * @throws InternalException If an I/O error occurs.
      */
     public static <T extends Collection<String>> T readLines(
             final InputStream in,
@@ -629,13 +644,13 @@ public class IoKit {
     }
 
     /**
-     * 从Reader中读取内容
+     * Reads lines from a {@link Reader} and adds them to a {@link Collection}.
      *
-     * @param <T>        集合类型
-     * @param reader     {@link Reader}
-     * @param collection 返回集合
-     * @return 内容
-     * @throws InternalException IO异常
+     * @param <T>        The type of the collection.
+     * @param reader     The source {@link Reader}.
+     * @param collection The collection to which the lines will be added.
+     * @return The collection containing the read lines.
+     * @throws InternalException If an I/O error occurs.
      */
     public static <T extends Collection<String>> T readLines(final Reader reader, final T collection)
             throws InternalException {
@@ -644,23 +659,24 @@ public class IoKit {
     }
 
     /**
-     * 按行读取UTF-8编码数据，针对每行的数据做处理
+     * Reads lines from an {@link InputStream} using UTF-8 encoding and processes each line with a {@link ConsumerX}.
      *
-     * @param in          {@link InputStream}
-     * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
-     * @throws InternalException IO异常
+     * @param in          The {@link InputStream}.
+     * @param lineHandler The line handler to process each line.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void readLines(final InputStream in, final ConsumerX<String> lineHandler) throws InternalException {
         readLines(in, Charset.UTF_8, lineHandler);
     }
 
     /**
-     * 按行读取数据，针对每行的数据做处理
+     * Reads lines from an {@link InputStream} with a specified charset and processes each line with a
+     * {@link ConsumerX}.
      *
-     * @param in          {@link InputStream}
-     * @param charset     {@link java.nio.charset.Charset}编码
-     * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
-     * @throws InternalException IO异常
+     * @param in          The {@link InputStream}.
+     * @param charset     The {@link java.nio.charset.Charset} encoding to use.
+     * @param lineHandler The line handler to process each line.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void readLines(
             final InputStream in,
@@ -670,11 +686,13 @@ public class IoKit {
     }
 
     /**
-     * 按行读取数据，针对每行的数据做处理 {@link Reader}自带编码定义，因此读取数据的编码跟随其编码。 此方法不会关闭流，除非抛出异常
+     * Reads lines from a {@link Reader} and processes each line with a {@link ConsumerX}. The encoding of the data
+     * follows the Reader's own encoding definition. This method does not close the stream unless an exception is
+     * thrown.
      *
-     * @param reader      {@link Reader}
-     * @param lineHandler 行处理接口，实现handle方法用于编辑一行的数据后入到指定地方
-     * @throws InternalException IO异常
+     * @param reader      The {@link Reader}.
+     * @param lineHandler The line handler to process each line.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void readLines(final Reader reader, final ConsumerX<String> lineHandler) throws InternalException {
         Assert.notNull(reader);
@@ -686,43 +704,44 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取内容，直到遇到给定token
+     * Reads content from an {@link InputStream} until a specified token is encountered.
      *
-     * @param in    输入流
-     * @param token 停止的字符
-     * @return 输出流
+     * @param in    The input stream.
+     * @param token The character token to stop reading at.
+     * @return A {@link FastByteArrayOutputStream} containing the read content up to the token.
      */
     public static FastByteArrayOutputStream readToToken(final InputStream in, final int token) {
         return readTo(in, (c) -> c == token);
     }
 
     /**
-     * 从流中读取内容，直到遇到给定token满足{@link Predicate#test(Object)}
+     * Reads content from an {@link InputStream} until a specified condition defined by a {@link Predicate} is met.
      *
-     * @param in        输入流
-     * @param predicate 读取结束条件, {@link Predicate#test(Object)}返回true表示结束
-     * @return 输出流
+     * @param in        The input stream.
+     * @param predicate The predicate to test each character. Reading stops when {@link Predicate#test(Object)} returns
+     *                  {@code true}.
+     * @return A {@link FastByteArrayOutputStream} containing the read content.
      */
     public static FastByteArrayOutputStream readTo(final InputStream in, final Predicate<Integer> predicate) {
         return StreamReader.of(in, false).readTo(predicate);
     }
 
     /**
-     * String 转为UTF-8编码的字节流流
+     * Converts a {@link String} to a {@link ByteArrayInputStream} using UTF-8 encoding.
      *
-     * @param content 内容
-     * @return 字节流
+     * @param content The string content.
+     * @return A new {@link ByteArrayInputStream}, or {@code null} if the content is {@code null}.
      */
     public static ByteArrayInputStream toStream(final String content) {
         return toStream(content, Charset.UTF_8);
     }
 
     /**
-     * String 转为流
+     * Converts a {@link String} to a {@link ByteArrayInputStream} with a specified charset.
      *
-     * @param content 内容
-     * @param charset 编码
-     * @return 字节流
+     * @param content The string content.
+     * @param charset The character set to use for encoding the string.
+     * @return A new {@link ByteArrayInputStream}, or {@code null} if the content is {@code null}.
      */
     public static ByteArrayInputStream toStream(final String content, final java.nio.charset.Charset charset) {
         if (content == null) {
@@ -732,10 +751,10 @@ public class IoKit {
     }
 
     /**
-     * 文件转为{@link InputStream}
+     * Converts a {@link File} to an {@link InputStream}.
      *
-     * @param file 文件，非空
-     * @return {@link InputStream}
+     * @param file The file, must not be {@code null}.
+     * @return A new {@link InputStream} for the file.
      */
     public static InputStream toStream(final File file) {
         Assert.notNull(file);
@@ -743,10 +762,11 @@ public class IoKit {
     }
 
     /**
-     * 文件转为{@link InputStream}
+     * Converts a {@link Path} to an {@link InputStream}.
      *
-     * @param path {@link Path}，非空
-     * @return {@link InputStream}
+     * @param path The {@link Path}, must not be {@code null}.
+     * @return A new {@link InputStream} for the path.
+     * @throws InternalException If an I/O error occurs.
      */
     public static InputStream toStream(final Path path) {
         Assert.notNull(path);
@@ -758,10 +778,10 @@ public class IoKit {
     }
 
     /**
-     * byte[] 转为{@link ByteArrayInputStream}
+     * Converts a byte array to a {@link ByteArrayInputStream}.
      *
-     * @param content 内容bytes
-     * @return 字节流
+     * @param content The byte array content.
+     * @return A new {@link ByteArrayInputStream}, or {@code null} if the content is {@code null}.
      */
     public static ByteArrayInputStream toStream(final byte[] content) {
         if (content == null) {
@@ -771,10 +791,10 @@ public class IoKit {
     }
 
     /**
-     * {@link ByteArrayOutputStream}转为{@link ByteArrayInputStream}
+     * Converts a {@link ByteArrayOutputStream} to a {@link ByteArrayInputStream}.
      *
-     * @param out {@link ByteArrayOutputStream}
-     * @return 字节流
+     * @param out The {@link ByteArrayOutputStream}.
+     * @return A new {@link ByteArrayInputStream}, or {@code null} if the output stream is {@code null}.
      */
     public static ByteArrayInputStream toStream(final ByteArrayOutputStream out) {
         if (out == null) {
@@ -784,10 +804,10 @@ public class IoKit {
     }
 
     /**
-     * {@link FastByteArrayOutputStream}转为{@link ByteArrayInputStream}
+     * Converts a {@link FastByteArrayOutputStream} to a {@link ByteArrayInputStream}.
      *
-     * @param out {@link FastByteArrayOutputStream}
-     * @return 字节流
+     * @param out The {@link FastByteArrayOutputStream}.
+     * @return A new {@link ByteArrayInputStream}, or {@code null} if the output stream is {@code null}.
      */
     public static ByteArrayInputStream toStream(final FastByteArrayOutputStream out) {
         if (out == null) {
@@ -797,10 +817,11 @@ public class IoKit {
     }
 
     /**
-     * 转换为{@link BufferedInputStream}
+     * Converts an {@link InputStream} to a {@link BufferedInputStream}. If the input stream is already a
+     * {@link BufferedInputStream}, it is cast and returned.
      *
-     * @param in {@link InputStream}
-     * @return {@link BufferedInputStream}
+     * @param in The {@link InputStream}, must not be {@code null}.
+     * @return A {@link BufferedInputStream}.
      */
     public static BufferedInputStream toBuffered(final InputStream in) {
         Assert.notNull(in, "InputStream must be not null!");
@@ -808,11 +829,12 @@ public class IoKit {
     }
 
     /**
-     * 转换为{@link BufferedInputStream}
+     * Converts an {@link InputStream} to a {@link BufferedInputStream} with a specified buffer size. If the input
+     * stream is already a {@link BufferedInputStream}, it is cast and returned.
      *
-     * @param in         {@link InputStream}
-     * @param bufferSize buffer size
-     * @return {@link BufferedInputStream}
+     * @param in         The {@link InputStream}, must not be {@code null}.
+     * @param bufferSize The buffer size.
+     * @return A {@link BufferedInputStream}.
      */
     public static BufferedInputStream toBuffered(final InputStream in, final int bufferSize) {
         Assert.notNull(in, "InputStream must be not null!");
@@ -820,10 +842,11 @@ public class IoKit {
     }
 
     /**
-     * 转换为{@link BufferedOutputStream}
+     * Converts an {@link OutputStream} to a {@link BufferedOutputStream}. If the output stream is already a
+     * {@link BufferedOutputStream}, it is cast and returned.
      *
-     * @param out {@link OutputStream}
-     * @return {@link BufferedOutputStream}
+     * @param out The {@link OutputStream}, must not be {@code null}.
+     * @return A {@link BufferedOutputStream}.
      */
     public static BufferedOutputStream toBuffered(final OutputStream out) {
         Assert.notNull(out, "OutputStream must be not null!");
@@ -831,11 +854,12 @@ public class IoKit {
     }
 
     /**
-     * 转换为{@link BufferedOutputStream}
+     * Converts an {@link OutputStream} to a {@link BufferedOutputStream} with a specified buffer size. If the output
+     * stream is already a {@link BufferedOutputStream}, it is cast and returned.
      *
-     * @param out        {@link OutputStream}
-     * @param bufferSize buffer size
-     * @return {@link BufferedOutputStream}
+     * @param out        The {@link OutputStream}, must not be {@code null}.
+     * @param bufferSize The buffer size.
+     * @return A {@link BufferedOutputStream}.
      */
     public static BufferedOutputStream toBuffered(final OutputStream out, final int bufferSize) {
         Assert.notNull(out, "OutputStream must be not null!");
@@ -844,10 +868,11 @@ public class IoKit {
     }
 
     /**
-     * 转换为{@link BufferedReader}
+     * Converts a {@link Reader} to a {@link BufferedReader}. If the reader is already a {@link BufferedReader}, it is
+     * cast and returned.
      *
-     * @param reader {@link Reader}
-     * @return {@link BufferedReader}
+     * @param reader The {@link Reader}, must not be {@code null}.
+     * @return A {@link BufferedReader}.
      */
     public static BufferedReader toBuffered(final Reader reader) {
         Assert.notNull(reader, "Reader must be not null!");
@@ -855,11 +880,12 @@ public class IoKit {
     }
 
     /**
-     * 转换为{@link BufferedReader}
+     * Converts a {@link Reader} to a {@link BufferedReader} with a specified buffer size. If the reader is already a
+     * {@link BufferedReader}, it is cast and returned.
      *
-     * @param reader     {@link Reader}
-     * @param bufferSize buffer size
-     * @return {@link BufferedReader}
+     * @param reader     The {@link Reader}, must not be {@code null}.
+     * @param bufferSize The buffer size.
+     * @return A {@link BufferedReader}.
      */
     public static BufferedReader toBuffered(final Reader reader, final int bufferSize) {
         Assert.notNull(reader, "Reader must be not null!");
@@ -867,10 +893,11 @@ public class IoKit {
     }
 
     /**
-     * 转换为{@link BufferedWriter}
+     * Converts a {@link Writer} to a {@link BufferedWriter}. If the writer is already a {@link BufferedWriter}, it is
+     * cast and returned.
      *
-     * @param writer {@link Writer}
-     * @return {@link BufferedWriter}
+     * @param writer The {@link Writer}, must not be {@code null}.
+     * @return A {@link BufferedWriter}.
      */
     public static BufferedWriter toBuffered(final Writer writer) {
         Assert.notNull(writer, "Writer must be not null!");
@@ -878,11 +905,12 @@ public class IoKit {
     }
 
     /**
-     * 转换为{@link BufferedWriter}
+     * Converts a {@link Writer} to a {@link BufferedWriter} with a specified buffer size. If the writer is already a
+     * {@link BufferedWriter}, it is cast and returned.
      *
-     * @param writer     {@link Writer}
-     * @param bufferSize buffer size
-     * @return {@link BufferedWriter}
+     * @param writer     The {@link Writer}, must not be {@code null}.
+     * @param bufferSize The buffer size.
+     * @return A {@link BufferedWriter}.
      */
     public static BufferedWriter toBuffered(final Writer writer, final int bufferSize) {
         Assert.notNull(writer, "Writer must be not null!");
@@ -890,10 +918,11 @@ public class IoKit {
     }
 
     /**
-     * 将{@link InputStream}转换为支持mark标记的流 若原流支持mark标记，则返回原流，否则使用{@link BufferedInputStream} 包装之
+     * Converts an {@link InputStream} to a mark-supported stream. If the original stream already supports marking, it
+     * is returned directly. Otherwise, it is wrapped in a {@link BufferedInputStream}.
      *
-     * @param in 流
-     * @return {@link InputStream}
+     * @param in The input stream.
+     * @return A mark-supported {@link InputStream}.
      */
     public static InputStream toMarkSupport(final InputStream in) {
         if (null == in) {
@@ -906,10 +935,11 @@ public class IoKit {
     }
 
     /**
-     * 将{@link Reader}转换为支持mark标记的Reader 若原Reader支持mark标记，则返回原Reader，否则使用{@link BufferedReader} 包装之
+     * Converts a {@link Reader} to a mark-supported Reader. If the original Reader already supports marking, it is
+     * returned directly. Otherwise, it is wrapped in a {@link BufferedReader}.
      *
-     * @param reader {@link Reader}
-     * @return {@link Reader}
+     * @param reader The reader.
+     * @return A mark-supported {@link Reader}.
      */
     public static Reader toMarkSupport(final Reader reader) {
         if (null == reader) {
@@ -922,22 +952,24 @@ public class IoKit {
     }
 
     /**
-     * 获得{@link PushbackReader} 如果是{@link PushbackReader}强转返回，否则新建
+     * Creates a {@link PushbackReader}. If the provided reader is already a {@link PushbackReader}, it is cast and
+     * returned. Otherwise, a new {@link PushbackReader} is created.
      *
-     * @param reader       普通Reader
-     * @param pushBackSize 推后的byte数
-     * @return {@link PushbackReader}
+     * @param reader       The ordinary Reader.
+     * @param pushBackSize The size of the pushback buffer.
+     * @return A {@link PushbackReader}.
      */
     public static PushbackReader toPushBackReader(final Reader reader, final int pushBackSize) {
         return (reader instanceof PushbackReader) ? (PushbackReader) reader : new PushbackReader(reader, pushBackSize);
     }
 
     /**
-     * 转换为{@link PushbackInputStream} 如果传入的输入流已经是{@link PushbackInputStream}，强转返回，否则新建一个
+     * Converts an {@link InputStream} to a {@link PushbackInputStream}. If the provided input stream is already a
+     * {@link PushbackInputStream}, it is cast and returned. Otherwise, a new {@link PushbackInputStream} is created.
      *
-     * @param in           {@link InputStream}
-     * @param pushBackSize 推后的byte数
-     * @return {@link PushbackInputStream}
+     * @param in           The {@link InputStream}.
+     * @param pushBackSize The size of the pushback buffer.
+     * @return A {@link PushbackInputStream}.
      */
     public static PushbackInputStream toPushbackStream(final InputStream in, final int pushBackSize) {
         return (in instanceof PushbackInputStream) ? (PushbackInputStream) in
@@ -945,22 +977,25 @@ public class IoKit {
     }
 
     /**
-     * 将指定{@link InputStream} 转换为{@link InputStream#available()}方法可用的流。
-     * 在Socket通信流中，服务端未返回数据情况下{@link InputStream#available()}方法始终为{@code 0}
-     * 因此，在读取前需要调用{@link InputStream#read()}读取一个字节（未返回会阻塞），一旦读取到了，{@link InputStream#available()}方法就正常了。
-     * 需要注意的是，在网络流中，是按照块来传输的，所以 {@link InputStream#available()} 读取到的并非最终长度，而是此次块的长度。 此方法返回对象的规则为：
-     *
+     * Converts a given {@link InputStream} to a stream where {@link InputStream#available()} works reliably. In socket
+     * communication streams, {@link InputStream#available()} often returns {@code 0} when no data has been received
+     * yet. To make it work, one byte needs to be read (which blocks if no data is available). Once a byte is read,
+     * {@link InputStream#available()} will function correctly. Note that for network streams,
+     * {@link InputStream#available()} may return the size of the current chunk, not the total length.
+     * <p>
+     * The returned object follows these rules:
      * <ul>
-     * <li>FileInputStream 返回原对象，因为文件流的available方法本身可用</li>
-     * <li>其它InputStream 返回PushbackInputStream</li>
+     * <li>{@link FileInputStream} returns the original object, as its {@code available} method is inherently
+     * reliable.</li>
+     * <li>Other {@link InputStream} types return a {@link PushbackInputStream}.</li>
      * </ul>
      *
-     * @param in 被转换的流
-     * @return 转换后的流，可能为{@link PushbackInputStream}
+     * @param in The input stream to convert.
+     * @return The converted stream, potentially a {@link PushbackInputStream}.
      */
     public static InputStream toAvailableStream(final InputStream in) {
         if (in instanceof FileInputStream) {
-            // FileInputStream本身支持available方法。
+            // FileInputStream's available method is inherently reliable.
             return in;
         }
 
@@ -968,7 +1003,7 @@ public class IoKit {
         try {
             final int available = pushbackInputStream.available();
             if (available <= 0) {
-                // 此操作会阻塞，直到有数据被读到
+                // This operation will block until data is read.
                 final int b = pushbackInputStream.read();
                 pushbackInputStream.unread(b);
             }
@@ -980,23 +1015,23 @@ public class IoKit {
     }
 
     /**
-     * 将byte[]写到流中，并关闭目标流
+     * Writes a byte array to an {@link OutputStream} and closes the target stream.
      *
-     * @param out     输出流
-     * @param content 写入的内容
-     * @throws InternalException IO异常
+     * @param out     The output stream.
+     * @param content The content to write.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void write(final OutputStream out, final byte[] content) throws InternalException {
         write(out, true, content);
     }
 
     /**
-     * 将byte[]写到流中
+     * Writes a byte array to an {@link OutputStream}.
      *
-     * @param out        输出流
-     * @param isCloseOut 写入完毕是否关闭输出流
-     * @param content    写入的内容
-     * @throws InternalException IO异常
+     * @param out        The output stream.
+     * @param isCloseOut Whether to close the output stream after writing.
+     * @param content    The content to write.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void write(final OutputStream out, final boolean isCloseOut, final byte[] content)
             throws InternalException {
@@ -1004,12 +1039,14 @@ public class IoKit {
     }
 
     /**
-     * 将多部分内容写到流中，自动转换为UTF-8字符串
+     * Writes multiple {@link CharSequence} contents to an {@link OutputStream}, automatically converting them to UTF-8
+     * strings.
      *
-     * @param out        输出流
-     * @param isCloseOut 写入完毕是否关闭输出流
-     * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
-     * @throws InternalException IO异常
+     * @param out        The output stream.
+     * @param isCloseOut Whether to close the output stream after writing.
+     * @param contents   The contents to write. Each element's {@code toString()} method is called. Newlines are not
+     *                   automatically added.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void write(final OutputStream out, final boolean isCloseOut, final CharSequence... contents)
             throws InternalException {
@@ -1017,13 +1054,14 @@ public class IoKit {
     }
 
     /**
-     * 将多部分内容写到流中，自动转换为字符串
+     * Writes multiple {@link CharSequence} contents to an {@link OutputStream} with a specified charset.
      *
-     * @param out        输出流
-     * @param charset    写出的内容的字符集
-     * @param isCloseOut 写入完毕是否关闭输出流
-     * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
-     * @throws InternalException IO异常
+     * @param out        The output stream.
+     * @param charset    The character set to use for encoding the contents.
+     * @param isCloseOut Whether to close the output stream after writing.
+     * @param contents   The contents to write. Each element's {@code toString()} method is called. Newlines are not
+     *                   automatically added.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void write(
             final OutputStream out,
@@ -1034,12 +1072,12 @@ public class IoKit {
     }
 
     /**
-     * 将多部分内容写到流中
+     * Writes multiple {@link Object} contents to an {@link OutputStream}.
      *
-     * @param out        输出流
-     * @param isCloseOut 写入完毕是否关闭输出流
-     * @param contents   写入的内容
-     * @throws InternalException IO异常
+     * @param out        The output stream.
+     * @param isCloseOut Whether to close the output stream after writing.
+     * @param contents   The contents to write.
+     * @throws InternalException If an I/O error occurs.
      */
     public static void write(final OutputStream out, final boolean isCloseOut, final Object... contents)
             throws InternalException {
@@ -1047,23 +1085,23 @@ public class IoKit {
     }
 
     /**
-     * 从FileChannel中读取UTF-8编码内容
+     * Reads content from a {@link FileChannel} as a UTF-8 encoded string.
      *
-     * @param fileChannel 文件管道
-     * @return 内容
-     * @throws InternalException IO异常
+     * @param fileChannel The file channel.
+     * @return The content of the file channel as a string.
+     * @throws InternalException If an I/O error occurs.
      */
     public static String read(final FileChannel fileChannel) throws InternalException {
         return read(fileChannel, Charset.UTF_8);
     }
 
     /**
-     * 从FileChannel中读取内容
+     * Reads content from a {@link FileChannel} with a specified charset.
      *
-     * @param fileChannel 文件管道
-     * @param charset     字符集
-     * @return 内容
-     * @throws InternalException IO异常
+     * @param fileChannel The file channel.
+     * @param charset     The character set to use for decoding the bytes.
+     * @return The content of the file channel as a string.
+     * @throws InternalException If an I/O error occurs.
      */
     public static String read(final FileChannel fileChannel, final java.nio.charset.Charset charset)
             throws InternalException {
@@ -1077,11 +1115,12 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取内容，读到输出流中
+     * Reads content from a {@link ReadableByteChannel} into a {@link FastByteArrayOutputStream}. The channel is not
+     * closed after reading.
      *
-     * @param channel 可读通道，读取完毕后并不关闭通道
-     * @return 输出流
-     * @throws InternalException IO异常
+     * @param channel The readable byte channel.
+     * @return A {@link FastByteArrayOutputStream} containing the read content.
+     * @throws InternalException If an I/O error occurs.
      */
     public static FastByteArrayOutputStream read(final ReadableByteChannel channel) throws InternalException {
         final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
@@ -1090,12 +1129,13 @@ public class IoKit {
     }
 
     /**
-     * 从流中读取内容，读取完毕后并不关闭流
+     * Reads content from a {@link ReadableByteChannel} with a specified charset. The channel is not closed after
+     * reading.
      *
-     * @param channel 可读通道，读取完毕后并不关闭通道
-     * @param charset 字符集
-     * @return 内容
-     * @throws InternalException IO异常
+     * @param channel The readable byte channel.
+     * @param charset The character set to use for decoding the bytes.
+     * @return The content of the channel as a string.
+     * @throws InternalException If an I/O error occurs.
      */
     public static String read(final ReadableByteChannel channel, final java.nio.charset.Charset charset)
             throws InternalException {
@@ -1104,12 +1144,12 @@ public class IoKit {
     }
 
     /**
-     * 拷贝文件Channel，使用NIO，拷贝后不会关闭channel
+     * Copies content from one {@link FileChannel} to another using NIO. The channels are not closed after copying.
      *
-     * @param in  {@link FileChannel}，非空
-     * @param out {@link FileChannel}，非空
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
+     * @param in  The source {@link FileChannel}, must not be {@code null}.
+     * @param out The destination {@link FileChannel}, must not be {@code null}.
+     * @return The number of bytes copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(final FileChannel in, final FileChannel out) throws InternalException {
         Assert.notNull(in, "In channel is null!");
@@ -1119,25 +1159,27 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，使用NIO，不会关闭channel
+     * Copies content from a {@link ReadableByteChannel} to a {@link WritableByteChannel} using NIO. The channels are
+     * not closed after copying.
      *
-     * @param in  {@link ReadableByteChannel}
-     * @param out {@link WritableByteChannel}
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
+     * @param in  The source {@link ReadableByteChannel}.
+     * @param out The destination {@link WritableByteChannel}.
+     * @return The number of bytes copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(final ReadableByteChannel in, final WritableByteChannel out) throws InternalException {
         return copy(in, out, Normal._8192);
     }
 
     /**
-     * 拷贝流，使用NIO，不会关闭channel
+     * Copies content from a {@link ReadableByteChannel} to a {@link WritableByteChannel} using NIO with a specified
+     * buffer size. The channels are not closed after copying.
      *
-     * @param in         {@link ReadableByteChannel}
-     * @param out        {@link WritableByteChannel}
-     * @param bufferSize 缓冲大小，如果小于等于0，使用默认
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
+     * @param in         The source {@link ReadableByteChannel}.
+     * @param out        The destination {@link WritableByteChannel}.
+     * @param bufferSize The buffer size. If less than or equal to 0, the default size is used.
+     * @return The number of bytes copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(final ReadableByteChannel in, final WritableByteChannel out, final int bufferSize)
             throws InternalException {
@@ -1145,14 +1187,15 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，使用NIO，不会关闭channel
+     * Copies content from a {@link ReadableByteChannel} to a {@link WritableByteChannel} using NIO with a specified
+     * buffer size and progress handler. The channels are not closed after copying.
      *
-     * @param in             {@link ReadableByteChannel}
-     * @param out            {@link WritableByteChannel}
-     * @param bufferSize     缓冲大小，如果小于等于0，使用默认
-     * @param streamProgress {@link StreamProgress}进度处理器
-     * @return 拷贝的字节数
-     * @throws InternalException IO异常
+     * @param in             The source {@link ReadableByteChannel}.
+     * @param out            The destination {@link WritableByteChannel}.
+     * @param bufferSize     The buffer size. If less than or equal to 0, the default size is used.
+     * @param streamProgress The {@link StreamProgress} progress handler.
+     * @return The number of bytes copied.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copy(
             final ReadableByteChannel in,
@@ -1163,14 +1206,15 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流，使用NIO，不会关闭channel
+     * Copies content from a {@link ReadableByteChannel} to a {@link WritableByteChannel} using NIO with a specified
+     * buffer size, total count, and progress handler. The channels are not closed after copying.
      *
-     * @param in             {@link ReadableByteChannel}
-     * @param out            {@link WritableByteChannel}
-     * @param bufferSize     缓冲大小，如果小于等于0，使用默认
-     * @param totalCount     读取总长度
-     * @param streamProgress {@link StreamProgress}进度处理器
-     * @return 拷贝的字节数
+     * @param in             The source {@link ReadableByteChannel}.
+     * @param out            The destination {@link WritableByteChannel}.
+     * @param bufferSize     The buffer size. If less than or equal to 0, the default size is used.
+     * @param totalCount     The total number of bytes to read.
+     * @param streamProgress The {@link StreamProgress} progress handler.
+     * @return The number of bytes copied.
      */
     public static long copy(
             final ReadableByteChannel in,
@@ -1184,15 +1228,15 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流 thanks to:
-     * https://github.com/venusdrogon/feilong-io/blob/master/src/main/java/com/feilong/io/IOWriteUtil.java 本方法不会关闭流
+     * Copies content from an {@link InputStream} to an {@link OutputStream} using NIO. This method does not close the
+     * streams.
      *
-     * @param in             输入流
-     * @param out            输出流
-     * @param bufferSize     缓存大小
-     * @param streamProgress 进度条
-     * @return 传输的byte数
-     * @throws InternalException IO异常
+     * @param in             The input stream.
+     * @param out            The output stream.
+     * @param bufferSize     The buffer size.
+     * @param streamProgress The progress handler.
+     * @return The number of bytes transferred.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copyNio(
             final InputStream in,
@@ -1203,15 +1247,16 @@ public class IoKit {
     }
 
     /**
-     * 拷贝流 本方法不会关闭流
+     * Copies content from an {@link InputStream} to an {@link OutputStream} using NIO. This method does not close the
+     * streams.
      *
-     * @param in             输入流， 非空
-     * @param out            输出流， 非空
-     * @param bufferSize     缓存大小，-1表示默认
-     * @param count          最大长度，-1表示无限制
-     * @param streamProgress 进度条，{@code null}表示无进度条
-     * @return 传输的byte数
-     * @throws InternalException IO异常
+     * @param in             The input stream, must not be {@code null}.
+     * @param out            The output stream, must not be {@code null}.
+     * @param bufferSize     The buffer size. Use -1 for default size.
+     * @param count          The maximum length to copy. Use -1 for unlimited.
+     * @param streamProgress The progress handler, can be {@code null}.
+     * @return The number of bytes transferred.
+     * @throws InternalException If an I/O error occurs.
      */
     public static long copyNio(
             final InputStream in,
@@ -1232,24 +1277,25 @@ public class IoKit {
     }
 
     /**
-     * 从缓存中刷出数据
+     * Flushes data from a {@link Flushable} object. Any exceptions during flushing are silently ignored.
      *
-     * @param flushable {@link Flushable}
+     * @param flushable The {@link Flushable} object to flush.
      */
     public static void flush(final Flushable flushable) {
         if (null != flushable) {
             try {
                 flushable.flush();
             } catch (final Exception e) {
-                // 静默刷出
+                // Silently ignore
             }
         }
     }
 
     /**
-     * 尝试关闭指定对象 判断对象如果实现了{@link AutoCloseable}，则调用之
+     * Attempts to close the specified object. If the object implements {@link AutoCloseable}, its {@code close()}
+     * method is called.
      *
-     * @param object 可关闭对象
+     * @param object The object to close.
      */
     public static void close(final Object object) {
         if (object instanceof AutoCloseable) {
@@ -1258,9 +1304,10 @@ public class IoKit {
     }
 
     /**
-     * 关闭 关闭失败不会抛出异常
+     * Closes a {@link Closeable} object. Failure to close will not throw an exception, but runtime exceptions will be
+     * rethrown.
      *
-     * @param closeable 被关闭的对象
+     * @param closeable The {@link Closeable} object to close.
      */
     public static void close(Closeable closeable) {
         if (null != closeable) {
@@ -1269,29 +1316,31 @@ public class IoKit {
             } catch (RuntimeException rethrown) {
                 throw rethrown;
             } catch (Exception ignored) {
+                // Silently ignore other exceptions
             }
         }
     }
 
     /**
-     * 关闭 关闭失败不会抛出异常
+     * Closes an {@link AutoCloseable} object. Failure to close will not throw an exception.
      *
-     * @param autoCloseable 被关闭的对象
+     * @param autoCloseable The {@link AutoCloseable} object to close.
      */
     public static void close(AutoCloseable autoCloseable) {
         if (null != autoCloseable) {
             try {
                 autoCloseable.close();
             } catch (Exception e) {
-                // 静默关闭
+                // Silently close
             }
         }
     }
 
     /**
-     * 关闭 关闭失败不会抛出异常
+     * Closes a {@link Socket} object. Failure to close will not throw an exception, but runtime exceptions will be
+     * rethrown. Handles Android-specific `getsockname failed` AssertionError.
      *
-     * @param socket 被关闭的对象
+     * @param socket The {@link Socket} object to close.
      */
     public static void close(Socket socket) {
         if (null != socket) {
@@ -1303,12 +1352,16 @@ public class IoKit {
             } catch (RuntimeException rethrown) {
                 throw rethrown;
             } catch (Exception ignored) {
+                // Silently ignore other exceptions
             }
         }
     }
 
     /**
-     * @param serverSocket 被关闭的对象 关闭{@code serverSocket}，忽略任何已检查的异常。 如果{@code serverSocket}为空，则不执行任何操作
+     * Closes a {@link ServerSocket} object, ignoring any checked exceptions. If the {@code serverSocket} is
+     * {@code null}, no operation is performed.
+     *
+     * @param serverSocket The {@link ServerSocket} object to close.
      */
     public static void close(ServerSocket serverSocket) {
         if (null != serverSocket) {
@@ -1317,12 +1370,15 @@ public class IoKit {
             } catch (RuntimeException rethrown) {
                 throw rethrown;
             } catch (Exception ignored) {
+                // Silently ignore other exceptions
             }
         }
     }
 
     /**
-     * @param channel 需要被关闭的通道
+     * Closes an {@link AsynchronousSocketChannel}. Attempts to shutdown input and output before closing the channel.
+     *
+     * @param channel The {@link AsynchronousSocketChannel} to close.
      */
     public static void close(AsynchronousSocketChannel channel) {
         boolean connected = true;
@@ -1345,9 +1401,10 @@ public class IoKit {
     }
 
     /**
-     * 按照给定顺序连续关闭一系列对象 这些对象必须按照顺序关闭，否则会出错。
+     * Closes a series of {@link AutoCloseable} objects in the given order. These objects must be closed in sequence,
+     * otherwise errors may occur. Exceptions during closing are silently ignored.
      *
-     * @param closeables 需要关闭的对象
+     * @param closeables The {@link AutoCloseable} objects to close.
      */
     public static void closeQuietly(final AutoCloseable... closeables) {
         for (final AutoCloseable closeable : closeables) {
@@ -1356,18 +1413,22 @@ public class IoKit {
     }
 
     /**
-     * Returns true if {@code e} is due to a firmware bug fixed after Android 4.2.2.
-     * https://code.google.com/p/android/issues/detail?id=54072
+     * Returns true if the given {@link AssertionError} is due to a firmware bug fixed after Android 4.2.2. Refer to:
+     * <a href="https://code.google.com/p/android/issues/detail?id=54072">Android Issue 54072</a>
+     *
+     * @param e The {@link AssertionError} to check.
+     * @return {@code true} if the error is an Android getsockname error, {@code false} otherwise.
      */
     public static boolean isAndroidGetsocknameError(AssertionError e) {
         return null != e.getCause() && null != e.getMessage() && e.getMessage().contains("getsockname failed");
     }
 
     /**
-     * 关闭 关闭失败抛出{@link IOException}异常
+     * Closes a {@link Closeable} object. If the object is not {@code null}, its {@code close()} method is called.
+     * Throws an {@link IOException} if closing fails.
      *
-     * @param closeable 被关闭的对象
-     * @throws IOException IO异常
+     * @param closeable The {@link Closeable} object to close.
+     * @throws IOException If an I/O error occurs during closing.
      */
     public static void nullSafeClose(final Closeable closeable) throws IOException {
         if (null != closeable) {
@@ -1376,21 +1437,24 @@ public class IoKit {
     }
 
     /**
-     * 返回一个向{@code out}写入的接收器
+     * Returns a {@link Sink} that writes to the given {@link OutputStream}.
      *
-     * @param out 输出流
-     * @return 接收缓冲区
+     * @param out The output stream.
+     * @return A new {@link Sink}.
      */
     public static Sink sink(OutputStream out) {
         return sink(out, new Timeout());
     }
 
     /**
-     * 返回一个向{@code socket}写入的接收器。优先选择这个方法， 而不是{@link #sink(OutputStream)}，因为这个方法支持超时 当套接字写超时时，套接字将由看门狗线程异步关闭
+     * Returns a {@link Sink} that writes to the given {@link OutputStream} with a specified timeout. This method is
+     * preferred over {@link #sink(OutputStream)} when dealing with sockets, as it supports timeouts. When a socket
+     * write times out, the socket will be asynchronously closed by a watchdog thread.
      *
-     * @param out     数据输出流
-     * @param timeout 超时信息
-     * @return 接收器
+     * @param out     The data output stream.
+     * @param timeout The timeout information.
+     * @return A new {@link Sink}.
+     * @throws IllegalArgumentException if {@code out} or {@code timeout} is {@code null}.
      */
     private static Sink sink(final OutputStream out, final Timeout timeout) {
         if (null == out) {
@@ -1445,11 +1509,14 @@ public class IoKit {
     }
 
     /**
-     * 返回一个向{@code socket}写入的接收器。优先选择这个方法， 而不是{@link #sink(OutputStream)}，因为这个方法支持超时 当套接字写超时时，套接字将由任务线程异步关闭
+     * Returns a {@link Sink} that writes to the given {@link Socket}. This method is preferred over
+     * {@link #sink(OutputStream)} as it supports timeouts. When a socket write times out, the socket will be
+     * asynchronously closed by a task thread.
      *
-     * @param socket 套接字
-     * @return 接收器
-     * @throws IOException IO异常
+     * @param socket The socket.
+     * @return A new {@link Sink}.
+     * @throws IOException              If an I/O error occurs or the socket's output stream is {@code null}.
+     * @throws IllegalArgumentException if {@code socket} is {@code null}.
      */
     public static Sink sink(Socket socket) throws IOException {
         if (null == socket) {
@@ -1464,21 +1531,22 @@ public class IoKit {
     }
 
     /**
-     * 返回从{@code in}中读取的缓冲数据
+     * Returns a buffered {@link Source} that reads from the given {@link InputStream}.
      *
-     * @param in 数据输入流
-     * @return 缓冲数据
+     * @param in The data input stream.
+     * @return A new buffered {@link Source}.
      */
     public static Source source(InputStream in) {
         return source(in, new Timeout());
     }
 
     /**
-     * 返回从{@code in}中读取的缓冲数据
+     * Returns a buffered {@link Source} that reads from the given {@link InputStream} with a specified timeout.
      *
-     * @param in      数据输入流
-     * @param timeout 超时信息
-     * @return 缓冲数据
+     * @param in      The data input stream.
+     * @param timeout The timeout information.
+     * @return A new buffered {@link Source}.
+     * @throws IllegalArgumentException if {@code in} or {@code timeout} is {@code null}.
      */
     private static Source source(final InputStream in, final Timeout timeout) {
         if (null == in) {
@@ -1537,11 +1605,12 @@ public class IoKit {
     }
 
     /**
-     * 返回从{@code file}读取的缓冲数据
+     * Returns a buffered {@link Source} that reads from the given {@link File}.
      *
-     * @param file 文件
-     * @return 缓冲数据
-     * @throws FileNotFoundException 文件未找到
+     * @param file The file.
+     * @return A new buffered {@link Source}.
+     * @throws FileNotFoundException    If the file does not exist.
+     * @throws IllegalArgumentException if {@code file} is {@code null}.
      */
     public static Source source(File file) throws FileNotFoundException {
         if (null == file) {
@@ -1551,12 +1620,13 @@ public class IoKit {
     }
 
     /**
-     * 返回从{@code path}读取的缓冲数据
+     * Returns a buffered {@link Source} that reads from the given {@link Path}.
      *
-     * @param path    路径
-     * @param options 选项
-     * @return 缓冲数据
-     * @throws IOException IO异常
+     * @param path    The path.
+     * @param options Open options for the file.
+     * @return A new buffered {@link Source}.
+     * @throws IOException              If an I/O error occurs.
+     * @throws IllegalArgumentException if {@code path} is {@code null}.
      */
     public static Source source(Path path, OpenOption... options) throws IOException {
         if (null == path) {
@@ -1566,11 +1636,12 @@ public class IoKit {
     }
 
     /**
-     * 返回一个向{@code file}写入的接收器
+     * Returns a {@link Sink} that writes to the given {@link File}.
      *
-     * @param file 文件
-     * @return 接收器
-     * @throws FileNotFoundException 文件未找到
+     * @param file The file.
+     * @return A new {@link Sink}.
+     * @throws FileNotFoundException    If the file cannot be opened for writing.
+     * @throws IllegalArgumentException if {@code file} is {@code null}.
      */
     public static Sink sink(File file) throws FileNotFoundException {
         if (null == file) {
@@ -1580,11 +1651,12 @@ public class IoKit {
     }
 
     /**
-     * 返回一个附加到{@code file}的接收器
+     * Returns a {@link Sink} that appends to the given {@link File}.
      *
-     * @param file 文件
-     * @return 接收器
-     * @throws FileNotFoundException 文件未找到
+     * @param file The file.
+     * @return A new {@link Sink} for appending.
+     * @throws FileNotFoundException    If the file cannot be opened for appending.
+     * @throws IllegalArgumentException if {@code file} is {@code null}.
      */
     public static Sink appendingSink(File file) throws FileNotFoundException {
         if (null == file) {
@@ -1594,12 +1666,13 @@ public class IoKit {
     }
 
     /**
-     * 返回一个向{@code path}写入的接收器.
+     * Returns a {@link Sink} that writes to the given {@link Path}.
      *
-     * @param path    路径
-     * @param options 属性
-     * @return 写入的数据的接收器
-     * @throws IOException IO异常
+     * @param path    The path.
+     * @param options Open options for the file.
+     * @return A new {@link Sink} for writing data.
+     * @throws IOException              If an I/O error occurs.
+     * @throws IllegalArgumentException if {@code path} is {@code null}.
      */
     public static Sink sink(Path path, OpenOption... options) throws IOException {
         if (null == path) {
@@ -1609,9 +1682,9 @@ public class IoKit {
     }
 
     /**
-     * 返回一个都不写的接收器
+     * Returns a "blackhole" {@link Sink} that discards all written data.
      *
-     * @return 接收器
+     * @return A new blackhole {@link Sink}.
      */
     public static Sink blackhole() {
         return new Sink() {
@@ -1637,11 +1710,14 @@ public class IoKit {
     }
 
     /**
-     * 返回从{@code socket}读取的缓存信息。与{@link #source(InputStream)}相比， 更喜欢这个方法， 因为这个方法支持超时。当套接字读取超时时，套接字将由任务线程异步关闭
+     * Returns a buffered {@link Source} that reads from the given {@link Socket}. This method is preferred over
+     * {@link #source(InputStream)} as it supports timeouts. When a socket read times out, the socket will be
+     * asynchronously closed by a task thread.
      *
-     * @param socket 套接字
-     * @return 取的缓存信息
-     * @throws IOException IO异常
+     * @param socket The socket.
+     * @return A new buffered {@link Source}.
+     * @throws IOException              If an I/O error occurs or the socket's input stream is {@code null}.
+     * @throws IllegalArgumentException if {@code socket} is {@code null}.
      */
     public static Source source(Socket socket) throws IOException {
         if (null == socket) {
@@ -1655,6 +1731,13 @@ public class IoKit {
         return timeout.source(source);
     }
 
+    /**
+     * Creates an {@link AsyncTimeout} for the given {@link Socket}. This timeout will close the socket if a timeout
+     * occurs.
+     *
+     * @param socket The socket to associate with the timeout.
+     * @return A new {@link AsyncTimeout}.
+     */
     private static AsyncTimeout timeout(final Socket socket) {
         return new AsyncTimeout() {
 
@@ -1685,12 +1768,13 @@ public class IoKit {
     }
 
     /**
-     * 对比两个流内容是否相同 内部会转换流为 {@link BufferedInputStream}
+     * Compares the content of two {@link InputStream}s for equality. Internally, streams are converted to
+     * {@link BufferedInputStream}s.
      *
-     * @param input1 第一个流
-     * @param input2 第二个流
-     * @return 两个流的内容一致返回true，否则false
-     * @throws InternalException IO异常
+     * @param input1 The first input stream.
+     * @param input2 The second input stream.
+     * @return {@code true} if the contents of the two streams are identical, {@code false} otherwise.
+     * @throws InternalException If an I/O error occurs.
      */
     public static boolean contentEquals(InputStream input1, InputStream input2) throws InternalException {
         if (!(input1 instanceof BufferedInputStream)) {
@@ -1718,12 +1802,13 @@ public class IoKit {
     }
 
     /**
-     * 对比两个Reader的内容是否一致 内部会转换流为 {@link BufferedInputStream}
+     * Compares the content of two {@link Reader}s for equality. Internally, readers are converted to
+     * {@link BufferedReader}s.
      *
-     * @param input1 第一个reader
-     * @param input2 第二个reader
-     * @return 两个流的内容一致返回true，否则false
-     * @throws InternalException IO异常
+     * @param input1 The first reader.
+     * @param input2 The second reader.
+     * @return {@code true} if the contents of the two readers are identical, {@code false} otherwise.
+     * @throws InternalException If an I/O error occurs.
      */
     public static boolean contentEquals(Reader input1, Reader input2) throws InternalException {
         input1 = toBuffered(input1);
@@ -1747,12 +1832,13 @@ public class IoKit {
     }
 
     /**
-     * 对比两个流内容是否相同，忽略EOL字符 内部会转换流为 {@link BufferedInputStream}
+     * Compares the content of two {@link Reader}s for equality, ignoring End-Of-Line (EOL) characters. Internally,
+     * readers are converted to {@link BufferedReader}s.
      *
-     * @param input1 第一个流
-     * @param input2 第二个流
-     * @return 两个流的内容一致返回true，否则false
-     * @throws InternalException IO异常
+     * @param input1 The first reader.
+     * @param input2 The second reader.
+     * @return {@code true} if the contents of the two readers are identical (ignoring EOL), {@code false} otherwise.
+     * @throws InternalException If an I/O error occurs.
      */
     public static boolean contentEqualsIgnoreEOL(final Reader input1, final Reader input2) throws InternalException {
         final BufferedReader br1 = toBuffered(input1);
@@ -1772,7 +1858,9 @@ public class IoKit {
     }
 
     /**
-     * 返回行遍历器
+     * Returns a {@link LineIterator} for the given {@link Reader}.
+     * <p>
+     * Example usage:
      * 
      * <pre>
      * LineIterator it = null;
@@ -1787,20 +1875,22 @@ public class IoKit {
      * }
      * </pre>
      *
-     * @param reader {@link Reader}
-     * @return {@link LineIterator}
+     * @param reader The {@link Reader}.
+     * @return A new {@link LineIterator}.
      */
     public static LineIterator lineIter(final Reader reader) {
         return new LineIterator(reader);
     }
 
     /**
-     * 返回行遍历器
+     * Returns a {@link LineIterator} for the given {@link InputStream} and charset.
+     * <p>
+     * Example usage:
      * 
      * <pre>
      * LineIterator it = null;
      * try {
-     *     it = IoKit.lineIter(in, Charset.CHARSET_UTF_8);
+     *     it = IoKit.lineIter(in, Charset.UTF_8);
      *     while (it.hasNext()) {
      *         String line = it.nextLine();
      *         // do something with line
@@ -1810,25 +1900,35 @@ public class IoKit {
      * }
      * </pre>
      *
-     * @param in      {@link InputStream}
-     * @param charset 编码
-     * @return {@link LineIterator}
+     * @param in      The {@link InputStream}.
+     * @param charset The encoding.
+     * @return A new {@link LineIterator}.
      */
     public static LineIterator lineIter(final InputStream in, final java.nio.charset.Charset charset) {
         return new LineIterator(in, charset);
     }
 
     /**
-     * {@link ByteArrayOutputStream} 转换为String
+     * Converts a {@link ByteArrayOutputStream} to a {@link String} using the specified charset.
      *
-     * @param out     {@link ByteArrayOutputStream}
-     * @param charset 编码
-     * @return 字符串
+     * @param out     The {@link ByteArrayOutputStream}.
+     * @param charset The encoding.
+     * @return The string representation of the output stream's content.
      */
     public static String toString(final ByteArrayOutputStream out, final java.nio.charset.Charset charset) {
         return out.toString(charset);
     }
 
+    /**
+     * Checks if the given offset and byte count are within the bounds of the total size. Throws an
+     * {@link ArrayIndexOutOfBoundsException} if the range is invalid.
+     *
+     * @param size      The total size.
+     * @param offset    The starting offset.
+     * @param byteCount The number of bytes.
+     * @throws ArrayIndexOutOfBoundsException if the offset or byteCount are negative, or if the range extends beyond
+     *                                        the size.
+     */
     public static void checkOffsetAndCount(long size, long offset, long byteCount) {
         if ((offset | byteCount) < 0 || offset > size || size - offset < byteCount) {
             throw new ArrayIndexOutOfBoundsException(
@@ -1837,18 +1937,36 @@ public class IoKit {
     }
 
     /**
-     * 即使被声明也不允许直接抛出 这是一种很糟糕的做饭,很容易遭到攻击 清理后捕获并重新抛出异常
+     * Rethrows a {@link Throwable} as an unchecked exception without modifying its stack trace. This is a dangerous
+     * practice and should be used with extreme caution.
      *
-     * @param t 异常
+     * @param t The {@link Throwable} to rethrow.
      */
     public static void sneakyRethrow(Throwable t) {
         IoKit.<Error>sneakyThrow2(t);
     }
 
+    /**
+     * Helper method for {@link #sneakyRethrow(Throwable)} to bypass checked exception compilation.
+     *
+     * @param t   The {@link Throwable} to rethrow.
+     * @param <T> The type of the throwable.
+     * @throws T The rethrown throwable.
+     */
     private static <T extends Throwable> void sneakyThrow2(Throwable t) throws T {
         throw (T) t;
     }
 
+    /**
+     * Compares a range of bytes in two byte arrays for equality.
+     *
+     * @param a         The first byte array.
+     * @param aOffset   The starting offset in the first array.
+     * @param b         The second byte array.
+     * @param bOffset   The starting offset in the second array.
+     * @param byteCount The number of bytes to compare.
+     * @return {@code true} if the specified ranges are equal, {@code false} otherwise.
+     */
     public static boolean arrayRangeEquals(byte[] a, int aOffset, byte[] b, int bOffset, int byteCount) {
         for (int i = 0; i < byteCount; i++) {
             if (a[i + aOffset] != b[i + bOffset])
@@ -1858,41 +1976,70 @@ public class IoKit {
     }
 
     /**
-     * 返回缓冲区从{@code source}读取的字节流 返回的源将对其内存缓冲区执行批量读取
+     * Returns a buffered {@link BufferSource} that reads bytes from the given {@link Source}. The returned source will
+     * perform bulk reads into its memory buffer.
      *
-     * @param source 字节流
-     * @return 返回缓冲区
+     * @param source The byte stream source.
+     * @return A new {@link BufferSource}.
      */
     public static BufferSource buffer(Source source) {
         return new RealSource(source);
     }
 
     /**
-     * 返回一个新接收器，该接收器缓冲写{@code sink} 返回的接收器将批量写入{@code sink}
+     * Returns a new {@link BufferSink} that buffers writes to the given {@link Sink}. The returned sink will perform
+     * bulk writes to the underlying {@code sink}.
      *
-     * @param sink 接收一个字节流
-     * @return 接收缓冲区
+     * @param sink The byte stream sink.
+     * @return A new {@link BufferSink}.
      */
     public static BufferSink buffer(Sink sink) {
         return new RealSink(sink);
     }
 
+    /**
+     * Reverses the byte order of a short integer.
+     *
+     * @param s The short integer.
+     * @return The short integer with reversed byte order.
+     */
     public static short reverseBytesShort(short s) {
         int i = s & 0xffff;
         int reversed = (i & 0xff00) >>> 8 | (i & 0x00ff) << 8;
         return (short) reversed;
     }
 
+    /**
+     * Reverses the byte order of an integer.
+     *
+     * @param i The integer.
+     * @return The integer with reversed byte order.
+     */
     public static int reverseBytesInt(int i) {
         return (i & 0xff000000) >>> 24 | (i & 0x00ff0000) >>> 8 | (i & 0x0000ff00) << 8 | (i & 0x000000ff) << 24;
     }
 
+    /**
+     * Reverses the byte order of a long integer.
+     *
+     * @param v The long integer.
+     * @return The long integer with reversed byte order.
+     */
     public static long reverseBytesLong(long v) {
         return (v & 0xff00000000000000L) >>> 56 | (v & 0x00ff000000000000L) >>> 40 | (v & 0x0000ff0000000000L) >>> 24
                 | (v & 0x000000ff00000000L) >>> 8 | (v & 0x00000000ff000000L) << 8 | (v & 0x0000000000ff0000L) << 24
                 | (v & 0x000000000000ff00L) << 40 | (v & 0x00000000000000ffL) << 56;
     }
 
+    /**
+     * Opens an {@link InputStream} for a given file path or URL string. Supports "resource:" prefix for classpath
+     * resources.
+     *
+     * @param name The file path or URL string.
+     * @return A new {@link InputStream}.
+     * @throws IOException           If an I/O error occurs.
+     * @throws FileNotFoundException If the resource or file is not found.
+     */
     public static InputStream openFileOrURL(String name) throws IOException {
         if (name.startsWith("resource:")) {
             URL url = ResourceKit.getResourceUrl(name.substring(9), IoKit.class);
@@ -1906,10 +2053,13 @@ public class IoKit {
     }
 
     /**
-     * 获取流长度，对于文件流，会调用{@link FileInputStream#available()}方法，对于其他流，返回-1 对于网络流，available可能为分段大小，所以返回-1
+     * Gets the length of an {@link InputStream}. For {@link FileInputStream}, it calls
+     * {@link FileInputStream#available()}. For other streams, it returns -1. Note that for network streams,
+     * {@code available()} might return the segment size, not the total length.
      *
-     * @param in 流
-     * @return 长度，-1表示未知长度
+     * @param in The input stream.
+     * @return The length of the stream, or -1 if the length is unknown.
+     * @throws InternalException If an I/O error occurs when checking available bytes for a {@link FileInputStream}.
      */
     public static int length(final InputStream in) {
         if (in instanceof FileInputStream) {

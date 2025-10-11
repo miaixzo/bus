@@ -37,19 +37,22 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * {@link ZipInputStream} 资源包装
+ * Wrapper for {@link ZipInputStream} resources.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ZipStream implements ZipResource {
 
+    /**
+     * The underlying {@link ZipInputStream}.
+     */
     private final ZipInputStream in;
 
     /**
-     * 构造
+     * Constructs a new ZipStream instance.
      *
-     * @param in {@link ZipInputStream}
+     * @param in The {@link ZipInputStream} to wrap.
      */
     public ZipStream(final ZipInputStream in) {
         this.in = in;
@@ -61,7 +64,8 @@ public class ZipStream implements ZipResource {
             ZipEntry zipEntry;
             while (null != (zipEntry = in.getNextEntry())) {
                 consumer.accept(zipEntry);
-                // 检查ZipBomb放在读取内容之后，以便entry中的信息正常读取
+                // ZipBomb check is performed after reading the content, so that information in the entry can be read
+                // normally.
                 ZipSecurity.checkZipBomb(zipEntry, maxSizeDiff);
             }
         } catch (final IOException e) {

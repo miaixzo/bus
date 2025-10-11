@@ -27,35 +27,33 @@
 */
 package org.miaixz.bus.starter.notify;
 
+import jakarta.annotation.Resource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import jakarta.annotation.Resource;
-
 /**
- * 消息通知自动配置类，用于配置消息通知相关的Bean。
+ * Auto-configuration class for message notification, responsible for setting up notification-related beans.
+ * <p>
+ * This class creates and configures the notification service provider factory, which manages and creates various
+ * message notification services.
  *
  * <p>
- * 该类负责创建并配置消息通知服务提供者工厂，用于管理和创建各种消息通知服务。
- * </p>
- *
- * <p>
- * 使用示例：
- * </p>
+ * <strong>Usage Example:</strong>
  * 
- * <pre>
- * // 在application.yml中配置
+ * <pre>{@code
+ * // In application.yml:
  * bus:
  *   notify:
- *     # 消息通知相关配置
+ *     # Notification-related configurations for different providers
  *
- * // 在代码中直接注入使用
+ * // In your code:
  * &#64;Autowired
- * private NotifyProviderService notifyProviderService;
+ * private NotifyService notifyService;
  *
- * // 发送邮件通知
- * notifyProviderService.send(NotifyRegistry.EMAIL, "邮件内容");
- * </pre>
+ * // Get a specific provider and send a notification
+ * Provider emailProvider = notifyService.require(Registry.GENERIC_EDM);
+ * // emailProvider.send(...);
+ * }</pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -64,19 +62,19 @@ import jakarta.annotation.Resource;
 public class NotifyConfiguration {
 
     /**
-     * 消息通知配置属性，包含各种消息通知组件的配置信息。 通过{@link EnableConfigurationProperties}注解自动注入。
+     * Injected notification configuration properties, containing settings for various notification components.
+     * Automatically injected via the {@link EnableConfigurationProperties} annotation.
      */
     @Resource
-    NotifyProperties properties;
+    private NotifyProperties properties;
 
     /**
-     * 创建消息通知服务提供者工厂Bean。
-     *
+     * Creates the notification service provider factory bean.
      * <p>
-     * 该方法创建一个{@link NotifyService}实例，用于管理和创建各种消息通知服务提供者。 该实例会使用配置属性来初始化。
-     * </p>
+     * This method creates a {@link NotifyService} instance, which is used to manage and create various notification
+     * service providers. The instance is initialized with the application's configuration properties.
      *
-     * @return 配置好的消息通知服务提供者工厂实例
+     * @return A configured instance of the notification service provider factory.
      */
     @Bean
     public NotifyService notifyProviderFactory() {

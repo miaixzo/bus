@@ -26,12 +26,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 民俗文化 由于区域文化差异对于年月日等相关统称也有所不同 cn - 中文区域 en - 英文区域
- *
- * 其他区域根据相关内容实现或重写相关方法即可
+ * Provides classes representing various cultural and calendrical concepts, including traditional festivals and cyclical
+ * time units (days, months, etc.).
  * <p>
- * 致谢：本包部分方法实现来自：<a href="https://github.com/6tail/lunar-java">https://github.com/6tail/lunar-java</a>
- * </p>
+ * Implementations for different regions (e.g., 'cn' for Chinese, 'en' for English) can be created to handle cultural
+ * variations in date and time naming.
+ * <p>
+ * Acknowledgement: Some methods in this package are inspired by or adapted from the lunar-java project:
+ * <a href="https://github.com/6tail/lunar-java">https://github.com/6tail/lunar-java</a>
  *
  * @author Kimi Liu
  * @since Java 17+

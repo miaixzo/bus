@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.PatternKit;
 
 /**
- * 拼音工具类，用于快速获取拼音
+ * Pinyin utility class for quickly obtaining Pinyin.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,9 +40,9 @@ import org.miaixz.bus.core.xyz.PatternKit;
 public class PinyinKit {
 
     /**
-     * 创建拼音引擎
+     * Creates a Pinyin engine.
      *
-     * @param engineName 引擎名称
+     * @param engineName The engine name.
      * @return {@link PinyinProvider}
      */
     public static PinyinProvider createEngine(final String engineName) {
@@ -50,105 +50,107 @@ public class PinyinKit {
     }
 
     /**
-     * 获得全局单例的拼音引擎
+     * Gets the global singleton Pinyin engine.
      *
-     * @return 全局单例的拼音引擎
+     * @return The global singleton Pinyin engine.
      */
     public static PinyinProvider getEngine() {
         return PinyinFactory.get();
     }
 
     /**
-     * 如果c为汉字，则返回大写拼音；如果c不是汉字，则返回String.valueOf(c)
+     * If c is a Chinese character, returns its uppercase Pinyin; otherwise, returns String.valueOf(c).
      *
-     * @param c 任意字符，汉字返回拼音，非汉字原样返回
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param c Any character. Chinese characters are converted to Pinyin, others are returned as is.
+     * @return Chinese characters are converted to Pinyin, others are returned as is.
      */
     public static String getPinyin(final char c) {
         return getEngine().getPinyin(c);
     }
 
     /**
-     * 如果c为汉字，则返回大写拼音；如果c不是汉字，则返回String.valueOf(c)
+     * If c is a Chinese character, returns its uppercase Pinyin; otherwise, returns String.valueOf(c).
      *
-     * @param c    任意字符，汉字返回拼音，非汉字原样返回
-     * @param tone 是否保留声调
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param c    Any character. Chinese characters are converted to Pinyin, others are returned as is.
+     * @param tone Whether to include tone marks.
+     * @return Chinese characters are converted to Pinyin, others are returned as is.
      */
     public static String getPinyin(final char c, final boolean tone) {
         return getEngine().getPinyin(c, tone);
     }
 
     /**
-     * 将输入字符串转为拼音，每个字之间的拼音使用空格分隔
+     * Converts the input string to Pinyin, with spaces separating the Pinyin of each character.
      *
-     * @param text 任意字符，汉字返回拼音，非汉字原样返回
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param text Any character. Chinese characters are converted to Pinyin, others are returned as is.
+     * @return Chinese characters are converted to Pinyin, others are returned as is.
      */
     public static String getPinyin(final String text) {
         return getPinyin(text, Symbol.SPACE);
     }
 
     /**
-     * 将输入字符串转为拼音，每个字之间的拼音使用空格分隔
+     * Converts the input string to Pinyin, with spaces separating the Pinyin of each character.
      *
-     * @param text 任意字符，汉字返回拼音，非汉字原样返回
-     * @param tone 是否保留声调
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param text Any character. Chinese characters are converted to Pinyin, others are returned as is.
+     * @param tone Whether to include tone marks.
+     * @return Chinese characters are converted to Pinyin, others are returned as is.
      */
     public static String getPinyin(final String text, final boolean tone) {
         return getPinyin(text, Symbol.SPACE, tone);
     }
 
     /**
-     * 将输入字符串转为拼音，以字符为单位插入分隔符
+     * Converts the input string to Pinyin, inserting a separator between the Pinyin of each character.
      *
-     * @param text      任意字符，汉字返回拼音，非汉字原样返回
-     * @param separator 每个字拼音之间的分隔符
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param text      Any character. Chinese characters are converted to Pinyin, others are returned as is.
+     * @param separator The separator between the Pinyin of each character.
+     * @return Chinese characters are converted to Pinyin, others are returned as is.
      */
     public static String getPinyin(final String text, final String separator) {
         return getEngine().getPinyin(text, separator);
     }
 
     /**
-     * 将输入字符串转为拼音，以字符为单位插入分隔符
+     * Converts the input string to Pinyin, inserting a separator between the Pinyin of each character.
      *
-     * @param text      任意字符，汉字返回拼音，非汉字原样返回
-     * @param separator 每个字拼音之间的分隔符
-     * @param tone      是否保留声调
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param text      Any character. Chinese characters are converted to Pinyin, others are returned as is.
+     * @param separator The separator between the Pinyin of each character.
+     * @param tone      Whether to include tone marks.
+     * @return Chinese characters are converted to Pinyin, others are returned as is.
      */
     public static String getPinyin(final String text, final String separator, final boolean tone) {
         return getEngine().getPinyin(text, separator, tone);
     }
 
     /**
-     * 将输入字符串转为拼音首字母，其它字符原样返回
+     * Converts the input character to the first letter of its Pinyin; other characters are returned as is.
      *
-     * @param c 任意字符，汉字返回拼音，非汉字原样返回
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param c Any character. Chinese characters are converted to the first letter of their Pinyin, others are returned
+     *          as is.
+     * @return The first letter of the Pinyin for Chinese characters, or the original character for others.
      */
     public static char getFirstLetter(final char c) {
         return getEngine().getFirstLetter(c);
     }
 
     /**
-     * 将输入字符串转为拼音首字母，其它字符原样返回
+     * Converts the input string to the first letter of its Pinyin; other characters are returned as is.
      *
-     * @param text      任意字符，汉字返回拼音，非汉字原样返回
-     * @param separator 分隔符
-     * @return 汉字返回拼音，非汉字原样返回
+     * @param text      Any character string. Chinese characters are converted to the first letter of their Pinyin,
+     *                  others are returned as is.
+     * @param separator The separator.
+     * @return The first letters of the Pinyin for Chinese characters, or the original characters for others.
      */
     public static String getFirstLetter(final String text, final String separator) {
         return (text == null) ? null : getEngine().getFirstLetter(text, separator);
     }
 
     /**
-     * 是否为中文字符
+     * Checks if a character is a Chinese character.
      *
-     * @param c 字符
-     * @return 是否为中文字符
+     * @param c The character.
+     * @return Whether the character is a Chinese character.
      */
     public static boolean isChinese(final char c) {
         return '〇' == c || PatternKit.isMatch(Pattern.CHINESE_PATTERN, String.valueOf(c));

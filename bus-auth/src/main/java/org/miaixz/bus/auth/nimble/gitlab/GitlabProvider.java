@@ -43,21 +43,39 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import java.util.Map;
 
 /**
- * Gitlab 登录
+ * GitLab login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GitlabProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code GitlabProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public GitlabProvider(Context context) {
         super(context, Registry.GITLAB);
     }
 
+    /**
+     * Constructs a {@code GitlabProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public GitlabProvider(Context context, CacheX cache) {
         super(context, Registry.GITLAB, cache);
     }
 
+    /**
+     * Retrieves the access token from GitLab's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
@@ -84,6 +102,13 @@ public class GitlabProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from GitLab's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String response = doGetUserInfo(authToken);
@@ -115,13 +140,19 @@ public class GitlabProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Checks the response content for errors.
+     *
+     * @param object the response map to check
+     * @throws AuthorizedException if the response contains an error or message indicating failure
+     */
     private void checkResponse(Map<String, Object> object) {
-        // auth/token 验证异常
+        // auth/token validation exception
         if (object.containsKey("error")) {
             String errorDescription = (String) object.get("error_description");
             throw new AuthorizedException(errorDescription != null ? errorDescription : "Unknown error");
         }
-        // user 验证异常
+        // user validation exception
         if (object.containsKey("message")) {
             String message = (String) object.get("message");
             throw new AuthorizedException(message != null ? message : "Unknown error");
@@ -129,10 +160,11 @@ public class GitlabProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {

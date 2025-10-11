@@ -30,7 +30,7 @@ package org.miaixz.bus.core.center.date.culture.en;
 import java.util.Calendar;
 
 /**
- * 日期各个部分的枚举 与Calendar相应值对应
+ * Enumeration for various parts of a date, corresponding to {@link Calendar} fields.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,107 +38,115 @@ import java.util.Calendar;
 public enum Various {
 
     /**
-     * 世纪
+     * Era
      *
      * @see Calendar#ERA
      */
     ERA(Calendar.ERA),
     /**
-     * 年
+     * Year
      *
      * @see Calendar#YEAR
      */
     YEAR(Calendar.YEAR),
     /**
-     * 月
+     * Month
      *
      * @see Calendar#MONTH
      */
     MONTH(Calendar.MONTH),
     /**
-     * 一年中第几周
+     * Week in year
      *
      * @see Calendar#WEEK_OF_YEAR
      */
     WEEK_OF_YEAR(Calendar.WEEK_OF_YEAR),
     /**
-     * 一月中第几周
+     * Week in month
      *
      * @see Calendar#WEEK_OF_MONTH
      */
     WEEK_OF_MONTH(Calendar.WEEK_OF_MONTH),
     /**
-     * 一月中的第几天
+     * Day in month
      *
      * @see Calendar#DAY_OF_MONTH
      */
     DAY_OF_MONTH(Calendar.DAY_OF_MONTH),
     /**
-     * 一年中的第几天
+     * Day in year
      *
      * @see Calendar#DAY_OF_YEAR
      */
     DAY_OF_YEAR(Calendar.DAY_OF_YEAR),
     /**
-     * 周几，1表示周日，2表示周一
+     * Day of week, 1 for Sunday, 2 for Monday
      *
      * @see Calendar#DAY_OF_WEEK
      */
     DAY_OF_WEEK(Calendar.DAY_OF_WEEK),
     /**
-     * 天所在的周是这个月的第几周
+     * Day of week in month
      *
      * @see Calendar#DAY_OF_WEEK_IN_MONTH
      */
     DAY_OF_WEEK_IN_MONTH(Calendar.DAY_OF_WEEK_IN_MONTH),
     /**
-     * 上午或者下午
+     * AM or PM
      *
      * @see Calendar#AM_PM
      */
     AM_PM(Calendar.AM_PM),
     /**
-     * 小时，用于12小时制
+     * Hour, for 12-hour clock
      *
      * @see Calendar#HOUR
      */
     HOUR(Calendar.HOUR),
     /**
-     * 小时，用于24小时制
+     * Hour, for 24-hour clock
      *
-     * @see Calendar#HOUR
+     * @see Calendar#HOUR_OF_DAY
      */
     HOUR_OF_DAY(Calendar.HOUR_OF_DAY),
     /**
-     * 分钟
+     * Minute
      *
      * @see Calendar#MINUTE
      */
     MINUTE(Calendar.MINUTE),
     /**
-     * 秒
+     * Second
      *
      * @see Calendar#SECOND
      */
     SECOND(Calendar.SECOND),
     /**
-     * 毫秒
+     * Millisecond
      *
      * @see Calendar#MILLISECOND
      */
     MILLISECOND(Calendar.MILLISECOND);
 
+    /**
+     * The corresponding value in {@link Calendar}.
+     */
     private final int value;
 
+    /**
+     * Constructor for Various enum.
+     *
+     * @param value The corresponding value in {@link Calendar}.
+     */
     Various(final int value) {
         this.value = value;
     }
 
     /**
-     * 将 {@link Calendar}相关值转换为DatePart枚举对象
+     * Converts a {@link Calendar} field int value to a {@link Various} enum object.
      *
-     * @param calendarPartIntValue Calendar中关于Week的int值
-     * @return Type
+     * @param calendarPartIntValue The int value of the field in Calendar.
+     * @return The corresponding {@link Various} enum.
      */
     public static Various of(final int calendarPartIntValue) {
         switch (calendarPartIntValue) {
@@ -193,9 +201,9 @@ public enum Various {
     }
 
     /**
-     * 获取{@link Calendar}中对应的值
+     * Gets the corresponding value in {@link Calendar}.
      *
-     * @return {@link Calendar}中对应的值
+     * @return The corresponding value in {@link Calendar}.
      */
     public int getValue() {
         return this.value;

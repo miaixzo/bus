@@ -30,7 +30,9 @@ package org.miaixz.bus.core.lang.thread;
 import java.util.concurrent.ExecutorService;
 
 /**
- * 保证ExecutorService在对象回收时正常结束
+ * A specialized {@link DelegatedExecutorService} that ensures the underlying {@link ExecutorService} is properly shut
+ * down when this object is garbage collected. This helps in preventing resource leaks by providing a finalization
+ * mechanism for the executor service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,14 +40,18 @@ import java.util.concurrent.ExecutorService;
 public class FinalizableDelegatedExecutorService extends DelegatedExecutorService {
 
     /**
-     * 构造
+     * Constructs a new {@code FinalizableDelegatedExecutorService} that wraps the given {@link ExecutorService}.
      *
-     * @param executor {@link ExecutorService}
+     * @param executor The {@link ExecutorService} to be wrapped.
      */
     FinalizableDelegatedExecutorService(final ExecutorService executor) {
         super(executor);
     }
 
+    /**
+     * Initiates an orderly shutdown in which previously submitted tasks are executed, but no new tasks will be
+     * accepted. This method delegates to the underlying {@link ExecutorService#shutdown()}.
+     */
     @Override
     public void shutdown() {
         super.shutdown();

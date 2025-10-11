@@ -32,7 +32,8 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleYear;
 
 /**
- * 大运（10年1大运）
+ * Represents a "Decade Fortune" (大运) in Chinese astrology, which is a ten-year period of fortune. This class extends
+ * {@link Loops} for cyclical operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,35 +41,41 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleYear;
 public class DecadeFortune extends Loops {
 
     /**
-     * 童限
+     * The Child Limit (童限) associated with this Decade Fortune.
      */
     protected ChildLimit childLimit;
 
     /**
-     * 序号
+     * The index of this Decade Fortune within the sequence of fortunes.
      */
     protected int index;
 
+    /**
+     * Constructs a {@code DecadeFortune} instance with the specified Child Limit and index.
+     *
+     * @param childLimit The {@link ChildLimit} instance.
+     * @param index      The index of this Decade Fortune.
+     */
     public DecadeFortune(ChildLimit childLimit, int index) {
         this.childLimit = childLimit;
         this.index = index;
     }
 
     /**
-     * 通过童限初始化
+     * Creates a {@code DecadeFortune} instance from a Child Limit and an index.
      *
-     * @param childLimit 童限
-     * @param index      序号
-     * @return 大运
+     * @param childLimit The {@link ChildLimit} instance.
+     * @param index      The index of this Decade Fortune.
+     * @return A new {@code DecadeFortune} instance.
      */
     public static DecadeFortune fromChildLimit(ChildLimit childLimit, int index) {
         return new DecadeFortune(childLimit, index);
     }
 
     /**
-     * 开始年龄
+     * Gets the starting age for this Decade Fortune.
      *
-     * @return 开始年龄
+     * @return The starting age.
      */
     public int getStartAge() {
         return childLimit.getEndSixtyCycleYear().getYear() - childLimit.getStartSixtyCycleYear().getYear() + 1
@@ -76,53 +83,64 @@ public class DecadeFortune extends Loops {
     }
 
     /**
-     * 结束年龄
+     * Gets the ending age for this Decade Fortune.
      *
-     * @return 结束年龄
+     * @return The ending age.
      */
     public int getEndAge() {
         return getStartAge() + 9;
     }
 
     /**
-     * 干支
+     * Gets the Sixty-Year Cycle (干支) for this Decade Fortune.
      *
-     * @return 干支
+     * @return The {@link SixtyCycle} instance.
      */
     public SixtyCycle getSixtyCycle() {
         return childLimit.getEightChar().getMonth().next(childLimit.isForward() ? index + 1 : -index - 1);
     }
 
+    /**
+     * Gets the name of this Decade Fortune, which is the name of its associated Sixty-Year Cycle.
+     *
+     * @return The name of the Decade Fortune.
+     */
     public String getName() {
         return getSixtyCycle().getName();
     }
 
+    /**
+     * Gets the next {@code DecadeFortune} in the sequence.
+     *
+     * @param n The number of steps to move forward or backward.
+     * @return The next {@code DecadeFortune} instance.
+     */
     public DecadeFortune next(int n) {
         return fromChildLimit(childLimit, index + n);
     }
 
     /**
-     * 开始干支年
+     * Gets the Sixty-Year Cycle Year (干支年) when this Decade Fortune starts.
      *
-     * @return 干支年
+     * @return The {@link SixtyCycleYear} instance representing the start year.
      */
     public SixtyCycleYear getStartSixtyCycleYear() {
         return childLimit.getEndSixtyCycleYear().next(index * 10);
     }
 
     /**
-     * 结束干支年
+     * Gets the Sixty-Year Cycle Year (干支年) when this Decade Fortune ends.
      *
-     * @return 干支年
+     * @return The {@link SixtyCycleYear} instance representing the end year.
      */
     public SixtyCycleYear getEndSixtyCycleYear() {
         return getStartSixtyCycleYear().next(9);
     }
 
     /**
-     * 开始小运
+     * Gets the starting Fortune (小运) for this Decade Fortune.
      *
-     * @return 小运
+     * @return The {@link Fortune} instance.
      */
     public Fortune getStartFortune() {
         return Fortune.fromChildLimit(childLimit, index * 10);

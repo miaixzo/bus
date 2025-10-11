@@ -34,18 +34,34 @@ import org.miaixz.bus.validate.magic.Validator;
 import org.miaixz.bus.validate.magic.annotation.Blank;
 
 /**
- * BLANK 校验
+ * Validator for checking if a value is blank. A value is considered blank if it is null, or if it is a string that is
+ * empty or contains only whitespace.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BlankMatcher implements Validator<Object>, Matcher<Object, Blank> {
 
+    /**
+     * Checks if the given object is blank.
+     *
+     * @param object  The object to validate.
+     * @param context The validation context (ignored).
+     * @return {@code true} if the object is blank, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, Context context) {
         return ObjectKit.isBlankIfString(object);
     }
 
+    /**
+     * Checks if the given object is blank, based on the {@link Blank} annotation.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link Blank} annotation (ignored).
+     * @param context    The validation context.
+     * @return {@code true} if the object is blank, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, Blank annotation, Context context) {
         return on(object, context);

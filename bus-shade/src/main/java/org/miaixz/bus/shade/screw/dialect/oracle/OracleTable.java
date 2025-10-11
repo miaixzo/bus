@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Oracle table
+ * Represents table information for an Oracle database.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,27 +44,27 @@ import lombok.Setter;
 public class OracleTable implements Table {
 
     /**
-     * TABLE_CAT
+     * The table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
     /**
-     * 表名
+     * The name of the table.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
     /**
-     * 表模式
+     * The schema of the table.
      */
     @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
     /**
-     * 表类型
+     * The type of the table (e.g., "TABLE", "VIEW", etc.).
      */
     @MappingField(value = "TABLE_TYPE")
     private String tableType;
     /**
-     * 备注
+     * The explanatory comment on the table.
      */
     @MappingField(value = "REMARKS")
     private String remarks;

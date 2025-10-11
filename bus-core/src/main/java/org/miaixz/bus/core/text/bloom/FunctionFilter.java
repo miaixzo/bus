@@ -31,21 +31,30 @@ import java.io.Serial;
 import java.util.function.Function;
 
 /**
- * 基于Hash函数方法的{@link BloomFilter}
+ * A Bloom filter implementation based on a custom hash function provided by a {@link Function}. This filter extends
+ * {@link AbstractFilter} and uses a user-defined hash function to determine the bit positions for elements.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FunctionFilter extends AbstractFilter {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852235578011L;
 
+    /**
+     * The hash function used to generate hash values for input strings. This function maps a string to a numeric value.
+     */
     private final Function<String, Number> hashFunc;
 
     /**
-     * @param size     最大值
-     * @param hashFunc Hash函数
+     * Constructs a new {@code FunctionFilter} with the specified size and hash function.
+     *
+     * @param size     The capacity of the Bloom filter (number of bits in the bit set).
+     * @param hashFunc The hash function to be used for mapping strings to numeric values.
      */
     public FunctionFilter(final int size, final Function<String, Number> hashFunc) {
         super(size);
@@ -53,11 +62,11 @@ public class FunctionFilter extends AbstractFilter {
     }
 
     /**
-     * 创建FuncFilter
+     * Creates a new {@code FunctionFilter} instance.
      *
-     * @param size     最大值
-     * @param hashFunc Hash函数
-     * @return FunctionFilter
+     * @param size     The capacity of the Bloom filter (number of bits in the bit set).
+     * @param hashFunc The hash function to be used for mapping strings to numeric values.
+     * @return A new {@code FunctionFilter} instance.
      */
     public static FunctionFilter of(final int size, final Function<String, Number> hashFunc) {
         return new FunctionFilter(size, hashFunc);
@@ -65,6 +74,8 @@ public class FunctionFilter extends AbstractFilter {
 
     @Override
     public int hash(final String text) {
+        // Applies the custom hash function and then takes the modulo of the filter's size
+        // to ensure the hash value fits within the bit set's bounds.
         return hashFunc.apply(text).intValue() % size;
     }
 

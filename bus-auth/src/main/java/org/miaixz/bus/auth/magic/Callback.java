@@ -38,7 +38,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 授权回调时的参数类
+ * Parameter class for authorization callbacks. This class encapsulates various parameters received during the callback
+ * phase of an authentication flow.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,61 +52,69 @@ import lombok.experimental.SuperBuilder;
 public class Callback implements Serializable {
 
     /**
-     * 访问AuthorizeUrl后回调时带的参数code
+     * The 'code' parameter returned after accessing the AuthorizeUrl.
      */
     private String code;
 
     /**
-     * 访问AuthorizeUrl后回调时带的参数auth_code，该参数目前只使用于支付宝登录
+     * The 'auth_code' parameter returned after accessing the AuthorizeUrl. This parameter is currently only used for
+     * Alipay login.
      */
     private String auth_code;
 
     /**
-     * 访问AuthorizeUrl后回调时带的参数state，用于和请求AuthorizeUrl前的state比较，防止CSRF攻击
+     * The 'state' parameter returned after accessing the AuthorizeUrl. Used to compare with the state before requesting
+     * the AuthorizeUrl to prevent CSRF attacks.
      */
     private String state;
 
     /**
-     * 华为授权登录接受code的参数名
+     * The parameter name for 'code' when receiving authorization from Huawei login.
      */
     private String authorization_code;
 
     /**
-     * Twitter回调后返回的oauth_token
+     * The 'oauth_token' returned after a Twitter callback.
      */
     private String oauth_token;
 
     /**
-     * Twitter回调后返回的oauth_verifier
+     * The 'oauth_verifier' returned after a Twitter callback.
      */
     private String oauth_verifier;
 
     /**
-     * 苹果仅在用户首次授权应用程序时返回此值。如果您的应用程序已经获得了用户的授权，那么苹果将不会再次返回此值
+     * Apple returns this value only when the user authorizes the application for the first time. If your application
+     * has already obtained user authorization, Apple will not return this value again.
      * 
-     * @see <a href="https://developer.apple.com/documentation/sign_in_with_apple/useri">user info</a>
+     * @see <a href="https://developer.apple.com/documentation/sign_in_with_apple/useri">Apple User Info</a>
      */
     private String user;
 
     /**
-     * 苹果错误信息，仅在用户取消授权时返回此值
+     * Apple error message, returned only when the user cancels authorization.
      * 
      * @see <a href=
-     *      "https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_js/incorporating_sign_in_with_apple_into_other_platforms">error
-     *      response</a>
+     *      "https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_js/incorporating_sign_in_with_apple_into_other_platforms">Apple
+     *      Error Response</a>
      */
     private String error;
 
     /**
-     * 该参数目前只使用于抖音小程序匿名登录
+     * This parameter is currently only used for Douyin Mini Program anonymous login.
      */
     private String anonymous_code;
 
     /**
-     * VK 设备id
+     * VK device ID.
      */
     private String device_id;
 
+    /**
+     * Retrieves the authorization code. If the 'code' field is empty, it returns the 'auth_code' field.
+     *
+     * @return the authorization code
+     */
     public String getCode() {
         return StringKit.isEmpty(code) ? auth_code : code;
     }

@@ -35,7 +35,7 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.vortex.Provider;
 
 /**
- * XML 序列化提供者，实现对象到 XML 字符串的转换
+ * XML serialization provider, implementing the conversion of objects to XML strings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,28 +43,34 @@ import org.miaixz.bus.vortex.Provider;
 public class XmlProvider implements Provider {
 
     /**
-     * 将对象序列化为 XML 字符串
+     * Serializes an object into an XML string.
+     * <p>
+     * This method first constructs a standard XML header. It then attempts to convert the input object into a Map
+     * structure using {@link JsonKit#getProvider()} and {@code toMap(Object)}, and subsequently serializes this Map
+     * into an XML string using {@link XmlKit#mapToXmlString(Map)}. If any error occurs during serialization, it prints
+     * the stack trace and returns an empty string.
+     * </p>
      *
-     * @param object 要序列化的对象
-     * @return 序列化后的 XML 字符串，若序列化失败返回空字符串
+     * @param object The object to be serialized.
+     * @return The serialized XML string, or an empty string if serialization fails.
      */
     @Override
     public String serialize(Object object) {
         try {
-            // 创建 XML 头部
+            // Create XML header
             StringBuffer buffer = new StringBuffer();
             buffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 
-            // 将对象转换为 Map 结构并序列化为 XML
+            // Convert the object to a Map structure and serialize to XML
             Map<String, Object> map = JsonKit.getProvider().toMap(object);
-            XmlKit.mapToXmlString(map);
+            buffer.append(XmlKit.mapToXmlString(map));
 
             return buffer.toString();
         } catch (Exception e) {
-            // 捕获异常并打印堆栈信息
+            // Catch exception and print stack trace
             e.printStackTrace();
         }
-        // 序列化失败时返回空字符串
+        // Return an empty string if serialization fails
         return Normal.EMPTY;
     }
 

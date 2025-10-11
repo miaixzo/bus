@@ -45,7 +45,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Resource资源工具类
+ * Resource utility class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,52 +53,52 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class ResourceKit {
 
     /**
-     * 读取Classpath下的资源为字符串，使用UTF-8编码
+     * Reads a classpath resource as a string using UTF-8 encoding.
      *
-     * @param resource 资源路径，使用相对ClassPath的路径
-     * @return 资源内容
+     * @param resource The path to the resource, relative to the classpath root.
+     * @return The resource content as a string.
      */
     public static String readString(final String resource) {
         return getResource(resource).readString();
     }
 
     /**
-     * 读取Classpath下的资源为字符串
+     * Reads a classpath resource as a string using a specified charset.
      *
-     * @param resource 可以是绝对路径，也可以是相对路径（相对ClassPath）
-     * @param charset  编码
-     * @return 资源内容
+     * @param resource The path to the resource.
+     * @param charset  The charset.
+     * @return The resource content as a string.
      */
     public static String readString(final String resource, final java.nio.charset.Charset charset) {
         return getResource(resource).readString(charset);
     }
 
     /**
-     * 读取Classpath下的资源为byte[]
+     * Reads a classpath resource into a byte array.
      *
-     * @param resource 可以是绝对路径，也可以是相对路径（相对ClassPath）
-     * @return 资源内容
+     * @param resource The path to the resource.
+     * @return The resource content as a byte array.
      */
     public static byte[] readBytes(final String resource) {
         return getResource(resource).readBytes();
     }
 
     /**
-     * 从ClassPath资源中获取{@link InputStream}
+     * Gets an `InputStream` for a classpath resource.
      *
-     * @param resource ClassPath资源
-     * @return {@link InputStream}
-     * @throws InternalException 资源不存在异常
+     * @param resource The classpath resource path.
+     * @return An `InputStream`.
+     * @throws InternalException if the resource is not found.
      */
     public static InputStream getStream(final String resource) throws InternalException {
         return getResource(resource).getStream();
     }
 
     /**
-     * 从ClassPath资源中获取{@link InputStream}，当资源不存在时返回null
+     * Gets an `InputStream` for a classpath resource, returning `null` if not found.
      *
-     * @param resource ClassPath资源
-     * @return {@link InputStream}
+     * @param resource The classpath resource path.
+     * @return An `InputStream`, or `null`.
      */
     public static InputStream getStreamSafe(final String resource) {
         try {
@@ -110,99 +110,74 @@ public class ResourceKit {
     }
 
     /**
-     * 从ClassPath资源中获取{@link BufferedReader}
+     * Gets a `BufferedReader` for a classpath resource using UTF-8 encoding.
      *
-     * @param resource ClassPath资源
-     * @return {@link InputStream}
+     * @param resource The classpath resource path.
+     * @return A `BufferedReader`.
      */
     public static BufferedReader getReader(final String resource) {
         return getReader(resource, Charset.UTF_8);
     }
 
     /**
-     * 从ClassPath资源中获取{@link BufferedReader}
+     * Gets a `BufferedReader` for a classpath resource.
      *
-     * @param resource ClassPath资源
-     * @param charset  编码
-     * @return {@link InputStream}
+     * @param resource The classpath resource path.
+     * @param charset  The charset.
+     * @return A `BufferedReader`.
      */
     public static BufferedReader getReader(final String resource, final java.nio.charset.Charset charset) {
         return getResource(resource).getReader(charset);
     }
 
     /**
-     * 获得资源的URL 路径用/分隔，例如:
+     * Gets the URL for a resource.
      *
-     * <pre>
-     * config/a/db.config
-     * spring/xml/test.xml
-     * </pre>
-     *
-     * @param resource 资源（相对Classpath的路径）
-     * @return 资源URL
-     * @throws InternalException IO异常
+     * @param resource The resource path relative to the classpath.
+     * @return The resource URL.
+     * @throws InternalException if an IO error occurs.
      */
     public static URL getResourceUrl(final String resource) throws InternalException {
         return getResourceUrl(resource, null);
     }
 
     /**
-     * 获取指定路径下的资源列表 路径格式必须为目录格式,用/分隔，例如:
+     * Gets a list of URLs for all resources with a given name.
      *
-     * <pre>
-     * config/a
-     * spring/xml
-     * </pre>
-     *
-     * @param resource 资源路径
-     * @return 资源列表
+     * @param resource The resource path.
+     * @return A list of resource URLs.
      */
     public static List<URL> getResourceUrls(final String resource) {
         return getResourceUrls(resource, null);
     }
 
     /**
-     * 获取指定路径下的资源列表 路径格式必须为目录格式,用/分隔，例如:
+     * Gets a filtered list of URLs for all resources with a given name.
      *
-     * <pre>
-     * config/a
-     * spring/xml
-     * </pre>
-     *
-     * @param resource 资源路径
-     * @param filter   过滤器，用于过滤不需要的资源，{@code null}表示不过滤，保留所有元素
-     * @return 资源列表
+     * @param resource The resource path.
+     * @param filter   A predicate to filter the resources.
+     * @return A list of resource URLs.
      */
     public static List<URL> getResourceUrls(final String resource, final Predicate<URL> filter) {
         return IteratorKit.filterToList(getResourceUrlIter(resource), filter);
     }
 
     /**
-     * 获取指定路径下的资源Iterator 路径格式必须为目录格式,用/分隔，例如:
+     * Gets an iterator for all resource URLs with a given name.
      *
-     * <pre>
-     * config/a
-     * spring/xml
-     * </pre>
-     *
-     * @param resource 资源路径
-     * @return 资源列表
+     * @param resource The resource path.
+     * @return An iterator of resource URLs.
      */
     public static EnumerationIterator<URL> getResourceUrlIter(final String resource) {
         return getResourceUrlIter(resource, null);
     }
 
     /**
-     * 获取指定路径下的资源Iterator 路径格式必须为目录格式,用/分隔，例如:
+     * Gets an iterator for all resource URLs with a given name.
      *
-     * <pre>
-     * config/a
-     * spring/xml
-     * </pre>
-     *
-     * @param resource    资源路径
-     * @param classLoader {@link ClassLoader}
-     * @return 资源列表
+     * @param resource    The resource path.
+     * @param classLoader The `ClassLoader`.
+     * @return An iterator of resource URLs.
      */
     public static EnumerationIterator<URL> getResourceUrlIter(final String resource, final ClassLoader classLoader) {
         final Enumeration<URL> resources;
@@ -215,11 +190,11 @@ public class ResourceKit {
     }
 
     /**
-     * 获得资源相对路径对应的URL
+     * Gets the URL for a resource relative to a base class or the classpath root.
      *
-     * @param resource  资源相对路径，{@code null}和""都表示classpath根路径
-     * @param baseClass 基准Class，获得的相对路径相对于此Class所在路径，如果为{@code null}则相对ClassPath
-     * @return {@link URL}
+     * @param resource  The resource path.
+     * @param baseClass The base class for relative paths.
+     * @return The resource URL.
      */
     public static URL getResourceUrl(String resource, final Class<?> baseClass) {
         resource = StringKit.toStringOrEmpty(resource);
@@ -227,10 +202,10 @@ public class ResourceKit {
     }
 
     /**
-     * 获取{@link Resource} 资源对象 如果提供路径为绝对路径或路径以file:开头，返回{@link FileResource}，否则返回{@link ClassPathResource}
+     * Gets a {@link Resource} object for a given path.
      *
-     * @param path 路径，可以是绝对路径，也可以是相对路径（相对ClassPath）
-     * @return {@link Resource} 资源对象
+     * @param path The path (can be absolute, classpath-relative, or a URL).
+     * @return A {@link Resource} object.
      */
     public static Resource getResource(final String path) {
         if (StringKit.isNotBlank(path)) {
@@ -243,10 +218,10 @@ public class ResourceKit {
     }
 
     /**
-     * 获取{@link UrlResource} 资源对象
+     * Gets a {@link Resource} object for a given URL.
      *
-     * @param url URL
-     * @return {@link Resource} 资源对象
+     * @param url The URL.
+     * @return A {@link Resource} object.
      */
     public static Resource getResource(final URL url) {
         if (Normal.isJarURL(url)) {
@@ -258,35 +233,31 @@ public class ResourceKit {
     }
 
     /**
-     * 获取{@link FileResource} 资源对象
+     * Gets a `FileResource` object for a given `File`.
      *
-     * @param file {@link File}
-     * @return {@link Resource} 资源对象
+     * @param file The `File`.
+     * @return A `FileResource` object.
      */
     public static Resource getResource(final File file) {
         return new FileResource(file);
     }
 
     /**
-     * 获取同名的所有资源
+     * Gets all resources with the same name from the classpath.
      *
-     * @param resource 资源名
-     * @return {@link MultiResource}
+     * @param resource The resource name.
+     * @return A {@link MultiResource}.
      */
     public static MultiResource getResources(final String resource) {
         return getResources(resource, null);
     }
 
     /**
-     * 获取同名的所有资源 资源的加载顺序是：
-     * <ul>
-     * <li>1. 首先在本项目下查找资源文件</li>
-     * <li>2. 按照classpath定义的顺序，去对应路径或jar包下寻找资源文件</li>
-     * </ul>
+     * Gets all resources with the same name from the classpath.
      *
-     * @param resource    资源名
-     * @param classLoader {@link ClassLoader}，{@code null}表示使用默认的当前上下文ClassLoader
-     * @return {@link MultiResource}
+     * @param resource    The resource name.
+     * @param classLoader The `ClassLoader`.
+     * @return A {@link MultiResource}.
      */
     public static MultiResource getResources(final String resource, final ClassLoader classLoader) {
         final EnumerationIterator<URL> iter = getResourceUrlIter(resource, classLoader);
@@ -298,11 +269,11 @@ public class ResourceKit {
     }
 
     /**
-     * 加载配置文件内容到{@link Properties}中 需要注意的是，如果资源文件的扩展名是.xml，会调用{@link Properties#loadFromXML(InputStream)} 读取。
+     * Loads the content of a resource into a `Properties` object.
      *
-     * @param properties {@link Properties}文件
-     * @param resource   资源
-     * @param charset    编码，对XML无效，默认UTF-8
+     * @param properties The `Properties` object.
+     * @param resource   The resource.
+     * @param charset    The charset (ignored for XML files).
      */
     public static void loadTo(
             final Properties properties,
@@ -312,14 +283,12 @@ public class ResourceKit {
         Assert.notNull(resource);
         final String filename = resource.getName();
         if (filename != null && StringKit.endWithIgnoreCase(filename, ".xml")) {
-            // XML
             try (final InputStream in = resource.getStream()) {
                 properties.loadFromXML(in);
             } catch (final IOException e) {
                 throw new InternalException(e);
             }
         } else {
-            // .properties
             try (final BufferedReader reader = resource.getReader(ObjectKit.defaultIfNull(charset, Charset.UTF_8))) {
                 properties.load(reader);
             } catch (final IOException e) {
@@ -329,13 +298,13 @@ public class ResourceKit {
     }
 
     /**
-     * 加载指定名称的所有配置文件内容到{@link Properties}中
+     * Loads all configuration files with a given name into a `Properties` object.
      *
-     * @param properties   {@link Properties}文件
-     * @param resourceName 资源名，可以是相对classpath的路径，也可以是绝对路径
-     * @param classLoader  {@link ClassLoader}，{@code null}表示使用默认的当前上下文ClassLoader
-     * @param charset      编码，对XML无效，默认UTF-8
-     * @param isOverride   是否覆盖模式
+     * @param properties   The `Properties` object.
+     * @param resourceName The resource name.
+     * @param classLoader  The `ClassLoader`.
+     * @param charset      The charset.
+     * @param isOverride   If `true`, later files will override properties from earlier ones.
      */
     public static void loadAllTo(
             final Properties properties,
@@ -350,7 +319,6 @@ public class ResourceKit {
             return;
         }
 
-        // 非覆盖模式下，读取配置文件后逐个检查key
         final Properties tmpProps = new Properties();
         for (final Resource resource : getResources(resourceName, classLoader)) {
             loadTo(tmpProps, resource, charset);

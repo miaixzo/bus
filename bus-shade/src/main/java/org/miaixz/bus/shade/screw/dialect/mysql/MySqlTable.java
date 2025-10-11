@@ -34,7 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 表信息
+ * Table metadata for MySQL.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,52 +44,52 @@ import lombok.Setter;
 public class MySqlTable implements Table {
 
     /**
-     * tableCat
+     * Table catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")
     private String tableCat;
     /**
-     * 表名
+     * Table name.
      */
     @MappingField(value = "TABLE_NAME")
     private String tableName;
     /**
-     *
+     * Name of the designated "identifier" column of a typed table (may be {@code null}).
      */
     @MappingField(value = "SELF_REFERENCING_COL_NAME")
     private String selfReferencingColName;
     /**
-     *
+     * Table schema (may be {@code null}).
      */
-    @MappingField(value = "TABLE_CAT")
+    @MappingField(value = "TABLE_SCHEM")
     private String tableSchem;
     /**
-     *
+     * Type schema (may be {@code null}).
      */
     @MappingField(value = "TYPE_SCHEM")
     private String typeSchem;
     /**
-     *
+     * Type catalog (may be {@code null}).
      */
     @MappingField(value = "TABLE_CAT")
     private Object typeCat;
     /**
-     * 表类型
+     * Table type (e.g., "TABLE", "VIEW", "SYSTEM TABLE").
      */
     @MappingField(value = "TABLE_TYPE")
     private String tableType;
     /**
-     * 备注
+     * Explanatory comment on the table.
      */
     @MappingField(value = "REMARKS")
     private String remarks;
     /**
-     *
+     * Specifies how values in SELF_REFERENCING_COL_NAME are created (e.g., "SYSTEM", "USER", "DERIVED").
      */
     @MappingField(value = "REF_GENERATION")
     private String refGeneration;
     /**
-     * 类型名称
+     * Typed table type name (may be {@code null}).
      */
     @MappingField(value = "TYPE_NAME")
     private String typeName;

@@ -31,77 +31,80 @@ import java.io.Closeable;
 import java.io.Serializable;
 
 /**
- * 对象池接口，提供：
+ * Interface for an object pool, providing core functionalities for managing pooled objects. This includes borrowing,
+ * returning, and freeing objects.
  * <ul>
- * <li>{@link #borrowObject()} 对象借出</li>
- * <li>{@link #returnObject(Object)} 对象归还</li>
- * <li>{@link #free(Object)} 对象销毁</li>
+ * <li>{@link #borrowObject()} for borrowing an object from the pool.</li>
+ * <li>{@link #returnObject(Object)} for returning an object to the pool.</li>
+ * <li>{@link #free(Object)} for explicitly destroying an object.</li>
  * </ul>
- * 对于对象池中对象维护，通过{@link PoolConfig#getMaxIdle()}控制，规则如下：
+ * Object maintenance within the pool is controlled by {@link PoolConfig#getMaxIdle()}. The rules are as follows:
  * <ul>
- * <li>如果借出量很多，则不断扩容，直到达到{@link PoolConfig#getMaxSize()}</li>
- * <li>如果池对象闲置超出{@link PoolConfig#getMaxIdle()}，则销毁。</li>
- * <li>实际使用中，池中对象可能少于{@link PoolConfig#getMinSize()}</li>
+ * <li>If many objects are borrowed, the pool will continuously expand until it reaches
+ * {@link PoolConfig#getMaxSize()}.</li>
+ * <li>If a pooled object remains idle beyond {@link PoolConfig#getMaxIdle()}, it will be destroyed.</li>
+ * <li>In practical use, the number of objects in the pool might be less than {@link PoolConfig#getMinSize()}.</li>
  * </ul>
  *
- * @param <T> 对象类型
+ * @param <T> the type of objects managed by this pool
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ObjectPool<T> extends Closeable, Serializable {
 
     /**
-     * 借出对象，流程如下：
+     * Borrows an object from the pool. The process involves:
      * <ol>
-     * <li>从池中取出对象</li>
-     * <li>检查对象可用性</li>
-     * <li>如果无可用对象，扩容池并创建新对象</li>
-     * <li>继续取对象</li>
+     * <li>Retrieving an object from the pool.</li>
+     * <li>Checking the object's validity.</li>
+     * <li>If no valid object is available, the pool expands and creates a new object.</li>
+     * <li>Continues to retrieve an object.</li>
      * </ol>
      *
-     * @return 对象
+     * @return the borrowed object
      */
     T borrowObject();
 
     /**
-     * 归还对象，流程如下：
+     * Returns an object to the pool. The process involves:
      * <ol>
-     * <li>检查对象可用性</li>
-     * <li>不可用则销毁之</li>
-     * <li>可用则入池</li>
+     * <li>Checking the object's validity.</li>
+     * <li>If the object is invalid, it is destroyed.</li>
+     * <li>If the object is valid, it is returned to the pool.</li>
      * </ol>
      *
-     * @param object 对象
-     * @return this
+     * @param object the object to be returned
+     * @return this object pool instance
      */
     ObjectPool<T> returnObject(final T object);
 
     /**
-     * 释放对象，即在使用中发现对象损坏或不可用，则直接销毁之
+     * Frees (destroys) an object. This method should be called if an object is found to be corrupted or unusable during
+     * its active use.
      *
-     * @param object 对象
-     * @return this
+     * @param object the object to be freed/destroyed
+     * @return this object pool instance
      */
     ObjectPool<T> free(final T object);
 
     /**
-     * 获取持有对象总数（包括空闲对象 + 正在使用对象数）
+     * Retrieves the total number of objects held by the pool, including both idle and actively used objects.
      *
-     * @return 总数
+     * @return the total count of objects in the pool
      */
     int getTotal();
 
     /**
-     * 获取空闲对象数，即在池中的对象数
+     * Retrieves the number of idle objects currently in the pool.
      *
-     * @return 空闲对象数，-1表示此信息不可用
+     * @return the count of idle objects, or -1 if this information is not available
      */
     int getIdleCount();
 
     /**
-     * 获取已经借出的对象（正在使用的）对象数
+     * Retrieves the number of objects currently borrowed and in active use.
      *
-     * @return 正在使用的对象数，-1表示此对象不可用
+     * @return the count of actively used objects, or -1 if this information is not available
      */
     int getActiveCount();
 

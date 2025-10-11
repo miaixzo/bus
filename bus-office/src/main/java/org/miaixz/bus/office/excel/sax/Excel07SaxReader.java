@@ -46,8 +46,8 @@ import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 import org.miaixz.bus.office.excel.xyz.ExcelSaxKit;
 
 /**
- * Sax方式读取Excel文件 Excel2007格式说明见：<a href=
- * "http://www.cnblogs.com/wangmingshun/p/6654143.html">http://www.cnblogs.com/wangmingshun/p/6654143.html</a>
+ * SAX-based reader for Excel 2007+ files (XLSX). For details on Excel 2007+ format, see:
+ * <a href="http://www.cnblogs.com/wangmingshun/p/6654143.html">http://www.cnblogs.com/wangmingshun/p/6654143.html</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,29 +57,30 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     private final SheetDataSaxHandler handler;
 
     /**
-     * 构造
+     * Constructs a new {@code Excel07SaxReader}.
      *
-     * @param rowHandler 行处理器
+     * @param rowHandler The row handler to process each row.
      */
     public Excel07SaxReader(final RowHandler rowHandler) {
         this(rowHandler, false);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code Excel07SaxReader}.
      *
-     * @param rowHandler        行处理器
-     * @param padCellAtEndOfRow 是否对齐数据，即在行尾补充null cell
+     * @param rowHandler        The row handler to process each row.
+     * @param padCellAtEndOfRow {@code true} to pad missing cells at the end of a row with {@code null} values,
+     *                          {@code false} otherwise.
      */
     public Excel07SaxReader(final RowHandler rowHandler, final boolean padCellAtEndOfRow) {
         this.handler = new SheetDataSaxHandler(rowHandler, padCellAtEndOfRow);
     }
 
     /**
-     * 设置行处理器
+     * Sets the row handler for processing rows.
      *
-     * @param rowHandler 行处理器
-     * @return this
+     * @param rowHandler The row handler.
+     * @return This reader instance, for chaining.
      */
     public Excel07SaxReader setRowHandler(final RowHandler rowHandler) {
         this.handler.setRowHandler(rowHandler);
@@ -115,24 +116,25 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     }
 
     /**
-     * 开始读取Excel，Sheet编号从0开始计数
+     * Starts reading an Excel file. Sheet numbers are 0-based.
      *
-     * @param opcPackage {@link OPCPackage}，Excel包，读取后不关闭
-     * @param rid        Excel中的sheet rid编号，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException POI异常
+     * @param opcPackage {@link OPCPackage}, the Excel package. The package will not be closed after reading.
+     * @param rid        The sheet rId in Excel. If -1, all sheets will be processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     public Excel07SaxReader read(final OPCPackage opcPackage, final int rid) throws InternalException {
         return read(opcPackage, RID_PREFIX + rid);
     }
 
     /**
-     * 开始读取Excel，Sheet编号从0开始计数
+     * Starts reading an Excel file. Sheet numbers are 0-based.
      *
-     * @param opcPackage         {@link OPCPackage}，Excel包，读取后不关闭
-     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException POI异常
+     * @param opcPackage         {@link OPCPackage}, the Excel package. The package will not be closed after reading.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
+     *                           e.g., "rId1"), or a sheet name. If -1, all sheets will be processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     public Excel07SaxReader read(final OPCPackage opcPackage, final String idOrRidOrSheetName)
             throws InternalException {
@@ -144,24 +146,27 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     }
 
     /**
-     * 开始读取Excel，Sheet编号从0开始计数
+     * Starts reading an Excel file. Sheet numbers are 0-based.
      *
-     * @param xssfReader         {@link XSSFReader}，Excel读取器
-     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名，rid必须加rId前缀，例如rId1，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException POI异常
+     * @param xssfReader         {@link XSSFReader}, the Excel reader.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
+     *                           e.g., "rId1"), or a sheet name. If -1, all sheets will be processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     public Excel07SaxReader read(final XSSFReader xssfReader, final String idOrRidOrSheetName)
             throws InternalException {
-        // 获取共享样式表，样式非必须
+        // Get shared styles table, styles are not mandatory.
         try {
             this.handler.stylesTable = xssfReader.getStylesTable();
         } catch (final IOException | InvalidFormatException ignore) {
             // ignore
         }
 
-        // 获取共享字符串表
-        // POI-5.2.0开始返回值有所变更，导致实际使用时提示方法未找到，此处使用反射调用，解决不同版本返回值变更问题
+        // Get shared strings table.
+        // Starting from POI-5.2.0, the return value has changed, causing MethodNotFoundException in actual use.
+        // Reflection is used here to call the method, resolving the return value change issue across different
+        // versions.
         // this.handler.sharedStrings = xssfReader.getSharedStringsTable();
         this.handler.sharedStrings = MethodKit.invoke(xssfReader, "getSharedStringsTable");
 
@@ -169,12 +174,13 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     }
 
     /**
-     * 开始读取Excel，Sheet编号从0开始计数
+     * Starts reading Excel sheets. Sheet numbers are 0-based.
      *
-     * @param xssfReader         {@link XSSFReader}，Excel读取器
-     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名，从0开始，rid必须加rId前缀，例如rId0，如果为-1处理所有编号的sheet
-     * @return this
-     * @throws InternalException POI异常
+     * @param xssfReader         {@link XSSFReader}, the Excel reader.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
+     *                           e.g., "rId0"), or a sheet name. If -1, all sheets will be processed.
+     * @return This reader instance, for chaining.
+     * @throws InternalException If a POI-related exception occurs.
      */
     private Excel07SaxReader readSheets(final XSSFReader xssfReader, final String idOrRidOrSheetName)
             throws InternalException {
@@ -182,16 +188,16 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
         InputStream sheetInputStream = null;
         try {
             if (this.handler.sheetIndex > -1) {
-                // 根据 rId# 或 rSheet# 查找sheet
+                // Find sheet by rId# or rSheet#.
                 sheetInputStream = xssfReader.getSheet(RID_PREFIX + (this.handler.sheetIndex + 1));
                 ExcelSaxKit.readFrom(sheetInputStream, this.handler);
                 this.handler.rowHandler.doAfterAllAnalysed();
             } else {
                 this.handler.sheetIndex = -1;
-                // 遍历所有sheet
+                // Iterate through all sheets.
                 final Iterator<InputStream> sheetInputStreams = xssfReader.getSheetsData();
                 while (sheetInputStreams.hasNext()) {
-                    // 重新读取一个sheet时行归零
+                    // Reset row index when reading a new sheet.
                     this.handler.index = 0;
                     this.handler.sheetIndex++;
                     sheetInputStream = sheetInputStreams.next();
@@ -210,35 +216,39 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     }
 
     /**
-     * 获取sheet索引，从0开始
+     * Gets the sheet index (0-based).
      * <ul>
-     * <li>传入'rId'开头，直接去除rId前缀</li>
-     * <li>传入纯数字，表示sheetIndex，通过{@link SheetRidReader}转换为rId</li>
-     * <li>传入其它字符串，表示sheetName，通过{@link SheetRidReader}转换为rId</li>
+     * <li>If the input starts with 'rId', the 'rId' prefix is removed directly.</li>
+     * <li>If the input is a pure number, it is treated as a sheet index and converted to rId via
+     * {@link SheetRidReader}.</li>
+     * <li>If the input is any other string, it is treated as a sheet name and converted to rId via
+     * {@link SheetRidReader}.</li>
      * </ul>
      *
-     * @param xssfReader         {@link XSSFReader}，Excel读取器
-     * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名称，从0开始，rid必须加rId前缀，例如rId0，如果为-1处理所有编号的sheet
-     * @return sheet索引，从0开始
+     * @param xssfReader         {@link XSSFReader}, the Excel reader.
+     * @param idOrRidOrSheetName The sheet identifier in Excel, which can be a sheet ID, an rId (prefixed with "rId",
+     *                           e.g., "rId0"), or a sheet name. If -1, all sheets will be processed.
+     * @return The sheet index (0-based).
+     * @throws IllegalArgumentException if the provided {@code idOrRidOrSheetName} is invalid or not found.
      */
     private int getSheetIndex(final XSSFReader xssfReader, String idOrRidOrSheetName) {
-        // rid直接处理
+        // Process rId directly.
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, RID_PREFIX)) {
             return Integer.parseInt(StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, RID_PREFIX));
         }
 
-        // sheetIndex需转换为rid
+        // Sheet index needs to be converted to rId.
         final SheetRidReader ridReader = SheetRidReader.parse(xssfReader);
 
         if (StringKit.startWithIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX)) {
-            // name:开头的被认为是sheet名称直接处理
+            // Names starting with "name:" are treated directly as sheet names.
             idOrRidOrSheetName = StringKit.removePrefixIgnoreCase(idOrRidOrSheetName, SHEET_NAME_PREFIX);
             final Integer rid = ridReader.getRidByNameBase0(idOrRidOrSheetName);
             if (null != rid) {
                 return rid;
             }
         } else {
-            // 尝试查找名称
+            // Try to find by name.
             Integer rid = ridReader.getRidByNameBase0(idOrRidOrSheetName);
             if (null != rid) {
                 return rid;
@@ -247,10 +257,10 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
             try {
                 final int sheetIndex = Integer.parseInt(idOrRidOrSheetName);
                 rid = ridReader.getRidBySheetIdBase0(sheetIndex);
-                // 如果查找不到对应index，则认为用户传入的直接是rid
+                // If no corresponding index is found, assume the user directly provided the rId.
                 return ObjectKit.defaultIfNull(rid, sheetIndex);
             } catch (final NumberFormatException ignore) {
-                // 非数字，说明非index，且没有对应名称，抛出异常
+                // Not a number, meaning it's not an index, and no corresponding name, throw exception.
             }
         }
 

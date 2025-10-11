@@ -39,7 +39,7 @@ import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Statfs;
 
 /**
- * Utility to query fsstat
+ * Utility to query fsstat on macOS.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,9 +48,9 @@ import com.sun.jna.platform.mac.SystemB.Statfs;
 public final class Fsstat {
 
     /**
-     * Query fsstat to map partitions to mount points
+     * Queries fsstat to map partitions to mount points.
      *
-     * @return A map with partitions as the key and mount points as the value
+     * @return A map with partitions as the key and mount points as the value.
      */
     public static Map<String, String> queryPartitionToMountMap() {
         Map<String, String> mountPointMap = new HashMap<>();
@@ -72,6 +72,15 @@ public final class Fsstat {
         return mountPointMap;
     }
 
+    /**
+     * Calls the `getfsstat64` system call to retrieve file system statistics.
+     *
+     * @param buf     An array of {@link Statfs} structures to be filled with file system information. If {@code null},
+     *                the function returns the number of mounted file systems.
+     * @param bufsize The size of the buffer pointed to by {@code buf}.
+     * @param flags   Flags to control the behavior of the call (e.g., {@code SystemB.MNT_NOWAIT}).
+     * @return The number of {@link Statfs} structures returned, or -1 if an error occurred.
+     */
     private static int queryFsstat(Statfs[] buf, int bufsize, int flags) {
         return SystemB.INSTANCE.getfsstat64(buf, bufsize, flags);
     }

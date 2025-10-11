@@ -38,19 +38,22 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 资源接口定义
+ * Resource interface definition.
  * <p>
- * 资源是数据表示的统称，我们可以将任意的数据封装为一个资源，然后读取其内容。
- * </p>
+ * A resource is a general term for data representation. Any data can be encapsulated as a resource, and its content can
+ * then be read.
+ *
  * <p>
- * 资源可以是文件、URL、ClassPath中的文件亦或者jar(zip)包中的文件。
- * </p>
+ * Resources can be files, URLs, files in the ClassPath, or files within jar (zip) packages.
+ *
  * <p>
- * 提供资源接口的意义在于，我们可以使用一个方法接收任意类型的数据，从而处理数据， 无需专门针对File、InputStream等写多个重载方法，同时也为更好的扩展提供了可能。
- * </p>
+ * The purpose of providing a resource interface is to allow a single method to accept any type of data for processing,
+ * eliminating the need to write multiple overloaded methods for {@code File}, {@code InputStream}, etc., and also
+ * providing better extensibility.
+ *
  * <p>
- * 使用非常简单，假设我们需要从classpath中读取一个xml，我们不用关心这个文件在目录中还是在jar中：
- * </p>
+ * Usage is very simple. For example, if we need to read an XML from the classpath, we don't need to care whether the
+ * file is in a directory or a jar:
  * 
  * <pre>
  * 
@@ -58,8 +61,8 @@ import org.miaixz.bus.core.xyz.IoKit;
  * String xmlStr = resource.readString();
  * </pre>
  * <p>
- * 同样，我们可以自己实现Resource接口，按照业务需要从任意位置读取数据，比如从数据库中。
- * </p>
+ * Similarly, we can implement the {@code Resource} interface ourselves to read data from any location according to
+ * business needs, such as from a database.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,47 +70,49 @@ import org.miaixz.bus.core.xyz.IoKit;
 public interface Resource {
 
     /**
-     * 获取资源名，例如文件资源的资源名为文件名
+     * Retrieves the name of the resource. For file resources, this is typically the file name.
      *
-     * @return 资源名
+     * @return The name of the resource.
      */
     String getName();
 
     /**
-     * 获得解析后的{@link URL}，无对应URL的返回{@code null}
+     * Retrieves the resolved {@link URL} for this resource. Returns {@code null} if no corresponding URL exists.
      *
-     * @return 解析后的{@link URL}
+     * @return The resolved {@link URL}, or {@code null} if not applicable.
      */
     URL getUrl();
 
     /**
-     * 获取资源大小
+     * Retrieves the size of the resource.
      *
-     * @return 资源大小
+     * @return The size of the resource in bytes.
      */
     long size();
 
     /**
-     * 获得 {@link InputStream}
+     * Retrieves an {@link InputStream} for reading the resource content.
      *
-     * @return {@link InputStream}
+     * @return An {@link InputStream} to the resource.
      */
     InputStream getStream();
 
     /**
-     * 检查资源是否变更 一般用于文件类资源，检查文件是否被修改过。
+     * Checks if the resource has been modified. This is typically used for file-based resources to check if the
+     * underlying file has changed.
      *
-     * @return 是否变更
+     * @return {@code true} if the resource has been modified, {@code false} otherwise.
      */
     default boolean isModified() {
         return false;
     }
 
     /**
-     * 将资源内容写出到流，不关闭输出流，但是关闭资源流
+     * Writes the content of this resource to the given output stream. The output stream is not closed, but the
+     * resource's input stream is closed.
      *
-     * @param out 输出流
-     * @throws InternalException IO异常
+     * @param out The {@link OutputStream} to write to.
+     * @throws InternalException If an I/O error occurs during the write operation.
      */
     default void writeTo(final OutputStream out) throws InternalException {
         try (final InputStream in = getStream()) {
@@ -118,41 +123,44 @@ public interface Resource {
     }
 
     /**
-     * 获得Reader
+     * Retrieves a {@link BufferedReader} for reading the resource content with the specified character set.
      *
-     * @param charset 编码
-     * @return {@link BufferedReader}
+     * @param charset The {@link java.nio.charset.Charset} to use for reading.
+     * @return A {@link BufferedReader} for the resource.
      */
     default BufferedReader getReader(final java.nio.charset.Charset charset) {
         return IoKit.toReader(getStream(), charset);
     }
 
     /**
-     * 读取资源内容，读取完毕后会关闭流 关闭流并不影响下一次读取
+     * Reads the content of the resource as a string using the specified character set. The stream is closed after
+     * reading, but this does not affect subsequent reads.
      *
-     * @param charset 编码
-     * @return 读取资源内容
-     * @throws InternalException 包装{@link IOException}
+     * @param charset The {@link java.nio.charset.Charset} to use for reading.
+     * @return The content of the resource as a string.
+     * @throws InternalException If an I/O error occurs during the read operation.
      */
     default String readString(final java.nio.charset.Charset charset) throws InternalException {
         return IoKit.read(getReader(charset));
     }
 
     /**
-     * 读取资源内容，读取完毕后会关闭流 关闭流并不影响下一次读取
+     * Reads the content of the resource as a string using UTF-8 encoding. The stream is closed after reading, but this
+     * does not affect subsequent reads.
      *
-     * @return 读取资源内容
-     * @throws InternalException 包装IOException
+     * @return The content of the resource as a string.
+     * @throws InternalException If an I/O error occurs during the read operation.
      */
     default String readString() throws InternalException {
         return readString(Charset.UTF_8);
     }
 
     /**
-     * 读取资源内容，读取完毕后会关闭流 关闭流并不影响下一次读取
+     * Reads the content of the resource as a byte array. The stream is closed after reading, but this does not affect
+     * subsequent reads.
      *
-     * @return 读取资源内容
-     * @throws InternalException 包装IOException
+     * @return The content of the resource as a byte array.
+     * @throws InternalException If an I/O error occurs during the read operation.
      */
     default byte[] readBytes() throws InternalException {
         return IoKit.readBytes(getStream());

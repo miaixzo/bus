@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 百度云短信
+ * Material for Baidu Cloud SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,7 +48,9 @@ import lombok.experimental.SuperBuilder;
 public class BaiduMaterial extends Material {
 
     /**
-     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
+     * Retrieves the API default request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The API request address.
      */
     @Override
     public String getUrl() {

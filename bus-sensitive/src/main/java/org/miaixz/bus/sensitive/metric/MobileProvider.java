@@ -33,13 +33,21 @@ import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
- * 手机号脱敏处理类 18233583070 脱敏后: 182****3030
+ * A desensitization provider for mobile phone numbers. It masks the middle four digits, keeping the first 3 and last 4
+ * digits visible. For example: {@code "18233583070"} becomes {@code "182****3070"}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MobileProvider extends AbstractProvider {
 
+    /**
+     * Applies mobile phone number-specific desensitization logic to the provided value.
+     *
+     * @param object  The object containing the mobile number string to be desensitized.
+     * @param context The current desensitization context, providing access to field annotations and other details.
+     * @return The desensitized mobile number, or null if the input is empty.
+     */
     @Override
     public Object build(Object object, Context context) {
         if (ObjectKit.isEmpty(object)) {

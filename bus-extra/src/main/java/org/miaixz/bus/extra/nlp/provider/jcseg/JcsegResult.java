@@ -36,24 +36,36 @@ import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
- * Jcseg分词结果包装 项目地址：https://gitee.com/lionsoul/jcseg
+ * Jcseg word segmentation result wrapper. This class adapts the Jcseg {@link ISegment} result to the common
+ * {@link org.miaixz.bus.extra.nlp.NLPResult} interface. Project homepage:
+ * <a href="https://gitee.com/lionsoul/jcseg">https://gitee.com/lionsoul/jcseg</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JcsegResult extends AbstractResult {
 
+    /**
+     * The underlying Jcseg {@link ISegment} instance, which provides the segmentation result.
+     */
     private final ISegment result;
 
     /**
-     * 构造
+     * Constructs a {@code JcsegResult} instance by wrapping a Jcseg segmentation result.
      *
-     * @param segment 分词结果
+     * @param segment The {@link ISegment} object obtained from Jcseg word segmentation.
      */
     public JcsegResult(final ISegment segment) {
         this.result = segment;
     }
 
+    /**
+     * Retrieves the next word from the Jcseg segmentation result. This method calls the {@code next()} method of the
+     * underlying {@link ISegment} and wraps the resulting {@link IWord} in a {@link JcsegWord}.
+     *
+     * @return The next {@link NLPWord} in the sequence, or {@code null} if the iteration has no more elements.
+     * @throws InternalException if an {@link IOException} occurs during the operation.
+     */
     @Override
     protected NLPWord nextWord() {
         final IWord word;

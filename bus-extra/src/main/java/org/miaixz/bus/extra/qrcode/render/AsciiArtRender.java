@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.qrcode.QrConfig;
 import com.google.zxing.common.BitMatrix;
 
 /**
- * ASCII Art渲染
+ * ASCII Art renderer.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,9 +50,9 @@ public class AsciiArtRender implements BitMatrixRender {
     private final QrConfig config;
 
     /**
-     * 构造
+     * Constructs an {@code AsciiArtRender} with the specified QR code configuration.
      *
-     * @param config 二维码配置
+     * @param config The QR code configuration.
      */
     public AsciiArtRender(final QrConfig config) {
         this.config = config;
@@ -60,14 +60,15 @@ public class AsciiArtRender implements BitMatrixRender {
 
     @Override
     public void render(final BitMatrix matrix, final OutputStream out) {
+        // Renders the BitMatrix to the given OutputStream, using the configured charset.
         render(matrix, new OutputStreamWriter(out, config.getCharset()));
     }
 
     /**
-     * 渲染SVG
+     * Renders the given {@link BitMatrix} as ASCII Art to the specified {@link Appendable}.
      *
-     * @param matrix 二维码
-     * @param writer 输出
+     * @param matrix The {@link BitMatrix} representing the QR code.
+     * @param writer The {@link Appendable} to which the ASCII Art will be written.
      */
     public void render(final BitMatrix matrix, final Appendable writer) {
         final int width = matrix.getWidth();

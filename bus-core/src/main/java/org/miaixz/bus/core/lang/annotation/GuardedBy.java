@@ -32,7 +32,12 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 注解: 用来标识每个需要加锁的状态变量以及保护该变量的锁 有助于代码的维护与审查,以及一些自动化的分析工具找到潜在的安全性错误
+ * A documentation annotation used to indicate that a field or method is protected by a specific lock. This helps in
+ * code maintenance, peer review, and automated analysis tools by making the concurrency policy explicit and helping to
+ * identify potential thread-safety issues.
+ * <p>
+ * This annotation is conceptually similar to the {@code @GuardedBy} annotation found in various static analysis tools
+ * and concurrency libraries (e.g., JCIP - Java Concurrency in Practice).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,9 +49,15 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface GuardedBy {
 
     /**
-     * 指出变量由哪些锁保护
+     * Specifies the lock that protects the annotated element. The value should be a string that identifies the lock
+     * object. Common conventions include:
+     * <ul>
+     * <li>{@code "this"}: The intrinsic lock of the instance.</li>
+     * <li>{@code "ClassName.class"}: The intrinsic lock of the class object.</li>
+     * <li>{@code "fieldName"}: The lock object referenced by the specified field.</li>
+     * </ul>
      *
-     * @return 对应的锁信息
+     * @return A string identifying the lock that provides the guard.
      */
     String value() default Normal.EMPTY;
 

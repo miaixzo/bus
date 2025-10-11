@@ -32,13 +32,17 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
 
 /**
- * 候
+ * Represents a "Hou" (候) or Pentad, a five-day period in the Chinese traditional calendar, often associated with
+ * natural phenomena. This class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Climate extends Samsara {
 
+    /**
+     * Array of names for the 72 Pentads (五日一候).
+     */
     public static final String[] NAMES = { "蚯蚓结", "麋角解", "水泉动", "雁北乡", "鹊始巢", "雉始雊", "鸡始乳", "征鸟厉疾", "水泽腹坚", "东风解冻",
             "蛰虫始振", "鱼陟负冰", "獭祭鱼", "候雁北", "草木萌动", "桃始华", "仓庚鸣", "鹰化为鸠", "玄鸟至", "雷乃发声", "始电", "桐始华", "田鼠化为鴽", "虹始见",
             "萍始生", "鸣鸠拂其羽", "戴胜降于桑", "蝼蝈鸣", "蚯蚓出", "王瓜生", "苦菜秀", "靡草死", "麦秋至", "螳螂生", "鵙始鸣", "反舌无声", "鹿角解", "蜩始鸣",
@@ -47,15 +51,27 @@ public class Climate extends Samsara {
             "雉入大水为蜃", "虹藏不见", "天气上升地气下降", "闭塞而成冬", "鹖鴠不鸣", "虎始交", "荔挺出" };
 
     /**
-     * 年
+     * The Gregorian year to which this Climate belongs.
      */
     protected int year;
 
+    /**
+     * Constructs a {@code Climate} instance with the specified year and name.
+     *
+     * @param year The Gregorian year.
+     * @param name The name of the Pentad.
+     */
     public Climate(int year, String name) {
         super(NAMES, name);
         this.year = year;
     }
 
+    /**
+     * Constructs a {@code Climate} instance with the specified year and index.
+     *
+     * @param year  The Gregorian year.
+     * @param index The index of the Pentad in the {@link #NAMES} array.
+     */
     public Climate(int year, int index) {
         super(NAMES, index);
         int size = getSize();
@@ -63,36 +79,42 @@ public class Climate extends Samsara {
     }
 
     /**
-     * 从名称初始化
+     * Creates a {@code Climate} instance from its year and name.
      *
-     * @param year 年
-     * @param name 名称
-     * @return 候
+     * @param year The Gregorian year.
+     * @param name The name of the Pentad.
+     * @return A new {@code Climate} instance.
      */
     public static Climate fromName(int year, String name) {
         return new Climate(year, name);
     }
 
     /**
-     * 从索引初始化
+     * Creates a {@code Climate} instance from its year and index.
      *
-     * @param year  年
-     * @param index 索引
-     * @return 候
+     * @param year  The Gregorian year.
+     * @param index The index of the Pentad.
+     * @return A new {@code Climate} instance.
      */
     public static Climate fromIndex(int year, int index) {
         return new Climate(year, index);
     }
 
     /**
-     * 三候
+     * Gets the Three Climates (三候) to which this Pentad belongs.
      *
-     * @return 三候
+     * @return The {@link ThreeClimate} instance.
      */
     public ThreeClimate getThree() {
         return ThreeClimate.fromIndex(index % 3);
     }
 
+    /**
+     * Gets the next {@code Climate} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code Climate} instance.
+     */
     public Climate next(int n) {
         int size = getSize();
         int i = index + n;
@@ -100,9 +122,9 @@ public class Climate extends Samsara {
     }
 
     /**
-     * 儒略日
+     * Gets the Julian Day (儒略日) for this Climate.
      *
-     * @return 儒略日
+     * @return The {@link JulianDay} instance.
      */
     public JulianDay getJulianDay() {
         double t = Galaxy.saLonT((year - 2000 + (index - 18) * 5.0 / 360 + 1) * 2 * Math.PI);
@@ -110,9 +132,9 @@ public class Climate extends Samsara {
     }
 
     /**
-     * 年
+     * Gets the Gregorian year of this Climate.
      *
-     * @return 年
+     * @return The Gregorian year.
      */
     public int getYear() {
         return year;

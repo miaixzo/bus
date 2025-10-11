@@ -40,6 +40,7 @@ import org.miaixz.bus.auth.magic.Material;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -50,27 +51,41 @@ import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 
 /**
- * 飞书 登录
+ * Feishu (Lark) login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FeishuProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code FeishuProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public FeishuProvider(Context context) {
         super(context, Registry.FEISHU);
     }
 
+    /**
+     * Constructs a {@code FeishuProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public FeishuProvider(Context context, CacheX cache) {
         super(context, Registry.FEISHU, cache);
     }
 
     /**
-     * 获取 app_access_token（企业自建应用）
+     * Retrieves the application access token (for enterprise self-built applications).
      * <p>
-     * Token 有效期为 2 小时，在此期间调用该接口 token 不会改变。当 token 有效期小于 30 分的时候，再次请求获取 token 的时候， 会生成一个新的 token，与此同时老的 token 依然有效。
+     * The token is valid for 2 hours. During this period, calling this interface will not change the token. When the
+     * token's validity period is less than 30 minutes, requesting a token again will generate a new token, while the
+     * old token remains valid.
      *
-     * @return appAccessToken
+     * @return the application access token
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     private String getAppAccessToken() {
         String cacheKey = this.complex.getName().concat(":app_access_token:").concat(context.getAppKey());
@@ -98,11 +113,17 @@ public class FeishuProvider extends AbstractProvider {
         }
         Object expireObj = jsonObject.get("expire");
         long expire = expireObj instanceof Number ? ((Number) expireObj).longValue() : 0;
-        // 缓存 app access token
+        // Cache app access token
         this.cache.write(cacheKey, appAccessToken, expire * 1000);
         return appAccessToken;
     }
 
+    /**
+     * Retrieves the access token from Feishu's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         Map<String, Object> requestObject = new HashMap<>();
@@ -112,6 +133,13 @@ public class FeishuProvider extends AbstractProvider {
         return getToken(requestObject, this.complex.accessToken());
     }
 
+    /**
+     * Retrieves user information from Feishu's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String accessToken = authToken.getAccessToken();
@@ -125,7 +153,7 @@ public class FeishuProvider extends AbstractProvider {
                 throw new AuthorizedException("Failed to parse user info response: empty response");
             }
             this.checkResponse(object);
-            Map<String, Object> data = (Map<String, Object>) object.get("data");
+            Map<String, Object> data = (Map<String, Object>) object.get(Consts.DATA);
             if (data == null) {
                 throw new AuthorizedException("Missing data in user info response");
             }
@@ -143,6 +171,12 @@ public class FeishuProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         Map<String, Object> requestObject = new HashMap<>();
@@ -153,6 +187,14 @@ public class FeishuProvider extends AbstractProvider {
                 .data(getToken(requestObject, this.complex.refresh())).build();
     }
 
+    /**
+     * Retrieves an authentication token from the specified URL with given parameters.
+     *
+     * @param param a map of parameters for the token request
+     * @param url   the URL to request the token from
+     * @return the {@link AuthToken} containing token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     private AuthToken getToken(Map<String, Object> param, String url) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
@@ -163,7 +205,7 @@ public class FeishuProvider extends AbstractProvider {
                 throw new AuthorizedException("Failed to parse token response: empty response");
             }
             this.checkResponse(jsonObject);
-            Map<String, Object> data = (Map<String, Object>) jsonObject.get("data");
+            Map<String, Object> data = (Map<String, Object>) jsonObject.get(Consts.DATA);
             if (data == null) {
                 throw new AuthorizedException("Missing data in token response");
             }
@@ -185,6 +227,13 @@ public class FeishuProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(complex.authorize()).queryParam("app_id", context.getAppKey())
@@ -193,9 +242,10 @@ public class FeishuProvider extends AbstractProvider {
     }
 
     /**
-     * 校验响应内容是否正确
+     * Checks the response content for errors.
      *
-     * @param jsonObject 响应内容
+     * @param jsonObject the response content to check
+     * @throws AuthorizedException if the response indicates an error
      */
     private void checkResponse(Map<String, Object> jsonObject) {
         Object codeObj = jsonObject.get("code");

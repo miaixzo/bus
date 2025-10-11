@@ -32,7 +32,9 @@ import java.nio.charset.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * 全局邮件帐户，依赖于邮件配置文件{@link MailAccount#MAIL_SETTING_PATHS}
+ * Represents a global mail account, implemented as a singleton enum. This class is responsible for loading and holding
+ * a single, globally accessible {@link MailAccount} instance from a configuration file specified in
+ * {@link MailAccount#MAIL_SETTING_PATHS}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,7 +42,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public enum GlobalMailAccount {
 
     /**
-     * 单例
+     * The singleton instance of the global mail account.
      */
     INSTANCE;
 
@@ -48,61 +50,64 @@ public enum GlobalMailAccount {
     private static final String CHARSET = "mail.mime.charset";
 
     static {
+        // By default, disable splitting of long parameters to ensure compatibility with certain mail clients.
         System.setProperty(SPLIT_LONG_PARAMS, "false");
+        // Set the global default charset for MIME messages based on the loaded account configuration.
         System.setProperty(CHARSET, INSTANCE.mailAccount.getCharset().name());
     }
 
+    /**
+     * The globally accessible mail account instance.
+     */
     private final MailAccount mailAccount;
 
     /**
-     * 构造
+     * Constructs the singleton instance and initializes the default mail account.
      */
     GlobalMailAccount() {
         mailAccount = createDefaultAccount();
     }
 
     /**
-     * 获得邮件帐户
+     * Retrieves the globally configured mail account.
      *
-     * @return 邮件帐户
+     * @return The global {@link MailAccount} instance.
      */
     public MailAccount getAccount() {
         return this.mailAccount;
     }
 
     /**
-     * 设置对于超长参数是否切分为多份，默认为false（国内邮箱附件不支持切分的附件名） 注意此项为全局设置，此项会调用
-     * 
-     * <pre>
-     * System.setProperty("mail.mime.splitlongparameters", true)
-     * </pre>
+     * Sets whether to split long parameters in MIME headers. This is a global setting. Note: This method calls
+     * {@link System#setProperty(String, String)}.
      *
-     * @param splitLongParams 对于超长参数是否切分为多份
+     * @param splitLongParams {@code true} to enable splitting, {@code false} to disable it.
      */
     public void setSplitLongParams(final boolean splitLongParams) {
         System.setProperty(SPLIT_LONG_PARAMS, String.valueOf(splitLongParams));
     }
 
     /**
-     * 设置全局默认编码
+     * Sets the global default character set for MIME messages. Note: This method calls
+     * {@link System#setProperty(String, String)}.
      *
-     * @param charset 编码
+     * @param charset The character set to set as the global default.
      */
     public void setCharset(final Charset charset) {
         System.setProperty(CHARSET, charset.name());
     }
 
     /**
-     * 创建默认帐户
+     * Creates the default mail account by searching for a configuration file in predefined paths.
      *
-     * @return {@link MailAccount}
+     * @return The loaded {@link MailAccount}, or null if no configuration file is found.
      */
     private MailAccount createDefaultAccount() {
         for (final String mailSettingPath : MailAccount.MAIL_SETTING_PATHS) {
             try {
                 return new MailAccount(mailSettingPath);
             } catch (final InternalException ignore) {
-                // ignore
+                // Ignore if a specific configuration file is not found and try the next one.
             }
         }
         return null;

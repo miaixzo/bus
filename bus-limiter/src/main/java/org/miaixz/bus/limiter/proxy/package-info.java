@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 管控代理
+ * Provides proxy-related classes for intercepting method calls and applying limiting logic. This package utilizes
+ * ByteBuddy to generate dynamic proxies that integrate with the limiter module's various strategies.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -39,13 +39,12 @@ import org.miaixz.bus.core.lang.reflect.lookup.LookupFactory;
 import org.miaixz.bus.core.lang.reflect.lookup.MethodLookupFactory;
 
 /**
- * {@link MethodHandles.Lookup}工具 {@link MethodHandles.Lookup}是一个方法句柄查找对象，用于在指定类中查找符合给定方法名称、方法类型的方法句柄。
- *
+ * Utility for {@link MethodHandles.Lookup}.
  * <p>
- * jdk8中如果直接调用{@link MethodHandles#lookup()}获取到的{@link MethodHandles.Lookup}在调用findSpecial和unreflectSpecial
- * 时会出现权限不够问题，抛出"no private access for invokespecial"异常，因此针对JDK8及JDK9+分别封装lookup方法。
- * 参考：https://blog.csdn.net/u013202238/article/details/108687086
- * </p>
+ * A {@link MethodHandles.Lookup} is an object for finding method handles in a specific class. In JDK 8, the `Lookup`
+ * object obtained by directly calling {@link MethodHandles#lookup()} may lack sufficient permissions for `findSpecial`
+ * and `unreflectSpecial`, leading to a "no private access for invokespecial" exception. This utility provides a
+ * workaround for both JDK 8 and JDK 9+.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,32 +58,31 @@ public class LookupKit {
     }
 
     /**
-     * jdk8中如果直接调用{@link MethodHandles#lookup()}获取到的{@link MethodHandles.Lookup}在调用findSpecial和unreflectSpecial
-     * 时会出现权限不够问题，抛出"no private access for invokespecial"异常，因此针对JDK8及JDK9+分别封装lookup方法。
+     * Gets a {@link MethodHandles.Lookup} instance with appropriate permissions. This provides a cross-JDK solution to
+     * the permission issues with `findSpecial` and `unreflectSpecial`.
      *
-     * @return {@link MethodHandles.Lookup}
+     * @return A {@link MethodHandles.Lookup} instance.
      */
     public static MethodHandles.Lookup lookup() {
         return lookup(CallerKit.getCaller());
     }
 
     /**
-     * jdk8中如果直接调用{@link MethodHandles#lookup()}获取到的{@link MethodHandles.Lookup}在调用findSpecial和unreflectSpecial
-     * 时会出现权限不够问题，抛出"no private access for invokespecial"异常，因此针对JDK8及JDK9+分别封装lookup方法。
+     * Gets a {@link MethodHandles.Lookup} instance for a specific class with appropriate permissions.
      *
-     * @param callerClass 被调用的类或接口
-     * @return {@link MethodHandles.Lookup}
+     * @param callerClass The class or interface to look up from.
+     * @return A {@link MethodHandles.Lookup} instance.
      */
     public static MethodHandles.Lookup lookup(final Class<?> callerClass) {
         return factory.lookup(callerClass);
     }
 
     /**
-     * 将{@link Method}或者{@link Constructor} 包装为方法句柄{@link MethodHandle}
+     * Wraps a {@link Method} or {@link Constructor} into a {@link MethodHandle}.
      *
-     * @param methodOrConstructor {@link Method}或者{@link Constructor}
-     * @return 方法句柄{@link MethodHandle}
-     * @throws InternalException {@link IllegalAccessException} 包装
+     * @param methodOrConstructor The {@link Method} or {@link Constructor}.
+     * @return The corresponding {@link MethodHandle}.
+     * @throws InternalException wrapping {@link IllegalAccessException}.
      */
     public static MethodHandle unreflect(final Member methodOrConstructor) throws InternalException {
         try {
@@ -99,42 +97,42 @@ public class LookupKit {
     }
 
     /**
-     * 将{@link Method} 转换为方法句柄{@link MethodHandle}
+     * Converts a {@link Method} into a {@link MethodHandle}.
      *
-     * @param method {@link Method}
-     * @return {@link MethodHandles}
-     * @throws IllegalAccessException 无权访问
+     * @param method The {@link Method}.
+     * @return The {@link MethodHandle}.
+     * @throws IllegalAccessException if access is denied.
      */
     public static MethodHandle unreflectMethod(final Method method) throws IllegalAccessException {
         final Class<?> caller = method.getDeclaringClass();
         final MethodHandles.Lookup lookup = lookup(caller);
         if (ModifierKit.isDefault(method)) {
-            // 当方法是default方法时，尤其对象是代理对象，需使用句柄方式执行
-            // 代理对象情况下调用method.invoke会导致循环引用执行，最终栈溢出
+            // For default methods, especially on proxy objects, use unreflectSpecial
+            // to avoid stack overflow from recursive invocation.
             return lookup.unreflectSpecial(method, caller);
         }
 
         try {
             return lookup.unreflect(method);
         } catch (final Exception ignore) {
-            // 某些情况下，无权限执行方法则尝试执行特殊方法
+            // In some cases where direct unreflection fails due to permissions, try unreflectSpecial.
             return lookup.unreflectSpecial(method, caller);
         }
     }
 
     /**
-     * 查找指定方法的方法句柄 此方法只会查找：
+     * Finds a method handle for a specified method. This method searches for:
      * <ul>
-     * <li>当前类的方法（包括构造方法和private方法）</li>
-     * <li>父类的方法（包括构造方法和private方法）</li>
-     * <li>当前类的static方法</li>
+     * <li>Methods in the current class (including constructors and private methods).</li>
+     * <li>Methods in superclasses (including constructors and private methods).</li>
+     * <li>Static methods in the current class.</li>
      * </ul>
      *
-     * @param callerClass 方法所在类或接口
-     * @param name        方法名称，{@code null}或者空则查找构造方法
-     * @param returnType  返回值类型
-     * @param argTypes    返回类型和参数类型列表
-     * @return 方法句柄 {@link MethodHandle}，{@code null}表示未找到方法
+     * @param callerClass The class or interface where the method is located.
+     * @param name        The method name; if null or blank, searches for a constructor.
+     * @param returnType  The return type.
+     * @param argTypes    The parameter types.
+     * @return The {@link MethodHandle}, or `null` if not found.
      */
     public static MethodHandle findMethod(
             final Class<?> callerClass,
@@ -145,17 +143,12 @@ public class LookupKit {
     }
 
     /**
-     * 查找指定方法的方法句柄 此方法只会查找：
-     * <ul>
-     * <li>当前类的方法（包括构造方法和private方法）</li>
-     * <li>父类的方法（包括构造方法和private方法）</li>
-     * <li>当前类的static方法</li>
-     * </ul>
+     * Finds a method handle for a specified method.
      *
-     * @param callerClass 方法所在类或接口
-     * @param name        方法名称，{@code null}或者空则查找构造方法
-     * @param type        返回类型和参数类型，可以使用{@code MethodType#methodType}构建
-     * @return 方法句柄 {@link MethodHandle}，{@code null}表示未找到方法
+     * @param callerClass The class or interface where the method is located.
+     * @param name        The method name; if null or blank, searches for a constructor.
+     * @param type        The method type (return type and parameter types).
+     * @return The {@link MethodHandle}, or `null` if not found.
      */
     public static MethodHandle findMethod(final Class<?> callerClass, final String name, final MethodType type) {
         if (StringKit.isBlank(name)) {
@@ -164,14 +157,14 @@ public class LookupKit {
 
         MethodHandle handle = null;
         final MethodHandles.Lookup lookup = LookupKit.lookup(callerClass);
-        // 成员方法
+        // Member methods
         try {
             handle = lookup.findVirtual(callerClass, name, type);
         } catch (final IllegalAccessException | NoSuchMethodException ignore) {
             // ignore
         }
 
-        // static方法
+        // Static methods
         if (null == handle) {
             try {
                 handle = lookup.findStatic(callerClass, name, type);
@@ -180,7 +173,7 @@ public class LookupKit {
             }
         }
 
-        // 特殊方法，包括构造方法、私有方法等
+        // Special methods (constructors, private methods, etc.)
         if (null == handle) {
             try {
                 handle = lookup.findSpecial(callerClass, name, type, callerClass);
@@ -195,11 +188,11 @@ public class LookupKit {
     }
 
     /**
-     * 查找指定的构造方法
+     * Finds a constructor handle.
      *
-     * @param callerClass 类
-     * @param argTypes    参数类型列表
-     * @return 构造方法句柄
+     * @param callerClass The class.
+     * @param argTypes    The parameter types.
+     * @return The constructor's method handle.
      */
     public static MethodHandle findConstructor(final Class<?> callerClass, final Class<?>... argTypes) {
         final Constructor<?> constructor = ReflectKit.getConstructor(callerClass, argTypes);
@@ -210,22 +203,22 @@ public class LookupKit {
     }
 
     /**
-     * 查找指定的构造方法，给定的参数类型必须完全匹配，不能有拆装箱或继承关系等/
+     * Finds a constructor handle with exact parameter type matching.
      *
-     * @param callerClass 类
-     * @param argTypes    参数类型列表，完全匹配
-     * @return 构造方法句柄
+     * @param callerClass The class.
+     * @param argTypes    The exact parameter types.
+     * @return The constructor's method handle.
      */
     public static MethodHandle findConstructorExact(final Class<?> callerClass, final Class<?>... argTypes) {
         return findConstructor(callerClass, MethodType.methodType(void.class, argTypes));
     }
 
     /**
-     * 查找指定的构造方法
+     * Finds a constructor handle.
      *
-     * @param callerClass 类
-     * @param type        参数类型，此处返回类型应为void.class
-     * @return 构造方法句柄
+     * @param callerClass The class.
+     * @param type        The constructor's method type (return type must be `void.class`).
+     * @return The constructor's method handle.
      */
     public static MethodHandle findConstructor(final Class<?> callerClass, final MethodType type) {
         final MethodHandles.Lookup lookup = lookup(callerClass);

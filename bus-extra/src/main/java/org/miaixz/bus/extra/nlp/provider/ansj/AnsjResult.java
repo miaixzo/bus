@@ -34,34 +34,55 @@ import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
- * Ansj分词结果实现 项目地址：https://github.com/NLPchina/ansj_seg
+ * Implementation of {@link NLPResult} for Ansj word segmentation results. This class wraps the
+ * {@link org.ansj.domain.Result} from Ansj and provides an iterator over {@link NLPWord} objects, adapting Ansj's
+ * {@link Term} to the common interface. Project homepage:
+ * <a href="https://github.com/NLPchina/ansj_seg">https://github.com/NLPchina/ansj_seg</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AnsjResult implements NLPResult {
 
+    /**
+     * The iterator over Ansj {@link Term} objects, representing the segmented words.
+     */
     private final Iterator<Term> result;
 
     /**
-     * 构造
+     * Constructs an {@code AnsjResult} instance by wrapping an Ansj segmentation result.
      *
-     * @param ansjResult 分词结果
+     * @param ansjResult The {@link org.ansj.domain.Result} object obtained from Ansj word segmentation.
      */
     public AnsjResult(final org.ansj.domain.Result ansjResult) {
         this.result = ansjResult.iterator();
     }
 
+    /**
+     * Checks if there are more words in the segmentation result.
+     *
+     * @return {@code true} if there are more words; {@code false} otherwise.
+     */
     @Override
     public boolean hasNext() {
         return result.hasNext();
     }
 
+    /**
+     * Returns the next word in the segmentation result as an {@link NLPWord}. This method wraps the Ansj {@link Term}
+     * into an {@link AnsjWord}.
+     *
+     * @return The next {@link NLPWord} in the iteration.
+     */
     @Override
     public NLPWord next() {
         return new AnsjWord(result.next());
     }
 
+    /**
+     * Removes the last word returned by this iterator from the underlying collection. This operation is optional and
+     * may throw an {@link UnsupportedOperationException}.
+     */
     @Override
     public void remove() {
         result.remove();

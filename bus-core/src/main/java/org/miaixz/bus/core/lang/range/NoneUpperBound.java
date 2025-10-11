@@ -28,27 +28,31 @@
 package org.miaixz.bus.core.lang.range;
 
 /**
- * 无限大的右边界
+ * Represents an infinitely large upper bound, effectively meaning there is no upper limit. This class implements the
+ * {@link Bound} interface for comparable types.
  *
- * @param <T> 边界值类型
+ * @param <T> the type of the boundary value, which must be comparable
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T> {
 
     /**
-     * 无限大的右边界
+     * Singleton instance for an infinitely large upper bound.
      */
     static final NoneUpperBound INSTANCE = new NoneUpperBound();
 
+    /**
+     * Private constructor to enforce singleton pattern.
+     */
     private NoneUpperBound() {
 
     }
 
     /**
-     * 获取边界值
+     * Retrieves the value of this boundary. For an infinitely large upper bound, this is always {@code null}.
      *
-     * @return 边界值
+     * @return {@code null}
      */
     @Override
     public T getValue() {
@@ -56,9 +60,9 @@ public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T>
     }
 
     /**
-     * 获取边界类型
+     * Retrieves the type of this boundary, which is always {@link BoundType#OPEN_UPPER_BOUND}.
      *
-     * @return 边界类型
+     * @return {@link BoundType#OPEN_UPPER_BOUND}
      */
     @Override
     public BoundType getType() {
@@ -66,10 +70,11 @@ public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T>
     }
 
     /**
-     * 检验指定值是否在当前边界表示的范围内
+     * Tests if the given value is within the range defined by this boundary. Since this is an infinitely large upper
+     * bound, any value is considered to be within its range.
      *
-     * @param t 要检验的值，不允许为{@code null}
-     * @return 是否
+     * @param t the value to test, must not be {@code null}
+     * @return {@code true} always
      */
     @Override
     public boolean test(final T t) {
@@ -78,15 +83,19 @@ public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T>
 
     /**
      * <p>
-     * 比较另一边界与当前边界在坐标轴上位置的先后顺序。 若令当前边界为<em>t1</em>，另一边界为<em>t2</em>，则有
+     * Compares the position of another boundary relative to this boundary on the coordinate axis. If the current
+     * boundary is <em>t1</em> (infinitely large upper bound) and the other boundary is <em>t2</em>, then:
      * <ul>
-     * <li>-1：<em>t1</em>在<em>t2</em>的左侧；</li>
-     * <li>0：<em>t1</em>与<em>t2</em>的重合；</li>
-     * <li>-1：<em>t1</em>在<em>t2</em>的右侧；</li>
+     * <li>-1: <em>t1</em> is to the left of <em>t2</em> (this case does not exist for an infinitely large upper
+     * bound);</li>
+     * <li>0: <em>t1</em> coincides with <em>t2</em> (if <em>t2</em> is also an infinitely large upper bound);</li>
+     * <li>1: <em>t1</em> is to the right of <em>t2</em> (unless <em>t2</em> is also an infinitely large upper
+     * bound).</li>
      * </ul>
      *
-     * @param bound 边界
-     * @return 位置
+     * @param bound the other boundary to compare with
+     * @return 0 if the other bound is also {@code NoneUpperBound}, otherwise 1 (meaning this bound is to the right of
+     *         the other)
      */
     @Override
     public int compareTo(final Bound<T> bound) {
@@ -94,9 +103,9 @@ public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T>
     }
 
     /**
-     * 获取{@code "[value"}或{@code "(value"}格式的字符串
+     * Returns a string representation of this bound, typically in the format "+∞ )".
      *
-     * @return 字符串
+     * @return a string representation of the bound
      */
     @Override
     public String descBound() {
@@ -104,9 +113,10 @@ public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T>
     }
 
     /**
-     * 获得当前实例对应的{@code { x | x >= xxx}}格式的不等式字符串
+     * Returns a string representation of the inequality corresponding to this instance, for example, {@code "{x | x <
+     * +∞}"}.
      *
-     * @return 字符串
+     * @return a string representation of the inequality
      */
     @Override
     public String toString() {
@@ -114,9 +124,10 @@ public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T>
     }
 
     /**
-     * 对当前边界取反
+     * Returns the negation of this boundary. The negation of an infinitely large upper bound is still an infinitely
+     * large upper bound.
      *
-     * @return 取反后的边界
+     * @return this {@code Bound} instance (as it represents an unbounded upper limit)
      */
     @Override
     public Bound<T> negate() {
@@ -124,9 +135,10 @@ public class NoneUpperBound<T extends Comparable<? super T>> implements Bound<T>
     }
 
     /**
-     * 将当前实例转为一个区间
+     * Converts this infinitely large upper bound into a {@link BoundedRange} instance. Since it's an infinitely large
+     * upper bound, it forms an unbounded range from negative infinity to positive infinity.
      *
-     * @return 区间
+     * @return a {@link BoundedRange} representing the entire real number line
      */
     @Override
     public BoundedRange<T> toRange() {

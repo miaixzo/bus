@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Httpx 实现
+ * Provides a simplified, fluent API implementation (Httpx) for making HTTP requests, building on the core HTTP client
+ * components.
  *
  * @author Kimi Liu
  * @since Java 17+

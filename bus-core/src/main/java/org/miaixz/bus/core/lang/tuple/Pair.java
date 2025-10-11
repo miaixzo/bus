@@ -34,10 +34,13 @@ import java.util.Objects;
 import org.miaixz.bus.core.lang.exception.CloneException;
 
 /**
- * 不可变二元组对象
+ * An immutable pair consisting of two elements.
+ * <p>
+ * This class is a basic container for two objects. It is immutable, meaning that once created, the left and right
+ * elements cannot be changed.
  *
- * @param <L> 左值类型
- * @param <R> 右值类型
+ * @param <L> the left element type
+ * @param <R> the right element type
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -47,19 +50,19 @@ public class Pair<L, R> implements Serializable, Cloneable {
     private static final long serialVersionUID = 2852280961003L;
 
     /**
-     * 左值（第一个值）
+     * The left element of this pair.
      */
     protected L left;
     /**
-     * 右值（第二个值）
+     * The right element of this pair.
      */
     protected R right;
 
     /**
-     * 构造
+     * Constructs a new pair with the specified left and right values.
      *
-     * @param left  左值
-     * @param right 右值
+     * @param left  the left value
+     * @param right the right value
      */
     public Pair(final L left, final R right) {
         this.left = left;
@@ -67,36 +70,44 @@ public class Pair<L, R> implements Serializable, Cloneable {
     }
 
     /**
-     * 构建Pair对象
+     * Creates a new pair instance.
      *
-     * @param <L>   左值类型
-     * @param <R>   右值类型
-     * @param left  左值
-     * @param right 右值
-     * @return Pair
+     * @param <L>   the left element type
+     * @param <R>   the right element type
+     * @param left  the left value, may be null
+     * @param right the right value, may be null
+     * @return a new {@code Pair} instance, never null
      */
     public static <L, R> Pair<L, R> of(final L left, final R right) {
         return new Pair<>(left, right);
     }
 
     /**
-     * 获取左值
+     * Gets the left element from this pair.
      *
-     * @return 左值
+     * @return the left element, may be null
      */
     public L getLeft() {
         return this.left;
     }
 
     /**
-     * 获取右值
+     * Gets the right element from this pair.
      *
-     * @return 右值
+     * @return the right element, may be null
      */
     public R getRight() {
         return this.right;
     }
 
+    /**
+     * Compares this pair to another object for equality.
+     * <p>
+     * This pair is equal to the other object if it is also a {@code Pair} and the left and right elements are equal.
+     *
+     * @param o the object to compare to, may be null
+     * @return {@code true} if the objects are equal, {@code false} otherwise
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -109,16 +120,33 @@ public class Pair<L, R> implements Serializable, Cloneable {
         return Objects.equals(left, pair.left) && Objects.equals(right, pair.right);
     }
 
+    /**
+     * Returns a hash code value for the pair. The hash code is based on the hash codes of the left and right elements.
+     *
+     * @return a hash code value for this pair
+     */
     @Override
     public int hashCode() {
         return Objects.hash(left, right);
     }
 
+    /**
+     * Returns a string representation of this pair. The string representation is in the form {@code "Pair{left=L,
+     * right=R}"}.
+     *
+     * @return a string representation of this pair
+     */
     @Override
     public String toString() {
         return "Pair{" + "left=" + left + ", right=" + right + '}';
     }
 
+    /**
+     * Creates and returns a clone of this object.
+     *
+     * @return a clone of this instance
+     * @throws CloneException if the object's class does not support the {@code Cloneable} interface
+     */
     @Override
     public Pair<L, R> clone() {
         try {

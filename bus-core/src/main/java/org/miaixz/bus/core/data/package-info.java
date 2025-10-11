@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 数据相关封装 如ID、电话、统一社会信用代码、密码、坐标系、数据脱敏等
+ * Encapsulation of data-related classes, such as ID, phone number, unified social credit code, password, coordinate
+ * system, data masking, etc.
  *
  * @author Kimi Liu
  * @since Java 17+

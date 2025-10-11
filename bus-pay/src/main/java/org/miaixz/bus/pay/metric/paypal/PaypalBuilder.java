@@ -34,7 +34,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.magic.Callback;
 
 /**
- * AccessToken
+ * A utility class for PayPal operations, including retry logic for API calls.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,12 +42,12 @@ import org.miaixz.bus.pay.magic.Callback;
 public class PaypalBuilder {
 
     /**
-     * 在遇到异常时尝试重试
+     * Retries a callable operation upon exception.
      *
-     * @param retryLimit    重试次数
-     * @param retryCallable 重试回调
-     * @param <V>           泛型
-     * @return V 结果
+     * @param <V>           The return type of the callable, which must extend {@link Callback}.
+     * @param retryLimit    The maximum number of retry attempts.
+     * @param retryCallable The callable operation to be executed.
+     * @return The result of the callable operation, or null if it fails after all retries.
      */
     public static <V extends Callback> V retryOnException(int retryLimit, Callable<V> retryCallable) {
         V v = null;
@@ -65,13 +65,13 @@ public class PaypalBuilder {
     }
 
     /**
-     * 在遇到异常时尝试重试
+     * Retries a callable operation upon exception, with a specified delay between retries.
      *
-     * @param retryLimit    重试次数
-     * @param sleepMillis   每次重试之后休眠的时间
-     * @param retryCallable 重试回调
-     * @param <V>           泛型
-     * @return V 结果
+     * @param <V>           The return type of the callable, which must extend {@link Callback}.
+     * @param retryLimit    The maximum number of retry attempts.
+     * @param sleepMillis   The time to sleep in milliseconds between retries.
+     * @param retryCallable The callable operation to be executed.
+     * @return The result of the callable operation, or null if it fails after all retries.
      */
     public static <V extends Callback> V retryOnException(int retryLimit, long sleepMillis, Callable<V> retryCallable) {
         V v = null;

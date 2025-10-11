@@ -44,84 +44,90 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 列表类型的服务加载器，用于替换JDK提供的{@link java.util.ServiceLoader} 相比JDK，增加了：
+ * A list-based service loader, intended as a replacement for the JDK's {@link java.util.ServiceLoader}. Compared to the
+ * JDK version, this implementation offers several enhancements:
  * <ul>
- * <li>可选服务存储位置（默认位于META-INF/services/）。</li>
- * <li>可自定义编码。</li>
- * <li>可自定义加载指定的服务实例。</li>
- * <li>可自定义加载指定的服务类，由用户决定如何实例化（如传入自定义构造参数等）。</li>
- * <li>提供更加灵活的服务加载机制，当选择加载指定服务时，其它服务无需加载。</li>
+ * <li>Optional service storage locations (defaults to {@code META-INF/services/}).</li>
+ * <li>Customizable character encoding.</li>
+ * <li>Ability to load specific service instances by name.</li>
+ * <li>Ability to load specific service classes, allowing user-controlled instantiation (e.g., with custom constructor
+ * arguments).</li>
+ * <li>A more flexible loading mechanism that avoids loading unnecessary services when a specific one is requested.</li>
  * </ul>
- *
  * <p>
- * 服务文件默认位于"META-INF/services/"下，文件名为服务接口类全名。内容类似于：
+ * Service files are located by default under {@code META-INF/services/}, with the file name being the fully qualified
+ * name of the service interface class. The content is a list of implementation class names:
  * 
  * <pre>
- *     # 我是注释
- *     service.Service1
- *     service.Service2
+ *     # This is a comment
+ *     com.example.Service1
+ *     com.example.Service2
  * </pre>
  * 
- * 通过调用{@link #getService(int)}方法，传入序号，即可获取对应服务。
+ * Services can be retrieved by their index using the {@link #getService(int)} method.
  *
- * @param <S> 服务类型
+ * @param <S> The type of the service.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
 
+    /**
+     * A list of fully qualified service class names.
+     */
     private final List<String> serviceNames;
-    // data: className, value: service instance
+    /**
+     * Cache for service instances, mapping class names to service objects.
+     */
     private final SimpleCache<String, S> serviceCache;
 
     /**
-     * 构造
+     * Constructs a new {@code ListServiceLoader}.
      *
-     * @param pathPrefix   路径前缀
-     * @param serviceClass 服务名称
-     * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
-     * @param charset      编码，默认UTF-8
+     * @param pathPrefix   The path prefix for the service files.
+     * @param serviceClass The service interface class.
+     * @param classLoader  A custom class loader, or {@code null} to use the current default class loader.
+     * @param charset      The character set to use for reading the service files, defaults to UTF-8.
      */
     public ListServiceLoader(final String pathPrefix, final Class<S> serviceClass, final ClassLoader classLoader,
             final Charset charset) {
         super(pathPrefix, serviceClass, classLoader, charset);
         this.serviceNames = new ArrayList<>();
         this.serviceCache = new SimpleCache<>(new HashMap<>());
-
         load();
     }
 
     /**
-     * 构建KVServiceLoader
+     * Creates a new {@code ListServiceLoader} with the default path prefix.
      *
-     * @param <S>          服务类型
-     * @param serviceClass 服务名称
-     * @return KVServiceLoader
+     * @param <S>          The type of the service.
+     * @param serviceClass The service interface class.
+     * @return A new {@code ListServiceLoader} instance.
      */
     public static <S> ListServiceLoader<S> of(final Class<S> serviceClass) {
         return of(serviceClass, null);
     }
 
     /**
-     * 构建KVServiceLoader
+     * Creates a new {@code ListServiceLoader} with the default path prefix and a specified class loader.
      *
-     * @param <S>          服务类型
-     * @param serviceClass 服务名称
-     * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
-     * @return KVServiceLoader
+     * @param <S>          The type of the service.
+     * @param serviceClass The service interface class.
+     * @param classLoader  A custom class loader, or {@code null} to use the current default class loader.
+     * @return A new {@code ListServiceLoader} instance.
      */
     public static <S> ListServiceLoader<S> of(final Class<S> serviceClass, final ClassLoader classLoader) {
         return of(Normal.META_INF_SERVICES, serviceClass, classLoader);
     }
 
     /**
-     * 构建KVServiceLoader
+     * Creates a new {@code ListServiceLoader} with a specified path prefix and class loader.
      *
-     * @param <S>          服务类型
-     * @param pathPrefix   路径前缀
-     * @param serviceClass 服务名称
-     * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
-     * @return KVServiceLoader
+     * @param <S>          The type of the service.
+     * @param pathPrefix   The path prefix for the service files.
+     * @param serviceClass The service interface class.
+     * @param classLoader  A custom class loader, or {@code null} to use the current default class loader.
+     * @return A new {@code ListServiceLoader} instance.
      */
     public static <S> ListServiceLoader<S> of(
             final String pathPrefix,
@@ -132,8 +138,6 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
 
     @Override
     public void load() {
-        // 解析同名的所有service资源
-        // 按照资源加载优先级，先加载和解析的资源优先使用，后加载的同名资源丢弃
         final MultiResource resources = ResourceKit.getResources(pathPrefix + serviceClass.getName(), this.classLoader);
         for (final Resource resource : resources) {
             parse(resource);
@@ -151,17 +155,16 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
     }
 
     /**
-     * 获取指定服务的实现类
+     * Gets the implementation class for the service at the specified index.
      *
-     * @param index 服务名称
-     * @return 服务名称对应的实现类
+     * @param index The index of the service.
+     * @return The implementation class corresponding to the service name.
      */
     public Class<S> getServiceClass(final int index) {
         final String serviceClassName = this.serviceNames.get(index);
         if (StringKit.isBlank(serviceClassName)) {
             return null;
         }
-
         return getServiceClass(serviceClassName);
     }
 
@@ -171,10 +174,10 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
     }
 
     /**
-     * 获取指定序号对应的服务，使用缓存，多次调用只返回相同的服务对象
+     * Gets the service at the specified index, using a cache. Multiple calls will return the same service object.
      *
-     * @param index 服务名称
-     * @return 服务对象
+     * @param index The index of the service.
+     * @return The service object.
      */
     public S getService(final int index) {
         final String serviceClassName = this.serviceNames.get(index);
@@ -191,8 +194,11 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
 
     @Override
     public Iterator<S> iterator() {
-        return new Iterator<S>() {
+        return new Iterator<>() {
 
+            /**
+             * Iterator for service names.
+             */
             private final Iterator<String> nameIter = serviceNames.iterator();
 
             @Override
@@ -208,9 +214,9 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
     }
 
     /**
-     * 解析一个资源，一个资源对应一个service文件
+     * Parses a single resource file.
      *
-     * @param resource 资源
+     * @param resource The resource to parse.
      */
     private void parse(final Resource resource) {
         try (final BufferedReader reader = resource.getReader(this.charset)) {
@@ -224,54 +230,48 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
     }
 
     /**
-     * 解析一行
+     * Parses a single line from a service file.
      *
-     * @param resource 资源
-     * @param reader   {@link BufferedReader}
-     * @param lineNo   行号
-     * @return 下一个行号，-1表示读取完毕
-     * @throws IOException IO异常
+     * @param resource The resource being parsed.
+     * @param reader   The {@link BufferedReader} for the resource.
+     * @param lineNo   The current line number.
+     * @return The next line number, or -1 if the end of the file is reached.
+     * @throws IOException If an I/O error occurs.
      */
     private int parseLine(final Resource resource, final BufferedReader reader, final int lineNo) throws IOException {
         String line = reader.readLine();
         if (line == null) {
-            // 结束
-            return -1;
+            return -1; // End of file
         }
         final int ci = line.indexOf(Symbol.C_HASH);
         if (ci >= 0) {
-            // 截取去除注释部分
-            // 当注释单独成行，则此行长度为0，跳过，读取下一行
+            // Strip comments
             line = line.substring(0, ci);
         }
         line = StringKit.trim(line);
         if (!line.isEmpty()) {
-            // 检查行
             checkLine(resource, lineNo, line);
-            // 不覆盖模式
-            final List<String> names = this.serviceNames;
-            if (!serviceCache.containsKey(line) && !names.contains(line)) {
-                names.add(line);
+            // In non-override mode, add only if not already present.
+            if (!serviceCache.containsKey(line) && !this.serviceNames.contains(line)) {
+                this.serviceNames.add(line);
             }
         }
         return lineNo + 1;
     }
 
     /**
-     * 检查行
+     * Checks the syntax of a service provider class name.
      *
-     * @param resource 资源
-     * @param lineNo   行号
-     * @param line     行内容
+     * @param resource The resource being parsed.
+     * @param lineNo   The current line number.
+     * @param line     The line content.
      */
     private void checkLine(final Resource resource, final int lineNo, final String line) {
         if (StringKit.containsBlank(line)) {
-            // 类中不允许空白符
             fail(resource, lineNo, "Illegal configuration-file syntax");
         }
         int cp = line.codePointAt(0);
         if (!Character.isJavaIdentifierStart(cp)) {
-            // 非Java合法标识符
             fail(resource, lineNo, "Illegal provider-class name: " + line);
         }
         final int n = line.length();
@@ -284,11 +284,11 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
     }
 
     /**
-     * 抛出异常
+     * Throws an {@link InternalException} with a formatted error message.
      *
-     * @param resource 资源
-     * @param lineNo   行号
-     * @param msg      消息
+     * @param resource The resource where the error occurred.
+     * @param lineNo   The line number of the error.
+     * @param msg      The error message.
      */
     private void fail(final Resource resource, final int lineNo, final String msg) {
         throw new InternalException(
@@ -296,10 +296,10 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
     }
 
     /**
-     * 创建服务，无缓存
+     * Creates a new service instance without caching.
      *
-     * @param serviceClassName 服务类名称
-     * @return 服务对象
+     * @param serviceClassName The fully qualified class name of the service.
+     * @return The new service object.
      */
     private S createService(final String serviceClassName) {
         return ReflectKit.newInstance(ClassKit.loadClass(serviceClassName));

@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * Facebook 授权范围
+ * Facebook authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,20 +42,81 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum FacebookScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Allows the app to read the user's default public profile. The meaning of {@code scope} is subject to
+     * {@code description}.
      */
-    PUBLIC_PROFILE("public_profile", "权限允许应用读取用户默认的公开资料", true), EMAIL("email", "获取用户的邮箱", false),
-    USER_AGE_RANGE("user_age_range", "允许应用程序访问用户的年龄范围", false), USER_BIRTHDAY("user_birthday", "获取用户的生日", false),
-    USER_FRIENDS("user_friends", "获取用户的好友列表", false), USER_GENDER("user_gender", "获取用户的性别", false),
-    USER_HOMETOWN("user_hometown", "获取用户的家乡信息", false), USER_LIKES("user_likes", "获取用户的喜欢列表", false),
-    USER_LINK("user_link", "获取用户的个人链接", true), USER_LOCATION("user_location", "获取用户的位置信息", false),
-    USER_PHOTOS("user_photos", "获取用户的相册信息", false), USER_POSTS("user_posts", "获取用户发布的内容", false),
-    USER_VIDEOS("user_videos", "获取用户上传的视频信息", false),
-    GROUPS_ACCESS_MEMBER_INFO("groups_access_member_info", "获取公开的群组成员信息", false),
-    PUBLISH_TO_GROUPS("publish_to_groups", "授权您的应用程序代表某人将内容发布到组中，前提是他们已经授予您的应用程序访问权限", false);
+    PUBLIC_PROFILE("public_profile", "Permission allows the app to read the user's default public profile", true),
+    /**
+     * Get user's email.
+     */
+    EMAIL("email", "Get user's email", false),
+    /**
+     * Allows the application to access the user's age range.
+     */
+    USER_AGE_RANGE("user_age_range", "Allows the application to access the user's age range", false),
+    /**
+     * Get user's birthday.
+     */
+    USER_BIRTHDAY("user_birthday", "Get user's birthday", false),
+    /**
+     * Get user's friend list.
+     */
+    USER_FRIENDS("user_friends", "Get user's friend list", false),
+    /**
+     * Get user's gender.
+     */
+    USER_GENDER("user_gender", "Get user's gender", false),
+    /**
+     * Get user's hometown information.
+     */
+    USER_HOMETOWN("user_hometown", "Get user's hometown information", false),
+    /**
+     * Get user's likes list.
+     */
+    USER_LIKES("user_likes", "Get user's likes list", false),
+    /**
+     * Get user's personal link.
+     */
+    USER_LINK("user_link", "Get user's personal link", true),
+    /**
+     * Get user's location information.
+     */
+    USER_LOCATION("user_location", "Get user's location information", false),
+    /**
+     * Get user's photo album information.
+     */
+    USER_PHOTOS("user_photos", "Get user's photo album information", false),
+    /**
+     * Get user's published content.
+     */
+    USER_POSTS("user_posts", "Get user's published content", false),
+    /**
+     * Get user's uploaded video information.
+     */
+    USER_VIDEOS("user_videos", "Get user's uploaded video information", false),
+    /**
+     * Get public group member information.
+     */
+    GROUPS_ACCESS_MEMBER_INFO("groups_access_member_info", "Get public group member information", false),
+    /**
+     * Authorizes your application to publish content to groups on someone's behalf, provided they have already granted
+     * your application access.
+     */
+    PUBLISH_TO_GROUPS("publish_to_groups",
+            "Authorizes your application to publish content to groups on someone's behalf, provided they have already granted your application access",
+            false);
 
+    /**
+     * The scope string as defined by Facebook.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

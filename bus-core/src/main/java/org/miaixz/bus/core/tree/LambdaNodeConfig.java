@@ -35,10 +35,10 @@ import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.xyz.LambdaKit;
 
 /**
- * 树配置属性相关（使用Lambda语法） 避免对字段名称硬编码
+ * Tree configuration properties using lambda expressions to avoid hard-coding field names.
  *
- * @param <T> 方法对象类型
- * @param <R> 返回值类型
+ * @param <T> The type of the object containing the properties.
+ * @param <R> The return type of the ID getter.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -54,18 +54,18 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
     private FunctionX<T, List<T>> childrenKeyFun;
 
     /**
-     * 获取ID方法
+     * Gets the function for retrieving the ID.
      * 
-     * @return ID方法
+     * @return The ID getter function.
      */
     public FunctionX<T, R> getIdKeyFun() {
         return idKeyFun;
     }
 
     /**
-     * 设置ID方法
+     * Sets the function for retrieving the ID.
      * 
-     * @param idKeyFun ID方法
+     * @param idKeyFun The ID getter function.
      * @return this
      */
     public LambdaNodeConfig<T, R> setIdKeyFun(final FunctionX<T, R> idKeyFun) {
@@ -74,18 +74,18 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
     }
 
     /**
-     * 获取父ID方法
+     * Gets the function for retrieving the parent ID.
      * 
-     * @return 父ID方法
+     * @return The parent ID getter function.
      */
     public FunctionX<T, R> getParentIdKeyFun() {
         return parentIdKeyFun;
     }
 
     /**
-     * 设置父ID方法
+     * Sets the function for retrieving the parent ID.
      * 
-     * @param parentIdKeyFun 父ID方法
+     * @param parentIdKeyFun The parent ID getter function.
      * @return this
      */
     public LambdaNodeConfig<T, R> setParentIdKeyFun(final FunctionX<T, R> parentIdKeyFun) {
@@ -94,18 +94,18 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
     }
 
     /**
-     * 设置权重方法
+     * Gets the function for retrieving the weight.
      * 
-     * @return 权重方法
+     * @return The weight getter function.
      */
     public FunctionX<T, Comparable<?>> getWeightKeyFun() {
         return weightKeyFun;
     }
 
     /**
-     * 设置权重方法
+     * Sets the function for retrieving the weight.
      * 
-     * @param weightKeyFun 权重方法
+     * @param weightKeyFun The weight getter function.
      * @return this
      */
     public LambdaNodeConfig<T, R> setWeightKeyFun(final FunctionX<T, Comparable<?>> weightKeyFun) {
@@ -114,18 +114,18 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
     }
 
     /**
-     * 获取节点名称方法
+     * Gets the function for retrieving the node name.
      * 
-     * @return 节点名称方法
+     * @return The node name getter function.
      */
     public FunctionX<T, CharSequence> getNameKeyFun() {
         return nameKeyFun;
     }
 
     /**
-     * 设置节点名称方法
+     * Sets the function for retrieving the node name.
      * 
-     * @param nameKeyFun 节点名称方法
+     * @param nameKeyFun The node name getter function.
      * @return this
      */
     public LambdaNodeConfig<T, R> setNameKeyFun(final FunctionX<T, CharSequence> nameKeyFun) {
@@ -134,18 +134,18 @@ public class LambdaNodeConfig<T, R> extends NodeConfig {
     }
 
     /**
-     * 获取子节点名称方法
+     * Gets the function for retrieving the list of child nodes.
      * 
-     * @return 子节点名称方法
+     * @return The children getter function.
      */
     public FunctionX<T, List<T>> getChildrenKeyFun() {
         return childrenKeyFun;
     }
 
     /**
-     * 设置子节点名称方法
+     * Sets the function for retrieving the list of child nodes.
      * 
-     * @param childrenKeyFun 子节点名称方法
+     * @param childrenKeyFun The children getter function.
      * @return this
      */
     public LambdaNodeConfig<T, R> setChildrenKeyFun(final FunctionX<T, List<T>> childrenKeyFun) {

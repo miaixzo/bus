@@ -32,7 +32,7 @@ import java.util.*;
 import org.miaixz.bus.core.center.set.SetFromMap;
 
 /**
- * 集合中的{@link java.util.Set}相关方法封装
+ * Encapsulates methods related to {@link java.util.Set} in collections.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,22 +40,24 @@ import org.miaixz.bus.core.center.set.SetFromMap;
 public class SetKit {
 
     /**
-     * 新建一个List 如果提供的初始化数组为空，新建默认初始长度的List
+     * Creates a new {@link HashSet} or {@link LinkedHashSet}. If the provided initial array is empty, a default initial
+     * capacity is used.
      *
-     * @param <T>      集合元素类型
-     * @param isLinked 是否为链表
-     * @return List对象
+     * @param <T>      The type of elements in the set.
+     * @param isLinked If {@code true}, a {@link LinkedHashSet} is created (maintains insertion order); otherwise, a
+     *                 {@link HashSet} is created.
+     * @return A new {@link HashSet} or {@link LinkedHashSet} object.
      */
     public static <T> HashSet<T> of(final boolean isLinked) {
         return _of(isLinked, null);
     }
 
     /**
-     * 新建一个HashSet
+     * Creates a new {@link HashSet} from an array of elements.
      *
-     * @param <T> 集合元素类型
-     * @param ts  元素数组
-     * @return HashSet对象
+     * @param <T> The type of elements in the set.
+     * @param ts  The array of elements.
+     * @return A new {@link HashSet} object.
      */
     @SafeVarargs
     public static <T> HashSet<T> of(final T... ts) {
@@ -63,11 +65,11 @@ public class SetKit {
     }
 
     /**
-     * 新建一个LinkedHashSet
+     * Creates a new {@link LinkedHashSet} from an array of elements.
      *
-     * @param <T> 集合元素类型
-     * @param ts  元素数组
-     * @return HashSet对象
+     * @param <T> The type of elements in the set.
+     * @param ts  The array of elements.
+     * @return A new {@link LinkedHashSet} object.
      */
     @SafeVarargs
     public static <T> LinkedHashSet<T> ofLinked(final T... ts) {
@@ -75,23 +77,24 @@ public class SetKit {
     }
 
     /**
-     * 新建一个HashSet
+     * Creates a new {@link HashSet} from an {@link Iterable} collection.
      *
-     * @param <T>      集合元素类型
-     * @param iterable 集合
-     * @return HashSet对象
+     * @param <T>      The type of elements in the set.
+     * @param iterable The iterable collection.
+     * @return A new {@link HashSet} object.
      */
     public static <T> HashSet<T> of(final Iterable<T> iterable) {
         return of(false, iterable);
     }
 
     /**
-     * 新建一个HashSet 提供的参数为null时返回空{@link HashSet}
+     * Creates a new {@link HashSet} or {@link LinkedHashSet} from an {@link Iterable} collection. If the provided
+     * iterable is {@code null}, an empty set of the specified type is returned.
      *
-     * @param <T>      集合元素类型
-     * @param isLinked 是否新建LinkedList
-     * @param iterable {@link Iterable}
-     * @return HashSet对象
+     * @param <T>      The type of elements in the set.
+     * @param isLinked If {@code true}, a {@link LinkedHashSet} is created; otherwise, a {@link HashSet}.
+     * @param iterable The {@link Iterable} collection.
+     * @return A new {@link HashSet} or {@link LinkedHashSet} object.
      */
     public static <T> HashSet<T> of(final boolean isLinked, final Iterable<T> iterable) {
         if (null == iterable) {
@@ -105,12 +108,13 @@ public class SetKit {
     }
 
     /**
-     * 新建一个HashSet
+     * Creates a new {@link HashSet} or {@link LinkedHashSet} from an {@link Iterator}.
      *
-     * @param <T>      集合元素类型
-     * @param isSorted 是否有序，有序返回 {@link LinkedHashSet}，否则返回{@link HashSet}
-     * @param iter     {@link Iterator}
-     * @return HashSet对象
+     * @param <T>      The type of elements in the set.
+     * @param isSorted If {@code true}, a {@link LinkedHashSet} is created (maintains insertion order); otherwise, a
+     *                 {@link HashSet} is created.
+     * @param iter     The {@link Iterator}.
+     * @return A new {@link HashSet} or {@link LinkedHashSet} object.
      */
     public static <T> HashSet<T> of(final boolean isSorted, final Iterator<T> iter) {
         if (null == iter) {
@@ -124,12 +128,13 @@ public class SetKit {
     }
 
     /**
-     * 新建一个HashSet
+     * Creates a new {@link HashSet} or {@link LinkedHashSet} from an {@link Enumeration}.
      *
-     * @param <T>         集合元素类型
-     * @param isLinked    是否有序，有序返回 {@link LinkedHashSet}，否则返回{@link HashSet}
-     * @param enumeration {@link Enumeration}
-     * @return HashSet对象
+     * @param <T>         The type of elements in the set.
+     * @param isLinked    If {@code true}, a {@link LinkedHashSet} is created (maintains insertion order); otherwise, a
+     *                    {@link HashSet} is created.
+     * @param enumeration The {@link Enumeration}.
+     * @return A new {@link HashSet} or {@link LinkedHashSet} object.
      */
     public static <T> HashSet<T> of(final boolean isLinked, final Enumeration<T> enumeration) {
         if (null == enumeration) {
@@ -143,22 +148,22 @@ public class SetKit {
     }
 
     /**
-     * 新建一个SetFromMap
+     * Creates a new {@link SetFromMap} from a given {@link Map}.
      *
-     * @param <T> 集合元素类型
-     * @param map Map
-     * @return SetFromMap对象
+     * @param <T> The type of elements in the set (which are the keys of the map).
+     * @param map The map to back the set.
+     * @return A new {@link SetFromMap} object.
      */
     public static <T> SetFromMap<T> of(final Map<T, Boolean> map) {
         return new SetFromMap<>(map);
     }
 
     /**
-     * 数组转为一个不可变List 类似于Java9中的List.of
+     * Converts an array of elements into an unmodifiable {@link Set}. Similar to Java 9's {@code Set.of} method.
      *
-     * @param ts  对象
-     * @param <T> 对象类型
-     * @return 不可修改List
+     * @param ts  The array of elements.
+     * @param <T> The type of elements.
+     * @return An unmodifiable {@link Set}.
      */
     @SafeVarargs
     public static <T> Set<T> view(final T... ts) {
@@ -166,11 +171,12 @@ public class SetKit {
     }
 
     /**
-     * 转为一个不可变Set
+     * Converts a {@link Set} into an unmodifiable {@link Set}.
      *
-     * @param ts  对象
-     * @param <T> 对象类型
-     * @return 不可修改List，如果提供List为{@code null}或者空，返回{@link Collections#emptySet()}
+     * @param ts  The set to make unmodifiable.
+     * @param <T> The type of elements.
+     * @return An unmodifiable {@link Set}. If the provided set is {@code null} or empty, {@link Collections#emptySet()}
+     *         is returned.
      */
     public static <T> Set<T> view(final Set<T> ts) {
         if (ArrayKit.isEmpty(ts)) {
@@ -180,10 +186,10 @@ public class SetKit {
     }
 
     /**
-     * 获取一个空Set，这个空Set不可变
+     * Returns an empty, unmodifiable {@link Set}.
      *
-     * @param <T> 元素类型
-     * @return 空的List
+     * @param <T> The type of elements.
+     * @return An empty, unmodifiable {@link Set}.
      * @see Collections#emptySet()
      */
     public static <T> Set<T> empty() {
@@ -191,42 +197,42 @@ public class SetKit {
     }
 
     /**
-     * 获取一个初始大小为0的Set，这个空Set可变
+     * Returns a new, mutable {@link HashSet} with an initial capacity of 0.
      *
-     * @param <T> 元素类型
-     * @return 空的List
+     * @param <T> The type of elements.
+     * @return A new, mutable {@link HashSet} with an initial capacity of 0.
      */
     public static <T> Set<T> zero() {
         return new HashSet<>(0, 1);
     }
 
     /**
-     * 获取一个只包含一个元素的Set，不可变
+     * Returns an unmodifiable {@link Set} containing only the specified element.
      *
-     * @param <T>     元素类型
-     * @param element 元素
-     * @return 只包含一个元素的Set
+     * @param <T>     The type of the element.
+     * @param element The single element to be contained in the set.
+     * @return An unmodifiable {@link Set} containing only the specified element.
      */
     public static <T> Set<T> singleton(final T element) {
         return Collections.singleton(element);
     }
 
     /**
-     * 获取一个初始大小为0的LinkedHashSet，这个空Set可变
+     * Returns a new, mutable {@link LinkedHashSet} with an initial capacity of 0.
      *
-     * @param <T> 元素类型
-     * @return 空的List
+     * @param <T> The type of elements.
+     * @return A new, mutable {@link LinkedHashSet} with an initial capacity of 0.
      */
     public static <T> Set<T> zeroLinked() {
         return new LinkedHashSet<>(0, 1);
     }
 
     /**
-     * 转为只读Set
+     * Returns an unmodifiable view of the specified set.
      *
-     * @param <T> 元素类型
-     * @param c   集合
-     * @return 只读集合
+     * @param <T> The type of elements.
+     * @param c   The set for which an unmodifiable view is to be returned.
+     * @return An unmodifiable view of the specified set. If the input set is {@code null}, {@code null} is returned.
      * @see Collections#unmodifiableSet(Set)
      */
     public static <T> Set<T> unmodifiable(final Set<? extends T> c) {
@@ -237,12 +243,12 @@ public class SetKit {
     }
 
     /**
-     * 新建一个HashSet
+     * Internal helper method to create a new {@link HashSet} or {@link LinkedHashSet}.
      *
-     * @param <T>      集合元素类型
-     * @param isLinked 是否有序，有序返回 {@link LinkedHashSet}，否则返回 {@link HashSet}
-     * @param ts       元素数组
-     * @return HashSet对象
+     * @param <T>      The type of elements in the set.
+     * @param isLinked If {@code true}, a {@link LinkedHashSet} is created; otherwise, a {@link HashSet}.
+     * @param ts       The array of elements to add to the set. If {@code null} or empty, an empty set is created.
+     * @return A new {@link HashSet} or {@link LinkedHashSet} object.
      */
     private static <T> HashSet<T> _of(final boolean isLinked, final T[] ts) {
         if (ArrayKit.isEmpty(ts)) {

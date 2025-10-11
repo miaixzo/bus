@@ -30,7 +30,8 @@ package org.miaixz.bus.proxy;
 import java.lang.reflect.Method;
 
 /**
- * 切面接口
+ * An interface representing an aspect in Aspect-Oriented Programming (AOP). An aspect allows for executing custom logic
+ * (advice) before, after, and upon exception of a method invocation on a target object.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,35 +39,39 @@ import java.lang.reflect.Method;
 public interface Aspect {
 
     /**
-     * 目标方法执行前的操作
+     * The "before" advice, executed before the target method is invoked.
      *
-     * @param target 目标对象
-     * @param method 目标方法
-     * @param args   参数
-     * @return 是否继续执行接下来的操作
+     * @param target The target object.
+     * @param method The method being invoked.
+     * @param args   The arguments passed to the method.
+     * @return {@code true} to proceed with the method invocation, {@code false} to block it.
      */
     boolean before(Object target, Method method, Object[] args);
 
     /**
-     * 目标方法执行后的操作 如果 target.method 抛出异常且 {@link Aspect#afterException} 返回true,则不会执行此操作 如果 {@link Aspect#afterException}
-     * 返回false,则无论target.method是否抛出异常，均会执行此操作
+     * The "after" advice, executed after the target method returns successfully.
+     * <p>
+     * This advice will not be executed if the target method throws an exception and
+     * {@link #afterException(Object, Method, Object[], Throwable)} returns {@code true} (suppressing the exception).
      *
-     * @param target    目标对象
-     * @param method    目标方法
-     * @param args      参数
-     * @param returnVal 目标方法执行返回值
-     * @return 是否允许返回值（接下来的操作）
+     * @param target    The target object.
+     * @param method    The method that was invoked.
+     * @param args      The arguments that were passed to the method.
+     * @param returnVal The value returned by the target method.
+     * @return {@code true} to allow the original return value to be returned, {@code false} to block it (may result in
+     *         a null return).
      */
     boolean after(Object target, Method method, Object[] args, Object returnVal);
 
     /**
-     * 目标方法抛出异常时的操作
+     * The "after-throwing" advice, executed when the target method throws an exception.
      *
-     * @param target 目标对象
-     * @param method 目标方法
-     * @param args   参数
-     * @param e      异常
-     * @return 是否允许抛出异常
+     * @param target The target object.
+     * @param method The method that was invoked.
+     * @param args   The arguments that were passed to the method.
+     * @param e      The exception thrown by the target method.
+     * @return {@code true} to suppress the exception (the proxy will not rethrow it), {@code false} to allow it to be
+     *         rethrown.
      */
     boolean afterException(Object target, Method method, Object[] args, Throwable e);
 

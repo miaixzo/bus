@@ -33,7 +33,8 @@ import java.lang.reflect.Field;
 import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 
 /**
- * 实体类字段信息类，参考 {@link java.lang.reflect.Field}，提供字段相关操作
+ * Represents the metadata of an entity class field, providing field-related operations similar to
+ * {@link java.lang.reflect.Field}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,26 +42,26 @@ import org.miaixz.bus.mapper.builder.GenericTypeResolver;
 public class FieldMeta {
 
     /**
-     * 所在实体类类型
+     * The entity class type where this field is located.
      */
     protected Class<?> entityClass;
 
     /**
-     * 对应实体类中的 Java 字段（可扩展方法注解）
+     * The corresponding Java field in the entity class (can be extended with method annotations).
      */
     protected Field field;
 
     /**
-     * 默认构造函数
+     * Default constructor.
      */
     public FieldMeta() {
     }
 
     /**
-     * 构造函数，初始化实体类和字段信息
+     * Constructs a new FieldMeta with entity class and field information.
      *
-     * @param entityClass 实体类类型
-     * @param field       Java 字段
+     * @param entityClass The entity class type.
+     * @param field       The Java field.
      */
     public FieldMeta(Class<?> entityClass, Field field) {
         this.entityClass = entityClass;
@@ -69,96 +70,96 @@ public class FieldMeta {
     }
 
     /**
-     * 获取字段对象
+     * Gets the underlying {@link Field} object.
      *
-     * @return Java 字段
+     * @return The Java field.
      */
     public Field getField() {
         return field;
     }
 
     /**
-     * 获取当前字段所在的类
+     * Gets the class in which this field is declared.
      *
-     * @return 声明字段的类
+     * @return The declaring class of the field.
      */
     public Class<?> getDeclaringClass() {
         return field.getDeclaringClass();
     }
 
     /**
-     * 获取字段名
+     * Gets the name of the field.
      *
-     * @return 字段名称
+     * @return The name of the field.
      */
     public String getName() {
         return field.getName();
     }
 
     /**
-     * 获取字段类型
+     * Gets the actual type of the field, resolving generics if necessary.
      *
-     * @return 字段的实际类型
+     * @return The actual type of the field.
      */
     public Class<?> getType() {
         return GenericTypeResolver.resolveFieldClass(field, entityClass);
     }
 
     /**
-     * 获取字段上的指定注解
+     * Gets a specific annotation on the field.
      *
-     * @param annotationClass 注解类型
-     * @param <T>             注解泛型
-     * @return 指定类型的注解实例，若不存在则返回 null
+     * @param annotationClass The annotation type.
+     * @param <T>             The generic type of the annotation.
+     * @return The annotation instance of the specified type, or null if not present.
      */
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         return field.getAnnotation(annotationClass);
     }
 
     /**
-     * 获取字段上的全部注解
+     * Gets all annotations on the field.
      *
-     * @return 注解数组
+     * @return An array of annotations.
      */
     public Annotation[] getAnnotations() {
         return field.getAnnotations();
     }
 
     /**
-     * 检查字段是否配置了指定注解
+     * Checks if a specific annotation is present on the field.
      *
-     * @param annotationClass 注解类型
-     * @return true 表示存在指定注解，false 表示不存在
+     * @param annotationClass The annotation type.
+     * @return {@code true} if the annotation is present, {@code false} otherwise.
      */
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
         return field.isAnnotationPresent(annotationClass);
     }
 
     /**
-     * 通过反射获取字段值
+     * Gets the value of the field via reflection.
      *
-     * @param obj 对象
-     * @return 字段值
-     * @throws RuntimeException 如果反射操作失败
+     * @param object The object from which to get the field value.
+     * @return The value of the field.
+     * @throws RuntimeException if the reflection operation fails.
      */
-    public Object get(Object obj) {
+    public Object get(Object object) {
         try {
-            return field.get(obj);
+            return field.get(object);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Error getting field value by reflection", e);
         }
     }
 
     /**
-     * 通过反射设置字段值
+     * Sets the value of the field via reflection.
      *
-     * @param obj   对象
-     * @param value 字段值
-     * @throws RuntimeException 如果反射操作失败
+     * @param object The object on which to set the field value.
+     * @param value  The new value for the field.
+     * @throws RuntimeException if the reflection operation fails.
      */
-    public void set(Object obj, Object value) {
+    public void set(Object object, Object value) {
         try {
-            field.set(obj, value);
+            field.set(object, value);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Error in reflection setting field value", e);
         }

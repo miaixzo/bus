@@ -27,79 +27,87 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.net.Protocol;
 
+import java.io.IOException;
+import java.util.List;
+
 /**
- * 仅{@link Protocol#HTTP_2 HTTP/2} 在客户端处理服务器发起的HTTP请求 返回true以请求取消已推的流。 注意，这并不保证将来的帧不会到达流ID
+ * An interface for handling server-initiated HTTP requests, specific to {@link Protocol#HTTP_2 HTTP/2}.
+ * <p>
+ * Implementations of this interface can choose to cancel pushed streams by returning {@code true}. Note that this does
+ * not guarantee that future frames will not arrive for the canceled stream ID.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface PushObserver {
 
+    /**
+     * A push observer that cancels all incoming pushed streams.
+     */
     PushObserver CANCEL = new PushObserver() {
 
         @Override
         public boolean onRequest(int streamId, List<Http2Header> requestHeaders) {
-            return true;
+            return true; // Cancel the stream.
         }
 
         @Override
         public boolean onHeaders(int streamId, List<Http2Header> responseHeaders, boolean last) {
-            return true;
+            return true; // Cancel the stream.
         }
 
         @Override
         public boolean onData(int streamId, BufferSource source, int byteCount, boolean last) throws IOException {
             source.skip(byteCount);
-            return true;
+            return true; // Cancel the stream.
         }
 
         @Override
         public void onReset(int streamId, Http2ErrorCode errorCode) {
+            // Do nothing.
         }
     };
 
     /**
-     * 描述服务器打算为其推送响应的请求
+     * Describes the request that the server intends to push a response for.
      *
-     * @param streamId       务器发起的流ID:偶数
-     * @param requestHeaders 最低限度包括 method、scheme、authority和path
-     * @return the true/false
+     * @param streamId       The server-initiated stream ID, which will be an even number.
+     * @param requestHeaders The request headers, minimally including method, scheme, authority, and path.
+     * @return {@code true} to cancel the pushed stream, {@code false} to accept it.
      */
     boolean onRequest(int streamId, List<Http2Header> requestHeaders);
 
     /**
-     * 推送请求对应的响应标头。当{@code last}为真时，则没有后续的数据帧
+     * The response headers corresponding to the pushed request. When {@code last} is true, there are no subsequent data
+     * frames.
      *
-     * @param streamId        服务器发起的流ID:偶数.
-     * @param responseHeaders 最少包含status
-     * @param last            如果为真，则没有响应数据
-     * @return the true/false
+     * @param streamId        The server-initiated stream ID, which will be an even number.
+     * @param responseHeaders The response headers, minimally including the status.
+     * @param last            {@code true} if there is no response data.
+     * @return {@code true} to cancel the pushed stream, {@code false} to accept it.
      */
     boolean onHeaders(int streamId, List<Http2Header> responseHeaders, boolean last);
 
     /**
-     * 与推送请求对应的响应数据块。必须读取或跳过这些数据.
+     * A block of response data corresponding to the pushed request. This data must be read or skipped.
      *
-     * @param streamId  服务器发起的流ID:偶数.
-     * @param source    与此流ID对应的数据的位置.
-     * @param byteCount 从源读取或跳过的字节数.
-     * @param last      如果为真，则不需要遵循任何数据帧.
-     * @return the true/false
-     * @throws IOException 异常
+     * @param streamId  The server-initiated stream ID, which will be an even number.
+     * @param source    The source of the data corresponding to this stream ID.
+     * @param byteCount The number of bytes to read or skip from the source.
+     * @param last      {@code true} if no more data frames will follow.
+     * @return {@code true} to cancel the pushed stream, {@code false} to accept it.
+     * @throws IOException if an I/O error occurs.
      */
     boolean onData(int streamId, BufferSource source, int byteCount, boolean last) throws IOException;
 
     /**
-     * 指示此流被取消的原因
+     * Indicates the reason why this stream was canceled.
      *
-     * @param streamId  服务器发起的流ID:偶数.
-     * @param errorCode 错误码信息
+     * @param streamId  The server-initiated stream ID, which will be an even number.
+     * @param errorCode The error code indicating the reason for cancellation.
      */
     void onReset(int streamId, Http2ErrorCode errorCode);
 

@@ -33,7 +33,7 @@ import org.apache.poi.xssf.extractor.XSSFExcelExtractor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
- * {@link org.apache.poi.ss.extractor.ExcelExtractor}工具封装
+ * Utility wrapper for {@link org.apache.poi.ss.extractor.ExcelExtractor}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,10 +41,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelExtractor {
 
     /**
-     * 获取 {@link org.apache.poi.ss.extractor.ExcelExtractor} 对象
+     * Gets an {@link org.apache.poi.ss.extractor.ExcelExtractor} object for the given workbook.
      *
-     * @param wb {@link Workbook}
-     * @return {@link org.apache.poi.ss.extractor.ExcelExtractor}
+     * @param wb The {@link Workbook} to extract text from.
+     * @return An {@link org.apache.poi.ss.extractor.ExcelExtractor} instance.
      */
     public static org.apache.poi.ss.extractor.ExcelExtractor getExtractor(final Workbook wb) {
         final org.apache.poi.ss.extractor.ExcelExtractor extractor;
@@ -57,11 +57,12 @@ public class ExcelExtractor {
     }
 
     /**
-     * 读取为文本格式 使用{@link org.apache.poi.ss.extractor.ExcelExtractor} 提取Excel内容
+     * Reads the content of the Excel workbook as plain text. Uses {@link org.apache.poi.ss.extractor.ExcelExtractor} to
+     * extract Excel content.
      *
-     * @param wb            {@link Workbook}
-     * @param withSheetName 是否附带sheet名
-     * @return Excel文本
+     * @param wb            The {@link Workbook} to read.
+     * @param withSheetName {@code true} to include sheet names in the extracted text, {@code false} otherwise.
+     * @return The extracted Excel content as a string.
      */
     public static String readAsText(final Workbook wb, final boolean withSheetName) {
         final org.apache.poi.ss.extractor.ExcelExtractor extractor = getExtractor(wb);

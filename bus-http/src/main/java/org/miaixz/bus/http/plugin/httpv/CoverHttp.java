@@ -52,37 +52,119 @@ import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.bodys.ResponseBody;
 
 /**
+ * An abstract base class for building HTTP requests, providing a fluent interface. It supports synchronous,
+ * asynchronous, and WebSocket requests.
+ *
+ * @param <C> The concrete subclass type, for method chaining.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
+    /**
+     * Regular expression to validate if a URL path still contains un-replaced path parameters.
+     */
     private static final String PATH_PARAM_REGEX = "[A-Za-z0-9_\\-/]*\\{[A-Za-z0-9_\\-]+\\}[A-Za-z0-9_\\-/]*";
 
+    /**
+     * The core HTTP client instance.
+     */
     public Httpv httpv;
+    /**
+     * If true, exceptions will not be thrown but will be available in the result object.
+     */
     public boolean nothrow;
+    /**
+     * If true, the next callback will be executed on an I/O thread.
+     */
     public boolean nextOnIO = false;
+    /**
+     * If true, all preprocessors (both serial and parallel) will be skipped for this request.
+     */
     public boolean skipPreproc = false;
+    /**
+     * If true, serial preprocessors will be skipped for this request.
+     */
     public boolean skipSerialPreproc = false;
+    /**
+     * The URL path for the request.
+     */
     private String urlPath;
+    /**
+     * A tag for identifying or canceling the request.
+     */
     private String tag;
+    /**
+     * A map of request headers.
+     */
     private Map<String, String> headers;
+    /**
+     * A map of parameters to be substituted in the URL path (e.g., /users/{id}).
+     */
     private Map<String, String> pathParams;
+    /**
+     * A map of parameters to be appended to the URL query string.
+     */
     private Map<String, String> urlParams;
+    /**
+     * A map of parameters to be included in the request body.
+     */
     private Map<String, String> bodyParams;
+    /**
+     * A map of file parameters for multipart requests.
+     */
     private Map<String, FilePara> files;
+    /**
+     * The request body object, to be serialized by a message converter.
+     */
     private Object requestBody;
+    /**
+     * A specific date format to be used during serialization.
+     */
     private String dateFormat;
+    /**
+     * The type of the request body (e.g., "json", "xml", "form").
+     */
     private String bodyType;
+    /**
+     * A callback for tracking request body upload progress.
+     */
     private Callback<Progress> onProcess;
+    /**
+     * If true, the progress callback will be executed on an I/O thread.
+     */
     private boolean processOnIO;
+    /**
+     * The progress callback will be triggered every `stepBytes` bytes.
+     */
     private long stepBytes = 0;
+    /**
+     * The progress callback will be triggered at percentage increments defined by this rate.
+     */
     private double stepRate = -1;
+    /**
+     * An arbitrary object that can be attached to this request.
+     */
     private Object object;
+    /**
+     * The task associated with the tag, used for cancellation.
+     */
     private Httpv.TagTask tagTask;
+    /**
+     * The object responsible for canceling this request.
+     */
     private Cancelable canceler;
+    /**
+     * The character set for this request.
+     */
     private Charset charset;
 
+    /**
+     * Constructs a new CoverHttp request builder.
+     *
+     * @param httpv The core Httpv client instance.
+     * @param url   The base URL or URL path for the request.
+     */
     public CoverHttp(Httpv httpv, String url) {
         this.urlPath = url;
         this.httpv = httpv;
@@ -91,32 +173,37 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 获取请求任务的URL地址
+     * Gets the URL of this request task.
      *
-     * @return URL地址
+     * @return The URL string.
      */
     public String getUrl() {
         return urlPath;
     }
 
     /**
-     * 获取请求任务的标签
+     * Gets the tag of this request task.
      *
-     * @return 标签
+     * @return The tag string.
      */
     public String getTag() {
         return tag;
     }
 
+    /**
+     * Gets the body type of this request task.
+     *
+     * @return The body type string (e.g., "json", "form").
+     */
     public String getBodyType() {
         return bodyType;
     }
 
     /**
-     * 标签匹配 判断任务标签与指定的标签是否匹配（包含指定的标签）
+     * Checks if this request's tag matches (contains) the given tag.
      *
-     * @param tag 标签
-     * @return 是否匹配
+     * @param tag The tag to check against.
+     * @return True if the request is tagged with the specified tag, false otherwise.
      */
     public boolean isTagged(String tag) {
         if (null != this.tag && null != tag) {
@@ -126,27 +213,28 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 获取请求任务的头信息
+     * Gets the headers of this request task.
      *
-     * @return 头信息
+     * @return A map of headers.
      */
     public Map<String, String> getHeaders() {
         return headers;
     }
 
     /**
-     * 获得被绑定的对象
+     * Gets the object bound to this request.
      *
-     * @return Object
+     * @return The bound object.
      */
     public Object getBound() {
         return object;
     }
 
     /**
-     * 设置在发生异常时不向上抛出，设置后： 异步请求可以在异常回调内捕获异常，同步请求在返回结果中找到该异常
+     * Configures the request to not throw exceptions on failure. Instead, the exception will be available in the
+     * `CoverResult` object.
      *
-     * @return this 实例
+     * @return This instance for chaining.
      */
     public C nothrow() {
         this.nothrow = true;
@@ -154,9 +242,9 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 指定该请求跳过任何预处理器（包括串行和并行）
+     * Specifies that this request should skip all preprocessors (both serial and parallel).
      *
-     * @return this 实例
+     * @return This instance for chaining.
      */
     public C skipPreproc() {
         this.skipPreproc = true;
@@ -164,9 +252,9 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 指定该请求跳过任何串行预处理器
+     * Specifies that this request should skip any serial preprocessors.
      *
-     * @return this 实例
+     * @return This instance for chaining.
      */
     public C skipSerialPreproc() {
         this.skipSerialPreproc = true;
@@ -174,8 +262,10 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * @param tag 标签
-     * @return this 实例 为请求任务添加标签
+     * Adds a tag to the request. Multiple tags can be added and will be concatenated with dots.
+     *
+     * @param tag The tag to add.
+     * @return This instance for chaining.
      */
     public C tag(String tag) {
         if (null != tag) {
@@ -190,8 +280,10 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * @param charset 编码格式
-     * @return CoverHttp 实例 设置该请求的编码格式
+     * Sets the character encoding for this request.
+     *
+     * @param charset The character set.
+     * @return This instance for chaining.
      */
     public C charset(Charset charset) {
         if (null != charset) {
@@ -201,8 +293,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * @param type 请求类型
-     * @return CoverHttp 实例 设置请求体的类型，如：form、json、xml、protobuf 等
+     * Sets the request body type, such as "form", "json", "xml", "protobuf", etc. This determines which message
+     * converter will be used for serialization.
+     *
+     * @param type The body type.
+     * @return This instance for chaining.
      */
     public C bodyType(String type) {
         if (null != type) {
@@ -212,9 +307,9 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 下一个回调在IO线程执行
+     * Specifies that the next callback should be executed on an I/O thread.
      *
-     * @return this 实例
+     * @return This instance for chaining.
      */
     public C nextOnIO() {
         nextOnIO = true;
@@ -222,10 +317,10 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 绑定一个对象
+     * Binds an arbitrary object to this request.
      *
-     * @param object 对象
-     * @return this 实例
+     * @param object The object to bind.
+     * @return This instance for chaining.
      */
     public C bind(Object object) {
         this.object = object;
@@ -233,11 +328,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 添加请求头
+     * Adds a request header.
      *
-     * @param name  请求头名
-     * @param value 请求头值
-     * @return this 实例
+     * @param name  The header name.
+     * @param value The header value.
+     * @return This instance for chaining.
      */
     public C addHeader(String name, String value) {
         if (null != name && null != value) {
@@ -250,10 +345,10 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 添加请求头
+     * Adds multiple request headers.
      *
-     * @param headers 请求头集合
-     * @return this 实例
+     * @param headers A map of headers to add.
+     * @return This instance for chaining.
      */
     public C addHeader(Map<String, String> headers) {
         if (null != headers) {
@@ -266,31 +361,31 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 设置Range头信息 表示接收报文体时跳过的字节数，用于断点续传
+     * Sets the Range header to resume a download.
      *
-     * @param rangeStart 表示从 rangeStart 个字节处开始接收，通常是已经下载的字节数，即上次的断点）
-     * @return this 实例
+     * @param rangeStart The byte offset to start receiving data from (inclusive).
+     * @return This instance for chaining.
      */
     public C setRange(long rangeStart) {
         return addHeader("Range", "bytes=" + rangeStart + Symbol.MINUS);
     }
 
     /**
-     * 设置Range头信息 设置接收报文体时接收的范围，用于分块下载
+     * Sets the Range header to download a specific chunk of a file.
      *
-     * @param rangeStart 表示从 rangeStart 个字节处开始接收
-     * @param rangeEnd   表示接收到 rangeEnd 个字节处
-     * @return this 实例
+     * @param rangeStart The starting byte offset (inclusive).
+     * @param rangeEnd   The ending byte offset (inclusive).
+     * @return This instance for chaining.
      */
     public C setRange(long rangeStart, long rangeEnd) {
         return addHeader("Range", "bytes=" + rangeStart + Symbol.MINUS + rangeEnd);
     }
 
     /**
-     * 设置报文体发送进度回调
+     * Sets a callback to monitor the progress of the request body upload.
      *
-     * @param onProcess 进度回调函数
-     * @return this 实例
+     * @param onProcess The progress callback function.
+     * @return This instance for chaining.
      */
     public C setOnProcess(Callback<Progress> onProcess) {
         this.onProcess = onProcess;
@@ -300,10 +395,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 设置进度回调的步进字节，默认 8K（8192） 表示每接收 stepBytes 个字节，执行一次进度回调
+     * Sets the step size in bytes for progress callbacks. The callback will be triggered approximately every
+     * `stepBytes` bytes are transferred. Defaults to 8KB.
      *
-     * @param stepBytes 步进字节
-     * @return this 实例
+     * @param stepBytes The step size in bytes.
+     * @return This instance for chaining.
      */
     public C stepBytes(long stepBytes) {
         this.stepBytes = stepBytes;
@@ -311,10 +407,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 设置进度回调的步进比例 表示每接收 stepRate 比例，执行一次进度回调
+     * Sets the step rate for progress callbacks. The callback will be triggered at percentage increments defined by
+     * this rate (e.g., 0.01 for every 1%).
      *
-     * @param stepRate 步进比例
-     * @return this 实例
+     * @param stepRate The step rate (between 0.0 and 1.0).
+     * @return This instance for chaining.
      */
     public C stepRate(double stepRate) {
         this.stepRate = stepRate;
@@ -322,11 +419,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 路径参数：替换URL里的{name}
+     * Adds a path parameter to be replaced in the URL (e.g., for /api/user/{id}).
      *
-     * @param name  参数名
-     * @param value 参数值
-     * @return this 实例
+     * @param name  The parameter name (without braces).
+     * @param value The parameter value.
+     * @return This instance for chaining.
      */
     public C addPathPara(String name, Object value) {
         if (null != name && null != value) {
@@ -339,10 +436,10 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 路径参数：替换URL里的{name}
+     * Adds multiple path parameters.
      *
-     * @param params 参数集合
-     * @return this 实例
+     * @param params A map of path parameters.
+     * @return This instance for chaining.
      */
     public C addPathPara(Map<String, ?> params) {
         if (null == pathParams) {
@@ -353,11 +450,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * URL参数：拼接在URL后的参数
+     * Adds a URL parameter to be appended to the query string.
      *
-     * @param name  参数名
-     * @param value 参数值
-     * @return this 实例
+     * @param name  The parameter name.
+     * @param value The parameter value.
+     * @return This instance for chaining.
      */
     public C addUrlPara(String name, Object value) {
         if (null != name && null != value) {
@@ -370,10 +467,10 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * URL参数：拼接在URL后的参数
+     * Adds multiple URL parameters.
      *
-     * @param params 参数集合
-     * @return this 实例
+     * @param params A map of URL parameters.
+     * @return This instance for chaining.
      */
     public C addUrlPara(Map<String, ?> params) {
         if (null == urlParams) {
@@ -384,11 +481,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * Body参数：放在Body里的参数
+     * Adds a parameter to be included in the request body (e.g., for form submissions).
      *
-     * @param name  参数名
-     * @param value 参数值
-     * @return this 实例
+     * @param name  The parameter name.
+     * @param value The parameter value.
+     * @return This instance for chaining.
      */
     public C addBodyPara(String name, Object value) {
         if (null != name && null != value) {
@@ -401,10 +498,10 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * Body参数：放在Body里的参数
+     * Adds multiple body parameters.
      *
-     * @param params 参数集合
-     * @return this 实例
+     * @param params A map of body parameters.
+     * @return This instance for chaining.
      */
     public C addBodyPara(Map<String, ?> params) {
         if (null == bodyParams) {
@@ -414,6 +511,12 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         return (C) this;
     }
 
+    /**
+     * Helper method to add parameters to a map.
+     *
+     * @param taskParams The map to add parameters to.
+     * @param params     The parameters to add.
+     */
     private void doAddParams(Map<String, String> taskParams, Map<String, ?> params) {
         if (null != params) {
             for (String name : params.keySet()) {
@@ -426,10 +529,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 设置 json 请求体
+     * Sets the request body directly. The body can be a byte array, a string, or a Java object that will be serialized
+     * by a configured message converter.
      *
-     * @param body 请求体，字节数组、字符串 或 Java对象（由 MsgConvertor 来序列化）
-     * @return this 实例
+     * @param body The request body.
+     * @return This instance for chaining.
      */
     public C setBodyPara(Object body) {
         this.requestBody = body;
@@ -437,22 +541,22 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 添加文件参数
+     * Adds a file parameter for a multipart request.
      *
-     * @param name     参数名
-     * @param filePath 文件路径
-     * @return this 实例
+     * @param name     The parameter name.
+     * @param filePath The path to the file.
+     * @return This instance for chaining.
      */
     public C addFilePara(String name, String filePath) {
         return addFilePara(name, new File(filePath));
     }
 
     /**
-     * 添加文件参数
+     * Adds a file parameter for a multipart request.
      *
-     * @param name 参数名
-     * @param file 文件
-     * @return this 实例
+     * @param name The parameter name.
+     * @param file The file object.
+     * @return This instance for chaining.
      */
     public C addFilePara(String name, File file) {
         if (null != name && null != file && file.exists()) {
@@ -467,25 +571,25 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 添加文件参数
+     * Adds a file parameter from a byte array for a multipart request.
      *
-     * @param name    参数名
-     * @param type    文件类型: 如 png、jpg、jpeg 等
-     * @param content 文件内容
-     * @return this 实例
+     * @param name    The parameter name.
+     * @param type    The file type/extension (e.g., "png", "jpg").
+     * @param content The file content as a byte array.
+     * @return This instance for chaining.
      */
     public C addFilePara(String name, String type, byte[] content) {
         return addFilePara(name, type, null, content);
     }
 
     /**
-     * 添加文件参数
+     * Adds a file parameter from a byte array for a multipart request.
      *
-     * @param name     参数名
-     * @param type     文件类型: 如 png、jpg、jpeg 等
-     * @param fileName 文件名
-     * @param content  文件内容
-     * @return this 实例
+     * @param name     The parameter name.
+     * @param type     The file type/extension (e.g., "png", "jpg").
+     * @param fileName The name of the file.
+     * @param content  The file content as a byte array.
+     * @return This instance for chaining.
      */
     public C addFilePara(String name, String type, String fileName, byte[] content) {
         if (null != name && null != content) {
@@ -497,6 +601,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         return (C) this;
     }
 
+    /**
+     * Cancels the request.
+     *
+     * @return True if the request was successfully canceled, false otherwise.
+     */
     @Override
     public boolean cancel() {
         if (null != canceler) {
@@ -505,6 +614,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         return false;
     }
 
+    /**
+     * Registers this task with the tag manager.
+     *
+     * @param canceler The object that can cancel this task.
+     */
     protected void registeTagTask(Cancelable canceler) {
         if (null != tag && null == tagTask) {
             tagTask = httpv.addTagTask(tag, canceler, this);
@@ -512,6 +626,9 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         this.canceler = canceler;
     }
 
+    /**
+     * Updates the tag in the tag manager if it has changed.
+     */
     private void updateTagTask() {
         if (null != tagTask) {
             tagTask.setTag(tag);
@@ -520,17 +637,32 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         }
     }
 
+    /**
+     * Removes this task from the tag manager.
+     */
     protected void removeTagTask() {
         if (null != tag) {
             httpv.removeTagTask(this);
         }
     }
 
+    /**
+     * Prepares the Httpd Call object for execution.
+     *
+     * @param method The HTTP method (e.g., "GET", "POST").
+     * @return A new Call instance.
+     */
     protected NewCall prepareCall(String method) {
         Request request = prepareRequest(method);
         return httpv.request(request);
     }
 
+    /**
+     * Prepares the Httpd Request object.
+     *
+     * @param method The HTTP method.
+     * @return A new Request instance.
+     */
     protected Request prepareRequest(String method) {
         boolean bodyCanUsed = HTTP.permitsRequestBody(method);
         assertNotConflict(!bodyCanUsed);
@@ -559,14 +691,25 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         return builder.build();
     }
 
+    /**
+     * Gets the content length of a request body.
+     *
+     * @param reqBody The request body.
+     * @return The content length in bytes.
+     */
     private long contentLength(RequestBody reqBody) {
         try {
-            return reqBody.length();
+            return reqBody.contentLength();
         } catch (IOException e) {
             throw new InternalException("Cannot get the length of the request body", e);
         }
     }
 
+    /**
+     * Adds configured headers to the request builder.
+     *
+     * @param builder The request builder.
+     */
     private void buildHeaders(Request.Builder builder) {
         if (null != headers) {
             for (String name : headers.keySet()) {
@@ -578,6 +721,12 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         }
     }
 
+    /**
+     * Converts an IOException into a CoverResult.State.
+     *
+     * @param e The IOException.
+     * @return The corresponding state.
+     */
     public CoverResult.State toState(IOException e) {
         if (e instanceof SocketTimeoutException) {
             return CoverResult.State.TIMEOUT;
@@ -592,6 +741,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         return CoverResult.State.EXCEPTION;
     }
 
+    /**
+     * Builds the RequestBody based on the configured parameters (body, files, body params).
+     *
+     * @return The constructed RequestBody.
+     */
     private RequestBody buildRequestBody() {
         if (null != files) {
             MultipartBody.Builder builder = new MultipartBody.Builder()
@@ -633,6 +787,12 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         return toRequestBody(bodyParams);
     }
 
+    /**
+     * Converts an object into a RequestBody using a message converter.
+     *
+     * @param object The object to convert.
+     * @return The resulting RequestBody.
+     */
     private RequestBody toRequestBody(Object object) {
         if (object instanceof byte[] || object instanceof String) {
             byte[] body = object instanceof byte[] ? (byte[]) object : ((String) object).getBytes(charset);
@@ -646,6 +806,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         return RequestBody.create(MediaType.valueOf(data.contentType + "; charset=" + charset.name()), data.data);
     }
 
+    /**
+     * Builds the final URL path, substituting path parameters and appending URL parameters.
+     *
+     * @return The final URL string.
+     */
     private String buildUrlPath() {
         String url = urlPath;
         if (null == url || url.trim().isEmpty()) {
@@ -672,12 +837,18 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         return url;
     }
 
+    /**
+     * Appends URL parameters to a base URL.
+     *
+     * @param url The base URL.
+     * @return The URL with appended parameters.
+     */
     private String buildUrl(String url) {
         StringBuilder sb = new StringBuilder(url);
         if (url.contains(Symbol.QUESTION_MARK)) {
             if (!url.endsWith(Symbol.QUESTION_MARK)) {
                 if (url.lastIndexOf(Symbol.EQUAL) < url.lastIndexOf(Symbol.QUESTION_MARK) + 2) {
-                    throw new InternalException("URL format error，'？' Not found after '='");
+                    throw new InternalException("URL format error, '?' Not found after '='");
                 }
                 if (!url.endsWith(Symbol.AND)) {
                     sb.append(Symbol.C_AND);
@@ -693,6 +864,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         return sb.toString();
     }
 
+    /**
+     * Asserts that there are no conflicting body parameter settings.
+     *
+     * @param bodyCantUsed True if the HTTP method does not permit a request body.
+     */
     protected void assertNotConflict(boolean bodyCantUsed) {
         if (bodyCantUsed) {
             if (ObjectKit.isNotEmpty(requestBody)) {
@@ -718,17 +894,25 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * @param latch CountDownLatch
-     * @return 是否未超时：false 表示已超时
+     * Awaits on a CountDownLatch with a timeout.
+     *
+     * @param latch The CountDownLatch to wait on.
+     * @return False if a timeout occurred, true otherwise.
      */
     protected boolean timeoutAwait(CountDownLatch latch) {
         try {
             return latch.await(httpv.preprocTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
-            throw new InternalException("TimeOut " + CoverResult.State.TIMEOUT);
+            Thread.currentThread().interrupt();
+            throw new InternalException("TimeOut " + CoverResult.State.TIMEOUT, e);
         }
     }
 
+    /**
+     * Creates a result object for a timeout event.
+     *
+     * @return A timeout CoverResult.
+     */
     protected CoverResult timeoutResult() {
         if (nothrow) {
             return new CoverResult.Real(this, CoverResult.State.TIMEOUT);
@@ -736,25 +920,60 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         throw new InternalException("Execution timeout " + CoverResult.State.TIMEOUT);
     }
 
+    /**
+     * Extracts the character set from an HTTP response.
+     *
+     * @param response The HTTP response.
+     * @return The character set, or the default if not specified.
+     */
     public Charset charset(Response response) {
         ResponseBody b = response.body();
         MediaType contentType = null != b ? b.contentType() : null;
         return null != contentType ? contentType.charset(charset) : charset;
     }
 
+    /**
+     * A container for file parameters used in multipart requests.
+     */
     static class FilePara {
 
+        /**
+         * The file type or extension.
+         */
         String type;
+        /**
+         * The name of the file.
+         */
         String fileName;
+        /**
+         * The file content as a byte array.
+         */
         byte[] content;
+        /**
+         * The file object.
+         */
         File file;
 
+        /**
+         * Constructor for file from byte array.
+         *
+         * @param type     The file type.
+         * @param fileName The file name.
+         * @param content  The file content.
+         */
         FilePara(String type, String fileName, byte[] content) {
             this.type = type;
             this.fileName = fileName;
             this.content = content;
         }
 
+        /**
+         * Constructor for file from a File object.
+         *
+         * @param type     The file type.
+         * @param fileName The file name.
+         * @param file     The file object.
+         */
         FilePara(String type, String fileName, File file) {
             this.type = type;
             this.fileName = fileName;
@@ -764,76 +983,82 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 同步 Http 请求任务
+     * A builder for synchronous HTTP requests.
      *
      * @author Kimi Liu
      * @since Java 17+
      */
     public static class Sync extends CoverHttp<Sync> {
 
+        /**
+         * Constructs a new synchronous request builder.
+         *
+         * @param client The Httpv instance.
+         * @param url    The request URL.
+         */
         public Sync(Httpv client, String url) {
             super(client, url);
         }
 
         /**
-         * 发起 GET 请求（Rest：获取资源，幂等）
+         * Executes a GET request (REST: retrieve a resource, idempotent).
          *
-         * @return 请求结果
+         * @return The request result.
          */
         public CoverResult get() {
             return request(HTTP.GET);
         }
 
         /**
-         * 发起 HEAD 请求（Rest：读取资源头信息，幂等）
+         * Executes a HEAD request (REST: retrieve resource headers, idempotent).
          *
-         * @return 请求结果
+         * @return The request result.
          */
         public CoverResult head() {
             return request(HTTP.HEAD);
         }
 
         /**
-         * 发起 POST 请求（Rest：创建资源，非幂等）
+         * Executes a POST request (REST: create a resource, not idempotent).
          *
-         * @return 请求结果
+         * @return The request result.
          */
         public CoverResult post() {
             return request(HTTP.POST);
         }
 
         /**
-         * 发起 PUT 请求（Rest：更新资源，幂等）
+         * Executes a PUT request (REST: update/replace a resource, idempotent).
          *
-         * @return 请求结果
+         * @return The request result.
          */
         public CoverResult put() {
             return request(HTTP.PUT);
         }
 
         /**
-         * 发起 PATCH 请求（Rest：更新资源，部分更新，幂等）
+         * Executes a PATCH request (REST: partially update a resource, idempotent).
          *
-         * @return HttpCall
+         * @return The request result.
          */
         public CoverResult patch() {
             return request(HTTP.PATCH);
         }
 
         /**
-         * 发起 DELETE 请求（Rest：删除资源，幂等）
+         * Executes a DELETE request (REST: delete a resource, idempotent).
          *
-         * @return 请求结果
+         * @return The request result.
          */
         public CoverResult delete() {
             return request(HTTP.DELETE);
         }
 
         /**
-         * 发起 HTTP 请求
+         * Executes an HTTP request with the specified method.
          *
-         * @param method 请求方法
-         * @return 请求结果
+         * @param method The HTTP method.
+         * @return The request result.
          */
         public CoverResult request(String method) {
             if (null == method || method.isEmpty()) {
@@ -841,7 +1066,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             }
             CoverResult.Real result = new CoverResult.Real(this, httpv.executor());
             SyncHttpCall httpCall = new SyncHttpCall();
-            // 注册标签任务
+            // Register tag task
             registeTagTask(httpCall);
             CountDownLatch latch = new CountDownLatch(1);
             httpv.preprocess(this, () -> {
@@ -866,7 +1091,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             if (null == result.getState()) {
                 timeout = !timeoutAwait(latch);
             }
-            // 移除标签任务
+            // Remove tag task
             removeTagTask();
             if (timeout) {
                 httpCall.cancel();
@@ -880,12 +1105,29 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             return result;
         }
 
+        /**
+         * A cancelable wrapper for a synchronous Httpd Call.
+         */
         static class SyncHttpCall implements Cancelable {
 
+            /**
+             * The underlying Httpd call.
+             */
             NewCall call;
+            /**
+             * Flag indicating if the call has completed.
+             */
             boolean done = false;
+            /**
+             * Flag indicating if the call has been canceled.
+             */
             boolean canceled = false;
 
+            /**
+             * Cancels the synchronous call.
+             * 
+             * @return True if cancellation was successful.
+             */
             @Override
             public synchronized boolean cancel() {
                 if (done) {
@@ -903,29 +1145,53 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 异步 Http 请求任务
+     * A builder for asynchronous HTTP requests.
      *
      * @author Kimi Liu
      * @since Java 17+
      */
     public static class Async extends CoverHttp<Async> {
 
+        /**
+         * Callback for successful response.
+         */
         private Callback<CoverResult> onResponse;
+        /**
+         * Callback for exceptions.
+         */
         private Callback<IOException> onException;
+        /**
+         * Callback for completion (success, failure, or cancellation).
+         */
         private Callback<CoverResult.State> onComplete;
+        /**
+         * Flag to execute onResponse on an I/O thread.
+         */
         private boolean rOnIO;
+        /**
+         * Flag to execute onException on an I/O thread.
+         */
         private boolean eOnIO;
+        /**
+         * Flag to execute onComplete on an I/O thread.
+         */
         private boolean cOnIO;
 
+        /**
+         * Constructs a new asynchronous request builder.
+         *
+         * @param htttpv The Httpv instance.
+         * @param url    The request URL.
+         */
         public Async(Httpv htttpv, String url) {
             super(htttpv, url);
         }
 
         /**
-         * 设置请求执行异常后的回调函数，设置后，相关异常将不再向上抛出
+         * Sets the callback for exceptions. When set, exceptions will not be thrown.
          *
-         * @param onException 请求异常回调
-         * @return AsyncHttp 实例
+         * @param onException The exception callback.
+         * @return This Async instance for chaining.
          */
         public Async setOnException(Callback<IOException> onException) {
             this.onException = onException;
@@ -935,10 +1201,10 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         }
 
         /**
-         * 设置请求执行完成后的回调函数，无论成功|失败|异常 都会被执行
+         * Sets the callback for when the request is complete (will be called in all cases).
          *
-         * @param onComplete 请求完成回调
-         * @return AsyncHttp 实例
+         * @param onComplete The completion callback.
+         * @return This Async instance for chaining.
          */
         public Async setOnComplete(Callback<CoverResult.State> onComplete) {
             this.onComplete = onComplete;
@@ -948,10 +1214,10 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         }
 
         /**
-         * 设置请求得到响应后的回调函数
+         * Sets the callback for a successful HTTP response.
          *
-         * @param onResponse 请求响应回调
-         * @return AsyncHttp 实例
+         * @param onResponse The response callback.
+         * @return This Async instance for chaining.
          */
         public Async setOnResponse(Callback<CoverResult> onResponse) {
             this.onResponse = onResponse;
@@ -961,64 +1227,64 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         }
 
         /**
-         * 发起 GET 请求（Rest：读取资源，幂等）
+         * Executes an asynchronous GET request.
          *
-         * @return GiveCall
+         * @return A GiveCall object to control and get the result of the async call.
          */
         public GiveCall get() {
             return request(HTTP.GET);
         }
 
         /**
-         * 发起 HEAD 请求（Rest：读取资源头信息，幂等）
+         * Executes an asynchronous HEAD request.
          *
-         * @return GiveCall
+         * @return A GiveCall object to control and get the result of the async call.
          */
         public GiveCall head() {
             return request(HTTP.HEAD);
         }
 
         /**
-         * 发起 POST 请求（Rest：创建资源，非幂等）
+         * Executes an asynchronous POST request.
          *
-         * @return GiveCall
+         * @return A GiveCall object to control and get the result of the async call.
          */
         public GiveCall post() {
             return request(HTTP.POST);
         }
 
         /**
-         * 发起 PUT 请求（Rest：更新资源，幂等）
+         * Executes an asynchronous PUT request.
          *
-         * @return GiveCall
+         * @return A GiveCall object to control and get the result of the async call.
          */
         public GiveCall put() {
             return request(HTTP.PUT);
         }
 
         /**
-         * 发起 PATCH 请求（Rest：更新资源，部分更新，幂等）
+         * Executes an asynchronous PATCH request.
          *
-         * @return GiveCall
+         * @return A GiveCall object to control and get the result of the async call.
          */
         public GiveCall patch() {
             return request(HTTP.PATCH);
         }
 
         /**
-         * 发起 DELETE 请求（Rest：删除资源，幂等）
+         * Executes an asynchronous DELETE request.
          *
-         * @return GiveCall
+         * @return A GiveCall object to control and get the result of the async call.
          */
         public GiveCall delete() {
             return request(HTTP.DELETE);
         }
 
         /**
-         * 发起 HTTP 请求
+         * Executes an asynchronous HTTP request with the specified method.
          *
-         * @param method 请求方法
-         * @return GiveCall
+         * @param method The HTTP method.
+         * @return A GiveCall object to control and get the result of the async call.
          */
         public GiveCall request(String method) {
             if (null == method || method.isEmpty()) {
@@ -1038,9 +1304,15 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             return call;
         }
 
+        /**
+         * Executes the Httpd call asynchronously.
+         *
+         * @param call The Httpd NewCall object.
+         * @return A GiveCall representing the ongoing request.
+         */
         private GiveCall executeCall(NewCall call) {
             OkGiveCall httpCall = new OkGiveCall(call);
-            call.enqueue(new Callback() {
+            call.enqueue(new Callback<Response>() {
 
                 @Override
                 public void onFailure(NewCall call, IOException error) {
@@ -1069,6 +1341,13 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             return httpCall;
         }
 
+        /**
+         * Synchronized handler for async callbacks.
+         *
+         * @param httpCall The call wrapper.
+         * @param result   The result of the call.
+         * @param runnable The callback logic to run.
+         */
         private void onCallback(OkGiveCall httpCall, CoverResult result, Runnable runnable) {
             synchronized (httpCall) {
                 removeTagTask();
@@ -1081,10 +1360,22 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             }
         }
 
+        /**
+         * A preliminary implementation of GiveCall used before the actual Httpd call is created.
+         */
         class PreGiveCall implements GiveCall {
 
+            /**
+             * The actual GiveCall implementation.
+             */
             GiveCall call;
+            /**
+             * Flag indicating if the call has been canceled.
+             */
             boolean canceled = false;
+            /**
+             * Latch to wait for the actual call to be set.
+             */
             CountDownLatch latch = new CountDownLatch(1);
 
             @Override
@@ -1107,6 +1398,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
                 return canceled;
             }
 
+            /**
+             * Sets the actual GiveCall once it's created.
+             * 
+             * @param call The actual call.
+             */
             void setCall(GiveCall call) {
                 this.call = call;
                 latch.countDown();
@@ -1126,12 +1422,29 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
         }
 
+        /**
+         * The standard implementation of GiveCall, wrapping an Httpd NewCall.
+         */
         class OkGiveCall implements GiveCall {
 
+            /**
+             * The underlying Httpd call.
+             */
             NewCall call;
+            /**
+             * The result of the call.
+             */
             CoverResult result;
+            /**
+             * Latch to wait for the result.
+             */
             CountDownLatch latch = new CountDownLatch(1);
 
+            /**
+             * Constructs a new OkGiveCall.
+             * 
+             * @param call The Httpd call.
+             */
             OkGiveCall(NewCall call) {
                 this.call = call;
             }
@@ -1166,6 +1479,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
                 return result;
             }
 
+            /**
+             * Sets the result of the call and releases the latch.
+             * 
+             * @param result The call result.
+             */
             void setResult(CoverResult result) {
                 this.result = result;
                 latch.countDown();

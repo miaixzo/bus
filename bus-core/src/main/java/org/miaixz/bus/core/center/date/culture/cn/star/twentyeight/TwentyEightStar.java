@@ -35,49 +35,81 @@ import org.miaixz.bus.core.center.date.culture.cn.Zone;
 import org.miaixz.bus.core.center.date.culture.cn.star.seven.SevenStar;
 
 /**
- * 二十八宿
+ * Represents the Twenty-Eight Mansions (二十八宿), a system of lunar mansions used in Chinese astronomy and astrology. This
+ * class extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TwentyEightStar extends Samsara {
 
+    /**
+     * Array of names for the Twenty-Eight Mansions.
+     */
     public static final String[] NAMES = { "角", "亢", "氐", "房", "心", "尾", "箕", "斗", "牛", "女", "虚", "危", "室", "壁", "奎",
             "娄", "胃", "昴", "毕", "觜", "参", "井", "鬼", "柳", "星", "张", "翼", "轸" };
 
+    /**
+     * Constructs a {@code TwentyEightStar} instance with the specified index.
+     *
+     * @param index The index of the mansion in the {@link #NAMES} array.
+     */
     public TwentyEightStar(int index) {
         super(NAMES, index);
     }
 
+    /**
+     * Constructs a {@code TwentyEightStar} instance with the specified name.
+     *
+     * @param name The name of the mansion.
+     */
     public TwentyEightStar(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Creates a {@code TwentyEightStar} instance from its index.
+     *
+     * @param index The index of the mansion.
+     * @return A new {@code TwentyEightStar} instance.
+     */
     public static TwentyEightStar fromIndex(int index) {
         return new TwentyEightStar(index);
     }
 
+    /**
+     * Creates a {@code TwentyEightStar} instance from its name.
+     *
+     * @param name The name of the mansion.
+     * @return A new {@code TwentyEightStar} instance.
+     */
     public static TwentyEightStar fromName(String name) {
         return new TwentyEightStar(name);
     }
 
+    /**
+     * Gets the next {@code TwentyEightStar} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code TwentyEightStar} instance.
+     */
     public TwentyEightStar next(int n) {
         return fromIndex(nextIndex(n));
     }
 
     /**
-     * 七曜
+     * Gets the corresponding {@link SevenStar} (七曜) for this Twenty-Eight Mansion.
      *
-     * @return 七曜
+     * @return The {@link SevenStar} associated with this mansion.
      */
     public SevenStar getSevenStar() {
         return SevenStar.fromIndex(index % 7 + 4);
     }
 
     /**
-     * 九野
+     * Gets the corresponding {@link Land} (九野) for this Twenty-Eight Mansion.
      *
-     * @return 九野
+     * @return The {@link Land} associated with this mansion.
      */
     public Land getLand() {
         return Land.fromIndex(
@@ -86,27 +118,27 @@ public class TwentyEightStar extends Samsara {
     }
 
     /**
-     * 宫
+     * Gets the corresponding {@link Zone} (宫) for this Twenty-Eight Mansion.
      *
-     * @return 宫
+     * @return The {@link Zone} associated with this mansion.
      */
     public Zone getZone() {
         return Zone.fromIndex(index / 7);
     }
 
     /**
-     * 动物
+     * Gets the corresponding {@link Animal} (动物) for this Twenty-Eight Mansion.
      *
-     * @return 动物
+     * @return The {@link Animal} associated with this mansion.
      */
     public Animal getAnimal() {
         return Animal.fromIndex(index);
     }
 
     /**
-     * 吉凶
+     * Determines the auspiciousness (luck) of the current Twenty-Eight Mansion.
      *
-     * @return 吉凶
+     * @return The {@link Luck} associated with this mansion.
      */
     public Luck getLuck() {
         return Luck.fromIndex(

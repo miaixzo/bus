@@ -35,47 +35,58 @@ import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * CRC16 Checksum，用于提供多种CRC16算法的通用实现 通过继承此类，重写update和reset完成相应算法。
+ * Abstract base class for CRC16 checksum implementations. This class provides a common structure for various CRC16
+ * algorithms. Subclasses should override the {@link #update(int)} and {@link #reset()} methods to implement specific
+ * CRC16 algorithms.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class CRC16Checksum implements Checksum, Serializable {
 
+    /**
+     * The serial version UID for serialization.
+     */
     @Serial
     private static final long serialVersionUID = 2852278688761L;
 
     /**
-     * CRC16 Checksum 结果值
+     * The current CRC16 checksum value.
      */
     protected int wCRCin;
 
     /**
-     * 构造
+     * Constructs a new CRC16Checksum and resets its internal state to the initial value.
      */
     public CRC16Checksum() {
         reset();
     }
 
+    /**
+     * Returns the current CRC16 checksum value.
+     *
+     * @return The current CRC16 checksum value.
+     */
     @Override
     public long getValue() {
         return wCRCin;
     }
 
     /**
-     * 获取16进制的CRC16值
+     * Retrieves the CRC16 value as a hexadecimal string.
      *
-     * @return 16进制的CRC16值
+     * @return The CRC16 value in hexadecimal format.
      */
     public String getHexValue() {
         return getHexValue(false);
     }
 
     /**
-     * 获取16进制的CRC16值
+     * Retrieves the CRC16 value as a hexadecimal string, with optional zero-padding.
      *
-     * @param isPadding 不足4位时，是否填充0以满足位数
-     * @return 16进制的CRC16值，4位
+     * @param isPadding If {@code true}, the hexadecimal string will be padded with leading zeros to ensure a length of
+     *                  4 characters.
+     * @return The CRC16 value in hexadecimal format.
      */
     public String getHexValue(final boolean isPadding) {
         String hex = HexKit.toHex(getValue());
@@ -86,20 +97,31 @@ public abstract class CRC16Checksum implements Checksum, Serializable {
         return hex;
     }
 
+    /**
+     * Resets the CRC16 checksum to its initial value (0x0000).
+     */
     @Override
     public void reset() {
         wCRCin = 0x0000;
     }
 
     /**
-     * 计算全部字节
+     * Updates the CRC16 checksum with the specified array of bytes. This method is equivalent to calling
+     * {@link #update(byte[], int, int)} with an offset of 0 and the full length of the array.
      *
-     * @param b 字节
+     * @param b The byte array to update the checksum with.
      */
     public void update(final byte[] b) {
         update(b, 0, b.length);
     }
 
+    /**
+     * Updates the CRC16 checksum with the specified array of bytes.
+     *
+     * @param b   The byte array to update the checksum with.
+     * @param off The start offset in the data.
+     * @param len The number of bytes to use for the update.
+     */
     @Override
     public void update(final byte[] b, final int off, final int len) {
         for (int i = off; i < off + len; i++)

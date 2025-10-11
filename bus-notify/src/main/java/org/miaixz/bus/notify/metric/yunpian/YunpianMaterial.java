@@ -37,7 +37,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 云片短信
+ * Material for Yunpian SMS service.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,12 +50,14 @@ import lombok.experimental.SuperBuilder;
 public class YunpianMaterial extends Material {
 
     /**
-     * apikey
+     * The API key for Yunpian API.
      */
     private String apikey;
 
     /**
-     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
+     * Retrieves the default API request address. This address is used when the {@link Context} endpoint is empty.
+     *
+     * @return The default API request address for Yunpian SMS.
      */
     @Override
     public String getUrl() {

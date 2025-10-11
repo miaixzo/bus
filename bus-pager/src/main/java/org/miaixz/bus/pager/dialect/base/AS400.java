@@ -36,13 +36,25 @@ import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 /**
- * AS400
+ * Database dialect for AS400. This class provides AS400-specific implementations for pagination SQL generation and
+ * parameter processing.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AS400 extends AbstractPaging {
 
+    /**
+     * Processes the pagination parameters for AS400. It adds {@code PAGEPARAMETER_FIRST} (offset) and
+     * {@code PAGEPARAMETER_SECOND} (limit) to the parameter map and updates the {@link CacheKey}.
+     *
+     * @param ms       the MappedStatement object
+     * @param paramMap a map containing the query parameters
+     * @param page     the {@link Page} object containing pagination details
+     * @param boundSql the BoundSql object for the query
+     * @param pageKey  the CacheKey for the paginated query
+     * @return the processed parameter map
+     */
     @Override
     public Object processPageParameter(
             MappedStatement ms,
@@ -58,6 +70,15 @@ public class AS400 extends AbstractPaging {
         return paramMap;
     }
 
+    /**
+     * Generates the AS400-specific pagination SQL. It appends {@code OFFSET ? ROWS FETCH FIRST ? ROWS ONLY} to the
+     * original SQL.
+     *
+     * @param sql     the original SQL string
+     * @param page    the {@link Page} object containing pagination details
+     * @param pageKey the CacheKey for the paginated query
+     * @return the AS400-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
         return sql + " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY";

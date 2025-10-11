@@ -38,7 +38,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.miaixz.bus.core.xyz.FieldKit;
 
 /**
- * {@link Sheet}相关工具类
+ * Utility class for {@link Sheet} related operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,11 +46,12 @@ import org.miaixz.bus.core.xyz.FieldKit;
 public class SheetKit {
 
     /**
-     * 获取或者创建sheet表 如果sheet表在Workbook中已经存在，则获取之，否则创建之
+     * Gets an existing sheet or creates a new one. If the sheet already exists in the workbook, it is retrieved;
+     * otherwise, it is created.
      *
-     * @param book      工作簿{@link Workbook}
-     * @param sheetName 工作表名，{@code null}表示默认
-     * @return 工作表 {@link Sheet}
+     * @param book      The workbook {@link Workbook}.
+     * @param sheetName The name of the worksheet. {@code null} indicates the default sheet.
+     * @return The worksheet {@link Sheet}.
      */
     public static Sheet getOrCreateSheet(final Workbook book, final String sheetName) {
         if (null == book) {
@@ -70,11 +71,12 @@ public class SheetKit {
     }
 
     /**
-     * 获取或者创建sheet表 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认） 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
+     * Gets an existing sheet or creates a new one. This method is used to switch the sheet for reading or to
+     * create/switch sheets for writing.
      *
-     * @param book       工作簿{@link Workbook}
-     * @param sheetIndex 工作表序号
-     * @return 工作表 {@link Sheet}
+     * @param book       The workbook {@link Workbook}.
+     * @param sheetIndex The 0-based index of the worksheet.
+     * @return The worksheet {@link Sheet}.
      */
     public static Sheet getOrCreateSheet(final Workbook book, final int sheetIndex) {
         Sheet sheet = null;
@@ -90,31 +92,31 @@ public class SheetKit {
     }
 
     /**
-     * sheet是否为空
+     * Checks if the given sheet is empty.
      *
-     * @param sheet {@link Sheet}
-     * @return sheet是否为空
+     * @param sheet The {@link Sheet} to check.
+     * @return {@code true} if the sheet is {@code null} or contains no rows, {@code false} otherwise.
      */
     public static boolean isEmpty(final Sheet sheet) {
         return null == sheet || (sheet.getLastRowNum() == 0 && sheet.getPhysicalNumberOfRows() == 0);
     }
 
     /**
-     * 遍历Sheet中的所有单元格
+     * Traverses all cells in the sheet.
      *
-     * @param sheet       {@link Sheet}
-     * @param cellHandler 单元格处理器
+     * @param sheet       The {@link Sheet} to traverse.
+     * @param cellHandler The cell handler to process each cell.
      */
     public static void walk(final Sheet sheet, final CellHandler cellHandler) {
         walk(sheet, new CellRangeAddress(0, sheet.getLastRowNum(), 0, sheet.getLastRowNum()), cellHandler);
     }
 
     /**
-     * 遍历Sheet中的指定区域单元格
+     * Traverses cells within a specified range in the sheet.
      *
-     * @param sheet       {@link Sheet}
-     * @param range       区域
-     * @param cellHandler 单元格处理器
+     * @param sheet       The {@link Sheet} to traverse.
+     * @param range       The {@link CellRangeAddress} defining the area to traverse.
+     * @param cellHandler The cell handler to process each cell.
      */
     public static void walk(final Sheet sheet, final CellRangeAddress range, final CellHandler cellHandler) {
         final CellWalk cellWalk = new CellWalk(sheet, range);
@@ -122,13 +124,15 @@ public class SheetKit {
     }
 
     /**
-     * 设置忽略错误，即Excel中的绿色警告小标，只支持XSSFSheet和SXSSFSheet
-     * 见：https://stackoverflow.com/questions/23488221/how-to-remove-warning-in-excel-using-apache-poi-in-java
+     * Sets ignored errors for a specified cell range in the sheet. This is used to suppress green warning indicators in
+     * Excel. This method only supports {@link XSSFSheet} and {@link SXSSFSheet}. See: <a href=
+     * "https://stackoverflow.com/questions/23488221/how-to-remove-warning-in-excel-using-apache-poi-in-java">How to
+     * remove warning in Excel using Apache POI in Java</a>
      *
-     * @param sheet             {@link Sheet}
-     * @param cellRangeAddress  指定单元格范围
-     * @param ignoredErrorTypes 忽略的错误类型列表
-     * @throws UnsupportedOperationException 如果sheet不是XSSFSheet
+     * @param sheet             The {@link Sheet}.
+     * @param cellRangeAddress  The specified cell range.
+     * @param ignoredErrorTypes A list of {@link IgnoredErrorType}s to ignore.
+     * @throws UnsupportedOperationException if the sheet is not an instance of {@link XSSFSheet} or {@link SXSSFSheet}.
      */
     public static void addIgnoredErrors(
             final Sheet sheet,
@@ -137,7 +141,7 @@ public class SheetKit {
         if (sheet instanceof XSSFSheet) {
             ((XSSFSheet) sheet).addIgnoredErrors(cellRangeAddress, ignoredErrorTypes);
         } else if (sheet instanceof SXSSFSheet) {
-            // SXSSFSheet并未提供忽略错误方法，获得其内部_sh字段设置
+            // SXSSFSheet does not provide a direct method to ignore errors. Access its internal _sh field.
             final XSSFSheet xssfSheet = (XSSFSheet) FieldKit.getFieldValue(sheet, "_sh");
             if (null != xssfSheet) {
                 xssfSheet.addIgnoredErrors(cellRangeAddress, ignoredErrorTypes);
@@ -148,12 +152,13 @@ public class SheetKit {
     }
 
     /**
-     * 获取指定坐标点对应的合并单元格范围
+     * Gets the merged cell region corresponding to the specified coordinates. If no merged region is found, returns
+     * {@code null}.
      *
-     * @param sheet {@link Sheet}
-     * @param x     x坐标，即列号
-     * @param y     行号
-     * @return CellRangeAddress or null
+     * @param sheet The {@link Sheet}.
+     * @param x     The x-coordinate (column index).
+     * @param y     The y-coordinate (row index).
+     * @return The {@link CellRangeAddress} of the merged region, or {@code null} if not found.
      */
     public static CellRangeAddress getMergedRegion(final Sheet sheet, final int x, final int y) {
         for (final CellRangeAddress ca : sheet.getMergedRegions()) {

@@ -44,18 +44,41 @@ import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
 
 /**
- * 加密的URL处理器
+ * A custom {@link URLStreamHandler} for URLs that intercepts connections to JAR entries and wraps them with
+ * {@link JarURLConnection} for on-the-fly decryption/encryption. This handler is crucial for enabling secure loading of
+ * resources within encrypted standard JARs.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JarURLHandler extends URLStreamHandler {
 
+    /**
+     * The provider responsible for decrypting input streams.
+     */
     private final DecryptorProvider decryptorProvider;
+    /**
+     * The provider responsible for encrypting output streams.
+     */
     private final EncryptorProvider encryptorProvider;
+    /**
+     * The cryptographic key used for encryption and decryption.
+     */
     private final Key key;
+    /**
+     * A set of indexed resource paths that are known to be encrypted and require special handling.
+     */
     private final Set<String> indexes;
 
+    /**
+     * Constructs a new {@code JarURLHandler}.
+     *
+     * @param decryptorProvider The provider responsible for decrypting resources.
+     * @param encryptorProvider The provider responsible for encrypting resources.
+     * @param key               The cryptographic key used for decryption.
+     * @param classLoader       The class loader used to find indexed resources.
+     * @throws Exception If an error occurs during initialization, such as reading the index file.
+     */
     public JarURLHandler(DecryptorProvider decryptorProvider, EncryptorProvider encryptorProvider, Key key,
             ClassLoader classLoader) throws Exception {
         this.decryptorProvider = decryptorProvider;
@@ -67,15 +90,26 @@ public class JarURLHandler extends URLStreamHandler {
             URL resource = resources.nextElement();
             String url = resource.toString();
             String classpath = url.substring(0, url.lastIndexOf("!/") + 2);
-            InputStream in = resource.openStream();
-            InputStreamReader isr = new InputStreamReader(in);
-            LineNumberReader lnr = new LineNumberReader(isr);
-            String name;
-            while (null != (name = lnr.readLine()))
-                indexes.add(classpath + name);
+            try (InputStream in = resource.openStream();
+                    InputStreamReader isr = new InputStreamReader(in);
+                    LineNumberReader lnr = new LineNumberReader(isr)) {
+                String name;
+                while (null != (name = lnr.readLine())) {
+                    indexes.add(classpath + name);
+                }
+            }
         }
     }
 
+    /**
+     * Opens a connection to the specified URL. If the URL corresponds to an indexed encrypted resource within a JAR, it
+     * returns a {@link JarURLConnection} to handle on-the-fly decryption. Otherwise, it delegates to the superclass's
+     * {@code openConnection} method.
+     *
+     * @param url The URL to open a connection to.
+     * @return A {@link URLConnection} for the specified URL.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
         URLConnection urlConnection = new URL(url.toString()).openConnection();

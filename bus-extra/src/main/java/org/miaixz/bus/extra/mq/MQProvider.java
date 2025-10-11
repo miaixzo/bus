@@ -28,7 +28,8 @@
 package org.miaixz.bus.extra.mq;
 
 /**
- * 消息队列引擎接口
+ * Defines the contract for a Message Queue (MQ) provider engine. Implementations of this interface are responsible for
+ * initializing the MQ system and providing access to message producers and consumers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,24 +37,27 @@ package org.miaixz.bus.extra.mq;
 public interface MQProvider {
 
     /**
-     * 初始化配置
+     * Initializes the MQ provider with the given configuration. This method should be called before any producer or
+     * consumer operations are performed.
      *
-     * @param config 配置
-     * @return this
+     * @param config The {@link MQConfig} containing the necessary configuration details for the MQ provider.
+     * @return This {@code MQProvider} instance, initialized and ready for use.
      */
     MQProvider init(MQConfig config);
 
     /**
-     * 获取消息生产者
+     * Retrieves a {@link Producer} instance associated with this MQ provider. The producer is used for sending messages
+     * to the MQ system.
      *
-     * @return 消息生产者
+     * @return A {@link Producer} instance for sending messages.
      */
     Producer getProducer();
 
     /**
-     * 获取消息消费者
+     * Retrieves a {@link Consumer} instance associated with this MQ provider. The consumer is used for receiving
+     * messages from the MQ system.
      *
-     * @return 消息消费者
+     * @return A {@link Consumer} instance for receiving messages.
      */
     Consumer getConsumer();
 

@@ -28,18 +28,19 @@
 package org.miaixz.bus.core.lang.reflect.creator;
 
 /**
- * 对象创建器，用于自定义创建指定类型、指定参数的对象 也叫对象初始化器。
+ * Object creator, used to custom create objects of a specified type with specified parameters. Also known as an object
+ * initializer.
  *
- * @param <T> 对象类型
+ * @param <T> The type of the object to be created.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface ObjectCreator<T> {
 
     /**
-     * 创建对象
+     * Creates an object.
      *
-     * @return 对象
+     * @return The created object.
      */
     T create();
 

@@ -31,7 +31,8 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
 import org.miaixz.bus.core.center.date.culture.cn.star.twentyeight.TwentyEightStar;
 
 /**
- * 动物
+ * Represents an animal (动物) in Chinese traditional culture, often associated with the Twenty-Eight Mansions. This class
+ * extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,63 +40,63 @@ import org.miaixz.bus.core.center.date.culture.cn.star.twentyeight.TwentyEightSt
 public class Animal extends Samsara {
 
     /**
-     * 动物
+     * Array of names for the animals.
      */
     public static final String[] NAMES = { "蛟", "龙", "貉", "兔", "狐", "虎", "豹", "獬", "牛", "蝠", "鼠", "燕", "猪", "獝", "狼",
             "狗", "彘", "鸡", "乌", "猴", "猿", "犴", "羊", "獐", "马", "鹿", "蛇", "蚓" };
 
     /**
-     * 构造
+     * Constructs an {@code Animal} instance with the specified index.
      *
-     * @param index 索引
+     * @param index The index of the animal in the {@link #NAMES} array.
      */
     public Animal(int index) {
         super(NAMES, index);
     }
 
     /**
-     * 构造
+     * Constructs an {@code Animal} instance with the specified name.
      *
-     * @param name 名称
+     * @param name The name of the animal.
      */
     public Animal(String name) {
         super(NAMES, name);
     }
 
     /**
-     * 根据索引获取对象
+     * Creates an {@code Animal} instance from its index.
      *
-     * @param index 索引
-     * @return this
+     * @param index The index of the animal.
+     * @return A new {@code Animal} instance.
      */
     public static Animal fromIndex(int index) {
         return new Animal(index);
     }
 
     /**
-     * 根据名称获取对象
+     * Creates an {@code Animal} instance from its name.
      *
-     * @param name 名称
-     * @return this
+     * @param name The name of the animal.
+     * @return A new {@code Animal} instance.
      */
     public static Animal fromName(String name) {
         return new Animal(name);
     }
 
     /**
-     * 获取对象
+     * Gets the next {@code Animal} in the cycle.
      *
-     * @param n 推移步数
-     * @return this
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code Animal} instance.
      */
     public Animal next(int n) {
         return fromIndex(nextIndex(n));
     }
 
     /**
-     * 二十八宿
+     * Gets the corresponding {@link TwentyEightStar} (二十八宿) for this animal.
      *
-     * @return 二十八宿
+     * @return The {@link TwentyEightStar} associated with this animal.
      */
     public TwentyEightStar getTwentyEightStar() {
         return TwentyEightStar.fromIndex(index);

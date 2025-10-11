@@ -41,7 +41,7 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 
 /**
- * Utility to query TCP connections
+ * Utility to query TCP connections on Unix-based systems.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,9 +53,10 @@ public final class NetStat {
     }
 
     /**
-     * Query netstat to obtain number of established TCP connections
+     * Query netstat to obtain the number of established TCP connections.
      *
-     * @return A pair with number of established IPv4 and IPv6 connections
+     * @return A {@link Pair} where the left element is the number of established IPv4 connections and the right element
+     *         is the number of established IPv6 connections.
      */
     public static Pair<Long, Long> queryTcpnetstat() {
         long tcp4 = 0L;
@@ -74,9 +75,9 @@ public final class NetStat {
     }
 
     /**
-     * Query netstat to all TCP and UDP connections
+     * Query netstat to get all TCP and UDP connections.
      *
-     * @return A list of TCP and UDP connections
+     * @return A list of {@link InternetProtocolStats.IPConnection} objects representing TCP and UDP connections.
      */
     public static List<InternetProtocolStats.IPConnection> queryNetstat() {
         List<InternetProtocolStats.IPConnection> connections = new ArrayList<>();
@@ -107,6 +108,13 @@ public final class NetStat {
         return connections;
     }
 
+    /**
+     * Parses an IP address and port from a string.
+     *
+     * @param s The string to parse (e.g., "73.169.134.6.9599").
+     * @return A {@link Pair} where the left element is the IP address as a byte array and the right element is the port
+     *         number.
+     */
     private static Pair<byte[], Integer> parseIP(String s) {
         // 73.169.134.6.9599 to 73.169.134.6 port 9599
         // or
@@ -138,10 +146,10 @@ public final class NetStat {
     }
 
     /**
-     * Gets TCP stats via {@code netstat -s}. Used for Linux and OpenBSD formats
+     * Gets TCP stats via {@code netstat -s}. Used for Linux and OpenBSD formats.
      *
-     * @param netstatStr The command string
-     * @return The statistics
+     * @param netstatStr The command string.
+     * @return The TCP statistics.
      */
     public static InternetProtocolStats.TcpStats queryTcpStats(String netstatStr) {
         long connectionsEstablished = 0;
@@ -230,10 +238,10 @@ public final class NetStat {
     }
 
     /**
-     * Gets UDP stats via {@code netstat -s}. Used for Linux and OpenBSD formats
+     * Gets UDP stats via {@code netstat -s}. Used for Linux and OpenBSD formats.
      *
-     * @param netstatStr The command string
-     * @return The statistics
+     * @param netstatStr The command string.
+     * @return The UDP statistics.
      */
     public static InternetProtocolStats.UdpStats queryUdpStats(String netstatStr) {
         long datagramsSent = 0;

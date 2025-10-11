@@ -36,119 +36,118 @@ import java.util.function.UnaryOperator;
 import org.miaixz.bus.core.lang.Optional;
 
 /**
- * 提供可变值类型接口
- *
+ * An interface for a mutable value wrapper.
  * <p>
- * 相较于{@link Optional}或{@link java.util.Optional}，该所有实现类中的方法都<b>不区分值是否为{@code null}</b>， 因此在使用前需要自行判断值是否为{@code null}，
- * 确保不会因为{@code null}值而抛出{@link NullPointerException}的情况。
- * </p>
+ * Unlike {@link Optional} or {@link java.util.Optional}, the methods in all implementing classes of this interface
+ * <b>do not perform `null` checks</b>. Therefore, it is the user's responsibility to handle `null` values to avoid a
+ * {@link NullPointerException}.
  *
- * @param <T> 值得类型
+ * @param <T> The type of the wrapped value.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Mutable<T> {
 
     /**
-     * 创建一个{@link MutableBool}对象
+     * Creates a new {@link MutableBoolean} object.
      *
-     * @param value 值
-     * @return {@link MutableBool}
+     * @param value The initial value.
+     * @return A new {@link MutableBoolean}.
      */
-    static MutableBool of(final boolean value) {
-        return new MutableBool(value);
+    static MutableBoolean of(final boolean value) {
+        return new MutableBoolean(value);
     }
 
     /**
-     * 创建一个{@link MutableByte}对象
+     * Creates a new {@link MutableByte} object.
      *
-     * @param value 值
-     * @return {@link MutableByte}
+     * @param value The initial value.
+     * @return A new {@link MutableByte}.
      */
     static MutableByte of(final byte value) {
         return new MutableByte(value);
     }
 
     /**
-     * 创建一个{@link MutableFloat}对象
+     * Creates a new {@link MutableFloat} object.
      *
-     * @param value 值
-     * @return {@link MutableFloat}
+     * @param value The initial value.
+     * @return A new {@link MutableFloat}.
      */
     static MutableFloat of(final float value) {
         return new MutableFloat(value);
     }
 
     /**
-     * 创建一个{@link MutableInt}对象
+     * Creates a new {@link MutableInt} object.
      *
-     * @param value 值
-     * @return {@link MutableInt}
+     * @param value The initial value.
+     * @return A new {@link MutableInt}.
      */
     static MutableInt of(final int value) {
         return new MutableInt(value);
     }
 
     /**
-     * 创建一个{@link MutableLong}对象
+     * Creates a new {@link MutableLong} object.
      *
-     * @param value 值
-     * @return {@link MutableLong}
+     * @param value The initial value.
+     * @return A new {@link MutableLong}.
      */
     static MutableLong of(final long value) {
         return new MutableLong(value);
     }
 
     /**
-     * 创建一个{@link MutableDouble}对象
+     * Creates a new {@link MutableDouble} object.
      *
-     * @param value 值
-     * @return {@link MutableDouble}
+     * @param value The initial value.
+     * @return A new {@link MutableDouble}.
      */
     static MutableDouble of(final double value) {
         return new MutableDouble(value);
     }
 
     /**
-     * 创建一个{@link MutableShort}对象
+     * Creates a new {@link MutableShort} object.
      *
-     * @param value 值
-     * @return {@link MutableShort}
+     * @param value The initial value.
+     * @return A new {@link MutableShort}.
      */
     static MutableShort of(final short value) {
         return new MutableShort(value);
     }
 
     /**
-     * 创建一个{@link MutableObject}对象
+     * Creates a new {@link MutableObject} object.
      *
-     * @param <T>   值类型
-     * @param value 值
-     * @return {@link MutableObject}
+     * @param <T>   The type of the value.
+     * @param value The initial value.
+     * @return A new {@link MutableObject}.
      */
     static <T> MutableObject<T> of(final T value) {
         return new MutableObject<>(value);
     }
 
     /**
-     * 获得原始值
+     * Gets the wrapped value.
      *
-     * @return 原始值
+     * @return The wrapped value.
      */
     T get();
 
     /**
-     * 设置值
+     * Sets the wrapped value.
      *
-     * @param value 值
+     * @param value The new value.
      */
     void set(T value);
 
     /**
-     * 根据操作修改值
+     * Applies an operator to the wrapped value and updates it.
      *
-     * @param operator 操作
-     * @return 值
+     * @param operator The operator to apply.
+     * @return This mutable object.
      */
     default Mutable<T> map(final UnaryOperator<T> operator) {
         set(operator.apply(get()));
@@ -156,10 +155,10 @@ public interface Mutable<T> {
     }
 
     /**
-     * 检查并操作值
+     * Performs an action on the wrapped value.
      *
-     * @param consumer 操作
-     * @return 当前对象
+     * @param consumer The action to perform.
+     * @return This mutable object.
      */
     default Mutable<T> peek(final Consumer<T> consumer) {
         consumer.accept(get());
@@ -167,30 +166,31 @@ public interface Mutable<T> {
     }
 
     /**
-     * 检查值是否满足条件
+     * Tests if the wrapped value satisfies a predicate.
      *
-     * @param predicate 条件
-     * @return 是否满足条件
+     * @param predicate The predicate to apply.
+     * @return `true` if the value satisfies the predicate.
      */
     default boolean test(final Predicate<T> predicate) {
         return predicate.test(get());
     }
 
     /**
-     * 获取值，并将值转换为{@link Optional}
+     * Gets the value and wraps it in an {@link Optional}.
      *
-     * @return {@link Optional}
+     * @return An {@link Optional} containing the value.
      */
     default Optional<T> toOpt() {
         return to(Optional::ofNullable);
     }
 
     /**
-     * 获取值，并将值转换为指定类型。 注意，值为null时，转换函数依然会被调用。
+     * Gets the value and converts it to another type using the given function. Note: The function will be called even
+     * if the wrapped value is `null`.
      *
-     * @param function 转换函数
-     * @param <R>      转换后的类型
-     * @return 转换后的值
+     * @param function The conversion function.
+     * @param <R>      The target type.
+     * @return The converted value.
      */
     default <R> R to(final Function<T, R> function) {
         Objects.requireNonNull(function);

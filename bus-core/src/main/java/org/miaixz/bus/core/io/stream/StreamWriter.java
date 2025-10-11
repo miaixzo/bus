@@ -40,21 +40,29 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * {@link OutputStream}写出器
+ * A utility class for writing data to an {@link OutputStream}. This class provides methods to write byte arrays,
+ * serializable objects, and character sequences to an output stream, with an option to close the stream after writing.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StreamWriter {
 
+    /**
+     * The underlying output stream to write to.
+     */
     private final OutputStream out;
+    /**
+     * Flag indicating whether the output stream should be closed after write operations.
+     */
     private final boolean closeAfterWrite;
 
     /**
-     * 构造
+     * Constructs a new {@code StreamWriter} with the specified output stream and a flag indicating whether the stream
+     * should be closed after writing.
      *
-     * @param out             {@link OutputStream}
-     * @param closeAfterWrite 写出结束后是否关闭流
+     * @param out             The {@link OutputStream} to write to.
+     * @param closeAfterWrite {@code true} if the output stream should be closed after writing, {@code false} otherwise.
      */
     public StreamWriter(final OutputStream out, final boolean closeAfterWrite) {
         this.out = out;
@@ -62,21 +70,21 @@ public class StreamWriter {
     }
 
     /**
-     * 创建写出器
+     * Creates a new {@code StreamWriter} instance.
      *
-     * @param out             {@link OutputStream}
-     * @param closeAfterWrite 写出结束后是否关闭流
-     * @return StreamReader
+     * @param out             The {@link OutputStream} to write to.
+     * @param closeAfterWrite {@code true} if the output stream should be closed after writing, {@code false} otherwise.
+     * @return A new {@code StreamWriter} instance.
      */
     public static StreamWriter of(final OutputStream out, final boolean closeAfterWrite) {
         return new StreamWriter(out, closeAfterWrite);
     }
 
     /**
-     * 将byte[]写到流中
+     * Writes a byte array to the output stream.
      *
-     * @param content 写入的内容
-     * @throws InternalException IO异常
+     * @param content The byte array to write.
+     * @throws InternalException If an I/O error occurs.
      */
     public void write(final byte[] content) throws InternalException {
         final OutputStream out = this.out;
@@ -92,10 +100,11 @@ public class StreamWriter {
     }
 
     /**
-     * 将多部分对象写到流中，使用{@link ObjectOutputStream}，对象必须实现序列化接口
+     * Writes multiple serializable objects to the output stream using {@link ObjectOutputStream}. Each object must
+     * implement the {@link java.io.Serializable} interface.
      *
-     * @param contents 写入的内容
-     * @throws InternalException IO异常
+     * @param contents An array of objects to write. Null objects will be skipped.
+     * @throws InternalException If an I/O error occurs during serialization.
      */
     public void writeObject(final Object... contents) throws InternalException {
         ObjectOutputStream osw = null;
@@ -121,11 +130,13 @@ public class StreamWriter {
     }
 
     /**
-     * 将多部分内容写到流中，自动转换为字符串
+     * Writes multiple character sequences to the output stream, converting them to strings. The content is written
+     * using the specified character set.
      *
-     * @param charset  写出的内容的字符集
-     * @param contents 写入的内容，调用toString()方法，不包括不会自动换行
-     * @throws InternalException IO异常
+     * @param charset  The character set to use for encoding the content.
+     * @param contents An array of character sequences to write. Null sequences will be skipped. The {@code toString()}
+     *                 method will be called on each sequence.
+     * @throws InternalException If an I/O error occurs.
      */
     public void writeString(final Charset charset, final CharSequence... contents) throws InternalException {
         OutputStreamWriter osw = null;

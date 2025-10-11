@@ -30,7 +30,7 @@ package org.miaixz.bus.core.xyz;
 import org.miaixz.bus.core.cache.provider.*;
 
 /**
- * 缓存工具类
+ * Cache utility class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,88 +38,88 @@ import org.miaixz.bus.core.cache.provider.*;
 public class CacheKit {
 
     /**
-     * 创建FIFO(first in first out) 先进先出缓存.
+     * Creates a FIFO (First-In, First-Out) cache.
      *
-     * @param <K>      Key类型
-     * @param <V>      Value类型
-     * @param capacity 容量
-     * @param timeout  过期时长，单位：毫秒
-     * @return {@link FIFOCache}
+     * @param <K>      The type of the key.
+     * @param <V>      The type of the value.
+     * @param capacity The cache capacity.
+     * @param timeout  The timeout for each entry in milliseconds.
+     * @return A new {@link FIFOCache} instance.
      */
     public static <K, V> FIFOCache<K, V> newFIFOCache(final int capacity, final long timeout) {
         return new FIFOCache<>(capacity, timeout);
     }
 
     /**
-     * 创建FIFO(first in first out) 先进先出缓存.
+     * Creates a FIFO (First-In, First-Out) cache.
      *
-     * @param <K>      Key类型
-     * @param <V>      Value类型
-     * @param capacity 容量
-     * @return {@link FIFOCache}
+     * @param <K>      The type of the key.
+     * @param <V>      The type of the value.
+     * @param capacity The cache capacity.
+     * @return A new {@link FIFOCache} instance.
      */
     public static <K, V> FIFOCache<K, V> newFIFOCache(final int capacity) {
         return new FIFOCache<>(capacity);
     }
 
     /**
-     * 创建LFU(least frequently used) 最少使用率缓存.
+     * Creates an LFU (Least Frequently Used) cache.
      *
-     * @param <K>      Key类型
-     * @param <V>      Value类型
-     * @param capacity 容量
-     * @param timeout  过期时长，单位：毫秒
-     * @return {@link LFUCache}
+     * @param <K>      The type of the key.
+     * @param <V>      The type of the value.
+     * @param capacity The cache capacity.
+     * @param timeout  The timeout for each entry in milliseconds.
+     * @return A new {@link LFUCache} instance.
      */
     public static <K, V> LFUCache<K, V> newLFUCache(final int capacity, final long timeout) {
         return new LFUCache<>(capacity, timeout);
     }
 
     /**
-     * 创建LFU(least frequently used) 最少使用率缓存.
+     * Creates an LFU (Least Frequently Used) cache.
      *
-     * @param <K>      Key类型
-     * @param <V>      Value类型
-     * @param capacity 容量
-     * @return {@link LFUCache}
+     * @param <K>      The type of the key.
+     * @param <V>      The type of the value.
+     * @param capacity The cache capacity.
+     * @return A new {@link LFUCache} instance.
      */
     public static <K, V> LFUCache<K, V> newLFUCache(final int capacity) {
         return new LFUCache<>(capacity);
     }
 
     /**
-     * 创建LRU (least recently used)最近最久未使用缓存.
+     * Creates an LRU (Least Recently Used) cache.
      *
-     * @param <K>      Key类型
-     * @param <V>      Value类型
-     * @param capacity 容量
-     * @param timeout  过期时长，单位：毫秒
-     * @return {@link LRUCache}
+     * @param <K>      The type of the key.
+     * @param <V>      The type of the value.
+     * @param capacity The cache capacity.
+     * @param timeout  The timeout for each entry in milliseconds.
+     * @return A new {@link LRUCache} instance.
      */
     public static <K, V> LRUCache<K, V> newLRUCache(final int capacity, final long timeout) {
         return new LRUCache<>(capacity, timeout);
     }
 
     /**
-     * 创建LRU (least recently used)最近最久未使用缓存.
+     * Creates an LRU (Least Recently Used) cache.
      *
-     * @param <K>      Key类型
-     * @param <V>      Value类型
-     * @param capacity 容量
-     * @return {@link LRUCache}
+     * @param <K>      The type of the key.
+     * @param <V>      The type of the value.
+     * @param capacity The cache capacity.
+     * @return A new {@link LRUCache} instance.
      */
     public static <K, V> LRUCache<K, V> newLRUCache(final int capacity) {
         return new LRUCache<>(capacity);
     }
 
     /**
-     * 创建定时缓存，通过定时任务自动清除过期缓存对象
+     * Creates a timed cache that automatically prunes expired entries via a scheduled task.
      *
-     * @param <K>                Key类型
-     * @param <V>                Value类型
-     * @param timeout            过期时长，单位：毫秒
-     * @param schedulePruneDelay 间隔时长，单位毫秒
-     * @return {@link TimedCache}
+     * @param <K>                The type of the key.
+     * @param <V>                The type of the value.
+     * @param timeout            The timeout for each entry in milliseconds.
+     * @param schedulePruneDelay The interval in milliseconds to prune expired entries.
+     * @return A new {@link TimedCache} instance.
      */
     public static <K, V> TimedCache<K, V> newTimedCache(final long timeout, final long schedulePruneDelay) {
         final TimedCache<K, V> cache = newTimedCache(timeout);
@@ -127,35 +127,35 @@ public class CacheKit {
     }
 
     /**
-     * 创建定时缓存.
+     * Creates a timed cache.
      *
-     * @param <K>     Key类型
-     * @param <V>     Value类型
-     * @param timeout 过期时长，单位：毫秒
-     * @return {@link TimedCache}
+     * @param <K>     The type of the key.
+     * @param <V>     The type of the value.
+     * @param timeout The timeout for each entry in milliseconds.
+     * @return A new {@link TimedCache} instance.
      */
     public static <K, V> TimedCache<K, V> newTimedCache(final long timeout) {
         return new TimedCache<>(timeout);
     }
 
     /**
-     * 创建弱引用缓存.
+     * Creates a cache with weak-referenced keys.
      *
-     * @param <K>     Key类型
-     * @param <V>     Value类型
-     * @param timeout 过期时长，单位：毫秒
-     * @return {@link WeakCache}
+     * @param <K>     The type of the key.
+     * @param <V>     The type of the value.
+     * @param timeout The timeout for each entry in milliseconds.
+     * @return A new {@link WeakCache} instance.
      */
     public static <K, V> WeakCache<K, V> newWeakCache(final long timeout) {
         return new WeakCache<>(timeout);
     }
 
     /**
-     * 创建无缓存实现.
+     * Creates a no-op cache implementation that does not store any entries.
      *
-     * @param <K> Key类型
-     * @param <V> Value类型
-     * @return {@link NoCache}
+     * @param <K> The type of the key.
+     * @param <V> The type of the value.
+     * @return A new {@link NoCache} instance.
      */
     public static <K, V> NoCache<K, V> newNoCache() {
         return new NoCache<>();

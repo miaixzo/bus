@@ -31,16 +31,26 @@ import java.io.Serial;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
 /**
- * {@link AtomicIntegerArray}转换器
+ * Converts an object to an {@link AtomicIntegerArray}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AtomicIntegerArrayConverter extends AbstractConverter {
 
+    /**
+     * The serial version UID.
+     */
     @Serial
     private static final long serialVersionUID = 2852263893218L;
 
+    /**
+     * Internally converts the given value to an {@link AtomicIntegerArray}.
+     *
+     * @param targetClass The target class, which should be {@link AtomicIntegerArray}.
+     * @param value       The value to be converted.
+     * @return The converted {@link AtomicIntegerArray} object.
+     */
     @Override
     protected AtomicIntegerArray convertInternal(final Class<?> targetClass, final Object value) {
         return new AtomicIntegerArray(Convert.convert(int[].class, value));

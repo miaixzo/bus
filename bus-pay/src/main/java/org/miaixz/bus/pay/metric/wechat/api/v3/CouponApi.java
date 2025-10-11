@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-优惠券接口
+ * WeChat Pay v3 API - Coupon APIs
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,169 +38,171 @@ import org.miaixz.bus.pay.Matcher;
 public enum CouponApi implements Matcher {
 
     /**
-     * 创建代金券批次
+     * Create a cash coupon batch
      */
-    CREATE_COUPON_STOCKS("/v3/marketing/favor/coupon-stocks", "创建代金券批次"),
+    CREATE_COUPON_STOCKS("/v3/marketing/favor/coupon-stocks", "Create a cash coupon batch"),
 
     /**
-     * 激活代金券批次
+     * Activate a cash coupon batch
      */
-    START_COUPON_STOCKS("/v3/marketing/favor/stocks/%s/start", "激活代金券批次"),
+    START_COUPON_STOCKS("/v3/marketing/favor/stocks/%s/start", "Activate a cash coupon batch"),
 
     /**
-     * 发放代金券
+     * Send a cash coupon
      */
-    SEND_COUPON("/v3/marketing/favor/users/%s/coupons", "发放代金券"),
+    SEND_COUPON("/v3/marketing/favor/users/%s/coupons", "Send a cash coupon"),
 
     /**
-     * 暂停代金券批次
+     * Pause a cash coupon batch
      */
-    PAUSE_COUPON_STOCKS("/v3/marketing/favor/stocks/%s/pause", "暂停代金券批次"),
+    PAUSE_COUPON_STOCKS("/v3/marketing/favor/stocks/%s/pause", "Pause a cash coupon batch"),
 
     /**
-     * 重启代金券批次
+     * Restart a cash coupon batch
      */
-    RESTART_COUPON_STOCKS("/v3/marketing/favor/stocks/%s/restart", "重启代金券批次"),
+    RESTART_COUPON_STOCKS("/v3/marketing/favor/stocks/%s/restart", "Restart a cash coupon batch"),
     /**
-     * 条件查询批次列表
+     * Query batch list by conditions
      */
-    QUERY_COUPON_STOCKS("/v3/marketing/favor/stocks", "条件查询批次列表"),
+    QUERY_COUPON_STOCKS("/v3/marketing/favor/stocks", "Query batch list by conditions"),
     /**
-     * 查询批次详情
+     * Query batch details
      */
-    QUERY_COUPON_STOCKS_INFO("/v3/marketing/favor/stocks/%s", "查询批次详情"),
+    QUERY_COUPON_STOCKS_INFO("/v3/marketing/favor/stocks/%s", "Query batch details"),
     /**
-     * 查询代金券详情
+     * Query cash coupon details
      */
-    QUERY_COUPON_INFO("/v3/marketing/favor/users/%s/coupons/%s", "查询代金券详情"),
+    QUERY_COUPON_INFO("/v3/marketing/favor/users/%s/coupons/%s", "Query cash coupon details"),
 
     /**
-     * 查询代金券可用商户
+     * Query available merchants for a cash coupon
      */
-    QUERY_COUPON_MERCHANTS("/v3/marketing/favor/stocks/%s/merchants", "查询代金券可用商户"),
+    QUERY_COUPON_MERCHANTS("/v3/marketing/favor/stocks/%s/merchants", "Query available merchants for a cash coupon"),
 
     /**
-     * 查询代金券可用单品
+     * Query available items for a cash coupon
      */
-    QUERY_COUPON_ITEMS("/v3/marketing/favor/stocks/%s/items", "查询代金券可用单品"),
+    QUERY_COUPON_ITEMS("/v3/marketing/favor/stocks/%s/items", "Query available items for a cash coupon"),
 
     /**
-     * 根据商户号查用户的券
+     * Query user's coupons by merchant ID
      */
-    QUERY_USER_COUPON("/v3/marketing/favor/users/%s/coupons", "根据商户号查用户的券"),
+    QUERY_USER_COUPON("/v3/marketing/favor/users/%s/coupons", "Query user's coupons by merchant ID"),
 
     /**
-     * 下载批次核销明细
+     * Download batch use flow
      */
-    DOWNLOAD_COUPON_STOCKS_USER_FLOW("/v3/marketing/favor/stocks/%s/use-flow", "下载批次核销明细"),
+    DOWNLOAD_COUPON_STOCKS_USER_FLOW("/v3/marketing/favor/stocks/%s/use-flow", "Download batch use flow"),
 
     /**
-     * 下载批次退款明细
+     * Download batch refund flow
      */
-    DOWNLOAD_COUPON_STOCKS_REFUND_FLOW("/v3/marketing/favor/stocks/%s/refund-flow", "下载批次退款明细"),
+    DOWNLOAD_COUPON_STOCKS_REFUND_FLOW("/v3/marketing/favor/stocks/%s/refund-flow", "Download batch refund flow"),
 
     /**
-     * 设置消息通知地址
+     * Set callback URL for notifications
      */
-    SETTING_COUPON_CALLBACKS("/v3/marketing/favor/callbacks", "设置消息通知地址"),
+    SETTING_COUPON_CALLBACKS("/v3/marketing/favor/callbacks", "Set callback URL for notifications"),
 
     /**
-     * 创建商家券
+     * Create a business coupon
      */
-    CREATE_BUSINESS_COUPON("/v3/marketing/busifavor/stocks", "创建商家券"),
+    CREATE_BUSINESS_COUPON("/v3/marketing/busifavor/stocks", "Create a business coupon"),
 
     /**
-     * 查询商家券批次详情
+     * Query business coupon batch details
      */
-    QUERY_BUSINESS_COUPON_STOCKS_INFO("/v3/marketing/busifavor/stocks/%s", "查询商家券批次详情"),
+    QUERY_BUSINESS_COUPON_STOCKS_INFO("/v3/marketing/busifavor/stocks/%s", "Query business coupon batch details"),
 
     /**
-     * 核销用户券
+     * Use a user's coupon
      */
-    USE_BUSINESS_COUPON("/v3/marketing/busifavor/coupons/use", "核销用户券"),
+    USE_BUSINESS_COUPON("/v3/marketing/busifavor/coupons/use", "Use a user's coupon"),
 
     /**
-     * 根据过滤条件查询用户券
+     * Query user's coupons by filter conditions
      */
-    QUERY_BUSINESS_USER_COUPON("/v3/marketing/busifavor/users/%s/coupons", "根据过滤条件查询用户券"),
+    QUERY_BUSINESS_USER_COUPON("/v3/marketing/busifavor/users/%s/coupons", "Query user's coupons by filter conditions"),
 
     /**
-     * 查询用户单张券详情
+     * Query details of a single user coupon
      */
-    QUERY_BUSINESS_USER_COUPON_INFO("/v3/marketing/busifavor/users/%s/coupons/%s/appids/%s", "查询用户单张券详情"),
+    QUERY_BUSINESS_USER_COUPON_INFO("/v3/marketing/busifavor/users/%s/coupons/%s/appids/%s",
+            "Query details of a single user coupon"),
 
     /**
-     * 上传预存code
+     * Upload pre-stocked codes
      */
-    BUSINESS_COUPON_UPLOAD_CODE("/v3/marketing/busifavor/stocks/%s/couponcodes", "上传预存code"),
+    BUSINESS_COUPON_UPLOAD_CODE("/v3/marketing/busifavor/stocks/%s/couponcodes", "Upload pre-stocked codes"),
 
     /**
-     * 设置/查询商家券事件通知地址
+     * Set/Query business coupon event notification URL
      */
-    BUSINESS_COUPON_CALLBACKS("/v3/marketing/busifavor/callbacks", "设置/查询商家券事件通知地址"),
+    BUSINESS_COUPON_CALLBACKS("/v3/marketing/busifavor/callbacks", "Set/Query business coupon event notification URL"),
 
     /**
-     * 关联订单信息
+     * Associate order information
      */
-    BUSINESS_COUPON_ASSOCIATE("/v3/marketing/busifavor/coupons/associate", "关联订单信息"),
+    BUSINESS_COUPON_ASSOCIATE("/v3/marketing/busifavor/coupons/associate", "Associate order information"),
 
     /**
-     * 取消关联订单信息
+     * Disassociate order information
      */
-    BUSINESS_COUPON_DISASSOCIATE("/v3/marketing/busifavor/coupons/disassociate", "取消关联订单信息"),
+    BUSINESS_COUPON_DISASSOCIATE("/v3/marketing/busifavor/coupons/disassociate", "Disassociate order information"),
 
     /**
-     * 修改批次预算
+     * Modify batch budget
      */
-    MODIFY_BUSINESS_COUPON_STOCKS_BUDGET("/v3/marketing/busifavor/stocks/%s/budget", "修改批次预算"),
+    MODIFY_BUSINESS_COUPON_STOCKS_BUDGET("/v3/marketing/busifavor/stocks/%s/budget", "Modify batch budget"),
 
     /**
-     * 修改商家券基本信息
+     * Modify business coupon basic information
      */
-    MODIFY_BUSINESS_COUPON_INFO("/v3/marketing/busifavor/stocks/%s", "修改商家券基本信息"),
+    MODIFY_BUSINESS_COUPON_INFO("/v3/marketing/busifavor/stocks/%s", "Modify business coupon basic information"),
 
     /**
-     * 申请退券
+     * Apply for a coupon return
      */
-    APPLY_REFUND_COUPONS("/v3/marketing/busifavor/coupons/return", "申请退券"),
+    APPLY_REFUND_COUPONS("/v3/marketing/busifavor/coupons/return", "Apply for a coupon return"),
 
     /**
-     * 使券失效
+     * Deactivate a coupon
      */
-    COUPON_DEACTIVATE("/v3/marketing/busifavor/coupons/deactivate", "使券失效"),
+    COUPON_DEACTIVATE("/v3/marketing/busifavor/coupons/deactivate", "Deactivate a coupon"),
 
     /**
-     * 营销补差付款
+     * Marketing subsidy payment
      */
-    COUPON_SUBSIDY_PAY("/v3/marketing/busifavor/subsidy/pay-receipts", "营销补差付款"),
+    COUPON_SUBSIDY_PAY("/v3/marketing/busifavor/subsidy/pay-receipts", "Marketing subsidy payment"),
 
     /**
-     * 查询营销补差付款单详情
+     * Query marketing subsidy payment details
      */
-    COUPON_SUBSIDY_PAY_INFO("/v3/marketing/busifavor/subsidy/pay-receipts/%s", "查询营销补差付款单详情"),
+    COUPON_SUBSIDY_PAY_INFO("/v3/marketing/busifavor/subsidy/pay-receipts/%s",
+            "Query marketing subsidy payment details"),
 
     /**
-     * 委托营销-建立合作关系
+     * Entrusted Marketing - Build partnership
      */
-    PARTNERSHIPS_BUILD("/v3/marketing/partnerships/build", "建立合作关系"),
+    PARTNERSHIPS_BUILD("/v3/marketing/partnerships/build", "Entrusted Marketing - Build partnership"),
 
     /**
-     * 委托营销-终止合作关系
+     * Entrusted Marketing - Terminate partnership
      */
-    PARTNERSHIPS_TERMINATE("/v3/marketing/partnerships/terminate", "终止合作关系"),
+    PARTNERSHIPS_TERMINATE("/v3/marketing/partnerships/terminate", "Entrusted Marketing - Terminate partnership"),
 
     /**
-     * 发放消费卡
+     * Send a consumption card
      */
-    SEND_BUSINESS_COUPON("/v3/marketing/busifavor/coupons/%s/send", "发放消费卡");
+    SEND_BUSINESS_COUPON("/v3/marketing/busifavor/coupons/%s/send", "Send a consumption card");
 
     /**
-     * 接口方法
+     * API method
      */
     private final String method;
 
     /**
-     * 接口描述
+     * API description
      */
     private final String desc;
 
@@ -210,7 +212,7 @@ public enum CouponApi implements Matcher {
     }
 
     /**
-     * 交易类型
+     * Transaction type
      *
      * @return the string
      */
@@ -220,7 +222,7 @@ public enum CouponApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Type description
      *
      * @return the string
      */
@@ -230,7 +232,7 @@ public enum CouponApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * API method
      *
      * @return the string
      */

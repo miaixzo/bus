@@ -34,14 +34,15 @@ import com.rnkrsoft.bopomofo4j.Bopomofo4j;
 import com.rnkrsoft.bopomofo4j.ToneType;
 
 /**
- * 封装了Bopomofo4j的引擎。
+ * Encapsulates the Bopomofo4j engine.
  *
  * <p>
- * Bopomofo4j封装，项目：https://gitee.com/rnkrsoft/Bopomofo4j。
+ * Bopomofo4j encapsulation, project:
+ * <a href="https://gitee.com/rnkrsoft/Bopomofo4j">https://gitee.com/rnkrsoft/Bopomofo4j</a>.
  * </p>
  *
  * <p>
- * 引入：
+ * To introduce (dependency):
  * 
  * <pre>
  * &lt;dependency&gt;
@@ -57,7 +58,7 @@ import com.rnkrsoft.bopomofo4j.ToneType;
 public class Bopomofo4JProvider implements PinyinProvider {
 
     /**
-     * 构造
+     * Constructs a new Bopomofo4JProvider instance. Initializes the Bopomofo4j library for local use.
      */
     public Bopomofo4JProvider() {
         Bopomofo4j.local();

@@ -33,20 +33,22 @@ import org.miaixz.bus.setting.metric.ini.IniProperty;
 import org.miaixz.bus.setting.metric.ini.IniSection;
 
 /**
- * iniFormatter的函数接口 通常，格式化程序需要三种格式，例如 {@link IniComment}, {@link IniSection}, {@link IniProperty}
+ * A functional interface for creating an INI {@link Format} instance. It provides the necessary element formatters for
+ * comments, sections, and properties.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
+@FunctionalInterface
 public interface Factory {
 
     /**
-     * 通过三个字符获取一个iniFormatter
+     * Applies the given element formatters to create a new {@link Format} instance.
      *
-     * @param commentElementFormatter  a formatter for comment
-     * @param sectionElementFormatter  a formatter for section
-     * @param propertyElementFormatter a formatter for property
-     * @return an {@link Format}
+     * @param commentElementFormatter  a formatter for comment lines.
+     * @param sectionElementFormatter  a formatter for section headers.
+     * @param propertyElementFormatter a formatter for property lines (key-value pairs).
+     * @return a new {@link Format} instance.
      */
     Format apply(
             ElementFormatter<IniComment> commentElementFormatter,

@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import java.io.IOException;
-
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.http.Headers;
@@ -36,8 +34,10 @@ import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.accord.RealConnection;
 
+import java.io.IOException;
+
 /**
- * Encode HTTP请求和decode HTTP响应
+ * Encodes HTTP requests and decodes HTTP responses.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,69 +45,89 @@ import org.miaixz.bus.http.accord.RealConnection;
 public interface HttpCodec {
 
     /**
-     * 丢弃输入数据流时要使用的超时。由于这是用于连接重用， 因此此超时时间应该大大少于建立新连接所需的时间.
+     * The timeout to use when discarding an input stream. Since this is used for connection reuse, this timeout should
+     * be significantly less than the time it takes to establish a new connection.
      */
     int DISCARD_STREAM_TIMEOUT_MILLIS = 100;
 
     /**
-     * 返回携带此编解码器的连接
+     * Returns the connection that carries this codec.
+     *
+     * @return The real connection.
      */
     RealConnection connection();
 
     /**
-     * 返回一个可以对请求体进行流处理的输出流.
+     * Returns an output stream that can stream the request body.
      *
-     * @param request       网络请求
-     * @param contentLength 内容长度
-     * @return 缓冲信息
+     * @param request       The network request.
+     * @param contentLength The content length of the request body.
+     * @return A sink for the request body.
+     * @throws IOException if an I/O error occurs.
      */
     Sink createRequestBody(Request request, long contentLength) throws IOException;
 
     /**
-     * 这应该更新HTTP引擎的sentRequestMillis字段.
+     * Writes the request headers to the network. This should update the HTTP engine's sentRequestMillis field.
      *
-     * @param request 网络请求
-     * @throws IOException 异常
+     * @param request The network request.
+     * @throws IOException if an I/O error occurs.
      */
     void writeRequestHeaders(Request request) throws IOException;
 
     /**
-     * 将请求刷新到基础套接字
+     * Flushes the request to the underlying socket.
      *
-     * @throws IOException 异常
+     * @throws IOException if an I/O error occurs.
      */
     void flushRequest() throws IOException;
 
     /**
-     * 将请求刷新到基础套接字，就不会传输更多的字节.
+     * Flushes the request to the underlying socket, indicating that no more bytes will be transmitted.
      *
-     * @throws IOException 异常
+     * @throws IOException if an I/O error occurs.
      */
     void finishRequest() throws IOException;
 
     /**
-     * 从HTTP传输解析响应头的字节
+     * Parses the response headers from the HTTP transport.
      *
-     * @param expectContinue 如果这是一个带有“100”响应代码的中间响应， 则返回null。否则，此方法永远不会返回null.
-     * @return 响应构建器
-     * @throws IOException 异常
+     * @param expectContinue If this is an intermediate response with a "100" response code, this returns null.
+     *                       Otherwise, this method will never return null.
+     * @return A response builder.
+     * @throws IOException if an I/O error occurs.
      */
     Response.Builder readResponseHeaders(boolean expectContinue) throws IOException;
 
+    /**
+     * Returns the reported content length of the response.
+     *
+     * @param response The response.
+     * @return The reported content length.
+     * @throws IOException if an I/O error occurs.
+     */
     long reportedContentLength(Response response) throws IOException;
 
+    /**
+     * Opens a source to read the response body.
+     *
+     * @param response The response.
+     * @return A source for the response body.
+     * @throws IOException if an I/O error occurs.
+     */
     Source openResponseBodySource(Response response) throws IOException;
 
     /**
-     * 在HTTP响应之后返回
+     * Returns the trailer headers after the HTTP response.
      *
-     * @return the object
-     * @throws IOException 异常
+     * @return The trailer headers.
+     * @throws IOException if an I/O error occurs.
      */
     Headers trailers() throws IOException;
 
     /**
-     * 取消这个流。这个流所持有的资源将被清理，尽管不是同步的。这可能会在连接池线程之后发生
+     * Cancels this stream. Resources held by this stream will be cleaned up, though not necessarily synchronously. This
+     * may happen after the connection pool thread.
      */
     void cancel();
 

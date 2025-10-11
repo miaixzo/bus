@@ -36,9 +36,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
- * 监听系统可用性事件的类。 基于 Spring 的事件监听机制，捕获系统可用性状态变更事件，并根据不同状态（存活状态和就绪状态）执行特定的行动。 集成 HealthProviderService
- * 以获取系统和硬件信息，用于日志记录、恢复操作或通知触发。
- * 
+ * A component that listens for application availability events.
+ * <p>
+ * Based on Spring's event listening mechanism, this class captures availability state changes and logs them. This is
+ * useful for observing the application's lifecycle, especially in containerized environments where liveness and
+ * readiness probes are critical.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,15 +49,18 @@ import org.springframework.stereotype.Component;
 public class AvailabilityListener {
 
     /**
-     * 监听 AvailabilityChangeEvent 事件，记录状态变更并根据状态类型执行特定动作。 支持以下状态类型：
+     * Listens for {@link AvailabilityChangeEvent} and logs the state transition. This method handles the following
+     * states:
      * <ul>
-     * <li>{@link LivenessState#CORRECT}: 系统存活正常，记录调试日志。</li>
-     * <li>{@link LivenessState#BROKEN}: 系统存活异常，记录调试日志，可能触发 Kubernetes 重启 pod。</li>
-     * <li>{@link ReadinessState#ACCEPTING_TRAFFIC}: 系统就绪接受流量，记录调试日志。</li>
-     * <li>{@link ReadinessState#REFUSING_TRAFFIC}: 系统拒绝流量，记录调试日志，可能移除 pod 的服务端点。</li>
+     * <li>{@link LivenessState#CORRECT}: The application is live and running correctly.</li>
+     * <li>{@link LivenessState#BROKEN}: The application is in a broken state, which may trigger a restart by the
+     * orchestrator.</li>
+     * <li>{@link ReadinessState#ACCEPTING_TRAFFIC}: The application is ready to accept traffic.</li>
+     * <li>{@link ReadinessState#REFUSING_TRAFFIC}: The application is not ready to accept traffic, which may cause it
+     * to be removed from the load balancer.</li>
      * </ul>
      *
-     * @param event 可用性状态变更事件，包含状态和时间戳
+     * @param event The availability state change event, containing the new state and a timestamp.
      */
     @EventListener
     public void onStateChange(AvailabilityChangeEvent<? extends AvailabilityState> event) {
@@ -62,14 +68,14 @@ public class AvailabilityListener {
         long timestamp = event.getTimestamp();
         String stateName = state.toString();
 
-        // 记录状态变更日志，包含状态类型和时间戳
+        // Log the state change with its type and timestamp.
         switch (state) {
             case ReadinessState.ACCEPTING_TRAFFIC -> Logger
                     .debug("System is ready to accept traffic at {}: {}", timestamp, stateName);
             case ReadinessState.REFUSING_TRAFFIC -> Logger
                     .debug("System is refusing traffic at {}: {}", timestamp, stateName);
-            case LivenessState.BROKEN -> Logger.debug("System is in broken state at {}: {}", timestamp, stateName);
-            case LivenessState.CORRECT -> Logger.debug("System is in correct state at {}: {}", timestamp, stateName);
+            case LivenessState.BROKEN -> Logger.debug("System is in a broken state at {}: {}", timestamp, stateName);
+            case LivenessState.CORRECT -> Logger.debug("System is in a correct state at {}: {}", timestamp, stateName);
             default -> Logger.warn("Unknown availability state detected at {}: {}", timestamp, stateName);
         }
     }

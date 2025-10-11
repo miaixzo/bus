@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.http.accord;
 
-import java.io.IOException;
-
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
@@ -37,27 +35,44 @@ import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.RealInterceptorChain;
 
+import java.io.IOException;
+
 /**
- * 打开到目标服务器的连接并继续到下一个拦截器.
+ * An interceptor that opens a connection to the target server and proceeds to the next interceptor.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConnectInterceptor implements Interceptor {
+public final class ConnectInterceptor implements Interceptor {
 
+    /**
+     * The httpd client instance.
+     */
     public final Httpd httpd;
 
+    /**
+     * Constructs a new ConnectInterceptor.
+     *
+     * @param httpd The Httpd client instance.
+     */
     public ConnectInterceptor(Httpd httpd) {
         this.httpd = httpd;
     }
 
+    /**
+     * Intercepts the request to establish a connection and create an exchange.
+     *
+     * @param chain The interceptor chain.
+     * @return The response from the server.
+     * @throws IOException if an I/O error occurs during the connection.
+     */
     @Override
     public Response intercept(NewChain chain) throws IOException {
         RealInterceptorChain realChain = (RealInterceptorChain) chain;
         Request request = realChain.request();
         Transmitter transmitter = realChain.transmitter();
 
-        // 我们需要网络来满足这个要求。可能用于验证条件GET
+        // We need the network to satisfy this request. This may be used to validate a conditional GET.
         boolean doExtensiveHealthChecks = !HTTP.GET.equals(request.method());
         Exchange exchange = transmitter.newExchange(chain, doExtensiveHealthChecks);
 

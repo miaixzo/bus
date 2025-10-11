@@ -34,7 +34,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.metric.MemoryCache;
 
 /**
- * 默认缓存实现
+ * Default cache implementation for notification services.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,65 +42,88 @@ import org.miaixz.bus.cache.metric.MemoryCache;
 public enum NotifyCache implements CacheX<String, Object> {
 
     /**
-     * 当前实例
+     * The singleton instance of the cache.
      */
     INSTANCE;
 
     private CacheX<String, Object> cache;
 
+    /**
+     * Constructs a new NotifyCache and initializes it with a {@link MemoryCache}.
+     */
     NotifyCache() {
         cache = new MemoryCache();
     }
 
     /**
-     * 获取缓存内容
+     * Retrieves the cached content associated with the given key.
      *
-     * @param key 缓存key
-     * @return 缓存内容
+     * @param key The cache key.
+     * @return The cached content, or {@code null} if not found or expired.
      */
     @Override
     public Object read(String key) {
         return cache.read(key);
     }
 
+    /**
+     * Retrieves a map of cached contents for the given collection of keys.
+     *
+     * @param keys A collection of cache keys.
+     * @return A map where keys are cache keys and values are their corresponding cached contents.
+     */
     @Override
-    public Map read(Collection<String> keys) {
+    public Map<String, Object> read(Collection<String> keys) {
         return this.cache.read(keys);
     }
 
     /**
-     * 是否存在key，如果对应key的value值已过期，也返回false
+     * Checks if the cache contains the specified key and if its value has not expired.
      *
-     * @param key 缓存key
-     * @return true：存在key，并且value没过期；false：key不存在或者已过期
+     * @param key The cache key.
+     * @return {@code true} if the key exists and its value is not expired; {@code false} otherwise.
      */
     @Override
     public boolean containsKey(String key) {
         return this.cache.containsKey(key);
     }
 
+    /**
+     * Writes multiple key-value pairs to the cache with a specified expiration time.
+     *
+     * @param map    The map of key-value pairs to write.
+     * @param expire The expiration time in milliseconds.
+     */
     @Override
-    public void write(Map map, long expire) {
+    public void write(Map<String, Object> map, long expire) {
         this.cache.write(map, expire);
     }
 
     /**
-     * 存入缓存
+     * Stores content in the cache with a specified key and expiration time.
      *
-     * @param key    缓存key
-     * @param value  缓存内容
-     * @param expire 指定缓存过期时间（毫秒）
+     * @param key    The cache key.
+     * @param value  The content to be cached.
+     * @param expire The expiration time in milliseconds.
      */
     @Override
     public void write(String key, Object value, long expire) {
         this.cache.write(key, value, expire);
     }
 
+    /**
+     * Removes one or more entries from the cache based on their keys.
+     *
+     * @param keys An array of cache keys to remove.
+     */
     @Override
     public void remove(String[] keys) {
         this.cache.remove(keys);
     }
 
+    /**
+     * Clears all entries from the cache.
+     */
     @Override
     public void clear() {
         this.cache.clear();

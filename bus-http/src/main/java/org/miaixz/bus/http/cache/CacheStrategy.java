@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.http.cache;
 
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Headers;
@@ -37,8 +34,13 @@ import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.metric.Internal;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 /**
- * 给定一个请求和缓存的响应，这将确定是使用网络、缓存还是两者都使用 选择缓存策略可能会向请求添加条件(比如条件get的“if - modified - since”报头) 或向缓存的响应添加警告(如果缓存的数据可能过时)
+ * Given a request and a cached response, this class determines whether to use the network, the cache, or both.
+ * Selecting a cache strategy may add conditions to the request (like the "If-Modified-Since" header for conditional
+ * GETs) or warnings to the cached response (if the cached data is potentially stale).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,12 +48,12 @@ import org.miaixz.bus.http.metric.Internal;
 public class CacheStrategy {
 
     /**
-     * 请求在网络上发送，如果调用不使用网络则为空
+     * The request to send on the network, or null if the network is not used.
      */
     public final Request networkRequest;
 
     /**
-     * 缓存响应以返回或验证;如果这个调用不使用缓存，则为null
+     * The cached response to return or validate; null if this call does not use the cache.
      */
     public final Response cacheResponse;
 
@@ -61,14 +63,14 @@ public class CacheStrategy {
     }
 
     /**
-     * 如果{@code response}可以存储为以后服务另一个请求，则返回true
+     * Returns true if {@code response} can be stored to later serve another request.
      *
-     * @param response 相应信息
-     * @param request  请求信息
-     * @return the true/false
+     * @param response The response to check.
+     * @param request  The request that resulted in the response.
+     * @return {@code true} if the response is cacheable.
      */
     public static boolean isCacheable(Response response, Request request) {
-        // 总是去网络获取非缓存的响应代码(RFC 7231 section 6.1)，这个实现不支持缓存部分内容
+        // Always go to network for non-cacheable response codes (RFC 7231 section 6.1).
         switch (response.code()) {
             case HTTP.HTTP_OK:
             case HTTP.HTTP_NOT_AUTHORITATIVE:
@@ -81,24 +83,29 @@ public class CacheStrategy {
             case HTTP.HTTP_REQ_TOO_LONG:
             case HTTP.HTTP_NOT_IMPLEMENTED:
             case HTTP.HTTP_PERM_REDIRECT:
-                // 这些代码可以被缓存，除非标头禁止
+                // These codes can be cached unless headers forbid it.
                 break;
 
             case HTTP.HTTP_MOVED_TEMP:
             case HTTP.HTTP_TEMP_REDIRECT:
-                if (null != response.header(HTTP.EXPIRES) || response.cacheControl().maxAgeSeconds() != -1
+                // These codes can only be cached if explicitly allowed by headers.
+                if (response.header(HTTP.EXPIRES) != null || response.cacheControl().maxAgeSeconds() != -1
                         || response.cacheControl().isPublic() || response.cacheControl().isPrivate()) {
                     break;
                 }
+                // Fall-through.
             default:
-                // 不能缓存所有其他代码
+                // All other codes cannot be cached.
                 return false;
         }
 
-        // 针对请求或响应的'no-store'指令会阻止缓存响应。
+        // A 'no-store' directive on either the request or the response prevents the response from being cached.
         return !response.cacheControl().noStore() && !request.cacheControl().noStore();
     }
 
+    /**
+     * A factory for creating {@link CacheStrategy} instances.
+     */
     public static class Factory {
 
         final long nowMillis;
@@ -106,39 +113,40 @@ public class CacheStrategy {
         final Response cacheResponse;
 
         /**
-         * 服务器提供缓存的响应的时间
+         * The server-provided date of the cached response.
          */
         private Date servedDate;
         private String servedDateString;
 
         /**
-         * 缓存响应的最后修改日期
+         * The last modified date of the cached response.
          */
         private Date lastModified;
         private String lastModifiedString;
 
         /**
-         * 缓存的响应的过期日期。如果设置了该字段和最大值，则首选最大值
+         * The expiration date of the cached response. If both this field and the max age are set, the max age is
+         * preferred.
          */
         private Date expires;
 
         /**
-         * 扩展头由Httpd设置，指定缓存的HTTP请求首次启动时的时间戳
+         * Extension header set by Httpd specifying the timestamp when the cached HTTP request was first initiated.
          */
         private long sentRequestMillis;
 
         /**
-         * 由Httpd设置的扩展头，指定首次接收缓存的HTTP响应时的时间戳
+         * Extension header set by Httpd specifying the timestamp when the cached HTTP response was first received.
          */
         private long receivedResponseMillis;
 
         /**
-         * 缓存响应的Etag
+         * The ETag of the cached response.
          */
         private String etag;
 
         /**
-         * 缓存响应的时间
+         * The age of the cached response.
          */
         private int ageSeconds = -1;
 
@@ -147,7 +155,7 @@ public class CacheStrategy {
             this.request = request;
             this.cacheResponse = cacheResponse;
 
-            if (null != cacheResponse) {
+            if (cacheResponse != null) {
                 this.sentRequestMillis = cacheResponse.sentRequestAtMillis();
                 this.receivedResponseMillis = cacheResponse.receivedResponseAtMillis();
                 Headers headers = cacheResponse.headers();
@@ -172,23 +180,27 @@ public class CacheStrategy {
         }
 
         /**
-         * 如果请求包含保存服务器不发送客户机本地响应的条件，则返回true 当请求按照自己的条件加入队列时，将不使用内置的响应缓存。
+         * Returns true if the request contains conditions that save the server from sending a response that the client
+         * already has locally. When a request is enqueued with its own conditions, the built-in response cache won't be
+         * used.
          *
-         * @param request 氢气信息
-         * @return the true/false
+         * @param request The request to check for conditions.
+         * @return {@code true} if the request has conditions.
          */
         private static boolean hasConditions(Request request) {
-            return null != request.header(HTTP.IF_MODIFIED_SINCE) || null != request.header(HTTP.IF_NONE_MATCH);
+            return request.header(HTTP.IF_MODIFIED_SINCE) != null || request.header(HTTP.IF_NONE_MATCH) != null;
         }
 
         /**
-         * @return 使用缓存的响应{@code response}返回满足{@code request}的策略
+         * Returns a strategy to satisfy {@code request} using the a cached response {@code response}.
+         *
+         * @return The computed cache strategy.
          */
         public CacheStrategy get() {
             CacheStrategy candidate = getCandidate();
 
-            if (null != candidate.networkRequest && request.cacheControl().onlyIfCached()) {
-                // 被禁止使用网络和缓存是不够的
+            if (candidate.networkRequest != null && request.cacheControl().onlyIfCached()) {
+                // We're forbidden from using the network and the cache is insufficient.
                 return new CacheStrategy(null, null);
             }
 
@@ -196,20 +208,24 @@ public class CacheStrategy {
         }
 
         /**
-         * @return 如果请求可以使用网络，则返回要使用的策略
+         * Returns a strategy to use assuming the request can use the network.
+         *
+         * @return The candidate cache strategy.
          */
         private CacheStrategy getCandidate() {
-            // 没有缓存的响应.
-            if (null == cacheResponse) {
+            // No cached response.
+            if (cacheResponse == null) {
                 return new CacheStrategy(request, null);
             }
 
-            // 如果缺少必要的握手，则删除缓存的响应。
-            if (request.isHttps() && null == cacheResponse.handshake()) {
+            // Drop the cached response if the handshake is missing.
+            if (request.isHttps() && cacheResponse.handshake() == null) {
                 return new CacheStrategy(request, null);
             }
-            // 如果不应该存储此响应，则不应该将其用作响应源。
-            // 只要持久性存储表现良好且规则不变，此检查就应该是多余的
+
+            // If this response shouldn't have been stored, it shouldn't be used as a response source.
+            // This check should be redundant as long as the persistence store is well-behaved and the rules
+            // haven't changed since the response was cached.
             if (!isCacheable(cacheResponse, request)) {
                 return new CacheStrategy(request, null);
             }
@@ -250,20 +266,21 @@ public class CacheStrategy {
                 return new CacheStrategy(null, builder.build());
             }
 
-            // 查找要添加到请求的条件。如果条件满足，则不会传输响应体。
+            // Find a condition to add to the request. If the condition is satisfied, the response body will not be
+            // transmitted.
             String conditionName;
             String conditionValue;
-            if (null != etag) {
+            if (etag != null) {
                 conditionName = "If-None-Match";
                 conditionValue = etag;
-            } else if (null != lastModified) {
+            } else if (lastModified != null) {
                 conditionName = "If-Modified-Since";
                 conditionValue = lastModifiedString;
-            } else if (null != servedDate) {
+            } else if (servedDate != null) {
                 conditionName = "If-Modified-Since";
                 conditionValue = servedDateString;
             } else {
-                return new CacheStrategy(request, null);
+                return new CacheStrategy(request, null); // No condition! Make a regular request.
             }
 
             Headers.Builder conditionalRequestHeaders = request.headers().newBuilder();
@@ -274,22 +291,23 @@ public class CacheStrategy {
         }
 
         /**
-         * @return 响应刷新的毫秒数，从服务日期开始
+         * Returns the number of milliseconds that the response is fresh for, from the served date.
+         *
+         * @return The freshness lifetime in milliseconds.
          */
         private long computeFreshnessLifetime() {
             CacheControl responseCaching = cacheResponse.cacheControl();
             if (responseCaching.maxAgeSeconds() != -1) {
                 return TimeUnit.SECONDS.toMillis(responseCaching.maxAgeSeconds());
-            } else if (null != expires) {
-                long servedMillis = null != servedDate ? servedDate.getTime() : receivedResponseMillis;
+            } else if (expires != null) {
+                long servedMillis = servedDate != null ? servedDate.getTime() : receivedResponseMillis;
                 long delta = expires.getTime() - servedMillis;
                 return delta > 0 ? delta : 0;
-            } else if (null != lastModified && null == cacheResponse.request().url().query()) {
-
-                // 根据HTTP RFC的建议并在Firefox中实现，
-                // 文档的最大值应该默认为其被提供时文档值的10%。
-                // 默认过期日期不用于包含查询的uri
-                long servedMillis = null != servedDate ? servedDate.getTime() : sentRequestMillis;
+            } else if (lastModified != null && cacheResponse.request().url().query() == null) {
+                // As recommended by the HTTP RFC and implemented in Firefox, the max age of a document should be
+                // defaulted to 10% of the document's age at the time it was served. Default expiration dates aren't
+                // used for URIs containing a query.
+                long servedMillis = servedDate != null ? servedDate.getTime() : sentRequestMillis;
                 long delta = servedMillis - lastModified.getTime();
                 return delta > 0 ? (delta / 10) : 0;
             }
@@ -297,10 +315,13 @@ public class CacheStrategy {
         }
 
         /**
-         * @return 返回响应的当前值(以毫秒为单位)。计算按RFC 7234规定，4.2.3计算值
+         * Returns the current age of the response, in milliseconds. The calculation is specified by RFC 7234, 4.2.3
+         * Calculating Age.
+         *
+         * @return The age of the response in milliseconds.
          */
         private long cacheResponseAge() {
-            long apparentReceivedAge = null != servedDate ? Math.max(0, receivedResponseMillis - servedDate.getTime())
+            long apparentReceivedAge = servedDate != null ? Math.max(0, receivedResponseMillis - servedDate.getTime())
                     : 0;
             long receivedAge = ageSeconds != -1 ? Math.max(apparentReceivedAge, TimeUnit.SECONDS.toMillis(ageSeconds))
                     : apparentReceivedAge;
@@ -310,10 +331,13 @@ public class CacheStrategy {
         }
 
         /**
-         * @return 如果computeFreshnessLifetime使用了启发式，则返回true 如果我们使用启发式来服务大于24小时的缓存响应，则需要附加一个警告
+         * Returns true if computeFreshnessLifetime used a heuristic. If we use a heuristic to serve a cached response,
+         * we must attach a warning header.
+         *
+         * @return {@code true} if a heuristic was used.
          */
         private boolean isFreshnessLifetimeHeuristic() {
-            return cacheResponse.cacheControl().maxAgeSeconds() == -1 && null == expires;
+            return cacheResponse.cacheControl().maxAgeSeconds() == -1 && expires == null;
         }
     }
 

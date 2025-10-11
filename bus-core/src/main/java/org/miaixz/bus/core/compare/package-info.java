@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 各种比较器（Comparator）实现和封装
+ * Provides various implementations and wrappers for {@link java.util.Comparator}.
  *
  * @author Kimi Liu
  * @since Java 17+

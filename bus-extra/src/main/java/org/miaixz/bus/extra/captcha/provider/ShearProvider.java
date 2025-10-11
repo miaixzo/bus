@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
 
 /**
- * 扭曲干扰验证码
+ * Shear interference CAPTCHA provider.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,58 +51,58 @@ public class ShearProvider extends AbstractProvider {
     private static final long serialVersionUID = 2852292037090L;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width  图片宽
-     * @param height 图片高
+     * @param width  Image width.
+     * @param height Image height.
      */
     public ShearProvider(final int width, final int height) {
         this(width, height, 5);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width     图片宽
-     * @param height    图片高
-     * @param codeCount 字符个数
+     * @param width     Image width.
+     * @param height    Image height.
+     * @param codeCount Number of characters.
      */
     public ShearProvider(final int width, final int height, final int codeCount) {
         this(width, height, codeCount, 4);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width     图片宽
-     * @param height    图片高
-     * @param codeCount 字符个数
-     * @param thickness 干扰线宽度
+     * @param width     Image width.
+     * @param height    Image height.
+     * @param codeCount Number of characters.
+     * @param thickness Thickness of the interference line.
      */
     public ShearProvider(final int width, final int height, final int codeCount, final int thickness) {
         this(width, height, new RandomStrategy(codeCount), thickness);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param generator      验证码生成器
-     * @param interfereCount 验证码干扰元素个数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param generator      CAPTCHA code generator.
+     * @param interfereCount Number of interfering elements (used as thickness for the line).
      */
     public ShearProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount) {
         super(width, height, generator, interfereCount);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param width          图片宽
-     * @param height         图片高
-     * @param codeCount      字符个数
-     * @param interfereCount 验证码干扰元素个数
-     * @param sizeBaseHeight 字体的大小 高度的倍数
+     * @param width          Image width.
+     * @param height         Image height.
+     * @param codeCount      Number of characters.
+     * @param interfereCount Number of interfering elements (used as thickness for the line).
+     * @param sizeBaseHeight Font size as a multiplier of the height.
      */
     public ShearProvider(final int width, final int height, final int codeCount, final int interfereCount,
             final float sizeBaseHeight) {
@@ -116,11 +116,11 @@ public class ShearProvider extends AbstractProvider {
         final Graphics2D g = ImageKit.createGraphics(image, this.background);
 
         try {
-            // 画字符串
+            // Draw the string
             drawString(g, code);
-            // 扭曲
+            // Apply shear distortion
             shear(g, this.width, this.height, ObjectKit.defaultIfNull(this.background, Color.WHITE));
-            // 画干扰线
+            // Draw interference line
             drawInterfere(
                     g,
                     0,
@@ -137,13 +137,13 @@ public class ShearProvider extends AbstractProvider {
     }
 
     /**
-     * 绘制字符串
+     * Draws the string.
      *
-     * @param g    {@link Graphics}画笔
-     * @param code 验证码
+     * @param g    The {@link Graphics2D} object.
+     * @param code The CAPTCHA code.
      */
     private void drawString(final Graphics2D g, final String code) {
-        // 指定透明度
+        // Specify transparency
         if (null != this.textAlpha) {
             g.setComposite(this.textAlpha);
         }
@@ -151,12 +151,12 @@ public class ShearProvider extends AbstractProvider {
     }
 
     /**
-     * 扭曲
+     * Applies shear distortion.
      *
-     * @param g     {@link Graphics}
-     * @param w1    w1
-     * @param h1    h1
-     * @param color 颜色
+     * @param g     The {@link Graphics} object.
+     * @param w1    The width.
+     * @param h1    The height.
+     * @param color The color.
      */
     private void shear(final Graphics g, final int w1, final int h1, final Color color) {
         shearX(g, w1, h1, color);
@@ -164,17 +164,15 @@ public class ShearProvider extends AbstractProvider {
     }
 
     /**
-     * X坐标扭曲
+     * Applies horizontal shear distortion.
      *
-     * @param g     {@link Graphics}
-     * @param w1    宽
-     * @param h1    高
-     * @param color 颜色
+     * @param g     The {@link Graphics} object.
+     * @param w1    The width.
+     * @param h1    The height.
+     * @param color The color.
      */
     private void shearX(final Graphics g, final int w1, final int h1, final Color color) {
-
         final int period = RandomKit.randomInt(this.width);
-
         final int frames = 1;
         final int phase = RandomKit.randomInt(2);
 
@@ -186,45 +184,42 @@ public class ShearProvider extends AbstractProvider {
             g.drawLine((int) d, i, 0, i);
             g.drawLine((int) d + w1, i, w1, i);
         }
-
     }
 
     /**
-     * Y坐标扭曲
+     * Applies vertical shear distortion.
      *
-     * @param g     {@link Graphics}
-     * @param w1    宽
-     * @param h1    高
-     * @param color 颜色
+     * @param g     The {@link Graphics} object.
+     * @param w1    The width.
+     * @param h1    The height.
+     * @param color The color.
      */
     private void shearY(final Graphics g, final int w1, final int h1, final Color color) {
-
         final int period = RandomKit.randomInt(this.height >> 1);
-
         final int frames = 20;
         final int phase = 7;
+
         for (int i = 0; i < w1; i++) {
             final double d = (double) (period >> 1)
                     * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
             g.copyArea(i, 0, 1, h1, 0, (int) d);
             g.setColor(color);
-            // 擦除原位置的痕迹
+            // Erase the original trace
             g.drawLine(i, (int) d, i, 0);
             g.drawLine(i, (int) d + h1, i, h1);
         }
-
     }
 
     /**
-     * 干扰线
+     * Draws an interference line.
      *
-     * @param g         {@link Graphics}
-     * @param x1        x1
-     * @param y1        y1
-     * @param x2        x2
-     * @param y2        y2
-     * @param thickness 粗细
-     * @param c         颜色
+     * @param g         The {@link Graphics} object.
+     * @param x1        The x-coordinate of the start point.
+     * @param y1        The y-coordinate of the start point.
+     * @param x2        The x-coordinate of the end point.
+     * @param y2        The y-coordinate of the end point.
+     * @param thickness The thickness of the line.
+     * @param c         The color of the line.
      */
     private void drawInterfere(
             final Graphics g,
@@ -234,7 +229,6 @@ public class ShearProvider extends AbstractProvider {
             final int y2,
             final int thickness,
             final Color c) {
-
         // The thick line is in fact a filled polygon
         g.setColor(c);
         final int dX = x2 - x1;
@@ -244,8 +238,7 @@ public class ShearProvider extends AbstractProvider {
 
         final double scale = (double) (thickness) / (2 * lineLength);
 
-        // The x and y increments from an endpoint needed to create a
-        // rectangle...
+        // The x and y increments from an endpoint needed to create a rectangle...
         double ddx = -scale * (double) dY;
         double ddy = scale * (double) dX;
         ddx += (ddx > 0) ? 0.5 : -0.5;

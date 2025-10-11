@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
-import org.miaixz.bus.pay.magic.Material;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 转换短链接
+ * Model for the Convert Short URL API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,12 +47,33 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class ShortUrl extends Material {
 
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID.
+     */
     private String sub_mch_id;
+    /**
+     * The long URL to be converted.
+     */
     private String long_url;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Signature type.
+     */
     private String sign_type;
 
 }

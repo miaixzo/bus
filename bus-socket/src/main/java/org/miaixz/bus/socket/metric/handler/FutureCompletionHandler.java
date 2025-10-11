@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -34,8 +34,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * @param <V>
- * @param <A>
+ * An adapter that bridges the callback-style {@link CompletionHandler} with the {@link Future} interface. This allows
+ * asynchronous I/O operations that use a {@code CompletionHandler} to be treated as a {@code Future}, enabling blocking
+ * calls via {@code get()} or polling for completion.
+ *
+ * @param <V> The result type of the {@code Future} and the {@code CompletionHandler}.
+ * @param <A> The type of the attachment passed to the {@code CompletionHandler}.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -46,19 +50,35 @@ public final class FutureCompletionHandler<V, A> implements CompletionHandler<V,
     private boolean cancel = false;
     private Throwable exception;
 
+    /**
+     * Called when the asynchronous operation completes successfully. Sets the result and notifies any threads waiting
+     * on the {@code Future}.
+     *
+     * @param result     The result of the I/O operation.
+     * @param attachment The object attached to the I/O operation.
+     */
     @Override
-    public void completed(V result, A selectionKey) {
+    public void completed(V result, A attachment) {
         this.result = result;
         done = true;
         synchronized (this) {
-            this.notify();
+            this.notifyAll();
         }
     }
 
+    /**
+     * Called when the asynchronous operation fails. Stores the exception to be thrown by `Future.get()`.
+     *
+     * @param exc        The exception thrown by the I/O operation.
+     * @param attachment The object attached to the I/O operation.
+     */
     @Override
     public void failed(Throwable exc, A attachment) {
         exception = exc;
         done = true;
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     @Override
@@ -69,7 +89,7 @@ public final class FutureCompletionHandler<V, A> implements CompletionHandler<V,
         cancel = true;
         done = true;
         synchronized (this) {
-            notify();
+            notifyAll();
         }
         return true;
     }
@@ -86,23 +106,19 @@ public final class FutureCompletionHandler<V, A> implements CompletionHandler<V,
 
     @Override
     public synchronized V get() throws InterruptedException, ExecutionException {
-        if (done) {
-            if (exception != null) {
-                throw new ExecutionException(exception);
-            }
-            return result;
-        } else {
+        if (!done) {
             wait();
         }
-        return get();
+        if (exception != null) {
+            throw new ExecutionException(exception);
+        }
+        return result;
     }
 
     @Override
     public synchronized V get(long timeout, TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
-        if (done) {
-            return get();
-        } else {
+        if (!done) {
             wait(unit.toMillis(timeout));
         }
         if (done) {

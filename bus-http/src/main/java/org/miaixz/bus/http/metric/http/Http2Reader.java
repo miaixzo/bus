@@ -39,21 +39,37 @@ import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Reads HTTP/2运输框架 此实现假设我们没有向对等端发送增加的{@link Http2Settings#getMaxFrameSize frame size设置}。
- * 因此，我们希望所有帧的最大长度为{@link Http2#INITIAL_MAX_FRAME_SIZE}。
+ * Reads HTTP/2 transport frames. This implementation assumes we haven't sent a SETTINGS frame to the peer that
+ * increases the frame size. Therefore, we expect all frames to have a maximum length of
+ * {@link Http2#INITIAL_MAX_FRAME_SIZE}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Http2Reader implements Closeable {
 
+    /**
+     * The HPACK reader for decoding headers.
+     */
     public final Hpack.Reader hpackReader;
+    /**
+     * The underlying source from which frames are read.
+     */
     public final BufferSource source;
+    /**
+     * A source that reads continuation frames.
+     */
     public final ContinuationSource continuation;
+    /**
+     * True if this is a client endpoint.
+     */
     public final boolean client;
 
     /**
-     * Creates a frame reader with max header table size of 4096.
+     * Creates a frame reader with a max header table size of 4096.
+     *
+     * @param source The source to read from.
+     * @param client True if this is a client endpoint.
      */
     Http2Reader(BufferSource source, boolean client) {
         this.source = source;
@@ -62,10 +78,26 @@ public class Http2Reader implements Closeable {
         this.hpackReader = new Hpack.Reader(4096, continuation);
     }
 
+    /**
+     * Reads an unsigned 24-bit integer.
+     *
+     * @param source The source to read from.
+     * @return The integer value.
+     * @throws IOException if an I/O error occurs.
+     */
     static int readMedium(BufferSource source) throws IOException {
         return (source.readByte() & 0xff) << 16 | (source.readByte() & 0xff) << 8 | (source.readByte() & 0xff);
     }
 
+    /**
+     * Calculates the length of the frame payload, excluding padding.
+     *
+     * @param length  The total length of the frame.
+     * @param flags   The frame flags.
+     * @param padding The padding length.
+     * @return The length of the payload without padding.
+     * @throws IOException if the padding is greater than the remaining length.
+     */
     static int lengthWithoutPadding(int length, byte flags, short padding) throws IOException {
         if ((flags & Http2.FLAG_PADDED) != 0)
             length--; // Account for reading the padding length.
@@ -75,6 +107,12 @@ public class Http2Reader implements Closeable {
         return (short) (length - padding);
     }
 
+    /**
+     * Reads the connection preface, which is different for clients and servers.
+     *
+     * @param handler The handler for frame events.
+     * @throws IOException if an I/O error occurs or the preface is incorrect.
+     */
     public void readConnectionPreface(Handler handler) throws IOException {
         if (client) {
             // The client reads the initial SETTINGS frame.
@@ -92,6 +130,14 @@ public class Http2Reader implements Closeable {
         }
     }
 
+    /**
+     * Reads the next frame from the source. This is a blocking call.
+     *
+     * @param requireSettings True if the next frame must be a SETTINGS frame.
+     * @param handler         The handler for frame events.
+     * @return True if a frame was read, false if the stream is exhausted.
+     * @throws IOException if an I/O error occurs.
+     */
     public boolean nextFrame(boolean requireSettings, Handler handler) throws IOException {
         try {
             source.require(9);
@@ -99,17 +145,6 @@ public class Http2Reader implements Closeable {
             return false;
         }
 
-        // 0 1 2 3
-        // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-        // +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-        // | Length (24) |
-        // +---------------+---------------+---------------+
-        // | Type (8) | Flags (8) |
-        // +-+-+-----------+---------------+-------------------------------+
-        // |R| Stream Identifier (31) |
-        // +=+=============================================================+
-        // | Frame Payload (0...) ...
-        // +---------------------------------------------------------------+
         int length = readMedium(source);
         if (length < 0 || length > Http2.INITIAL_MAX_FRAME_SIZE) {
             throw Http2.ioException("FRAME_SIZE_ERROR: %s", length);
@@ -167,6 +202,15 @@ public class Http2Reader implements Closeable {
         return true;
     }
 
+    /**
+     * Reads a HEADERS frame.
+     *
+     * @param handler  The handler for frame events.
+     * @param length   The length of the frame.
+     * @param flags    The frame flags.
+     * @param streamId The stream ID.
+     * @throws IOException if an I/O error occurs.
+     */
     private void readHeaders(Handler handler, int length, byte flags, int streamId) throws IOException {
         if (streamId == 0)
             throw Http2.ioException("PROTOCOL_ERROR: TYPE_HEADERS streamId == 0");
@@ -187,6 +231,16 @@ public class Http2Reader implements Closeable {
         handler.headers(endStream, streamId, -1, headerBlock);
     }
 
+    /**
+     * Reads a header block, which may be spread across multiple CONTINUATION frames.
+     *
+     * @param length   The length of the header block.
+     * @param padding  The padding length.
+     * @param flags    The frame flags.
+     * @param streamId The stream ID.
+     * @return A list of decoded headers.
+     * @throws IOException if an I/O error occurs.
+     */
     private List<Http2Header> readHeaderBlock(int length, short padding, byte flags, int streamId) throws IOException {
         continuation.length = continuation.left = length;
         continuation.padding = padding;
@@ -197,6 +251,15 @@ public class Http2Reader implements Closeable {
         return hpackReader.getAndResetHeaderList();
     }
 
+    /**
+     * Reads a DATA frame.
+     *
+     * @param handler  The handler for frame events.
+     * @param length   The length of the frame.
+     * @param flags    The frame flags.
+     * @param streamId The stream ID.
+     * @throws IOException if an I/O error occurs.
+     */
     private void readData(Handler handler, int length, byte flags, int streamId) throws IOException {
         if (streamId == 0)
             throw Http2.ioException("PROTOCOL_ERROR: TYPE_DATA streamId == 0");
@@ -214,6 +277,15 @@ public class Http2Reader implements Closeable {
         source.skip(padding);
     }
 
+    /**
+     * Reads a PRIORITY frame.
+     *
+     * @param handler  The handler for frame events.
+     * @param length   The length of the frame.
+     * @param flags    The frame flags.
+     * @param streamId The stream ID.
+     * @throws IOException if an I/O error occurs.
+     */
     private void readPriority(Handler handler, int length, byte flags, int streamId) throws IOException {
         if (length != 5)
             throw Http2.ioException("TYPE_PRIORITY length: %d != 5", length);
@@ -222,6 +294,13 @@ public class Http2Reader implements Closeable {
         readPriority(handler, streamId);
     }
 
+    /**
+     * Reads the payload of a PRIORITY frame.
+     *
+     * @param handler  The handler for frame events.
+     * @param streamId The stream ID.
+     * @throws IOException if an I/O error occurs.
+     */
     private void readPriority(Handler handler, int streamId) throws IOException {
         int w1 = source.readInt();
         boolean exclusive = (w1 & 0x80000000) != 0;
@@ -230,6 +309,15 @@ public class Http2Reader implements Closeable {
         handler.priority(streamId, streamDependency, weight, exclusive);
     }
 
+    /**
+     * Reads a RST_STREAM frame.
+     *
+     * @param handler  The handler for frame events.
+     * @param length   The length of the frame.
+     * @param flags    The frame flags.
+     * @param streamId The stream ID.
+     * @throws IOException if an I/O error occurs.
+     */
     private void readRstStream(Handler handler, int length, byte flags, int streamId) throws IOException {
         if (length != 4)
             throw Http2.ioException("TYPE_RST_STREAM length: %d != 4", length);
@@ -243,6 +331,15 @@ public class Http2Reader implements Closeable {
         handler.rstStream(streamId, errorCode);
     }
 
+    /**
+     * Reads a SETTINGS frame.
+     *
+     * @param handler  The handler for frame events.
+     * @param length   The length of the frame.
+     * @param flags    The frame flags.
+     * @param streamId The stream ID.
+     * @throws IOException if an I/O error occurs.
+     */
     private void readSettings(Handler handler, int length, byte flags, int streamId) throws IOException {
         if (streamId != 0)
             throw Http2.ioException("TYPE_SETTINGS streamId != 0");
@@ -298,6 +395,15 @@ public class Http2Reader implements Closeable {
         handler.settings(false, settings);
     }
 
+    /**
+     * Reads a PUSH_PROMISE frame.
+     *
+     * @param handler  The handler for frame events.
+     * @param length   The length of the frame.
+     * @param flags    The frame flags.
+     * @param streamId The stream ID.
+     * @throws IOException if an I/O error occurs.
+     */
     private void readPushPromise(Handler handler, int length, byte flags, int streamId) throws IOException {
         if (streamId == 0) {
             throw Http2.ioException("PROTOCOL_ERROR: TYPE_PUSH_PROMISE streamId == 0");
@@ -310,6 +416,15 @@ public class Http2Reader implements Closeable {
         handler.pushPromise(streamId, promisedStreamId, headerBlock);
     }
 
+    /**
+     * Reads a PING frame.
+     *
+     * @param handler  The handler for frame events.
+     * @param length   The length of the frame.
+     * @param flags    The frame flags.
+     * @param streamId The stream ID.
+     * @throws IOException if an I/O error occurs.
+     */
     private void readPing(Handler handler, int length, byte flags, int streamId) throws IOException {
         if (length != 8)
             throw Http2.ioException("TYPE_PING length != 8: %s", length);
@@ -321,6 +436,15 @@ public class Http2Reader implements Closeable {
         handler.ping(ack, payload1, payload2);
     }
 
+    /**
+     * Reads a GOAWAY frame.
+     *
+     * @param handler  The handler for frame events.
+     * @param length   The length of the frame.
+     * @param flags    The frame flags.
+     * @param streamId The stream ID.
+     * @throws IOException if an I/O error occurs.
+     */
     private void readGoAway(Handler handler, int length, byte flags, int streamId) throws IOException {
         if (length < 8)
             throw Http2.ioException("TYPE_GOAWAY length < 8: %s", length);
@@ -340,6 +464,15 @@ public class Http2Reader implements Closeable {
         handler.goAway(lastStreamId, errorCode, debugData);
     }
 
+    /**
+     * Reads a WINDOW_UPDATE frame.
+     *
+     * @param handler  The handler for frame events.
+     * @param length   The length of the frame.
+     * @param flags    The frame flags.
+     * @param streamId The stream ID.
+     * @throws IOException if an I/O error occurs.
+     */
     private void readWindowUpdate(Handler handler, int length, byte flags, int streamId) throws IOException {
         if (length != 4)
             throw Http2.ioException("TYPE_WINDOW_UPDATE length !=4: %s", length);
@@ -354,102 +487,157 @@ public class Http2Reader implements Closeable {
         source.close();
     }
 
+    /**
+     * Handler for HTTP/2 frames.
+     */
     interface Handler {
 
+        /**
+         * Handles a DATA frame.
+         * 
+         * @param inFinished True if this is the last frame of the stream.
+         * @param streamId   The stream ID.
+         * @param source     The source of the data.
+         * @param length     The length of the data.
+         * @throws IOException if an I/O error occurs.
+         */
         void data(boolean inFinished, int streamId, BufferSource source, int length) throws IOException;
 
         /**
-         * 创建或更新传入的标头，必要时创建相应的流。触发这个的帧是header和PUSH_PROMISE.
+         * Creates or updates incoming headers, creating the corresponding stream if necessary. The frames that trigger
+         * this are HEADERS and PUSH_PROMISE.
          *
-         * @param inFinished         如果发送方不发送更多的帧，则为真
-         * @param streamId           拥有这请求头的流.
-         * @param associatedStreamId 触发发送方创建此流的流.
-         * @param headerBlock        header信息
+         * @param inFinished         true if the sender will not send more frames.
+         * @param streamId           the stream that owns these headers.
+         * @param associatedStreamId the stream that triggered the sender to create this stream.
+         * @param headerBlock        the header block.
          */
         void headers(boolean inFinished, int streamId, int associatedStreamId, List<Http2Header> headerBlock);
 
+        /**
+         * Handles a RST_STREAM frame.
+         * 
+         * @param streamId  The stream ID.
+         * @param errorCode The error code.
+         */
         void rstStream(int streamId, Http2ErrorCode errorCode);
 
+        /**
+         * Handles a SETTINGS frame.
+         * 
+         * @param clearPrevious True if the settings should be cleared before applying.
+         * @param settings      The settings to apply.
+         */
         void settings(boolean clearPrevious, Http2Settings settings);
 
         /**
-         * HTTP/2 only.
+         * HTTP/2 only. Acknowledges the reception of a SETTINGS frame.
          */
         void ackSettings();
 
         /**
-         * 从对等端读取连接级ping,{@code ack}表示这是一个回复,{@code payload1} 和{@code payload2}中的数据是不透明的二进制，并且没有关于内容的规则
+         * Reads a connection-level ping from the peer. {@code ack} indicates this is a reply. The data in
+         * {@code payload1} and {@code payload2} is opaque binary and there are no rules on its content.
          *
-         * @param ack      the ack
-         * @param payload1 the payload1
-         * @param payload2 the payload2
+         * @param ack      the ack flag.
+         * @param payload1 the first payload integer.
+         * @param payload2 the second payload integer.
          */
         void ping(boolean ack, int payload1, int payload2);
 
         /**
-         * 同伴告诉我们停止创建流。在新连接上使用{@code ID > lastGoodStreamId}重播流是安全的。
-         * 带有{@code ID <= lastGoodStreamId}的正在运行的流只能在新连接上重播，如果它们是幂等的
+         * The peer tells us to stop creating streams. It is safe to replay streams with {@code ID >
+         * lastGoodStreamId} on a new connection. A running stream with {@code ID <= lastGoodStreamId} can only be
+         * replayed on a new connection if it is idempotent.
          *
-         * @param lastGoodStreamId 发送此消息之前处理的最后一个流ID。 如果{@code lastGoodStreamId}为零，则该对等点不处理任何帧.
-         * @param errorCode        关闭连接的原因.
-         * @param debugData        只适用于HTTP/2;要发送的不透明调试数据
+         * @param lastGoodStreamId The last stream ID that was processed before this message was sent. If
+         *                         {@code lastGoodStreamId} is zero, the peer did not process any frames.
+         * @param errorCode        The reason for closing the connection.
+         * @param debugData        Opaque debug data for HTTP/2 only.
          */
         void goAway(int lastGoodStreamId, Http2ErrorCode errorCode, ByteString debugData);
 
         /**
-         * 通知可以在{@code streamId}上发送额外的{@code windowSizeIncrement}字节 或者在{@code streamId}为零的情况下发送连接.
+         * Notifies that an additional {@code windowSizeIncrement} bytes can be sent on {@code streamId}, or on the
+         * connection if {@code streamId} is zero.
          *
-         * @param streamId            拥有这请求头的流
-         * @param windowSizeIncrement 字节
+         * @param streamId            The stream that owns these headers.
+         * @param windowSizeIncrement The number of bytes.
          */
         void windowUpdate(int streamId, long windowSizeIncrement);
 
         /**
-         * 读取标题或优先级帧时调用。这可以用来将流的权值从默认值(16)更改为一个新值.
+         * Called when a HEADERS or PRIORITY frame is read. This can be used to change the stream's weight from the
+         * default (16) to a new value.
          *
-         * @param streamId         具有优先级更改的流.
-         * @param streamDependency 此流所依赖的流ID.
-         * @param weight           先级的相对比例[1..256].
-         * @param exclusive        将这个流ID作为{@code streamDependency}的唯一子元素插入.
+         * @param streamId         The stream with the priority change.
+         * @param streamDependency The stream ID that this stream depends on.
+         * @param weight           The relative weight of the priority [1..256].
+         * @param exclusive        Inserts this stream ID as the sole child of {@code streamDependency}.
          */
         void priority(int streamId, int streamDependency, int weight, boolean exclusive);
 
         /**
-         * HTTP / 2只。接收推送承诺头块 一个推送承诺包含所有与服务器发起的请求相关的报头，以及一个{@code promise streamid}
-         * 它将被发送到响应帧。推送承诺帧作为响应的一部分发送到{@code streamId}.
+         * HTTP/2 only. Receives a push promise header block. A push promise contains all the headers associated with a
+         * server-initiated request, and a {@code promisedStreamId} that will be sent in a subsequent response frame.
+         * The push promise frame is sent as part of the response to {@code streamId}.
          *
-         * @param streamId         客户端发起的流ID。必须是奇数.
-         * @param promisedStreamId 服务器发起的流ID。必须是偶数.
-         * @param requestHeaders   最低限度包括{@code:method}、{@code:scheme}、{@code:authority}和(@code:path}.
-         * @throws IOException 异常信息
+         * @param streamId         The client-initiated stream ID. Must be odd.
+         * @param promisedStreamId The server-initiated stream ID. Must be even.
+         * @param requestHeaders   Minimally includes {@code :method}, {@code :scheme}, {@code :authority}, and
+         *                         {@code :path}.
+         * @throws IOException if an I/O error occurs.
          */
         void pushPromise(int streamId, int promisedStreamId, List<Http2Header> requestHeaders) throws IOException;
 
         /**
-         * HTTP/2 only. 表示用于连接或客户端发起的流的资源可从不同的网络位置或协议配置获得.
+         * HTTP/2 only. Indicates that a resource is available from a different network location or with a different
+         * protocol configuration.
          *
-         * @param streamId 当客户端发起的流ID(奇数)时，此备用服务的起源就是流的起源。当为0时， 原点在{@code origin}参数中指定.
-         * @param origin   当出现时，源通常表示为scheme、主机和端口的组合。 当为空时，原点是{@code streamId}.
-         * @param protocol ALPN协议，如{@code h2}.
-         * @param host     IP地址或主机名。
-         * @param port     与服务相关联的IP端口
-         * @param maxAge   这个选项被认为是新鲜的时间(以秒为单位).
+         * @param streamId When a client-initiated stream ID (odd number), the origin of this alternate service is the
+         *                 origin of the stream. When 0, the origin is specified in the {@code origin} parameter.
+         * @param origin   When present, the origin is typically represented as a combination of scheme, host, and port.
+         *                 When empty, the origin is that of the {@code streamId}.
+         * @param protocol ALPN protocol, such as {@code h2}.
+         * @param host     IP address or hostname.
+         * @param port     The IP port associated with the service.
+         * @param maxAge   The time in seconds that this option is considered fresh.
          */
         void alternateService(int streamId, String origin, ByteString protocol, String host, int port, long maxAge);
     }
 
     /**
-     * 头信息块的解压发生在帧层之上。当{@link Hpack.Reader#readHeaders()}需要延续帧时，该类延迟读取它们
+     * Decompression of the header block occurs above the frame layer. When {@link Hpack.Reader#readHeaders()} needs
+     * continuation frames, this class lazily reads them.
      */
     static class ContinuationSource implements Source {
 
+        /**
+         * 
+         * The underlying source.
+         */
         private final BufferSource source;
 
+        /**
+         * The length of the current frame.
+         */
         int length;
+        /**
+         * The flags of the current frame.
+         */
         byte flags;
+        /**
+         * The stream ID of the current frame.
+         */
         int streamId;
 
+        /**
+         * The number of bytes left to read in the current frame.
+         */
         int left;
+        /**
+         * The padding length of the current frame.
+         */
         short padding;
 
         ContinuationSource(BufferSource source) {

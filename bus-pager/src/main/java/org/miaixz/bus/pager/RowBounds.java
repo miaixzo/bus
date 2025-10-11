@@ -28,7 +28,8 @@
 package org.miaixz.bus.pager;
 
 /**
- * 扩展MyBatis的RowBounds，添加分页结果信息，如总记录数和是否执行count查询。
+ * Extends MyBatis's RowBounds to add pagination result information, such as total records and whether to perform a
+ * count query.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,55 +37,55 @@ package org.miaixz.bus.pager;
 public class RowBounds extends org.apache.ibatis.session.RowBounds {
 
     /**
-     * 总记录数
+     * The total number of records.
      */
     private Long total;
     /**
-     * 是否执行count查询
+     * Flag indicating whether a count query should be executed.
      */
     private Boolean count;
 
     /**
-     * 构造函数，指定偏移量和限制数。
+     * Constructs a RowBounds object with a specified offset and limit.
      *
-     * @param offset 起始偏移量
-     * @param limit  每页记录数
+     * @param offset the starting offset
+     * @param limit  the number of records per page
      */
     public RowBounds(int offset, int limit) {
         super(offset, limit);
     }
 
     /**
-     * 获取总记录数。
+     * Retrieves the total number of records.
      *
-     * @return 总记录数
+     * @return the total number of records
      */
     public Long getTotal() {
         return total;
     }
 
     /**
-     * 设置总记录数。
+     * Sets the total number of records.
      *
-     * @param total 总记录数
+     * @param total the total number of records to set
      */
     public void setTotal(Long total) {
         this.total = total;
     }
 
     /**
-     * 获取是否执行count查询。
+     * Retrieves whether a count query should be executed.
      *
-     * @return 是否执行count查询
+     * @return true if a count query should be executed, false otherwise
      */
     public Boolean getCount() {
         return count;
     }
 
     /**
-     * 设置是否执行count查询。
+     * Sets whether a count query should be executed.
      *
-     * @param count 是否执行count查询
+     * @param count true to execute a count query, false otherwise
      */
     public void setCount(Boolean count) {
         this.count = count;

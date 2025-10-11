@@ -36,10 +36,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.vortex.*;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Router;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -52,16 +56,18 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.annotation.NonNull;
 
 /**
- * MCP协议路由策略实现类，负责MCP协议的路由选择和负载均衡。
+ * An implementation of the Router interface for the MCP protocol, responsible for route selection and load balancing.
  * <p>
- * 该类实现了Strategy接口，专门处理MCP（Message Communication Protocol）协议的路由逻辑。 支持多种负载均衡策略，包括轮询、随机、权重等，并提供了服务实例的健康检查机制。
- * </p>
+ * This class implements the routing logic for the MCP (Message Communication Protocol). It supports various load
+ * balancing strategies, including round-robin, random, and weighted, and provides a health check mechanism for service
+ * instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -69,162 +75,239 @@ import reactor.util.annotation.NonNull;
 public class McpRequestRouter implements Router {
 
     /**
-     * 预定义的ExchangeStrategies实例，用于WebClient配置。
+     * Predefined {@code ExchangeStrategies} instance for WebClient configuration.
      * <p>
-     * 该实例在类加载时初始化并缓存，避免重复创建，提高性能。 配置了最大内存大小限制，防止大请求导致内存溢出。
-     * </p>
+     * This instance is cached upon class loading to improve performance and is configured with a maximum memory size to
+     * prevent `OutOfMemoryError` from large requests. The memory limit is set to 128MB to handle most typical request
+     * sizes while protecting the system from memory exhaustion attacks.
      */
     private static final ExchangeStrategies CACHED_EXCHANGE_STRATEGIES = ExchangeStrategies.builder()
             .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(Math.toIntExact(Normal.MEBI_128))).build();
 
     /**
-     * 线程安全的WebClient缓存，按baseUrl存储已初始化的WebClient实例。
+     * A thread-safe cache for WebClient instances, keyed by base URL.
      * <p>
-     * 用于优化与目标服务的通信，避免重复创建WebClient实例。 使用ConcurrentHashMap保证线程安全。
-     * </p>
+     * This map ensures that a WebClient instance is reused for a given base URL, optimizing resource usage and
+     * performance. Each WebClient is configured with the same ExchangeStrategies to maintain consistent behavior across
+     * all HTTP requests. The ConcurrentHashMap implementation provides thread-safe operations without explicit
+     * synchronization.
      */
     private final Map<String, WebClient> clients = new ConcurrentHashMap<>();
 
     /**
-     * 服务实例缓存，存储所有可用的MCP服务实例。
+     * A thread-safe cache for service instances, keyed by service name.
      * <p>
-     * 使用ConcurrentHashMap保证线程安全，键为服务名称，值为服务实例列表。
-     * </p>
+     * This map stores lists of service instances for each service name, allowing quick lookup of available instances
+     * during routing. The CopyOnWriteArrayList ensures thread-safe iteration and modification operations, which is
+     * important for service discovery scenarios where instances may be dynamically added or removed.
      */
     private final Map<String, List<ServiceInstance>> serviceCache = new ConcurrentHashMap<>();
 
     /**
-     * 负载均衡计数器，用于轮询策略。
+     * Load balancing counters for the round-robin strategy, keyed by service name.
      * <p>
-     * 使用AtomicInteger保证原子性操作，确保在高并发环境下的正确性。
-     * </p>
+     * This map maintains atomic counters for each service name to implement the round-robin load balancing algorithm.
+     * The AtomicInteger ensures thread-safe increment operations, preventing race conditions when multiple requests are
+     * being routed simultaneously. Each service name has its own counter to maintain independent round-robin sequences.
      */
     private final Map<String, AtomicInteger> counters = new ConcurrentHashMap<>();
 
     /**
-     * 负载均衡策略枚举。
+     * The default load balancing strategy.
+     * <p>
+     * This constant defines the fallback strategy when no specific strategy is configured. Round-robin is chosen as the
+     * default because it provides a simple, fair distribution of requests across available instances and is easy to
+     * implement and understand.
      */
-    private enum LoadBalanceStrategy {
-        ROUND_ROBIN, // 轮询
-        RANDOM, // 随机
-        WEIGHT // 权重
-    }
+    private static final EnumValue.Balance DEFAULT_STRATEGY = EnumValue.Balance.ROUND_ROBIN;
 
     /**
-     * 默认负载均衡策略。
-     */
-    private static final LoadBalanceStrategy DEFAULT_STRATEGY = LoadBalanceStrategy.ROUND_ROBIN;
-
-    /**
-     * 默认权重值。
+     * The default weight for service instances.
+     * <p>
+     * This constant defines the default weight assigned to service instances when no explicit weight is specified. A
+     * weight of 1 means each instance has equal priority in weighted load balancing algorithms. This value is used
+     * during service instance initialization and as a fallback when invalid weight values are provided.
      */
     private static final int DEFAULT_WEIGHT = 1;
 
     /**
-     * 处理客户端请求，构建并转发到目标服务，返回响应。
+     * Handles client requests by routing them to a target service and returning the response.
      * <p>
-     * 该方法是MCP协议路由的核心，负责根据配置的负载均衡策略选择合适的服务实例，然后构建和发送请求。 处理流程包括：
+     * This is the core routing method for the MCP protocol. It selects an appropriate service instance based on the
+     * configured load balancing strategy, then builds and sends the request. The process includes:
      * <ol>
-     * <li>验证输入参数</li>
-     * <li>获取服务实例列表</li>
-     * <li>执行健康检查</li>
-     * <li>应用负载均衡策略选择实例</li>
-     * <li>构建和发送请求</li>
-     * <li>处理响应</li>
+     * <li>Validating input parameters</li>
+     * <li>Retrieving the list of service instances</li>
+     * <li>Performing health checks</li>
+     * <li>Applying the load balancing strategy to select an instance</li>
+     * <li>Building and sending the request</li>
+     * <li>Processing the response</li>
      * </ol>
-     * </p>
      *
-     * @param request 客户端的ServerRequest对象，包含请求的所有信息
-     * @param context 请求上下文，包含请求参数和配置信息
-     * @param assets  配置资产，包含目标服务的配置信息
-     * @return Mono<ServerResponse> 包含目标服务的响应，以响应式方式返回
-     * @throws IllegalArgumentException 如果服务名称或服务实例无效
+     * @param request The client's {@code ServerRequest} object.
+     * @param context The request context, containing parameters and configuration.
+     * @param assets  The configuration assets for the target service.
+     * @return A {@code Mono<ServerResponse>} representing the asynchronous response from the target service.
+     * @throws IllegalArgumentException if the service name or service instances are invalid.
      */
     @NonNull
     @Override
     public Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets) {
-        // 1. 获取服务名称
+        // Get request method and path for logging
+        String method = request.methodName();
+        String path = request.path();
+
+        // 1. Get service name
         String serviceName = assets.getName();
         if (!StringKit.hasText(serviceName)) {
+            Logger.info(
+                    "==>       MCP: [N/A] [{}] [{}] [MCP_SERVICE_ERROR] - Service name cannot be empty",
+                    method,
+                    path);
             return Mono.error(new IllegalArgumentException("Service name cannot be empty"));
         }
+        Logger.info("==>       MCP: [N/A] [{}] [{}] [MCP_SERVICE_NAME] - Service name: {}", method, path, serviceName);
 
-        // 2. 获取服务实例列表
+        // 2. Get service instance list
         List<ServiceInstance> instances = serviceCache.get(serviceName);
         if (instances == null || instances.isEmpty()) {
+            Logger.info(
+                    "==>       MCP: [N/A] [{}] [{}] [MCP_INSTANCES_ERROR] - No available instances for service: {}",
+                    method,
+                    path,
+                    serviceName);
             return Mono.error(new IllegalArgumentException("No available instances for service: " + serviceName));
         }
+        Logger.info(
+                "==>       MCP: [N/A] [{}] [{}] [MCP_INSTANCES_FOUND] - Found {} instances for service: {}",
+                method,
+                path,
+                instances.size(),
+                serviceName);
 
-        // 3. 执行健康检查
+        // 3. Perform health check
         instances = instances.stream().filter(ServiceInstance::isHealthy).collect(Collectors.toList());
+        Logger.info(
+                "==>       MCP: [N/A] [{}] [{}] [MCP_HEALTH_CHECK] - {} healthy instances out of {}",
+                method,
+                path,
+                instances.size(),
+                serviceCache.get(serviceName).size());
 
         if (instances.isEmpty()) {
+            Logger.info(
+                    "==>       MCP: [N/A] [{}] [{}] [MCP_HEALTH_ERROR] - All instances are unhealthy for service: {}",
+                    method,
+                    path,
+                    serviceName);
             return Mono.error(new IllegalStateException("All instances are unhealthy for service: " + serviceName));
         }
 
-        // 4. 获取负载均衡策略
-        LoadBalanceStrategy strategy = parseLoadBalanceStrategy(null);
+        // 4. Get load balancing strategy
+        EnumValue.Balance balance = parseLoadBalanceStrategy(null);
+        Logger.info(
+                "==>       MCP: [N/A] [{}] [{}] [MCP_BALANCE_STRATEGY] - Using load balancing strategy: {}",
+                method,
+                path,
+                balance);
 
-        // 5. 应用负载均衡策略选择实例
-        ServiceInstance selectedInstance = selectInstance(instances, strategy, serviceName);
+        // 5. Apply load balancing strategy to select an instance
+        ServiceInstance selectedInstance = selectInstance(instances, balance, serviceName);
+        Logger.info(
+                "==>       MCP: [N/A] [{}] [{}] [MCP_INSTANCE_SELECTED] - Selected instance: {}:{}{}",
+                method,
+                path,
+                selectedInstance.getHost(),
+                selectedInstance.getPort(),
+                selectedInstance.getPath() != null ? selectedInstance.getPath() : "");
 
-        // 6. 更新统计信息
+        // 6. Update statistics
         selectedInstance.incrementRequestCount();
+        Logger.info(
+                "==>       MCP: [N/A] [{}] [{}] [MCP_INSTANCE_STATS] - Instance request count: {}",
+                method,
+                path,
+                selectedInstance.getRequestCount());
 
-        // 7. 构建和发送请求
-        return buildAndSendMcpRequest(request, context, assets, selectedInstance);
+        // 7. Build and send the MCP request
+        return buildAndSendMcpRequest(request, context, assets, selectedInstance, method, path);
     }
 
     /**
-     * 构建和发送MCP协议请求到目标服务。
+     * Builds and sends an MCP protocol request to the selected service instance.
      * <p>
-     * 该方法负责构建MCP协议请求，包括构建目标URL、配置请求头、处理请求体，并发送请求到目标服务。 支持MCP协议特有的消息格式和通信模式。
-     * </p>
+     * This method constructs the MCP request, including the target URL, headers, and body, and sends it to the target
+     * service.
      *
-     * @param request  客户端的ServerRequest对象，包含原始请求信息
-     * @param context  请求上下文，包含请求参数和配置信息
-     * @param assets   配置资产，包含目标服务的配置信息
-     * @param instance 选中的服务实例
-     * @return Mono<ResponseEntity<DataBuffer>> 目标服务的响应实体，包含响应头和响应体
+     * @param request  The original client {@code ServerRequest}.
+     * @param context  The request context.
+     * @param assets   The configuration assets.
+     * @param instance The selected service instance.
+     * @param method   The HTTP method for logging.
+     * @param path     The request path for logging.
+     * @return A {@code Mono<ResponseEntity<DataBuffer>>} with the response from the target service.
      */
     private Mono<ServerResponse> buildAndSendMcpRequest(
             ServerRequest request,
             Context context,
             Assets assets,
-            ServiceInstance instance) {
-        // 1. 构建MCP服务的基础URL
+            ServiceInstance instance,
+            String method,
+            String path) {
+        // 1. Build the base URL for the MCP service
         String baseUrl = buildMcpBaseUrl(instance);
+        Logger.info("==>       MCP: [N/A] [{}] [{}] [MCP_BASEURL] - Base URL: {}", method, path, baseUrl);
 
-        // 2. 获取或创建MCP客户端
+        // 2. Get or create the WebClient for MCP
         WebClient webClient = clients.computeIfAbsent(
                 baseUrl,
                 client -> WebClient.builder().exchangeStrategies(CACHED_EXCHANGE_STRATEGIES).baseUrl(baseUrl).build());
+        Logger.info("==>       MCP: [N/A] [{}] [{}] [MCP_CLIENT] - WebClient created/retrieved", method, path);
 
-        // 3. 构建目标URI
+        // 3. Build the target URI
         String targetUri = buildMcpTargetUri(assets, context);
+        Logger.info("==>       MCP: [N/A] [{}] [{}] [MCP_TARGET_URI] - Target URI: {}", method, path, targetUri);
 
-        // 4. 配置MCP请求
+        // 4. Configure the MCP request
         WebClient.RequestBodySpec bodySpec = webClient.method(context.getHttpMethod()).uri(targetUri);
+        Logger.info(
+                "==>       MCP: [N/A] [{}] [{}] [MCP_METHOD] - HTTP method: {}",
+                method,
+                path,
+                context.getHttpMethod());
 
-        // 5. 配置MCP协议特有的请求头
+        // 5. Configure MCP protocol-specific headers
         bodySpec.headers(headers -> {
             headers.addAll(request.headers().asHttpHeaders());
             headers.remove(HttpHeaders.HOST);
             headers.clearContentHeaders();
-            // 添加MCP协议特有的头信息
+            // Add MCP-specific headers
             headers.add("X-MCP-Protocol", "1.0");
             headers.add("X-MCP-Request-ID", context.getX_request_id());
             headers.add("X-MCP-Instance-ID", instance.getInstanceId());
         });
+        Logger.info("==>       MCP: [N/A] [{}] [{}] [MCP_HEADERS] - MCP protocol headers configured", method, path);
 
-        // 6. 处理MCP请求体
+        // 6. Handle the MCP request body
         Map<String, String> params = context.getRequestMap();
         if (!params.isEmpty()) {
-            // MCP协议使用JSON格式传输参数
+            // MCP protocol uses JSON to transmit parameters
             bodySpec.contentType(MediaType.APPLICATION_JSON).bodyValue(params);
+            Logger.info(
+                    "==>       MCP: [N/A] [{}] [{}] [MCP_BODY] - Request body configured with {} parameters",
+                    method,
+                    path,
+                    params.size());
+        } else {
+            Logger.info("==>       MCP: [N/A] [{}] [{}] [MCP_BODY] - No request parameters", method, path);
         }
 
-        // 7. 发送MCP请求
+        // 7. Send the MCP request
+        Logger.info(
+                "==>       MCP: [N/A] [{}] [{}] [MCP_SEND] - Sending request with timeout: {}ms",
+                method,
+                path,
+                assets.getTimeout());
         return bodySpec.httpRequest(clientHttpRequest -> {
             HttpClientRequest reactorRequest = clientHttpRequest.getNativeRequest();
             reactorRequest.responseTimeout(Duration.ofMillis(assets.getTimeout()));
@@ -232,13 +315,13 @@ public class McpRequestRouter implements Router {
     }
 
     /**
-     * 构建MCP服务的基础URL。
+     * Builds the base URL for an MCP service.
      * <p>
-     * 该方法根据服务实例中的主机、端口和路径信息构建MCP服务的基础URL。 MCP协议使用特定的URL格式，包括协议前缀和服务路径。
-     * </p>
+     * This method constructs the base URL from the host, port, and path of a service instance. The MCP protocol uses a
+     * specific URL format, including a protocol prefix.
      *
-     * @param instance 服务实例，包含目标服务的主机、端口和路径信息
-     * @return 构建的MCP基础URL字符串
+     * @param instance The service instance.
+     * @return The constructed MCP base URL string.
      */
     private String buildMcpBaseUrl(ServiceInstance instance) {
         StringBuilder baseUrlBuilder = new StringBuilder("mcp://").append(instance.getHost());
@@ -255,24 +338,24 @@ public class McpRequestRouter implements Router {
     }
 
     /**
-     * 构建MCP协议的目标URI。
+     * Builds the target URI for an MCP request.
      * <p>
-     * 该方法根据配置资产中的URL和请求上下文中的参数构建MCP协议的目标URI。 MCP协议使用特定的URI格式，包含资源路径和操作类型。
-     * </p>
+     * This method constructs the target URI based on the URL from the configuration assets and parameters from the
+     * request context.
      *
-     * @param assets  配置资产，包含目标服务的URL信息
-     * @param context 请求上下文，包含请求参数
-     * @return 构建的MCP目标URI字符串
+     * @param assets  The configuration assets.
+     * @param context The request context.
+     * @return The constructed MCP target URI string.
      */
     private String buildMcpTargetUri(Assets assets, Context context) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(assets.getUrl());
 
-        // 添加MCP协议特有的参数
+        // Add MCP-specific parameters
         builder.queryParam("protocol", "mcp");
         builder.queryParam("version", "1.0");
         builder.queryParam("requestId", context.getX_request_id());
 
-        // 添加请求参数
+        // Add request parameters
         Map<String, String> params = context.getRequestMap();
         if (!params.isEmpty()) {
             MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>(params.size());
@@ -284,13 +367,13 @@ public class McpRequestRouter implements Router {
     }
 
     /**
-     * 处理响应数据。
+     * Processes the response data.
      * <p>
-     * 该方法将目标服务返回的响应实体转换为ServerResponse对象。 会复制响应头，但移除CONTENT_LENGTH头以避免冲突。 如果响应体为空，则返回空响应体。
-     * </p>
+     * This method converts the {@code ResponseEntity} from the target service into a {@code ServerResponse}. It copies
+     * the headers but removes the CONTENT_LENGTH header to avoid conflicts.
      *
-     * @param responseEntity 响应实体，包含响应头和响应体
-     * @return Mono<ServerResponse> 处理后的响应
+     * @param responseEntity The response entity containing headers and body.
+     * @return A {@code Mono<ServerResponse>} for the client.
      */
     private Mono<ServerResponse> processResponse(ResponseEntity<DataBuffer> responseEntity) {
         return ServerResponse.ok().headers(headers -> {
@@ -302,42 +385,37 @@ public class McpRequestRouter implements Router {
     }
 
     /**
-     * 解析负载均衡策略配置。
+     * Parses the load balancing strategy from a configuration string.
      * <p>
-     * 从配置中解析负载均衡策略，如果未配置或配置无效，则使用默认策略。
-     * </p>
+     * If the configuration is invalid or not provided, the default strategy is used.
      *
-     * @param loadBalanceConfig 负载均衡配置字符串
-     * @return 解析后的负载均衡策略枚举
+     * @param loadBalanceConfig The load balancing configuration string.
+     * @return The parsed {@code LoadBalanceStrategy} enum.
      */
-    private LoadBalanceStrategy parseLoadBalanceStrategy(String loadBalanceConfig) {
+    private EnumValue.Balance parseLoadBalanceStrategy(String loadBalanceConfig) {
         if (!StringKit.hasText(loadBalanceConfig)) {
             return DEFAULT_STRATEGY;
         }
-
         try {
-            return LoadBalanceStrategy.valueOf(loadBalanceConfig.toUpperCase());
+            return EnumValue.Balance.valueOf(loadBalanceConfig.toUpperCase());
         } catch (IllegalArgumentException e) {
             return DEFAULT_STRATEGY;
         }
     }
 
     /**
-     * 根据负载均衡策略选择服务实例。
-     * <p>
-     * 支持轮询、随机和权重三种负载均衡策略。
-     * </p>
+     * Selects a service instance based on the load balancing strategy.
      *
-     * @param instances   可用服务实例列表
-     * @param strategy    负载均衡策略
-     * @param serviceName 服务名称
-     * @return 选中的服务实例
+     * @param instances   The list of available service instances.
+     * @param balance     The load balancing strategy.
+     * @param serviceName The name of the service.
+     * @return The selected service instance.
      */
     private ServiceInstance selectInstance(
             List<ServiceInstance> instances,
-            LoadBalanceStrategy strategy,
+            EnumValue.Balance balance,
             String serviceName) {
-        switch (strategy) {
+        switch (balance) {
             case ROUND_ROBIN:
                 return roundRobinSelect(instances, serviceName);
 
@@ -353,14 +431,11 @@ public class McpRequestRouter implements Router {
     }
 
     /**
-     * 轮询策略选择服务实例。
-     * <p>
-     * 使用原子计数器确保轮询的公平性，避免在高并发环境下出现倾斜。
-     * </p>
+     * Selects a service instance using the round-robin strategy.
      *
-     * @param instances   可用服务实例列表
-     * @param serviceName 服务名称
-     * @return 选中的服务实例
+     * @param instances   The list of available service instances.
+     * @param serviceName The name of the service.
+     * @return The selected service instance.
      */
     private ServiceInstance roundRobinSelect(List<ServiceInstance> instances, String serviceName) {
         AtomicInteger counter = counters.computeIfAbsent(serviceName, k -> new AtomicInteger(0));
@@ -369,13 +444,10 @@ public class McpRequestRouter implements Router {
     }
 
     /**
-     * 随机策略选择服务实例。
-     * <p>
-     * 使用随机数生成器选择服务实例，适用于负载均衡要求不高的场景。
-     * </p>
+     * Selects a service instance using the random strategy.
      *
-     * @param instances 可用服务实例列表
-     * @return 选中的服务实例
+     * @param instances The list of available service instances.
+     * @return The selected service instance.
      */
     private ServiceInstance randomSelect(List<ServiceInstance> instances) {
         int index = (int) (Math.random() * instances.size());
@@ -383,27 +455,18 @@ public class McpRequestRouter implements Router {
     }
 
     /**
-     * 权重策略选择服务实例。
-     * <p>
-     * 根据服务实例的权重进行选择，权重越高的实例被选中的概率越大。
-     * </p>
+     * Selects a service instance using the weighted strategy.
      *
-     * @param instances 可用服务实例列表
-     * @return 选中的服务实例
+     * @param instances The list of available service instances.
+     * @return The selected service instance.
      */
     private ServiceInstance weightSelect(List<ServiceInstance> instances) {
-        // 计算总权重
         int totalWeight = instances.stream().mapToInt(ServiceInstance::getWeight).sum();
-
         if (totalWeight <= 0) {
-            // 如果没有权重配置，则使用轮询策略
             return roundRobinSelect(instances, instances.get(0).getServiceName());
         }
 
-        // 生成随机权重值
         int randomWeight = (int) (Math.random() * totalWeight);
-
-        // 根据权重选择实例
         int currentWeight = 0;
         for (ServiceInstance instance : instances) {
             currentWeight += instance.getWeight();
@@ -411,39 +474,30 @@ public class McpRequestRouter implements Router {
                 return instance;
             }
         }
-
-        // 如果没有选中（理论上不会发生），返回第一个实例
+        // Fallback to the first instance (should theoretically not happen)
         return instances.get(0);
     }
 
     /**
-     * 添加服务实例到缓存。
-     * <p>
-     * 该方法用于动态添加服务实例，支持服务发现机制。
-     * </p>
+     * Adds a service instance to the cache.
      *
-     * @param serviceName 服务名称
-     * @param instance    服务实例
+     * @param serviceName The name of the service.
+     * @param instance    The service instance.
      */
     public void addServiceInstance(String serviceName, ServiceInstance instance) {
         Objects.requireNonNull(serviceName, "Service name cannot be null");
         Objects.requireNonNull(instance, "Service instance cannot be null");
 
         serviceCache.computeIfAbsent(serviceName, k -> new CopyOnWriteArrayList<>()).add(instance);
-
-        // 初始化健康检查
         instance.setHealthy(true);
         instance.setLastHealthCheckTime(System.currentTimeMillis());
     }
 
     /**
-     * 移除服务实例。
-     * <p>
-     * 该方法用于动态移除服务实例，支持服务下线机制。
-     * </p>
+     * Removes a service instance from the cache.
      *
-     * @param serviceName 服务名称
-     * @param instanceId  实例ID
+     * @param serviceName The name of the service.
+     * @param instanceId  The ID of the instance to remove.
      */
     public void removeServiceInstance(String serviceName, String instanceId) {
         Objects.requireNonNull(serviceName, "Service name cannot be null");
@@ -456,14 +510,11 @@ public class McpRequestRouter implements Router {
     }
 
     /**
-     * 更新服务实例的健康状态。
-     * <p>
-     * 该方法用于健康检查机制，更新服务实例的健康状态。
-     * </p>
+     * Updates the health status of a service instance.
      *
-     * @param serviceName 服务名称
-     * @param instanceId  实例ID
-     * @param healthy     健康状态
+     * @param serviceName The name of the service.
+     * @param instanceId  The ID of the instance.
+     * @param healthy     The new health status.
      */
     public void updateInstanceHealth(String serviceName, String instanceId, boolean healthy) {
         Objects.requireNonNull(serviceName, "Service name cannot be null");
@@ -479,33 +530,112 @@ public class McpRequestRouter implements Router {
     }
 
     /**
-     * 服务实例内部类，表示一个MCP服务实例。
+     * Inner class representing an MCP service instance.
      * <p>
-     * 包含服务实例的基本信息、健康状态和统计信息。
+     * This class encapsulates all information about a single service instance in the MCP system, including its network
+     * location, health status, load balancing weight, and request statistics. It provides methods to manage the
+     * instance's lifecycle and track its performance metrics.
      * </p>
      */
     public static class ServiceInstance {
 
+        /**
+         * The unique identifier for this service instance.
+         * <p>
+         * This ID is used to distinguish between multiple instances of the same service and is typically generated by
+         * the service discovery mechanism or assigned during instance registration. It must be unique within the scope
+         * of a single service name.
+         */
         private final String instanceId;
+
+        /**
+         * The name of the service this instance belongs to.
+         * <p>
+         * This field identifies the logical service that this instance is a part of. Multiple instances with the same
+         * service name but different instance IDs represent different physical endpoints for the same logical service.
+         */
         private final String serviceName;
+
+        /**
+         * The host address where this service instance is running.
+         * <p>
+         * This can be either an IP address or a hostname that can be resolved to an IP address. It is used to construct
+         * the URL for sending requests to this instance.
+         */
         private final String host;
+
+        /**
+         * The port number where this service instance is listening for requests.
+         * <p>
+         * This port number, combined with the host address, forms the complete network endpoint for the service
+         * instance. It must be a valid port number (1-65535) and should be the actual port where the service is
+         * listening.
+         */
         private final int port;
+
+        /**
+         * The path prefix for this service instance.
+         * <p>
+         * This optional field specifies a path prefix that should be prepended to all request URLs when routing to this
+         * instance. It allows multiple services to be hosted on the same host and port but with different path
+         * prefixes. May be null or empty if no path prefix is needed.
+         */
         private final String path;
+
+        /**
+         * The weight of this instance for weighted load balancing.
+         * <p>
+         * This value determines the relative proportion of requests that should be routed to this instance compared to
+         * other instances of the same service. Higher values indicate a higher proportion of requests. The actual
+         * weight used is either this value or DEFAULT_WEIGHT, whichever is greater.
+         */
         private final int weight;
+
+        /**
+         * The current health status of this service instance.
+         * <p>
+         * This boolean flag indicates whether the instance is currently healthy and able to handle requests. Unhealthy
+         * instances are excluded from the load balancing pool until their health status is restored. The volatile
+         * keyword ensures that changes to this field are immediately visible to all threads.
+         */
         private volatile boolean healthy;
+
+        /**
+         * The timestamp of the last health check performed on this instance.
+         * <p>
+         * This field stores the system time (in milliseconds) when the last health check was performed. It is used to
+         * determine when the next health check should be scheduled and to detect instances that haven't been checked
+         * recently. The volatile keyword ensures that changes to this field are immediately visible to all threads.
+         */
         private volatile long lastHealthCheckTime;
+
+        /**
+         * The total number of requests that have been routed to this instance.
+         * <p>
+         * This counter tracks the cumulative number of requests that have been sent to this instance since it was
+         * registered. It is used for monitoring and analytics purposes to understand the load distribution across
+         * instances. The AtomicInteger ensures thread-safe increment operations.
+         */
         private final AtomicInteger requestCount = new AtomicInteger(0);
+
+        /**
+         * Additional metadata associated with this service instance.
+         * <p>
+         * This map stores arbitrary key-value pairs of metadata that may be useful for routing decisions or monitoring.
+         * Common uses include storing version information, deployment environment, region/zone information, or custom
+         * routing tags. The ConcurrentHashMap ensures thread-safe access to the metadata.
+         */
         private final Map<String, String> metadata = new ConcurrentHashMap<>();
 
         /**
-         * 构造函数。
+         * Constructor.
          *
-         * @param instanceId  实例ID
-         * @param serviceName 服务名称
-         * @param host        主机地址
-         * @param port        端口
-         * @param path        服务路径
-         * @param weight      权重
+         * @param instanceId  The instance ID.
+         * @param serviceName The service name.
+         * @param host        The host address.
+         * @param port        The port.
+         * @param path        The service path.
+         * @param weight      The weight for load balancing.
          */
         public ServiceInstance(String instanceId, String serviceName, String host, int port, String path, int weight) {
             this.instanceId = instanceId;
@@ -519,135 +649,135 @@ public class McpRequestRouter implements Router {
         }
 
         /**
-         * 获取实例ID。
+         * Gets the instance ID.
          *
-         * @return 实例ID
+         * @return The instance ID.
          */
         public String getInstanceId() {
             return instanceId;
         }
 
         /**
-         * 获取服务名称。
+         * Gets the service name.
          *
-         * @return 服务名称
+         * @return The service name.
          */
         public String getServiceName() {
             return serviceName;
         }
 
         /**
-         * 获取主机地址。
+         * Gets the host address.
          *
-         * @return 主机地址
+         * @return The host address.
          */
         public String getHost() {
             return host;
         }
 
         /**
-         * 获取端口。
+         * Gets the port.
          *
-         * @return 端口
+         * @return The port.
          */
         public int getPort() {
             return port;
         }
 
         /**
-         * 获取服务路径。
+         * Gets the service path.
          *
-         * @return 服务路径
+         * @return The service path.
          */
         public String getPath() {
             return path;
         }
 
         /**
-         * 获取权重。
+         * Gets the weight.
          *
-         * @return 权重
+         * @return The weight.
          */
         public int getWeight() {
             return weight;
         }
 
         /**
-         * 检查实例是否健康。
+         * Checks if the instance is healthy.
          *
-         * @return 健康状态
+         * @return The health status.
          */
         public boolean isHealthy() {
             return healthy;
         }
 
         /**
-         * 设置健康状态。
+         * Sets the health status.
          *
-         * @param healthy 健康状态
+         * @param healthy The new health status.
          */
         public void setHealthy(boolean healthy) {
             this.healthy = healthy;
         }
 
         /**
-         * 获取上次健康检查时间。
+         * Gets the timestamp of the last health check.
          *
-         * @return 上次健康检查时间戳
+         * @return The last health check timestamp.
          */
         public long getLastHealthCheckTime() {
             return lastHealthCheckTime;
         }
 
         /**
-         * 设置上次健康检查时间。
+         * Sets the timestamp of the last health check.
          *
-         * @param lastHealthCheckTime 上次健康检查时间戳
+         * @param lastHealthCheckTime The last health check timestamp.
          */
         public void setLastHealthCheckTime(long lastHealthCheckTime) {
             this.lastHealthCheckTime = lastHealthCheckTime;
         }
 
         /**
-         * 获取请求计数。
+         * Gets the request count.
          *
-         * @return 请求计数
+         * @return The request count.
          */
         public int getRequestCount() {
             return requestCount.get();
         }
 
         /**
-         * 增加请求计数。
+         * Increments the request count.
          */
         public void incrementRequestCount() {
             requestCount.incrementAndGet();
         }
 
         /**
-         * 获取元数据。
+         * Gets the metadata map.
          *
-         * @return 元数据映射
+         * @return The metadata map.
          */
         public Map<String, String> getMetadata() {
             return metadata;
         }
 
         /**
-         * 添加元数据。
+         * Adds metadata.
          *
-         * @param key   键
-         * @param value 值
+         * @param key   The key.
+         * @param value The value.
          */
         public void addMetadata(String key, String value) {
             metadata.put(key, value);
         }
 
         /**
-         * 获取元数据值。
+         * Gets a metadata value.
          *
-         * @param key 键
-         * @return 值
+         * @param key The key.
+         * @return The value.
          */
         public String getMetadata(String key) {
             return metadata.get(key);

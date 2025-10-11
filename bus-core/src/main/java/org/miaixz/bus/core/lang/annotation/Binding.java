@@ -33,7 +33,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 注解: 用于绑定
+ * A meta-annotation that identifies a custom annotation as a binding annotation. Binding annotations are used in
+ * dependency injection frameworks to associate a specific implementation with an injection point (e.g., a field or
+ * parameter). This helps the injector distinguish between multiple implementations of the same type.
+ * <p>
+ * For example, you could create a custom annotation like {@code @Red}:
+ * 
+ * <pre>
+ *   {@code @Binding}
+ *   {@code @Retention(RUNTIME)}
+ *   {@code @Target({FIELD, PARAMETER, METHOD})}
+ *   public @interface Red {}
+ * </pre>
+ * 
+ * This {@code @Red} annotation could then be used to request the injection of a specific "red" implementation of a
+ * service. This concept is similar to {@code jakarta.inject.Qualifier}.
  *
  * @author Kimi Liu
  * @since Java 17+

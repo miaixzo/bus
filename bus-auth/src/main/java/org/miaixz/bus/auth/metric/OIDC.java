@@ -28,8 +28,8 @@
 package org.miaixz.bus.auth.metric;
 
 /**
- * OIDC 相关的常量
- * 
+ * Constants related to OIDC (OpenID Connect).
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

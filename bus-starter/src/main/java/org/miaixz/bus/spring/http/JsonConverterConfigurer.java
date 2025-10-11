@@ -32,8 +32,9 @@ import org.springframework.http.converter.HttpMessageConverter;
 import java.util.List;
 
 /**
- * JSON 转换器配置器接口，用于配置 Spring MVC 的 HttpMessageConverter。 实现类需提供转换器名称、可用性检查、优先级顺序和配置逻辑。 支持设置 autoType 属性，用于序列化/反序列化配置（如
- * Fastjson 的类型自动识别）。
+ * An interface for configuring JSON {@link HttpMessageConverter}s in Spring MVC. Implementations provide a name, an
+ * order of precedence, and the logic to configure the list of converters. It also supports an {@code autoType} property
+ * for serialization/deserialization features like Fastjson's type recognition.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,33 +42,35 @@ import java.util.List;
 public interface JsonConverterConfigurer {
 
     /**
-     * 返回转换器的名称，用于日志和调试。
+     * Returns the name of the converter, used for logging and debugging.
      *
-     * @return 转换器名称
+     * @return The converter's name.
      */
     String name();
 
     /**
-     * 返回转换器的优先级顺序（值越小，优先级越高）。
+     * Returns the order of precedence for the converter (lower values have higher priority).
      *
-     * @return 优先级顺序
+     * @return The order value.
      */
     int order();
 
     /**
-     * 配置 HttpMessageConverter 列表。
+     * Configures the list of {@link HttpMessageConverter}s. Implementations should add their custom converter to this
+     * list.
      *
-     * @param converters 要配置的消息转换器列表
+     * @param converters The list of message converters to configure.
      */
     void configure(List<HttpMessageConverter<?>> converters);
 
     /**
-     * 设置 autoType 属性，用于序列化/反序列化配置。 默认实现为空，子类可覆盖以支持 autoType。
+     * Sets the {@code autoType} property for serialization/deserialization configuration. The default implementation is
+     * empty, allowing subclasses to override it if they support this feature.
      *
-     * @param autoType 自动类型配置字符串
+     * @param autoType The configuration string for automatic type handling.
      */
     default void autoType(String autoType) {
-        // 默认实现为空，兼容不依赖 autoType 的实现类
+        // Default implementation is a no-op to support implementations that do not use autoType.
     }
 
 }

@@ -27,38 +27,40 @@
 */
 package org.miaixz.bus.core;
 
+import java.io.Serializable;
 import java.util.function.Consumer;
 
 /**
- * 对象加载抽象接口 通过实现此接口自定义实现对象的加载方式，例如懒加载机制、多线程加载等
+ * An abstract interface for object loading. By implementing this interface, you can define custom loading strategies,
+ * such as lazy loading or multi-threaded loading.
  *
- * @param <T> 对象类型
+ * @param <T> The type of the object to be loaded.
  * @author Kimi Liu
  * @since Java 17+
  */
 @FunctionalInterface
-public interface Loader<T> {
+public interface Loader<T> extends Serializable {
 
     /**
-     * 获取一个准备好的对象 通过准备逻辑准备好被加载的对象，然后返回。在准备完毕之前此方法应该被阻塞
+     * Gets the fully loaded object. This method should block until the object is prepared and ready to be returned.
      *
-     * @return 加载完毕的对象
+     * @return The loaded object.
      */
     T get();
 
     /**
-     * 是否已经初始化完毕
+     * Checks whether the object has been initialized.
      *
-     * @return 是否已经初始化完毕
+     * @return {@code true} if the object has been initialized, {@code false} otherwise.
      */
     default boolean isInitialized() {
         return true;
     }
 
     /**
-     * 如果已经初始化，就执行传入函数
+     * Executes the given consumer if the object has been initialized.
      *
-     * @param consumer 待执行函数，为{@code null}表示不执行任何操作
+     * @param consumer The consumer to execute. If {@code null}, no action is performed.
      */
     default void ifInitialized(final Consumer<T> consumer) {
         if (null != consumer && this.isInitialized()) {

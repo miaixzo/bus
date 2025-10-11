@@ -42,7 +42,8 @@ import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 文件名相关工具类
+ * A utility class for file name operations, providing methods to extract, modify, and validate file names and their
+ * components.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,32 +51,34 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FileName {
 
     /**
-     * 特殊后缀
+     * An array of special double-file extensions (e.g., for compressed tarballs like "tar.bz2", "tar.gz", "tar.xz").
+     * These suffixes are treated as a single extension for operations like {@link #mainName(String)}.
      */
     private static final CharSequence[] SPECIAL_SUFFIX = { "tar.bz2", "tar.Z", "tar.gz", "tar.xz" };
 
     /**
-     * 返回文件名
+     * Returns the name of the file.
      *
-     * @param file 文件
-     * @return 文件名
+     * @param file The file object.
+     * @return The file name, or {@code null} if the file is {@code null}.
      */
     public static String getName(final File file) {
         return (null != file) ? file.getName() : null;
     }
 
     /**
-     * 返回文件名
-     * 
+     * Returns the file name from a file path. This method extracts the last component of the path.
+     *
      * <pre>
-     * "d:/test/aaa" 返回 "aaa"
-     * "/test/aaa.jpg" 返回 "aaa.jpg"
+     * "d:/test/aaa"    -&gt; "aaa"
+     * "/test/aaa.jpg" -&gt; "aaa.jpg"
+     * "/test/"        -&gt; "test"
      * </pre>
      *
-     * @param filePath 文件
-     * @return 文件名
+     * @param filePath The file path string.
+     * @return The file name, or {@code null} if the file path is {@code null}.
      */
-    public static String getName(final String filePath) {
+    public static String getName(String filePath) {
         if (null == filePath) {
             return null;
         }
@@ -84,29 +87,26 @@ public class FileName {
             return filePath;
         }
         if (CharKit.isFileSeparator(filePath.charAt(len - 1))) {
-            // 以分隔符结尾的去掉结尾分隔符
             len--;
         }
 
         int begin = 0;
-        char c;
         for (int i = len - 1; i > -1; i--) {
-            c = filePath.charAt(i);
+            char c = filePath.charAt(i);
             if (CharKit.isFileSeparator(c)) {
-                // 查找最后一个路径分隔符（/或者\）
                 begin = i + 1;
                 break;
             }
         }
-
         return filePath.substring(begin, len);
     }
 
     /**
-     * 返回主文件名
+     * Returns the main name of a file, which is the file name without the extension. If the file is a directory, its
+     * name is returned.
      *
-     * @param file 文件
-     * @return 主文件名
+     * @param file The file object.
+     * @return The main name of the file.
      */
     public static String mainName(final File file) {
         if (file.isDirectory()) {
@@ -116,12 +116,13 @@ public class FileName {
     }
 
     /**
-     * 返回主文件名
+     * Returns the main name of a file from its full name, excluding the extension. This method handles special double
+     * extensions like "tar.gz".
      *
-     * @param fileName 完整文件名
-     * @return 主文件名
+     * @param fileName The full file name string.
+     * @return The main name of the file, or {@code null} if the file name is {@code null}.
      */
-    public static String mainName(final String fileName) {
+    public static String mainName(String fileName) {
         if (null == fileName) {
             return null;
         }
@@ -130,7 +131,6 @@ public class FileName {
             return fileName;
         }
 
-        // 多级扩展名的主文件名
         for (final CharSequence specialSuffix : SPECIAL_SUFFIX) {
             if (StringKit.endWith(fileName, "." + specialSuffix)) {
                 return StringKit.subPre(fileName, len - specialSuffix.length() - 1);
@@ -143,28 +143,24 @@ public class FileName {
 
         int begin = 0;
         int end = len;
-        char c;
         for (int i = len - 1; i >= 0; i--) {
-            c = fileName.charAt(i);
+            char c = fileName.charAt(i);
             if (len == end && Symbol.C_DOT == c) {
-                // 查找最后一个文件名和扩展名的分隔符：.
                 end = i;
             }
-            // 查找最后一个路径分隔符（/或者\），如果这个分隔符在.之后，则继续查找，否则结束
             if (CharKit.isFileSeparator(c)) {
                 begin = i + 1;
                 break;
             }
         }
-
         return fileName.substring(begin, end);
     }
 
     /**
-     * 获取文件扩展名（后缀名），扩展名不带“.”
+     * Gets the file extension (suffix), without the leading dot. If the file is a directory, {@code null} is returned.
      *
-     * @param file 文件
-     * @return 扩展名
+     * @param file The file object.
+     * @return The extension string, or {@code null} if it's a directory or the file is {@code null}.
      */
     public static String extName(final File file) {
         if (null == file) {
@@ -177,10 +173,12 @@ public class FileName {
     }
 
     /**
-     * 获得文件的扩展名（后缀名），扩展名不带“.”
+     * Gets the file extension from a file name, without the leading dot. This method handles special double extensions
+     * and returns an empty string if no extension is found.
      *
-     * @param fileName 文件名
-     * @return 扩展名
+     * @param fileName The file name string.
+     * @return The extension string, or an empty string if there is no extension, or {@code null} if the file name is
+     *         {@code null}.
      */
     public static String extName(final String fileName) {
         if (fileName == null) {
@@ -189,69 +187,65 @@ public class FileName {
         final int index = fileName.lastIndexOf(Symbol.DOT);
         if (index == -1) {
             return Normal.EMPTY;
-        } else {
-            final int secondToLastIndex = fileName.substring(0, index).lastIndexOf(Symbol.DOT);
-            final String substr = fileName.substring(secondToLastIndex == -1 ? index : secondToLastIndex + 1);
-            if (StringKit.containsAny(substr, SPECIAL_SUFFIX)) {
-                return substr;
-            }
-
-            final String ext = fileName.substring(index + 1);
-            // 扩展名中不能包含路径相关的符号
-            return StringKit.containsAny(ext, Symbol.C_SLASH, Symbol.C_BACKSLASH) ? Normal.EMPTY : ext;
         }
+        final int secondToLastIndex = fileName.substring(0, index).lastIndexOf(Symbol.DOT);
+        final String substr = fileName.substring(secondToLastIndex == -1 ? index : secondToLastIndex + 1);
+        if (StringKit.containsAny(substr, SPECIAL_SUFFIX)) {
+            return substr;
+        }
+
+        final String ext = fileName.substring(index + 1);
+        return StringKit.containsAny(ext, Symbol.C_SLASH, Symbol.C_BACKSLASH) ? Normal.EMPTY : ext;
     }
 
     /**
-     * 获取文件后缀名，扩展名不带“.”
+     * Gets the file suffix (extension). This is an alias for {@link #extName(File)}.
      *
-     * @param file 文件
-     * @return 扩展名
-     * @see #extName(File)
+     * @param file The file object.
+     * @return The extension string.
      */
     public static String getSuffix(final File file) {
         return extName(file);
     }
 
     /**
-     * 获得文件后缀名，扩展名不带“.”
+     * Gets the file suffix (extension). This is an alias for {@link #extName(String)}.
      *
-     * @param fileName 文件名
-     * @return 扩展名
-     * @see #extName(String)
+     * @param fileName The file name string.
+     * @return The extension string.
      */
     public static String getSuffix(final String fileName) {
         return extName(fileName);
     }
 
     /**
-     * 返回主文件名
+     * Gets the main part of the file name (prefix before the extension). This is an alias for {@link #mainName(File)}.
      *
-     * @param file 文件
-     * @return 主文件名
-     * @see #mainName(File)
+     * @param file The file object.
+     * @return The main name (prefix) of the file.
      */
     public static String getPrefix(final File file) {
         return mainName(file);
     }
 
     /**
-     * 返回主文件名
+     * Gets the main part of the file name (prefix before the extension). This is an alias for
+     * {@link #mainName(String)}.
      *
-     * @param fileName 完整文件名
-     * @return 主文件名
-     * @see #mainName(String)
+     * @param fileName The full file name string.
+     * @return The main name (prefix) of the file.
      */
     public static String getPrefix(final String fileName) {
         return mainName(fileName);
     }
 
     /**
-     * 增加临时扩展名
+     * Adds a temporary suffix to a file name. If the provided suffix is blank, ".temp" is used. The suffix will be
+     * prefixed with a dot if it's not already.
      *
-     * @param fileName 文件名
-     * @param suffix   临时扩展名，如果为空，使用`.temp`
-     * @return 临时文件名
+     * @param fileName The original file name string.
+     * @param suffix   The temporary suffix to add. If blank, ".temp" is used.
+     * @return The new file name with the temporary suffix appended.
      */
     public static String addTempSuffix(final String fileName, String suffix) {
         if (StringKit.isBlank(suffix)) {
@@ -259,15 +253,15 @@ public class FileName {
         } else {
             suffix = StringKit.addPrefixIfNot(suffix, Symbol.DOT);
         }
-
         return fileName + suffix;
     }
 
     /**
-     * 清除文件名中的在Windows下不支持的非法字符，包括： \ / : * ? " &lt; &gt; |
+     * Removes invalid characters for a file name on Windows systems. Invalid characters include:
+     * {@code \ / : * ? " < > |}.
      *
-     * @param fileName 文件名（必须不包括路径，否则路径符将被替换）
-     * @return 清理后的文件名
+     * @param fileName The file name string (should not include the path).
+     * @return The cleaned file name string, or the original file name if it's blank.
      */
     public static String cleanInvalid(final String fileName) {
         return StringKit.isBlank(fileName) ? fileName
@@ -275,98 +269,63 @@ public class FileName {
     }
 
     /**
-     * 文件名中是否包含在Windows下不支持的非法字符，包括： \ / : * ? " &lt; &gt; |
+     * Checks if a file name contains invalid characters for Windows systems. Invalid characters include:
+     * {@code \ / : * ? " < > |}.
      *
-     * @param fileName 文件名（必须不包括路径，否则路径符将被替换）
-     * @return 是否包含非法字符
+     * @param fileName The file name string to check.
+     * @return {@code true} if the file name contains invalid characters, {@code false} otherwise.
      */
     public static boolean containsInvalid(final String fileName) {
-        return (!StringKit.isBlank(fileName)) && PatternKit.contains(Pattern.FILE_NAME_INVALID_PATTERN_WIN, fileName);
+        return !StringKit.isBlank(fileName) && PatternKit.contains(Pattern.FILE_NAME_INVALID_PATTERN_WIN, fileName);
     }
 
     /**
-     * 根据文件名检查文件类型，忽略大小写
+     * Checks if a file has one of the specified extensions (case-insensitive).
      *
-     * @param fileName 文件名
-     * @param extNames 被检查的扩展名数组，同一文件类型可能有多种扩展名，扩展名不带“.”
-     * @return 是否是指定扩展名的类型
+     * @param fileName The file name string.
+     * @param extNames The extensions to check against (without the leading dot). Can be multiple.
+     * @return {@code true} if the file's extension matches one of the given extensions (case-insensitive),
+     *         {@code false} otherwise.
      */
     public static boolean isType(final String fileName, final String... extNames) {
         return StringKit.equalsAnyIgnoreCase(extName(fileName), extNames);
     }
 
     /**
-     * 修复路径 如果原路径尾部有分隔符，则保留为标准分隔符（/），否则不保留
-     * <ol>
-     * <li>1. 统一用 /</li>
-     * <li>2. 多个 / 转换为一个 /</li>
-     * <li>3. 去除左边空格</li>
-     * <li>4. .. 和 . 转换为绝对路径，当..多于已有路径时，直接返回根路径</li>
-     * <li>5. SMB路径保留，如\\127.0.0.0\a\b.zip</li>
-     * </ol>
-     * 示例：
-     * 
-     * <pre>
-     * "/foo//" = "/foo/"
-     * "/foo/./" = "/foo/"
-     * "/foo/../bar" = "/bar"
-     * "/foo/../bar/" = "/bar/"
-     * "/foo/../bar/../baz" = "/baz"
-     * "/../" = "/"
-     * "foo/bar/.." = "foo"
-     * "foo/../bar" = "bar"
-     * "foo/../../bar" = "bar"
-     * "//server/foo/../bar" = "/server/bar"
-     * "//server/../bar" = "/bar"
-     * "C:\\foo\\..\\bar" = "C:/bar"
-     * "C:\\..\\bar" = "C:/bar"
-     * "~/foo/../bar/" = "~/bar/"
-     * "~/../bar" = 普通用户运行是'bar的home目录'，ROOT用户运行是'/bar'
-     * </pre>
+     * Normalizes a path string by resolving "." and ".." segments and standardizing separators to '/'. It also handles
+     * special prefixes like "classpath:" and "file:", and user home directory (~) expansion.
      *
-     * @param path 原路径
-     * @return 修复后的路径
+     * @param path The original path string.
+     * @return The normalized path string, or {@code null} if the input path is {@code null}.
      */
-    public static String normalize(final String path) {
+    public static String normalize(String path) {
         if (path == null) {
             return null;
         }
-
-        // 兼容Windows下的共享目录路径（原始路径如果以\\开头，则保留这种路径）
         if (path.startsWith("\\\\")) {
-            return path;
+            return path; // SMB path
         }
 
-        // 兼容Spring风格的ClassPath路径，去除前缀，不区分大小写
         String pathToUse = StringKit.removePrefixIgnoreCase(path, Normal.CLASSPATH);
-        // 去除file:前缀
         pathToUse = StringKit.removePrefixIgnoreCase(pathToUse, Normal.FILE_URL_PREFIX);
-
-        // 识别home目录形式，并转换为绝对路径
         if (StringKit.startWith(pathToUse, Symbol.C_TILDE)) {
             pathToUse = Keys.getUserHomePath() + pathToUse.substring(1);
         }
 
-        // 统一使用斜杠
         pathToUse = pathToUse.replaceAll("[/\\\\]+", Symbol.SLASH);
-        // 去除开头空白符，末尾空白符合法，不去除
         pathToUse = StringKit.trimPrefix(pathToUse);
-        // 去除尾部的换行符
         pathToUse = StringKit.trim(pathToUse, StringTrimer.TrimMode.SUFFIX, (c) -> c == '\n' || c == '\r');
 
         String prefix = Normal.EMPTY;
         final int prefixIndex = pathToUse.indexOf(Symbol.COLON);
         if (prefixIndex > -1) {
-            // 可能Windows风格路径
             prefix = pathToUse.substring(0, prefixIndex + 1);
             if (StringKit.startWith(prefix, Symbol.C_SLASH)) {
-                // 去除类似于/C:这类路径开头的斜杠
                 prefix = prefix.substring(1);
             }
             if (!prefix.contains(Symbol.SLASH)) {
                 pathToUse = pathToUse.substring(prefixIndex + 1);
             } else {
-                // 如果前缀中包含/,说明非Windows风格path
                 prefix = Normal.EMPTY;
             }
         }
@@ -380,11 +339,11 @@ public class FileName {
     }
 
     /**
-     * 重命名文件主名称(不会修改后缀)
+     * Renames the main part of a file name, preserving its original extension.
      *
-     * @param filePath        文件
-     * @param newFileMainName 新的文件主名称(不含后缀)
-     * @return 重命名后的文件名称
+     * @param filePath        The full file path string.
+     * @param newFileMainName The new main name for the file (without extension).
+     * @return The new file name string with the updated main name and original extension.
      */
     public static String rename(final String filePath, final String newFileMainName) {
         String fileName = getName(filePath);
@@ -392,35 +351,27 @@ public class FileName {
             return newFileMainName;
         }
 
-        // 如果原始文件名称有后缀则保留
         final String suffix = getSuffix(fileName);
-        if (StringKit.isBlank(suffix)) {
-            return newFileMainName;
-        } else {
-            return newFileMainName + "." + suffix;
-        }
+        return StringKit.isBlank(suffix) ? newFileMainName : newFileMainName + "." + suffix;
     }
 
     /**
-     * 处理路径，将路径中的"."和".."转换为标准的路径元素
+     * Resolves path elements by handling "." (current directory) and ".." (parent directory) segments. This is a helper
+     * method for path normalization.
      *
-     * @param pathList 路径列表，使用`/`隔开的路径元素列表
-     * @param prefix   路径前缀，用于区别相对或绝对路径
-     * @return 处理后的路径
+     * @param pathList The list of path segments (strings).
+     * @return The resolved list of path segments, with "." and ".." handled.
      */
     private static List<String> resolePathElements(final List<String> pathList, final String prefix) {
         final List<String> pathElements = new LinkedList<>();
         int tops = 0;
-        String element;
         for (int i = pathList.size() - 1; i >= 0; i--) {
-            element = pathList.get(i);
-            // 只处理非.的目录，即只处理非当前目录
+            String element = pathList.get(i);
             if (!Symbol.DOT.equals(element)) {
                 if (Symbol.DOUBLE_DOT.equals(element)) {
                     tops++;
                 } else {
                     if (tops > 0) {
-                        // 有上级目录标记时按照个数依次跳过
                         tops--;
                     } else {
                         pathElements.add(0, element);

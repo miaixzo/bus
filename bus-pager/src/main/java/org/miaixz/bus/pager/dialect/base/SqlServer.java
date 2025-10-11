@@ -47,18 +47,43 @@ import org.miaixz.bus.pager.parsing.SqlServerSqlParser;
 import org.miaixz.bus.pager.parsing.DefaultSqlServerSqlParser;
 
 /**
- * 数据库方言 sqlserver
+ * Database dialect for SQL Server. This class provides SQL Server-specific implementations for pagination SQL
+ * generation and parameter processing. It also handles SQL caching and replacement for specific SQL Server syntax like
+ * `with(nolock)`.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SqlServer extends AbstractPaging {
 
+    /**
+     * SQL Server specific SQL parser for pagination.
+     */
     protected SqlServerSqlParser sqlServerSqlParser;
+    /**
+     * Cache for count SQL queries.
+     */
     protected CacheX<String, String> CACHE_COUNTSQL;
+    /**
+     * Cache for paginated SQL queries.
+     */
     protected CacheX<String, String> CACHE_PAGESQL;
+    /**
+     * Utility for replacing and restoring SQL parts, especially for `with(nolock)`.
+     */
     protected ReplaceSql replaceSql;
 
+    /**
+     * Generates the SQL for the count query for SQL Server. It uses a cache to store and retrieve count SQL, and
+     * applies SQL replacement rules.
+     *
+     * @param ms              the MappedStatement object
+     * @param boundSql        the BoundSql object containing the original SQL and parameters
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @param countKey        the CacheKey for the count query
+     * @return the generated count SQL string
+     */
     @Override
     public String getCountSql(
             MappedStatement ms,
@@ -80,6 +105,16 @@ public class SqlServer extends AbstractPaging {
         return cacheSql;
     }
 
+    /**
+     * Processes the pagination parameters for SQL Server. This implementation simply returns the parameter map as is.
+     *
+     * @param ms       the MappedStatement object
+     * @param paramMap a map containing the query parameters
+     * @param page     the {@link Page} object containing pagination details
+     * @param boundSql the BoundSql object for the query
+     * @param pageKey  the CacheKey for the paginated query
+     * @return the processed parameter map
+     */
     @Override
     public Object processPageParameter(
             MappedStatement ms,
@@ -90,9 +125,18 @@ public class SqlServer extends AbstractPaging {
         return paramMap;
     }
 
+    /**
+     * Generates the SQL Server-specific pagination SQL. It uses a cache to store and retrieve paginated SQL, applies
+     * SQL replacement rules, and substitutes pagination parameters.
+     *
+     * @param sql     the original SQL string
+     * @param page    the {@link Page} object containing pagination details
+     * @param pageKey the CacheKey for the paginated query
+     * @return the SQL Server-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, Page page, CacheKey pageKey) {
-        // 处理pageKey
+        // Process pageKey
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
         String cacheSql = CACHE_PAGESQL.read(sql);
@@ -109,8 +153,15 @@ public class SqlServer extends AbstractPaging {
     }
 
     /**
-     * 分页查询，Pager转换SQL时报错with(nolock)不识别的问题， 重写父类AbstractPaging.getPageSql转换出错的方法。 1.
-     * this.replaceSql.replace(sql);先转换成假的表名 2. 然后进行SQL转换 3. this.replaceSql.restore(sql);最后再恢复成真的with(nolock)
+     * Overrides the parent method to handle SQL Server specific pagination, especially for `with(nolock)` clauses. It
+     * first replaces specific SQL parts, then applies order by, and finally restores the SQL.
+     *
+     * @param ms              the MappedStatement object
+     * @param boundSql        the BoundSql object containing the original SQL and parameters
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @param pageKey         the CacheKey for the paginated query
+     * @return the generated paginated SQL string
      */
     @Override
     public String getPageSql(
@@ -132,6 +183,12 @@ public class SqlServer extends AbstractPaging {
         return page.isOrderByOnly() ? sql : this.getPageSql(sql, page, pageKey);
     }
 
+    /**
+     * Sets the properties for this SQL Server dialect. It initializes the {@link SqlServerSqlParser},
+     * {@link ReplaceSql} implementation, and SQL caches.
+     *
+     * @param properties the properties to set
+     */
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);

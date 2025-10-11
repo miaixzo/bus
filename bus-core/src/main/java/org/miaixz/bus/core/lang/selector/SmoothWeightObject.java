@@ -28,32 +28,38 @@
 package org.miaixz.bus.core.lang.selector;
 
 /**
- * 平滑权重对象
+ * Represents an object with a weight for use in smooth weighted round-robin selection.
+ * <p>
+ * This class extends {@link WeightObject} and adds a {@code currentWeight} property, which is a dynamic value that
+ * changes during the selection process.
  *
- * @param <T> 对象类型
+ * @param <T> the type of the wrapped object
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SmoothWeightObject<T> extends WeightObject<T> {
 
+    /**
+     * The current, dynamic weight of the object.
+     */
     private int currentWeight;
 
     /**
-     * 构造
+     * Constructs a new {@code SmoothWeightObject} with an initial current weight of 0.
      *
-     * @param object 对象
-     * @param weight 权重
+     * @param object the object to wrap
+     * @param weight the static weight of the object
      */
     public SmoothWeightObject(final T object, final int weight) {
         this(object, weight, 0);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code SmoothWeightObject}.
      *
-     * @param object        对象
-     * @param weight        权重
-     * @param currentWeight 当前权重
+     * @param object        the object to wrap
+     * @param weight        the static weight of the object
+     * @param currentWeight the initial current weight
      */
     public SmoothWeightObject(final T object, final int weight, final int currentWeight) {
         super(object, weight);
@@ -61,20 +67,18 @@ public class SmoothWeightObject<T> extends WeightObject<T> {
     }
 
     /**
-     * 获取当前权重
+     * Gets the current (dynamic) weight of the object.
      *
-     * @return int 临时权重
+     * @return the current weight
      */
     public int getCurrentWeight() {
         return currentWeight;
     }
 
     /**
-     * setCurrentWeight
-     * <p>
-     * 设置当前权重
+     * Sets the current (dynamic) weight of the object.
      *
-     * @param currentWeight 权重值
+     * @param currentWeight the new current weight
      */
     public void setCurrentWeight(final int currentWeight) {
         this.currentWeight = currentWeight;

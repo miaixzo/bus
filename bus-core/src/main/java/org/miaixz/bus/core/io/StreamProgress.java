@@ -28,7 +28,10 @@
 package org.miaixz.bus.core.io;
 
 /**
- * Stream进度条 提供流拷贝进度监测，如开始、结束触发，以及进度回调。 注意进度回调的{@code total}参数为总大小，某些场景下无总大小的标记，则此值应为-1或者{@link Long#MAX_VALUE}，表示此参数无效。
+ * Stream progress monitor. Provides stream copy progress monitoring, such as start and end triggers, and progress
+ * callbacks. Note that the {@code total} parameter in the progress callback represents the total size. In some
+ * scenarios where the total size is unknown, this value should be -1 or {@link Long#MAX_VALUE}, indicating that this
+ * parameter is invalid.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,20 +39,20 @@ package org.miaixz.bus.core.io;
 public interface StreamProgress {
 
     /**
-     * 开始
+     * Called when the stream copy starts.
      */
     void start();
 
     /**
-     * 进行中
+     * Called during the stream copy process.
      *
-     * @param total        总大小，如果未知为 -1或者{@link Long#MAX_VALUE}
-     * @param progressSize 已经进行的大小
+     * @param total        The total size. If unknown, it will be -1 or {@link Long#MAX_VALUE}.
+     * @param progressSize The size that has already been processed.
      */
     void progress(long total, long progressSize);
 
     /**
-     * 结束
+     * Called when the stream copy finishes.
      */
     void finish();
 

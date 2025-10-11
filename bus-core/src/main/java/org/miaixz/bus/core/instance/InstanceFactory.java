@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 实例化工厂类
+ * Instance factory class.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,45 +46,48 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public final class InstanceFactory implements Instance {
 
     /**
-     * 单例 map 对象 1. data 是 class 的全称
+     * Singleton map object. The key is the fully qualified class name.
      */
     private final Map<String, Object> singletonMap = new ConcurrentHashMap<>();
     /**
-     * 线程内的 map 对象
+     * Thread-local map object.
      */
     private final ThreadLocal<Map<String, Object>> mapThreadLocal = new ThreadLocal<>();
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private InstanceFactory() {
 
     }
 
     /**
-     * 获取单例对象
+     * Gets the singleton instance of the factory.
      *
-     * @return 实例化对象
+     * @return The instance factory.
      */
     public static InstanceFactory getInstance() {
         return SingletonHolder.INSTANCE_FACTORY;
     }
 
     /**
-     * 静态方法单例
+     * Gets a singleton instance using a static method.
      *
-     * @param clazz 类信息
-     * @param <T>   泛型
-     * @return 结果
+     * @param <T>   The generic type.
+     * @param clazz The class information.
+     * @return The singleton instance.
      */
     public static <T> T singletion(Class<T> clazz) {
         return getInstance().singleton(clazz);
     }
 
     /**
-     * 静态方法单例
+     * Gets a singleton instance from a specific group using a static method.
      *
-     * @param clazz     类信息
-     * @param groupName 分组名称
-     * @param <T>       泛型
-     * @return 结果
+     * @param <T>       The generic type.
+     * @param clazz     The class information.
+     * @param groupName The group name.
+     * @return The singleton instance.
      */
     public static <T> T singletion(Class<T> clazz, final String groupName) {
         return getInstance().singleton(clazz, groupName);
@@ -106,16 +109,16 @@ public final class InstanceFactory implements Instance {
     public <T> T threadLocal(Class<T> clazz) {
         this.notNull(clazz);
 
-        // 1. 校验 map 是否存在
+        // 1. Check if the map exists.
         Map<String, Object> map = mapThreadLocal.get();
         if (ObjectKit.isNull(map)) {
             map = new ConcurrentHashMap<>();
         }
 
-        // 2. 获取对象
+        // 2. Get the object.
         T instance = this.getSingleton(clazz, map);
 
-        // 3. 更新 threadLocal
+        // 3. Update the thread-local.
         mapThreadLocal.set(map);
 
         return instance;
@@ -142,11 +145,12 @@ public final class InstanceFactory implements Instance {
     }
 
     /**
-     * 获取单例对象
+     * Gets the singleton object.
      *
-     * @param clazz       class 类型
-     * @param instanceMap 实例化对象 map
-     * @return 单例对象
+     * @param <T>         The generic type.
+     * @param clazz       The class type.
+     * @param instanceMap The instance map.
+     * @return The singleton object.
      */
     private <T> T getSingleton(final Class<T> clazz, final Map<String, Object> instanceMap) {
         this.notNull(clazz);
@@ -161,12 +165,13 @@ public final class InstanceFactory implements Instance {
     }
 
     /**
-     * 获取单例对象
+     * Gets the singleton object from a group.
      *
-     * @param clazz       查询 clazz
-     * @param group       分组信息
-     * @param instanceMap 实例化对象 map
-     * @return 单例对象
+     * @param <T>         The generic type.
+     * @param clazz       The class to query.
+     * @param group       The group information.
+     * @param instanceMap The instance map.
+     * @return The singleton object.
      */
     private <T> T getSingleton(final Class<T> clazz, final String group, final Map<String, Object> instanceMap) {
         this.notNull(clazz);
@@ -182,19 +187,22 @@ public final class InstanceFactory implements Instance {
     }
 
     /**
-     * 断言参数不可为 null
+     * Asserts that the class is not null.
      *
-     * @param clazz class 信息
+     * @param clazz The class information.
      */
-    private void notNull(final Class clazz) {
+    private void notNull(final Class<?> clazz) {
         Assert.notNull(clazz, "class");
     }
 
     /**
-     * 静态内部类实现单例
+     * Static inner class for singleton implementation.
      */
     private static class SingletonHolder {
 
+        /**
+         * The singleton instance of the factory.
+         */
         private static final InstanceFactory INSTANCE_FACTORY = new InstanceFactory();
     }
 

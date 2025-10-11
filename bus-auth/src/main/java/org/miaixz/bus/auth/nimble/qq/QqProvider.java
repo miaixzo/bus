@@ -47,33 +47,63 @@ import org.miaixz.bus.auth.nimble.AbstractProvider;
 import java.util.Map;
 
 /**
- * QQ 登录
+ * QQ login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class QqProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code QqProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public QqProvider(Context context) {
         super(context, Registry.QQ);
     }
 
+    /**
+     * Constructs a {@code QqProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public QqProvider(Context context, CacheX cache) {
         super(context, Registry.QQ, cache);
     }
 
+    /**
+     * Retrieves the access token from QQ's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(callback.getCode());
         return getAuthToken(response);
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         String response = Httpx.get(refreshTokenUrl(authToken.getRefreshToken()));
         return Message.builder().errcode(ErrorCode._SUCCESS.getKey()).data(getAuthToken(response)).build();
     }
 
+    /**
+     * Retrieves user information from QQ's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         String openId = this.getOpenId(authToken);
@@ -94,12 +124,13 @@ public class QqProvider extends AbstractProvider {
     }
 
     /**
-     * 获取QQ用户的OpenId，支持自定义是否启用查询unionid的功能，如果启用查询unionid的功能， 那就需要开发者先通过邮件申请unionid功能，参考链接
-     * {@see <url id="d0a3btkc75r1mimetbp0" type="url" status="parsed" title="UnionID介绍 — QQ互联WIKI" wc=
-     * "4771">http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D</url> }
+     * Retrieves the OpenId of the QQ user. Supports custom enabling of the unionid query function. If the unionid query
+     * function is enabled, the developer needs to apply for the unionid function via email. Reference link:
+     * {@see <a href="http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D">UnionID Introduction - QQ Connect Wiki</a>}
      *
-     * @param authToken 通过{@link QqProvider#getAccessToken(Callback)}获取到的{@code accessToken}
-     * @return openId
+     * @param authToken the {@code accessToken} obtained via {@link QqProvider#getAccessToken(Callback)}
+     * @return the user's OpenId or UnionId if available
+     * @throws AuthorizedException if parsing the response fails or an error is returned by QQ
      */
     private String getOpenId(AuthToken authToken) {
         String response = Httpx.get(
@@ -122,10 +153,10 @@ public class QqProvider extends AbstractProvider {
     }
 
     /**
-     * 返回获取userInfo的url
+     * Returns the URL to obtain user information.
      *
-     * @param authToken 用户授权token
-     * @return 返回获取userInfo的url
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
      */
     @Override
     protected String userInfoUrl(AuthToken authToken) {
@@ -134,6 +165,13 @@ public class QqProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * Parses the access token response string into an {@link AuthToken} object.
+     *
+     * @param response the response string from the access token endpoint
+     * @return the parsed {@link AuthToken}
+     * @throws AuthorizedException if the response indicates an error or is missing required token information
+     */
     private AuthToken getAuthToken(String response) {
         Map<String, String> accessTokenObject = Builder.parseStringToMap(response);
         if (!accessTokenObject.containsKey("access_token") || accessTokenObject.containsKey("code")) {
@@ -144,6 +182,13 @@ public class QqProvider extends AbstractProvider {
                 .refreshToken(accessTokenObject.get("refresh_token")).build();
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))

@@ -31,35 +31,35 @@ import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 主键生成器接口，用于通过接口生成主键值。
+ * Primary key generator interface, used to generate primary key values through an interface.
  *
- * @param <T> 主键值类型
+ * @param <T> The type of the primary key value.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface GenId<T> {
 
     /**
-     * 生成主键值。
+     * Generates a primary key value.
      *
-     * @param table  实体表信息
-     * @param column 主键列信息
-     * @return 生成的主键值
+     * @param table  The entity table information.
+     * @param column The primary key column information.
+     * @return The generated primary key value.
      */
     T genId(TableMeta table, ColumnMeta column);
 
     /**
-     * 默认空实现，抛出不支持操作异常。
+     * Default null implementation, throws an {@link UnsupportedOperationException}.
      */
     class NULL implements GenId<Object> {
 
         /**
-         * 默认实现，抛出不支持操作异常。
+         * Default implementation, throws an {@link UnsupportedOperationException}.
          *
-         * @param table  实体表信息
-         * @param column 主键列信息
-         * @return 无返回值，总是抛出异常
-         * @throws UnsupportedOperationException 不支持的主键生成操作
+         * @param table  The entity table information.
+         * @param column The primary key column information.
+         * @return No return value, always throws an exception.
+         * @throws UnsupportedOperationException if the primary key generation operation is not supported.
          */
         @Override
         public Object genId(TableMeta table, ColumnMeta column) {

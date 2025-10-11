@@ -28,6 +28,7 @@
 package org.miaixz.bus.auth.nimble.ximalaya;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
@@ -51,27 +52,39 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * 喜马拉雅 登录
+ * Ximalaya login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class XimalayaProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code XimalayaProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public XimalayaProvider(Context context) {
         super(context, Registry.XIMALAYA);
     }
 
+    /**
+     * Constructs a {@code XimalayaProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public XimalayaProvider(Context context, CacheX cache) {
         super(context, Registry.XIMALAYA, cache);
     }
 
     /**
-     * 签名算法 {@code https://open.ximalaya.com/doc/detailApi?categoryId=6&articleId=69}
+     * Generates a signature for Ximalaya requests. Reference:
+     * {@code https://open.ximalaya.com/doc/detailApi?categoryId=6&articleId=69}
      *
-     * @param params       加密参数
-     * @param clientSecret 平台应用的授权key
-     * @return Signature
+     * @param params       the parameters to be signed
+     * @param clientSecret the application secret key of the platform
+     * @return the generated signature
      */
     private static String sign(Map<String, String> params, String clientSecret) {
         TreeMap<String, String> map = new TreeMap<>(params);
@@ -96,11 +109,12 @@ public class XimalayaProvider extends AbstractProvider {
     }
 
     /**
-     * 获取access token
+     * Retrieves the access token from Ximalaya's authorization server.
      *
-     * @param callback 授权成功后的回调参数
-     * @return token
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
      * @see AbstractProvider#authorize(String)
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
      */
     @Override
     public AuthToken getAccessToken(Callback callback) {
@@ -136,10 +150,11 @@ public class XimalayaProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {
@@ -150,12 +165,13 @@ public class XimalayaProvider extends AbstractProvider {
     }
 
     /**
-     * 校验响应结果
+     * Checks the response content for errors.
      *
-     * @param object 接口返回的结果
+     * @param object the response map to check
+     * @throws AuthorizedException if the response indicates an error or message indicating failure
      */
     private void checkResponse(Map<String, Object> object) {
-        if (object.containsKey("errcode")) {
+        if (object.containsKey(Consts.ERRCODE)) {
             String errorNo = String.valueOf(object.get("error_no"));
             String errorDesc = (String) object.get("error_desc");
             throw new AuthorizedException(errorNo, errorDesc != null ? errorDesc : "Unknown error");
@@ -163,11 +179,12 @@ public class XimalayaProvider extends AbstractProvider {
     }
 
     /**
-     * 使用token换取用户信息
+     * Retrieves user information from Ximalaya's user info endpoint.
      *
-     * @param authToken token信息
-     * @return 用户信息
+     * @param authToken the token information
+     * @return {@link Material} containing the user's information
      * @see AbstractProvider#getAccessToken(Callback)
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
      */
     @Override
     public Material getUserInfo(AuthToken authToken) {

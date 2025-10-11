@@ -44,29 +44,32 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 7z格式数据解压器，即将归档打包的数据释放
+ * Extractor for 7z format archives, used to unpack archived data.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SevenZExtractor implements Extractor, RandomAccess {
 
+    /**
+     * The underlying SevenZFile from Apache Commons Compress.
+     */
     private final SevenZFile sevenZFile;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param file 包文件
+     * @param file The archive file.
      */
     public SevenZExtractor(final File file) {
         this(file, null);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param file     包文件
-     * @param password 密码，null表示无密码
+     * @param file     The archive file.
+     * @param password The password, null for no password.
      */
     public SevenZExtractor(final File file, final char[] password) {
         try {
@@ -77,38 +80,38 @@ public class SevenZExtractor implements Extractor, RandomAccess {
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param in 包流
+     * @param in The archive stream.
      */
     public SevenZExtractor(final InputStream in) {
         this(in, null);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param in       包流
-     * @param password 密码，null表示无密码
+     * @param in       The archive stream.
+     * @param password The password, null for no password.
      */
     public SevenZExtractor(final InputStream in, final char[] password) {
         this(new SeekableInMemoryByteChannel(IoKit.readBytes(in)), password);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param channel {@link SeekableByteChannel}
+     * @param channel {@link SeekableByteChannel}.
      */
     public SevenZExtractor(final SeekableByteChannel channel) {
         this(channel, null);
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param channel  {@link SeekableByteChannel}
-     * @param password 密码，null表示无密码
+     * @param channel  {@link SeekableByteChannel}.
+     * @param password The password, null for no password.
      */
     public SevenZExtractor(final SeekableByteChannel channel, final char[] password) {
         try {
@@ -141,7 +144,7 @@ public class SevenZExtractor implements Extractor, RandomAccess {
             }
 
             try {
-                // 此处使用查找entry对应Stream方式，由于只调用一次，也只遍历一次
+                // Use the method to find the stream for the entry. Since it's called only once, it traverses only once.
                 return sevenZFile.getInputStream(entry);
             } catch (final IOException e) {
                 throw new InternalException(e);
@@ -152,11 +155,12 @@ public class SevenZExtractor implements Extractor, RandomAccess {
     }
 
     /**
-     * 释放（解压）到指定目录
+     * Extracts (decompresses) to the specified directory.
      *
-     * @param targetDir 目标目录
-     * @param predicate 解压文件过滤器，用于指定需要释放的文件，null表示不过滤。当{@link Predicate#test(Object)}为{@code true}时释放。
-     * @throws IOException IO异常
+     * @param targetDir The target directory.
+     * @param predicate A filter for extracted files, used to specify which files to extract. null means no filtering.
+     *                  Extracts when {@link Predicate#test(Object)} is {@code true}.
+     * @throws IOException if an I/O error occurs.
      */
     private void extractInternal(final File targetDir, final Predicate<ArchiveEntry> predicate) throws IOException {
         Assert.isTrue(null != targetDir && ((!targetDir.exists()) || targetDir.isDirectory()), "target must be dir.");
@@ -169,15 +173,16 @@ public class SevenZExtractor implements Extractor, RandomAccess {
             }
             outItemFile = FileKit.file(targetDir, entry.getName());
             if (entry.isDirectory()) {
-                // 创建对应目录
+                // Create the corresponding directory
                 // noinspection ResultOfMethodCallIgnored
                 outItemFile.mkdirs();
             } else if (entry.hasStream()) {
-                // 读取entry对应数据流
-                // 此处直接读取而非调用sevenZFile.getInputStream(entry)，因为此方法需要遍历查找entry对应位置，性能不好。
+                // Read the data stream corresponding to the entry.
+                // Read directly here instead of calling sevenZFile.getInputStream(entry), because that method needs to
+                // traverse to find the entry's position, which affects performance.
                 FileKit.copy(new Seven7EntryInputStream(sevenZFile, entry), outItemFile);
             } else {
-                // 无数据流的文件创建为空文件
+                // Create an empty file for entries with no data stream.
                 FileKit.touch(outItemFile);
             }
         }

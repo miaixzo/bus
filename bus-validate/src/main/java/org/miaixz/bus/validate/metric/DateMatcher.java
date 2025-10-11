@@ -27,41 +27,44 @@
 */
 package org.miaixz.bus.validate.metric;
 
-import java.util.Collection;
-import java.util.Map;
-
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Date;
 
 /**
- * 日期校验
+ * Validator for checking if a string represents a valid date according to a specified format.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DateMatcher implements Matcher<Object, Date> {
 
+    /**
+     * Checks if the given object is a valid date according to the format specified in the annotation.
+     *
+     * @param object     The object to validate. It can be a {@code java.util.Date} or a {@code String} representing a
+     *                   date.
+     * @param annotation The {@link Date} annotation instance, which provides the date format.
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is a valid date, {@code false} otherwise. Returns {@code true} if the object
+     *         is null or a blank string, allowing other annotations like {@code @NotNull} or {@code @NotBlank} to
+     *         handle such cases.
+     */
     @Override
     public boolean on(Object object, Date annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
             return false;
         }
 
-        int num;
-        if (object instanceof String) {
-            num = ((String) object).length();
-        } else if (object.getClass().isArray()) {
-            num = ((Object[]) object).length;
-        } else if (object instanceof Collection) {
-            num = ((Collection) object).size();
-        } else if (object instanceof Map) {
-            num = ((Map) object).keySet().size();
-        } else {
-            throw new IllegalArgumentException("不支持的检查长度的对象类型:" + object.getClass());
+        String value = StringKit.toString(object);
+        if (StringKit.isBlank(value)) {
+            return true;
         }
-        return false;
+        DateKit.parse(value);
+        return true;
     }
 
 }

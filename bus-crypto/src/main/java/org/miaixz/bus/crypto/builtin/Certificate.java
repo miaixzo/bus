@@ -59,7 +59,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 证书相关套件
+ * Certificate related toolkit. This class provides utilities for handling and building X.509 certificates.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -75,98 +75,100 @@ public class Certificate implements Serializable {
     private static final long serialVersionUID = 2852288292676L;
 
     /**
-     * 证书编号
+     * The serial number of the certificate.
      */
     private String serial;
 
     /**
-     * 证书文件
+     * The file name associated with the certificate.
      */
     private String fileName;
 
     /**
-     * 证书版本
+     * The version of the certificate.
      */
     private String version;
 
     /**
-     * P12证书对应的密码
+     * The password for the P12 certificate.
      */
     private String password;
 
     /**
-     * 证书公钥
+     * The public key of the certificate.
      */
     private String publicKey;
 
     /**
-     * 证书颁发者名称
+     * The Common Name (CN) of the certificate issuer.
      */
     private String issuerCN;
 
     /**
-     * 证书颁发者组织
+     * The Organization (O) of the certificate issuer.
      */
     private String issuerO;
 
     /**
-     * 证书颁发者
+     * The issuer of this certificate.
      */
     private Principal issuer;
 
     /**
-     * 此证书主体
+     * The subject of this certificate.
      */
     private Principal subject;
 
     /**
-     * 此证书主体名称
+     * The Common Name (CN) of the certificate subject.
      */
     private String subjectCN;
 
     /**
-     * 此证书主体组织
+     * The Organization (O) of the certificate subject.
      */
     private String subjectO;
 
     /**
-     * 有效起始日期
+     * The date from which the certificate is valid.
      */
     private Date notBefore;
 
     /**
-     * 有效终止日期
+     * The date until which the certificate is valid.
      */
     private Date notAfter;
 
     /**
-     * 证书本身
+     * The X.509 certificate itself.
      */
     private X509Certificate self;
 
     /**
-     * CA证书签发
+     * Builds and signs an X.509 certificate, typically for a Certificate Authority (CA). This method generates a
+     * self-signed certificate or a certificate signed by a CA if issuer and subject are different.
      *
-     * @return the {@link X509Certificate}
+     * @return The generated {@link X509Certificate}.
+     * @throws InternalException if any cryptographic operation or certificate building fails.
      */
     public X509Certificate build() {
-        // 创建书颁发者
+        // Create certificate issuer
         X500NameBuilder issuer = new X500NameBuilder(BCStyle.INSTANCE);
         issuer.addRDN(BCStyle.CN, this.issuerCN);
         issuer.addRDN(BCStyle.O, this.issuerO);
 
-        // 创建证书主体
+        // Create certificate subject
         X500NameBuilder subject = new X500NameBuilder(BCStyle.INSTANCE);
         subject.addRDN(BCStyle.CN, this.subjectCN);
         subject.addRDN(BCStyle.O, this.subjectO);
 
-        // 创建证书的公钥/私钥对
+        // Generate public/private key pair for the certificate
         KeyPair keyPair = Keeper.generateKeyPair("RSA");
-        // 与证书关联的公钥
+        // Public key associated with the certificate
         PublicKey publicKey = keyPair.getPublic();
-        // 与证书关联的私钥
+        // Private key associated with the certificate
         PrivateKey privateKey = keyPair.getPrivate();
-        // 主体密钥标识符
+        // Subject Key Identifier
         SubjectKeyIdentifier subjectKeyIdentifier = new SubjectKeyIdentifier(publicKey.getEncoded());
         KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature | KeyUsage.keyEncipherment
                 | KeyUsage.dataEncipherment | KeyUsage.cRLSign);

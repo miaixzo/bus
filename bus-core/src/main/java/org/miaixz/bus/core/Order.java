@@ -28,7 +28,7 @@
 package org.miaixz.bus.core;
 
 /**
- * 排序
+ * An interface for objects that can be ordered. This is often used for sorting components or plugins.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,19 +36,21 @@ package org.miaixz.bus.core;
 public interface Order extends Comparable<Order> {
 
     /**
-     * 优先级 越小优先级越高
+     * Gets the order value of this object. A smaller value represents a higher priority.
      *
-     * @return order
+     * @return The order value.
      */
     default int order() {
         return 0;
     }
 
     /**
-     * 使用order进行比较
+     * Compares this object with the specified object for order. The comparison is based on the value returned by the
+     * {@link #order()} method.
      *
-     * @param o compareTo
-     * @return result
+     * @param o The object to be compared.
+     * @return A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than
+     *         the specified object.
      */
     @Override
     default int compareTo(Order o) {

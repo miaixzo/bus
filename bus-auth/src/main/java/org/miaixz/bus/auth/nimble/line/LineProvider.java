@@ -50,21 +50,39 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Line 登录
+ * LINE login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class LineProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code LineProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public LineProvider(Context context) {
         super(context, Registry.LINE);
     }
 
+    /**
+     * Constructs a {@code LineProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public LineProvider(Context context, CacheX cache) {
         super(context, Registry.LINE, cache);
     }
 
+    /**
+     * Retrieves the access token from LINE's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
@@ -98,6 +116,13 @@ public class LineProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Retrieves user information from LINE's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
@@ -127,6 +152,13 @@ public class LineProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Revokes the authorization for the given access token.
+     *
+     * @param authToken the token information to revoke
+     * @return a {@link Message} indicating the result of the revocation
+     * @throws AuthorizedException if parsing the response fails or an error occurs during revocation
+     */
     @Override
     public Message revoke(AuthToken authToken) {
         Map<String, String> form = new HashMap<>(5);
@@ -141,7 +173,7 @@ public class LineProvider extends AbstractProvider {
             }
 
             Boolean revoked = (Boolean) object.get("revoked");
-            // 返回1表示取消授权成功，否则失败
+            // Return 1 indicates successful authorization cancellation, otherwise failed
             Errors status = (revoked != null && revoked) ? ErrorCode._SUCCESS : ErrorCode._FAILURE;
             return Message.builder().errcode(status.getKey()).errmsg(status.getValue()).build();
         } catch (Exception e) {
@@ -149,6 +181,13 @@ public class LineProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Refreshes the access token (renews its validity).
+     *
+     * @param authToken the token information returned after successful login
+     * @return a {@link Message} containing the refreshed token information
+     * @throws AuthorizedException if parsing the response fails or an error occurs during token refresh
+     */
     @Override
     public Message refresh(AuthToken authToken) {
         Map<String, String> form = new HashMap<>();
@@ -184,11 +223,24 @@ public class LineProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Returns the URL to obtain user information.
+     *
+     * @param authToken the user's authorization token
+     * @return the URL to obtain user information
+     */
     @Override
-    public String userInfoUrl(AuthToken authToken) {
+    protected String userInfoUrl(AuthToken authToken) {
         return Builder.fromUrl(this.complex.userinfo()).queryParam("user", authToken.getUid()).build();
     }
 
+    /**
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
+     *
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
+     */
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state)).queryParam("nonce", state)

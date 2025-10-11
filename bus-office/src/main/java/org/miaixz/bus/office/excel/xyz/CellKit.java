@@ -41,7 +41,7 @@ import org.miaixz.bus.office.excel.cell.values.CompositeCellValue;
 import org.miaixz.bus.office.excel.style.StyleSet;
 
 /**
- * Excel表格中单元格工具类
+ * Utility class for cell operations in Excel tables.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,21 +49,21 @@ import org.miaixz.bus.office.excel.style.StyleSet;
 public class CellKit {
 
     /**
-     * 获取单元格值
+     * Gets the value of a cell.
      *
-     * @param cell {@link Cell}单元格
-     * @return 值，类型可能为：Date、Double、Boolean、String
+     * @param cell The {@link Cell} object.
+     * @return The cell value, which can be of type Date, Double, Boolean, or String.
      */
     public static Object getCellValue(final Cell cell) {
         return getCellValue(cell, false);
     }
 
     /**
-     * 获取单元格值
+     * Gets the value of a cell.
      *
-     * @param cell            {@link Cell}单元格
-     * @param isTrimCellValue 如果单元格类型为字符串，是否去掉两边空白符
-     * @return 值，类型可能为：Date、Double、Boolean、String
+     * @param cell            The {@link Cell} object.
+     * @param isTrimCellValue If the cell type is String, whether to trim leading and trailing whitespace.
+     * @return The cell value, which can be of type Date, Double, Boolean, or String.
      */
     public static Object getCellValue(final Cell cell, final boolean isTrimCellValue) {
         if (null == cell) {
@@ -73,48 +73,52 @@ public class CellKit {
     }
 
     /**
-     * 获取单元格值
+     * Gets the value of a cell with a custom cell editor.
      *
-     * @param cell       {@link Cell}单元格
-     * @param cellEditor 单元格值编辑器。可以通过此编辑器对单元格值做自定义操作
-     * @return 值，类型可能为：Date、Double、Boolean、String
+     * @param cell       The {@link Cell} object.
+     * @param cellEditor The cell editor. This editor can be used to customize cell values.
+     * @return The cell value, which can be of type Date, Double, Boolean, or String.
      */
     public static Object getCellValue(final Cell cell, final CellEditor cellEditor) {
         return getCellValue(cell, null, cellEditor);
     }
 
     /**
-     * 获取单元格值
+     * Gets the value of a cell with a specified cell type and trim option.
      *
-     * @param cell            {@link Cell}单元格
-     * @param cellType        单元格值类型{@link CellType}枚举
-     * @param isTrimCellValue 如果单元格类型为字符串，是否去掉两边空白符
-     * @return 值，类型可能为：Date、Double、Boolean、String
+     * @param cell            The {@link Cell} object.
+     * @param cellType        The {@link CellType} enum for the cell value type.
+     * @param isTrimCellValue If the cell type is String, whether to trim leading and trailing whitespace.
+     * @return The cell value, which can be of type Date, Double, Boolean, or String.
      */
     public static Object getCellValue(final Cell cell, final CellType cellType, final boolean isTrimCellValue) {
         return getCellValue(cell, cellType, isTrimCellValue ? new TrimEditor() : null);
     }
 
     /**
-     * 获取单元格值 如果单元格值为数字格式，则判断其格式中是否有小数部分，无则返回Long类型，否则返回Double类型
+     * Gets the value of a cell with a specified cell type and custom cell editor. If the cell value is in number
+     * format, it checks if it has a decimal part. If not, it returns a Long type; otherwise, it returns a Double type.
      *
-     * @param cell       {@link Cell}单元格
-     * @param cellType   单元格值类型{@link CellType}枚举，如果为{@code null}默认使用cell的类型
-     * @param cellEditor 单元格值编辑器。可以通过此编辑器对单元格值做自定义操作
-     * @return 值，类型可能为：Date、Double、Boolean、String
+     * @param cell       The {@link Cell} object.
+     * @param cellType   The {@link CellType} enum for the cell value type. If {@code null}, the cell's own type is
+     *                   used.
+     * @param cellEditor The cell editor. This editor can be used to customize cell values.
+     * @return The cell value, which can be of type Date, Double, Boolean, or String.
      */
     public static Object getCellValue(final Cell cell, final CellType cellType, final CellEditor cellEditor) {
         return CompositeCellValue.of(cell, cellType, cellEditor).getValue();
     }
 
     /**
-     * 设置单元格值 根据传入的styleSet自动匹配样式 当为头部样式时默认赋值头部样式，但是头部中如果有数字、日期等类型，将按照数字、日期样式设置
+     * Sets the value of a cell. Automatically matches the style based on the provided {@link StyleSet}. When it is a
+     * header style, the header style is assigned by default, but if the header contains numeric, date, or other types,
+     * it will be set according to the numeric or date style.
      *
-     * @param cell       单元格
-     * @param value      值
-     * @param styleSet   单元格样式集，包括日期等样式，null表示无样式
-     * @param isHeader   是否为标题单元格
-     * @param cellEditor 单元格值编辑器，可修改单元格值或修改单元格，{@code null}表示不编辑
+     * @param cell       The cell to set the value for.
+     * @param value      The value to set.
+     * @param styleSet   The cell style set, including date and other styles. {@code null} indicates no styling.
+     * @param isHeader   {@code true} if this is a header cell, {@code false} otherwise.
+     * @param cellEditor The cell editor, which can modify cell values or cells. {@code null} indicates no editing.
      */
     public static void setCellValue(
             final Cell cell,
@@ -135,12 +139,14 @@ public class CellKit {
     }
 
     /**
-     * 设置单元格值 根据传入的styleSet自动匹配样式 当为头部样式时默认赋值头部样式，但是头部中如果有数字、日期等类型，将按照数字、日期样式设置
+     * Sets the value of a cell. Automatically matches the style based on the provided {@link StyleSet}. When it is a
+     * header style, the header style is assigned by default, but if the header contains numeric, date, or other types,
+     * it will be set according to the numeric or date style.
      *
-     * @param cell       单元格
-     * @param value      值
-     * @param style      自定义样式，null表示无样式
-     * @param cellEditor 单元格值编辑器，可修改单元格值或修改单元格，{@code null}表示不编辑
+     * @param cell       The cell to set the value for.
+     * @param value      The value to set.
+     * @param style      Custom style. {@code null} indicates no styling.
+     * @param cellEditor The cell editor, which can modify cell values or cells. {@code null} indicates no editing.
      */
     public static void setCellValue(
             final Cell cell,
@@ -152,11 +158,13 @@ public class CellKit {
     }
 
     /**
-     * 设置单元格值 根据传入的styleSet自动匹配样式 当为头部样式时默认赋值头部样式，但是头部中如果有数字、日期等类型，将按照数字、日期样式设置
+     * Sets the value of a cell. Automatically matches the style based on the provided {@link StyleSet}. When it is a
+     * header style, the header style is assigned by default, but if the header contains numeric, date, or other types,
+     * it will be set according to the numeric or date style.
      *
-     * @param cell       单元格
-     * @param value      值或{@link CellSetter}
-     * @param cellEditor 单元格值编辑器，可修改单元格值或修改单元格，{@code null}表示不编辑
+     * @param cell       The cell to set the value for.
+     * @param value      The value or {@link CellSetter} to set.
+     * @param cellEditor The cell editor, which can modify cell values or cells. {@code null} indicates no editing.
      */
     public static void setCellValue(final Cell cell, Object value, final CellEditor cellEditor) {
         if (null == cell) {
@@ -171,19 +179,21 @@ public class CellKit {
     }
 
     /**
-     * 设置单元格值 根据传入的styleSet自动匹配样式 当为头部样式时默认赋值头部样式，但是头部中如果有数字、日期等类型，将按照数字、日期样式设置
+     * Sets the value of a cell. Automatically matches the style based on the provided {@link StyleSet}. When it is a
+     * header style, the header style is assigned by default, but if the header contains numeric, date, or other types,
+     * it will be set according to the numeric or date style.
      *
-     * @param cell  单元格
-     * @param value 值或{@link CellSetter}
+     * @param cell  The cell to set the value for.
+     * @param value The value or {@link CellSetter} to set.
      */
     public static void setCellValue(final Cell cell, final Object value) {
         if (null == cell) {
             return;
         }
 
-        // 在使用BigWriter(SXSSF)模式写出数据时，单元格值为直接值，非引用值（is标签）
-        // 而再使用ExcelWriter(XSSF)编辑时，会写出引用值，导致失效。
-        // 此处做法是先清空单元格值，再写入
+        // When writing data in BigWriter (SXSSF) mode, cell values are direct values, not reference values (is tag).
+        // However, when editing with ExcelWriter (XSSF), reference values are written, causing invalidation.
+        // The approach here is to clear the cell value first, then write.
         if (CellType.BLANK != cell.getCellType()) {
             cell.setBlank();
         }
@@ -192,25 +202,26 @@ public class CellKit {
     }
 
     /**
-     * 获取或创建指定坐标单元格
+     * Gets an existing cell or creates a new one at the specified coordinates.
      *
-     * @param sheet {@link Sheet}
-     * @param x     X坐标，从0计数，即列号
-     * @param y     Y坐标，从0计数，即行号
-     * @return {@link Cell}
+     * @param sheet The {@link Sheet} object.
+     * @param x     The X-coordinate (column index), 0-based.
+     * @param y     The Y-coordinate (row index), 0-based.
+     * @return The {@link Cell} at the specified coordinates.
      */
     public static Cell getOrCreateCell(final Sheet sheet, final int x, final int y) {
         return getCell(sheet, x, y, true);
     }
 
     /**
-     * 获取指定坐标单元格，如果isCreateIfNotExist为false，则在单元格不存在时返回{@code null}
+     * Gets the cell at the specified coordinates. If {@code isCreateIfNotExist} is {@code false}, it returns
+     * {@code null} if the cell does not exist.
      *
-     * @param sheet              {@link Sheet}
-     * @param x                  X坐标，从0计数，即列号
-     * @param y                  Y坐标，从0计数，即行号
-     * @param isCreateIfNotExist 单元格不存在时是否创建
-     * @return {@link Cell}
+     * @param sheet              The {@link Sheet} object.
+     * @param x                  The X-coordinate (column index), 0-based.
+     * @param y                  The Y-coordinate (row index), 0-based.
+     * @param isCreateIfNotExist {@code true} to create the cell if it does not exist, {@code false} otherwise.
+     * @return The {@link Cell} at the specified coordinates.
      */
     public static Cell getCell(final Sheet sheet, final int x, final int y, final boolean isCreateIfNotExist) {
         final Row row = isCreateIfNotExist ? RowKit.getOrCreateRow(sheet, y) : sheet.getRow(y);
@@ -221,11 +232,11 @@ public class CellKit {
     }
 
     /**
-     * 获取单元格，如果单元格不存在，返回{@link NullCell}
+     * Gets the cell. If the cell does not exist, it returns a {@link NullCell}.
      *
-     * @param row       Excel表的行
-     * @param cellIndex 列号
-     * @return {@link Row}
+     * @param row       The Excel row.
+     * @param cellIndex The column index.
+     * @return The {@link Cell} object.
      */
     public static Cell getCell(final Row row, final int cellIndex) {
         if (null == row) {
@@ -239,11 +250,11 @@ public class CellKit {
     }
 
     /**
-     * 获取已有单元格或创建新单元格
+     * Gets an existing cell or creates a new one at the specified column index within the given row.
      *
-     * @param row       Excel表的行
-     * @param cellIndex 列号
-     * @return {@link Row}
+     * @param row       The Excel row.
+     * @param cellIndex The column index.
+     * @return The {@link Cell} at the specified index.
      */
     public static Cell getOrCreateCell(final Row row, final int cellIndex) {
         if (null == row) {
@@ -257,11 +268,11 @@ public class CellKit {
     }
 
     /**
-     * 判断指定的单元格是否是合并单元格
+     * Checks if the specified cell is a merged cell.
      *
-     * @param sheet       {@link Sheet}
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return 是否是合并单元格
+     * @param sheet       The {@link Sheet} object.
+     * @param locationRef The cell address identifier, e.g., A11, B5.
+     * @return {@code true} if it is a merged cell, {@code false} otherwise.
      */
     public static boolean isMergedRegion(final Sheet sheet, final String locationRef) {
         final CellReference cellReference = new CellReference(locationRef);
@@ -269,22 +280,22 @@ public class CellKit {
     }
 
     /**
-     * 判断指定的单元格是否是合并单元格
+     * Checks if the specified cell is a merged cell.
      *
-     * @param cell {@link Cell}
-     * @return 是否是合并单元格
+     * @param cell The {@link Cell} object.
+     * @return {@code true} if it is a merged cell, {@code false} otherwise.
      */
     public static boolean isMergedRegion(final Cell cell) {
         return isMergedRegion(cell.getSheet(), cell.getColumnIndex(), cell.getRowIndex());
     }
 
     /**
-     * 判断指定的单元格是否是合并单元格
+     * Checks if the specified cell is a merged cell.
      *
-     * @param sheet {@link Sheet}
-     * @param x     列号，从0开始
-     * @param y     行号，从0开始
-     * @return 是否是合并单元格
+     * @param sheet The {@link Sheet} object.
+     * @param x     The column index, 0-based.
+     * @param y     The row index, 0-based.
+     * @return {@code true} if it is a merged cell, {@code false} otherwise.
      */
     public static boolean isMergedRegion(final Sheet sheet, final int x, final int y) {
         final int sheetMergeCount = sheet.getNumMergedRegions();
@@ -299,30 +310,30 @@ public class CellKit {
     }
 
     /**
-     * 合并单元格，可以根据设置的值来合并行和列
+     * Merges cells. Can merge rows and columns based on the set values.
      *
-     * @param sheet            表对象
-     * @param cellRangeAddress 合并单元格范围，定义了起始行列和结束行列
-     * @return 合并后的单元格号
+     * @param sheet            The sheet object.
+     * @param cellRangeAddress The range of cells to merge, defining the starting and ending rows and columns.
+     * @return The index of the merged region.
      */
     public static int mergingCells(final Sheet sheet, final CellRangeAddress cellRangeAddress) {
         return mergingCells(sheet, cellRangeAddress, null);
     }
 
     /**
-     * 合并单元格，可以根据设置的值来合并行和列
+     * Merges cells. Can merge rows and columns based on the set values.
      *
-     * @param sheet            表对象
-     * @param cellRangeAddress 合并单元格范围，定义了起始行列和结束行列
-     * @param cellStyle        单元格样式，只提取边框样式，null表示无样式
-     * @return 合并后的单元格号
+     * @param sheet            The sheet object.
+     * @param cellRangeAddress The range of cells to merge, defining the starting and ending rows and columns.
+     * @param cellStyle        The cell style. Only border styles are extracted. {@code null} indicates no styling.
+     * @return The index of the merged region.
      */
     public static int mergingCells(
             final Sheet sheet,
             final CellRangeAddress cellRangeAddress,
             final CellStyle cellStyle) {
         if (cellRangeAddress.getNumberOfCells() <= 1) {
-            // 非合并单元格，无需合并
+            // Not a merged cell, no need to merge.
             return -1;
         }
         StyleKit.setBorderStyle(sheet, cellRangeAddress, cellStyle);
@@ -330,10 +341,10 @@ public class CellKit {
     }
 
     /**
-     * 获取合并单元格中的第一个单元格 传入的cell可以是合并单元格范围内的任意一个单元格
+     * Gets the first cell of a merged region. The provided cell can be any cell within the merged region.
      *
-     * @param cell {@link Cell}
-     * @return 合并单元格
+     * @param cell The {@link Cell} object.
+     * @return The first cell of the merged region, or the cell itself if it's not part of a merged region.
      */
     public static Cell getFirstCellOfMerged(final Cell cell) {
         if (null == cell) {
@@ -349,12 +360,13 @@ public class CellKit {
     }
 
     /**
-     * 获取合并单元格 传入的x,y坐标（列行数）可以是合并单元格范围内的任意一个单元格
+     * Gets the merged cell information. The x,y coordinates (column, row) can be any cell within the merged region.
      *
-     * @param sheet {@link Sheet}
-     * @param x     列号，从0开始，可以是合并单元格范围中的任意一列
-     * @param y     行号，从0开始，可以是合并单元格范围中的任意一行
-     * @return 合并单元格，如果非合并单元格，返回坐标对应的单元格
+     * @param sheet The {@link Sheet} object.
+     * @param x     The column index, 0-based, can be any column within the merged cell range.
+     * @param y     The row index, 0-based, can be any row within the merged cell range.
+     * @return The {@link MergedCell} object. If it's not a merged cell, returns the cell corresponding to the
+     *         coordinates.
      */
     public static MergedCell getMergedCell(final Sheet sheet, final int x, final int y) {
         if (null == sheet) {
@@ -370,23 +382,24 @@ public class CellKit {
     }
 
     /**
-     * 为特定单元格添加批注
+     * Adds a comment to a specific cell.
      *
-     * @param cell          单元格
-     * @param commentText   批注内容
-     * @param commentAuthor 作者
+     * @param cell          The cell.
+     * @param commentText   The content of the comment.
+     * @param commentAuthor The author of the comment.
      */
     public static void setComment(final Cell cell, final String commentText, final String commentAuthor) {
         setComment(cell, commentText, commentAuthor, null);
     }
 
     /**
-     * 为特定单元格添加批注
+     * Adds a comment to a specific cell.
      *
-     * @param cell          单元格
-     * @param commentText   批注内容
-     * @param commentAuthor 作者，{@code null}表示无作者
-     * @param anchor        批注的位置、大小等信息，null表示使用默认
+     * @param cell          The cell.
+     * @param commentText   The content of the comment.
+     * @param commentAuthor The author of the comment. {@code null} indicates no author.
+     * @param anchor        The position, size, and other information of the comment. {@code null} indicates using
+     *                      default settings.
      */
     public static void setComment(
             final Cell cell,
@@ -397,17 +410,17 @@ public class CellKit {
         final CreationHelper factory = sheet.getWorkbook().getCreationHelper();
         if (anchor == null) {
             anchor = factory.createClientAnchor();
-            // 默认位置，在注释的单元格的右方
+            // Default position, to the right of the commented cell.
             anchor.setCol1(cell.getColumnIndex() + 1);
             anchor.setCol2(cell.getColumnIndex() + 3);
             anchor.setRow1(cell.getRowIndex());
             anchor.setRow2(cell.getRowIndex() + 2);
-            // 自适应
+            // Adaptive resizing.
             anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_AND_RESIZE);
         }
 
         final Comment comment = sheet.createDrawingPatriarch().createCellComment(anchor);
-        // 修正在XSSFCell中未设置地址导致错位问题
+        // Fix the issue of incorrect positioning when the address is not set in XSSFCell.
         comment.setAddress(cell.getAddress());
         comment.setString(factory.createRichTextString(commentText));
         if (null != commentAuthor) {
@@ -417,9 +430,9 @@ public class CellKit {
     }
 
     /**
-     * 移除指定单元格
+     * Removes the specified cell.
      *
-     * @param cell 单元格
+     * @param cell The cell to remove.
      */
     public static void remove(final Cell cell) {
         if (null != cell) {
@@ -428,11 +441,12 @@ public class CellKit {
     }
 
     /**
-     * 根据字符串表示法创建一个CellRangeAddress对象 该方法提供了一种通过直接使用字符串引用来创建CellRangeAddress对象的便捷方式 字符串引用应符合Excel中单元格范围的常规表示法，如"B1" 或
-     * "A1:B2"。
+     * Creates a {@link CellRangeAddress} object from a string representation. This method provides a convenient way to
+     * create a {@link CellRangeAddress} object by directly using a string reference. The string reference should
+     * conform to the conventional representation of cell ranges in Excel, such as "B1" or "A1:B2".
      *
-     * @param ref 代表单元格范围的字符串，格式为"A1:B2"。
-     * @return 根据给定字符串创建的CellRangeAddress对象。
+     * @param ref The string representing the cell range, in the format "A1:B2".
+     * @return A {@link CellRangeAddress} object created from the given string.
      * @see CellRangeAddress#valueOf(String)
      */
     public static CellRangeAddress of(final String ref) {
@@ -440,70 +454,79 @@ public class CellKit {
     }
 
     /**
-     * 根据给定的行和列索引创建一个CellRangeAddress对象 这个方法提供了一种简洁的方式，来表示一个Excel表格中特定的区域，由起始行和列以及结束行和列定义。
+     * Creates a {@link CellRangeAddress} object based on the given row and column indices. This method provides a
+     * concise way to represent a specific area in an Excel table, defined by starting and ending rows and columns.
      *
-     * @param firstRow 起始行的索引，从0开始计数。
-     * @param lastRow  结束行的索引，从0开始计数，必须大于firstRow。
-     * @param firstCol 起始列的索引，从0开始计数。
-     * @param lastCol  结束列的索引，从0开始计数，必须大于firstCol。
-     * @return 返回一个新的CellRangeAddress对象，表示由参数定义的区域。
+     * @param firstRow The index of the starting row, 0-based.
+     * @param lastRow  The index of the ending row, 0-based, must be greater than or equal to {@code firstRow}.
+     * @param firstCol The index of the starting column, 0-based.
+     * @param lastCol  The index of the ending column, 0-based, must be greater than or equal to {@code firstCol}.
+     * @return A new {@link CellRangeAddress} object representing the area defined by the parameters.
      */
     public static CellRangeAddress of(final int firstRow, final int lastRow, final int firstCol, final int lastCol) {
         return new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
     }
 
     /**
-     * 根据给定的行和列索引创建一个单行的CellRangeAddress对象，从首列开始。 这个方法提供了一种简洁的方式，来表示一个Excel表格中特定的区域，由起始行和列以及结束行和列定义。
+     * Creates a single-row {@link CellRangeAddress} object based on the given row and ending column index, starting
+     * from the first column. This method provides a concise way to represent a specific area in an Excel table, defined
+     * by starting and ending rows and columns.
      *
-     * @param row     行的索引，从0开始计数。
-     * @param lastCol 结束列的索引，从0开始计数，必须大于firstCol。
-     * @return 返回一个新的CellRangeAddress对象，表示由参数定义的区域。
+     * @param row     The index of the row, 0-based.
+     * @param lastCol The index of the ending column, 0-based, must be greater than or equal to 0.
+     * @return A new {@link CellRangeAddress} object representing the area defined by the parameters.
      */
     public static CellRangeAddress ofSingleRow(final int row, final int lastCol) {
         return ofSingleRow(row, 0, lastCol);
     }
 
     /**
-     * 根据给定的行和列索引创建一个单行的CellRangeAddress对象 这个方法提供了一种简洁的方式，来表示一个Excel表格中特定的区域，由起始行和列以及结束行和列定义。
+     * Creates a single-row {@link CellRangeAddress} object based on the given row and column indices. This method
+     * provides a concise way to represent a specific area in an Excel table, defined by starting and ending rows and
+     * columns.
      *
-     * @param row      行的索引，从0开始计数。
-     * @param firstCol 起始列的索引，从0开始计数。
-     * @param lastCol  结束列的索引，从0开始计数，必须大于firstCol。
-     * @return 返回一个新的CellRangeAddress对象，表示由参数定义的区域。
+     * @param row      The index of the row, 0-based.
+     * @param firstCol The index of the starting column, 0-based.
+     * @param lastCol  The index of the ending column, 0-based, must be greater than or equal to {@code firstCol}.
+     * @return A new {@link CellRangeAddress} object representing the area defined by the parameters.
      */
     public static CellRangeAddress ofSingleRow(final int row, final int firstCol, final int lastCol) {
         return of(row, row, firstCol, lastCol);
     }
 
     /**
-     * 根据给定的行和列索引创建一个单列CellRangeAddress对象，从首行开始。 这个方法提供了一种简洁的方式，来表示一个Excel表格中特定的区域，由起始行和列以及结束行和列定义。
+     * Creates a single-column {@link CellRangeAddress} object based on the given ending row and column index, starting
+     * from the first row. This method provides a concise way to represent a specific area in an Excel table, defined by
+     * starting and ending rows and columns.
      *
-     * @param lastRow 结束行的索引，从0开始计数，必须大于firstRow。
-     * @param col     列的索引，从0开始计数。
-     * @return 返回一个新的CellRangeAddress对象，表示由参数定义的区域。
+     * @param lastRow The index of the ending row, 0-based, must be greater than or equal to 0.
+     * @param col     The index of the column, 0-based.
+     * @return A new {@link CellRangeAddress} object representing the area defined by the parameters.
      */
     public static CellRangeAddress ofSingleColumn(final int lastRow, final int col) {
         return ofSingleColumn(0, lastRow, col);
     }
 
     /**
-     * 根据给定的行和列索引创建一个单列CellRangeAddress对象。 这个方法提供了一种简洁的方式，来表示一个Excel表格中特定的区域，由起始行和列以及结束行和列定义。
+     * Creates a single-column {@link CellRangeAddress} object based on the given row and column indices. This method
+     * provides a concise way to represent a specific area in an Excel table, defined by starting and ending rows and
+     * columns.
      *
-     * @param firstRow 起始行的索引，从0开始计数。
-     * @param lastRow  结束行的索引，从0开始计数，必须大于firstRow。
-     * @param col      列的索引，从0开始计数。
-     * @return 返回一个新的CellRangeAddress对象，表示由参数定义的区域。
+     * @param firstRow The index of the starting row, 0-based.
+     * @param lastRow  The index of the ending row, 0-based, must be greater than or equal to {@code firstRow}.
+     * @param col      The index of the column, 0-based.
+     * @return A new {@link CellRangeAddress} object representing the area defined by the parameters.
      */
     public static CellRangeAddress ofSingleColumn(final int firstRow, final int lastRow, final int col) {
         return of(firstRow, lastRow, col, col);
     }
 
     /**
-     * 获取合并单元格{@link CellRangeAddress}，如果不是返回null
+     * Gets the merged cell {@link CellRangeAddress}. If the cell is not part of a merged region, returns {@code null}.
      *
-     * @param sheet       {@link Sheet}
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return {@link CellRangeAddress}
+     * @param sheet       The {@link Sheet} object.
+     * @param locationRef The cell address identifier, e.g., A11, B5.
+     * @return The {@link CellRangeAddress} of the merged region, or {@code null} if not merged.
      */
     public static CellRangeAddress getCellRangeAddress(final Sheet sheet, final String locationRef) {
         final CellReference cellReference = new CellReference(locationRef);
@@ -511,22 +534,22 @@ public class CellKit {
     }
 
     /**
-     * 获取合并单元格{@link CellRangeAddress}，如果不是返回null
+     * Gets the merged cell {@link CellRangeAddress}. If the cell is not part of a merged region, returns {@code null}.
      *
-     * @param cell {@link Cell}
-     * @return {@link CellRangeAddress}
+     * @param cell The {@link Cell} object.
+     * @return The {@link CellRangeAddress} of the merged region, or {@code null} if not merged.
      */
     public static CellRangeAddress getCellRangeAddress(final Cell cell) {
         return getCellRangeAddress(cell.getSheet(), cell.getColumnIndex(), cell.getRowIndex());
     }
 
     /**
-     * 获取合并单元格{@link CellRangeAddress}，如果不是返回null
+     * Gets the merged cell {@link CellRangeAddress}. If the cell is not part of a merged region, returns {@code null}.
      *
-     * @param sheet {@link Sheet}
-     * @param x     列号，从0开始
-     * @param y     行号，从0开始
-     * @return {@link CellRangeAddress}
+     * @param sheet The {@link Sheet} object.
+     * @param x     The column index, 0-based.
+     * @param y     The row index, 0-based.
+     * @return The {@link CellRangeAddress} of the merged region, or {@code null} if not merged.
      */
     public static CellRangeAddress getCellRangeAddress(final Sheet sheet, final int x, final int y) {
         if (sheet != null) {
@@ -544,10 +567,10 @@ public class CellKit {
     }
 
     /**
-     * 将Sheet列号变为列名
+     * Converts a sheet column index to its Excel column name representation.
      *
-     * @param index 列号, 从0开始
-     * @return 0-A; 1-B...26-AA
+     * @param index The column index, 0-based.
+     * @return The Excel column name (e.g., 0 -> A; 1 -> B; 26 -> AA).
      */
     public static String indexToColName(int index) {
         if (index < 0) {
@@ -566,10 +589,10 @@ public class CellKit {
     }
 
     /**
-     * 根据表元的列名转换为列号
+     * Converts an Excel column name to its 0-based column index.
      *
-     * @param colName 列名, 从A开始
-     * @return A1-0; B1-1...AA1-26
+     * @param colName The column name, starting from A.
+     * @return The 0-based column index (e.g., A1 -> 0; B1 -> 1; AA1 -> 26).
      */
     public static int colNameToIndex(final String colName) {
         final int length = colName.length();
@@ -578,7 +601,7 @@ public class CellKit {
         for (int i = 0; i < length; i++) {
             c = Character.toUpperCase(colName.charAt(i));
             if (Character.isDigit(c)) {
-                break;// 确定指定的char值是否为数字
+                break; // Determine if the specified char value is a digit.
             }
             index = (index + 1) * 26 + (int) c - 'A';
         }
@@ -586,10 +609,11 @@ public class CellKit {
     }
 
     /**
-     * 将Excel中地址标识符（例如A11，B5）等转换为行列表示 例如：A11 - col:0,row:10，B5-col:1,row:4
+     * Converts an Excel address identifier (e.g., A11, B5) to row and column representation. For example: A11 -> col:0,
+     * row:10; B5 -> col:1, row:4.
      *
-     * @param locationRef 单元格地址标识符，例如A11，B5
-     * @return 坐标点
+     * @param locationRef The cell address identifier, e.g., A11, B5.
+     * @return A {@link CellReference} object representing the coordinates.
      */
     public static CellReference toCellReference(final String locationRef) {
         return new CellReference(locationRef);

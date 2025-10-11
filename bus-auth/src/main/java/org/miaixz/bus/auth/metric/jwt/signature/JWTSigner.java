@@ -28,7 +28,8 @@
 package org.miaixz.bus.auth.metric.jwt.signature;
 
 /**
- * JWT签名接口封装，通过实现此接口，完成不同算法的签名功能
+ * JWT Signer interface encapsulation. Implementations of this interface provide signing functionalities for different
+ * algorithms.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,35 +37,35 @@ package org.miaixz.bus.auth.metric.jwt.signature;
 public interface JWTSigner {
 
     /**
-     * 签名
+     * Signs the JWT parts.
      *
-     * @param headerBase64  JWT头的JSON字符串的Base64表示
-     * @param payloadBase64 JWT载荷的JSON字符串Base64表示
-     * @return 签名结果Base64，即JWT的第三部分
+     * @param headerBase64  Base64 representation of the JWT header JSON string
+     * @param payloadBase64 Base64 representation of the JWT payload JSON string
+     * @return the Base64 encoded signature result, which is the third part of the JWT
      */
     String sign(String headerBase64, String payloadBase64);
 
     /**
-     * 验签
+     * Verifies the JWT signature.
      *
-     * @param headerBase64  JWT头的JSON字符串Base64表示
-     * @param payloadBase64 JWT载荷的JSON字符串Base64表示
-     * @param signBase64    被验证的签名Base64表示
-     * @return 签名是否一致
+     * @param headerBase64  Base64 representation of the JWT header JSON string
+     * @param payloadBase64 Base64 representation of the JWT payload JSON string
+     * @param signBase64    the Base64 representation of the signature to be verified
+     * @return true if the signature is consistent and valid, false otherwise
      */
     boolean verify(String headerBase64, String payloadBase64, String signBase64);
 
     /**
-     * 获取算法
+     * Retrieves the algorithm used for signing.
      *
-     * @return 算法
+     * @return the algorithm name
      */
     String getAlgorithm();
 
     /**
-     * 获取算法ID，即算法的简写形式，如HS256
+     * Retrieves the algorithm ID, which is the shorthand form of the algorithm, e.g., HS256.
      *
-     * @return 算法ID
+     * @return the algorithm ID
      */
     default String getAlgorithmId() {
         return JWTSignerBuilder.getId(getAlgorithm());

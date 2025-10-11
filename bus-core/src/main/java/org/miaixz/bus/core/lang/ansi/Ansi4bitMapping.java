@@ -30,7 +30,8 @@ package org.miaixz.bus.core.lang.ansi;
 import java.util.LinkedHashMap;
 
 /**
- * ANSI 4bit 颜色和Lab颜色映射关系
+ * Provides a mapping between ANSI 4-bit colors and their corresponding LabColor representations. This class is used to
+ * find the closest ANSI 4-bit color for a given LabColor.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,12 +39,13 @@ import java.util.LinkedHashMap;
 public class Ansi4bitMapping extends AnsiLabMapping {
 
     /**
-     * 单例
+     * Singleton instance of {@code Ansi4bitMapping}.
      */
     public static final Ansi4bitMapping INSTANCE = new Ansi4bitMapping();
 
     /**
-     * 构造
+     * Constructs a new {@code Ansi4bitMapping} and initializes the {@code ansiLabMap} with standard ANSI 4-bit colors
+     * and their RGB-derived LabColor values.
      */
     public Ansi4bitMapping() {
         ansiLabMap = new LinkedHashMap<>(16, 1);

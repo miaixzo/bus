@@ -37,7 +37,8 @@ import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * GZIP 格式压缩接收器，使用 {@link Deflater} 进行压缩，仅在必要时调用 flush 以优化性能。
+ * A {@code GzipSink} compresses data into GZIP format using a {@link Deflater}. It optimizes performance by calling
+ * {@link #flush()} only when necessary.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,35 +46,35 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class GzipSink implements Sink {
 
     /**
-     * 接收 GZIP 格式数据的缓冲接收器
+     * The buffered sink that receives the GZIP formatted data.
      */
     private final BufferSink sink;
 
     /**
-     * 用于压缩数据的压缩器
+     * The deflater used for compressing data.
      */
     private final Deflater deflater;
 
     /**
-     * 负责在解压源和压缩接收器之间移动数据的压缩接收器
+     * The deflater sink responsible for moving data between the uncompressed source and the compressed sink.
      */
     private final DeflaterSink deflaterSink;
 
     /**
-     * 计算压缩数据的 CRC32 校验和
+     * The CRC32 checksum calculator for the uncompressed data.
      */
     private final CRC32 crc = new CRC32();
 
     /**
-     * 是否已关闭
+     * A flag indicating whether this sink has been closed.
      */
     private boolean closed;
 
     /**
-     * 构造方法，初始化 GZIP 接收器。
+     * Constructs a {@code GzipSink} with the specified underlying sink.
      *
-     * @param sink 底层接收器
-     * @throws IllegalArgumentException 如果 sink 为 null
+     * @param sink The underlying sink to which the GZIP data will be written.
+     * @throws IllegalArgumentException If {@code sink} is {@code null}.
      */
     public GzipSink(Sink sink) {
         if (null == sink) {
@@ -86,12 +87,13 @@ public class GzipSink implements Sink {
     }
 
     /**
-     * 从源缓冲区读取指定字节数并写入压缩数据。
+     * Writes {@code byteCount} bytes from {@code source} to this sink, compressing them into GZIP format. The CRC32
+     * checksum is updated for the uncompressed data.
      *
-     * @param source    数据源缓冲区
-     * @param byteCount 要读取的字节数
-     * @throws IOException              如果写入失败
-     * @throws IllegalArgumentException 如果 byteCount 小于 0
+     * @param source    The buffer containing the data to write.
+     * @param byteCount The number of bytes to read from {@code source} and write.
+     * @throws IOException              If an I/O error occurs during the write or compression operation.
+     * @throws IllegalArgumentException If {@code byteCount} is less than 0.
      */
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
@@ -104,9 +106,9 @@ public class GzipSink implements Sink {
     }
 
     /**
-     * 刷新缓冲区，推送压缩数据到目标。
+     * Flushes any buffered compressed data to the underlying sink.
      *
-     * @throws IOException 如果刷新失败
+     * @throws IOException If an I/O error occurs during the flush operation.
      */
     @Override
     public void flush() throws IOException {
@@ -114,9 +116,9 @@ public class GzipSink implements Sink {
     }
 
     /**
-     * 获取接收器的超时配置。
+     * Returns the timeout for the underlying sink.
      *
-     * @return 超时对象
+     * @return The timeout object associated with the underlying sink.
      */
     @Override
     public Timeout timeout() {
@@ -124,9 +126,10 @@ public class GzipSink implements Sink {
     }
 
     /**
-     * 关闭接收器，完成压缩并释放资源。
+     * Closes this sink, finishes the GZIP compression, writes the GZIP footer, and releases any system resources
+     * associated with the deflater and the underlying sink.
      *
-     * @throws IOException 如果关闭失败
+     * @throws IOException If an I/O error occurs during the close operation.
      */
     @Override
     public void close() throws IOException {
@@ -158,16 +161,18 @@ public class GzipSink implements Sink {
     }
 
     /**
-     * 获取压缩器以访问统计信息、字典、压缩级别等。
+     * Returns the {@link Deflater} instance used by this sink. This allows access to deflater statistics, dictionary,
+     * compression level, etc.
      *
-     * @return 压缩器对象
+     * @return The {@link Deflater} object.
      */
     public final Deflater deflater() {
         return deflater;
     }
 
     /**
-     * 写入 GZIP 文件头。
+     * Writes the GZIP file header to the underlying sink. The header includes the GZIP ID, compression method, flags,
+     * modification time, extra flags, and OS.
      */
     private void writeHeader() {
         Buffer buffer = this.sink.buffer();
@@ -180,22 +185,23 @@ public class GzipSink implements Sink {
     }
 
     /**
-     * 写入 GZIP 文件尾，包括 CRC32 校验和和原始数据长度。
+     * Writes the GZIP file footer to the underlying sink. The footer includes the CRC32 checksum of the uncompressed
+     * data and the total length of the uncompressed data.
      *
-     * @throws IOException 如果写入失败
+     * @throws IOException If an I/O error occurs during the write operation.
      */
     private void writeFooter() throws IOException {
-        // 原始数据的 CRC32
+        // CRC32 of original data
         sink.writeIntLe((int) crc.getValue());
-        // 原始数据长度
+        // Original data length
         sink.writeIntLe((int) deflater.getBytesRead());
     }
 
     /**
-     * 更新 CRC32 校验和。
+     * Updates the CRC32 checksum with the data from the provided buffer.
      *
-     * @param buffer    数据缓冲区
-     * @param byteCount 要更新的字节数
+     * @param buffer    The buffer containing the data to update the checksum with.
+     * @param byteCount The number of bytes from the buffer to use for the checksum update.
      */
     private void updateCrc(Buffer buffer, long byteCount) {
         for (SectionBuffer head = buffer.head; byteCount > 0; head = head.next) {

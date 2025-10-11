@@ -44,7 +44,9 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 干支日（立春换年，节令换月）
+ * Represents a Sixty-Year Cycle Day (干支日), a traditional Chinese calendar unit. The year changes at the Start of Spring
+ * (立春), and the month changes at the beginning of a solar term (节令). This class extends {@link Loops} for cyclical
+ * operations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,20 +54,28 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class SixtyCycleDay extends Loops {
 
     /**
-     * 公历日
+     * The Gregorian day associated with this Sixty-Year Cycle Day.
      */
     protected SolarDay solarDay;
 
     /**
-     * 干支月
+     * The Sixty-Year Cycle Month associated with this day.
      */
     protected SixtyCycleMonth month;
 
     /**
-     * 日柱
+     * The Sixty-Year Cycle for the day (日柱).
      */
     protected SixtyCycle day;
 
+    /**
+     * Constructs a {@code SixtyCycleDay} instance with the specified Gregorian day, Sixty-Year Cycle Month, and day
+     * pillar.
+     *
+     * @param solarDay The Gregorian day.
+     * @param month    The Sixty-Year Cycle Month.
+     * @param day      The Sixty-Year Cycle for the day.
+     */
     SixtyCycleDay(SolarDay solarDay, SixtyCycleMonth month, SixtyCycle day) {
         this.solarDay = solarDay;
         this.month = month;
@@ -73,9 +83,9 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * 初始化
+     * Constructs a {@code SixtyCycleDay} instance based on a {@link SolarDay}.
      *
-     * @param solarDay 公历日
+     * @param solarDay The Gregorian day.
      */
     public SixtyCycleDay(SolarDay solarDay) {
         int solarYear = solarDay.getYear();
@@ -102,77 +112,93 @@ public class SixtyCycleDay extends Loops {
         this.day = lunarDay.getSixtyCycle();
     }
 
+    /**
+     * Creates a {@code SixtyCycleDay} instance from a {@link SolarDay}.
+     *
+     * @param solarDay The Gregorian day.
+     * @return A new {@code SixtyCycleDay} instance.
+     */
     public static SixtyCycleDay fromSolarDay(SolarDay solarDay) {
         return new SixtyCycleDay(solarDay);
     }
 
     /**
-     * 公历日
+     * Gets the Gregorian day associated with this Sixty-Year Cycle Day.
      *
-     * @return 公历日
+     * @return The {@link SolarDay} instance.
      */
     public SolarDay getSolarDay() {
         return solarDay;
     }
 
     /**
-     * 干支月
+     * Gets the Sixty-Year Cycle Month associated with this day.
      *
-     * @return 干支月
+     * @return The {@link SixtyCycleMonth} instance.
      */
     public SixtyCycleMonth getSixtyCycleMonth() {
         return month;
     }
 
     /**
-     * 年柱
+     * Gets the Sixty-Year Cycle for the year (年柱).
      *
-     * @return 年柱
+     * @return The {@link SixtyCycle} instance representing the year pillar.
      */
     public SixtyCycle getYear() {
         return month.getYear();
     }
 
     /**
-     * 月柱
+     * Gets the Sixty-Year Cycle for the month (月柱).
      *
-     * @return 月柱
+     * @return The {@link SixtyCycle} instance representing the month pillar.
      */
     public SixtyCycle getMonth() {
         return month.getSixtyCycle();
     }
 
     /**
-     * 干支
+     * Gets the Sixty-Year Cycle for the day (日柱).
      *
-     * @return 干支
+     * @return The {@link SixtyCycle} instance representing the day pillar.
      */
     public SixtyCycle getSixtyCycle() {
         return day;
     }
 
+    /**
+     * Gets the name of this Sixty-Year Cycle Day.
+     *
+     * @return The name of the day as a formatted string.
+     */
     public String getName() {
         return String.format("%s日", day);
     }
 
+    /**
+     * Returns a string representation of this Sixty-Year Cycle Day, including the month and day.
+     *
+     * @return A string representation of the Sixty-Year Cycle Day.
+     */
     @Override
     public String toString() {
         return String.format("%s%s", month, getName());
     }
 
     /**
-     * 建除十二值神
+     * Gets the Duty (建除十二值神) associated with this day.
      *
-     * @return 建除十二值神
+     * @return The {@link Duty} instance.
      */
     public Duty getDuty() {
         return Duty.fromIndex(day.getEarthBranch().getIndex() - getMonth().getEarthBranch().getIndex());
     }
 
     /**
-     * 黄道黑道十二神
+     * Gets the Twelve Star (黄道黑道十二神) associated with this day.
      *
-     * @return 黄道黑道十二神
+     * @return The {@link TwelveStar} instance.
      */
     public TwelveStar getTwelveStar() {
         return TwelveStar
@@ -180,9 +206,9 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * 九星
+     * Gets the Nine Star (九星) associated with this day.
      *
-     * @return 九星
+     * @return The {@link NineStar} instance.
      */
     public NineStar getNineStar() {
         SolarTerms dongZhi = SolarTerms.fromIndex(solarDay.getYear(), 0);
@@ -209,9 +235,9 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * 太岁方位
+     * Gets the direction of Jupiter (太岁方位) for this day.
      *
-     * @return 方位
+     * @return The {@link Direction} of Jupiter.
      */
     public Direction getJupiterDirection() {
         int index = day.getIndex();
@@ -220,18 +246,18 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * 逐日胎神
+     * Gets the daily Fetus God (逐日胎神) for this day.
      *
-     * @return 逐日胎神
+     * @return The {@link FetusDay} instance.
      */
     public FetusDay getFetusDay() {
         return FetusDay.fromSixtyCycleDay(this);
     }
 
     /**
-     * 二十八宿
+     * Gets the Twenty-Eight Mansions (二十八宿) associated with this day.
      *
-     * @return 二十八宿
+     * @return The {@link TwentyEightStar} instance.
      */
     public TwentyEightStar getTwentyEightStar() {
         return TwentyEightStar.fromIndex(new int[] { 10, 18, 26, 6, 14, 22, 2 }[solarDay.getWeek().getIndex()])
@@ -239,37 +265,37 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * 神煞列表(吉神宜趋，凶神宜忌)
+     * Gets the list of Gods and Evils (神煞列表) for this day, indicating auspicious (吉神宜趋) and inauspicious (凶神宜忌) ones.
      *
-     * @return 神煞列表
+     * @return A list of {@link God} objects.
      */
     public List<God> getGods() {
         return God.getDayGods(getMonth(), day);
     }
 
     /**
-     * 宜
+     * Gets the list of recommended activities (宜) for this day.
      *
-     * @return 宜忌列表
+     * @return A list of {@link Taboo} objects representing recommended activities.
      */
     public List<Taboo> getRecommends() {
         return Taboo.getDayRecommends(getMonth(), day);
     }
 
     /**
-     * 忌
+     * Gets the list of activities to avoid (忌) for this day.
      *
-     * @return 宜忌列表
+     * @return A list of {@link Taboo} objects representing activities to avoid.
      */
     public List<Taboo> getAvoids() {
         return Taboo.getDayAvoids(getMonth(), day);
     }
 
     /**
-     * 推移
+     * Gets the next {@code SixtyCycleDay} by adding a specified number of days.
      *
-     * @param n 推移天数
-     * @return 干支日
+     * @param n The number of days to add.
+     * @return The next {@code SixtyCycleDay} instance.
      */
     @Override
     public SixtyCycleDay next(int n) {
@@ -277,9 +303,9 @@ public class SixtyCycleDay extends Loops {
     }
 
     /**
-     * 干支时辰列表
+     * Gets a list of all Sixty-Year Cycle Hours (干支时辰列表) for this day.
      *
-     * @return 干支时辰列表
+     * @return A list of {@link SixtyCycleHour} objects.
      */
     public List<SixtyCycleHour> getHours() {
         List<SixtyCycleHour> l = new ArrayList<>();

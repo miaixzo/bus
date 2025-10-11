@@ -28,7 +28,7 @@
 package org.miaixz.bus.pay;
 
 /**
- * 平台模式
+ * Represents the mode of the payment platform.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,23 +36,33 @@ package org.miaixz.bus.pay;
 public enum Mode {
 
     /**
-     * 商户模式
+     * Seller mode.
      */
     SELLER("SELLER"),
     /**
-     * 服务商模式
+     * Service provider mode.
      */
     SERVICE("SERVICE");
 
     /**
-     * 对应值
+     * The string value of the mode.
      */
     private final String value;
 
+    /**
+     * Constructs a new Mode.
+     *
+     * @param value The string value of the mode.
+     */
     Mode(String value) {
         this.value = value;
     }
 
+    /**
+     * Gets the string value of the mode.
+     *
+     * @return The string value.
+     */
     public String getValue() {
         return value;
     }

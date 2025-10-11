@@ -31,9 +31,12 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 防击穿对象工具类
+ * A utility class for handling cache penetration prevention.
  * <p>
- * 提供防击穿对象的创建和判断功能，用于缓存系统中防止缓存击穿问题。 缓存击穿是指大量请求同时查询一个不存在的缓存数据，导致这些请求直接穿透缓存访问数据库。 通过在缓存中存储特殊的防击穿对象，可以有效减少对数据库的访问压力。
+ * Cache penetration occurs when a non-existent key is frequently requested, causing each request to bypass the cache
+ * and hit the underlying data source (e.g., a database). This class provides a special singleton object that can be
+ * cached to represent a "null" or non-existent value, thereby preventing subsequent requests for the same key from
+ * hitting the data source.
  * </p>
  *
  * @author Kimi Liu
@@ -42,43 +45,44 @@ import java.io.Serializable;
 public class PreventObjects {
 
     /**
-     * 获取防击穿对象
+     * Returns the singleton object used for cache penetration prevention.
      * <p>
-     * 返回一个单例的防击穿对象，用于标识缓存中的空值或不存在的情况
+     * This object serves as a placeholder in the cache for keys that correspond to non-existent data.
      * </p>
      *
-     * @return 防击穿对象
+     * @return The singleton penetration prevention object.
      */
     public static Object getPreventObject() {
         return PreventObject.INSTANCE;
     }
 
     /**
-     * 判断对象是否为防击穿对象
+     * Checks if a given object is the special penetration prevention object.
      *
-     * @param object 要判断的对象
-     * @return 如果是防击穿对象则返回true，否则返回false
+     * @param object The object to check.
+     * @return {@code true} if the object is the penetration prevention instance, otherwise {@code false}.
      */
     public static boolean isPrevent(Object object) {
         return object == PreventObject.INSTANCE || object instanceof PreventObject;
     }
 
     /**
-     * 防击穿对象内部类
+     * The internal singleton class for the penetration prevention object.
      * <p>
-     * 实现Serializable接口，确保可以被序列化存储到缓存中 使用单例模式，确保全局只有一个实例
+     * It is implemented as a serializable singleton to ensure it can be stored in various distributed cache
+     * implementations and that only one instance exists globally.
      * </p>
      */
     private static final class PreventObject implements Serializable {
 
         /**
-         * 序列化版本号
+         * The serialization version UID.
          */
         @Serial
         private static final long serialVersionUID = 2852290208329L;
 
         /**
-         * 单例实例
+         * The singleton instance.
          */
         private static final PreventObject INSTANCE = new PreventObject();
     }

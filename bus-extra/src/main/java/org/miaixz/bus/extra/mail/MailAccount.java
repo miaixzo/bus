@@ -42,7 +42,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.setting.Setting;
 
 /**
- * 邮件账户对象
+ * Represents a mail account, encapsulating all necessary configuration for sending emails. This includes SMTP server
+ * details, authentication credentials, and connection settings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,136 +51,176 @@ import org.miaixz.bus.setting.Setting;
 public class MailAccount implements Serializable {
 
     /**
-     * 默认mail配置查询路径
+     * Default paths for loading mail configuration settings.
      */
     public static final String[] MAIL_SETTING_PATHS = new String[] { "config/mail.setting",
             "config/mailAccount.setting", "mail.setting" };
     @Serial
     private static final long serialVersionUID = 2852285572363L;
-    private static final String MAIL_PROTOCOL = "mail.transport.protocol";
-    private static final String SMTP_HOST = "mail.smtp.host";
-    private static final String SMTP_PORT = "mail.smtp.port";
-    private static final String SMTP_AUTH = "mail.smtp.auth";
-    // 认证机制，多个机制使用空格或逗号隔开，如：XOAUTH2
-    private static final String SMTP_AUTH_MECHANISMS = "mail.smtp.auth.mechanisms";
-    private static final String SMTP_TIMEOUT = "mail.smtp.timeout";
-    private static final String SMTP_CONNECTION_TIMEOUT = "mail.smtp.connectiontimeout";
-    private static final String SMTP_WRITE_TIMEOUT = "mail.smtp.writetimeout";
-    // SSL
-    private static final String STARTTLS_ENABLE = "mail.smtp.starttls.enable";
-    private static final String SSL_ENABLE = "mail.smtp.ssl.enable";
-    private static final String SSL_PROTOCOLS = "mail.smtp.ssl.protocols";
-    private static final String SOCKET_FACTORY = "mail.smtp.socketFactory.class";
-    private static final String SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
-    private static final String SOCKET_FACTORY_PORT = "smtp.socketFactory.port";
-
-    // 其他
-    private static final String MAIL_DEBUG = "mail.debug";
     /**
-     * 自定义的其他属性，此自定义属性会覆盖默认属性
+     * Mail transport protocol property key.
      */
-    private final Map<String, Object> customProperty = new HashMap<>();
+    private static final String MAIL_PROTOCOL = "mail.transport.protocol";
     /**
-     * SMTP服务器域名
+     * SMTP server host property key.
+     */
+    private static final String SMTP_HOST = "mail.smtp.host";
+    /**
+     * SMTP server port property key.
+     */
+    private static final String SMTP_PORT = "mail.smtp.port";
+    /**
+     * SMTP authentication property key.
+     */
+    private static final String SMTP_AUTH = "mail.smtp.auth";
+    /**
+     * SMTP authentication mechanisms property key.
+     */
+    private static final String SMTP_AUTH_MECHANISMS = "mail.smtp.auth.mechanisms";
+    /**
+     * SMTP timeout property key.
+     */
+    private static final String SMTP_TIMEOUT = "mail.smtp.timeout";
+    /**
+     * SMTP connection timeout property key.
+     */
+    private static final String SMTP_CONNECTION_TIMEOUT = "mail.smtp.connectiontimeout";
+    /**
+     * SMTP write timeout property key.
+     */
+    private static final String SMTP_WRITE_TIMEOUT = "mail.smtp.writetimeout";
+    /**
+     * STARTTLS enable property key.
+     */
+    private static final String STARTTLS_ENABLE = "mail.smtp.starttls.enable";
+    /**
+     * SSL enable property key.
+     */
+    private static final String SSL_ENABLE = "mail.smtp.ssl.enable";
+    /**
+     * SSL protocols property key.
+     */
+    private static final String SSL_PROTOCOLS = "mail.smtp.ssl.protocols";
+    /**
+     * Socket factory class property key.
+     */
+    private static final String SOCKET_FACTORY = "mail.smtp.socketFactory.class";
+    /**
+     * Socket factory fallback property key.
+     */
+    private static final String SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
+    /**
+     * Socket factory port property key.
+     */
+    private static final String SOCKET_FACTORY_PORT = "smtp.socketFactory.port";
+    /**
+     * Mail debug property key.
+     */
+    private static final String MAIL_DEBUG = "mail.debug";
+
+    /**
+     * The SMTP server host.
      */
     private String host;
     /**
-     * SMTP服务端口
+     * The SMTP server port.
      */
     private Integer port;
     /**
-     * 是否需要用户名密码验证
+     * Indicates whether authentication is required.
      */
     private Boolean auth;
     /**
-     * 认证机制，多个机制使用空格或逗号隔开，如：XOAUTH2
+     * Authentication mechanisms, such as XOAUTH2, separated by spaces or commas.
      */
     private String authMechanisms;
     /**
-     * 用户名
+     * The username for authentication.
      */
     private String user;
     /**
-     * 密码 使用char[]保存密码有利于及时擦除 见：https://www.cnblogs.com/okokabcd/p/16456966.html
+     * The password for authentication, stored as a char array for security.
      */
     private char[] pass;
     /**
-     * 发送方，遵循RFC-822标准
+     * The sender's email address, compliant with RFC-822.
      */
     private String from;
     /**
-     * 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
+     * Enables debug mode, which displays communication with the mail server.
      */
     private boolean debug;
     /**
-     * 编码用于编码邮件正文和发送人、收件人等中文
+     * The character set for encoding email content and headers.
      */
     private java.nio.charset.Charset charset = Charset.UTF_8;
     /**
-     * 对于文件名是否使用{@link #charset}编码，默认为 {@code true}
+     * Indicates whether to encode attachment filenames using the specified charset.
      */
     private boolean encodefilename = true;
     /**
-     * 使用 STARTTLS安全连接，STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。
+     * Enables STARTTLS for a secure connection, upgrading a plain text connection to an encrypted one.
      */
     private boolean starttlsEnable = false;
     /**
-     * 使用 SSL安全连接
+     * Enables SSL for a secure connection.
      */
     private Boolean sslEnable;
     /**
-     * SSL协议，多个协议用空格分隔
+     * The SSL protocols to use, separated by spaces.
      */
     private String sslProtocols;
     /**
-     * 指定实现javax.net.SocketFactory接口的类的名称,这个类将被用于创建SMTP的套接字
+     * The name of the class implementing javax.net.SocketFactory for creating SMTP sockets.
      */
     private String socketFactoryClass = "javax.net.ssl.SSLSocketFactory";
     /**
-     * 如果设置为true,未能创建一个套接字使用指定的套接字工厂类将导致使用java.net.Socket创建的套接字类, 默认值为true
+     * If true, falls back to java.net.Socket if the specified socket factory fails.
      */
     private boolean socketFactoryFallback;
     /**
-     * 指定的端口连接到在使用指定的套接字工厂。如果没有设置,将使用默认端口
+     * The port to connect to when using the specified socket factory.
      */
     private int socketFactoryPort = 465;
     /**
-     * SMTP超时时长，单位毫秒，缺省值不超时
+     * The SMTP timeout in milliseconds.
      */
     private long timeout;
     /**
-     * Socket连接超时值，单位毫秒，缺省值不超时
+     * The socket connection timeout in milliseconds.
      */
     private long connectionTimeout;
     /**
-     * Socket写出超时值，单位毫秒，缺省值不超时
+     * The socket write timeout in milliseconds.
      */
     private long writeTimeout;
+    /**
+     * A map for custom properties that will override default settings.
+     */
+    private final Map<String, Object> customProperty = new HashMap<>();
 
     /**
-     * 构造,所有参数需自行定义或保持默认值
+     * Constructs a new {@code MailAccount} with default values.
      */
     public MailAccount() {
     }
 
     /**
-     * 构造
+     * Constructs a new {@code MailAccount} from a configuration file.
      *
-     * @param settingPath 配置文件路径
+     * @param settingPath The path to the configuration file.
      */
     public MailAccount(final String settingPath) {
         this(new Setting(settingPath));
     }
 
     /**
-     * 构造
+     * Constructs a new {@code MailAccount} from a {@link Setting} object.
      *
-     * @param setting 配置文件
+     * @param setting The {@link Setting} object containing mail configuration.
      */
     public MailAccount(final Setting setting) {
         setting.toBean(this);
-
-        // 对于用户希望直接在配置文件中设置mail.xxx参数的情况，在此加入
         setting.forEach((key, value) -> {
             if (StringKit.startWith(key, "mail.")) {
                 this.setCustomProperty(key, value);
@@ -188,19 +229,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获得SMTP服务器域名
+     * Retrieves the SMTP server host.
      *
-     * @return SMTP服务器域名
+     * @return The SMTP server host.
      */
     public String getHost() {
         return host;
     }
 
     /**
-     * 设置SMTP服务器域名
+     * Sets the SMTP server host.
      *
-     * @param host SMTP服务器域名
-     * @return this
+     * @param host The SMTP server host.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setHost(final String host) {
         this.host = host;
@@ -208,19 +249,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获得SMTP服务端口
+     * Retrieves the SMTP server port.
      *
-     * @return SMTP服务端口
+     * @return The SMTP server port.
      */
     public Integer getPort() {
         return port;
     }
 
     /**
-     * 设置SMTP服务端口
+     * Sets the SMTP server port.
      *
-     * @param port SMTP服务端口
-     * @return this
+     * @param port The SMTP server port.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setPort(final Integer port) {
         this.port = port;
@@ -228,19 +269,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 是否需要用户名密码验证
+     * Checks if authentication is required.
      *
-     * @return 是否需要用户名密码验证
+     * @return {@code true} if authentication is required, {@code false} otherwise.
      */
     public Boolean isAuth() {
         return auth;
     }
 
     /**
-     * 设置是否需要用户名密码验证
+     * Sets whether authentication is required.
      *
-     * @param isAuth 是否需要用户名密码验证
-     * @return this
+     * @param isAuth {@code true} to enable authentication, {@code false} to disable it.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setAuth(final boolean isAuth) {
         this.auth = isAuth;
@@ -248,19 +289,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获取认证机制，多个机制使用空格或逗号隔开，如：XOAUTH2
+     * Retrieves the authentication mechanisms.
      *
-     * @return 认证机制
+     * @return The authentication mechanisms.
      */
     public String getAuthMechanisms() {
         return this.authMechanisms;
     }
 
     /**
-     * 设置认证机制，多个机制使用空格或逗号隔开，如：XOAUTH2
+     * Sets the authentication mechanisms.
      *
-     * @param authMechanisms 认证机制
-     * @return this
+     * @param authMechanisms The authentication mechanisms.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setAuthMechanisms(final String authMechanisms) {
         this.authMechanisms = authMechanisms;
@@ -268,19 +309,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获取用户名
+     * Retrieves the username for authentication.
      *
-     * @return 用户名
+     * @return The username.
      */
     public String getUser() {
         return user;
     }
 
     /**
-     * 设置用户名
+     * Sets the username for authentication.
      *
-     * @param user 用户名
-     * @return this
+     * @param user The username.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setUser(final String user) {
         this.user = user;
@@ -288,19 +329,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获取密码
+     * Retrieves the password for authentication.
      *
-     * @return 密码
+     * @return The password as a char array.
      */
     public char[] getPass() {
         return pass;
     }
 
     /**
-     * 设置密码
+     * Sets the password for authentication.
      *
-     * @param pass 密码
-     * @return this
+     * @param pass The password as a char array.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setPass(final char[] pass) {
         this.pass = pass;
@@ -308,24 +349,20 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获取发送方，遵循RFC-822标准
+     * Retrieves the sender's email address.
      *
-     * @return 发送方，遵循RFC-822标准
+     * @return The sender's email address.
      */
     public String getFrom() {
         return from;
     }
 
     /**
-     * 设置发送方，遵循RFC-822标准 发件人可以是以下形式：
+     * Sets the sender's email address, which can be in the format "user@example.com" or "Sender Name
+     * &lt;user@example.com&gt;".
      *
-     * <pre>
-     * 1. user@xxx.xx
-     * 2.  name &lt;user@xxx.xx&gt;
-     * </pre>
-     *
-     * @param from 发送方，遵循RFC-822标准
-     * @return this
+     * @param from The sender's email address.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setFrom(final String from) {
         this.from = from;
@@ -333,19 +370,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
+     * Checks if debug mode is enabled.
      *
-     * @return 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
+     * @return {@code true} if debug mode is enabled, {@code false} otherwise.
      */
     public boolean isDebug() {
         return debug;
     }
 
     /**
-     * 设置是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
+     * Sets whether to enable debug mode.
      *
-     * @param debug 是否打开调试模式，调试模式会显示与邮件服务器通信过程，默认不开启
-     * @return this
+     * @param debug {@code true} to enable debug mode, {@code false} to disable it.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setDebug(final boolean debug) {
         this.debug = debug;
@@ -353,23 +390,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获取字符集编码
+     * Retrieves the character set for encoding.
      *
-     * @return 编码，可能为{@code null}
+     * @return The character set, or null if not set.
      */
     public java.nio.charset.Charset getCharset() {
         return charset;
     }
 
     /**
-     * 设置字符集编码，此选项不会修改全局配置，若修改全局配置，请设置此项为{@code null}并设置：
-     * 
-     * <pre>
-     * System.setProperty("mail.mime.charset", charset);
-     * </pre>
+     * Sets the character set for encoding. If null, the global default (mail.mime.charset) is used.
      *
-     * @param charset 字符集编码，{@code null} 则表示使用全局设置的默认编码，全局编码为mail.mime.charset系统属性
-     * @return this
+     * @param charset The character set.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setCharset(final java.nio.charset.Charset charset) {
         this.charset = charset;
@@ -377,42 +410,39 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 对于文件名是否使用{@link #charset}编码，默认为 {@code true}
+     * Checks if attachment filenames should be encoded using the specified charset.
      *
-     * @return 对于文件名是否使用{@link #charset}编码，默认为 {@code true}
+     * @return {@code true} if filenames should be encoded, {@code false} otherwise.
      */
     public boolean isEncodefilename() {
-
         return encodefilename;
     }
 
     /**
-     * 设置对于文件名是否使用{@link #charset}编码，此选项不会修改全局配置 如果此选项设置为{@code false}，则是否编码取决于两个系统属性：
-     * <ul>
-     * <li>mail.mime.encodefilename 是否编码附件文件名</li>
-     * <li>mail.mime.charset 编码文件名的编码</li>
-     * </ul>
+     * Sets whether to encode attachment filenames using the specified charset.
      *
-     * @param encodefilename 对于文件名是否使用{@link #charset}编码
+     * @param encodefilename {@code true} to encode filenames, {@code false} to rely on system properties.
+     * @return This {@code MailAccount} instance for method chaining.
      */
-    public void setEncodefilename(final boolean encodefilename) {
+    public MailAccount setEncodefilename(final boolean encodefilename) {
         this.encodefilename = encodefilename;
+        return this;
     }
 
     /**
-     * 是否使用 STARTTLS安全连接，STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。
+     * Checks if STARTTLS is enabled.
      *
-     * @return 是否使用 STARTTLS安全连接
+     * @return {@code true} if STARTTLS is enabled, {@code false} otherwise.
      */
     public boolean isStarttlsEnable() {
         return this.starttlsEnable;
     }
 
     /**
-     * 设置是否使用STARTTLS安全连接，STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。
+     * Sets whether to enable STARTTLS.
      *
-     * @param startttlsEnable 是否使用STARTTLS安全连接
-     * @return this
+     * @param startttlsEnable {@code true} to enable STARTTLS, {@code false} to disable it.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setStarttlsEnable(final boolean startttlsEnable) {
         this.starttlsEnable = startttlsEnable;
@@ -420,19 +450,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 是否使用 SSL安全连接
+     * Checks if SSL is enabled.
      *
-     * @return 是否使用 SSL安全连接
+     * @return {@code true} if SSL is enabled, {@code false} otherwise.
      */
     public Boolean isSslEnable() {
         return this.sslEnable;
     }
 
     /**
-     * 设置是否使用SSL安全连接
+     * Sets whether to enable SSL.
      *
-     * @param sslEnable 是否使用SSL安全连接
-     * @return this
+     * @param sslEnable {@code true} to enable SSL, {@code false} to disable it.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setSslEnable(final Boolean sslEnable) {
         this.sslEnable = sslEnable;
@@ -440,37 +470,39 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获取SSL协议，多个协议用空格分隔
+     * Retrieves the SSL protocols to be used for the connection, separated by spaces.
      *
-     * @return SSL协议，多个协议用空格分隔
+     * @return The SSL protocols string.
      */
     public String getSslProtocols() {
         return sslProtocols;
     }
 
     /**
-     * 设置SSL协议，多个协议用空格分隔
+     * Sets the SSL protocols to be used for the connection, separated by spaces.
      *
-     * @param sslProtocols SSL协议，多个协议用空格分隔
+     * @param sslProtocols The SSL protocols string.
+     * @return This {@code MailAccount} instance for method chaining.
      */
-    public void setSslProtocols(final String sslProtocols) {
+    public MailAccount setSslProtocols(final String sslProtocols) {
         this.sslProtocols = sslProtocols;
+        return this;
     }
 
     /**
-     * 获取指定实现javax.net.SocketFactory接口的类的名称,这个类将被用于创建SMTP的套接字
+     * Retrieves the socket factory class name.
      *
-     * @return 指定实现javax.net.SocketFactory接口的类的名称, 这个类将被用于创建SMTP的套接字
+     * @return The socket factory class name.
      */
     public String getSocketFactoryClass() {
         return socketFactoryClass;
     }
 
     /**
-     * 设置指定实现javax.net.SocketFactory接口的类的名称,这个类将被用于创建SMTP的套接字
+     * Sets the socket factory class name.
      *
-     * @param socketFactoryClass 指定实现javax.net.SocketFactory接口的类的名称,这个类将被用于创建SMTP的套接字
-     * @return this
+     * @param socketFactoryClass The socket factory class name.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setSocketFactoryClass(final String socketFactoryClass) {
         this.socketFactoryClass = socketFactoryClass;
@@ -478,19 +510,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 如果设置为true,未能创建一个套接字使用指定的套接字工厂类将导致使用java.net.Socket创建的套接字类, 默认值为true
+     * Checks if socket factory fallback is enabled.
      *
-     * @return 如果设置为true, 未能创建一个套接字使用指定的套接字工厂类将导致使用java.net.Socket创建的套接字类, 默认值为true
+     * @return {@code true} if fallback is enabled, {@code false} otherwise.
      */
     public boolean isSocketFactoryFallback() {
         return socketFactoryFallback;
     }
 
     /**
-     * 如果设置为true,未能创建一个套接字使用指定的套接字工厂类将导致使用java.net.Socket创建的套接字类, 默认值为true
+     * Sets whether to enable socket factory fallback.
      *
-     * @param socketFactoryFallback 如果设置为true,未能创建一个套接字使用指定的套接字工厂类将导致使用java.net.Socket创建的套接字类, 默认值为true
-     * @return this
+     * @param socketFactoryFallback {@code true} to enable fallback, {@code false} to disable it.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setSocketFactoryFallback(final boolean socketFactoryFallback) {
         this.socketFactoryFallback = socketFactoryFallback;
@@ -498,19 +530,19 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获取指定的端口连接到在使用指定的套接字工厂。如果没有设置,将使用默认端口
+     * Retrieves the socket factory port.
      *
-     * @return 指定的端口连接到在使用指定的套接字工厂。如果没有设置,将使用默认端口
+     * @return The socket factory port.
      */
     public int getSocketFactoryPort() {
         return socketFactoryPort;
     }
 
     /**
-     * 指定的端口连接到在使用指定的套接字工厂。如果没有设置,将使用默认端口
+     * Sets the socket factory port.
      *
-     * @param socketFactoryPort 指定的端口连接到在使用指定的套接字工厂。如果没有设置,将使用默认端口
-     * @return this
+     * @param socketFactoryPort The socket factory port.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setSocketFactoryPort(final int socketFactoryPort) {
         this.socketFactoryPort = socketFactoryPort;
@@ -518,10 +550,10 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置SMTP超时时长，单位毫秒，缺省值不超时
+     * Sets the SMTP timeout.
      *
-     * @param timeout SMTP超时时长，单位毫秒，缺省值不超时
-     * @return this
+     * @param timeout The timeout in milliseconds.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setTimeout(final long timeout) {
         this.timeout = timeout;
@@ -529,10 +561,10 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置Socket连接超时值，单位毫秒，缺省值不超时
+     * Sets the socket connection timeout.
      *
-     * @param connectionTimeout Socket连接超时值，单位毫秒，缺省值不超时
-     * @return this
+     * @param connectionTimeout The timeout in milliseconds.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setConnectionTimeout(final long connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
@@ -540,10 +572,10 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置Socket写出超时值，单位毫秒，缺省值不超时
+     * Sets the socket write timeout.
      *
-     * @param writeTimeout Socket写出超时值，单位毫秒，缺省值不超时
-     * @return this
+     * @param writeTimeout The timeout in milliseconds.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setWriteTimeout(final long writeTimeout) {
         this.writeTimeout = writeTimeout;
@@ -551,20 +583,20 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获取自定义属性列表
+     * Retrieves the map of custom properties.
      *
-     * @return 自定义参数列表
+     * @return The map of custom properties.
      */
     public Map<String, Object> getCustomProperty() {
         return customProperty;
     }
 
     /**
-     * 设置自定义属性，如mail.smtp.ssl.socketFactory
+     * Sets a custom property.
      *
-     * @param key   属性名，空白被忽略
-     * @param value 属性值， null被忽略
-     * @return this
+     * @param key   The property key.
+     * @param value The property value.
+     * @return This {@code MailAccount} instance for method chaining.
      */
     public MailAccount setCustomProperty(final String key, final Object value) {
         if (StringKit.isNotBlank(key) && ObjectKit.isNotNull(value)) {
@@ -574,9 +606,9 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 获得SMTP相关信息
+     * Retrieves the SMTP properties for this account.
      *
-     * @return {@link Properties}
+     * @return A {@link Properties} object containing SMTP settings.
      */
     public Properties getSmtpProps() {
         final Properties p = new Properties();
@@ -584,7 +616,6 @@ public class MailAccount implements Serializable {
         p.put(SMTP_HOST, this.host);
         p.put(SMTP_PORT, String.valueOf(this.port));
         p.put(SMTP_AUTH, String.valueOf(this.auth));
-        // 增加Oath2认证方式支持
         if (StringKit.isNotBlank(this.authMechanisms)) {
             p.put(SMTP_AUTH_MECHANISMS, this.authMechanisms);
         }
@@ -594,77 +625,70 @@ public class MailAccount implements Serializable {
         if (this.connectionTimeout > 0) {
             p.put(SMTP_CONNECTION_TIMEOUT, String.valueOf(this.connectionTimeout));
         }
-
         if (this.writeTimeout > 0) {
             p.put(SMTP_WRITE_TIMEOUT, String.valueOf(this.writeTimeout));
         }
-
         p.put(MAIL_DEBUG, String.valueOf(this.debug));
 
         if (this.starttlsEnable) {
-            // STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。
             p.put(STARTTLS_ENABLE, "true");
-
             if (null == this.sslEnable) {
-                // 为了兼容旧版本，当用户没有此项配置时，按照starttlsEnable开启状态时对待
                 this.sslEnable = true;
             }
         }
 
-        // SSL
         if (null != this.sslEnable && this.sslEnable) {
             p.put(SSL_ENABLE, "true");
             p.put(SOCKET_FACTORY, socketFactoryClass);
             p.put(SOCKET_FACTORY_FALLBACK, String.valueOf(this.socketFactoryFallback));
             p.put(SOCKET_FACTORY_PORT, String.valueOf(this.socketFactoryPort));
-            // 在Linux下需自定义SSL协议版本
             if (StringKit.isNotBlank(this.sslProtocols)) {
                 p.put(SSL_PROTOCOLS, this.sslProtocols);
             }
         }
 
-        // 补充自定义属性，允许自定属性覆盖已经设置的值
         p.putAll(this.customProperty);
 
         return p;
     }
 
     /**
-     * 如果某些值为null，使用默认值
+     * Fills in default values for any fields that are null or blank. This is useful for creating a complete
+     * configuration from minimal information.
      *
-     * @return this
+     * @return This {@code MailAccount} instance for method chaining.
+     * @throws NullPointerException if the 'from' address is not set.
      */
     public MailAccount defaultIfEmpty() {
         Assert.notBlank(this.from, "'from' must not blank!");
 
-        // 去掉发件人的姓名部分
         final String fromAddress = InternalMail.parseFirstAddress(this.from, this.charset).getAddress();
 
         if (StringKit.isBlank(this.host)) {
-            // 如果SMTP地址为空，默认使用smtp.<发件人邮箱后缀>
             this.host = StringKit
                     .format("smtp.{}", StringKit.subSuf(fromAddress, fromAddress.indexOf(Symbol.C_AT) + 1));
         }
         if (StringKit.isBlank(user)) {
-            // 如果用户名为空，默认为发件人
             this.user = fromAddress;
         }
         if (null == this.auth) {
-            // 如果密码非空白，则使用认证模式
             this.auth = ArrayKit.isNotEmpty(this.pass);
         }
         if (null == this.port) {
-            // 端口在SSL状态下默认与socketFactoryPort一致，非SSL状态下默认为25
             this.port = (null != this.sslEnable && this.sslEnable) ? this.socketFactoryPort : 25;
         }
         if (null == this.charset) {
-            // 默认UTF-8编码
             this.charset = Charset.UTF_8;
         }
 
         return this;
     }
 
+    /**
+     * Returns a string representation of the MailAccount, excluding the password for security.
+     *
+     * @return A string representation of the object.
+     */
     @Override
     public String toString() {
         return "MailAccount [host=" + host + ", port=" + port + ", auth=" + auth + ", user=" + user + ", pass="

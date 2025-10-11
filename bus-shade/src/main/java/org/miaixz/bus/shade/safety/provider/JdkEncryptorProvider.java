@@ -38,7 +38,7 @@ import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 
 /**
- * JDK内置加密算法的加密器
+ * An {@link EncryptorProvider} implementation that uses the built-in JDK cryptographic algorithms.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,10 +47,23 @@ public class JdkEncryptorProvider implements EncryptorProvider {
 
     private final String algorithm;
 
+    /**
+     * Constructs a {@code JdkEncryptorProvider} with the specified algorithm.
+     *
+     * @param algorithm The name of the encryption algorithm to use (e.g., "AES").
+     */
     public JdkEncryptorProvider(String algorithm) {
         this.algorithm = algorithm;
     }
 
+    /**
+     * Encrypts a source file and writes the result to a destination file.
+     *
+     * @param key  The encryption key.
+     * @param src  The source file to encrypt.
+     * @param dest The destination file to write the encrypted content to.
+     * @throws IOException If an I/O error occurs during encryption.
+     */
     @Override
     public void encrypt(Key key, File src, File dest) throws IOException {
         if (!dest.getParentFile().exists() && !dest.getParentFile().mkdirs()) {
@@ -61,6 +74,14 @@ public class JdkEncryptorProvider implements EncryptorProvider {
         }
     }
 
+    /**
+     * Encrypts an input stream and writes the result to an output stream.
+     *
+     * @param key The encryption key.
+     * @param in  The input stream containing the plaintext data.
+     * @param out The output stream to write the encrypted data to.
+     * @throws IOException If an I/O error occurs during encryption.
+     */
     @Override
     public void encrypt(Key key, InputStream in, OutputStream out) throws IOException {
         CipherInputStream cis = null;
@@ -76,6 +97,14 @@ public class JdkEncryptorProvider implements EncryptorProvider {
         }
     }
 
+    /**
+     * Wraps an input stream with an encrypting input stream.
+     *
+     * @param key The encryption key.
+     * @param in  The input stream to wrap.
+     * @return A new input stream that encrypts the data from the original stream.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public InputStream encrypt(Key key, InputStream in) throws IOException {
         try {
@@ -87,6 +116,14 @@ public class JdkEncryptorProvider implements EncryptorProvider {
         }
     }
 
+    /**
+     * Wraps an output stream with an encrypting output stream.
+     *
+     * @param key The encryption key.
+     * @param out The output stream to wrap.
+     * @return A new output stream that encrypts data before writing it to the original stream.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public OutputStream encrypt(Key key, OutputStream out) throws IOException {
         try {

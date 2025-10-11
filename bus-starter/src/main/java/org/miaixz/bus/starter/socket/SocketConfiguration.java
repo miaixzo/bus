@@ -27,14 +27,16 @@
 */
 package org.miaixz.bus.starter.socket;
 
+import jakarta.annotation.Resource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import jakarta.annotation.Resource;
-
 /**
- * Socket配置
+ * Auto-configuration for the socket service.
+ * <p>
+ * This class enables the {@link SocketProperties} and creates the main {@link SocketQuickService} bean that manages the
+ * server lifecycle.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,9 +44,22 @@ import jakarta.annotation.Resource;
 @EnableConfigurationProperties(value = { SocketProperties.class })
 public class SocketConfiguration {
 
+    /**
+     * Injected socket configuration properties.
+     */
     @Resource
-    SocketProperties properties;
+    private SocketProperties properties;
 
+    /**
+     * Creates the {@link SocketQuickService} bean.
+     * <p>
+     * This bean is responsible for starting and stopping the underlying socket server. The {@code initMethod="start"}
+     * and {@code destroyMethod="stop"} attributes ensure that the server's lifecycle is tied to the Spring application
+     * context. The bean is only created if no other bean of the same type is already present.
+     * </p>
+     *
+     * @return A new {@link SocketQuickService} instance.
+     */
     @Bean(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean
     public SocketQuickService initialization() {

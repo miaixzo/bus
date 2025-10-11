@@ -32,8 +32,10 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.validate.Context;
 
 /**
- * 校验器接口
+ * Validator interface.
  *
+ * @param <T> The type of the object to be validated.
+ * @param <K> The type of the annotation associated with the validator.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -41,38 +43,43 @@ import org.miaixz.bus.validate.Context;
 public interface Matcher<T, K> extends Provider {
 
     /**
-     * 将Validator转为Matcher
+     * Converts a {@link Validator} to a {@link Matcher}.
      *
-     * @param validator Validator对象
-     * @param <T>       Validator泛型
-     * @return ComplexValidator对象
+     * @param <T>       The generic type of the Validator.
+     * @param validator The Validator object.
+     * @return A {@code Matcher} object.
      */
     static <T> Matcher<T, ?> of(Validator<T> validator) {
         return (object, annotation, context) -> validator.on(object, context);
     }
 
     /**
-     * 根据校验器,创建相对立的一个校验器
+     * Creates a new validator that is the logical negation of the given validator.
      *
-     * @param matcher 校验器
-     * @param <T>     校验对象泛型
-     * @param <K>     校验器注解泛型
-     * @return 新的校验器, 永远与传入参数的校验器的校验结果相反
+     * @param <T>     The generic type of the object to be validated.
+     * @param <K>     The generic type of the validator annotation.
+     * @param matcher The validator to negate.
+     * @return A new validator whose result is always the opposite of the input validator's result.
      */
     static <T, K> Matcher<T, K> not(Matcher<T, K> matcher) {
         return (object, anno, context) -> !matcher.on(object, anno, context);
     }
 
     /**
-     * 校验对象
+     * Validates the given object.
      *
-     * @param object     被校验的对象
-     * @param annotation 被校验对象的注解
-     * @param context    校验环境上下文
-     * @return 校验结果, true：校验通过
+     * @param object     The object to be validated.
+     * @param annotation The annotation on the object being validated.
+     * @param context    The validation context.
+     * @return {@code true} if the validation passes, {@code false} otherwise.
      */
     boolean on(T object, K annotation, Context context);
 
+    /**
+     * Returns the type of this provider.
+     *
+     * @return The provider type, which is {@link EnumValue.Povider#VALIDATE}.
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.VALIDATE;

@@ -30,43 +30,63 @@ package org.miaixz.bus.core.center.date.culture.cn.climate;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 三候
+ * Represents a "Sanhou" (三候) or Three Climates, which are three five-day periods within a solar term. This class
+ * extends {@link Samsara} to manage a cyclical list of these entities.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ThreeClimate extends Samsara {
 
+    /**
+     * Array of names for the Three Climates.
+     */
     public static final String[] NAMES = { "初候", "二候", "三候" };
 
+    /**
+     * Constructs a {@code ThreeClimate} instance with the specified name.
+     *
+     * @param name The name of the Climate.
+     */
     public ThreeClimate(String name) {
         super(NAMES, name);
     }
 
+    /**
+     * Constructs a {@code ThreeClimate} instance with the specified index.
+     *
+     * @param index The index of the Climate in the {@link #NAMES} array.
+     */
     public ThreeClimate(int index) {
         super(NAMES, index);
     }
 
     /**
-     * 从名称初始化
+     * Creates a {@code ThreeClimate} instance from its name.
      *
-     * @param name 名称
-     * @return 三候
+     * @param name The name of the Climate.
+     * @return A new {@code ThreeClimate} instance.
      */
     public static ThreeClimate fromName(String name) {
         return new ThreeClimate(name);
     }
 
     /**
-     * 从索引初始化
+     * Creates a {@code ThreeClimate} instance from its index.
      *
-     * @param index 索引
-     * @return 三候
+     * @param index The index of the Climate.
+     * @return A new {@code ThreeClimate} instance.
      */
     public static ThreeClimate fromIndex(int index) {
         return new ThreeClimate(index);
     }
 
+    /**
+     * Gets the next {@code ThreeClimate} in the cycle.
+     *
+     * @param n The number of steps to move forward or backward in the cycle.
+     * @return The next {@code ThreeClimate} instance.
+     */
     public ThreeClimate next(int n) {
         return fromIndex(nextIndex(n));
     }

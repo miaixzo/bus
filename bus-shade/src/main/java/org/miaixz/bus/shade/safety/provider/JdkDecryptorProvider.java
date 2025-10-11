@@ -38,7 +38,7 @@ import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 
 /**
- * JDK内置解密算法的解密器
+ * A {@link DecryptorProvider} implementation that uses the built-in JDK cryptographic algorithms.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,10 +47,23 @@ public class JdkDecryptorProvider implements DecryptorProvider {
 
     private final String algorithm;
 
+    /**
+     * Constructs a {@code JdkDecryptorProvider} with the specified algorithm.
+     *
+     * @param algorithm The name of the decryption algorithm to use (e.g., "AES").
+     */
     public JdkDecryptorProvider(String algorithm) {
         this.algorithm = algorithm;
     }
 
+    /**
+     * Decrypts a source file and writes the result to a destination file.
+     *
+     * @param key  The decryption key.
+     * @param src  The source file to decrypt.
+     * @param dest The destination file to write the decrypted content to.
+     * @throws IOException If an I/O error occurs during decryption.
+     */
     @Override
     public void decrypt(Key key, File src, File dest) throws IOException {
         if (!dest.getParentFile().exists() && !dest.getParentFile().mkdirs()) {
@@ -61,6 +74,14 @@ public class JdkDecryptorProvider implements DecryptorProvider {
         }
     }
 
+    /**
+     * Decrypts an input stream and writes the result to an output stream.
+     *
+     * @param key The decryption key.
+     * @param in  The input stream containing the encrypted data.
+     * @param out The output stream to write the decrypted data to.
+     * @throws IOException If an I/O error occurs during decryption.
+     */
     @Override
     public void decrypt(Key key, InputStream in, OutputStream out) throws IOException {
         CipherInputStream cis = null;
@@ -76,6 +97,14 @@ public class JdkDecryptorProvider implements DecryptorProvider {
         }
     }
 
+    /**
+     * Wraps an input stream with a decrypting input stream.
+     *
+     * @param key The decryption key.
+     * @param in  The input stream to wrap.
+     * @return A new input stream that decrypts the data from the original stream.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public InputStream decrypt(Key key, InputStream in) throws IOException {
         try {
@@ -87,6 +116,14 @@ public class JdkDecryptorProvider implements DecryptorProvider {
         }
     }
 
+    /**
+     * Wraps an output stream with a decrypting output stream.
+     *
+     * @param key The decryption key.
+     * @param out The output stream to wrap.
+     * @return A new output stream that decrypts data before writing it to the original stream.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public OutputStream decrypt(Key key, OutputStream out) throws IOException {
         try {

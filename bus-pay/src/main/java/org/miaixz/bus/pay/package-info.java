@@ -26,10 +26,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 如你所见，它仅仅是一个第三方授权登录的工具类库，它可以让我们脱离繁琐的第三方登录SDK，让登录变得So easy!
- * 史上最全的整合第三方登录的开源库。目前已支持Github、Gitee、微博、钉钉、百度、Coding、腾讯云开发者平台、OSChina、
- * 支付宝、QQ、微信、淘宝、GoogleS、Facebook、抖音、领英、小米、微软、今日头条、Teambition、StackOverflow、Pinterest、 人人、华为和企业微信等第三方平台的授权登录。 Login, so
- * easy!
+ * This package provides a comprehensive toolkit for integrating with various third-party payment platforms. It aims to
+ * simplify the development process by offering a unified API, abstracting away the complexities of individual payment
+ * gateway SDKs. This allows developers to integrate payment functionalities with minimal effort.
+ * <p>
+ * The library supports a wide range of payment providers, including but not limited to Alipay, WeChat Pay, UnionPay,
+ * and PayPal. It is designed to make payment integration "So easy!".
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -41,7 +41,9 @@ import org.miaixz.bus.core.xyz.AnnoKit;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * 组合注解元素, 对JDK的原生注解机制做一个增强，支持类似Spring的组合注解。 核心实现使用了递归获取指定元素上的注解以及注解的注解，以实现复合注解的获取。
+ * An enhanced {@link AnnotatedElement} implementation that supports composite annotations, similar to Spring's
+ * mechanism. It recursively retrieves annotations and meta-annotations from the specified element to provide a
+ * comprehensive view.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,32 +54,38 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
     private static final long serialVersionUID = 2852250737317L;
 
     /**
-     * 过滤器
+     * The predicate used to filter annotations. Only annotations for which the predicate returns {@code true} are
+     * retained.
      */
     private final Predicate<Annotation> predicate;
     /**
-     * 注解类型与注解对象对应表
+     * A map storing all annotations found on the element and its meta-annotations, keyed by annotation type.
      */
     private Map<Class<? extends Annotation>, Annotation> annotationMap;
     /**
-     * 直接注解类型与注解对象对应表
+     * A map storing annotations directly declared on the element, keyed by annotation type.
      */
     private Map<Class<? extends Annotation>, Annotation> declaredAnnotationMap;
 
     /**
-     * 构造
+     * Constructs a new {@code CombinationAnnotatedElement} for the given element with no annotation filtering.
      *
-     * @param element 需要解析注解的元素：可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param element The element to parse annotations from. This can be a {@link Class},
+     *                {@link java.lang.reflect.Method}, {@link java.lang.reflect.Field},
+     *                {@link java.lang.reflect.Constructor}.
      */
     public CombinationAnnotatedElement(final AnnotatedElement element) {
         this(element, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code CombinationAnnotatedElement} for the given element with a specified annotation filter.
      *
-     * @param element   需要解析注解的元素：可以是Class、Method、Field、Constructor、ReflectPermission
-     * @param predicate 过滤器，{@link Predicate#test(Object)}返回{@code true}保留，否则不保留
+     * @param element   The element to parse annotations from. This can be a {@link Class},
+     *                  {@link java.lang.reflect.Method}, {@link java.lang.reflect.Field},
+     *                  {@link java.lang.reflect.Constructor}.
+     * @param predicate The predicate to filter annotations. Annotations for which {@link Predicate#test(Object)}
+     *                  returns {@code true} are retained.
      */
     public CombinationAnnotatedElement(final AnnotatedElement element, final Predicate<Annotation> predicate) {
         this.predicate = predicate;
@@ -85,11 +93,14 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
     }
 
     /**
-     * 创建CombinationAnnotationElement
+     * Creates a new {@code CombinationAnnotatedElement} instance.
      *
-     * @param element   需要解析注解的元素：可以是Class、Method、Field、Constructor、ReflectPermission
-     * @param predicate 过滤器，{@link Predicate#test(Object)}返回{@code true}保留，否则不保留
-     * @return CombinationAnnotationElement
+     * @param element   The element to parse annotations from. This can be a {@link Class},
+     *                  {@link java.lang.reflect.Method}, {@link java.lang.reflect.Field},
+     *                  {@link java.lang.reflect.Constructor}.
+     * @param predicate The predicate to filter annotations. Annotations for which {@link Predicate#test(Object)}
+     *                  returns {@code true} are retained.
+     * @return A new {@code CombinationAnnotatedElement} instance.
      */
     public static CombinationAnnotatedElement of(
             final AnnotatedElement element,
@@ -97,23 +108,46 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
         return new CombinationAnnotatedElement(element, predicate);
     }
 
+    /**
+     * Checks if an annotation of the specified type is present on this element or any of its meta-annotations.
+     *
+     * @param annotationClass The type of the annotation to check for.
+     * @return {@code true} if an annotation of the specified type is present, {@code false} otherwise.
+     */
     @Override
     public boolean isAnnotationPresent(final Class<? extends Annotation> annotationClass) {
         return annotationMap.containsKey(annotationClass);
     }
 
+    /**
+     * Returns this element's annotation for the specified type if such an annotation is present, else null.
+     *
+     * @param annotationClass The Class object corresponding to the annotation type.
+     * @param <T>             The type of the annotation.
+     * @return This element's annotation for the specified annotation type, or null if no such annotation is present.
+     */
     @Override
     public <T extends Annotation> T getAnnotation(final Class<T> annotationClass) {
         final Annotation annotation = annotationMap.get(annotationClass);
         return (annotation == null) ? null : (T) annotation;
     }
 
+    /**
+     * Returns all annotations present on this element.
+     *
+     * @return All annotations present on this element.
+     */
     @Override
     public Annotation[] getAnnotations() {
         final Collection<Annotation> annotations = this.annotationMap.values();
         return annotations.toArray(new Annotation[0]);
     }
 
+    /**
+     * Returns all annotations that are directly present on this element.
+     *
+     * @return All annotations directly present on this element.
+     */
     @Override
     public Annotation[] getDeclaredAnnotations() {
         final Collection<Annotation> annotations = this.declaredAnnotationMap.values();
@@ -121,9 +155,9 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
     }
 
     /**
-     * 初始化
+     * Initializes the annotation maps by parsing declared and inherited annotations.
      *
-     * @param element 元素
+     * @param element The annotated element to initialize from.
      */
     private void init(final AnnotatedElement element) {
         final Annotation[] declaredAnnotations = AnnoKit.getDeclaredAnnotations(element);
@@ -131,8 +165,9 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
         parseDeclared(declaredAnnotations);
 
         final Annotation[] annotations = element.getAnnotations();
-        // 如果子类重写了父类的注解，虽然两者数组内部元素一样的，但是数组中的顺序可能不一样
-        // getAnnotations()的包含父类，getDeclaredAnnotations()不包含父类。他们两是一个包含关系，只会存在后者的注解元素大于等于前者的情况。
+        // If the number of declared annotations is the same as all annotations, it means there are no inherited
+        // annotations
+        // or overridden annotations, so the declared map can be reused for the full annotation map.
         if (declaredAnnotations.length == annotations.length) {
             this.annotationMap = this.declaredAnnotationMap;
         } else {
@@ -142,55 +177,55 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
     }
 
     /**
-     * 进行递归解析注解，直到全部都是元注解为止
+     * Recursively parses declared annotations and their meta-annotations until all meta-annotations are processed.
      *
-     * @param annotations Class, Method, Field等
+     * @param annotations An array of annotations directly declared on an element (Class, Method, Field, etc.).
      */
     private void parseDeclared(final Annotation[] annotations) {
         if (ArrayKit.isEmpty(annotations)) {
             return;
         }
         Class<? extends Annotation> annotationType;
-        // 直接注解
+        // Process directly declared annotations
         for (final Annotation annotation : annotations) {
             annotationType = annotation.annotationType();
-            // 跳过元注解和已经处理过的注解，防止递归调用
+            // Skip meta-annotations and already processed annotations to prevent infinite recursion.
             if (!AnnoKit.isMetaAnnotation(annotationType) && !declaredAnnotationMap.containsKey(annotationType)) {
                 if (test(annotation)) {
                     declaredAnnotationMap.put(annotationType, annotation);
                 }
-                // 测试不通过的注解，不影响继续递归
+                // Even if the annotation doesn't pass the test, continue to recurse its meta-annotations.
                 parseDeclared(AnnoKit.getDeclaredAnnotations(annotationType));
             }
         }
     }
 
     /**
-     * 进行递归解析注解，直到全部都是元注解为止
+     * Recursively parses all annotations (including inherited ones) and their meta-annotations.
      *
-     * @param annotations Class, Method, Field等
+     * @param annotations An array of annotations present on an element (Class, Method, Field, etc.).
      */
     private void parse(final Annotation[] annotations) {
         Class<? extends Annotation> annotationType;
         for (final Annotation annotation : annotations) {
             annotationType = annotation.annotationType();
             if (!Normal.META_ANNOTATIONS.contains(annotationType)
-                    // 跳过元注解和已经处理过的注解，防止递归调用
+                    // Skip meta-annotations and already processed annotations to prevent infinite recursion.
                     && !annotationMap.containsKey(annotationType)) {
                 if (test(annotation)) {
                     annotationMap.put(annotationType, annotation);
                 }
-                // 测试不通过的注解，不影响继续递归
+                // Even if the annotation doesn't pass the test, continue to recurse its meta-annotations.
                 parse(annotationType.getAnnotations());
             }
         }
     }
 
     /**
-     * 检查给定的注解是否符合过滤条件
+     * Checks if the given annotation satisfies the filter predicate.
      *
-     * @param annotation 注解对象
-     * @return 是否符合条件
+     * @param annotation The annotation object to test.
+     * @return {@code true} if the annotation passes the filter or if no filter is set, {@code false} otherwise.
      */
     private boolean test(final Annotation annotation) {
         return null == this.predicate || this.predicate.test(annotation);

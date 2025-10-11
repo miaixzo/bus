@@ -30,26 +30,39 @@ package org.miaixz.bus.core.center.date.culture.cn.plumrain;
 import org.miaixz.bus.core.center.date.culture.Replenish;
 
 /**
- * 梅雨天
+ * Represents a specific day within the "Plum Rain" (梅雨) season. This class extends {@link Replenish} to associate a
+ * specific day index with a {@link PlumRain} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PlumRainDay extends Replenish {
 
+    /**
+     * Constructs a {@code PlumRainDay} instance with the specified {@link PlumRain} and day index.
+     *
+     * @param plumRain The {@link PlumRain} instance representing the Plum Rain period.
+     * @param dayIndex The index of the day within the Plum Rain period.
+     */
     public PlumRainDay(PlumRain plumRain, int dayIndex) {
         super(plumRain, dayIndex);
     }
 
     /**
-     * 梅雨
+     * Gets the {@link PlumRain} instance associated with this Plum Rain Day.
      *
-     * @return 梅雨
+     * @return The {@link PlumRain} instance.
      */
     public PlumRain getPlumRain() {
         return (PlumRain) tradition;
     }
 
+    /**
+     * Returns a string representation of this Plum Rain Day. If it's the "Entering Plum Rain" period (index 0), it
+     * returns the superclass's string representation. Otherwise, it returns the name of the Plum Rain period.
+     *
+     * @return A string representation of the Plum Rain Day.
+     */
     @Override
     public String toString() {
         return getPlumRain().getIndex() == 0 ? super.toString() : tradition.getName();

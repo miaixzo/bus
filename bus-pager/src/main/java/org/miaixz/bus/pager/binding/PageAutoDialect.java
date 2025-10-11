@@ -50,7 +50,9 @@ import org.miaixz.bus.pager.dialect.auto.Hikari;
 import org.miaixz.bus.pager.dialect.base.*;
 
 /**
- * 提供数据库分页方言的自动识别和配置功能。
+ * Provides automatic identification and configuration of database pagination dialects. This class manages a mapping of
+ * dialect aliases to their implementations and handles the dynamic selection of the appropriate dialect based on the
+ * database connection.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,44 +60,44 @@ import org.miaixz.bus.pager.dialect.base.*;
 public class PageAutoDialect {
 
     /**
-     * 存储方言别名与实现类的映射
+     * Stores a mapping of dialect aliases to their implementation classes.
      */
     private static Map<String, Class<? extends Dialect>> dialectAliasMap = new LinkedHashMap<>();
     /**
-     * 存储自动方言别名与实现类的映射
+     * Stores a mapping of auto-dialect aliases to their implementation classes.
      */
     private static Map<String, Class<? extends AutoDialect>> autoDialectMap = new LinkedHashMap<>();
     /**
-     * 是否启用自动方言识别
+     * Flag indicating whether automatic dialect recognition is enabled. Default is true.
      */
     private boolean autoDialect = true;
     /**
-     * 缓存方言实现，键为JDBC URL或方言类名
+     * Caches dialect implementations, with the key being the JDBC URL or dialect class name.
      */
     private Map<Object, AbstractPaging> urlDialectMap = new ConcurrentHashMap<>();
     /**
-     * 线程本地存储的方言实例
+     * Thread-local storage for dialect instances, ensuring each thread has its own dialect.
      */
     private ThreadLocal<AbstractPaging> dialectThreadLocal = new ThreadLocal<>();
     /**
-     * 配置属性
+     * Configuration properties for the pagination plugin.
      */
     private Properties properties;
     /**
-     * 自动方言识别委托
+     * Delegate for automatic dialect recognition.
      */
     private AutoDialect autoDialectDelegate;
     /**
-     * 线程安全锁
+     * Reentrant lock for thread-safe operations, especially during dialect initialization.
      */
     private ReentrantLock lock = new ReentrantLock();
     /**
-     * 默认方言实例
+     * The default dialect instance, used when auto-dialect is disabled or a specific dialect is configured.
      */
     private AbstractPaging delegate;
 
     static {
-        // 注册数据库方言别名
+        // Register database dialect aliases
         registerDialectAlias("hsqldb", Hsqldb.class);
         registerDialectAlias("h2", Hsqldb.class);
         registerDialectAlias("phoenix", Hsqldb.class);
@@ -127,7 +129,7 @@ public class PageAutoDialect {
         registerDialectAlias("opengauss", PostgreSql.class);
         registerDialectAlias("sundb", Oracle.class);
 
-        // 注册自动方言别名
+        // Register auto-dialect aliases
         registerAutoDialectAlias("old", Early.class);
         registerAutoDialectAlias("hikari", Hikari.class);
         registerAutoDialectAlias("druid", Druid.class);
@@ -135,30 +137,30 @@ public class PageAutoDialect {
     }
 
     /**
-     * 注册方言别名。
+     * Registers a database dialect alias with its corresponding implementation class.
      *
-     * @param alias        方言别名
-     * @param dialectClass 方言实现类
+     * @param alias        the alias for the dialect (e.g., "mysql", "oracle")
+     * @param dialectClass the {@link Dialect} implementation class
      */
     public static void registerDialectAlias(String alias, Class<? extends Dialect> dialectClass) {
         dialectAliasMap.put(alias, dialectClass);
     }
 
     /**
-     * 注册自动方言别名。
+     * Registers an auto-dialect alias with its corresponding implementation class.
      *
-     * @param alias            自动方言别名
-     * @param autoDialectClass 自动方言实现类
+     * @param alias            the alias for the auto-dialect
+     * @param autoDialectClass the {@link AutoDialect} implementation class
      */
     public static void registerAutoDialectAlias(String alias, Class<? extends AutoDialect> autoDialectClass) {
         autoDialectMap.put(alias, autoDialectClass);
     }
 
     /**
-     * 从JDBC URL提取方言名称。
+     * Extracts the dialect name from a JDBC URL.
      *
-     * @param jdbcUrl JDBC URL
-     * @return 方言名称，若无法识别则返回null
+     * @param jdbcUrl the JDBC URL string
+     * @return the dialect name if recognized, otherwise null
      */
     public static String fromJdbcUrl(String jdbcUrl) {
         final String url = jdbcUrl.toLowerCase();
@@ -171,11 +173,11 @@ public class PageAutoDialect {
     }
 
     /**
-     * 解析方言类。
+     * Resolves a dialect class from its name or alias.
      *
-     * @param className 方言类名或别名
-     * @return 方言实现类
-     * @throws Exception 若类不存在或无法加载
+     * @param className the dialect class name or alias
+     * @return the resolved dialect implementation class
+     * @throws Exception if the class does not exist or cannot be loaded
      */
     public static Class resloveDialectClass(String className) throws Exception {
         if (dialectAliasMap.containsKey(className.toLowerCase())) {
@@ -186,12 +188,12 @@ public class PageAutoDialect {
     }
 
     /**
-     * 实例化方言对象。
+     * Instantiates a dialect object from its class name or alias.
      *
-     * @param dialectClass 方言类名或别名
-     * @param properties   配置属性
-     * @return 方言实例
-     * @throws PageException 若实例化失败
+     * @param dialectClass the dialect class name or alias
+     * @param properties   the properties to set on the dialect instance
+     * @return an instance of {@link AbstractPaging}
+     * @throws PageException if instantiation fails or the class is not a valid dialect implementation
      */
     public static AbstractPaging instanceDialect(String dialectClass, Properties properties) {
         AbstractPaging dialect;
@@ -215,9 +217,10 @@ public class PageAutoDialect {
     }
 
     /**
-     * 获取当前方言代理对象。
+     * Retrieves the current dialect delegate. If a thread-local dialect is set, it returns that; otherwise, it returns
+     * the default delegate.
      *
-     * @return 方言实例
+     * @return the current {@link AbstractPaging} instance
      */
     public AbstractPaging getDelegate() {
         if (delegate != null) {
@@ -227,35 +230,37 @@ public class PageAutoDialect {
     }
 
     /**
-     * 清除线程本地方言代理。
+     * Clears the thread-local dialect delegate.
      */
     public void clearDelegate() {
         dialectThreadLocal.remove();
     }
 
     /**
-     * 获取线程本地方言实例。
+     * Retrieves the thread-local dialect instance.
      *
-     * @return 方言实例
+     * @return the thread-local {@link AbstractPaging} instance
      */
     public AbstractPaging getDialectThreadLocal() {
         return dialectThreadLocal.get();
     }
 
     /**
-     * 设置线程本地方言实例。
+     * Sets the thread-local dialect instance.
      *
-     * @param delegate 方言实例
+     * @param delegate the {@link AbstractPaging} instance to set for the current thread
      */
     public void setDialectThreadLocal(AbstractPaging delegate) {
         this.dialectThreadLocal.set(delegate);
     }
 
     /**
-     * 初始化方言代理，支持运行时指定方言。
+     * Initializes the dialect delegate, supporting runtime specification of the dialect. If a specific dialect class is
+     * provided, it will be used. Otherwise, it attempts to auto-detect the dialect.
      *
-     * @param ms           MyBatis映射语句
-     * @param dialectClass 方言实现类或别名，如"mysql"、"oracle"
+     * @param ms           the MyBatis MappedStatement
+     * @param dialectClass the dialect implementation class name or alias (e.g., "mysql", "oracle"), can be null for
+     *                     auto-detection
      */
     public void initDelegateDialect(MappedStatement ms, String dialectClass) {
         if (StringKit.isNotEmpty(dialectClass)) {
@@ -282,10 +287,10 @@ public class PageAutoDialect {
     }
 
     /**
-     * 自动获取分页方言实现。
+     * Automatically retrieves the pagination dialect implementation based on the MappedStatement and DataSource.
      *
-     * @param ms MyBatis映射语句
-     * @return 方言实例
+     * @param ms the MyBatis MappedStatement
+     * @return an instance of {@link AbstractPaging} representing the detected dialect
      */
     public AbstractPaging autoGetDialect(MappedStatement ms) {
         DataSource dataSource = ms.getConfiguration().getEnvironment().getDataSource();
@@ -308,9 +313,11 @@ public class PageAutoDialect {
     }
 
     /**
-     * 初始化自定义自动方言实现。
+     * Initializes the custom auto-dialect implementation based on properties.
      *
-     * @param properties 配置属性
+     * @param properties the configuration properties
+     * @throws IllegalArgumentException if the configured auto-dialect class does not exist
+     * @throws RuntimeException         if the auto-dialect class does not provide a parameterless constructor
      */
     private void initAutoDialectClass(Properties properties) {
         String autoDialectClassStr = properties.getProperty("autoDialectClass");
@@ -336,9 +343,12 @@ public class PageAutoDialect {
     }
 
     /**
-     * 初始化方言别名配置。
+     * Initializes custom dialect alias configurations from properties. The {@code dialectAlias} property should be a
+     * semicolon-separated list of key-value pairs (e.g., "alias1=xx.dialectClass;alias2=dialectClass2").
      *
-     * @param properties 配置属性
+     * @param properties the configuration properties
+     * @throws IllegalArgumentException if the dialectAlias parameter is misconfigured or a configured dialect
+     *                                  implementation class does not exist
      */
     private void initDialectAlias(Properties properties) {
         String dialectAlias = properties.getProperty("dialectAlias");
@@ -368,9 +378,10 @@ public class PageAutoDialect {
     }
 
     /**
-     * 设置分页配置属性。
+     * Sets the pagination configuration properties for this {@code PageAutoDialect} instance. This method initializes
+     * auto-dialect settings, registers custom dialect aliases, and sets the default dialect.
      *
-     * @param properties 配置属性
+     * @param properties the properties to set
      */
     public void setProperties(Properties properties) {
         this.properties = properties;

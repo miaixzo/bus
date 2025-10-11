@@ -23,10 +23,14 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 图形/图像处理插件
+ * This package contains high-level client and server implementations for various DICOM and HL7 services. It provides
+ * convenient wrappers and utilities for common DICOM operations such as C-STORE, C-FIND, C-MOVE, C-GET, as well as
+ * tools for converting between different data formats (e.g., DICOM to XML, JSON to DICOM). The classes in this package
+ * are designed to simplify the development of DICOM applications by encapsulating the lower-level details of the DICOM
+ * protocol.
  *
  * @author Kimi Liu
  * @since Java 17+

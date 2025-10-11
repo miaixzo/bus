@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * OSS对象存储服务，包括图片管理，文件，视频等
+ * Provides Object Storage Service (OSS) functionalities, including image management, file storage, video handling, and
+ * more.
  *
  * @author Kimi Liu
  * @since Java 17+

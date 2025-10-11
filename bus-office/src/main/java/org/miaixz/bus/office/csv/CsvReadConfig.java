@@ -31,7 +31,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * CSV读取配置项
+ * CSV read configuration options.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,44 +42,46 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     private static final long serialVersionUID = 2852283116503L;
 
     /**
-     * 指定标题行号，-1表示无标题行
+     * Specifies the header line number. A value of -1 indicates no header line.
      */
     protected long headerLineNo = -1;
     /**
-     * 是否跳过空白行，默认true
+     * Whether to skip empty rows. Default is {@code true}.
      */
     protected boolean skipEmptyRows = true;
     /**
-     * 每行字段个数不同时是否抛出异常，默认false
+     * Whether to throw an exception if the number of fields in rows differs. Default is {@code false}.
      */
     protected boolean errorOnDifferentFieldCount;
     /**
-     * 定义开始的行（包括），此处为原始文件行号
+     * The starting line number (inclusive) for reading. This refers to the original file line number.
      */
     protected long beginLineNo;
     /**
-     * 结束的行（包括），此处为原始文件行号
+     * The ending line number (inclusive) for reading. This refers to the original file line number. Default is
+     * unlimited.
      */
     protected long endLineNo = Long.MAX_VALUE - 1;
     /**
-     * 每个字段是否去除两边空白符
+     * Whether to trim whitespace from each field.
      */
     protected boolean trimField;
 
     /**
-     * 默认配置
+     * Creates a new default {@code CsvReadConfig} instance.
      *
-     * @return 默认配置
+     * @return A new {@code CsvReadConfig} with default settings.
      */
     public static CsvReadConfig of() {
         return new CsvReadConfig();
     }
 
     /**
-     * 设置是否首行做为标题行，默认false 当设置为{@code true}时，默认标题行号是{@link #beginLineNo}，{@code false}为-1，表示无行号
+     * Sets whether the first row should be treated as a header row. Default is {@code false}. If set to {@code true},
+     * the header line number defaults to {@link #beginLineNo}. If {@code false}, it is -1, indicating no header.
      *
-     * @param containsHeader 是否首行做为标题行，默认false
-     * @return this
+     * @param containsHeader {@code true} if the first row is a header, {@code false} otherwise.
+     * @return This configuration object, for chaining.
      * @see #setHeaderLineNo(long)
      */
     public CsvReadConfig setContainsHeader(final boolean containsHeader) {
@@ -87,10 +89,10 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     }
 
     /**
-     * 设置标题行行号，默认-1，表示无标题行
+     * Sets the header line number. A value of -1 indicates no header line.
      *
-     * @param headerLineNo 标题行行号，-1表示无标题行
-     * @return this
+     * @param headerLineNo The header line number.
+     * @return This configuration object, for chaining.
      */
     public CsvReadConfig setHeaderLineNo(final long headerLineNo) {
         this.headerLineNo = headerLineNo;
@@ -98,10 +100,10 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     }
 
     /**
-     * 设置是否跳过空白行，默认true
+     * Sets whether to skip empty rows. Default is {@code true}.
      *
-     * @param skipEmptyRows 是否跳过空白行，默认true
-     * @return this
+     * @param skipEmptyRows {@code true} to skip empty rows, {@code false} otherwise.
+     * @return This configuration object, for chaining.
      */
     public CsvReadConfig setSkipEmptyRows(final boolean skipEmptyRows) {
         this.skipEmptyRows = skipEmptyRows;
@@ -109,10 +111,11 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     }
 
     /**
-     * 设置每行字段个数不同时是否抛出异常，默认false
+     * Sets whether an exception should be thrown if the number of fields in rows differs. Default is {@code false}.
      *
-     * @param errorOnDifferentFieldCount 每行字段个数不同时是否抛出异常，默认false
-     * @return this
+     * @param errorOnDifferentFieldCount {@code true} to throw an exception on inconsistent field counts, {@code false}
+     *                                   otherwise.
+     * @return This configuration object, for chaining.
      */
     public CsvReadConfig setErrorOnDifferentFieldCount(final boolean errorOnDifferentFieldCount) {
         this.errorOnDifferentFieldCount = errorOnDifferentFieldCount;
@@ -120,10 +123,11 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     }
 
     /**
-     * 设置开始的行（包括），默认0，此处为原始文件行号
+     * Sets the starting line number (inclusive) for reading. Default is 0. This refers to the original file line
+     * number.
      *
-     * @param beginLineNo 开始的行号（包括）
-     * @return this
+     * @param beginLineNo The starting line number (inclusive).
+     * @return This configuration object, for chaining.
      */
     public CsvReadConfig setBeginLineNo(final long beginLineNo) {
         this.beginLineNo = beginLineNo;
@@ -131,10 +135,11 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     }
 
     /**
-     * 设置结束的行（包括），默认不限制，此处为原始文件行号
+     * Sets the ending line number (inclusive) for reading. Default is unlimited. This refers to the original file line
+     * number.
      *
-     * @param endLineNo 结束的行号（包括）
-     * @return this
+     * @param endLineNo The ending line number (inclusive).
+     * @return This configuration object, for chaining.
      */
     public CsvReadConfig setEndLineNo(final long endLineNo) {
         this.endLineNo = endLineNo;
@@ -142,10 +147,11 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     }
 
     /**
-     * 设置每个字段是否去除两边空白符 如果字段以{@link #textDelimiter}包围，则保留两边空格
+     * Sets whether to trim whitespace from each field. If a field is enclosed by {@link #textDelimiter}, leading and
+     * trailing spaces within the delimiters are preserved.
      *
-     * @param trimField 去除两边空白符
-     * @return this
+     * @param trimField {@code true} to trim whitespace from fields, {@code false} otherwise.
+     * @return This configuration object, for chaining.
      */
     public CsvReadConfig setTrimField(final boolean trimField) {
         this.trimField = trimField;

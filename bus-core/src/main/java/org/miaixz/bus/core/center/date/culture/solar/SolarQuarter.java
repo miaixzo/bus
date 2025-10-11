@@ -34,7 +34,7 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.en.Quarter;
 
 /**
- * 公历季度
+ * Represents a quarter in the Gregorian calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,20 +42,21 @@ import org.miaixz.bus.core.center.date.culture.en.Quarter;
 public class SolarQuarter extends Loops {
 
     /**
-     * 年
+     * The solar year this quarter belongs to.
      */
     protected SolarYear year;
 
     /**
-     * 索引，0-3
+     * The index of the quarter within the year, 0-3.
      */
     protected int index;
 
     /**
-     * 初始化
+     * Constructs a {@code SolarQuarter} with the given year and index.
      *
-     * @param year  年
-     * @param index 索引，0-3
+     * @param year  The year.
+     * @param index The index of the quarter, 0-3.
+     * @throws IllegalArgumentException if the index is out of valid range.
      */
     public SolarQuarter(int year, int index) {
         if (index < 0 || index > 3) {
@@ -65,37 +66,49 @@ public class SolarQuarter extends Loops {
         this.index = index;
     }
 
+    /**
+     * Creates a {@code SolarQuarter} instance from the given year and index.
+     *
+     * @param year  The year.
+     * @param index The index of the quarter.
+     * @return A new {@link SolarQuarter} instance.
+     */
     public static SolarQuarter fromIndex(int year, int index) {
         return new SolarQuarter(year, index);
     }
 
     /**
-     * 公历年
+     * Gets the solar year this quarter belongs to.
      *
-     * @return 公历年
+     * @return The {@link SolarYear}.
      */
     public SolarYear getSolarYear() {
         return year;
     }
 
     /**
-     * 年
+     * Gets the year number.
      *
-     * @return 年
+     * @return The year number.
      */
     public int getYear() {
         return year.getYear();
     }
 
     /**
-     * 索引
+     * Gets the index of the quarter within the year, 0-3.
      *
-     * @return 索引，0-3
+     * @return The index.
      */
     public int getIndex() {
         return index;
     }
 
+    /**
+     * Gets the name of this solar quarter.
+     *
+     * @return The name of this solar quarter.
+     */
     public String getName() {
         return Quarter.getName(index);
     }
@@ -105,15 +118,21 @@ public class SolarQuarter extends Loops {
         return year + getName();
     }
 
+    /**
+     * Gets the solar quarter after a specified number of quarters.
+     *
+     * @param n The number of quarters to add.
+     * @return The {@link SolarQuarter} after {@code n} quarters.
+     */
     public SolarQuarter next(int n) {
         int i = index + n;
         return fromIndex((getYear() * 4 + i) / 4, indexOf(i, 4));
     }
 
     /**
-     * 月份列表
+     * Gets a list of all months in this solar quarter. A quarter has 3 months.
      *
-     * @return 月份列表，1季度有3个月。
+     * @return A list of {@link SolarMonth} objects for this quarter.
      */
     public List<SolarMonth> getMonths() {
         List<SolarMonth> l = new ArrayList<>(3);

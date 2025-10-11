@@ -31,13 +31,20 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.sensitive.Context;
 
 /**
- * 不脱敏
+ * A provider that performs no desensitization. It simply returns the original value as a string.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NoneProvider extends AbstractProvider {
 
+    /**
+     * Returns the original object's string representation without any modification.
+     *
+     * @param object  The original object.
+     * @param context The current desensitization context (ignored).
+     * @return The original value as a string, or null if the input is empty.
+     */
     @Override
     public Object build(Object object, Context context) {
         if (ObjectKit.isEmpty(object)) {

@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.EnumKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 星期枚举 与Calendar中的星期int值对应
+ * Enumeration for weeks, corresponding to the int values of weeks in {@link Calendar}.
  *
  * @author Kimi Liu
  * @see #SUNDAY
@@ -50,49 +50,53 @@ import org.miaixz.bus.core.xyz.StringKit;
 public enum Week {
 
     /**
-     * 周日
+     * Sunday
      */
     SUNDAY(Calendar.SUNDAY, "日"),
     /**
-     * 周一
+     * Monday
      */
     MONDAY(Calendar.MONDAY, "一"),
     /**
-     * 周二
+     * Tuesday
      */
     TUESDAY(Calendar.TUESDAY, "二"),
     /**
-     * 周三
+     * Wednesday
      */
     WEDNESDAY(Calendar.WEDNESDAY, "三"),
     /**
-     * 周四
+     * Thursday
      */
     THURSDAY(Calendar.THURSDAY, "四"),
     /**
-     * 周五
+     * Friday
      */
     FRIDAY(Calendar.FRIDAY, "五"),
     /**
-     * 周六
+     * Saturday
      */
     SATURDAY(Calendar.SATURDAY, "六");
 
+    /**
+     * Array of all {@link Week} enum constants.
+     */
     private static final Week[] ENUMS = Week.values();
 
     /**
-     * 星期对应{@link Calendar} 中的Week值
+     * The week value corresponding to {@link Calendar}.
      */
     private final int code;
     /**
-     * 星期对应名称
+     * The name of the week.
      */
     private final String name;
 
     /**
-     * 构造
+     * Constructor for Week enum.
      *
-     * @param code 星期对应{@link Calendar} 中的Week值
+     * @param code The week value corresponding to {@link Calendar}.
+     * @param name The name of the week.
      */
     Week(final int code, final String name) {
         this.code = code;
@@ -100,10 +104,10 @@ public enum Week {
     }
 
     /**
-     * 将 {@link Calendar}星期相关值转换为Week枚举对象
+     * Converts a {@link Calendar} week int value to a {@link Week} enum object.
      *
-     * @param code Calendar中关于Week的int值，1表示Sunday
-     * @return Week
+     * @param code The int value of the week in Calendar, 1 represents Sunday.
+     * @return The corresponding {@link Week} enum.
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY
@@ -120,11 +124,11 @@ public enum Week {
     }
 
     /**
-     * 解析别名为Week对象，别名如：sun或者SUNDAY，不区分大小写
+     * Parses an alias into a {@link Week} object. Aliases like "sun" or "SUNDAY" are case-insensitive.
      *
-     * @param name 别名值
-     * @return 周枚举Week，非空
-     * @throws IllegalArgumentException 如果别名无对应的枚举，抛出此异常
+     * @param name The alias value.
+     * @return The {@link Week} enum, never null.
+     * @throws IllegalArgumentException If the alias does not correspond to a valid enum.
      */
     public static Week of(final String name) throws IllegalArgumentException {
         if (null != name && name.length() > 1) {
@@ -191,10 +195,10 @@ public enum Week {
     }
 
     /**
-     * 将 {@link DayOfWeek}星期相关值转换为Week枚举对象
+     * Converts a {@link DayOfWeek} value to a {@link Week} enum object.
      *
-     * @param dayOfWeek DayOfWeek星期值
-     * @return Week
+     * @param dayOfWeek The {@link DayOfWeek} value.
+     * @return The corresponding {@link Week} enum.
      * @see #SUNDAY
      * @see #MONDAY
      * @see #TUESDAY
@@ -207,46 +211,46 @@ public enum Week {
         Assert.notNull(dayOfWeek);
         int week = dayOfWeek.getValue() + 1;
         if (8 == week) {
-            // 周日
+            // Sunday
             week = 1;
         }
         return of(week);
     }
 
     /**
-     * 转换为中文名
+     * Gets the Chinese name of the week.
      *
-     * @param code   Calendar中关于Week的int值，1表示Sunday
-     * @param prefix 表示星期的前缀，例如前缀为“星期”，则返回结果为“星期一”；前缀为”周“，结果为“周一”
-     * @return 星期的中文名
+     * @param code   The int value of the week in Calendar, 1 represents Sunday.
+     * @param prefix The prefix for the week, e.g., "星期" or "周".
+     * @return The Chinese name of the week.
      */
     public static String getName(final int code, String prefix) {
         return prefix + ENUMS[code].name;
     }
 
     /**
-     * 获取枚举属性信息
+     * Retrieves enum property information.
      *
-     * @param fieldName 属性名称
-     * @return the string[]
+     * @param fieldName The name of the field.
+     * @return An array of strings representing the field values.
      */
     public static String[] get(String fieldName) {
         return EnumKit.getFieldValues(Week.class, fieldName).toArray(String[]::new);
     }
 
     /**
-     * 获得星期对应{@link Calendar} 中的Week值
+     * Gets the week value corresponding to {@link Calendar}.
      *
-     * @return 星期对应 {@link Calendar} 中的Week值
+     * @return The week value corresponding to {@link Calendar}.
      */
     public int getCode() {
         return this.code;
     }
 
     /**
-     * 获取ISO8601规范的int值，from 1 (Monday) to 7 (Sunday).
+     * Gets the ISO8601 standard int value, from 1 (Monday) to 7 (Sunday).
      *
-     * @return ISO8601规范的int值
+     * @return The ISO8601 standard int value.
      */
     public int getIsoValue() {
         int iso8601IntValue = getCode() - 1;
@@ -257,19 +261,19 @@ public enum Week {
     }
 
     /**
-     * 转换为中文名
+     * Converts to the Chinese name.
      *
-     * @return 星期的中文名
+     * @return The Chinese name of the week.
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     * 转换为中文名
+     * Converts to the Chinese name with a specified prefix.
      *
-     * @param prefix 表示星期的前缀，例如前缀为“星期”，则返回结果为“星期一”；前缀为”周“，结果为“周一”
-     * @return 星期的中文名
+     * @param prefix The prefix for the week, e.g., "星期" or "周".
+     * @return The Chinese name of the week.
      */
     public String getName(final String prefix) {
         switch (this) {
@@ -300,9 +304,9 @@ public enum Week {
     }
 
     /**
-     * 转换为{@link DayOfWeek}
+     * Converts to {@link DayOfWeek}.
      *
-     * @return {@link DayOfWeek}
+     * @return The corresponding {@link DayOfWeek}.
      */
     public DayOfWeek toJdkDayOfWeek() {
         return DayOfWeek.of(getIsoValue());

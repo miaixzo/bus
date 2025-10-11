@@ -32,12 +32,22 @@ import java.util.Arrays;
 import org.miaixz.bus.core.lang.Algorithm;
 
 /**
- * 密码接口，提供统一的API，用于兼容和统一JCE和BouncyCastle等库的操作
+ * Represents a cryptographic cipher, providing a unified API for various implementations like JCE and Bouncy Castle.
+ * <p>
+ * This interface supports block-wise encryption and decryption through the combined use of {@code process} and
+ * {@code doFinal} methods. For example, if you need to encrypt a 23-byte message with a block size of 8 bytes, you
+ * would make three calls:
+ * </p>
  * <ul>
- * <li>process和doFinal组合使用，用于分块加密或解密。 例如处理块的大小为8，实际需要加密的报文长度为23，那么需要分三块进行加密，前面2块长度为8的报文需要调用process进行部分加密，
- * 部分加密的结果可以从process的返回值获取到， 最后的7长度(其实一般会填充到长度为块长度8)的报文则调用doFinal进行加密，结束整个部分加密的操作。</li>
- * <li>processFinal默认处理并输出小于块的数据，或一次性数据。</li>
+ * <li>Two calls to {@code process} for the first two 8-byte blocks. The partial results can be retrieved from the
+ * return value of these calls.</li>
+ * <li>One call to {@code doFinal} for the final 7 bytes (which will typically be padded to the block size of 8). This
+ * call completes the encryption operation.</li>
  * </ul>
+ * <p>
+ * The {@code processFinal} method is provided as a convenience for processing data in a single operation, suitable for
+ * data smaller than a block or when processing the entire data at once.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,88 +55,103 @@ import org.miaixz.bus.core.lang.Algorithm;
 public interface Cipher {
 
     /**
-     * 获取算法名称
+     * Gets the name of the algorithm.
      *
-     * @return 算法名称
+     * @return The algorithm name.
      */
     String getAlgorithm();
 
     /**
-     * 获取块大小，当为Stream方式加密时返回0
+     * Gets the block size of the cipher.
      *
-     * @return 块大小，-1表示非块加密
+     * @return The block size in bytes, or -1 if the cipher is not a block cipher, or 0 for stream ciphers.
      */
     int getBlockSize();
 
     /**
-     * 初始化模式和参数
+     * Initializes the cipher with a specific mode and parameters.
      *
-     * @param mode       模式，如加密模式或解密模式
-     * @param parameters Cipher所需参数，包括Key、Random、IV等信息
+     * @param mode       The operation mode, such as encryption or decryption.
+     * @param parameters The parameters required by the cipher, including Key, IV, etc.
      */
     void init(Algorithm.Type mode, Parameters parameters);
 
     /**
-     * 返回输出缓冲区为了保存下一个update或doFinal操作的结果所需的长度（以字节为单位） 下一个update或doFinal调用的实际输出长度可能小于此方法返回的长度。 一般为块大小对应的输出大小
+     * Returns the required size of the output buffer to store the result of the next {@code process} or {@code doFinal}
+     * operation.
+     * <p>
+     * The actual output length may be less than the value returned by this method. This is typically the output size
+     * corresponding to the block size.
+     * </p>
      *
-     * @param len 输入长度
-     * @return 输出长度，-1表示非块加密
+     * @param len The input length in bytes.
+     * @return The required output buffer size in bytes, or -1 if not a block cipher.
      */
     int getOutputSize(int len);
 
     /**
-     * 执行运算，可以是加密运算或解密运算 此方法主要处理一块数据，一块数据处理完毕后，应调用{@link #doFinal(byte[], int)}处理padding等剩余数据。
+     * Processes a single block of data. This method is intended for multi-part encryption or decryption operations.
+     * After processing all full blocks, a call to {@link #doFinal(byte[], int)} is required to handle any remaining
+     * data and padding.
      *
-     * @param in     输入数据
-     * @param inOff  输入数据开始位置
-     * @param len    被处理数据长度
-     * @param out    输出数据
-     * @param outOff 输出数据开始位置
-     * @return 处理长度
+     * @param in     The input buffer containing the data.
+     * @param inOff  The offset in the input buffer where the data begins.
+     * @param len    The length of the data to process.
+     * @param out    The output buffer for the processed data.
+     * @param outOff The offset in the output buffer where the result should be stored.
+     * @return The number of bytes processed and stored in the output buffer.
      */
     int process(byte[] in, int inOff, int len, byte[] out, int outOff);
 
     /**
-     * 处理最后一块数据 当{@link #process(byte[], int, int, byte[], int)}处理完数据后非完整块数据，此方法用于处理块中剩余的bytes
-     * 如加密数据要求128bit，即16byes的整数，单数处理数据后为15bytes，此时根据padding方式不同，可填充剩余1byte为指定值（如填充0）
-     * 当对数据进行分段加密时，需要首先多次执行process方法，在最后一块数据处理完后执行此方法。
+     * Finishes a multi-part encryption or decryption operation. This method processes the final block of data,
+     * including any necessary padding. It should be called after all calls to
+     * {@link #process(byte[], int, int, byte[], int)} are complete.
+     * <p>
+     * For example, if an encryption algorithm requires 128-bit (16-byte) blocks and the last data segment is only 15
+     * bytes, this method will apply the appropriate padding (e.g., filling the last byte with a specific value) before
+     * finalizing the operation.
+     * </p>
      *
-     * @param out    经过process执行过运算的结果数据
-     * @param outOff 数据处理开始位置
-     * @return 处理长度
+     * @param out    The output buffer containing the results of previous {@code process} calls.
+     * @param outOff The offset in the output buffer where the final result should be stored.
+     * @return The number of bytes stored in the output buffer as a result of this final operation.
      */
     int doFinal(byte[] out, int outOff);
 
     /**
-     * 处理数据，并返回最终结果 此方法用于完整处理一块数据并返回。
+     * Processes the input data in a single step and returns the final result. This is a convenience method for
+     * single-part operations.
      *
-     * @param in 输入数据
-     * @return 结果数据
+     * @param in The input data to be processed.
+     * @return The resulting encrypted or decrypted data.
      */
     default byte[] processFinal(final byte[] in) {
         return processFinal(in, 0, in.length);
     }
 
     /**
-     * 处理数据，并返回最终结果 此方法用于完整处理一块数据并返回。
+     * Processes the input data in a single step and returns the final result. This method handles the entire operation,
+     * including processing and finalization.
      *
-     * @param in       输入数据
-     * @param inOffset 输入开始的 input中的偏移量
-     * @param inputLen 输入长度
-     * @return 结果数据
+     * @param in       The input buffer containing the data.
+     * @param inOffset The offset in the input buffer where the data begins.
+     * @param inputLen The length of the data to process.
+     * @return The resulting encrypted or decrypted data.
      * @see #process(byte[], int, int, byte[], int)
      * @see #doFinal(byte[], int)
      */
     default byte[] processFinal(final byte[] in, final int inOffset, final int inputLen) {
         final byte[] buf = new byte[getOutputSize(in.length)];
         int len = process(in, inOffset, inputLen, buf, 0);
-        // 处理剩余数据，如Padding数据等
+        // Process remaining data, such as padding
         len += doFinal(buf, len);
         return (len == buf.length) ? buf : Arrays.copyOfRange(buf, 0, len);
     }
 
     /**
-     * Cipher所需参数，包括Key、Random、IV等信息
+     * A marker interface for cipher parameters, such as keys, initialization vectors (IVs), and other cryptographic
+     * settings.
      */
     interface Parameters {
 

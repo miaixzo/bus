@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 基于分区的对象池实现，参考：https://github.com/DanielYWoo/fast-object-pool
+ * Provides an implementation of an object pool based on partitioning. This design is inspired by:
+ * <a href="https://github.com/DanielYWoo/fast-object-pool">https://github.com/DanielYWoo/fast-object-pool</a>
  *
  * @author Kimi Liu
  * @since Java 17+

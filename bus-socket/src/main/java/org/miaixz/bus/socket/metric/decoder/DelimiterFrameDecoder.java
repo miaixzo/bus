@@ -32,35 +32,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 指定结束标识的解码器
+ * A decoder that frames messages based on a specified delimiter.
+ * <p>
+ * This decoder reads bytes from a {@link ByteBuffer} until a predefined delimiter byte sequence is found. It supports
+ * handling fragmented messages across multiple buffer reads.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DelimiterFrameDecoder implements SocketDecoder {
 
+    /**
+     * The position to reposition the buffer if a partial delimiter is found.
+     */
     private final int reposition;
     /**
-     * 存储已解析的数据
+     * A list of ByteBuffers storing the data that has been parsed so far.
      */
     private final List<ByteBuffer> bufferList;
     /**
-     * 消息结束标志
+     * The byte sequence marking the end of a message.
      */
     private byte[] endFLag;
     /**
-     * 期望本次校验的结束标索引位置
+     * The expected index within the {@code endFLag} for the current byte being checked.
      */
     private int exceptIndex;
     /**
-     * 是否解析完成
+     * A flag indicating whether the current message has been fully read.
      */
     private boolean finishRead;
     /**
-     * 位置信息
+     * The current position in the {@code bufferList}.
      */
     private int position;
 
+    /**
+     * Constructs a {@code DelimiterFrameDecoder} with the specified end flag and unit buffer size.
+     *
+     * @param endFLag        the byte array representing the message delimiter
+     * @param unitBufferSize the size of each internal buffer unit
+     * @throws IllegalArgumentException if {@code endFLag} is empty or {@code unitBufferSize} is less than 1
+     */
     public DelimiterFrameDecoder(byte[] endFLag, int unitBufferSize) {
         if (endFLag == null || endFLag.length == 0) {
             throw new IllegalArgumentException("endFLag cannot be empty");
@@ -81,6 +95,13 @@ public class DelimiterFrameDecoder implements SocketDecoder {
         bufferList.add(ByteBuffer.allocate(unitBufferSize));
     }
 
+    /**
+     * Decodes bytes from the provided {@link ByteBuffer} to find the message delimiter.
+     *
+     * @param byteBuffer the buffer containing the data to decode
+     * @return {@code true} if a complete frame has been decoded, {@code false} otherwise
+     * @throws RuntimeException if the decoder has already finished reading a delimiter
+     */
     public boolean decode(ByteBuffer byteBuffer) {
         if (finishRead) {
             throw new RuntimeException("delimiter has finish read");
@@ -120,7 +141,11 @@ public class DelimiterFrameDecoder implements SocketDecoder {
         if (position == 0) {
             return bufferList.get(position);
         }
-        byte[] data = new byte[(position) * bufferList.get(0).capacity() + bufferList.get(position).limit()];
+        int totalLength = 0;
+        for (int i = 0; i <= position; i++) {
+            totalLength += bufferList.get(i).limit();
+        }
+        byte[] data = new byte[totalLength];
         int index = 0;
         for (int i = 0; i <= position; i++) {
             ByteBuffer b = bufferList.get(i);
@@ -131,16 +156,16 @@ public class DelimiterFrameDecoder implements SocketDecoder {
     }
 
     /**
-     * 重置解码器
+     * Resets the decoder to its initial state.
      */
     public void reset() {
         reset(null);
     }
 
     /**
-     * 重置解码器
+     * Resets the decoder to its initial state and optionally updates the delimiter.
      *
-     * @param endFLag 更新结束标志
+     * @param endFLag the new delimiter to use, or {@code null} to keep the existing one
      */
     public void reset(byte[] endFLag) {
         if (endFLag != null) {

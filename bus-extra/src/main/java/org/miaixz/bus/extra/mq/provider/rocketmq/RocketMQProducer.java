@@ -35,29 +35,36 @@ import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
 
 /**
- * RocketMQ 生产者实现类
+ * RocketMQ producer implementation class. This class provides an adapter for sending messages to Apache RocketMQ,
+ * integrating with the internal {@link Producer} interface. It handles the conversion of internal {@link Message}
+ * objects into RocketMQ {@link org.apache.rocketmq.common.message.Message} objects for transmission.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RocketMQProducer implements Producer {
 
+    /**
+     * The native Apache RocketMQ producer object, responsible for sending messages to RocketMQ topics.
+     */
     private final MQProducer producer;
 
     /**
-     * 构造方法
+     * Constructs a {@code RocketMQProducer} with the specified native RocketMQ producer object.
      *
-     * @param producer RocketMQ 原生生产者对象
+     * @param producer The native RocketMQ {@link MQProducer} object.
      */
     public RocketMQProducer(final MQProducer producer) {
         this.producer = producer;
     }
 
     /**
-     * 发送消息到指定主题
+     * Sends a {@link Message} to the specified RocketMQ topic. The message's topic and content are used to create a
+     * RocketMQ {@link org.apache.rocketmq.common.message.Message} which is then sent by the underlying RocketMQ
+     * producer.
      *
-     * @param message 要发送的消息对象，包含主题和内容
-     * @throws MQueueException 消息发送失败时抛出异常
+     * @param message The {@link Message} object to send, containing the topic and content.
+     * @throws MQueueException if message sending fails due to an underlying RocketMQ client exception.
      */
     @Override
     public void send(final Message message) {
@@ -71,9 +78,11 @@ public class RocketMQProducer implements Producer {
     }
 
     /**
-     * 关闭生产者，释放资源
+     * Closes the underlying RocketMQ producer and releases all associated resources. This method ensures that the
+     * producer is properly shut down.
      *
-     * @throws IOException 关闭过程中发生IO异常时抛出
+     * @throws IOException if an I/O error occurs during closing (though RocketMQ shutdown typically handles this
+     *                     internally).
      */
     @Override
     public void close() throws IOException {

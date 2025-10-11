@@ -32,7 +32,7 @@ import java.time.temporal.ChronoField;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 季度枚举
+ * Enumeration for quarters of a year.
  *
  * @author Kimi Liu
  * @see #Q1
@@ -44,43 +44,52 @@ import org.miaixz.bus.core.lang.Assert;
 public enum Quarter {
 
     /**
-     * 一季度
+     * First quarter
      */
     Q1(1, "一季度"),
     /**
-     * 二季度
+     * Second quarter
      */
     Q2(2, "二季度"),
     /**
-     * 三季度
+     * Third quarter
      */
     Q3(3, "三季度"),
     /**
-     * 四季度
+     * Fourth quarter
      */
     Q4(4, "四季度");
 
+    /**
+     * Array of all {@link Quarter} enum constants.
+     */
     private static final Quarter[] ENUMS = Quarter.values();
 
     /**
-     * 编码
+     * The code of the quarter.
      */
     private final int code;
     /**
-     * 名称
+     * The name of the quarter.
      */
     private final String name;
 
+    /**
+     * Constructor for Quarter enum.
+     *
+     * @param code The code of the quarter.
+     * @param name The name of the quarter.
+     */
     Quarter(final int code, final String name) {
         this.code = code;
         this.name = name;
     }
 
     /**
-     * 将 季度int转换为Season枚举对象
+     * Converts an int value representing a quarter to a {@link Quarter} enum object.
      *
-     * @param intValue 季度int表示
-     * @return {@code Quarter}
+     * @param intValue The int value representing the quarter.
+     * @return The corresponding {@link Quarter} enum.
      * @see #Q1
      * @see #Q2
      * @see #Q3
@@ -106,38 +115,21 @@ public enum Quarter {
     }
 
     /**
-     * 获取季度值
+     * Gets the name of the quarter.
      *
-     * @return 季度值
+     * @param code The code of the quarter.
+     * @return The name of the quarter.
      */
     public static String getName(int code) {
         return ENUMS[code].name;
     }
 
     /**
-     * 获取季度值
+     * Returns the corresponding quarter based on the given month value.
      *
-     * @return 季度值
-     */
-    public int getCode() {
-        return this.code;
-    }
-
-    /**
-     * 获取季度值
-     *
-     * @return 季度值
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * 根据给定的月份值返回对应的季度
-     *
-     * @param monthValue 月份值，取值范围为1到12
-     * @return 对应的季度
-     * @throws IllegalArgumentException 如果月份值不在有效范围内（1到12），将抛出异常
+     * @param monthValue The month value, ranging from 1 to 12.
+     * @return The corresponding quarter.
+     * @throws IllegalArgumentException If the month value is not within the valid range (1 to 12).
      */
     public static Quarter fromMonth(final int monthValue) {
         ChronoField.MONTH_OF_YEAR.checkValidValue(monthValue);
@@ -145,10 +137,10 @@ public enum Quarter {
     }
 
     /**
-     * 根据给定的月份返回对应的季度
+     * Returns the corresponding quarter based on the given {@link Month}.
      *
-     * @param month 月份
-     * @return 对应的季度
+     * @param month The {@link Month}.
+     * @return The corresponding quarter.
      */
     public static Quarter fromMonth(final Month month) {
         Assert.notNull(month);
@@ -157,31 +149,49 @@ public enum Quarter {
     }
 
     /**
-     * 该季度的第一个月
+     * Computes the quarter value corresponding to the given month value.
      *
-     * @return 结果
+     * @param monthValue The month value, ranging from 1 to 12.
+     * @return The corresponding quarter value.
+     */
+    private static int computeQuarterValueInternal(final int monthValue) {
+        return (monthValue - 1) / 3 + 1;
+    }
+
+    /**
+     * Gets the code of the quarter.
+     *
+     * @return The code of the quarter.
+     */
+    public int getCode() {
+        return this.code;
+    }
+
+    /**
+     * Gets the name of the quarter.
+     *
+     * @return The name of the quarter.
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Gets the first month of this quarter.
+     *
+     * @return The first month of this quarter.
      */
     public Month firstMonth() {
         return Month.of(this.code * 3 - 3);
     }
 
     /**
-     * 该季度最后一个月
+     * Gets the last month of this quarter.
      *
-     * @return 结果
+     * @return The last month of this quarter.
      */
     public Month lastMonth() {
         return Month.of(this.code * 3 - 1);
-    }
-
-    /**
-     * 计算给定月份对应的季度值
-     *
-     * @param monthValue 月份值，取值范围为1到12
-     * @return 对应的季度值
-     */
-    private static int computeQuarterValueInternal(final int monthValue) {
-        return (monthValue - 1) / 3 + 1;
     }
 
 }

@@ -34,7 +34,10 @@ import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.stereotype.Component;
 
 /**
- * 容器警告处理
+ * Customizes the Undertow servlet web server factory, specifically for WebSocket configuration.
+ * <p>
+ * This class implements {@link WebServerFactoryCustomizer} to configure Undertow's {@link WebSocketDeploymentInfo},
+ * ensuring that WebSocket buffers are properly set up.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,6 +45,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class DeploymentInfoCustomizers implements WebServerFactoryCustomizer<UndertowServletWebServerFactory> {
 
+    /**
+     * Customizes the Undertow servlet web server factory.
+     * <p>
+     * This method adds a {@code DeploymentInfoCustomizer} to the factory, which configures the
+     * {@link WebSocketDeploymentInfo} with a {@link DefaultByteBufferPool} for WebSocket buffers.
+     * </p>
+     *
+     * @param factory The {@link UndertowServletWebServerFactory} to customize.
+     */
     @Override
     public void customize(UndertowServletWebServerFactory factory) {
         factory.addDeploymentInfoCustomizers(deploymentInfo -> {

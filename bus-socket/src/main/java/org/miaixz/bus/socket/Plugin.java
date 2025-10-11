@@ -28,29 +28,42 @@
 package org.miaixz.bus.socket;
 
 /**
- * 插件
+ * Represents a plugin interface for extending socket communication functionality.
+ * <p>
+ * Plugins can intercept and modify the behavior of message processing and monitor various state events. This interface
+ * extends {@link Monitor}, allowing plugins to also act as network monitors.
+ * </p>
  *
- * @param <T> 消息对象实体类型
+ * @param <T> the type of message object entity handled by this plugin
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface Plugin<T> extends Monitor {
 
     /**
-     * 对请求消息进行预处理，并决策是否进行后续的Handler处理 若返回false，则当前消息将被忽略。 若返回true，该消息会正常秩序Handler.process
+     * Pre-processes the incoming request message and decides whether to proceed with subsequent {@link Handler}
+     * processing.
+     * <p>
+     * If this method returns {@code false}, the current message will be ignored and not passed to the {@code Handler}.
+     * If it returns {@code true}, the message will proceed normally to {@code Handler.process}.
+     * </p>
      *
-     * @param session 会话
-     * @param data    待处理的业务消息
-     * @return the true/false
+     * @param session the communication session
+     * @param data    the business message to be processed
+     * @return {@code true} if the message should be processed by the handler, {@code false} otherwise
      */
     boolean process(Session session, T data);
 
     /**
-     * 监听状态机事件
+     * Listens to state machine events.
+     * <p>
+     * This method is triggered by the framework when a specific {@link Status} event occurs.
+     * </p>
      *
-     * @param status    状态
-     * @param session   会话
-     * @param throwable 异常
+     * @param status    the {@link Status} enumeration indicating the type of event
+     * @param session   the {@link Session} object that triggered the state event
+     * @param throwable an optional {@link Throwable} object if an exception is associated with the event, otherwise
+     *                  {@code null}
      * @see Handler#stateEvent(Session, Status, Throwable)
      */
     void stateEvent(Status status, Session session, Throwable throwable);

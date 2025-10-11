@@ -52,12 +52,12 @@ import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 
 /**
- * SFTP是Secure File Transfer Protocol的缩写，安全文件传送协议。可以为传输文件提供一种安全的加密方法。 SFTP 为
- * SSH的一部份，是一种传输文件到服务器的安全方式。SFTP是使用加密传输认证信息和传输的数据，所以，使用SFTP是非常安全的。
- * 但是，由于这种传输方式使用了加密/解密技术，所以传输效率比普通的FTP要低得多，如果您对网络安全性要求更高时，可以使用SFTP代替FTP。
- *
+ * SFTP (Secure File Transfer Protocol) client implementation based on JSch. SFTP provides a secure, encrypted method
+ * for file transfer over SSH, making it a robust alternative to traditional FTP. Due to encryption and decryption
+ * overhead, its transfer efficiency is generally lower than standard FTP. This class is suitable for scenarios with
+ * high network security requirements.
  * <p>
- * 此类为基于jsch的SFTP实现 参考：<a href=
+ * Reference: <a href=
  * "https://www.cnblogs.com/longyg/archive/2012/06/25/2556576.html">https://www.cnblogs.com/longyg/archive/2012/06/25/2556576.html</a>
  * </p>
  *
@@ -66,23 +66,29 @@ import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
  */
 public class JschSftp extends AbstractFtp {
 
+    /**
+     * The underlying JSch session.
+     */
     private Session session;
+    /**
+     * The underlying JSch SFTP channel.
+     */
     private ChannelSftp channel;
 
     /**
-     * 构造
+     * Constructs a {@code JschSftp} instance with the given FTP configuration and initializes it immediately.
      *
-     * @param config FTP配置
+     * @param config The {@link FtpConfig} containing connection details.
      */
     public JschSftp(final FtpConfig config) {
         this(config, true);
     }
 
     /**
-     * 构造
+     * Constructs a {@code JschSftp} instance with the given FTP configuration and an option to initialize immediately.
      *
-     * @param config FTP配置
-     * @param init   是否立即初始化
+     * @param config The {@link FtpConfig} containing connection details.
+     * @param init   If {@code true}, the SFTP connection is initialized immediately.
      */
     public JschSftp(final FtpConfig config, final boolean init) {
         super(config);
@@ -92,11 +98,11 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 构造
+     * Constructs a {@code JschSftp} instance with an existing JSch {@link Session}, character set, and timeout.
      *
-     * @param session {@link Session}
-     * @param charset 编码
-     * @param timeOut 超时时间，单位毫秒
+     * @param session The pre-existing JSch {@link Session}.
+     * @param charset The character set for file names.
+     * @param timeOut The connection timeout duration in milliseconds.
      */
     public JschSftp(final Session session, final Charset charset, final long timeOut) {
         super(FtpConfig.of().setCharset(charset).setConnectionTimeout(timeOut));
@@ -105,11 +111,11 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 构造
+     * Constructs a {@code JschSftp} instance with an existing JSch {@link ChannelSftp}, character set, and timeout.
      *
-     * @param channel {@link ChannelSftp}
-     * @param charset 编码
-     * @param timeOut 超时时间，单位毫秒
+     * @param channel The pre-existing JSch {@link ChannelSftp}.
+     * @param charset The character set for file names.
+     * @param timeOut The connection timeout duration in milliseconds.
      */
     public JschSftp(final ChannelSftp channel, final Charset charset, final long timeOut) {
         super(FtpConfig.of().setCharset(charset).setConnectionTimeout(timeOut));
@@ -118,27 +124,27 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 构造
+     * Creates a {@code JschSftp} instance with the specified SSH connection details.
      *
-     * @param sshHost 远程主机
-     * @param sshPort 远程主机端口
-     * @param sshUser 远程主机用户名
-     * @param sshPass 远程主机密码
-     * @return JschSftp
+     * @param sshHost The remote host address.
+     * @param sshPort The remote host port.
+     * @param sshUser The username for authentication.
+     * @param sshPass The password for authentication.
+     * @return A new {@code JschSftp} instance.
      */
     public static JschSftp of(final String sshHost, final int sshPort, final String sshUser, final String sshPass) {
         return of(sshHost, sshPort, sshUser, sshPass, DEFAULT_CHARSET);
     }
 
     /**
-     * 构造
+     * Creates a {@code JschSftp} instance with the specified SSH connection details and character set.
      *
-     * @param sshHost 远程主机
-     * @param sshPort 远程主机端口
-     * @param sshUser 远程主机用户名
-     * @param sshPass 远程主机密码
-     * @param charset 编码
-     * @return JschSftp
+     * @param sshHost The remote host address.
+     * @param sshPort The remote host port.
+     * @param sshUser The username for authentication.
+     * @param sshPass The password for authentication.
+     * @param charset The character set for file names.
+     * @return A new {@code JschSftp} instance.
      */
     public static JschSftp of(
             final String sshHost,
@@ -150,7 +156,10 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 初始化
+     * Initializes the SFTP connection. If the session or channel is not yet established, it will be created and
+     * connected. The filename encoding will be set based on the FTP configuration.
+     *
+     * @throws InternalException if a JSch or SftpException occurs during initialization.
      */
     public void init() {
         if (null == this.channel) {
@@ -166,7 +175,6 @@ public class JschSftp extends AbstractFtp {
             }
 
             if (!session.isConnected()) {
-                // 首先Session需连接
                 try {
                     session.connect((int) this.ftpConfig.getConnector().getTimeout());
                 } catch (final JSchException e) {
@@ -174,7 +182,6 @@ public class JschSftp extends AbstractFtp {
                 }
             }
 
-            // 创建Channel
             try {
                 this.channel = (ChannelSftp) this.session.openChannel(ChannelType.SFTP.getValue());
             } catch (final JSchException e) {
@@ -207,9 +214,10 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 获取SFTP通道客户端
+     * Retrieves the underlying SFTP channel client.
      *
-     * @return 通道客户端
+     * @return The {@link ChannelSftp} client.
+     * @throws InternalException if an error occurs during initialization or connection.
      */
     public ChannelSftp getClient() {
         if (!this.channel.isConnected()) {
@@ -218,11 +226,6 @@ public class JschSftp extends AbstractFtp {
         return this.channel;
     }
 
-    /**
-     * 远程当前目录
-     *
-     * @return 远程当前目录
-     */
     @Override
     public String pwd() {
         try {
@@ -233,9 +236,10 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 获取HOME路径
+     * Retrieves the HOME directory on the SFTP server.
      *
-     * @return HOME路径
+     * @return The HOME directory path.
+     * @throws InternalException if an SftpException occurs.
      */
     public String home() {
         try {
@@ -245,43 +249,40 @@ public class JschSftp extends AbstractFtp {
         }
     }
 
-    /**
-     * 遍历某个目录下所有文件或目录，不会递归遍历
-     *
-     * @param path 遍历某个目录下所有文件或目录
-     * @return 目录或文件名列表
-     */
     @Override
     public List<String> ls(final String path) {
         return ls(path, null);
     }
 
     /**
-     * 遍历某个目录下所有目录，不会递归遍历
+     * Lists all directories in a given path, without recursion.
      *
-     * @param path 遍历某个目录下所有目录
-     * @return 目录名列表
+     * @param path The path to list directories from.
+     * @return A list of directory names.
      */
     public List<String> lsDirs(final String path) {
         return ls(path, t -> t.getAttrs().isDir());
     }
 
     /**
-     * 遍历某个目录下所有文件，不会递归遍历
+     * Lists all files in a given path, without recursion.
      *
-     * @param path 遍历某个目录下所有文件
-     * @return 文件名列表
+     * @param path The path to list files from.
+     * @return A list of file names.
      */
     public List<String> lsFiles(final String path) {
         return ls(path, t -> !t.getAttrs().isDir());
     }
 
     /**
-     * 遍历某个目录下所有文件或目录，不会递归遍历 此方法自动过滤"."和".."两种目录
+     * Lists all files or directories in a given path, without recursion, applying a filter. This method automatically
+     * filters out "." and ".." directories.
      *
-     * @param path      遍历某个目录下所有文件或目录
-     * @param predicate 文件或目录过滤器，可以实现过滤器返回自己需要的文件或目录名列表，{@link Predicate#test(Object)}为{@code true}保留
-     * @return 目录或文件名列表
+     * @param path      The path to list files or directories from.
+     * @param predicate A file or directory filter. {@link Predicate#test(Object)} returning {@code true} keeps the
+     *                  entry.
+     * @return A list of directory or file names.
+     * @throws InternalException if an SftpException occurs other than "No such file".
      */
     public List<String> ls(final String path, final Predicate<LsEntry> predicate) {
         final List<LsEntry> entries = lsEntries(path, predicate);
@@ -292,21 +293,25 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件或目录，生成LsEntry列表，不会递归遍历 此方法自动过滤"."和".."两种目录
+     * Lists all files or directories in a given path, generating a list of {@link LsEntry} objects, without recursion.
+     * This method automatically filters out "." and ".." directories.
      *
-     * @param path 遍历某个目录下所有文件或目录
-     * @return 目录或文件名列表
+     * @param path The path to list files or directories from.
+     * @return A list of {@link LsEntry} objects.
      */
     public List<LsEntry> lsEntries(final String path) {
         return lsEntries(path, null);
     }
 
     /**
-     * 遍历某个目录下所有文件或目录，生成LsEntry列表，不会递归遍历 此方法自动过滤"."和".."两种目录
+     * Lists all files or directories in a given path, generating a list of {@link LsEntry} objects, without recursion,
+     * applying a filter. This method automatically filters out "." and ".." directories.
      *
-     * @param path      遍历某个目录下所有文件或目录
-     * @param predicate 文件或目录过滤器，可以实现过滤器返回自己需要的文件或目录名列表，{@link Predicate#test(Object)}为{@code true}保留
-     * @return 目录或文件名列表
+     * @param path      The path to list files or directories from.
+     * @param predicate A file or directory filter. {@link Predicate#test(Object)} returning {@code true} keeps the
+     *                  entry.
+     * @return A list of {@link LsEntry} objects.
+     * @throws InternalException if an SftpException occurs other than "No such file".
      */
     public List<LsEntry> lsEntries(final String path, final Predicate<LsEntry> predicate) {
         final List<LsEntry> entryList = new ArrayList<>();
@@ -324,7 +329,6 @@ public class JschSftp extends AbstractFtp {
             if (!StringKit.startWithIgnoreCase(e.getMessage(), "No such file")) {
                 throw new InternalException(e);
             }
-            // 文件不存在忽略
         }
         return entryList;
     }
@@ -342,7 +346,6 @@ public class JschSftp extends AbstractFtp {
     @Override
     public boolean mkdir(final String dir) {
         if (isDir(dir)) {
-            // 目录已经存在，创建直接返回
             return true;
         }
         try {
@@ -361,7 +364,6 @@ public class JschSftp extends AbstractFtp {
         } catch (final SftpException e) {
             final String msg = e.getMessage();
             if (StringKit.containsAnyIgnoreCase(msg, "No such file", "does not exist")) {
-                // 文件不存在直接返回false
                 return false;
             }
             throw new InternalException(e);
@@ -369,17 +371,9 @@ public class JschSftp extends AbstractFtp {
         return sftpATTRS.isDir();
     }
 
-    /**
-     * 打开指定目录，如果指定路径非目录或不存在抛出异常
-     *
-     * @param directory directory
-     * @return 是否打开目录
-     * @throws InternalException 进入目录失败异常
-     */
     @Override
     synchronized public boolean cd(final String directory) throws InternalException {
         if (StringKit.isBlank(directory)) {
-            // 当前目录
             return true;
         }
         try {
@@ -390,11 +384,6 @@ public class JschSftp extends AbstractFtp {
         }
     }
 
-    /**
-     * 删除文件
-     *
-     * @param filePath 要删除的文件绝对路径
-     */
     @Override
     public boolean delFile(final String filePath) {
         try {
@@ -405,12 +394,6 @@ public class JschSftp extends AbstractFtp {
         return true;
     }
 
-    /**
-     * 删除文件夹及其文件夹下的所有文件
-     *
-     * @param dirPath 文件夹路径
-     * @return boolean 是否删除成功
-     */
     @Override
     public boolean delDir(final String dirPath) {
         if (!cd(dirPath)) {
@@ -442,7 +425,6 @@ public class JschSftp extends AbstractFtp {
             return false;
         }
 
-        // 删除空目录
         try {
             channel.rmdir(dirPath);
             return true;
@@ -452,10 +434,10 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 将本地文件或者文件夹同步（覆盖）上传到远程路径
+     * Recursively uploads a local file or folder to a remote path, overwriting existing files.
      *
-     * @param remotePath 远程路径
-     * @param file       文件或者文件夹
+     * @param remotePath The remote path.
+     * @param file       The local file or folder to upload.
      */
     public void upload(final String remotePath, final File file) {
         if (!FileKit.exists(file)) {
@@ -490,17 +472,12 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 上传文件到指定目录，可选：
+     * Uploads a file from an InputStream to the specified remote directory.
      *
-     * <pre>
-     * 1. path为null或""上传到当前路径
-     * 2. path为相对路径则相对于当前路径的子路径
-     * 3. path为绝对路径则上传到此路径
-     * </pre>
-     *
-     * @param destPath   服务端路径，可以为{@code null} 或者相对路径或绝对路径
-     * @param fileName   文件名
-     * @param fileStream 文件流
+     * @param destPath   The destination path on the server.
+     * @param fileName   The filename.
+     * @param fileStream The file input stream.
+     * @throws InternalException if an SftpException occurs.
      */
     public void uploadFile(String destPath, final String fileName, final InputStream fileStream) {
         destPath = StringKit.addSuffixIfNot(destPath, Symbol.SLASH) + StringKit.removePrefix(fileName, Symbol.SLASH);
@@ -508,36 +485,39 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 将本地文件上传到目标服务器，目标文件名为destPath，若destPath为目录，则目标文件名将与srcFilePath文件名相同。覆盖模式
+     * Uploads a local file to the target server, overwriting existing files.
      *
-     * @param srcFilePath 本地文件路径
-     * @param destPath    目标路径，
-     * @return this
+     * @param srcFilePath The local file path.
+     * @param destPath    The target path.
+     * @return This {@code JschSftp} instance.
+     * @throws InternalException if an SftpException occurs.
      */
     public JschSftp put(final String srcFilePath, final String destPath) {
         return put(srcFilePath, destPath, Mode.OVERWRITE);
     }
 
     /**
-     * 将本地文件上传到目标服务器，目标文件名为destPath，若destPath为目录，则目标文件名将与srcFilePath文件名相同。
+     * Uploads a local file to the target server with a specified transfer mode.
      *
-     * @param srcFilePath 本地文件路径
-     * @param destPath    目标路径，
-     * @param mode        {@link Mode} 模式
-     * @return this
+     * @param srcFilePath The local file path.
+     * @param destPath    The target path.
+     * @param mode        The {@link Mode} for file transfer.
+     * @return This {@code JschSftp} instance.
+     * @throws InternalException if an SftpException occurs.
      */
     public JschSftp put(final String srcFilePath, final String destPath, final Mode mode) {
         return put(srcFilePath, destPath, null, mode);
     }
 
     /**
-     * 将本地文件上传到目标服务器，目标文件名为destPath，若destPath为目录，则目标文件名将与srcFilePath文件名相同。
+     * Uploads a local file to the target server with a progress monitor and transfer mode.
      *
-     * @param srcFilePath 本地文件路径
-     * @param destPath    目标路径，
-     * @param monitor     上传进度监控，通过实现此接口完成进度显示
-     * @param mode        {@link Mode} 模式
-     * @return this
+     * @param srcFilePath The local file path.
+     * @param destPath    The target path.
+     * @param monitor     The upload progress monitor.
+     * @param mode        The {@link Mode} for file transfer.
+     * @return This {@code JschSftp} instance.
+     * @throws InternalException if an SftpException occurs.
      */
     public JschSftp put(
             final String srcFilePath,
@@ -553,13 +533,14 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 将本地数据流上传到目标服务器，目标文件名为destPath，目标必须为文件
+     * Uploads a local data stream to the target server.
      *
-     * @param srcStream 本地的数据流
-     * @param destPath  目标路径，
-     * @param monitor   上传进度监控，通过实现此接口完成进度显示
-     * @param mode      {@link Mode} 模式
-     * @return this
+     * @param srcStream The local data stream.
+     * @param destPath  The target path.
+     * @param monitor   The upload progress monitor.
+     * @param mode      The {@link Mode} for file transfer.
+     * @return This {@code JschSftp} instance.
+     * @throws InternalException if an SftpException occurs.
      */
     public JschSftp put(
             final InputStream srcStream,
@@ -580,41 +561,30 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 下载文件到{@link OutputStream}中
+     * Downloads a file to an {@link OutputStream}.
      *
-     * @param src 源文件路径，包括文件名
-     * @param out 目标流
-     * @see #get(String, OutputStream)
+     * @param src The source file path on the remote server.
+     * @param out The target output stream.
      */
     public void download(final String src, final OutputStream out) {
         get(src, out);
     }
 
-    /**
-     * 递归下载FTP文件夹到本地目录。
-     *
-     * @param sourceDir FTP源目录路径
-     * @param targetDir 本地目标目录
-     * @throws InternalException 如果下载失败
-     */
+    @Override
     public void recursiveDownloadFolder(String sourceDir, File targetDir) throws InternalException {
-        // 规范化路径，移除末尾斜杠
         sourceDir = sourceDir.replaceAll("/+$", "");
 
-        // 获取FTP目录文件列表
         List<LsEntry> entries = lsEntries(sourceDir);
         if (entries == null || entries.isEmpty()) {
             return;
         }
 
-        // 确保目标目录存在
         if (!targetDir.exists() && !targetDir.mkdirs()) {
             throw new InternalException("Failed to create target directory: " + targetDir.getAbsolutePath());
         }
 
         for (LsEntry item : entries) {
             String fileName = item.getFilename();
-            // 跳过.和..目录
             if (fileName.equals(".") || fileName.equals("..")) {
                 continue;
             }
@@ -623,11 +593,9 @@ public class JschSftp extends AbstractFtp {
             File destFile = new File(targetDir, fileName);
 
             if (item.getAttrs().isDir()) {
-                // 递归处理子目录
                 recursiveDownloadFolder(srcPath, destFile);
             } else {
-                // 下载文件，仅当本地不存在或FTP文件更新
-                if (!destFile.exists() || item.getAttrs().getMTime() * 1000 > destFile.lastModified()) {
+                if (!destFile.exists() || item.getAttrs().getMTime() * 1000L > destFile.lastModified()) {
                     download(srcPath, destFile);
                 }
             }
@@ -635,11 +603,12 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 获取远程文件
+     * Retrieves a remote file and saves it to a local path.
      *
-     * @param src  远程文件路径
-     * @param dest 目标文件路径
-     * @return this
+     * @param src  The remote file path.
+     * @param dest The target file path.
+     * @return This {@code JschSftp} instance.
+     * @throws InternalException if an SftpException occurs.
      */
     public JschSftp get(final String src, final String dest) {
         try {
@@ -651,11 +620,12 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 获取远程文件
+     * Retrieves a remote file and writes it to an output stream.
      *
-     * @param src 远程文件路径
-     * @param out 目标流
-     * @return this
+     * @param src The remote file path.
+     * @param out The target output stream.
+     * @return This {@code JschSftp} instance.
+     * @throws InternalException if an SftpException occurs.
      */
     public JschSftp get(final String src, final OutputStream out) {
         try {
@@ -691,19 +661,19 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * JSch支持的三种文件传输模式
+     * Enumeration of file transfer modes supported by JSch.
      */
     public enum Mode {
         /**
-         * 完全覆盖模式，这是JSch的默认文件传输模式，即如果目标文件已经存在，传输的文件将完全覆盖目标文件，产生新的文件。
+         * Overwrite mode: If the target file exists, it will be completely overwritten.
          */
         OVERWRITE,
         /**
-         * 恢复模式，如果文件已经传输一部分，这时由于网络或其他任何原因导致文件传输中断，如果下一次传输相同的文件，则会从上一次中断的地方续传。
+         * Resume mode: If a file transfer is interrupted, it can be resumed from the point of interruption.
          */
         RESUME,
         /**
-         * 追加模式，如果目标文件已存在，传输的文件将在目标文件后追加。
+         * Append mode: If the target file exists, the transferred file will be appended to the end of it.
          */
         APPEND
     }

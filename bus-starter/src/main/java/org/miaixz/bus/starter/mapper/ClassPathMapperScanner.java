@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Set;
-
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -46,8 +42,15 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Set;
+
 /**
- * MyBatis映射器扫描器，通过包路径、注解或标记接口注册映射器 支持指定注解或接口过滤，禁用搜索所有接口时仅扫描指定类型
+ * A {@link ClassPathBeanDefinitionScanner} that scans for and registers MyBatis mapper interfaces.
+ * <p>
+ * This scanner can be configured to search for interfaces that are annotated with a specific annotation or that extend
+ * a specific marker interface. If no annotation or marker interface is specified, it will scan for all interfaces.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,67 +58,68 @@ import org.springframework.core.type.filter.AssignableTypeFilter;
 public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 
     /**
-     * MyBatis SqlSession工厂，用于创建SqlSession
+     * The SqlSessionFactory used to create SqlSessions.
      */
     private SqlSessionFactory sqlSessionFactory;
 
     /**
-     * MyBatis SqlSession模板，提供线程安全的SqlSession操作
+     * The SqlSessionTemplate that provides a thread-safe SqlSession.
      */
     private SqlSessionTemplate sqlSessionTemplate;
 
     /**
-     * SqlSessionTemplate的Bean名称，用于Spring容器引用
+     * The bean name of the SqlSessionTemplate, for referencing within the Spring container.
      */
     private String sqlSessionTemplateBeanName;
 
     /**
-     * SqlSessionFactory的Bean名称，用于Spring容器引用
+     * The bean name of the SqlSessionFactory, for referencing within the Spring container.
      */
     private String sqlSessionFactoryBeanName;
 
     /**
-     * 扫描的注解类型，用于过滤特定注解的接口
+     * The annotation to scan for. Interfaces with this annotation will be registered as mappers.
      */
     private Class<? extends Annotation> annotationClass;
 
     /**
-     * 扫描的标记接口，用于过滤实现特定接口的类
+     * The marker interface to scan for. Interfaces extending this marker will be registered as mappers.
      */
     private Class<?> markerInterface;
 
     /**
-     * MapperBuilder的Bean名称，用于配置通用Mapper
+     * The bean name of the MapperBuilder, used for configuring the generic Mapper.
      */
     private String mapperBuilderBeanName;
 
     /**
-     * Mapper工厂Bean，用于创建Mapper实例
+     * The factory bean used to create mapper instances.
      */
     private MapperFactoryBean<?> mapperFactoryBean = new MapperFactoryBean<>();
 
     /**
-     * 构造函数，初始化映射器扫描器
+     * Constructs a new ClassPathMapperScanner.
      *
-     * @param registry Spring Bean定义注册器
+     * @param registry The Spring bean definition registry.
      */
     public ClassPathMapperScanner(BeanDefinitionRegistry registry) {
         super(registry, false);
     }
 
     /**
-     * 配置扫描过滤器，设置搜索的接口或注解规则 支持注解、标记接口或默认扫描所有接口，排除package-info.java
+     * Configures the scanning filters. It sets up rules to search for interfaces based on annotations or a marker
+     * interface. By default, it scans all interfaces and excludes package-info.java.
      */
     public void registerFilters() {
         boolean acceptAllInterfaces = true;
 
-        // 添加注解过滤器
+        // Add annotation filter if specified.
         if (this.annotationClass != null) {
             addIncludeFilter(new AnnotationTypeFilter(this.annotationClass));
             acceptAllInterfaces = false;
         }
 
-        // 添加接口过滤器，忽略标记接口本身
+        // Add marker interface filter, ignoring the marker interface itself.
         if (this.markerInterface != null) {
             addIncludeFilter(new AssignableTypeFilter(this.markerInterface) {
 
@@ -127,22 +131,23 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             acceptAllInterfaces = false;
         }
 
-        // 默认包含所有接口
+        // If no specific filters are set, include all interfaces.
         if (acceptAllInterfaces) {
             addIncludeFilter((metadataReader, metadataReaderFactory) -> true);
         }
 
-        // 排除 package-info.java
+        // Exclude package-info.java files.
         addExcludeFilter(
                 (metadataReader, metadataReaderFactory) -> metadataReader.getClassMetadata().getClassName()
                         .endsWith("package-info"));
     }
 
     /**
-     * 扫描指定包路径，注册映射器Bean 如果未找到映射器，记录警告日志；否则处理Bean定义
+     * Scans the specified base packages for mapper interfaces and registers them as beans. It logs a warning if no
+     * mappers are found.
      *
-     * @param basePackages 扫描的基础包路径
-     * @return 注册的Bean定义集合
+     * @param basePackages The base packages to scan.
+     * @return A set of BeanDefinitionHolders for the registered beans.
      */
     @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
@@ -160,18 +165,21 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     }
 
     /**
-     * 处理扫描到的Bean定义，配置MapperFactoryBean 设置映射器接口、MapperFactoryBean、SqlSession和MapperBuilder
+     * Processes the scanned bean definitions, configuring them as {@link MapperFactoryBean} instances. It sets the
+     * mapper interface, SqlSessionFactory/SqlSessionTemplate, and other properties.
      *
-     * @param beanDefinitions 扫描到的Bean定义集合
+     * @param beanDefinitions The set of scanned bean definitions.
      */
     private void processBeanDefinitions(Set<BeanDefinitionHolder> beanDefinitions) {
         GenericBeanDefinition definition;
         for (BeanDefinitionHolder holder : beanDefinitions) {
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
-            // 映射器接口是bean的原始类，但是bean的实际类是MapperFactoryBean
-            definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName());
+            String beanClassName = definition.getBeanClassName();
+            // The mapper interface is the original class of the bean, but the actual bean class is MapperFactoryBean.
+            definition.getConstructorArgumentValues().addGenericArgumentValue(beanClassName);
             definition.setBeanClass(this.mapperFactoryBean.getClass());
-            // 设置通用 Mapper
+
+            // Set the generic Mapper builder if specified.
             if (StringKit.hasText(this.mapperBuilderBeanName)) {
                 definition.getPropertyValues()
                         .add("mapperBuilder", new RuntimeBeanReference(this.mapperBuilderBeanName));
@@ -186,10 +194,11 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                 definition.getPropertyValues().add("sqlSessionFactory", this.sqlSessionFactory);
                 explicitFactoryUsed = true;
             }
+
             if (StringKit.hasText(this.sqlSessionTemplateBeanName)) {
                 if (explicitFactoryUsed) {
                     Logger.warn(
-                            "Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
+                            "Cannot use both sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
                 }
                 definition.getPropertyValues()
                         .add("sqlSessionTemplate", new RuntimeBeanReference(this.sqlSessionTemplateBeanName));
@@ -197,29 +206,27 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             } else if (this.sqlSessionTemplate != null) {
                 if (explicitFactoryUsed) {
                     Logger.warn(
-                            "Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
+                            "Cannot use both sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
                 }
                 definition.getPropertyValues().add("sqlSessionTemplate", this.sqlSessionTemplate);
                 explicitFactoryUsed = true;
             }
-            if (!explicitFactoryUsed) {
-                if (Logger.isDebugEnabled()) {
-                    Logger.debug(
-                            "Enabling component by type for MapperFactoryBean with name '{}' and '{}'",
-                            holder.getBeanName(),
-                            definition.getBeanClassName());
 
-                }
+            if (!explicitFactoryUsed) {
+                Logger.debug(
+                        "Enabling component by type for MapperFactoryBean with name '{}' and class '{}'",
+                        holder.getBeanName(),
+                        definition.getBeanClassName());
                 definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
             }
         }
     }
 
     /**
-     * 判断是否为候选组件，仅限接口且独立
+     * Determines if a bean definition is a candidate for a mapper. It must be an interface and independent.
      *
-     * @param beanDefinition Bean定义
-     * @return 是否为候选组件
+     * @param beanDefinition The bean definition to check.
+     * @return {@code true} if it is a candidate component, {@code false} otherwise.
      */
     @Override
     protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
@@ -227,11 +234,11 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     }
 
     /**
-     * 检查候选Bean，防止重复定义
+     * Checks if a bean with the given name is already defined to prevent duplicates.
      *
-     * @param beanName       Bean名称
-     * @param beanDefinition Bean定义
-     * @return 是否为有效候选
+     * @param beanName       The name of the bean.
+     * @param beanDefinition The definition of the bean.
+     * @return {@code true} if it is a valid candidate, {@code false} otherwise.
      */
     @Override
     protected boolean checkCandidate(String beanName, BeanDefinition beanDefinition) {
@@ -247,72 +254,72 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     }
 
     /**
-     * 设置扫描的注解类型
+     * Sets the annotation class to scan for.
      *
-     * @param annotationClass 注解类
+     * @param annotationClass The annotation class.
      */
     public void setAnnotationClass(Class<? extends Annotation> annotationClass) {
         this.annotationClass = annotationClass;
     }
 
     /**
-     * 设置MapperFactoryBean
+     * Sets the MapperFactoryBean to be used by the scanner.
      *
-     * @param mapperFactoryBean Mapper工厂Bean
+     * @param mapperFactoryBean The MapperFactoryBean instance.
      */
     public void setMapperFactoryBean(MapperFactoryBean<?> mapperFactoryBean) {
         this.mapperFactoryBean = mapperFactoryBean != null ? mapperFactoryBean : new MapperFactoryBean<>();
     }
 
     /**
-     * 设置MapperBuilder的Bean名称
+     * Sets the bean name of the MapperBuilder.
      *
-     * @param mapperBuilderBeanName MapperBuilder的Bean名称
+     * @param mapperBuilderBeanName The bean name of the MapperBuilder.
      */
     public void setMapperBuilderBeanName(String mapperBuilderBeanName) {
         this.mapperBuilderBeanName = mapperBuilderBeanName;
     }
 
     /**
-     * 设置标记接口
+     * Sets the marker interface to scan for.
      *
-     * @param markerInterface 标记接口
+     * @param markerInterface The marker interface.
      */
     public void setMarkerInterface(Class<?> markerInterface) {
         this.markerInterface = markerInterface;
     }
 
     /**
-     * 设置SqlSessionFactory
+     * Sets the SqlSessionFactory to be used by the mappers.
      *
-     * @param sqlSessionFactory SqlSession工厂
+     * @param sqlSessionFactory The SqlSessionFactory instance.
      */
     public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
         this.sqlSessionFactory = sqlSessionFactory;
     }
 
     /**
-     * 设置SqlSessionFactory的Bean名称
+     * Sets the bean name of the SqlSessionFactory.
      *
-     * @param sqlSessionFactoryBeanName SqlSessionFactory的Bean名称
+     * @param sqlSessionFactoryBeanName The bean name of the SqlSessionFactory.
      */
     public void setSqlSessionFactoryBeanName(String sqlSessionFactoryBeanName) {
         this.sqlSessionFactoryBeanName = sqlSessionFactoryBeanName;
     }
 
     /**
-     * 设置SqlSessionTemplate
+     * Sets the SqlSessionTemplate to be used by the mappers.
      *
-     * @param sqlSessionTemplate SqlSession模板
+     * @param sqlSessionTemplate The SqlSessionTemplate instance.
      */
     public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
         this.sqlSessionTemplate = sqlSessionTemplate;
     }
 
     /**
-     * 设置SqlSessionTemplate的Bean名称
+     * Sets the bean name of the SqlSessionTemplate.
      *
-     * @param sqlSessionTemplateBeanName SqlSessionTemplate的Bean名称
+     * @param sqlSessionTemplateBeanName The bean name of the SqlSessionTemplate.
      */
     public void setSqlSessionTemplateBeanName(String sqlSessionTemplateBeanName) {
         this.sqlSessionTemplateBeanName = sqlSessionTemplateBeanName;

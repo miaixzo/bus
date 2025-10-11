@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 下载资金账单
+ * Download Fund Flow model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,12 +48,33 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class DownloadFundFlow extends Material {
 
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Signature type.
+     */
     private String sign_type;
+    /**
+     * Bill date.
+     */
     private String bill_date;
+    /**
+     * Account type.
+     */
     private String account_type;
+    /**
+     * Tar type.
+     */
     private String tar_type;
 
 }

@@ -37,7 +37,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * api definition
+ * Represents an API definition or asset within the Vortex module. This class holds various properties defining an API
+ * endpoint, including its identification, network details, request characteristics, and security settings.
  *
  * @author Justubborn
  * @since Java 17+
@@ -49,71 +50,79 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class Assets {
 
+    /**
+     * The unique identifier for this asset.
+     */
     private String id;
     /**
-     * 名称
+     * The name of the asset.
      */
     private String name;
     /**
-     * 服务器地址
+     * The host address of the server.
      */
     private String host;
     /**
-     * 上下文路径
+     * The context path of the API.
      */
     private String path;
     /**
-     * 端口
+     * The port number of the server.
      */
     private Integer port;
     /**
-     * 方法URL
+     * The full URL of the method.
      */
     private String url;
     /**
-     * 方法
+     * The HTTP method (e.g., GET, POST).
      */
     private String method;
     /**
-     * 路由模式 1.HTTP 2.MQ 3.MCP
+     * The routing mode: 1.HTTP, 2.MQ, 3.MCP.
      */
     private Integer mode;
     /**
-     * 请求类型 1.GET 2.POST 3.HEAD 4.PUT 5.PATCH 6.DELETE 7.OPTIONS 8.TRACE
+     * The request type: 1.GET, 2.POST, 3.HEAD, 4.PUT, 5.PATCH, 6.DELETE, 7.OPTIONS, 8.TRACE.
      */
     private Integer type;
     /**
-     * 授权 0.不做校验 1.校验
+     * Authorization setting: 0. No validation, 1. Validation required.
      */
     private Integer token;
     /**
-     * 签名
-     *
+     * Signature setting.
      */
     private Integer sign;
     /**
-     * 适用范围
-     *
+     * The scope of applicability.
      */
     private Integer scope;
     /**
-     * 例外规则
+     * Exception rules for firewall.
      */
     private Integer firewall;
     /**
-     * 版本
+     * The version of the asset.
      */
     private String version;
     /**
-     * 描述
+     * A description of the asset.
      */
     private String description;
 
     /**
-     * 超时时间
+     * The timeout duration in milliseconds for requests. Default is 10000 milliseconds.
      */
     private long timeout = 10000;
 
+    /**
+     * Compares this Assets object with the specified object for equality. The comparison is based on the {@code id}
+     * field.
+     *
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal (have the same id), {@code false} otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -124,6 +133,11 @@ public class Assets {
         return id.equals(assets.id);
     }
 
+    /**
+     * Returns a hash code value for the object. This hash code is based on the {@code id} field.
+     *
+     * @return A hash code value for this object.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id);

@@ -20,7 +20,7 @@
  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ OUT of OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -35,7 +35,7 @@ import org.miaixz.bus.mapper.parsing.FieldMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
- * 列工厂处理链，支持单例，线程安全
+ * A processing chain for column factories, designed to be thread-safe and support singleton instances.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,34 +43,34 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class ColumnSchemaChain implements ColumnSchemaBuilder.Chain {
 
     /**
-     * 列工厂列表
+     * The list of column factories.
      */
     private final List<ColumnSchemaBuilder> factories;
 
     /**
-     * 下一个处理链节点
+     * The next node in the processing chain.
      */
     private final ColumnSchemaChain next;
 
     /**
-     * 当前工厂索引
+     * The index of the current factory in the list.
      */
     private final int index;
 
     /**
-     * 构造函数，初始化列工厂处理链
+     * Constructs a new column factory processing chain.
      *
-     * @param factories 列工厂列表
+     * @param factories The list of column factories.
      */
     public ColumnSchemaChain(List<ColumnSchemaBuilder> factories) {
         this(factories, 0);
     }
 
     /**
-     * 私有构造函数，初始化处理链节点
+     * Private constructor to initialize a node in the processing chain.
      *
-     * @param factories 列工厂列表
-     * @param index     当前工厂索引
+     * @param factories The list of column factories.
+     * @param index     The index of the current factory.
      */
     private ColumnSchemaChain(List<ColumnSchemaBuilder> factories, int index) {
         this.factories = factories;
@@ -83,11 +83,12 @@ public class ColumnSchemaChain implements ColumnSchemaBuilder.Chain {
     }
 
     /**
-     * 创建实体列信息，链式调用列工厂
+     * Creates entity column information by invoking column factories in a chain.
      *
-     * @param tableMeta 实体表信息
-     * @param fieldMeta 字段信息
-     * @return 实体类中列的信息的 Optional 包装对象，若为空则表示不属于实体中的列
+     * @param tableMeta The entity table information.
+     * @param fieldMeta The field information.
+     * @return An {@link Optional} containing the column information for the entity class. An empty Optional indicates
+     *         that the field is not a column in the entity.
      */
     @Override
     public Optional<List<ColumnMeta>> createColumn(TableMeta tableMeta, FieldMeta fieldMeta) {

@@ -37,7 +37,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 访问授权
+ * Represents access authorization information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,85 +53,85 @@ public class Authorize extends Entity {
     private static final long serialVersionUID = 2852290950589L;
 
     /**
-     * 当前租户标识
+     * The identifier for the current tenant.
      */
     @Transient
     protected String x_tenant_id;
 
     /**
-     * 当前租户名称
+     * The name of the current tenant.
      */
     @Transient
     protected String x_tenant_name;
 
     /**
-     * 当前用户标识
+     * The identifier for the current user.
      */
     @Transient
     protected String x_user_id;
 
     /**
-     * 当前用户邮箱
+     * The email address of the current user.
      */
     @Transient
     protected String x_user_email;
 
     /**
-     * 当前用户编码
+     * The code or username of the current user.
      */
     @Transient
     protected String x_user_code;
 
     /**
-     * 当前用户昵称
+     * The nickname of the current user.
      */
     @Transient
     protected String x_user_nick;
 
     /**
-     * 当前用户名称
+     * The full name of the current user.
      */
     @Transient
     protected String x_user_name;
 
     /**
-     * 当前用户头像
+     * The avatar URL of the current user.
      */
     @Transient
     protected String x_user_avatar;
 
     /**
-     * 当前用户角色
+     * The role identifier of the current user.
      */
     @Transient
     protected String x_role_id;
 
     /**
-     * 当前用户职称
+     * The duty or position identifier of the current user.
      */
     @Transient
     protected String x_duty_id;
 
     /**
-     * 当前用户设备
+     * The device identifier of the current user.
      */
     @Transient
     protected String x_device_id;
 
     /**
-     * 当前应用ID
+     * The identifier of the current application.
      */
     @Transient
     protected String x_app_id;
 
     /**
-     * 当前API调用ID
+     * The identifier for the current API call.
      */
     @Transient
     protected String x_api_id;
 
     /**
-     * 扩展参数信息
+     * Extended parameter information.
      */
     @Transient
     protected String x_extension;

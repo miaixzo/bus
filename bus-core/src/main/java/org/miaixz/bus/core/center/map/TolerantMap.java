@@ -33,10 +33,20 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 一个可以提供默认值的Map
+ * A decorator for a {@link Map} that returns a default value instead of {@code null} when a key is not found. This
+ * provides a "tolerant" or forgiving alternative to a standard map, preventing {@code NullPointerException}s in chains
+ * of operations.
+ * <p>
+ * Example:
+ * 
+ * <pre>{@code
+ * 
+ * Map<String, Integer> map = new TolerantMap<>(new HashMap<>(), -1);
+ * Integer value = map.get("nonexistent_key"); // returns -1 instead of null
+ * }</pre>
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys maintained by this map.
+ * @param <V> The type of mapped values.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -45,43 +55,46 @@ public class TolerantMap<K, V> extends MapWrapper<K, V> {
     @Serial
     private static final long serialVersionUID = 2852276071699L;
 
+    /**
+     * The default value to return when a key is not found in the map.
+     */
     private final V defaultValue;
 
     /**
-     * 构造
+     * Constructs a new {@code TolerantMap} wrapping a {@link HashMap} with the specified default value.
      *
-     * @param defaultValue 默认值
+     * @param defaultValue The value to return for non-existent keys.
      */
     public TolerantMap(final V defaultValue) {
         this(new HashMap<>(), defaultValue);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code TolerantMap} with a specified capacity, load factor, and default value.
      *
-     * @param initialCapacity 初始容量
-     * @param loadFactor      增长因子
-     * @param defaultValue    默认值
+     * @param initialCapacity The initial capacity of the underlying {@link HashMap}.
+     * @param loadFactor      The load factor of the underlying {@link HashMap}.
+     * @param defaultValue    The value to return for non-existent keys.
      */
     public TolerantMap(final int initialCapacity, final float loadFactor, final V defaultValue) {
         this(new HashMap<>(initialCapacity, loadFactor), defaultValue);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code TolerantMap} with a specified initial capacity and default value.
      *
-     * @param initialCapacity 初始容量
-     * @param defaultValue    默认值
+     * @param initialCapacity The initial capacity of the underlying {@link HashMap}.
+     * @param defaultValue    The value to return for non-existent keys.
      */
     public TolerantMap(final int initialCapacity, final V defaultValue) {
         this(new HashMap<>(initialCapacity), defaultValue);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code TolerantMap} that wraps an existing map.
      *
-     * @param map          Map实现
-     * @param defaultValue 默认值
+     * @param map          The underlying {@link Map} to wrap. Must not be {@code null}.
+     * @param defaultValue The value to return for non-existent keys.
      */
     public TolerantMap(final Map<K, V> map, final V defaultValue) {
         super(map);
@@ -89,23 +102,37 @@ public class TolerantMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * 构建TolerantMap
+     * Creates a new {@code TolerantMap} that wraps the given map and provides a default value.
      *
-     * @param map          map实现
-     * @param defaultValue 默认值
-     * @param <K>          键类型
-     * @param <V>          值类型
-     * @return TolerantMap
+     * @param <K>          The type of keys.
+     * @param <V>          The type of values.
+     * @param map          The underlying {@link Map} to wrap.
+     * @param defaultValue The value to return for non-existent keys.
+     * @return A new {@code TolerantMap} instance.
      */
     public static <K, V> TolerantMap<K, V> of(final Map<K, V> map, final V defaultValue) {
         return new TolerantMap<>(map, defaultValue);
     }
 
+    /**
+     * Returns the value for the specified key. If the key is not found, it returns the predefined default value instead
+     * of {@code null}.
+     *
+     * @param key The key whose associated value is to be returned.
+     * @return The value associated with the key, or the default value if the key is not present.
+     */
     @Override
     public V get(final Object key) {
         return getOrDefault(key, defaultValue);
     }
 
+    /**
+     * Compares this {@code TolerantMap} with another object for equality. The result is {@code true} if and only if the
+     * argument is also a {@code TolerantMap} with an equal underlying map and an equal default value.
+     *
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
+     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -121,11 +148,21 @@ public class TolerantMap<K, V> extends MapWrapper<K, V> {
         return getRaw().equals(that.getRaw()) && Objects.equals(defaultValue, that.defaultValue);
     }
 
+    /**
+     * Returns the hash code for this map. The hash code is derived from the underlying map and the default value.
+     *
+     * @return The hash code for this map.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getRaw(), defaultValue);
     }
 
+    /**
+     * Returns a string representation of this map, including the default value.
+     *
+     * @return A string representation of the map.
+     */
     @Override
     public String toString() {
         return "TolerantMap{" + "map=" + getRaw() + ", defaultValue=" + defaultValue + '}';

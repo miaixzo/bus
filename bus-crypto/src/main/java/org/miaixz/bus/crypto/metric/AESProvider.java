@@ -33,8 +33,11 @@ import org.miaixz.bus.crypto.Provider;
 import org.miaixz.bus.crypto.center.AES;
 
 /**
- * 高级加密标准,是下一代的加密算法标准,速度快,安全级别高； AES是一个使用128为分组块的分组加密算法,分组块和128、192或256位的密钥一起作为输入, 对4×4的字节数组上进行操作
- * 众所周之AES是种十分高效的算法,尤其在8位架构中,这源于它面向字节的设计 AES 适用于8位的小型单片机或者普通的32位微处理器,并且适合用专门的硬件实现,硬件实现能够使其吞吐量(每秒可以到达的加密/解密bit数) 达到十亿量级
+ * Provides an implementation for the Advanced Encryption Standard (AES) algorithm. AES is a fast, highly secure,
+ * next-generation encryption standard. It is a block cipher that operates on 128-bit blocks, using keys of 128, 192, or
+ * 256 bits. AES is designed to be efficient, especially in 8-bit architectures, due to its byte-oriented design. It is
+ * suitable for small 8-bit microcontrollers or common 32-bit microprocessors, and can achieve gigabit-level throughput
+ * when implemented in dedicated hardware.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,10 +45,13 @@ import org.miaixz.bus.crypto.center.AES;
 public class AESProvider implements Provider {
 
     /**
-     * 加密
+     * Encrypts the given content using AES with the provided key.
      *
-     * @param key     密钥
-     * @param content 需要加密的内容
+     * @param key     The encryption key as a string. It will be converted to bytes using the platform's default
+     *                charset.
+     * @param content The content to be encrypted as a byte array.
+     * @return The encrypted content as a byte array.
+     * @throws InternalException if the key is null or empty.
      */
     @Override
     public byte[] encrypt(String key, byte[] content) {
@@ -57,10 +63,13 @@ public class AESProvider implements Provider {
     }
 
     /**
-     * 解密
+     * Decrypts the given content using AES with the provided key.
      *
-     * @param key     密钥
-     * @param content 需要解密的内容
+     * @param key     The decryption key as a string. It will be converted to bytes using the platform's default
+     *                charset.
+     * @param content The content to be decrypted as a byte array.
+     * @return The decrypted content as a byte array.
+     * @throws InternalException if the key is null or empty.
      */
     @Override
     public byte[] decrypt(String key, byte[] content) {

@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * CRC16相关算法封装为Checksum
+ * Provides various CRC16 algorithms encapsulated as Checksum implementations.
  *
  * @author Kimi Liu
  * @since Java 17+

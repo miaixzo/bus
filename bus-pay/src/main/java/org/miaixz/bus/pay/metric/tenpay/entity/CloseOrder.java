@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 关闭订单
+ * Close Order model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,12 +48,33 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class CloseOrder extends Material {
 
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID.
+     */
     private String sub_mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Merchant order number.
+     */
     private String out_trade_no;
+    /**
+     * Total fee.
+     */
     private String total_fee;
 
 }

@@ -33,14 +33,14 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.crypto.builtin.digest.Digester;
 
 /**
- * 国密SM3杂凑（摘要）算法
- *
+ * SM3 cryptographic hash (digest) algorithm implementation.
  * <p>
- * 国密算法包括：
+ * The suite of national cryptographic algorithms (Guomi algorithms) includes:
+ * </p>
  * <ol>
- * <li>非对称加密和签名：SM2，asymmetric</li>
- * <li>摘要签名算法：SM3，digest</li>
- * <li>对称加密：SM4，symmetric</li>
+ * <li>Asymmetric encryption and signature: SM2 (asymmetric)</li>
+ * <li>Digest signature algorithm: SM3 (digest)</li>
+ * <li>Symmetric encryption: SM4 (symmetric)</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -52,37 +52,39 @@ public class SM3 extends Digester {
     private static final long serialVersionUID = 2852290571103L;
 
     /**
-     * 构造
+     * Constructs an SM3 digester.
      */
     public SM3() {
         super(Algorithm.SM3.getValue());
     }
 
     /**
-     * 构造
+     * Constructs an SM3 digester with the specified salt.
      *
-     * @param salt 盐值
+     * @param salt The salt value as a byte array.
      */
     public SM3(final byte[] salt) {
         this(salt, 0, 1);
     }
 
     /**
-     * 构造
+     * Constructs an SM3 digester with the specified salt and digest count.
      *
-     * @param salt        盐值
-     * @param digestCount 摘要次数，当此值小于等于1,默认为1。
+     * @param salt        The salt value as a byte array.
+     * @param digestCount The number of times to apply the digest algorithm. If less than or equal to 1, it defaults to
+     *                    1.
      */
     public SM3(final byte[] salt, final int digestCount) {
         this(salt, 0, digestCount);
     }
 
     /**
-     * 构造
+     * Constructs an SM3 digester with the specified salt, salt position, and digest count.
      *
-     * @param salt         盐值
-     * @param saltPosition 加盐位置，即将盐值字符串放置在数据的index数，默认0
-     * @param digestCount  摘要次数，当此值小于等于1,默认为1。
+     * @param salt         The salt value as a byte array.
+     * @param saltPosition The index at which the salt string is placed in the data. Defaults to 0.
+     * @param digestCount  The number of times to apply the digest algorithm. If less than or equal to 1, it defaults to
+     *                     1.
      */
     public SM3(final byte[] salt, final int saltPosition, final int digestCount) {
         this();
@@ -92,9 +94,9 @@ public class SM3 extends Digester {
     }
 
     /**
-     * 创建SM3实例
+     * Creates a new SM3 instance.
      *
-     * @return SM3
+     * @return A new {@link SM3} instance.
      */
     public static SM3 of() {
         return new SM3();

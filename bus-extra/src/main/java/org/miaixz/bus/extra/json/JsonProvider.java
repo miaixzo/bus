@@ -35,7 +35,9 @@ import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.EnumValue;
 
 /**
- * JSON服务提供者
+ * Defines the contract for a JSON service provider. This interface specifies a set of common methods for JSON
+ * serialization and deserialization, allowing for different underlying JSON libraries (e.g., Jackson, Gson, Fastjson)
+ * to be used interchangeably.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,109 +45,114 @@ import org.miaixz.bus.core.lang.EnumValue;
 public interface JsonProvider extends Provider {
 
     /**
-     * 解析对象为Json字符串
+     * Converts an object into its JSON string representation.
      *
-     * @param object 要转换的对象
-     * @return 返回对象的json字符串
+     * @param object The object to be serialized.
+     * @return The JSON string representation of the object.
      */
     String toJsonString(Object object);
 
     /**
-     * 解析对象为Json字符串
+     * Converts an object into its JSON string representation, with a specified date format.
      *
-     * @param object 要转换的对象
-     * @param format 日期格式，如"yyyy年MM月dd日 HH时mm分ss秒"
-     * @return 返回对象的json字符串
+     * @param object The object to be serialized.
+     * @param format The date format string to use for date/time objects, e.g., "yyyy-MM-dd HH:mm:ss".
+     * @return The JSON string representation of the object.
      */
     String toJsonString(Object object, String format);
 
     /**
-     * 解析json字符串到指定类型的对象
+     * Parses a JSON string into an object of the specified class.
      *
-     * @param json  要解析的json字符串
-     * @param clazz 类对象class
-     * @param <T>   泛型参数类型
-     * @return 返回解析后的对象
+     * @param <T>   The type of the target object.
+     * @param json  The JSON string to be deserialized.
+     * @param clazz The class of the target object.
+     * @return The deserialized object.
      */
     <T> T toPojo(String json, Class<T> clazz);
 
     /**
-     * 从Map转换到对象
+     * Converts a {@link Map} into a plain old Java object (POJO) of the specified class.
      *
-     * @param map   Map对象
-     * @param clazz 与Map可兼容的对象类型
-     * @param <T>   泛型参数类型
-     * @return 返回Map转换得到的对象
+     * @param <T>   The type of the target POJO.
+     * @param map   The source map.
+     * @param clazz The class of the target POJO.
+     * @return The POJO converted from the map.
      */
     <T> T toPojo(Map map, Class<T> clazz);
 
     /**
-     * 解析json字符串到List
+     * Parses a JSON string into a {@link List}.
      *
-     * @param json 要解析的json字符串
-     * @param <T>  泛型参数类型
-     * @return 返回List
+     * @param <T>  The generic type of the elements in the list.
+     * @param json The JSON string to be deserialized.
+     * @return The resulting {@link List}.
      */
     <T> List<T> toList(String json);
 
     /**
-     * 按指定的Type解析json字符串到List
+     * Parses a JSON string into a {@link List} of objects of the specified class.
      *
-     * @param json  要解析的json字符串
-     * @param clazz 类对象class
-     * @param <T>   泛型参数类型
-     * @return 返回List
+     * @param <T>   The type of the elements in the list.
+     * @param json  The JSON string to be deserialized.
+     * @param clazz The class of the elements in the list.
+     * @return The resulting {@link List}.
      */
     <T> List<T> toList(String json, Class<T> clazz);
 
     /**
-     * 按指定的Type解析json字符串到List
+     * Parses a JSON string into a {@link List} of a specific generic type.
      *
-     * @param json 要解析的json字符串
-     * @param type {@link Type}
-     * @param <T>  泛型参数类型
-     * @return 返回List
+     * @param <T>  The generic type of the elements in the list.
+     * @param json The JSON string to be deserialized.
+     * @param type The {@link Type} representing the list's generic type.
+     * @return The resulting {@link List}.
      */
     <T> List<T> toList(String json, final Type type);
 
     /**
-     * 解析json字符串到Map
+     * Parses a JSON string into a {@link Map}.
      *
-     * @param json 要解析的json字符串
-     * @param <K>  键类型
-     * @param <V>  值类型
-     * @return 返回Map
+     * @param <K>  The type of the keys in the map.
+     * @param <V>  The type of the values in the map.
+     * @param json The JSON string to be deserialized.
+     * @return The resulting {@link Map}.
      */
     <K, V> Map<K, V> toMap(String json);
 
     /**
-     * 转换对象到Map
+     * Converts an object into a {@link Map}.
      *
-     * @param object 与Map可兼容的对象
-     * @param <K>    键类型
-     * @param <V>    值类型
-     * @return 返回Map对象
+     * @param <K>    The type of the keys in the map.
+     * @param <V>    The type of the values in the map.
+     * @param object The object to be converted.
+     * @return The resulting {@link Map}.
      */
     <K, V> Map<K, V> toMap(Object object);
 
     /**
-     * 获取json字符串指定属性值
+     * Extracts the value of a specific field from a JSON string.
      *
-     * @param json  要解析的json字符串
-     * @param field 属性名称
-     * @param <T>   泛型参数类型
-     * @return 返回解析后的属性值
+     * @param <T>   The type of the value to be returned.
+     * @param json  The JSON string to be parsed.
+     * @param field The name of the field whose value is to be extracted.
+     * @return The value of the specified field.
      */
     <T> T getValue(String json, String field);
 
     /**
-     * 判断是否为标准json
+     * Checks if a given string is a valid, well-formed JSON string.
      *
-     * @param json 字符串
-     * @return the true/false
+     * @param json The string to be checked.
+     * @return {@code true} if the string is a valid JSON, {@code false} otherwise.
      */
     boolean isJson(String json);
 
+    /**
+     * Returns the type of this JSON provider.
+     *
+     * @return The provider type, which is {@link EnumValue.Povider#JSON}.
+     */
     @Override
     default Object type() {
         return EnumValue.Povider.JSON;

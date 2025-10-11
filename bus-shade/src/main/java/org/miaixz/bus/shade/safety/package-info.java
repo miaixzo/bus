@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Spring Boot JAR 安全加密运行工具, 同时支持的原生JAR
+ * Provides utilities for secure encryption and execution of Spring Boot JARs, with support for native JARs.
  *
  * @author Kimi Liu
  * @since Java 17+

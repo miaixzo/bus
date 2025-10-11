@@ -30,7 +30,8 @@ package org.miaixz.bus.core.lang.thread;
 import java.util.concurrent.*;
 
 /**
- * 类比 {@link java.util.concurrent.Executors}
+ * A utility class for creating various types of {@link Executor} instances, similar to {@link Executors}. It provides
+ * convenient methods to build thread pools with common configurations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,10 +39,13 @@ import java.util.concurrent.*;
 public class ThreadExecutorBuilder {
 
     /**
-     * 创建一个线程数固定（corePoolSize==maximumPoolSize）的线程池 核心线程会一直存在，不被回收 如果一个核心线程由于异常跪了，会新创建一个线程 无界队列LinkedBlockingQueue
+     * Creates a thread pool with a fixed number of threads (corePoolSize == maximumPoolSize). Core threads will always
+     * remain in the pool and will not be reclaimed. If a core thread terminates due to an exception, a new thread will
+     * be created. This executor uses an unbounded {@link LinkedBlockingQueue}.
      *
-     * @param corePoolSize 要保留在池中的线程数，即使它们是空闲的
-     * @param prefix       线程名前缀
+     * @param corePoolSize The number of threads to keep in the pool, even if they are idle.
+     * @param prefix       The prefix for the names of threads created in this pool.
+     * @return A new {@link Executor} instance configured as a fixed-size thread pool.
      */
     public static Executor newFixedFastThread(final int corePoolSize, final String prefix) {
         return new ThreadPoolExecutor(corePoolSize, corePoolSize, 0L, TimeUnit.MILLISECONDS,
@@ -49,10 +53,14 @@ public class ThreadExecutorBuilder {
     }
 
     /**
-     * corePoolSize==0 maximumPoolSize==Integer.MAX_VALUE 队列：SynchronousQueue 创建一个线程池：当池中的线程都处于忙碌状态时，会立即新建一个线程来处理新来的任务
-     * 这种池将会在执行许多耗时短的异步任务的时候提高程序的性能 60秒钟内没有使用的线程将会被中止，并且从线程池中移除，因此几乎不必担心耗费资源
+     * Creates a cached thread pool. This pool will create new threads as needed to execute new tasks, but will reuse
+     * previously constructed threads when they are available. Threads that have not been used for sixty seconds are
+     * terminated and removed from the cache. This pool is suitable for applications that may launch many short-lived
+     * tasks. It uses a {@link SynchronousQueue} and has a core pool size of 0 and a maximum pool size of
+     * {@link Integer#MAX_VALUE}.
      *
-     * @param prefix 线程名前缀
+     * @param prefix The prefix for the names of threads created in this pool.
+     * @return A new {@link Executor} instance configured as a cached thread pool.
      */
     public static Executor newCachedFastThread(final String prefix) {
         return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(),
@@ -60,16 +68,20 @@ public class ThreadExecutorBuilder {
     }
 
     /**
-     * 用给定的初始参数创建一个新的Executor
+     * Creates a new {@link Executor} with the given initial parameters. This method provides fine-grained control over
+     * the thread pool's configuration.
      *
-     * @param corePoolSize    要保留在池中的线程数，即使它们是空闲的
-     * @param maximumPoolSize 池中允许的最大线程数
-     * @param keepAliveTime   当线程数大于核心时，这是多余空闲线程在终止前等待新任务的最大时间。
-     * @param unit            keepAliveTime参数的时间单位
-     * @param workQueue       任务执行之前用于保存任务的队列。此队列将仅保存由execute方法提交的可运行任务。
-     * @param prefix          线程名前缀
-     * @param handler         由于达到线程边界和队列容量而阻塞执行时使用的处理程序
-     * @return {@link Executor}
+     * @param corePoolSize    The number of threads to keep in the pool, even if they are idle.
+     * @param maximumPoolSize The maximum number of threads allowed in the pool.
+     * @param keepAliveTime   When the number of threads is greater than the core pool size, this is the maximum time
+     *                        that excess idle threads will wait for new tasks before terminating.
+     * @param unit            The time unit for the {@code keepAliveTime} argument.
+     * @param workQueue       The queue to use for holding tasks before they are executed. This queue will only hold
+     *                        {@link Runnable} tasks submitted by the {@code execute} method.
+     * @param prefix          The prefix for the names of threads created in this pool.
+     * @param handler         The {@link RejectedExecutionHandler} to use when the {@link Executor} cannot accept a new
+     *                        task, for example, when its maximum capacity and queue capacity are reached.
+     * @return A new {@link Executor} instance configured with the specified parameters.
      */
     public static Executor newLimitedFastThread(
             final int corePoolSize,

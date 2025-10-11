@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
-import org.miaixz.bus.pay.magic.Material;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 查询订单 支持: 普通订单查询、刷脸支付订单、查询分账结果、回退结果查询
+ * Model for the Order Query API. Supports querying regular orders, face-payment orders, profit sharing results, and
+ * refund results.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,16 +48,49 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class OrderQuery extends Material {
 
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID.
+     */
     private String sub_mch_id;
+    /**
+     * WeChat's order number.
+     */
     private String transaction_id;
+    /**
+     * Merchant's order number.
+     */
     private String out_trade_no;
+    /**
+     * WeChat's profit sharing order ID.
+     */
     private String order_id;
+    /**
+     * Merchant's profit sharing order number.
+     */
     private String out_order_no;
+    /**
+     * Merchant's refund number.
+     */
     private String out_return_no;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Signature type.
+     */
     private String sign_type;
 
 }

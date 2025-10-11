@@ -37,24 +37,37 @@ import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 
 /**
- * Lucene-analysis分词抽象封装 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis
+ * Abstract provider for Lucene-analysis based word segmentation engines. This class provides a base implementation for
+ * integrating various Lucene analyzers. Project homepage: <a href=
+ * "https://github.com/apache/lucene-solr/tree/master/lucene/analysis">https://github.com/apache/lucene-solr/tree/master/lucene/analysis</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AnalysisProvider implements NLPProvider {
 
+    /**
+     * The underlying Lucene {@link Analyzer} used for tokenization.
+     */
     private final Analyzer analyzer;
 
     /**
-     * 构造
+     * Constructs a new {@code AnalysisProvider} instance with a specified Lucene {@link Analyzer}.
      *
-     * @param analyzer 分析器{@link Analyzer}
+     * @param analyzer The {@link Analyzer} to use for word segmentation.
      */
     public AnalysisProvider(final Analyzer analyzer) {
         this.analyzer = analyzer;
     }
 
+    /**
+     * Performs word segmentation on the given text using the configured Lucene {@link Analyzer}. It creates a
+     * {@link TokenStream} from the text and wraps it in an {@link AnalysisResult}.
+     *
+     * @param text The input text {@link CharSequence} to be segmented.
+     * @return An {@link NLPResult} object containing the segmented words from the Lucene analyzer.
+     * @throws InternalException if an {@link IOException} occurs during token stream processing.
+     */
     @Override
     public NLPResult parse(final CharSequence text) {
         final TokenStream stream;

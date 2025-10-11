@@ -44,7 +44,9 @@ import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
 import com.sun.jna.platform.mac.CoreFoundation.CFStringRef;
 
 /**
- * MacNetworks class.
+ * <p>
+ * MacNetworkIF class.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -64,11 +66,24 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     private long speed;
     private long timeStamp;
 
+    /**
+     * Constructs a new {@code MacNetworkIF} object.
+     *
+     * @param netint The {@link NetworkInterface} object.
+     * @param data   A map of network interface statistics with the index as the key.
+     * @throws InstantiationException If the network interface cannot be properly initialized.
+     */
     public MacNetworkIF(NetworkInterface netint, Map<Integer, NetStat.IFdata> data) throws InstantiationException {
         super(netint, queryIfDisplayName(netint));
         updateNetworkStats(data);
     }
 
+    /**
+     * Queries the display name for a given network interface.
+     *
+     * @param netint The {@link NetworkInterface} to query.
+     * @return The localized display name of the network interface, or its BSD name if the display name cannot be found.
+     */
     private static String queryIfDisplayName(NetworkInterface netint) {
         String name = netint.getName();
         CFArrayRef ifArray = SystemConfiguration.INSTANCE.SCNetworkInterfaceCopyAll();
@@ -94,10 +109,10 @@ public final class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Gets all network interfaces on this machine
+     * Gets all network interfaces on this machine.
      *
-     * @param includeLocalInterfaces include local interfaces in the result
-     * @return A list of {@link NetworkIF} objects representing the interfaces
+     * @param includeLocalInterfaces Whether to include local (loopback) interfaces in the result.
+     * @return A list of {@link NetworkIF} objects representing the interfaces.
      */
     public static List<NetworkIF> getNetworks(boolean includeLocalInterfaces) {
         // One time fetch of stats
@@ -113,61 +128,97 @@ public final class MacNetworkIF extends AbstractNetworkIF {
         return ifList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getIfType() {
         return this.ifType;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getBytesRecv() {
         return this.bytesRecv;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getBytesSent() {
         return this.bytesSent;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getPacketsRecv() {
         return this.packetsRecv;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getPacketsSent() {
         return this.packetsSent;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getInErrors() {
         return this.inErrors;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getOutErrors() {
         return this.outErrors;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getInDrops() {
         return this.inDrops;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getCollisions() {
         return this.collisions;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getSpeed() {
         return this.speed;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getTimeStamp() {
         return this.timeStamp;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean updateAttributes() {
         int index = queryNetworkInterface().getIndex();
@@ -178,7 +229,7 @@ public final class MacNetworkIF extends AbstractNetworkIF {
      * Updates interface network statistics on the given interface. Statistics include packets and bytes sent and
      * received, and interface speed.
      *
-     * @param data A map of network interface statistics with the index as the key
+     * @param data A map of network interface statistics with the index as the key.
      * @return {@code true} if the update was successful, {@code false} otherwise.
      */
     private boolean updateNetworkStats(Map<Integer, NetStat.IFdata> data) {

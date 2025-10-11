@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-分账接口
+ * WeChat Pay v3 API - Profit Sharing APIs
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,62 +38,62 @@ import org.miaixz.bus.pay.Matcher;
 public enum ProfitSharingApi implements Matcher {
 
     /**
-     * 请求分账
+     * Request Profit Sharing
      */
-    PROFIT_SHARING_ORDERS("/v3/profitsharing/orders", "请求分账"),
+    PROFIT_SHARING_ORDERS("/v3/profitsharing/orders", "Request Profit Sharing"),
 
     /**
-     * 查询分账结果
+     * Query Profit Sharing Result
      */
-    PROFIT_SHARING_ORDERS_QUERY("/v3/profitsharing/orders/%s", "查询分账结果"),
+    PROFIT_SHARING_ORDERS_QUERY("/v3/profitsharing/orders/%s", "Query Profit Sharing Result"),
 
     /**
-     * 请求分账回退
+     * Request Profit Sharing Return
      */
-    PROFIT_SHARING_RETURN_ORDERS("/v3/profitsharing/return-orders", "请求分账回退"),
+    PROFIT_SHARING_RETURN_ORDERS("/v3/profitsharing/return-orders", "Request Profit Sharing Return"),
 
     /**
-     * 查询分账回退结果
+     * Query Profit Sharing Return Result
      */
-    PROFIT_SHARING_RETURN_ORDERS_QUERY("/v3/profitsharing/return-orders/%s", "查询分账回退结果"),
+    PROFIT_SHARING_RETURN_ORDERS_QUERY("/v3/profitsharing/return-orders/%s", "Query Profit Sharing Return Result"),
 
     /**
-     * 解冻剩余资金
+     * Unfreeze Remaining Funds
      */
-    PROFIT_SHARING_UNFREEZE("/v3/profitsharing/orders/unfreeze", "解冻剩余资金"),
+    PROFIT_SHARING_UNFREEZE("/v3/profitsharing/orders/unfreeze", "Unfreeze Remaining Funds"),
 
     /**
-     * 查询剩余待分金额
+     * Query Remaining Amount to be Shared
      */
-    PROFIT_SHARING_UNFREEZE_QUERY("/v3/profitsharing/transactions/%s/amounts", "查询剩余待分金额"),
+    PROFIT_SHARING_UNFREEZE_QUERY("/v3/profitsharing/transactions/%s/amounts", "Query Remaining Amount to be Shared"),
 
     /**
-     * 查询最大分账比例
+     * Query Maximum Profit Sharing Ratio
      */
-    PROFIT_SHARING_MERCHANT_CONFIGS("/v3/profitsharing/merchant-configs/%s", "查询最大分账比例"),
+    PROFIT_SHARING_MERCHANT_CONFIGS("/v3/profitsharing/merchant-configs/%s", "Query Maximum Profit Sharing Ratio"),
 
     /**
-     * 添加分账接收方
+     * Add Profit Sharing Receiver
      */
-    PROFIT_SHARING_RECEIVERS_ADD("/v3/profitsharing/receivers/add", "添加分账接收方"),
+    PROFIT_SHARING_RECEIVERS_ADD("/v3/profitsharing/receivers/add", "Add Profit Sharing Receiver"),
 
     /**
-     * 删除分账接收方
+     * Delete Profit Sharing Receiver
      */
-    PROFIT_SHARING_RECEIVERS_DELETE("/v3/profitsharing/receivers/delete", "删除分账接收方"),
+    PROFIT_SHARING_RECEIVERS_DELETE("/v3/profitsharing/receivers/delete", "Delete Profit Sharing Receiver"),
 
     /**
-     * 申请分账账单
+     * Apply for Profit Sharing Bill
      */
-    PROFIT_SHARING_BILLS("/v3/profitsharing/bills", "申请分账账单");
+    PROFIT_SHARING_BILLS("/v3/profitsharing/bills", "Apply for Profit Sharing Bill");
 
     /**
-     * 接口方法
+     * API method
      */
     private final String method;
 
     /**
-     * 接口描述
+     * API description
      */
     private final String desc;
 
@@ -103,7 +103,7 @@ public enum ProfitSharingApi implements Matcher {
     }
 
     /**
-     * 交易类型
+     * Transaction type
      *
      * @return the string
      */
@@ -113,7 +113,7 @@ public enum ProfitSharingApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Type description
      *
      * @return the string
      */
@@ -123,7 +123,7 @@ public enum ProfitSharingApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * API method
      *
      * @return the string
      */

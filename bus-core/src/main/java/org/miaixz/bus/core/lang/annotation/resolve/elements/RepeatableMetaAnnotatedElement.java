@@ -42,18 +42,25 @@ import org.miaixz.bus.core.xyz.CollKit;
 
 /**
  * <p>
- * 支持可重复注解的增强{@link AnnotatedElement}， 功能与{@link MetaAnnotatedElement}类似，但是存在下述差异：
+ * An enhanced {@link AnnotatedElement} that supports repeatable annotations. Its functionality is similar to
+ * {@link MetaAnnotatedElement}, but with the following key differences:
  * <ul>
- * <li>限制以同一根注解延伸出的树结构上——而不是{@link AnnotatedElement}上——每种类型注解只能保留一个，
- * 即当{@link AnnotatedElement}存在多个根注解有相同的元注解时，这些元注解会都会被扫描到；</li>
- * <li>支持扫描{@link AnnotatedElement}可重复注解，即当当前实例指定的{@link RepeatableAnnotationCollector}
- * 支持从{@link AnnotatedElement}上直接声明的注解中获得可重复注解时， 则将会自动将其展开直到不为容器注解为止。 eg： A上存在注解<em>X</em>，该注解是一个容器注解，内部可重复注解<em>Y</em>，
- * 包含解析后，得到注解<em>X</em>与可重复注解<em>Y</em>, 同理，若存在<em>X</em>、<em>Y</em>、<em>X</em>的嵌套关系，则解析后获得全部三者；</li>
+ * <li>It restricts that within a tree structure extending from the same root annotation (rather than on the
+ * {@link AnnotatedElement} itself), only one annotation of each type can be retained. This means that if multiple root
+ * annotations have the same meta-annotation, all these meta-annotations will be scanned.</li>
+ * <li>It supports scanning for repeatable annotations on the {@link AnnotatedElement}. If the
+ * {@link RepeatableAnnotationCollector} specified for the current instance supports extracting repeatable annotations
+ * from directly declared annotations on the {@link AnnotatedElement}, these will be automatically expanded until they
+ * are no longer container annotations. For example: if annotation <em>X</em> exists on element A, and <em>X</em> is a
+ * container annotation containing repeatable annotation <em>Y</em>, after parsing, both annotation <em>X</em> and
+ * repeatable annotation <em>Y</em> are obtained. Similarly, if there is a nested relationship like <em>X</em>,
+ * <em>Y</em>, <em>X</em>, all three will be obtained after parsing.</li>
  * </ul>
- * 由于上述机制，当通过实例的{@link #getAnnotation(Class)}或{@link #getDeclaredAnnotation(Class)}
- * 方法获得指定类型注解时，若该类型注解存在多个，仅能尽可能获得最先被扫描到的那一个。
+ * Due to the above mechanisms, when obtaining an annotation of a specific type via {@link #getAnnotation(Class)} or
+ * {@link #getDeclaredAnnotation(Class)} methods, if multiple annotations of that type exist, only the one scanned first
+ * will be returned.
  *
- * @param <T> AnnotationMapping类型
+ * @param <T> The type of {@link AnnotationMapping}.
  * @author Kimi Liu
  * @see RepeatableAnnotationCollector
  * @since Java 17+
@@ -62,30 +69,34 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
         implements AnnotatedElement, Iterable<T> {
 
     /**
-     * 包装的{@link AnnotatedElement}对象
+     * The wrapped {@link AnnotatedElement} object.
      */
     private final AnnotatedElement element;
 
     /**
-     * 创建{@link AnnotationMapping}的工厂方法
+     * The factory function for creating {@link AnnotationMapping} instances.
      */
     private final BiFunction<T, Annotation, T> mappingFactory;
 
     /**
-     * 解析得到的根注解与元注解的聚合体
+     * A list of {@link Aggregation} objects, each representing a root annotation and its meta-annotations. This list is
+     * unmodifiable.
      */
     private final List<Aggregation> aggregations;
 
     /**
-     * 可重复注解收集器
+     * The {@link RepeatableAnnotationCollector} used to extract repeatable annotations.
      */
     private final RepeatableAnnotationCollector repeatableCollector;
 
     /**
-     * 创建一个支持可重复注解的增强{@link AnnotatedElement}
+     * Constructs a new {@code RepeatableMetaAnnotatedElement} that supports repeatable annotations.
      *
-     * @param element        包装的{@link AnnotatedElement}对象
-     * @param mappingFactory 创建{@link AnnotationMapping}的工厂方法
+     * @param repeatableCollector The {@link RepeatableAnnotationCollector} to use for extracting repeatable
+     *                            annotations.
+     * @param element             The {@link AnnotatedElement} object to wrap. Must not be {@code null}.
+     * @param mappingFactory      The factory function for creating {@link AnnotationMapping} instances. Must not be
+     *                            {@code null}.
      */
     RepeatableMetaAnnotatedElement(final RepeatableAnnotationCollector repeatableCollector,
             final AnnotatedElement element, final BiFunction<T, Annotation, T> mappingFactory) {
@@ -96,12 +107,15 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 获取{@link AnnotatedElement}上的注解结构，该方法会针对相同的{@link AnnotatedElement}缓存映射对象
+     * Creates a new {@code RepeatableMetaAnnotatedElement} instance for the given element. This method uses the
+     * standard {@link RepeatableAnnotationCollector}.
      *
-     * @param element        被注解元素
-     * @param mappingFactory 创建{@link AnnotationMapping}的工厂方法，返回值为{@code null}时将忽略该注解
-     * @param <A>            {@link AnnotationMapping}类型
-     * @return {@link AnnotatedElement}上的注解结构
+     * @param element        The {@link AnnotatedElement} to wrap.
+     * @param mappingFactory The factory function for creating {@link AnnotationMapping} instances. If it returns
+     *                       {@code null}, the annotation will be ignored.
+     * @param <A>            The type of {@link AnnotationMapping}.
+     * @return A {@code RepeatableMetaAnnotatedElement} instance representing the annotation structure on the
+     *         {@link AnnotatedElement}.
      */
     public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> create(
             final AnnotatedElement element,
@@ -110,13 +124,15 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 获取{@link AnnotatedElement}上的注解结构，该方法会针对相同的{@link AnnotatedElement}缓存映射对象
+     * Creates a new {@code RepeatableMetaAnnotatedElement} instance for the given element and a custom collector.
      *
-     * @param collector      可重复注解收集器
-     * @param element        被注解元素
-     * @param mappingFactory 创建{@link AnnotationMapping}的工厂方法，返回值为{@code null}时将忽略该注解
-     * @param <A>            {@link AnnotationMapping}类型
-     * @return {@link AnnotatedElement}上的注解结构
+     * @param collector      The {@link RepeatableAnnotationCollector} to use.
+     * @param element        The {@link AnnotatedElement} to wrap.
+     * @param mappingFactory The factory function for creating {@link AnnotationMapping} instances. If it returns
+     *                       {@code null}, the annotation will be ignored.
+     * @param <A>            The type of {@link AnnotationMapping}.
+     * @return A {@code RepeatableMetaAnnotatedElement} instance representing the annotation structure on the
+     *         {@link AnnotatedElement}.
      */
     public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> create(
             final RepeatableAnnotationCollector collector,
@@ -126,10 +142,11 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 指定注解是否在{@link #element}上直接声明的注解、直接声明的注解包含的可重复注解， 以及他们的元注解中存在
+     * Checks if the specified annotation type is present on any directly declared annotation, any repeatable annotation
+     * contained within them, or any of their meta-annotations on the {@link #element}.
      *
-     * @param annotationType 注解类型
-     * @return 是否
+     * @param annotationType The type of the annotation to check for.
+     * @return {@code true} if the annotation is present, {@code false} otherwise.
      */
     @Override
     public boolean isAnnotationPresent(final Class<? extends Annotation> annotationType) {
@@ -137,11 +154,13 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 从{@link #element}上直接声明的注解、直接声明的注解包含的可重复注解，以及它们的元注解中获得指定类型的注解
+     * Retrieves an annotation of the specified type from the directly declared annotations on the {@link #element},
+     * including repeatable annotations contained within them, and their meta-annotations. If multiple annotations of
+     * the same type are found, the first one encountered is returned.
      *
-     * @param annotationType 注解类型
-     * @param <A>            注解类型
-     * @return 注解
+     * @param annotationType The type of the annotation to retrieve.
+     * @param <A>            The type of the annotation.
+     * @return The annotation instance, or {@code null} if not found.
      */
     @Override
     public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
@@ -151,9 +170,10 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 获取{@link #element}上直接声明的注解、直接声明的注解包含的可重复注解，以及它们的元注解
+     * Retrieves all annotations from the directly declared annotations on the {@link #element}, including repeatable
+     * annotations contained within them, and their meta-annotations.
      *
-     * @return 注解
+     * @return An array of all found annotation instances.
      */
     @Override
     public Annotation[] getAnnotations() {
@@ -162,11 +182,12 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 从{@link #element}上直接声明的注解、直接声明的注解包含的可重复注解，以及它们的元注解中获得指定类型的注解
+     * Retrieves all annotations of the specified type from the directly declared annotations on the {@link #element},
+     * including repeatable annotations contained within them, and their meta-annotations.
      *
-     * @param annotationType 注解类型
-     * @param <A>            注解类型
-     * @return 注解
+     * @param annotationType The type of the annotation to retrieve.
+     * @param <A>            The type of the annotation.
+     * @return An array of annotation instances, or an empty array if none are found.
      */
     @Override
     public <A extends Annotation> A[] getAnnotationsByType(final Class<A> annotationType) {
@@ -176,9 +197,10 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 获取由{@link #element}直接声明的注解，不包含被直接声明的容器注解包括的可重复注解
+     * Retrieves all annotations directly declared on the {@link #element}, excluding repeatable annotations contained
+     * within directly declared container annotations.
      *
-     * @return 注解
+     * @return An array of directly declared annotation instances.
      */
     @Override
     public Annotation[] getDeclaredAnnotations() {
@@ -187,11 +209,13 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 获取由{@link #element}直接声明的注解，不包含被直接声明的容器注解包括的可重复注解
+     * Retrieves a directly declared annotation of the specified type from the {@link #element}, excluding repeatable
+     * annotations contained within directly declared container annotations. If multiple annotations of the same type
+     * are found, the first one encountered is returned.
      *
-     * @param annotationType 注解类型
-     * @param <A>            注解类型
-     * @return 注解
+     * @param annotationType The type of the annotation to retrieve.
+     * @param <A>            The type of the annotation.
+     * @return The directly declared annotation instance, or {@code null} if not found.
      */
     @Override
     public <A extends Annotation> A getDeclaredAnnotation(final Class<A> annotationType) {
@@ -201,11 +225,12 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 获取由{@link #element}直接声明的注解，不包含被直接声明的容器注解包括的可重复注解
+     * Retrieves all directly declared annotations of the specified type from the {@link #element}, excluding repeatable
+     * annotations contained within directly declared container annotations.
      *
-     * @param annotationType 注解类型
-     * @param <A>            注解类型
-     * @return 注解
+     * @param annotationType The type of the annotation to retrieve.
+     * @param <A>            The type of the annotation.
+     * @return An array of directly declared annotation instances, or an empty array if none are found.
      */
     @Override
     public <A extends Annotation> A[] getDeclaredAnnotationsByType(final Class<A> annotationType) {
@@ -216,19 +241,23 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 注解对象
+     * Retrieves the original {@link AnnotatedElement} object that was wrapped.
      *
-     * @return 被包装的原始元素
+     * @return The wrapped original element.
      */
     public AnnotatedElement getElement() {
         return element;
     }
 
     /**
-     * 比较两个实例是否相等
+     * Compares this {@code RepeatableMetaAnnotatedElement} to the specified object. The result is {@code true} if and
+     * only if the argument is not {@code null} and is a {@code RepeatableMetaAnnotatedElement} object that wraps the
+     * same {@link AnnotatedElement}, uses the same {@link BiFunction} for mapping, and the same
+     * {@link RepeatableAnnotationCollector}.
      *
-     * @param o 对象
-     * @return 是否
+     * @param o The object to compare this {@code RepeatableMetaAnnotatedElement} against.
+     * @return {@code true} if the given object represents a {@code RepeatableMetaAnnotatedElement} equivalent to this
+     *         {@code RepeatableMetaAnnotatedElement}, {@code false} otherwise.
      */
     @Override
     public boolean equals(final Object o) {
@@ -244,9 +273,9 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 获取实例的哈希值
+     * Returns a hash code for this {@code RepeatableMetaAnnotatedElement}.
      *
-     * @return 哈希值
+     * @return A hash code value for this object.
      */
     @Override
     public int hashCode() {
@@ -254,9 +283,10 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 获取迭代器
+     * Returns an iterator over the {@link AnnotationMapping} objects contained within this element. The iteration order
+     * is based on the order of aggregations and then the order of mappings within each aggregation.
      *
-     * @return 迭代器
+     * @return An iterator over {@link AnnotationMapping} objects.
      */
     @Override
     public Iterator<T> iterator() {
@@ -265,7 +295,11 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 初始化
+     * Initializes the list of {@link Aggregation} objects by collecting repeatable annotations from the wrapped
+     * element.
+     *
+     * @param element The {@link AnnotatedElement} to initialize from.
+     * @return A list of {@link Aggregation} objects.
      */
     private List<Aggregation> initAggregations(final AnnotatedElement element) {
         final List<Aggregation> result = new ArrayList<>();
@@ -279,7 +313,11 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 若当前注解是可重复注解的容器，则将其平铺后把可重复注解加入{@link #aggregations}
+     * Collects repeatable annotations from a given annotation. If the annotation is a container for repeatable
+     * annotations, it is flattened, and the contained repeatable annotations are added to the aggregations.
+     *
+     * @param annotation The annotation to collect repeatable annotations from.
+     * @return A list of {@link Aggregation} objects representing the collected repeatable annotations.
      */
     private List<Aggregation> collectRepeatable(final Annotation annotation) {
         return repeatableCollector.getAllRepeatableAnnotations(annotation).stream()
@@ -287,25 +325,31 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
     }
 
     /**
-     * 由根注解与其元注解构成的注解聚合
+     * Represents an aggregation of a root annotation and its meta-annotations. This inner class is used to manage the
+     * hierarchy of annotations stemming from a single root annotation.
      */
     class Aggregation {
 
         /**
-         * 根注解
+         * The root annotation of this aggregation.
          */
         private final T root;
         /**
-         * 是否是由{@link #element}直接声明的注解
+         * Indicates whether this root annotation was directly declared on the {@link #element}.
          */
         private final boolean isDirect;
         /**
-         * 注解
+         * A lazy-loaded map of annotation types to their {@link AnnotationMapping} instances within this aggregation.
+         * This map is {@code null} by default and initialized upon first access.
          */
         private volatile Map<Class<? extends Annotation>, T> mappings;
 
         /**
-         * 创建一个合并聚合
+         * Constructs a new {@code Aggregation} with a root annotation and its direct declaration status.
+         *
+         * @param root     The root annotation for this aggregation.
+         * @param isDirect {@code true} if the root annotation is directly declared on the {@link #element},
+         *                 {@code false} otherwise.
          */
         public Aggregation(final Annotation root, final boolean isDirect) {
             this.root = mappingFactory.apply(null, root);
@@ -313,7 +357,10 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
         }
 
         /**
-         * 获得收集到的注解
+         * Retrieves the map of annotation types to their {@link AnnotationMapping} instances within this aggregation,
+         * initializing it if necessary.
+         *
+         * @return An unmodifiable map of annotation types to {@link AnnotationMapping} instances.
          */
         private Map<Class<? extends Annotation>, T> getMappings() {
             if (Objects.isNull(mappings)) {
@@ -327,7 +374,10 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
         }
 
         /**
-         * 获得注解及其元注解
+         * Initializes the map of meta-annotations for this aggregation. It performs a breadth-first search starting
+         * from the root annotation to collect all its meta-annotations.
+         *
+         * @return A map of annotation types to their {@link AnnotationMapping} instances.
          */
         private Map<Class<? extends Annotation>, T> initMetaAnnotations() {
             final Map<Class<? extends Annotation>, T> collectedMappings = new LinkedHashMap<>();
@@ -353,7 +403,12 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
         }
 
         /**
-         * 该注解是否需要映射 默认情况下，已经处理过、或在{@link java.lang}包下的注解不会被处理
+         * Determines whether a given annotation needs to be mapped within this aggregation. By default, annotations
+         * that have already been processed or are in the {@code java.lang} package are not processed.
+         *
+         * @param mappings   The map of currently processed annotations within this aggregation.
+         * @param annotation The annotation object to check.
+         * @return {@code true} if the annotation needs mapping, {@code false} otherwise.
          */
         private boolean isNeedMapping(final Map<Class<? extends Annotation>, T> mappings, final Annotation annotation) {
             return !CharsBacker.startWith(annotation.annotationType().getName(), "java.lang.")
@@ -361,18 +416,18 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
         }
 
         /**
-         * 根注解是否由{@link #element}直接声明
+         * Checks if the root annotation of this aggregation was directly declared on the {@link #element}.
          *
-         * @return 是否
+         * @return {@code true} if the root annotation is directly declared, {@code false} otherwise.
          */
         public boolean isDirect() {
             return isDirect;
         }
 
         /**
-         * 获取根注解
+         * Retrieves the root annotation mapping of this aggregation.
          *
-         * @return 根注解
+         * @return The root annotation mapping.
          */
         public T getRoot() {
             return root;

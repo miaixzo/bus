@@ -61,31 +61,32 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /**
- * Sax方式读取Excel相关工具类
+ * Utility class for SAX-based Excel reading.
  *
  * @author Kimi Liu
+ * @since Java 17+
  */
 public class ExcelSaxKit {
 
     /**
-     * 创建 {@link ExcelSaxReader}
+     * Creates an {@link ExcelSaxReader} instance.
      *
-     * @param isXlsx     是否为xlsx格式（07格式）
-     * @param rowHandler 行处理器
-     * @return {@link ExcelSaxReader}
+     * @param isXlsx     {@code true} if the Excel file is in XLSX format (07 format), {@code false} otherwise.
+     * @param rowHandler The row handler to process each row.
+     * @return An {@link ExcelSaxReader} instance.
      */
     public static ExcelSaxReader<?> createSaxReader(final boolean isXlsx, final RowHandler rowHandler) {
         return isXlsx ? new Excel07SaxReader(rowHandler) : new Excel03SaxReader(rowHandler);
     }
 
     /**
-     * 根据数据类型获取数据
+     * Retrieves data value based on cell data type.
      *
-     * @param cellDataType  数据类型枚举
-     * @param value         数据值
-     * @param sharedStrings {@link SharedStrings}
-     * @param numFmtString  数字格式名
-     * @return 数据值
+     * @param cellDataType  The data type enum of the cell.
+     * @param value         The raw value of the cell.
+     * @param sharedStrings The {@link SharedStrings} table.
+     * @param numFmtString  The number format string.
+     * @return The processed data value.
      */
     public static Object getDataValue(
             CellDataType cellDataType,
@@ -150,12 +151,12 @@ public class ExcelSaxKit {
     }
 
     /**
-     * 格式化数字或日期值
+     * Formats a number or date value.
      *
-     * @param value        值
-     * @param numFmtIndex  数字格式索引
-     * @param numFmtString 数字格式名
-     * @return 格式化后的值
+     * @param value        The value to format.
+     * @param numFmtIndex  The index of the number format.
+     * @param numFmtString The number format string.
+     * @return The formatted value.
      */
     public static String formatCellContent(String value, final int numFmtIndex, final String numFmtString) {
         if (null != numFmtString) {
@@ -169,39 +170,39 @@ public class ExcelSaxKit {
     }
 
     /**
-     * 计算两个单元格之间的单元格数目(同一行)
+     * Calculates the number of null cells between two cells in the same row.
      *
-     * @param preRef 前一个单元格位置，例如A1
-     * @param ref    当前单元格位置，例如A8
-     * @return 同一行中两个单元格之间的空单元格数
+     * @param preRef The coordinate of the previous cell, e.g., A1.
+     * @param ref    The coordinate of the current cell, e.g., A8.
+     * @return The number of empty cells between the two cells in the same row.
      */
     public static int countNullCell(final String preRef, final String ref) {
-        // excel2007最大行数是1048576，最大列数是16384，最后一列列名是XFD
-        // 数字代表列，去掉列信息
+        // Excel 2007 maximum row count is 1048576, maximum column count is 16384, last column name is XFD.
+        // Remove row information from column names.
         String preXfd = ObjectKit.defaultIfNull(preRef, Symbol.AT).replaceAll("\\d+", "");
         String xfd = ObjectKit.defaultIfNull(ref, Symbol.AT).replaceAll("\\d+", "");
 
-        // A表示65，@表示64，如果A算作1，那@代表0
-        // 填充最大位数3
+        // A represents 65, @ represents 64. If A is counted as 1, then @ represents 0.
+        // Pad to a maximum of 3 digits.
         preXfd = StringKit.fillBefore(preXfd, Symbol.C_AT, Normal._3);
         xfd = StringKit.fillBefore(xfd, Symbol.C_AT, Normal._3);
 
         final char[] preLetter = preXfd.toCharArray();
         final char[] letter = xfd.toCharArray();
-        // 用字母表示则最多三位，每26个字母进一位
+        // For letters, maximum three digits, increment by one every 26 letters.
         final int res = (letter[0] - preLetter[0]) * 26 * 26 + (letter[1] - preLetter[1]) * 26
                 + (letter[2] - preLetter[2]);
         return res - 1;
     }
 
     /**
-     * 从Excel的XML文档中读取内容，并使用{@link ContentHandler}处理
+     * Reads content from an Excel XML document and processes it using a {@link ContentHandler}.
      *
-     * @param xmlDocStream Excel的XML文档流
-     * @param handler      文档内容处理接口，实现此接口用于回调处理数据
-     * @throws DependencyException 依赖异常
-     * @throws InternalException   POI异常，包装了SAXException
-     * @throws RevisedException    IO异常，如流关闭或异常等
+     * @param xmlDocStream The input stream of the Excel XML document.
+     * @param handler      The document content handler, implementing this interface for callback data processing.
+     * @throws DependencyException If a required dependency (e.g., Xerces) is missing.
+     * @throws InternalException   If a POI-related exception occurs (wraps SAXException).
+     * @throws RevisedException    If an I/O exception occurs, such as stream closure or error.
      */
     public static void readFrom(final InputStream xmlDocStream, final ContentHandler handler)
             throws DependencyException, InternalException, RevisedException {
@@ -224,16 +225,16 @@ public class ExcelSaxKit {
         } catch (final SAXException e) {
             throw new InternalException(e);
         } catch (final TerminateException e) {
-            // 用户抛出此异常，表示强制结束读取
+            // This exception is thrown by the user to force termination of reading.
         }
     }
 
     /**
-     * 判断数字Record中是否为日期格式
+     * Checks if a numeric record in Excel 03 SAX reading is a date format.
      *
-     * @param cell           单元格记录
-     * @param formatListener {@link FormatTrackingHSSFListener}
-     * @return 是否为日期格式
+     * @param cell           The cell record.
+     * @param formatListener The {@link FormatTrackingHSSFListener}.
+     * @return {@code true} if it is a date format, {@code false} otherwise.
      */
     public static boolean isDateFormat(
             final CellValueRecordInterface cell,
@@ -244,11 +245,11 @@ public class ExcelSaxKit {
     }
 
     /**
-     * 判断日期格式
+     * Checks if the given format index and format string represent a date format.
      *
-     * @param formatIndex  格式索引，一般用于内建格式
-     * @param formatString 格式字符串
-     * @return 是否为日期格式
+     * @param formatIndex  The format index, usually for built-in formats.
+     * @param formatString The format string.
+     * @return {@code true} if it is a date format, {@code false} otherwise.
      * @see Builder#isDateFormat(int, String)
      */
     public static boolean isDateFormat(final int formatIndex, final String formatString) {
@@ -256,59 +257,60 @@ public class ExcelSaxKit {
     }
 
     /**
-     * 获取日期
+     * Gets a {@link DateTime} object from a cell value string.
      *
-     * @param value 单元格值
-     * @return 日期
+     * @param value The cell value string.
+     * @return A {@link DateTime} object.
      */
     public static DateTime getDateValue(final String value) {
         return getDateValue(Double.parseDouble(value));
     }
 
     /**
-     * 获取日期
+     * Gets a {@link DateTime} object from a cell value (double).
      *
-     * @param value 单元格值
-     * @return 日期
+     * @param value The cell value (double).
+     * @return A {@link DateTime} object.
      */
     public static DateTime getDateValue(final double value) {
         return DateKit.date(org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value, false));
     }
 
     /**
-     * 在Excel03 sax读取中获取日期或数字类型的结果值
+     * Gets the result value of a date or number type in Excel 03 SAX reading.
      *
-     * @param cell           记录单元格
-     * @param value          值
-     * @param formatListener {@link FormatTrackingHSSFListener}
-     * @return 值，可能为Date或Double或Long
+     * @param cell           The cell record.
+     * @param value          The value.
+     * @param formatListener The {@link FormatTrackingHSSFListener}.
+     * @return The value, which can be {@link DateTime}, {@link Double}, or {@link Long}.
      */
     public static Object getNumberOrDateValue(
             final CellValueRecordInterface cell,
             final double value,
             final FormatTrackingHSSFListener formatListener) {
         if (isDateFormat(cell, formatListener)) {
-            // 可能为日期格式
+            // May be date format.
             return getDateValue(value);
         }
         return getNumberValue(value, formatListener.getFormatString(cell));
     }
 
     /**
-     * 获取数字类型值
+     * Gets a numeric value. Unless the format explicitly specifies decimal places, it returns a {@link Long} if there
+     * are no decimal places, otherwise a {@link Double}.
      *
-     * @param value        值
-     * @param numFmtString 格式
-     * @return 数字，可以是Double、Long
+     * @param value        The value string.
+     * @param numFmtString The number format string.
+     * @return A numeric value, which can be {@link Double} or {@link Long}.
      */
     private static Number getNumberValue(final String value, final String numFmtString) {
         if (StringKit.isBlank(value)) {
             return null;
         }
-        // 可能精度丢失，对含有小数的value判断并转为BigDecimal
+        // Possible precision loss, convert to BigDecimal if value contains decimal part.
         final double number = Double.parseDouble(value);
         if (StringKit.contains(value, Symbol.C_DOT) && !value.equals(Double.toString(number))) {
-            // 精度丢失
+            // Precision loss.
             return MathKit.toBigDecimal(value);
         }
 
@@ -316,18 +318,19 @@ public class ExcelSaxKit {
     }
 
     /**
-     * 获取数字类型值，除非格式中明确数字保留小数，否则无小数情况下按照long返回
+     * Gets a numeric value. Unless the format explicitly specifies decimal places, it returns a {@link Long} if there
+     * are no decimal places, otherwise a {@link Double}.
      *
-     * @param numValue     值
-     * @param numFmtString 格式
-     * @return 数字，可以是Double、Long
+     * @param numValue     The numeric value.
+     * @param numFmtString The number format string.
+     * @return A numeric value, which can be {@link Double} or {@link Long}.
      */
     private static Number getNumberValue(final double numValue, final String numFmtString) {
-        // 普通数字
+        // Normal number.
         if (null != numFmtString && !StringKit.contains(numFmtString, Symbol.C_DOT)) {
             final long longPart = (long) numValue;
             if (longPart == numValue) {
-                // 对于无小数部分的数字类型，转为Long
+                // For numeric types without decimal parts, convert to Long.
                 return longPart;
             }
         }

@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v2;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v2 版本-支付相关接口
+ * WeChat Pay V2 API interfaces related to payments.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,109 +38,116 @@ import org.miaixz.bus.pay.Matcher;
 public enum PayApi implements Matcher {
 
     /**
-     * 沙箱环境
+     * Sandbox environment.
      */
-    SAND_BOX_NEW("/sandboxnew", "沙箱环境"),
+    SAND_BOX_NEW("/sandboxnew", "Sandbox environment"),
 
     /**
-     * V2 版本沙箱环境
+     * V2 version sandbox environment.
      */
-    API_V2_SANDBOX("/xdc/apiv2sandbox", "V2 版本沙箱环境"),
+    API_V2_SANDBOX("/xdc/apiv2sandbox", "V2 version sandbox environment"),
 
     /**
-     * 获取沙箱环境验签秘钥
+     * Get sandbox environment signature key.
      */
-    GET_SIGN_KEY("/xdc/apiv2getsignkey/sign/getsignkey", "获取沙箱环境验签秘钥"),
+    GET_SIGN_KEY("/xdc/apiv2getsignkey/sign/getsignkey", "Get sandbox environment signature key"),
 
     /**
-     * 统一下单
+     * Unified order.
      */
-    UNIFIED_ORDER("/pay/unifiedorder", "统一下单"),
+    UNIFIED_ORDER("/pay/unifiedorder", "Unified order"),
 
     /**
-     * 付款码支付
+     * Micropay.
      */
-    MICRO_PAY("/pay/micropay", "付款码支付"),
+    MICRO_PAY("/pay/micropay", "Micropay"),
 
     /**
-     * 查询订单
+     * Order query.
      */
-    ORDER_QUERY("/pay/orderquery", "查询订单"),
+    ORDER_QUERY("/pay/orderquery", "Order query"),
 
     /**
-     * 关闭订单
+     * Close order.
      */
-    CLOSE_ORDER("/pay/closeorder", "关闭订单"),
+    CLOSE_ORDER("/pay/closeorder", "Close order"),
 
     /**
-     * 撤销订单
+     * Reverse order.
      */
-    REVERSE("/secapi/pay/reverse", "撤销订单"),
+    REVERSE("/secapi/pay/reverse", "Reverse order"),
 
     /**
-     * 申请退款
+     * Apply for refund.
      */
-    REFUND("/secapi/pay/refund", "申请退款"),
+    REFUND("/secapi/pay/refund", "Apply for refund"),
 
     /**
-     * 单品优惠-申请退款 <a href="https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_103&index=3">官方文档</a>
+     * Single item discount - apply for refund
+     * <a href="https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_103&index=3">Official documentation</a>
      */
-    REFUND_V2("/secapi/pay/refundv2", "单品优惠-申请退款"),
+    REFUND_V2("/secapi/pay/refundv2", "Single item discount - apply for refund"),
 
     /**
-     * 查询退款
+     * Refund query.
      */
-    REFUND_QUERY("/pay/refundquery", "查询退款"),
+    REFUND_QUERY("/pay/refundquery", "Refund query"),
 
     /**
-     * 单品优惠-查询退款
+     * Single item discount - refund query.
      */
-    REFUND_QUERY_V2("/pay/refundqueryv2", "单品优惠-查询退款"),
+    REFUND_QUERY_V2("/pay/refundqueryv2", "Single item discount - refund query"),
 
     /**
-     * 下载对账单
+     * Download bill.
      */
-    DOWNLOAD_BILL("/pay/downloadbill", "下载对账单"),
+    DOWNLOAD_BILL("/pay/downloadbill", "Download bill"),
 
     /**
-     * 下载资金对账单
+     * Download fund flow bill.
      */
-    DOWNLOAD_FUND_FLOW("/pay/downloadfundflow", "下载资金对账单"),
+    DOWNLOAD_FUND_FLOW("/pay/downloadfundflow", "Download fund flow bill"),
 
     /**
-     * 交易保障
+     * Transaction guarantee.
      */
-    REPORT("/payitil/report", "交易保障"),
+    REPORT("/payitil/report", "Transaction guarantee"),
 
     /**
-     * 付款码查询openid
+     * Query openid by authorization code.
      */
-    AUTH_CODE_TO_OPENID("/tools/authcodetoopenid", "付款码查询openid"),
+    AUTH_CODE_TO_OPENID("/tools/authcodetoopenid", "Query openid by authorization code"),
 
     /**
-     * 转换短链接
+     * Convert to short URL.
      */
-    SHORT_URL("/tools/shorturl", "转换短链接");
+    SHORT_URL("/tools/shorturl", "Convert to short URL");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new PayApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     PayApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -148,9 +155,9 @@ public enum PayApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -158,9 +165,9 @@ public enum PayApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

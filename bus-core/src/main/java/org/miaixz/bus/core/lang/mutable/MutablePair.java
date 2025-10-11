@@ -32,10 +32,10 @@ import java.io.Serial;
 import org.miaixz.bus.core.lang.tuple.Pair;
 
 /**
- * 可变二元组对象
+ * A mutable pair object.
  *
- * @param <L> 左值类型
- * @param <R> 右值类型
+ * @param <L> The type of the left value.
+ * @param <R> The type of the right value.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -45,23 +45,23 @@ public class MutablePair<L, R> extends Pair<L, R> implements Mutable<MutablePair
     private static final long serialVersionUID = 2852271208227L;
 
     /**
-     * 构造
+     * Constructs a new {@code MutablePair} with the specified left and right values.
      *
-     * @param left  左值
-     * @param right 右值
+     * @param left  The initial left value.
+     * @param right The initial right value.
      */
     public MutablePair(final L left, final R right) {
         super(left, right);
     }
 
     /**
-     * 构建MutablePair对象
+     * Creates a new {@code MutablePair}.
      *
-     * @param <L>   左值类型
-     * @param <R>   右值类型
-     * @param left  左值
-     * @param right 右值
-     * @return MutablePair
+     * @param <L>   The type of the left value.
+     * @param <R>   The type of the right value.
+     * @param left  The initial left value.
+     * @param right The initial right value.
+     * @return A new {@code MutablePair} instance.
      */
     public static <L, R> MutablePair<L, R> of(final L left, final R right) {
         return new MutablePair<>(left, right);
@@ -79,18 +79,18 @@ public class MutablePair<L, R> extends Pair<L, R> implements Mutable<MutablePair
     }
 
     /**
-     * 设置左值
+     * Sets the left value.
      *
-     * @param left 左值
+     * @param left The new left value.
      */
     public void setLeft(final L left) {
         this.left = left;
     }
 
     /**
-     * 设置右值
+     * Sets the right value.
      *
-     * @param right 右值
+     * @param right The new right value.
      */
     public void setRight(final R right) {
         this.right = right;

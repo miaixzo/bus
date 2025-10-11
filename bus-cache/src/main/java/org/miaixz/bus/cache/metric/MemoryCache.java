@@ -37,96 +37,96 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 内存缓存支持
+ * An in-memory cache implementation based on {@link ConcurrentHashMap} and {@link ReentrantReadWriteLock}.
  * <p>
- * 基于 ConcurrentHashMap 实现的线程安全内存缓存，支持最大容量、访问后过期时间、写入后过期时间和初始容量配置。 提供定时清理过期缓存、批量读写操作和统计信息获取功能。
+ * This class provides a thread-safe, in-memory caching solution that supports various eviction policies, including
+ * maximum size, time-to-live (expire after write), and time-to-idle (expire after access). It also features a periodic
+ * cleanup task to prune expired entries.
  * </p>
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys.
+ * @param <V> The type of values.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MemoryCache<K, V> implements CacheX<K, V> {
 
     /**
-     * 默认缓存过期时间：3分钟
+     * The default cache expiration time: 3 minutes (in milliseconds).
      * <p>
-     * 鉴于授权过程中，根据个人的操作习惯或授权平台（如 Google）的差异，授权流程耗时不同， 但通常不会过长。本缓存工具默认过期时间为3分钟，超过3分钟的缓存将失效并被删除。
+     * This default is chosen to accommodate processes that may take a few minutes, such as user authorization flows.
      * </p>
      */
-    public static long timeout = 3_600_000;
+    public static long timeout = 180_000;
 
     /**
-     * 是否开启定时清理过期缓存的任务
+     * A global flag to enable or disable the scheduled task for pruning expired cache entries.
      */
     public static boolean schedulePrune = true;
 
     /**
-     * 缓存存储 Map，键为缓存键，值为缓存状态
+     * The underlying map for storing cache entries.
      */
     private final Map<K, CacheState> map;
 
     /**
-     * 读写锁，用于保证线程安全
+     * A read-write lock to ensure thread-safe access to the cache.
      */
     private final ReentrantReadWriteLock cacheLock = new ReentrantReadWriteLock(true);
 
     /**
-     * 写锁
+     * The lock for write operations.
      */
     private final Lock writeLock = cacheLock.writeLock();
 
     /**
-     * 读锁
+     * The lock for read operations.
      */
     private final Lock readLock = cacheLock.readLock();
 
     /**
-     * 最大缓存条目数
+     * The maximum number of entries the cache can hold.
      */
     private final long maximumSize;
 
     /**
-     * 访问后过期时间（毫秒）
+     * The expiration time in milliseconds after the last access.
      */
     private final long expireAfterAccess;
 
     /**
-     * 写入后过期时间（毫秒）
+     * The expiration time in milliseconds after the last write.
      */
     private final long expireAfterWrite;
 
     /**
-     * 请求次数统计
+     * A counter for the total number of cache requests.
      */
     private final AtomicLong requestCount = new AtomicLong();
 
     /**
-     * 命中次数统计
+     * A counter for the number of cache hits.
      */
     private final AtomicLong hitCount = new AtomicLong();
 
     /**
-     * 默认构造方法
+     * Constructs a {@code MemoryCache} with default settings.
      * <p>
-     * 创建内存缓存实例，使用默认配置（最大容量 1000，写入后过期时间 3 分钟，无访问后过期时间）， 如果开启了定时清理，则启动定时清理任务。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * cache.write("key1", "value1", timeout);
-     * }</pre>
+     * Default configuration:
+     * <ul>
+     * <li>Maximum size: 1000 entries</li>
+     * <li>Expire after write: 3 minutes</li>
+     * <li>Expire after access: Disabled</li>
+     * </ul>
+     * If {@link #schedulePrune} is enabled, a cleanup task is scheduled.
      */
     public MemoryCache() {
         this.map = new ConcurrentHashMap<>(16);
@@ -139,18 +139,10 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 构造函数
-     * <p>
-     * 使用指定的最大容量和过期时间创建缓存实例。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>(1000, 600_000);
-     * cache.write("key1", "value1", 600_000);
-     * }</pre>
+     * Constructs a {@code MemoryCache} with a specified maximum size and expiration time.
      *
-     * @param size   最大缓存条目数
-     * @param expire 写入后过期时间（毫秒）
+     * @param size   The maximum number of entries the cache can hold.
+     * @param expire The expiration time in milliseconds after the last write.
      */
     public MemoryCache(long size, long expire) {
         this.map = new ConcurrentHashMap<>(16);
@@ -163,25 +155,20 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 构造函数
+     * Constructs a {@code MemoryCache} from a {@link Properties} object.
      * <p>
-     * 使用 Properties 配置创建缓存实例，支持最大容量、访问后过期时间、写入后过期时间和初始容量。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * Properties props = new Properties();
-     * props.setProperty("maximumSize", "1000");
-     * props.setProperty("expireAfterWrite", "600000");
-     * props.setProperty("expireAfterAccess", "300000");
-     * props.setProperty("initialCapacity", "16");
-     * MemoryCache<String, String> cache = new MemoryCache<>(props);
-     * }</pre>
+     * Supported properties:
+     * <ul>
+     * <li>`maximumSize`: Max entries (default: 1000).</li>
+     * <li>`expireAfterWrite`: TTL in ms (default: 3 minutes).</li>
+     * <li>`expireAfterAccess`: TTI in ms (default: 0, disabled).</li>
+     * <li>`initialCapacity`: Initial map size (default: 16).</li>
+     * </ul>
      *
-     * @param properties 配置属性
+     * @param properties The configuration properties.
      */
     public MemoryCache(Properties properties) {
-        String prefix = StringKit.isNotEmpty(properties.getProperty("prefix")) ? properties.getProperty("prefix")
-                : Normal.EMPTY;
+        String prefix = properties.getProperty("prefix", Normal.EMPTY);
         String maximumSize = properties.getProperty(prefix + "maximumSize");
         String expireAfterAccess = properties.getProperty(prefix + "expireAfterAccess");
         String expireAfterWrite = properties.getProperty(prefix + "expireAfterWrite");
@@ -194,28 +181,21 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
 
         this.map = new ConcurrentHashMap<>(initCapacity);
         if (schedulePrune) {
-            this.schedulePrune(
-                    Math.min(
-                            this.expireAfterWrite,
-                            this.expireAfterAccess > 0 ? this.expireAfterAccess : Long.MAX_VALUE));
+            long effectiveExpire = Math
+                    .min(this.expireAfterWrite, this.expireAfterAccess > 0 ? this.expireAfterAccess : Long.MAX_VALUE);
+            this.schedulePrune(effectiveExpire);
         }
     }
 
     /**
-     * 获取缓存
+     * Reads a single value from the cache.
      * <p>
-     * 从缓存中读取指定键的值，如果键不存在或已过期则返回 null。 示例代码：
+     * Returns the value associated with the key if it exists and has not expired. Accessing the key updates its last
+     * access time, relevant for the `expireAfterAccess` policy.
      * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * cache.write("key1", "value1", timeout);
-     * String value = cache.read("key1");
-     * System.out.println("值: " + value);
-     * }</pre>
      *
-     * @param key 缓存键
-     * @return 缓存值，或 null 如果不存在或已过期
+     * @param key The key whose value to retrieve.
+     * @return The value, or {@code null} if the key is not found or has expired.
      */
     @Override
     public V read(K key) {
@@ -235,21 +215,11 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 批量获取缓存
-     * <p>
-     * 从缓存中批量读取指定键集合的值，不存在的键对应的值为 null。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * cache.write("key1", "value1", timeout);
-     * cache.write("key2", "value2", timeout);
-     * Map<String, String> values = cache.read(Arrays.asList("key1", "key2"));
-     * System.out.println("批量值: " + values);
-     * }</pre>
+     * Reads multiple values from the cache in a batch.
      *
-     * @param keys 缓存键集合
-     * @return 缓存键值映射
+     * @param keys A collection of keys to retrieve.
+     * @return A map of keys to their corresponding values. If a key is not found or has expired, its value in the map
+     *         will be {@code null}.
      */
     @Override
     public Map<K, V> read(Collection<K> keys) {
@@ -261,21 +231,11 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 批量设置缓存
-     * <p>
-     * 向缓存中批量写入键值对，超出最大容量时移除最旧的条目。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * Map<String, String> map = new HashMap<>();
-     * map.put("key1", "value1");
-     * map.put("key2", "value2");
-     * cache.write(map, timeout);
-     * }</pre>
+     * Writes multiple key-value pairs to the cache.
      *
-     * @param keyValueMap 缓存键值映射
-     * @param expire      过期时间（毫秒）
+     * @param keyValueMap A map of key-value pairs to store.
+     * @param expire      The expiration time in milliseconds. This is ignored by this implementation, as expiration is
+     *                    set globally.
      */
     @Override
     public void write(Map<K, V> keyValueMap, long expire) {
@@ -285,20 +245,14 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 设置缓存
+     * Writes a single key-value pair to the cache.
      * <p>
-     * 向缓存中写入单个键值对，超出最大容量时移除最旧的条目。 示例代码：
+     * If the cache is full (i.e., at `maximumSize`), the oldest entry is evicted to make space.
      * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * cache.write("key1", "value1", timeout);
-     * System.out.println("已写入: key1");
-     * }</pre>
      *
-     * @param key    缓存键
-     * @param value  缓存值
-     * @param expire 过期时间（毫秒）
+     * @param key    The key to write.
+     * @param value  The value to associate with the key.
+     * @param expire The expiration time in milliseconds. This is used to calculate the entry's expiry.
      */
     @Override
     public void write(K key, V value, long expire) {
@@ -314,20 +268,10 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 判断缓存中是否存在指定的键
-     * <p>
-     * 检查指定键是否存在且未过期。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * cache.write("key1", "value1", timeout);
-     * boolean exists = cache.containsKey("key1");
-     * System.out.println("键存在: " + exists);
-     * }</pre>
+     * Checks if a key exists in the cache and has not expired.
      *
-     * @param key 缓存键
-     * @return 如果存在且未过期则返回 true，否则返回 false
+     * @param key The key to check.
+     * @return {@code true} if the key exists and is not expired, otherwise {@code false}.
      */
     @Override
     public boolean containsKey(K key) {
@@ -341,47 +285,26 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 清理过期的缓存
+     * Removes all expired entries from the cache.
      * <p>
-     * 移除所有已过期的缓存条目（包括写入后过期和访问后过期）。 示例代码：
+     * <strong>Note:</strong> This method does not clear all entries. It only prunes entries that have expired based on
+     * the `expireAfterWrite` or `expireAfterAccess` policies.
      * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * cache.clear();
-     * System.out.println("缓存已清理");
-     * }</pre>
      */
     @Override
     public void clear() {
         writeLock.lock();
         try {
-            Iterator<Map.Entry<K, CacheState>> iterator = map.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<K, CacheState> entry = iterator.next();
-                if (entry.getValue().isExpired(expireAfterWrite, expireAfterAccess)) {
-                    iterator.remove();
-                }
-            }
+            map.entrySet().removeIf(entry -> entry.getValue().isExpired(expireAfterWrite, expireAfterAccess));
         } finally {
             writeLock.unlock();
         }
     }
 
     /**
-     * 移除指定的缓存
-     * <p>
-     * 移除指定键的缓存条目。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * cache.write("key1", "value1", timeout);
-     * cache.remove("key1");
-     * System.out.println("已移除: key1");
-     * }</pre>
+     * Removes one or more entries from the cache.
      *
-     * @param keys 要移除的缓存键
+     * @param keys The keys of the entries to remove.
      */
     @Override
     public void remove(K... keys) {
@@ -396,37 +319,18 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 定时清理过期缓存
-     * <p>
-     * 调度定时任务以清理过期缓存，清理间隔为过期时间。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * cache.schedulePrune(600_000);
-     * System.out.println("定时清理已调度");
-     * }</pre>
+     * Schedules a periodic task to prune expired entries from the cache.
      *
-     * @param delay 间隔时长，单位毫秒
+     * @param delay The interval in milliseconds at which to run the pruning task.
      */
     public void schedulePrune(long delay) {
         CacheScheduler.INSTANCE.schedule(this::clear, delay);
     }
 
     /**
-     * 获取缓存统计信息
-     * <p>
-     * 返回缓存的统计信息，包括请求次数、命中次数、命中率和当前大小。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * cache.read("key1");
-     * String stats = cache.getStats();
-     * System.out.println("统计信息: " + stats);
-     * }</pre>
+     * Gets a string representation of the current cache statistics.
      *
-     * @return 缓存统计信息字符串
+     * @return A string containing statistics like request count, hit count, hit rate, and current size.
      */
     public String getStats() {
         long requests = requestCount.get();
@@ -441,182 +345,79 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * 获取缓存估算大小
-     * <p>
-     * 返回当前缓存中的条目数量。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * cache.write("key1", "value1", timeout);
-     * long size = cache.estimatedSize();
-     * System.out.println("缓存大小: " + size);
-     * }</pre>
+     * Returns the approximate number of entries in this cache.
      *
-     * @return 缓存估算大小
+     * @return The number of entries.
      */
     public long estimatedSize() {
         return map.size();
     }
 
     /**
-     * 获取内部缓存实例
-     * <p>
-     * 返回底层的 ConcurrentHashMap 实例，用于高级操作。 示例代码：
-     * </p>
-     * 
-     * <pre>{@code
-     * MemoryCache<String, String> cache = new MemoryCache<>();
-     * Map<String, CacheState> nativeCache = cache.getNativeCache();
-     * System.out.println("内部缓存: " + nativeCache);
-     * }</pre>
+     * Returns the underlying {@link Map} instance used by the cache.
      *
-     * @return 内部缓存实例
+     * @return The native cache map.
      */
     public Map<K, CacheState> getNativeCache() {
         return map;
     }
 
     /**
-     * 移除最旧的缓存条目
-     * <p>
-     * 当缓存超出最大容量时，移除最早写入的条目。
-     * </p>
+     * Evicts the oldest entry from the cache, determined by its write time.
      */
     private void evictOldest() {
         writeLock.lock();
         try {
-            Map.Entry<K, CacheState> oldest = null;
-            long oldestTime = Long.MAX_VALUE;
-            for (Map.Entry<K, CacheState> entry : map.entrySet()) {
-                long writeTime = entry.getValue().getWriteTime();
-                if (writeTime < oldestTime) {
-                    oldestTime = writeTime;
-                    oldest = entry;
-                }
-            }
-            if (oldest != null) {
-                map.remove(oldest.getKey());
-            }
+            map.entrySet().stream().min(Comparator.comparingLong(entry -> entry.getValue().getWriteTime()))
+                    .ifPresent(oldest -> map.remove(oldest.getKey()));
         } finally {
             writeLock.unlock();
         }
     }
 
     /**
-     * 缓存调度器枚举
-     * <p>
-     * 单例模式，负责调度定时清理任务。
-     * </p>
+     * A singleton scheduler for handling periodic cache maintenance tasks.
      */
-    enum CacheScheduler {
+    private enum CacheScheduler {
 
-        /**
-         * 当前实例
-         */
         INSTANCE;
 
-        /**
-         * 缓存任务编号
-         */
-        private AtomicInteger cacheTaskNumber = new AtomicInteger(1);
-
-        /**
-         * 调度器执行服务
-         */
+        private final AtomicInteger cacheTaskNumber = new AtomicInteger(1);
         private ScheduledExecutorService scheduler;
 
-        /**
-         * 私有构造方法
-         * <p>
-         * 初始化调度器。
-         * </p>
-         */
         CacheScheduler() {
             of();
         }
 
-        /**
-         * 初始化调度器
-         * <p>
-         * 创建线程池用于调度定时任务。
-         * </p>
-         */
         private void of() {
             this.shutdown();
             this.scheduler = new ScheduledThreadPoolExecutor(10,
                     r -> new Thread(r, String.format("Cache-Task-%s", cacheTaskNumber.getAndIncrement())));
         }
 
-        /**
-         * 关闭调度器
-         * <p>
-         * 停止调度器的所有任务。
-         * </p>
-         */
         public void shutdown() {
             if (scheduler != null) {
                 scheduler.shutdown();
             }
         }
 
-        /**
-         * 调度定时任务
-         * <p>
-         * 安排定时任务以固定间隔执行。 示例代码：
-         * </p>
-         * 
-         * <pre>{@code
-         * CacheScheduler.INSTANCE.schedule(() -> System.out.println("清理任务"), 600_000);
-         * }</pre>
-         *
-         * @param task  任务
-         * @param delay 延迟时间，单位毫秒
-         */
         public void schedule(Runnable task, long delay) {
             this.scheduler.scheduleAtFixedRate(task, delay, delay, TimeUnit.MILLISECONDS);
         }
     }
 
     /**
-     * 缓存状态类
-     * <p>
-     * 用于存储缓存值、写入时间、最后访问时间和过期时间，并提供判断是否过期的方法。
-     * </p>
+     * An internal class to hold the cached value along with its metadata.
      */
     @Getter
     @Setter
     private static class CacheState implements Serializable {
 
-        /**
-         * 缓存值
-         */
-        private Object state;
-
-        /**
-         * 写入时间戳
-         */
+        private final Object state;
         private final long writeTime;
-
-        /**
-         * 最后访问时间戳
-         */
         private long lastAccessTime;
-
-        /**
-         * 写入后过期时间戳
-         */
         private final long expireAfterWrite;
 
-        /**
-         * 构造方法
-         * <p>
-         * 初始化缓存值和过期时间，记录写入时间和初始访问时间。
-         * </p>
-         *
-         * @param state  缓存值
-         * @param expire 写入后过期时间（毫秒）
-         */
         CacheState(Object state, long expire) {
             this.state = state;
             this.writeTime = System.currentTimeMillis();
@@ -624,35 +425,21 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
             this.expireAfterWrite = this.writeTime + expire;
         }
 
-        /**
-         * 更新最后访问时间
-         * <p>
-         * 在读取缓存时更新最后访问时间。
-         * </p>
-         */
         void updateAccessTime() {
             this.lastAccessTime = System.currentTimeMillis();
         }
 
-        /**
-         * 判断缓存是否过期
-         * <p>
-         * 根据写入后过期时间和访问后过期时间判断缓存是否有效。
-         * </p>
-         *
-         * @param expireAfterWrite  写入后过期时间（毫秒）
-         * @param expireAfterAccess 访问后过期时间（毫秒）
-         * @return 如果已过期则返回 true，否则返回 false
-         */
-        boolean isExpired(long expireAfterWrite, long expireAfterAccess) {
+        boolean isExpired(long globalExpireAfterWrite, long globalExpireAfterAccess) {
             long currentTime = System.currentTimeMillis();
-            if (expireAfterWrite > 0 && currentTime > this.expireAfterWrite) {
+            // Check entry-specific expiration
+            if (this.expireAfterWrite > this.writeTime && currentTime > this.expireAfterWrite) {
                 return true;
             }
-            if (expireAfterAccess > 0 && currentTime > this.lastAccessTime + expireAfterAccess) {
+            // Check global expiration policies
+            if (globalExpireAfterWrite > 0 && currentTime > this.writeTime + globalExpireAfterWrite) {
                 return true;
             }
-            return false;
+            return globalExpireAfterAccess > 0 && currentTime > this.lastAccessTime + globalExpireAfterAccess;
         }
     }
 

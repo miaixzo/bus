@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.http;
 
-import java.io.IOException;
-
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.http.bodys.ResponseBody;
 
+import java.io.IOException;
+
 /**
- * 调用是准备执行的请求。电话可以取消。 由于此对象表示单个请求/响应对(流)，因此不能执行两次.
+ * A call is a request that has been prepared for execution. A call can be canceled. As this object represents a single
+ * request/response pair (stream), it cannot be executed twice.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,66 +42,96 @@ import org.miaixz.bus.http.bodys.ResponseBody;
 public interface NewCall extends Cloneable {
 
     /**
-     * @return 返回发起此调用的原始请求
+     * Returns the original request that initiated this call.
+     *
+     * @return The original request.
      */
     Request request();
 
     /**
-     * 立即调用请求，并阻塞，直到可以处理响应或出现错误. 调用者可以使用响应的{@link Response#body}方法读取响应体。为了避免资源泄漏， 调用者必须{@linkplain ResponseBody
-     * 关闭响应体}或响应 注意，传输层的成功(接收HTTP响应代码、报头和正文)不一定表示应用程序层的成功: {@code response}可能仍然表示不满意的HTTP响应代码，如404或500
+     * Invokes the request immediately, and blocks until the response can be processed or is in error.
      *
-     * @return 响应体
-     * @throws IOException           如果请求由于取消、连接问题或超时而无法执行 因为网络可能在交换期间失败， 所以远程服务器可能在失败之前接受了请求
-     * @throws IllegalStateException 当调用已经执行
+     * <p>
+     * The caller can read the response body with the {@link Response#body} method. To avoid resource leaks, the caller
+     * must {@linkplain ResponseBody close the response body} or the response.
+     *
+     * <p>
+     * Note that transport-layer success (receiving a HTTP response code, headers and body) does not necessarily
+     * indicate application-layer success: {@code response} may still indicate an unhappy HTTP response code like 404 or
+     * 500.
+     *
+     * @return The response to the request.
+     * @throws IOException           if the request could not be executed due to cancellation, a connectivity problem or
+     *                               timeout. Because networks can fail during an exchange, it is possible that the
+     *                               remote server accepted the request before the failure.
+     * @throws IllegalStateException when the call has already been executed.
      */
     Response execute() throws IOException;
 
     /**
-     * 调度将在将来某个时候执行的请求 {@link Httpd#dispatcher dispatcher}定义请求将在何时运行: 通常是立即运行， 除非当前正在执行其他几个请求
-     * 该客户端稍后将使用HTTP响应或失败异常回调{@code responseCallback}
+     * Schedules the request to be executed at some point in the future.
      *
-     * @param callback 异步回调
-     * @throws IllegalStateException 当调用已经执行
+     * <p>
+     * The {@link Httpd#dispatcher dispatcher} defines when the request will run: usually immediately unless there are
+     * several other requests currently being executed.
+     *
+     * <p>
+     * This client will later call back {@code responseCallback} with either an HTTP response or a failure exception.
+     *
+     * @param callback The asynchronous callback.
+     * @throws IllegalStateException when the call has already been executed.
      */
     void enqueue(Callback callback);
 
     /**
-     * 如果可能，取消请求。已经完成的请求不能被取消
+     * Cancels the request, if possible. Requests that are already complete cannot be canceled.
      */
     void cancel();
 
     /**
-     * @return the true/false
+     * Returns true if this call has been either {@linkplain #execute() executed} or {@linkplain #enqueue(Callback)
+     * enqueued}. It is an error to execute a call more than once.
+     *
+     * @return true if this call has been executed or enqueued.
      */
     boolean isExecuted();
 
     /**
-     * 是否已经取消会停止
+     * Returns true if this call has been canceled.
      *
-     * @return the true/false
+     * @return true if this call has been canceled.
      */
     boolean isCanceled();
 
     /**
-     * 返回跨越整个调用的超时:解析DNS、连接、写入请求体、服务器处理和读取响应体 如果调用需要重定向或重试，所有操作都必须在一个超时周期内完成
-     * 使用{@link Httpd.Builder#callTimeout}配置客户端的默认超时
+     * Returns a timeout that spans the entire call: resolving DNS, connecting, writing the request body, server
+     * processing, and reading the response body. If the call requires redirects or retries all must complete within one
+     * timeout period.
      *
-     * @return 超时时间
+     * <p>
+     * Configure the client's default timeout using {@link Httpd.Builder#callTimeout}.
+     *
+     * @return The timeout for the entire call.
      */
     Timeout timeout();
 
     /**
-     * @return 创建与此调用相同的新调用，即使该调用已经被加入队列或执行
+     * Creates a new, identical call to this one which can be enqueued or executed even if this call has already been.
+     *
+     * @return A new call that is a clone of this call.
      */
     NewCall clone();
 
+    /**
+     * A factory for creating {@link NewCall} instances.
+     */
     interface Factory {
 
         /**
-         * 创建新的调用
+         * Creates a new call for the given request.
          *
-         * @param request 网络请求信息
-         * @return 调用者信息
+         * @param request The network request information.
+         * @return A new call instance.
          */
         NewCall newCall(Request request);
 

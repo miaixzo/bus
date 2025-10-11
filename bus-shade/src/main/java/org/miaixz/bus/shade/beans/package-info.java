@@ -26,6 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 生成相关实体类及方法
+ * Provides utilities for generating related entity classes and methods.
+ * 
+ * @author Kimi Liu
+ * @since Java 17+
  */
 package org.miaixz.bus.shade.beans;

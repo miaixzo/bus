@@ -30,7 +30,9 @@ package org.miaixz.bus.core.text.dfa;
 import org.miaixz.bus.core.lang.range.DefaultSegment;
 
 /**
- * 匹配到的单词，包含单词，text中匹配单词的内容，以及匹配内容在text中的下标， 下标可以用来做单词的进一步处理，如果替换成**
+ * Represents a word found during a DFA-based search. This class stores the actual word from the dictionary, the content
+ * matched in the text, and its start and end indices within the text. The indices can be used for further processing,
+ * such as replacing the found word.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,21 +40,21 @@ import org.miaixz.bus.core.lang.range.DefaultSegment;
 public class FoundWord extends DefaultSegment<Integer> {
 
     /**
-     * 生效的单词，即单词树中的词
+     * The effective word from the dictionary (the keyword that was matched).
      */
     private final String word;
     /**
-     * 单词匹配到的内容，即文中的单词
+     * The actual content matched in the text, which might include stop characters if the filter allows.
      */
     private final String foundWord;
 
     /**
-     * 构造
+     * Constructs a {@code FoundWord} instance.
      *
-     * @param word       生效的单词，即单词树中的词
-     * @param foundWord  单词匹配到的内容，即文中的单词
-     * @param startIndex 起始位置（包含）
-     * @param endIndex   结束位置（包含）
+     * @param word       The effective word from the dictionary.
+     * @param foundWord  The content matched in the text.
+     * @param startIndex The starting index (inclusive) of the matched word in the text.
+     * @param endIndex   The ending index (inclusive) of the matched word in the text.
      */
     public FoundWord(final String word, final String foundWord, final int startIndex, final int endIndex) {
         super(startIndex, endIndex);
@@ -61,27 +63,27 @@ public class FoundWord extends DefaultSegment<Integer> {
     }
 
     /**
-     * 获取生效的单词，即单词树中的词
+     * Retrieves the effective word from the dictionary.
      *
-     * @return 生效的单词
+     * @return The effective word.
      */
     public String getWord() {
         return word;
     }
 
     /**
-     * 获取单词匹配到的内容，即文中的单词
+     * Retrieves the content that was actually matched in the text.
      *
-     * @return 单词匹配到的内容
+     * @return The matched content.
      */
     public String getFoundWord() {
         return foundWord;
     }
 
     /**
-     * 默认的，只输出匹配到的关键字
+     * Returns the matched keyword as a string.
      *
-     * @return 匹配到的关键字
+     * @return The matched keyword.
      */
     @Override
     public String toString() {

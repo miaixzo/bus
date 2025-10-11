@@ -49,33 +49,37 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
 import org.miaixz.bus.core.center.date.culture.rabjung.RabjungDay;
 
 /**
- * 公历日
+ * Represents a day in the Gregorian calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SolarDay extends Loops {
 
+    /**
+     * Names of solar days.
+     */
     public static final String[] NAMES = { "1日", "2日", "3日", "4日", "5日", "6日", "7日", "8日", "9日", "10日", "11日", "12日",
             "13日", "14日", "15日", "16日", "17日", "18日", "19日", "20日", "21日", "22日", "23日", "24日", "25日", "26日", "27日",
             "28日", "29日", "30日", "31日" };
 
     /**
-     * 公历月
+     * The solar month this day belongs to.
      */
     protected SolarMonth month;
 
     /**
-     * 日
+     * The day of the solar month.
      */
     protected int day;
 
     /**
-     * 初始化
+     * Constructs a {@code SolarDay} with the given year, month, and day.
      *
-     * @param year  年
-     * @param month 月
-     * @param day   日
+     * @param year  The year.
+     * @param month The month.
+     * @param day   The day.
+     * @throws IllegalArgumentException if the day is out of valid range for the given month and year.
      */
     public SolarDay(int year, int month, int day) {
         if (day < 1) {
@@ -93,59 +97,67 @@ public class SolarDay extends Loops {
         this.day = day;
     }
 
+    /**
+     * Creates a {@code SolarDay} instance from the given year, month, and day.
+     *
+     * @param year  The year.
+     * @param month The month.
+     * @param day   The day.
+     * @return A new {@link SolarDay} instance.
+     */
     public static SolarDay fromYmd(int year, int month, int day) {
         return new SolarDay(year, month, day);
     }
 
     /**
-     * 公历月
+     * Gets the solar month this day belongs to.
      *
-     * @return 公历月
+     * @return The {@link SolarMonth}.
      */
     public SolarMonth getSolarMonth() {
         return month;
     }
 
     /**
-     * 年
+     * Gets the year of this solar day.
      *
-     * @return 年
+     * @return The year.
      */
     public int getYear() {
         return month.getYear();
     }
 
     /**
-     * 月
+     * Gets the month of this solar day.
      *
-     * @return 月
+     * @return The month.
      */
     public int getMonth() {
         return month.getMonth();
     }
 
     /**
-     * 日
+     * Gets the day of this solar day.
      *
-     * @return 日
+     * @return The day.
      */
     public int getDay() {
         return day;
     }
 
     /**
-     * 星期
+     * Gets the week of this solar day.
      *
-     * @return 星期
+     * @return The {@link Week} of this day.
      */
     public Week getWeek() {
         return getJulianDay().getWeek();
     }
 
     /**
-     * 星座
+     * Gets the constellation for this solar day.
      *
-     * @return 星座
+     * @return The {@link Constellation} for this day.
      */
     public Constellation getConstellation() {
         int y = getMonth() * 100 + day;
@@ -163,6 +175,11 @@ public class SolarDay extends Loops {
                                                                                                 : y < 1123 ? 7 : 8);
     }
 
+    /**
+     * Gets the Chinese name of the solar day.
+     *
+     * @return The name of the solar day.
+     */
     public String getName() {
         return NAMES[day - 1];
     }
@@ -172,15 +189,21 @@ public class SolarDay extends Loops {
         return month + getName();
     }
 
+    /**
+     * Gets the solar day after a specified number of days.
+     *
+     * @param n The number of days to add.
+     * @return The {@link SolarDay} after {@code n} days.
+     */
     public SolarDay next(int n) {
         return getJulianDay().next(n).getSolarDay();
     }
 
     /**
-     * 是否在指定公历日之前
+     * Checks if this solar day is before the target solar day.
      *
-     * @param target 公历日
-     * @return true/false
+     * @param target The target solar day.
+     * @return {@code true} if this day is before the target, {@code false} otherwise.
      */
     public boolean isBefore(SolarDay target) {
         int aYear = getYear();
@@ -194,10 +217,10 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * 是否在指定公历日之后
+     * Checks if this solar day is after the target solar day.
      *
-     * @param target 公历日
-     * @return true/false
+     * @param target The target solar day.
+     * @return {@code true} if this day is after the target, {@code false} otherwise.
      */
     public boolean isAfter(SolarDay target) {
         int aYear = getYear();
@@ -211,18 +234,18 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * 节气
+     * Gets the solar term for this solar day.
      *
-     * @return 节气
+     * @return The {@link SolarTerms} for this day.
      */
     public SolarTerms getTerm() {
         return getTermDay().getSolarTerm();
     }
 
     /**
-     * 节气第几天
+     * Gets the solar term day information for this solar day.
      *
-     * @return 节气第几天
+     * @return The {@link SolarTermDay} for this day.
      */
     public SolarTermDay getTermDay() {
         int y = getYear();
@@ -241,10 +264,10 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * 公历周
+     * Gets the solar week for this solar day.
      *
-     * @param start 起始星期，1234560分别代表星期一至星期天
-     * @return 公历周
+     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
+     * @return The {@link SolarWeek} for this day.
      */
     public SolarWeek getSolarWeek(int start) {
         int y = getYear();
@@ -257,18 +280,18 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * 候
+     * Gets the phenology (Hou) for this solar day.
      *
-     * @return 候
+     * @return The {@link Climate} for this day.
      */
     public Climate getPhenology() {
         return getClimateDay().getClimate();
     }
 
     /**
-     * 七十二候
+     * Gets the climate day information (72 Hou) for this solar day.
      *
-     * @return 七十二候
+     * @return The {@link ClimateDay} for this day.
      */
     public ClimateDay getClimateDay() {
         SolarTermDay d = getTermDay();
@@ -282,34 +305,34 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * 三伏天
+     * Gets the Dog Day (SanFuTian) information for this solar day.
      *
-     * @return 三伏天
+     * @return The {@link DogDay} for this day.
      */
     public DogDay getDogDay() {
-        // 夏至
+        // Summer Solstice
         SolarTerms xiaZhi = SolarTerms.fromIndex(getYear(), 12);
         SolarDay start = xiaZhi.getJulianDay().getSolarDay();
-        // 第3个庚日，即初伏第1天
+        // The 3rd Geng day after Summer Solstice, which is the 1st day of Chufu.
         start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(6) + 20);
         int days = subtract(start);
-        // 初伏以前
+        // Before Chufu
         if (days < 0) {
             return null;
         }
         if (days < 10) {
             return new DogDay(Dog.fromIndex(0), days);
         }
-        // 第4个庚日，中伏第1天
+        // The 4th Geng day, 1st day of Zhongfu.
         start = start.next(10);
         days = subtract(start);
         if (days < 10) {
             return new DogDay(Dog.fromIndex(1), days);
         }
-        // 第5个庚日，中伏第11天或末伏第1天
+        // The 5th Geng day, 11th day of Zhongfu or 1st day of Mofu.
         start = start.next(10);
         days = subtract(start);
-        // 立秋
+        // Autumn Begins
         if (xiaZhi.next(3).getJulianDay().getSolarDay().isAfter(start)) {
             if (days < 10) {
                 return new DogDay(Dog.fromIndex(1), days + 10);
@@ -321,9 +344,9 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * 数九天
+     * Gets the Nine Day (ShuJiuTian) information for this solar day.
      *
-     * @return 数九天
+     * @return The {@link NineDay} for this day.
      */
     public NineDay getNineDay() {
         int year = getYear();
@@ -340,20 +363,21 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * 梅雨天（芒种后的第1个丙日入梅，小暑后的第1个未日出梅）
+     * Gets the Plum Rain Day (MeiYuTian) information for this solar day (MeiYu starts on the first Bing day after
+     * Mangzhong, and ends on the first Wei day after Xiaoshu).
      *
-     * @return 梅雨天
+     * @return The {@link PlumRainDay} for this day.
      */
     public PlumRainDay getPlumRainDay() {
-        // 芒种
+        // Grain in Ear
         SolarTerms grainInEar = SolarTerms.fromIndex(getYear(), 11);
         SolarDay start = grainInEar.getJulianDay().getSolarDay();
-        // 芒种后的第1个丙日
+        // The first Bing day after Mangzhong
         start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(2));
 
-        // 小暑
+        // Minor Heat
         SolarDay end = grainInEar.next(2).getJulianDay().getSolarDay();
-        // 小暑后的第1个未日
+        // The first Wei day after Xiaoshu
         end = end.next(end.getLunarDay().getSixtyCycle().getEarthBranch().stepsTo(7));
 
         if (isBefore(start) || isAfter(end)) {
@@ -364,9 +388,9 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * 人元司令分野
+     * Gets the Hidden Stem Day (RenYuanSiLingFenYe) information for this solar day.
      *
-     * @return 人元司令分野
+     * @return The {@link HiddenStemDay} for this day.
      */
     public HiddenStemDay getHideHeavenStemDay() {
         int[] dayCounts = { 3, 5, 7, 9, 10, 30 };
@@ -400,37 +424,37 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * 位于当年的索引
+     * Gets the index of this day within the year.
      *
-     * @return 索引
+     * @return The index within the year (0-365 or 0-366 for leap years).
      */
     public int getIndexInYear() {
         return subtract(fromYmd(getYear(), 1, 1));
     }
 
     /**
-     * 公历日期相减，获得相差天数
+     * Subtracts a target {@code SolarDay} from this {@code SolarDay}, returning the difference in days.
      *
-     * @param target 公历
-     * @return 天数
+     * @param target The target {@code SolarDay}.
+     * @return The number of days difference.
      */
     public int subtract(SolarDay target) {
         return (int) (getJulianDay().subtract(target.getJulianDay()));
     }
 
     /**
-     * 儒略日
+     * Gets the Julian day corresponding to this solar day.
      *
-     * @return 儒略日
+     * @return The {@link JulianDay} for this solar day.
      */
     public JulianDay getJulianDay() {
         return JulianDay.fromYmdHms(getYear(), getMonth(), day, 0, 0, 0);
     }
 
     /**
-     * 农历日
+     * Gets the lunar day corresponding to this solar day.
      *
-     * @return 农历日
+     * @return The {@link LunarDay} for this solar day.
      */
     public LunarDay getLunarDay() {
         LunarMonth m = LunarMonth.fromYm(getYear(), getMonth());
@@ -443,36 +467,36 @@ public class SolarDay extends Loops {
     }
 
     /**
-     * 干支日
+     * Gets the Sixty Cycle Day (GanZhi day) corresponding to this solar day.
      *
-     * @return 干支日
+     * @return The {@link SixtyCycleDay} for this solar day.
      */
     public SixtyCycleDay getSixtyCycleDay() {
         return SixtyCycleDay.fromSolarDay(this);
     }
 
     /**
-     * 法定假日，如果当天不是法定假日，返回null
+     * Gets the statutory holiday for this day. Returns {@code null} if it's not a statutory holiday.
      *
-     * @return 法定假日
+     * @return The {@link Holiday} if it's a holiday, otherwise {@code null}.
      */
     public Holiday getHoliday() {
         return Holiday.fromYmd(getYear(), getMonth(), day);
     }
 
     /**
-     * 公历现代节日，如果当天不是公历现代节日，返回null
+     * Gets the modern Gregorian festival for this day. Returns {@code null} if it's not a modern Gregorian festival.
      *
-     * @return 公历现代节日
+     * @return The {@link SolarFestival} if it's a festival, otherwise {@code null}.
      */
     public SolarFestival getFestival() {
         return SolarFestival.fromYmd(getYear(), getMonth(), day);
     }
 
     /**
-     * 藏历日
+     * Gets the Tibetan day corresponding to this solar day.
      *
-     * @return 藏历日
+     * @return The {@link RabjungDay} for this solar day.
      */
     public RabjungDay getRabByungDay() {
         return RabjungDay.fromSolarDay(this);

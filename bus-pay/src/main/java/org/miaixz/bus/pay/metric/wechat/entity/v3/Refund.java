@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 /**
- * V3 微信申请退款
+ * Model for the V3 Create Refund API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,39 +49,39 @@ import lombok.experimental.SuperBuilder;
 public class Refund {
 
     /**
-     * 子商户号
+     * Sub-merchant ID (for service providers).
      */
     private String sub_mchid;
     /**
-     * 微信支付订单号
+     * WeChat Pay's original order number.
      */
     private String transaction_id;
     /**
-     * 商户订单号
+     * Merchant's original order number.
      */
     private String out_trade_no;
     /**
-     * 商户退款单号
+     * Merchant's unique refund number.
      */
     private String out_refund_no;
     /**
-     * 退款原因
+     * Reason for the refund.
      */
     private String reason;
     /**
-     * 退款结果回调url
+     * URL for receiving asynchronous refund notifications.
      */
     private String notify_url;
     /**
-     * 退款资金来源
+     * Source of the refund funds (e.g., AVAILABLE).
      */
     private String funds_account;
     /**
-     * 金额信息
+     * Amount details for the refund.
      */
     private RefundAmount amount;
     /**
-     * 退款商品
+     * Details of the specific goods being refunded.
      */
     private List<RefundGoodsDetail> goods_detail;
 

@@ -34,32 +34,54 @@ import java.util.Objects;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * 弱引用对象，在GC时发现弱引用会回收其对象
+ * A weak reference object, which is automatically cleared by the garbage collector when it is no longer strongly or
+ * softly reachable. This class extends {@link WeakReference} and implements the {@link Ref} interface to provide a
+ * consistent reference API.
  *
- * @param <T> 键类型
+ * @param <T> The type of the object held by this weak reference.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WeakObject<T> extends WeakReference<T> implements Ref<T> {
 
+    /**
+     * The pre-calculated hash code of the referenced object. This is stored to ensure consistent hash code behavior
+     * even if the referenced object is cleared.
+     */
     private final int hashCode;
 
     /**
-     * 构造
+     * Constructs a new weak reference to the given object. The reference is registered with the given queue. The hash
+     * code of the object is pre-calculated and stored.
      *
-     * @param object 原始对象
-     * @param queue  {@link ReferenceQueue}
+     * @param object The object to be weakly referenced.
+     * @param queue  The reference queue with which the weak reference is to be registered.
      */
     public WeakObject(final T object, final ReferenceQueue<? super T> queue) {
         super(object, queue);
         hashCode = Objects.hashCode(object);
     }
 
+    /**
+     * Returns the hash code for this weak reference. The hash code is based on the hash code of the referenced object
+     * at the time of construction. This ensures that the hash code remains consistent even if the referenced object is
+     * cleared.
+     *
+     * @return The hash code of this weak reference.
+     */
     @Override
     public int hashCode() {
         return hashCode;
     }
 
+    /**
+     * Compares this weak reference to the specified object. The result is {@code true} if and only if the argument is a
+     * {@code WeakObject} and the objects referenced by both weak references are {@code equals()}.
+     *
+     * @param object The object to compare with.
+     * @return {@code true} if the given object refers to the same object as this weak reference, {@code false}
+     *         otherwise.
+     */
     @Override
     public boolean equals(final Object object) {
         if (object == this) {

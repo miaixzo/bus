@@ -41,7 +41,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 实体公用方法
+ * Common methods for entities.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,14 +54,15 @@ import lombok.experimental.SuperBuilder;
 public class Material {
 
     /**
-     * 申请商户号的appid或商户号绑定的appid 企业号corpid即为此appid
+     * The appid of the merchant account application or the appid bound to the merchant account. The enterprise number
+     * (corpid) is this appid.
      */
     private String appid;
 
     /**
-     * 将建构的 builder 转为 Map
+     * Converts the constructed builder to a Map.
      *
-     * @return 转化后的 Map
+     * @return The converted Map.
      */
     public Map<String, String> toMap() {
         String[] fieldNames = getNames(this);
@@ -76,10 +77,10 @@ public class Material {
     }
 
     /**
-     * 获取属性名数组
+     * Gets the array of attribute names.
      *
-     * @param object 对象
-     * @return 返回对象属性名数组
+     * @param object The object.
+     * @return Returns the array of object attribute names.
      */
     public String[] getNames(Object object) {
         Field[] fields = object.getClass().getDeclaredFields();
@@ -91,11 +92,11 @@ public class Material {
     }
 
     /**
-     * 根据属性名获取属性值
+     * Gets the attribute value by attribute name.
      *
-     * @param field  属性名称
-     * @param object 对象
-     * @return 返回对应属性的值
+     * @param field  The attribute name.
+     * @param object The object.
+     * @return Returns the value of the corresponding attribute.
      */
     public Object getFieldValueByName(String field, Object object) {
         try {

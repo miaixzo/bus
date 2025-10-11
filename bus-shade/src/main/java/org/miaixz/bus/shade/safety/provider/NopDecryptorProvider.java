@@ -33,13 +33,22 @@ import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 
 /**
- * 无操作解密器
+ * A no-operation {@link DecryptorProvider} that performs no actual decryption. It simply passes the data through
+ * without modification.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NopDecryptorProvider implements DecryptorProvider {
 
+    /**
+     * Copies the source file to the destination file without any decryption.
+     *
+     * @param key  The decryption key (ignored).
+     * @param src  The source file.
+     * @param dest The destination file.
+     * @throws IOException If an I/O error occurs during the copy.
+     */
     @Override
     public void decrypt(Key key, File src, File dest) throws IOException {
         try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
@@ -47,16 +56,40 @@ public class NopDecryptorProvider implements DecryptorProvider {
         }
     }
 
+    /**
+     * Transfers all bytes from the input stream to the output stream without any decryption.
+     *
+     * @param key The decryption key (ignored).
+     * @param in  The input stream.
+     * @param out The output stream.
+     * @throws IOException If an I/O error occurs during the transfer.
+     */
     @Override
     public void decrypt(Key key, InputStream in, OutputStream out) throws IOException {
         Builder.transfer(in, out);
     }
 
+    /**
+     * Returns the original input stream without wrapping it in a decrypting stream.
+     *
+     * @param key The decryption key (ignored).
+     * @param in  The input stream.
+     * @return The original input stream.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public InputStream decrypt(Key key, InputStream in) throws IOException {
         return in;
     }
 
+    /**
+     * Returns the original output stream without wrapping it in a decrypting stream.
+     *
+     * @param key The decryption key (ignored).
+     * @param out The output stream.
+     * @return The original output stream.
+     * @throws IOException If an I/O error occurs.
+     */
     @Override
     public OutputStream decrypt(Key key, OutputStream out) throws IOException {
         return out;

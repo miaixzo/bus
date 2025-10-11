@@ -27,12 +27,14 @@
 */
 package org.miaixz.bus.http.cache;
 
-import java.io.IOException;
-
 import org.miaixz.bus.core.io.sink.Sink;
 
+import java.io.IOException;
+
 /**
- * 缓存请求信息
+ * An interface for writing a response to the cache.
+ * <p>
+ * Implementations of this interface provide a {@link Sink} to which the response body can be written.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,13 +42,18 @@ import org.miaixz.bus.core.io.sink.Sink;
 public interface CacheRequest {
 
     /**
-     * @return 字节流信息
-     * @throws IOException 异常
+     * Returns a sink that can be used to write the response body to the cache.
+     *
+     * @return The sink for the response body.
+     * @throws IOException if an I/O error occurs.
      */
     Sink body() throws IOException;
 
     /**
-     * 终止这个缓存
+     * Aborts this cache request.
+     * <p>
+     * This should be called when the response body cannot be written, for example, due to a network error.
+     * </p>
      */
     void abort();
 

@@ -34,9 +34,8 @@ import org.miaixz.bus.core.io.file.FileType;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Excel支持的图片类型枚举
+ * Enumeration of picture types supported by Excel.
  *
- * 
  * @see Workbook#PICTURE_TYPE_EMF
  * @see Workbook#PICTURE_TYPE_WMF
  * @see Workbook#PICTURE_TYPE_PICT
@@ -50,51 +49,51 @@ import org.miaixz.bus.core.xyz.StringKit;
 public enum ExcelPictureType {
 
     /**
-     * Extended windows meta file
+     * Extended Windows Metafile format.
      */
     EMF(Workbook.PICTURE_TYPE_EMF),
 
     /**
-     * Windows Meta File
+     * Windows Metafile format.
      */
     WMF(Workbook.PICTURE_TYPE_WMF),
 
     /**
-     * Mac PICT format
+     * Macintosh PICT format.
      */
     PICT(Workbook.PICTURE_TYPE_PICT),
 
     /**
-     * JPEG format
+     * JPEG format.
      */
     JPEG(Workbook.PICTURE_TYPE_JPEG),
 
     /**
-     * PNG format
+     * PNG format.
      */
     PNG(Workbook.PICTURE_TYPE_PNG),
 
     /**
-     * Device independent bitmap
+     * Device Independent Bitmap format.
      */
     DIB(Workbook.PICTURE_TYPE_DIB);
 
     private final int value;
 
     /**
-     * 构造
+     * Constructs an {@code ExcelPictureType} enum with the specified type code.
      *
-     * @param value 类型编码
+     * @param value The integer code representing the picture type.
      */
     ExcelPictureType(final int value) {
         this.value = value;
     }
 
     /**
-     * 获取图片类型
+     * Gets the {@code ExcelPictureType} based on the image file's extension.
      *
-     * @param imgFile 图片文件
-     * @return 图片类型，默认PNG
+     * @param imgFile The image file.
+     * @return The corresponding {@code ExcelPictureType}, defaults to {@link #PNG} if the type is unknown.
      */
     public static ExcelPictureType getType(final File imgFile) {
         final String type = FileType.getType(imgFile);
@@ -110,14 +109,14 @@ public enum ExcelPictureType {
             return DIB;
         }
 
-        // 默认格式
+        // Default format.
         return PNG;
     }
 
     /**
-     * 获取类型编码
+     * Gets the integer code representing this picture type.
      *
-     * @return 编码
+     * @return The type code.
      */
     public int getValue() {
         return this.value;

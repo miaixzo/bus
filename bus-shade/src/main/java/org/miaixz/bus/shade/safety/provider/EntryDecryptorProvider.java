@@ -30,26 +30,53 @@ package org.miaixz.bus.shade.safety.provider;
 import org.miaixz.bus.shade.safety.Complex;
 
 /**
- * 记录可过滤的解密器
+ * An abstract base class for decryptor providers that support filtering of entries. This class combines the
+ * functionality of a {@link DecryptorProvider} with a {@link Complex} filter, allowing subclasses to decide whether to
+ * decrypt an entry based on the filter's logic.
  *
+ * @param <E> The type of entry to be filtered.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class EntryDecryptorProvider<E> extends WrappedDecryptorProvider
         implements DecryptorProvider, Complex<E> {
 
+    /**
+     * The filter used to determine whether an entry should be decrypted.
+     */
     protected final Complex<E> filter;
+    /**
+     * A no-operation decryptor provider, used when an entry is filtered out.
+     */
     protected final NopDecryptorProvider xNopDecryptor = new NopDecryptorProvider();
 
+    /**
+     * Constructs an {@code EntryDecryptorProvider} with a delegate decryptor and no filter.
+     *
+     * @param decryptorProvider The delegate decryptor provider.
+     */
     protected EntryDecryptorProvider(DecryptorProvider decryptorProvider) {
         this(decryptorProvider, null);
     }
 
+    /**
+     * Constructs an {@code EntryDecryptorProvider} with a delegate decryptor and a specified filter.
+     *
+     * @param decryptorProvider The delegate decryptor provider.
+     * @param filter            The filter to apply to entries. If {@code null}, all entries will be processed.
+     */
     protected EntryDecryptorProvider(DecryptorProvider decryptorProvider, Complex<E> filter) {
         super(decryptorProvider);
         this.filter = filter;
     }
 
+    /**
+     * Determines whether the given entry should be processed based on the configured filter.
+     *
+     * @param entry The entry to check.
+     * @return {@code true} if the entry should be processed (i.e., the filter is null or the filter accepts the entry);
+     *         {@code false} otherwise.
+     */
     @Override
     public boolean on(E entry) {
         return null == filter || filter.on(entry);

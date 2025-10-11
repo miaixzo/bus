@@ -32,22 +32,30 @@ import org.miaixz.bus.core.lang.loader.AntFilter;
 import org.miaixz.bus.shade.safety.Complex;
 
 /**
- * Ant表达式过规则
+ * An abstract {@link Complex} implementation that filters entries based on Ant-style path matching. This class converts
+ * Ant-style patterns into regular expressions for underlying matching.
  *
+ * @param <E> The type of entry to be filtered.
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AntComplex<E> extends RegexComplex<E> implements Complex<E> {
 
+    /**
+     * Constructs a new {@code AntComplex} with the specified Ant-style pattern.
+     *
+     * @param ant The Ant-style pattern to use for filtering.
+     */
     protected AntComplex(String ant) {
         super(convert(ant));
     }
 
     /**
-     * 将ANT风格路径表达式转换成正则表达式
+     * Converts an Ant-style path expression into a regular expression. This method handles wildcards like '*' and '**'
+     * and escapes special regex characters.
      *
-     * @param ant ANT风格路径表达式
-     * @return 正则表达式
+     * @param ant The Ant-style path expression.
+     * @return The corresponding regular expression string.
      */
     private static String convert(String ant) {
         String regex = ant;

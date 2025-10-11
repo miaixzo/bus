@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Validator;
 import java.lang.annotation.Annotation;
 
 /**
- * 当前框架内预定义的校验器名称
+ * Predefined validator names within the current framework.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,24 +41,28 @@ import java.lang.annotation.Annotation;
 public class Builder extends Validator {
 
     /**
-     * 默认属性名
+     * Default attribute name.
      */
     public static final String DEFAULT_FIELD = "field";
     /**
-     * 默认属性名
+     * Default error code.
      */
     public static final String DEFAULT_ERRCODE = "115000";
     /**
-     * 校验对象参数
+     * The object parameter to be validated.
      */
     public static final String VALUE = "value";
+    /**
+     * The name of the field being validated.
+     */
     public static final String FIELD = "field";
+    /**
+     * The validation group.
+     */
     public static final String GROUP = "group";
-    public static final String ERRCODE = "errcode";
-    public static final String ERRMSG = "errmsg";
 
     /**
-     * 参数校验
+     * Parameter validation constants.
      */
     public static final String _ALWAYS = "Always";
     public static final String _BLANK = "Blank";
@@ -89,62 +93,67 @@ public class Builder extends Validator {
     public static final String _TRUE = "True";
 
     /**
-     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Creates a new validation instance for the given object. A new object is created each time to avoid thread safety
+     * issues. {@link ThreadLocal} can be used for optimization.
      *
-     * @param <T>    对象
-     * @param object 原始对象
-     * @return the object
+     * @param <T>    the type of the object to be validated.
+     * @param object the original object.
+     * @return a validation instance for the object.
      */
     public static <T> T on(Object object) {
         return Instances.singletion(Provider.class).on(object);
     }
 
     /**
-     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Creates a new validation instance for the given object with context. A new object is created each time to avoid
+     * thread safety issues. {@link ThreadLocal} can be used for optimization.
      *
-     * @param <T>     对象
-     * @param object  原始对象
-     * @param context 上下文信息
-     * @return the object
+     * @param <T>     the type of the object to be validated.
+     * @param object  the original object.
+     * @param context the validation context.
+     * @return a validation instance for the object.
      */
     public static <T> T on(Object object, Context context) {
         return Instances.singletion(Provider.class).on(object, context);
     }
 
     /**
-     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Creates a new validation instance for the given object with annotations. A new object is created each time to
+     * avoid thread safety issues. {@link ThreadLocal} can be used for optimization.
      *
-     * @param <T>         对象
-     * @param object      原始对象
-     * @param annotations 注解信息
-     * @return the object
+     * @param <T>         the type of the object to be validated.
+     * @param object      the original object.
+     * @param annotations the validation annotations.
+     * @return a validation instance for the object.
      */
     public static <T> T on(Object object, Annotation[] annotations) {
         return Instances.singletion(Provider.class).on(object, annotations);
     }
 
     /**
-     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Creates a new validation instance for the given object with annotations and context. A new object is created each
+     * time to avoid thread safety issues. {@link ThreadLocal} can be used for optimization.
      *
-     * @param <T>         对象
-     * @param object      原始对象
-     * @param annotations 注解信息
-     * @param context     上下文信息
-     * @return the object
+     * @param <T>         the type of the object to be validated.
+     * @param object      the original object.
+     * @param annotations the validation annotations.
+     * @param context     the validation context.
+     * @return a validation instance for the object.
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context) {
         return Instances.singletion(Provider.class).on(object, annotations, context);
     }
 
     /**
-     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Creates a new validation instance for the given object with annotations, context, and field name. A new object is
+     * created each time to avoid thread safety issues. {@link ThreadLocal} can be used for optimization.
      *
-     * @param <T>         对象
-     * @param object      原始对象
-     * @param annotations 注解信息
-     * @param context     上下文信息
-     * @param field       当前属性
-     * @return the object
+     * @param <T>         the type of the object to be validated.
+     * @param object      the original object.
+     * @param annotations the validation annotations.
+     * @param context     the validation context.
+     * @param field       the name of the field being validated.
+     * @return a validation instance for the object.
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context, String field) {
         return Instances.singletion(Provider.class).on(object, annotations, context, field);

@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 摘要加密算法实现
+ * Provides implementations for digest cryptographic algorithms. This package includes utilities for various hashing
+ * functions like MD5, SHA-1, SHA-256, and HMAC.
  *
  * @author Kimi Liu
  * @since Java 17+

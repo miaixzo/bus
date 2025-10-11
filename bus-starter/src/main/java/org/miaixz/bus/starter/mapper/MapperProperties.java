@@ -27,12 +27,8 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -42,11 +38,17 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 /**
- * Mapper配置项
+ * Configuration properties for MyBatis Mapper.
+ * <p>
+ * This class provides a way to configure MyBatis and the Mapper framework through Spring Boot's property mechanism
+ * (e.g., {@code application.yml}).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,63 +61,88 @@ public class MapperProperties {
     private static final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 
     /**
-     * 扫描Mapper接口的基本包
+     * Base packages to scan for MyBatis mapper interfaces.
+     * <p>
+     * You can specify more than one package by using a comma or semicolon as a separator.
+     * </p>
      */
     private String[] basePackage;
+
     /**
-     * Mapper xml配置文件的位置
+     * Location of the MyBatis XML configuration file.
      */
     private String configLocation;
+
     /**
-     * Mapper映射器文件的位置
+     * Locations of MyBatis mapper XML files.
      */
     private String[] mapperLocations;
+
     /**
-     * 用于搜索类型别名的包(包的分隔符为",; \t\n")
+     * Packages to search for type aliases. (Package separators are ",; \t\n")
      */
     private String typeAliasesPackage;
+
     /**
-     * 用于过滤类型别名的超类 如果没有指定，Mapper将从typeAliasesPackage中搜索的所有类作为类型别名处理
+     * The superclass for filtering type aliases. If this is not specified, all classes found in
+     * {@code typeAliasesPackage} will be treated as type aliases.
      */
     private Class<?> typeAliasesSuperType;
+
     /**
-     * 包来搜索类型处理程序。(包的分隔符为",; \t\n")
+     * Packages to search for type handlers. (Package separators are ",; \t\n")
      */
     private String typeHandlersPackage;
+
     /**
-     * 指示是否对Mapper xml配置文件进行presence检查
+     * Indicates whether to check for the presence of the MyBatis XML configuration file.
      */
     private boolean checkConfigLocation = false;
+
     /**
-     * {@link org.mybatis.spring.SqlSessionTemplate}的执行模式
+     * The execution mode for the {@link org.mybatis.spring.SqlSessionTemplate}.
      */
     private ExecutorType executorType;
+
     /**
-     * Mapper配置的外部化属性
+     * Externalized properties for MyBatis configuration.
      */
     private Properties configurationProperties;
+
     /**
-     * 用于自定义默认设置的Configuration对象 如果指定了{@link #configLocation}，则不使用此属性
+     * A {@link Configuration} object for customizing default settings. This property is not used if
+     * {@link #configLocation} is specified.
      */
     @NestedConfigurationProperty
     private Configuration configuration;
+
     /**
-     * 参数信息
+     * General parameter settings, often used for plugins. For example, for PageHelper:
+     * {@code helperDialect=mysql,reasonable=true,supportMethodsArguments=true,params=count=countSql}
      */
     private String params;
+
     /**
-     * 识别列名中的SQL关键字
+     * Automatically delimits SQL keywords in column names.
      */
     private String autoDelimitKeywords;
+
     /**
-     * 分页合理化参数
+     * Enables pagination parameter rationalization. When enabled, if pageNum < 1, it will query page 1. If pageNum >
+     * total pages, it will query the last page.
      */
     private String reasonable;
+
     /**
-     * 支持通过 Mapper 接口参数来传递分页参数
+     * Whether to support passing pagination parameters through Mapper interface method arguments.
      */
     private String supportMethodsArguments;
 
+    /**
+     * Resolves the mapper locations specified in the properties into an array of {@link Resource} objects.
+     *
+     * @return An array of resolved {@link Resource} objects.
+     */
     public Resource[] resolveMapperLocations() {
         List<Resource> resources = new ArrayList<>();
         if (this.mapperLocations != null) {
@@ -126,6 +153,12 @@ public class MapperProperties {
         return resources.toArray(new Resource[resources.size()]);
     }
 
+    /**
+     * Retrieves resources from a given location pattern.
+     *
+     * @param location The location pattern (e.g., "classpath*:com/my/mapper/*.xml").
+     * @return An array of {@link Resource} objects.
+     */
     private Resource[] getResources(String location) {
         try {
             return resourceResolver.getResources(location);

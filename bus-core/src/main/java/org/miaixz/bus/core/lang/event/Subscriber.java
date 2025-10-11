@@ -32,7 +32,8 @@ import java.util.EventListener;
 import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
- * 订阅者接口
+ * Interface for event subscribers. Implementations of this interface can register to receive and process events.
+ * Subscribers are comparable based on their {@link #order()} for determining execution sequence.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,30 +41,40 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public interface Subscriber extends EventListener, Comparable<Subscriber> {
 
     /**
-     * 当事件发生时的操作
+     * Action to be performed when an event occurs.
      *
-     * @param event 事件对象，根据不同事件，可选是否执行
+     * @param event The event object. Implementations can choose whether to process the event based on its type or
+     *              content.
      */
     void update(Event event);
 
     /**
-     * 获取事件执行顺序，值越小越先执行
+     * Retrieves the execution order of this subscriber. Subscribers with smaller order values will be executed before
+     * those with larger values. The default order is 1000.
      *
-     * @return 执行顺序
+     * @return The execution order.
      */
     default int order() {
         return 1000;
     }
 
+    /**
+     * Compares this subscriber with the specified subscriber for order. The comparison is based on the {@link #order()}
+     * method, allowing subscribers to be sorted.
+     *
+     * @param o The subscriber to be compared.
+     * @return A negative integer, zero, or a positive integer as this subscriber's order is less than, equal to, or
+     *         greater than the specified subscriber's order.
+     */
     @Override
     default int compareTo(final Subscriber o) {
         return CompareKit.compare(this.order(), o.order());
     }
 
     /**
-     * 是否异步执行，默认为false，同步执行
+     * Determines whether this subscriber should execute asynchronously. By default, subscribers execute synchronously.
      *
-     * @return 是否异步执行
+     * @return {@code true} if the subscriber should execute asynchronously, {@code false} otherwise.
      */
     default boolean async() {
         return false;

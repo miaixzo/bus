@@ -31,12 +31,13 @@ import lombok.*;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Format;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.server.ServerWebExchange;
@@ -48,7 +49,11 @@ import reactor.util.annotation.NonNull;
 import java.net.UnknownHostException;
 
 /**
- * 全局异常处理器，处理 Web 应用中的异常并返回标准化的 JSON 响应
+ * Global exception handler that processes exceptions in Web applications and returns standardized JSON responses.
+ * <p>
+ * This handler implements {@link WebExceptionHandler} to catch various exceptions that occur during request processing.
+ * It sets the HTTP status to OK (200) and the content type to JSON, then constructs a {@link Message} object based on
+ * the exception type. The message is then serialized to JSON and written to the response body.
  *
  * @author Justubborn
  * @since Java 17+
@@ -56,123 +61,146 @@ import java.net.UnknownHostException;
 public class ErrorsHandler implements WebExceptionHandler {
 
     /**
-     * 处理异常，生成标准化的错误响应
+     * Handles exceptions, generating a standardized error response.
+     * <p>
+     * This method is invoked when an exception occurs during request processing. It sets the response status to
+     * {@code HttpStatus.OK} and content type to {@code MediaType.APPLICATION_JSON}. It then builds an error message
+     * based on the exception type and writes the serialized JSON message to the response body. Finally, it logs the
+     * error handling process.
+     * </p>
      *
-     * @param exchange 当前的 ServerWebExchange 对象，包含请求和响应
-     * @param ex       捕获的异常对象
-     * @return {@link Mono<Void>} 表示异步处理完成
+     * @param exchange The current {@link ServerWebExchange} object, containing the request and response.
+     * @param ex       The caught {@link Throwable} object.
+     * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
      */
     @NonNull
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        // 获取响应对象并设置状态码和内容类型
+        // Get the response object and set the status code and content type
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(HttpStatus.OK);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        // 获取请求上下文
+        // Get the request context
         Context context = Context.get(exchange);
 
-        // 根据异常类型生成错误消息
+        // Get request information for logging
+        ServerHttpRequest request = exchange.getRequest();
+        String path = request.getPath().value();
+        String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
+
+        // Generate an error message based on the exception type
         Message message = buildErrorMessage(ex, exchange);
 
-        // 强制使用 JSON 序列化，确保返回JSON格式
-        String formatBody = context.getFormat().getProvider().serialize(message);
+        // Direct log output without creating methods
+        if (ex instanceof WebClientException) {
+            if (ex.getCause() instanceof UnknownHostException) {
+                Logger.info(
+                        "==>    Handler: [N/A] [{}] [{}] [ERROR_WEBCLIENT] - UnknownHostException: {}",
+                        method,
+                        path,
+                        ex.getCause().getMessage());
+            } else {
+                Logger.info(
+                        "==>    Handler: [N/A] [{}] [{}] [ERROR_WEBCLIENT] - WebClientException: {}",
+                        method,
+                        path,
+                        ex.getMessage());
+            }
+        } else if (ex instanceof UncheckedException) {
+            if (StringKit.isNotBlank(((UncheckedException) ex).getErrcode())) {
+                Logger.info(
+                        "==>    Handler: [N/A] [{}] [{}] [ERROR_UNCHECKED] - ErrorCode: {}, Message: {}",
+                        method,
+                        path,
+                        ((UncheckedException) ex).getErrcode(),
+                        ((UncheckedException) ex).getErrmsg());
+            } else {
+                Logger.info(
+                        "==>    Handler: [N/A] [{}] [{}] [ERROR_UNCHECKED] - Generic InternalException: {}",
+                        method,
+                        path,
+                        ex.getMessage());
+            }
+        } else {
+            Logger.info(
+                    "==>    Handler: [N/A] [{}] [{}] [ERROR_UNKNOWN] - Unknown exception type: {}, Message: {}",
+                    method,
+                    path,
+                    ex.getClass().getName(),
+                    ex.getMessage());
+        }
 
-        // 将格式化后的响应写入 DataBuffer
+        // Force JSON serialization to ensure a JSON format is returned
+        String formatBody = context.getFormats().getProvider().serialize(message);
+
+        // Wrap the formatted response into a DataBuffer
         DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes(Charset.UTF_8));
 
-        // 返回响应并记录执行耗时
-        return response.writeWith(Mono.just(db)).doOnTerminate(() -> logErrorHandling(exchange, context, ex));
+        // Return the response and log the execution time
+        return response.writeWith(Mono.just(db)).doOnTerminate(() -> {
+            // Direct log output without creating methods
+            if (context != null) {
+                long executionTime = System.currentTimeMillis() - context.getTimestamp();
+                Logger.info(
+                        "==>    Handler: [N/A] [{}] [{}] [ERROR_COMPLETION] - Error handled, execution time: {}ms, exception: {}",
+                        method,
+                        path,
+                        executionTime,
+                        ex.getClass().getSimpleName());
+            } else {
+                Logger.info(
+                        "==>    Handler: [N/A] [{}] [{}] [ERROR_COMPLETION] - Error handled, exception: {}",
+                        method,
+                        path,
+                        ex.getClass().getSimpleName());
+            }
+        });
     }
 
     /**
-     * 构建错误消息
+     * Builds an error message based on the provided exception.
+     * <p>
+     * This method categorizes exceptions and delegates to specific handlers for {@link WebClientException},
+     * {@link UncheckedException} (and its subclasses like {@link InternalException}, {@link ValidateException},
+     * {@link BusinessException}), and other unknown exceptions.
+     * </p>
      *
-     * @param ex       异常对象
-     * @param exchange ServerWebExchange 对象
-     * @return 错误消息对象
+     * @param ex       The exception object.
+     * @param exchange The {@link ServerWebExchange} object.
+     * @return An error {@link Message} object.
      */
     protected Message buildErrorMessage(Throwable ex, ServerWebExchange exchange) {
-        // 1. 首先处理不属于 UncheckedException 继承体系的特定异常
+        // 1. First, handle specific exceptions that do not belong to the UncheckedException inheritance hierarchy
         if (ex instanceof WebClientException) {
-            return handleWebClientException((WebClientException) ex, exchange);
+            if (ex.getCause() instanceof UnknownHostException) {
+                return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue())
+                        .build();
+            } else {
+                return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue())
+                        .build();
+            }
         }
 
-        // 2. 然后，用一个 if 块处理所有 UncheckedException 及其子类
-        // InternalException, ValidateException, BusinessException 都会在这里被捕获
+        // 2. Then, handle all UncheckedException and its subclasses with an if block
+        // InternalException, ValidateException, BusinessException will all be caught here
         if (ex instanceof UncheckedException) {
-            return handleUncheckedException((UncheckedException) ex, exchange);
+            UncheckedException uncheckedEx = (UncheckedException) ex;
+            if (StringKit.isNotBlank(uncheckedEx.getErrcode())) {
+                return Message.builder().errcode(uncheckedEx.getErrcode()).errmsg(uncheckedEx.getErrmsg()).build();
+            } else {
+                return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue())
+                        .build();
+            }
         }
 
-        // 注意: 你的代码中还有一个 handleBusinessException(LicenseException ex, ...)，
-        // 如果 LicenseException 也继承自 UncheckedException, 它也会被上面的代码块处理。
-        // 如果它有特殊逻辑，需要单独处理，则应放在 UncheckedException 检查之前。
-
-        // 3. 最后，处理所有其他未知异常
-        return handleUnknownException(ex, exchange);
-    }
-
-    /**
-     * 处理 WebClientException
-     */
-    protected Message handleWebClientException(WebClientException ex, ServerWebExchange exchange) {
-        if (ex.getCause() instanceof UnknownHostException) {
-            Format.error(exchange, "WEBCLIENT_UNKNOWN_HOST", "UnknownHostException: " + ex.getCause().getMessage());
-            return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue()).build();
-        } else {
-            Format.error(exchange, "WEBCLIENT_EXCEPTION", "WebClientException: " + ex.getMessage());
-            return Message.builder().errcode(ErrorCode._116000.getKey()).errmsg(ErrorCode._116000.getValue()).build();
-        }
-    }
-
-    /**
-     * 处理 InternalException
-     */
-    protected Message handleUncheckedException(UncheckedException ex, ServerWebExchange exchange) {
-        if (StringKit.isNotBlank(ex.getErrcode())) {
-            Format.error(
-                    exchange,
-                    "INTERNAL_EXCEPTION",
-                    "ErrorCode: " + ex.getErrcode() + ", Message: " + ex.getErrmsg());
-            return Message.builder().errcode(ex.getErrcode()).errmsg(ex.getErrmsg()).build();
-        } else {
-            Format.error(exchange, "INTERNAL_EXCEPTION", "Generic InternalException: " + ex.getMessage());
-            return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue()).build();
-        }
-    }
-
-    /**
-     * 处理未知异常
-     */
-    protected Message handleUnknownException(Throwable ex, ServerWebExchange exchange) {
-        Format.error(
-                exchange,
-                "UNKNOWN_EXCEPTION",
-                "Unknown exception type: " + ex.getClass().getName() + ", Message: " + ex.getMessage());
+        // 3. Finally, handle all other unknown exceptions
         return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue()).build();
     }
 
     /**
-     * 记录错误处理日志
-     *
-     * @param exchange ServerWebExchange 对象
-     * @param context  请求上下文
-     * @param ex       异常对象
+     * Represents a standardized message structure for API responses, typically used for error messages.
      */
-    private void logErrorHandling(ServerWebExchange exchange, Context context, Throwable ex) {
-        if (context != null) {
-            long executionTime = System.currentTimeMillis() - context.getTimestamp();
-            Format.info(
-                    exchange,
-                    "ERROR_HANDLED",
-                    "Error handled, execution time: " + executionTime + "ms, exception: "
-                            + ex.getClass().getSimpleName());
-        } else {
-            Format.info(exchange, "ERROR_HANDLED", "Error handled, exception: " + ex.getClass().getSimpleName());
-        }
-    }
-
     @Getter
     @Setter
     @Builder
@@ -181,12 +209,12 @@ public class ErrorsHandler implements WebExceptionHandler {
     public static class Message {
 
         /**
-         * 响应码
+         * The response code, indicating the specific error or status.
          */
         private String errcode;
 
         /**
-         * 提示信息
+         * The descriptive error message or status message.
          */
         private String errmsg;
 

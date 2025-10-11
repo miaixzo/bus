@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 钉钉通知模版
+ * Material for DingTalk notification messages.
  *
  * @author Justubborn
  * @since Java 17+
@@ -49,32 +49,33 @@ import lombok.experimental.SuperBuilder;
 public class DingTalkMaterial extends Material {
 
     /**
-     * 应用agentId
+     * The agent ID of the application.
      */
     private String agentId;
     /**
-     * 接收者的用户userId列表，最大列表长度：100
+     * A comma-separated list of recipient user IDs. Maximum list length: 100.
      */
     private String userIdList;
     /**
-     * 接收者的部门id列表，最大列表长度：20, 接收者是部门id下(包括子部门下)的所有用户
+     * A comma-separated list of recipient department IDs. Maximum list length: 20. All users within these departments
+     * (including sub-departments) will receive the message.
      */
     private String deptIdList;
     /**
-     * 是否发送给企业全部用户 true,false
+     * Indicates whether to send the message to all users in the enterprise. {@code true} or {@code false}.
      */
     private boolean toAllUser;
     /**
-     * 白名单列表
+     * A comma-separated list of user IDs in the whitelist.
      */
     private String whiteList;
     /**
-     * json字符串
+     * The message content in JSON string format.
      */
     private String msg;
 
     /**
-     * 钉钉token
+     * The DingTalk access token.
      */
     private String token;
 

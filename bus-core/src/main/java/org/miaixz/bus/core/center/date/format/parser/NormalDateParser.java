@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.center.date.DateTime;
 
 /**
- * 全局正则日期解析器，通过预定义或自定义的正则规则解析日期字符串。
+ * A global date parser that uses a set of predefined and customizable regular expression rules to parse date strings.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,27 +40,28 @@ import org.miaixz.bus.core.center.date.DateTime;
 public class NormalDateParser implements PredicateDateParser {
 
     /**
-     * 默认单例实例
+     * The default singleton instance of this parser.
      */
-    public static NormalDateParser INSTANCE = new NormalDateParser();
+    public static final NormalDateParser INSTANCE = new NormalDateParser();
 
     /**
-     * 正则日期解析器
+     * The underlying regular expression-based date parser.
      */
     private final RegexDateParser parser;
 
     /**
-     * 构造，初始化默认的解析规则。
+     * Constructs a new {@code NormalDateParser} with a default set of parsing rules.
      */
     public NormalDateParser() {
         parser = createDefault();
     }
 
     /**
-     * 测试是否适用此解析器。
+     * Tests if this parser is applicable to the given date string. This implementation always returns {@code true} as
+     * it serves as a fallback parser.
      *
-     * @param charSequence 日期字符串
-     * @return 始终返回true，作为兜底解析器
+     * @param charSequence The date string.
+     * @return always {@code true}.
      */
     @Override
     public boolean test(final CharSequence charSequence) {
@@ -68,10 +69,10 @@ public class NormalDateParser implements PredicateDateParser {
     }
 
     /**
-     * 解析日期字符串，线程安全。
+     * Parses a date string into a {@link DateTime} object. This method is thread-safe.
      *
-     * @param source 日期字符串
-     * @return 解析后的日期对象
+     * @param source The date string to parse.
+     * @return The parsed {@link DateTime} object.
      */
     @Override
     public DateTime parse(final CharSequence source) {
@@ -79,93 +80,75 @@ public class NormalDateParser implements PredicateDateParser {
     }
 
     /**
-     * 创建默认的正则日期解析器。
+     * Creates the default {@link RegexDateParser} with a comprehensive set of common date format patterns.
      *
-     * @return 正则日期解析器
+     * @return The configured {@link RegexDateParser}.
      */
     private RegexDateParser createDefault() {
         final String yearRegex = "(?<year>\\d{2,4})";
-        // 月的正则，匹配：Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec，
-        // 或 January, February, March, April, May, June, July, August, September, October, November, December
+        // Regex for month, matching abbreviated and full English names, or Chinese month names.
         final String monthRegex = "(?<month>[jfmaasond][aepucoe][nbrylgptvc]\\w{0,6}|[一二三四五六七八九十]{1,2}月)";
         final String dayRegex = "(?<day>\\d{1,2})(?:th)?";
-        // 周的正则，匹配：Mon, Tue, Wed, Thu, Fri, Sat, Sun，
-        // 或 Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
-        // 周一般出现在日期头部，可选
+        // Regex for the day of the week, optional.
         final String weekRegexWithSuff = "((?<week>[mwfts][oeruha][ndieut](\\w{3,6})?|(星期|周)[一二三四五六日])\\W+)?";
-        // hh:mm:ss.SSSSZ hh:mm:ss.SSSS hh:mm:ss hh:mm
+        // Regex for time part, optional.
         final String timeRegexWithPre = "(" + "(\\W+|T)(at\\s)?(?<hour>\\d{1,2})" + "\\W(?<minute>\\d{1,2})"
                 + "(\\W(?<second>\\d{1,2}))?秒?" + "(?:[.,](?<nanosecond>\\d{1,9}))?(?<zero>z)?" + "(\\s?(?<m>[ap]m))?"
                 + ")?";
-        // 月开头，类似：May 8
+        // Date format like "May 8"
         final String dateRegexMonthFirst = monthRegex + "\\W+" + dayRegex;
-        // 日开头，类似：02-Jan
+        // Date format like "02-Jan"
         final String dateRegexDayFirst = dayRegex + "\\W+" + monthRegex;
-        // 时区拼接，类似：
-        // GMT+0100 (GMT Daylight Time)
-        // +0200 (CEST)
-        // GMT+0100
-        // MST
-        final String zoneRegex = "\\s?(?<zone>"
-                // 匹配：GMT MST等
-                + "[a-z ]*"
-                // 匹配：+08:00 +0800 +08
-                + "(\\s?[-+]\\d{1,2}:?(?:\\d{2})?)*"
-                // 匹配：(GMT Daylight Time)等
-                + "(\\s?[(]?[a-z ]+[)]?)?" + ")";
+        // Regex for timezone part.
+        final String zoneRegex = "\\s?(?<zone>" + "[a-z ]*" // Matches timezone names like GMT, MST
+                + "(\\s?[-+]\\d{1,2}:?(?:\\d{2})?)*" // Matches offsets like +08:00, +0800
+                + "(\\s?[(]?[a-z ]+[)]?)?" // Matches display names like (GMT Daylight Time)
+                + ")";
         final String maskRegex = "(\\smsk m=[+-]\\d[.]\\d+)?";
 
         return RegexDateParser.of(
-                // 【年月日时】类似：2009-Feb-08，时间部分可选，类似：5:57:50，05:57:50 +08:00
+                // Year-Month-Day formats, e.g., 2009-Feb-08 05:57:50 +08:00
                 yearRegex + "\\W" + dateRegexMonthFirst + timeRegexWithPre + zoneRegex + maskRegex,
-                // 【年月日时】类似：2020-02-08或2020年02月08日，时间部分可选，类似：5:57:50，05:57:50 +08:00
+                // Year-Month-Day formats, e.g., 2020-02-08 or 2020年02月08日
                 yearRegex + "\\W(?<month>\\d{1,2})(\\W(?<day>\\d{1,2}))?日?" + timeRegexWithPre + zoneRegex + maskRegex,
 
-                // 【周月日年时】类似：May 8, 2009，时间部分可选，类似：5:57:50，05:57:50 +08:00
+                // Month-Day-Year formats, e.g., May 8, 2009 05:57:50
                 weekRegexWithSuff + dateRegexMonthFirst + "\\W+" + yearRegex + timeRegexWithPre + zoneRegex + maskRegex,
-                // 【周月日时年】类似：Mon Jan 2 15:05:05 MST 2020
+                // Week-Month-Day-Time-Year format, e.g., Mon Jan 2 15:05:05 MST 2020
                 weekRegexWithSuff + dateRegexMonthFirst + timeRegexWithPre + zoneRegex + "\\W+" + yearRegex + maskRegex,
-                // 【周日月年时】类似：Monday, 02-Jan-06 15:05:05 MST
+                // Week-Day-Month-Year-Time format, e.g., Monday, 02-Jan-06 15:05:05 MST
                 weekRegexWithSuff + dateRegexDayFirst + "\\W+" + yearRegex + timeRegexWithPre + zoneRegex + maskRegex,
-                // 【日月年时】MM/dd/yyyy, dd/MM/yyyy, 类似：5/12/2020 03:00:50，为避免歧义，只支持4位年
+                // Ambiguous M/d/yyyy or d/M/yyyy format, e.g., 5/12/2020 03:00:50
                 "(?<dayOrMonth>\\d{1,2}\\W\\d{1,2})\\W(?<year>\\d{4})" + timeRegexWithPre + zoneRegex + maskRegex,
 
-                // 纯数字日期时间
-                // yyyy
-                // yyyyMM
-                // yyyyMMdd
-                // yyyyMMddhhmmss
-                // unixtime(10)
-                // millisecond(13)
-                // microsecond(16)
-                // nanosecond(19)
+                // Purely numeric date-time strings
                 "^(?<number>\\d{4,19})$");
     }
 
     /**
-     * 设置月份优先顺序，当无法区分月和日时，决定使用mm/dd还是dd/mm。
+     * Sets the preference for parsing ambiguous date formats (e.g., '01/02/2023').
      *
-     * @param preferMonthFirst true为mm/dd，false为dd/mm
+     * @param preferMonthFirst if {@code true}, parse as MM/dd; if {@code false}, parse as dd/MM.
      */
-    synchronized public void setPreferMonthFirst(final boolean preferMonthFirst) {
+    public synchronized void setPreferMonthFirst(final boolean preferMonthFirst) {
         parser.setPreferMonthFirst(preferMonthFirst);
     }
 
     /**
-     * 注册自定义日期正则规则。
+     * Registers a custom regular expression for date parsing.
      *
-     * @param regex 日期正则表达式
+     * @param regex The date regular expression.
      */
-    synchronized public void registerRegex(final String regex) {
+    public synchronized void registerRegex(final String regex) {
         parser.addRegex(regex);
     }
 
     /**
-     * 注册自定义日期正则模式。
+     * Registers a custom compiled {@link Pattern} for date parsing.
      *
-     * @param pattern 日期正则模式
+     * @param pattern The date regex pattern.
      */
-    synchronized public void registerPattern(final Pattern pattern) {
+    public synchronized void registerPattern(final Pattern pattern) {
         parser.addPattern(pattern);
     }
 

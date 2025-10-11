@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 白条分期策略查询接口
+ * Baitiao installment plan query interface model.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,10 +48,25 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class QueryBaiTiao extends Material {
 
+    /**
+     * Version number.
+     */
     private String version;
+    /**
+     * Merchant number.
+     */
     private String merchant;
+    /**
+     * Transaction number.
+     */
     private String tradeNum;
+    /**
+     * Transaction amount.
+     */
     private String amount;
+    /**
+     * Signature.
+     */
     private String sign;
 
 }

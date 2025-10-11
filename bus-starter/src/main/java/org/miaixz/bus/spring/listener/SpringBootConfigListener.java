@@ -42,8 +42,9 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 
 /**
- * 监听 {@link ApplicationEnvironmentPreparedEvent} 事件，注册基于 {@link ConfigurableEnvironment} 的配置源， 并通过
- * {@link BannerPrinter} 处理 Spring Boot Banner 打印。 确保在环境准备阶段触发配置注册和 Banner 打印，且只执行一次。
+ * An {@link ApplicationListener} for the {@link ApplicationEnvironmentPreparedEvent}. It registers a custom property
+ * source and handles the printing of the Spring Boot banner via {@link BannerPrinter}. This ensures that the
+ * configuration and banner printing occur early in the environment preparation phase and are executed only once.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,20 +52,20 @@ import org.springframework.core.env.PropertiesPropertySource;
 public class SpringBootConfigListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent>, Ordered {
 
     /**
-     * 用于确保配置注册和 Banner 打印只执行一次的标志。
+     * A flag to ensure that configuration registration and banner printing are performed only once.
      */
     private final AtomicBoolean registered = new AtomicBoolean();
 
     /**
-     * SpringApplication 实例，用于传递给 {@link BannerPrinter} 以设置和获取 Banner。
+     * The {@link SpringApplication} instance, used for banner configuration.
      */
     public SpringApplication application;
 
     /**
-     * 处理 {@link ApplicationEnvironmentPreparedEvent} 事件，初始化 SpringApplication 并触发配置注册。 通过 {@link AtomicBoolean}
-     * 确保事件处理逻辑只执行一次。
+     * Handles the {@link ApplicationEnvironmentPreparedEvent} by initializing the {@link SpringApplication} instance
+     * and triggering the configuration registration. This logic is guaranteed to run only once.
      *
-     * @param event 环境准备完成事件，包含 SpringApplication 和 ConfigurableEnvironment
+     * @param event The environment prepared event, containing the application and environment.
      */
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
@@ -75,9 +76,9 @@ public class SpringBootConfigListener implements ApplicationListener<Application
     }
 
     /**
-     * 定义监听器优先级，高于默认值以确保在环境准备阶段早期执行。
+     * Defines the listener's priority, ensuring it executes early in the environment preparation phase.
      *
-     * @return 优先级值，HIGHEST_PRECEDENCE + 13
+     * @return The order value, set to {@code HIGHEST_PRECEDENCE + 13}.
      */
     @Override
     public int getOrder() {
@@ -85,20 +86,21 @@ public class SpringBootConfigListener implements ApplicationListener<Application
     }
 
     /**
-     * 注册配置并触发 Banner 打印。 调用 {@link BannerPrinter} 处理 Banner 打印逻辑，并执行其他配置注册。
+     * Registers custom configurations and triggers the banner printing. This method adds a property source for
+     * {@code bus.version} and then calls the {@link BannerPrinter}.
      *
-     * @param environment Spring 环境配置，用于 Banner 打印和配置注册
+     * @param environment The Spring environment configuration.
      */
     public void registerConfigs(ConfigurableEnvironment environment) {
-        // 注册bus.version属性
+        // Register the bus.version property.
         Properties props = new Properties();
         props.setProperty(Keys.VERSION, Version._VERSION);
         MutablePropertySources sources = environment.getPropertySources();
         sources.addLast(new PropertiesPropertySource("bus", props));
 
-        // 设置并打印 Banner
+        // Set and print the banner.
         new BannerPrinter().printBanner(this.application, environment);
-        // 其他配置注册逻辑（待实现）
+        // Other configuration logic can be added here.
     }
 
 }

@@ -35,7 +35,7 @@ import org.miaixz.bus.core.center.map.reference.ReferenceConcurrentMap;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 
 /**
- * Bean属性缓存 缓存用于防止多次反射造成的性能问题
+ * A cache for Bean properties, designed to prevent performance issues caused by repeated reflection.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,19 +43,28 @@ import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 public enum BeanCache {
 
     /**
-     * 单例
+     * The singleton instance of {@code BeanCache}.
      */
     INSTANCE;
 
+    /**
+     * Cache for {@link PropertyDescriptor}s, keyed by class, where property names are case-sensitive. Uses
+     * {@link WeakConcurrentMap} for automatic cleanup of entries when the class is no longer referenced.
+     */
     private final WeakConcurrentMap<Class<?>, Map<String, PropertyDescriptor>> pdCache = new WeakConcurrentMap<>();
+    /**
+     * Cache for {@link PropertyDescriptor}s, keyed by class, where property names are case-insensitive. Uses
+     * {@link WeakConcurrentMap} for automatic cleanup of entries when the class is no longer referenced.
+     */
     private final WeakConcurrentMap<Class<?>, Map<String, PropertyDescriptor>> ignoreCasePdCache = new WeakConcurrentMap<>();
 
     /**
-     * 获得属性名和{@link PropertyDescriptor}Map映射
+     * Retrieves a map of property names to their corresponding {@link PropertyDescriptor}s for a given bean class.
      *
-     * @param beanClass  Bean的类
-     * @param ignoreCase 是否忽略大小写
-     * @return 属性名和{@link PropertyDescriptor}Map映射
+     * @param beanClass  The class of the bean.
+     * @param ignoreCase Whether to ignore case when matching property names.
+     * @return A map where keys are property names (or their lowercase versions if {@code ignoreCase} is true) and
+     *         values are {@link PropertyDescriptor} objects.
      */
     public Map<String, PropertyDescriptor> getPropertyDescriptorMap(
             final Class<?> beanClass,
@@ -64,12 +73,14 @@ public enum BeanCache {
     }
 
     /**
-     * 获得属性名和{@link PropertyDescriptor}Map映射
+     * Retrieves a map of property names to their corresponding {@link PropertyDescriptor}s for a given bean class. If
+     * the map is not already in the cache, it is computed using the provided supplier and then cached.
      *
-     * @param beanClass  Bean的类
-     * @param ignoreCase 是否忽略大小写
-     * @param supplier   缓存对象产生函数
-     * @return 属性名和{@link PropertyDescriptor}Map映射
+     * @param beanClass  The class of the bean.
+     * @param ignoreCase Whether to ignore case when matching property names.
+     * @param supplier   A {@link SupplierX} function to compute the map if it's not found in the cache.
+     * @return A map where keys are property names (or their lowercase versions if {@code ignoreCase} is true) and
+     *         values are {@link PropertyDescriptor} objects.
      */
     public Map<String, PropertyDescriptor> getPropertyDescriptorMap(
             final Class<?> beanClass,
@@ -79,11 +90,12 @@ public enum BeanCache {
     }
 
     /**
-     * 加入缓存
+     * Puts a map of property names to {@link PropertyDescriptor}s into the cache for a given bean class.
      *
-     * @param beanClass                      Bean的类
-     * @param fieldNamePropertyDescriptorMap 属性名和{@link PropertyDescriptor}Map映射
-     * @param ignoreCase                     是否忽略大小写
+     * @param beanClass                      The class of the bean.
+     * @param fieldNamePropertyDescriptorMap The map of property names to {@link PropertyDescriptor}s to cache.
+     * @param ignoreCase                     Whether the cached map should be associated with case-insensitive property
+     *                                       names.
      */
     public void putPropertyDescriptorMap(
             final Class<?> beanClass,
@@ -93,7 +105,7 @@ public enum BeanCache {
     }
 
     /**
-     * 清空缓存
+     * Clears all cached {@link PropertyDescriptor} maps from both case-sensitive and case-insensitive caches.
      */
     public void clear() {
         this.pdCache.clear();
@@ -101,10 +113,10 @@ public enum BeanCache {
     }
 
     /**
-     * 根据是否忽略字段名的大小写，返回不用Cache对象
+     * Returns the appropriate cache (case-sensitive or case-insensitive) based on the {@code ignoreCase} flag.
      *
-     * @param ignoreCase 是否忽略大小写
-     * @return {@link ReferenceConcurrentMap}
+     * @param ignoreCase Whether to retrieve the case-insensitive cache.
+     * @return The {@link ReferenceConcurrentMap} instance to use.
      */
     private ReferenceConcurrentMap<Class<?>, Map<String, PropertyDescriptor>> getCache(final boolean ignoreCase) {
         return ignoreCase ? ignoreCasePdCache : pdCache;

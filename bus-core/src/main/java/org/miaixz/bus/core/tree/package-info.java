@@ -26,10 +26,15 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供通用树生成，特点：
- * <p>
- * 1、每个字段可自定义 2、支持排序 树深度配置,自定义转换器等 3、支持额外属性扩展 4、贴心 许多属性,特性都有默认值处理 5、使用简单 可一行代码生成树 6、代码简洁轻量无额外依赖
- * </p>
+ * Provides utilities for generic tree generation with the following features:
+ * <ul>
+ * <li><b>Customizable Fields:</b> Each field in the tree node can be customized.</li>
+ * <li><b>Sorting and Configuration:</b> Supports node sorting, tree depth configuration, and custom converters.</li>
+ * <li><b>Extensible:</b> Allows adding extra properties to nodes.</li>
+ * <li><b>User-Friendly Defaults:</b> Thoughtfully designed with default values for many properties and features.</li>
+ * <li><b>Simplicity:</b> Trees can be generated with a single line of code.</li>
+ * <li><b>Lightweight:</b> Concise, lightweight, and has no external dependencies.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+

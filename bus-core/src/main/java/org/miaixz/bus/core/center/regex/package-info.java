@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 正则表达式相关封装
+ * Provides utilities and classes for regular expression operations and validation. This package includes
+ * functionalities for compiling, caching, and matching regular expressions, as well as predefined patterns for common
+ * validation tasks.
  *
  * @author Kimi Liu
  * @since Java 17+

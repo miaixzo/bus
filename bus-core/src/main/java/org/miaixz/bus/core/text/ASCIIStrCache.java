@@ -28,27 +28,37 @@
 package org.miaixz.bus.core.text;
 
 /**
- * ASCII字符对应的字符串缓存
+ * Cache for ASCII character strings. This class provides a cached {@link String} representation for ASCII characters to
+ * improve performance when converting characters to strings.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ASCIIStrCache {
 
+    /**
+     * The maximum length of the ASCII character set (0-127).
+     */
     private static final int ASCII_LENGTH = 128;
+    /**
+     * The cache array for ASCII character strings. Each index corresponds to an ASCII character's integer value, and
+     * the value is its {@link String} representation.
+     */
     private static final String[] CACHE = new String[ASCII_LENGTH];
 
     static {
+        // Populate the cache with String representations of ASCII characters.
         for (char c = 0; c < ASCII_LENGTH; c++) {
             CACHE[c] = String.valueOf(c);
         }
     }
 
     /**
-     * 字符转为字符串 如果为ASCII字符，使用缓存
+     * Converts a character to its {@link String} representation. If the character is an ASCII character, its cached
+     * string value is returned. Otherwise, a new {@link String} is created.
      *
-     * @param c 字符
-     * @return 字符串
+     * @param c The character to convert.
+     * @return The {@link String} representation of the character.
      */
     public static String toString(final char c) {
         return c < ASCII_LENGTH ? CACHE[c] : String.valueOf(c);

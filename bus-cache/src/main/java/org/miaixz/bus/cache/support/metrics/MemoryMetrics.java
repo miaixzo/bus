@@ -35,10 +35,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.miaixz.bus.cache.Metrics;
 
 /**
- * 内存缓存命中率统计实现
+ * An in-memory implementation of {@link Metrics} for cache hit rate statistics.
  * <p>
- * 基于内存的缓存命中率统计实现，使用ConcurrentHashMap存储命中次数和请求次数， 支持并发更新，适用于单机环境或测试环境。
- * </p>
+ * This class uses {@link ConcurrentHashMap} to store hit and request counts, making it suitable for concurrent updates
+ * in a single-node or testing environment.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,20 +46,20 @@ import org.miaixz.bus.cache.Metrics;
 public class MemoryMetrics implements Metrics {
 
     /**
-     * 命中次数映射，键为缓存模式/分组名称，值为命中次数
+     * A thread-safe map to store the hit counts for each cache pattern.
      */
-    private ConcurrentMap<String, AtomicLong> hitMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, AtomicLong> hitMap = new ConcurrentHashMap<>();
 
     /**
-     * 请求次数映射，键为缓存模式/分组名称，值为请求次数
+     * A thread-safe map to store the total request counts for each cache pattern.
      */
-    private ConcurrentMap<String, AtomicLong> requireMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, AtomicLong> requireMap = new ConcurrentHashMap<>();
 
     /**
-     * 增加命中次数
+     * Increments the hit count for a specific cache pattern.
      *
-     * @param pattern 缓存模式/分组名称
-     * @param count   增加的命中数量
+     * @param pattern The name of the cache pattern or group.
+     * @param count   The number of hits to add.
      */
     @Override
     public void hitIncr(String pattern, int count) {
@@ -67,10 +67,10 @@ public class MemoryMetrics implements Metrics {
     }
 
     /**
-     * 增加请求次数
+     * Increments the request count for a specific cache pattern.
      *
-     * @param pattern 缓存模式/分组名称
-     * @param count   增加的请求数量
+     * @param pattern The name of the cache pattern or group.
+     * @param count   The number of requests to add.
      */
     @Override
     public void reqIncr(String pattern, int count) {
@@ -78,9 +78,12 @@ public class MemoryMetrics implements Metrics {
     }
 
     /**
-     * 获取缓存命中率统计信息
+     * Retrieves a snapshot of the current cache hit rate statistics for all patterns.
+     * <p>
+     * It calculates the hit rate for each pattern and also provides a summary of the global hit rate.
+     * </p>
      *
-     * @return 缓存命中率统计映射，键为缓存模式/分组名称，值为HittingDO对象
+     * @return A map where keys are pattern names and values are {@link Snapshot} objects containing the statistics.
      */
     @Override
     public Map<String, Snapshot> getHitting() {
@@ -88,7 +91,7 @@ public class MemoryMetrics implements Metrics {
         AtomicLong statisticsHit = new AtomicLong(0);
         AtomicLong statisticsRequired = new AtomicLong(0);
 
-        // 遍历请求次数映射，计算每个模式的命中率
+        // Iterate over the request map to calculate the hit rate for each pattern.
         requireMap.forEach((pattern, count) -> {
             long hit = hitMap.computeIfAbsent(pattern, (key) -> new AtomicLong(0)).get();
             long require = count.get();
@@ -97,15 +100,15 @@ public class MemoryMetrics implements Metrics {
             result.put(pattern, Snapshot.newInstance(hit, require));
         });
 
-        // 添加全局命中率统计
+        // Add the global hit rate statistics.
         result.put(summaryName(), Snapshot.newInstance(statisticsHit.get(), statisticsRequired.get()));
         return result;
     }
 
     /**
-     * 重置指定缓存模式的命中率统计
+     * Resets the hit and request counts for a specific cache pattern.
      *
-     * @param pattern 缓存模式/分组名称
+     * @param pattern The name of the cache pattern or group to reset.
      */
     @Override
     public void reset(String pattern) {
@@ -114,7 +117,7 @@ public class MemoryMetrics implements Metrics {
     }
 
     /**
-     * 重置所有缓存模式的命中率统计
+     * Resets all statistics, clearing all hit and request counts.
      */
     @Override
     public void resetAll() {

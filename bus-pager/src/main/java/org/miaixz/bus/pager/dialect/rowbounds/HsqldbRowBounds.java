@@ -32,13 +32,23 @@ import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.pager.dialect.AbstractRowBounds;
 
 /**
- * hsqldb 基于 RowBounds 的分页
+ * Hsqldb dialect for pagination based on {@link RowBounds}. This class provides Hsqldb-specific SQL generation for
+ * pagination using offset and limit.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HsqldbRowBounds extends AbstractRowBounds {
 
+    /**
+     * Generates the Hsqldb-specific pagination SQL using {@link RowBounds}. It appends {@code LIMIT ?} and optionally
+     * {@code OFFSET ?} to the original SQL.
+     *
+     * @param sql       the original SQL string
+     * @param rowBounds the {@link RowBounds} object containing offset and limit
+     * @param pageKey   the CacheKey for the paginated query
+     * @return the Hsqldb-specific paginated SQL string
+     */
     @Override
     public String getPageSql(String sql, RowBounds rowBounds, CacheKey pageKey) {
         StringBuilder sqlBuilder = new StringBuilder(sql.length() + 20);

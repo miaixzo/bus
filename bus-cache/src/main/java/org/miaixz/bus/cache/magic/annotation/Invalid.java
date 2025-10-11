@@ -31,9 +31,10 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 缓存失效注解
+ * Triggers cache invalidation after the annotated method is executed.
  * <p>
- * 用于标记方法执行后使缓存失效。当方法被调用时，会根据配置的键规则清除对应的缓存。
+ * When the method is invoked, the framework will remove one or more cache entries based on the keying rules derived
+ * from this annotation and any {@link CacheKey} annotations on the parameters.
  * </p>
  *
  * @author Kimi Liu
@@ -45,32 +46,33 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface Invalid {
 
     /**
-     * 指定使用的缓存实现
+     * The name of the cache from which to invalidate entries.
      * <p>
-     * 与@Cached注解的value属性功能相同
+     * This functions identically to the {@code value} attribute in the {@link Cached} annotation.
      * </p>
      *
-     * @return 缓存实现名称
+     * @return The name of the cache implementation.
      */
     String value() default Normal.EMPTY;
 
     /**
-     * 指定每个键的前缀
+     * A static prefix for the cache key(s) to be invalidated.
      * <p>
-     * 与@Cached注解的prefix属性功能相同
+     * This functions identically to the {@code prefix} attribute in the {@link Cached} annotation.
      * </p>
      *
-     * @return 键前缀
+     * @return The prefix for the cache key.
      */
     String prefix() default Normal.EMPTY;
 
     /**
-     * 使用SpEL表达式
+     * A SpEL (Spring Expression Language) expression for conditional invalidation.
      * <p>
-     * 与@Cached注解的condition属性功能相同 当这个SpEL表达式为true时，该方法会使缓存失效
+     * The invalidation will only occur if this expression evaluates to {@code true}. This functions identically to the
+     * {@code condition} attribute in the {@link Cached} annotation.
      * </p>
      *
-     * @return SpEL条件表达式
+     * @return The SpEL condition.
      */
     String condition() default Normal.EMPTY;
 

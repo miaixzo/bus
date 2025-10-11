@@ -34,7 +34,7 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.Week;
 
 /**
- * 公历周
+ * Represents a week in the Gregorian calendar.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,27 +42,28 @@ import org.miaixz.bus.core.center.date.culture.cn.Week;
 public class SolarWeek extends Loops {
 
     /**
-     * 公历月
+     * The solar month this week belongs to.
      */
     protected SolarMonth month;
 
     /**
-     * 索引，0-5
+     * The index of the week within the month, 0-5.
      */
     protected int index;
 
     /**
-     * 起始星期
+     * The starting day of the week.
      */
     protected Week start;
 
     /**
-     * 初始化
+     * Constructs a {@code SolarWeek} with the given year, month, week index, and start day.
      *
-     * @param year  年
-     * @param month 月
-     * @param index 索引，0-5
-     * @param start 起始星期，1234560分别代表星期一至星期天
+     * @param year  The year.
+     * @param month The month.
+     * @param index The index of the week, 0-5.
+     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
+     * @throws IllegalArgumentException if the index or start day is out of valid range.
      */
     public SolarWeek(int year, int month, int index, int start) {
         if (index < 0 || index > 5) {
@@ -80,55 +81,64 @@ public class SolarWeek extends Loops {
         this.start = Week.fromIndex(start);
     }
 
+    /**
+     * Creates a {@code SolarWeek} instance from the given year, month, week index, and start day.
+     *
+     * @param year  The year.
+     * @param month The month.
+     * @param index The index of the week, 0-5.
+     * @param start The starting day of the week, 1-7 (1 for Monday, 7 for Sunday).
+     * @return A new {@link SolarWeek} instance.
+     */
     public static SolarWeek fromYm(int year, int month, int index, int start) {
         return new SolarWeek(year, month, index, start);
     }
 
     /**
-     * 公历月
+     * Gets the solar month this week belongs to.
      *
-     * @return 公历月
+     * @return The {@link SolarMonth}.
      */
     public SolarMonth getSolarMonth() {
         return month;
     }
 
     /**
-     * 年
+     * Gets the year of this solar week.
      *
-     * @return 年
+     * @return The year.
      */
     public int getYear() {
         return month.getYear();
     }
 
     /**
-     * 月
+     * Gets the month of this solar week.
      *
-     * @return 月
+     * @return The month.
      */
     public int getMonth() {
         return month.getMonth();
     }
 
     /**
-     * 索引
+     * Gets the index of the week within the month, 0-5.
      *
-     * @return 索引，0-5
+     * @return The index.
      */
     public int getIndex() {
         return index;
     }
 
     /**
-     * 位于当年的索引
+     * Gets the index of this week within the year.
      *
-     * @return 索引
+     * @return The index within the year.
      */
     public int getIndexInYear() {
         int i = 0;
         SolarDay firstDay = getFirstDay();
-        // 今年第1周
+        // The first week of the year
         SolarWeek w = SolarWeek.fromYm(getYear(), 1, 0, start.getIndex());
         while (!w.getFirstDay().equals(firstDay)) {
             w = w.next(1);
@@ -138,14 +148,19 @@ public class SolarWeek extends Loops {
     }
 
     /**
-     * 起始星期
+     * Gets the starting day of the week.
      *
-     * @return 星期
+     * @return The {@link Week} representing the start day.
      */
     public Week getStart() {
         return start;
     }
 
+    /**
+     * Gets the Chinese name of the week.
+     *
+     * @return The name of the week.
+     */
     public String getName() {
         return Week.WHICH[index];
     }
@@ -155,6 +170,12 @@ public class SolarWeek extends Loops {
         return month + getName();
     }
 
+    /**
+     * Gets the solar week after a specified number of weeks.
+     *
+     * @param n The number of weeks to add.
+     * @return The {@link SolarWeek} after {@code n} weeks.
+     */
     public SolarWeek next(int n) {
         int startIndex = start.getIndex();
         int d = index;
@@ -184,9 +205,9 @@ public class SolarWeek extends Loops {
     }
 
     /**
-     * 本周第1天
+     * Gets the first day of this week.
      *
-     * @return 公历日
+     * @return The first {@link SolarDay} of this week.
      */
     public SolarDay getFirstDay() {
         SolarDay firstDay = SolarDay.fromYmd(getYear(), getMonth(), 1);
@@ -194,9 +215,9 @@ public class SolarWeek extends Loops {
     }
 
     /**
-     * 本周公历日列表
+     * Gets a list of all solar days in this week.
      *
-     * @return 公历日列表
+     * @return A list of {@link SolarDay} objects for this week.
      */
     public List<SolarDay> getDays() {
         List<SolarDay> l = new ArrayList<>(7);

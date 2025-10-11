@@ -33,7 +33,8 @@ import java.security.NoSuchAlgorithmException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Ketama算法，用于在一致性Hash中快速定位服务器位置
+ * An implementation of the Ketama hash algorithm, commonly used in consistent hashing to map keys to servers (e.g., in
+ * Memcached).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,21 +42,27 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 public class KetamaHash implements Hash64<byte[]>, Hash32<byte[]> {
 
     /**
-     * 计算MD5值，使用UTF-8编码
+     * Calculates the MD5 hash of the given key.
      *
-     * @param key 被计算的键
-     * @return MD5值
+     * @param key The key to be hashed.
+     * @return The MD5 hash as a byte array.
      */
     private static byte[] md5(final byte[] key) {
         final MessageDigest md5;
         try {
             md5 = MessageDigest.getInstance("MD5");
         } catch (final NoSuchAlgorithmException e) {
-            throw new InternalException("MD5 algorithm not suooport!", e);
+            throw new InternalException("MD5 algorithm not supported!", e);
         }
         return md5.digest(key);
     }
 
+    /**
+     * Computes the 64-bit Ketama hash value.
+     *
+     * @param key The input byte array.
+     * @return The 64-bit hash value.
+     */
     @Override
     public long hash64(final byte[] key) {
         final byte[] bKey = md5(key);
@@ -63,11 +70,23 @@ public class KetamaHash implements Hash64<byte[]>, Hash32<byte[]> {
                 | (bKey[0] & 0xFF);
     }
 
+    /**
+     * Computes the 32-bit Ketama hash value.
+     *
+     * @param key The input byte array.
+     * @return The 32-bit hash value.
+     */
     @Override
     public int hash32(final byte[] key) {
         return (int) (hash64(key) & 0xffffffffL);
     }
 
+    /**
+     * Computes the 64-bit Ketama hash and returns it as a {@link Number}.
+     *
+     * @param key The input byte array.
+     * @return The 64-bit hash as a {@code Long}.
+     */
     @Override
     public Number encode(final byte[] key) {
         return hash64(key);

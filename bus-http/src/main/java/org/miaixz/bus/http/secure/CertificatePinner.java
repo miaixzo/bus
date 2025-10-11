@@ -27,40 +27,56 @@
 */
 package org.miaixz.bus.http.secure;
 
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.*;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.UnoUrl;
 
+import javax.net.ssl.SSLPeerUnverifiedException;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.*;
+
 /**
- * 限制哪些证书受信任。将证书固定起来可以防御对证书颁发机构的攻击。 它还可以防止通过应用程序用户知道或不知道的中间人证书颁发机构进行连接 固定证书限制了服务器团队更新其TLS证书的能力。通过固定证书，
- * 您将承担额外的操作复杂性，并限制您在证书颁发机构之间迁移的能力。 未经服务器的TLS管理员许可，请勿使用证书固定! 如果{@link javax.net.ssl.TrustManager}不接受自签名证书,
- * 则{@link CertificatePinner}不能用于pin自签名证书
+ * Constrains which certificates are trusted. Certificate pinning increases security, but also limits your server team's
+ * abilities to update their TLS certificates. <strong>Do not use certificate pinning without the blessing of your
+ * server's TLS administrator!</strong>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class CertificatePinner {
 
+    /**
+     * A default certificate pinner that trusts any certificate chain.
+     */
     public static final CertificatePinner DEFAULT = new Builder().build();
 
+    /**
+     * The set of configured pins.
+     */
     private final Set<Pin> pins;
+    /**
+     * An optional cleaner for the certificate chain.
+     */
     private final CertificateChainCleaner certificateChainCleaner;
 
+    /**
+     * Constructs a new CertificatePinner.
+     * 
+     * @param pins                    The set of pins.
+     * @param certificateChainCleaner The certificate chain cleaner.
+     */
     CertificatePinner(Set<Pin> pins, CertificateChainCleaner certificateChainCleaner) {
         this.pins = pins;
         this.certificateChainCleaner = certificateChainCleaner;
     }
 
     /**
-     * Returns the SHA-256 of {@code certificate}'s public key. In Http and earlier, this returned a SHA-1 hash of the
-     * public key. Both types are supported, but SHA-256 is preferred.
+     * Returns the SHA-256 of {@code certificate}'s public key.
+     *
+     * @param certificate The certificate to hash.
+     * @return A string in the format "sha256/&lt;base64-hash&gt;".
      */
     public static String pin(Certificate certificate) {
         if (!(certificate instanceof X509Certificate)) {
@@ -69,10 +85,22 @@ public class CertificatePinner {
         return "sha256/" + sha256((X509Certificate) certificate).base64();
     }
 
+    /**
+     * Computes the SHA-1 hash of a certificate's public key.
+     * 
+     * @param x509Certificate The certificate.
+     * @return The SHA-1 hash as a ByteString.
+     */
     static ByteString sha1(X509Certificate x509Certificate) {
         return ByteString.of(x509Certificate.getPublicKey().getEncoded()).sha1();
     }
 
+    /**
+     * Computes the SHA-256 hash of a certificate's public key.
+     * 
+     * @param x509Certificate The certificate.
+     * @return The SHA-256 hash as a ByteString.
+     */
     static ByteString sha256(X509Certificate x509Certificate) {
         return ByteString.of(x509Certificate.getPublicKey().getEncoded()).sha256();
     }
@@ -94,24 +122,27 @@ public class CertificatePinner {
     }
 
     /**
-     * 确认{@code hostname}所固定的证书中至少有一个位于{@code peerCertificates}中。
-     * 如果没有为{@code hostname}指定证书，则不执行任何操作。Httpd在成功的TLS握手之后调用它，但是在使用连接之前.
+     * Confirms that at least one of the certificates pinned for {@code hostname} is present in
+     * {@code peerCertificates}. This method is called after a successful TLS handshake, but before the connection is
+     * used.
      *
-     * @param hostname         主机名
-     * @param peerCertificates 证书信息
-     * @throws SSLPeerUnverifiedException 如果{@code peerCertificates} 与{@code hostname}所固定的证书不匹配
+     * @param hostname         The hostname of the peer.
+     * @param peerCertificates The certificate chain presented by the peer.
+     * @throws SSLPeerUnverifiedException if {@code peerCertificates} does not match the certificates pinned for
+     *                                    {@code hostname}.
      */
     public void check(String hostname, List<Certificate> peerCertificates) throws SSLPeerUnverifiedException {
         List<Pin> pins = findMatchingPins(hostname);
         if (pins.isEmpty())
             return;
 
+        List<Certificate> checkedPeerCertificates = peerCertificates;
         if (null != certificateChainCleaner) {
-            peerCertificates = certificateChainCleaner.clean(peerCertificates, hostname);
+            checkedPeerCertificates = certificateChainCleaner.clean(peerCertificates, hostname);
         }
 
-        for (int c = 0, certsSize = peerCertificates.size(); c < certsSize; c++) {
-            X509Certificate x509Certificate = (X509Certificate) peerCertificates.get(c);
+        for (int c = 0, certsSize = checkedPeerCertificates.size(); c < certsSize; c++) {
+            X509Certificate x509Certificate = (X509Certificate) checkedPeerCertificates.get(c);
 
             // Lazily compute the hashes for each certificate.
             ByteString sha1 = null;
@@ -138,8 +169,8 @@ public class CertificatePinner {
         // If we couldn't find a matching pin, format a nice exception.
         StringBuilder message = new StringBuilder().append("Certificate pinning failure!")
                 .append("\n  Peer certificate chain:");
-        for (int c = 0, certsSize = peerCertificates.size(); c < certsSize; c++) {
-            X509Certificate x509Certificate = (X509Certificate) peerCertificates.get(c);
+        for (int c = 0, certsSize = checkedPeerCertificates.size(); c < certsSize; c++) {
+            X509Certificate x509Certificate = (X509Certificate) checkedPeerCertificates.get(c);
             message.append("\n    ").append(pin(x509Certificate)).append(": ")
                     .append(x509Certificate.getSubjectDN().getName());
         }
@@ -152,15 +183,10 @@ public class CertificatePinner {
     }
 
     /**
-     * @deprecated replaced with {@link #check(String, List)}.
-     */
-    public void check(String hostname, Certificate... peerCertificates) throws SSLPeerUnverifiedException {
-        check(hostname, Arrays.asList(peerCertificates));
-    }
-
-    /**
-     * Returns list of matching certificates' pins for the hostname. Returns an empty list if the hostname does not have
-     * pinned certificates.
+     * Returns a list of matching certificates' pins for the hostname.
+     *
+     * @param hostname The hostname to match against.
+     * @return An empty list if the hostname does not have pinned certificates.
      */
     List<Pin> findMatchingPins(String hostname) {
         List<Pin> result = Collections.emptyList();
@@ -175,30 +201,36 @@ public class CertificatePinner {
     }
 
     /**
-     * Returns a certificate pinner that uses {@code certificateChainCleaner}.
+     * Returns a new certificate pinner that uses {@code certificateChainCleaner}.
+     *
+     * @param certificateChainCleaner The cleaner to use.
+     * @return a new {@code CertificatePinner} instance.
      */
     public CertificatePinner withCertificateChainCleaner(CertificateChainCleaner certificateChainCleaner) {
         return Objects.equals(this.certificateChainCleaner, certificateChainCleaner) ? this
                 : new CertificatePinner(pins, certificateChainCleaner);
     }
 
-    static class Pin {
+    /**
+     * Represents a single certificate pin.
+     */
+    static final class Pin {
 
         private static final String WILDCARD = "*.";
         /**
-         * 像{@code example.com}这样的主机名或{@code *.example.com}这样的模式.
+         * A hostname pattern like {@code example.com} or {@code *.example.com}.
          */
         final String pattern;
         /**
-         * 规范主机名，即{@code EXAMPLE.com}变为{@code EXAMPLE.com}.
+         * The canonical hostname, extracted from the pattern.
          */
         final String canonicalHostname;
         /**
-         * 要么 {@code sha1/} or {@code sha256/}.
+         * The hash algorithm, either {@code sha1/} or {@code sha256/}.
          */
         final String hashAlgorithm;
         /**
-         * 使用{@link # hashalgm}的固定证书散列.
+         * The base64-encoded hash of the certificate's public key.
          */
         final ByteString hash;
 
@@ -228,7 +260,6 @@ public class CertificatePinner {
                 return (hostname.length() - firstDot - 1) == canonicalHostname.length() && hostname
                         .regionMatches(false, firstDot + 1, canonicalHostname, 0, canonicalHostname.length());
             }
-
             return hostname.equals(canonicalHostname);
         }
 
@@ -254,18 +285,19 @@ public class CertificatePinner {
     }
 
     /**
-     * 构建已配置的证书
+     * A builder for creating a {@link CertificatePinner}.
      */
-    public static class Builder {
+    public static final class Builder {
 
         private final List<Pin> pins = new ArrayList<>();
 
         /**
-         * 用于{@code pattern} 的证书
+         * Pins certificates for a given hostname pattern.
          *
-         * @param pattern lowner -case主机名或通配符模式，如{@code *.example.com}.
-         * @param pins    SHA-256或SHA-1散列。每个pin是证书主题公钥信息的散列，用base64编码， 以{@code sha256/}或{@code sha1/}为前缀
-         * @return 构建器
+         * @param pattern A lowercase hostname or wildcard pattern (e.g., {@code *.example.com}).
+         * @param pins    One or more SHA-256 or SHA-1 hashes. Each pin is a base64-encoded hash of a certificate's
+         *                Subject Public Key Info, prefixed with {@code sha256/} or {@code sha1/}.
+         * @return This builder instance.
          */
         public Builder add(String pattern, String... pins) {
             if (null == pattern)
@@ -278,6 +310,11 @@ public class CertificatePinner {
             return this;
         }
 
+        /**
+         * Builds the {@link CertificatePinner} with the configured pins.
+         *
+         * @return A new {@code CertificatePinner} instance.
+         */
         public CertificatePinner build() {
             return new CertificatePinner(new LinkedHashSet<>(pins), null);
         }

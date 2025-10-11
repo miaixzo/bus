@@ -36,7 +36,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 import org.miaixz.bus.socket.buffer.WriteBuffer;
 
 /**
- * 会话相关实现
+ * Abstract base class representing a network session.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,20 +44,20 @@ import org.miaixz.bus.socket.buffer.WriteBuffer;
 public abstract class Session {
 
     /**
-     * Session状态:已关闭
+     * Session status: closed.
      */
     protected static final byte SESSION_STATUS_CLOSED = 1;
     /**
-     * Session状态:关闭中
+     * Session status: in the process of closing.
      */
     protected static final byte SESSION_STATUS_CLOSING = 2;
     /**
-     * Session状态:正常
+     * Session status: active and enabled.
      */
     protected static final byte SESSION_STATUS_ENABLED = 3;
 
     /**
-     * 会话当前状态
+     * Current status of the session.
      *
      * @see Session#SESSION_STATUS_CLOSED
      * @see Session#SESSION_STATUS_CLOSING
@@ -65,120 +65,125 @@ public abstract class Session {
      */
     protected byte status = SESSION_STATUS_ENABLED;
     /**
-     * 是否读通道以至末尾
+     * Whether the read channel has reached the end-of-stream.
      */
     protected boolean eof;
     protected int modCount = 0;
     /**
-     * 附件对象
+     * An optional attachment object.
      */
     private Object attachment;
 
     /**
-     * 获取WriteBuffer用以数据输出
+     * Gets the `WriteBuffer` for data output.
      *
-     * @return WriteBuffer
+     * @return The `WriteBuffer`.
      */
     public abstract WriteBuffer writeBuffer();
 
     /**
-     * 获取读缓冲区对象
+     * Gets the read buffer object.
+     *
+     * @return The `ByteBuffer` for reading.
      */
     public abstract ByteBuffer readBuffer();
 
     /**
-     * 强制关闭当前Session 若此时还存留待输出的数据，则会导致该部分数据丢失
+     * Forcibly closes the current session. Any pending data in the write buffer may be lost.
      */
     public final void close() {
         close(true);
     }
 
+    /**
+     * Pauses the read operation until `signalRead` is called.
+     */
     public abstract void awaitRead();
 
     /**
-     * 继续触发读行为，该方法仅可在异步处理模式下可使用，否则会触发不可预知的异常
+     * Resumes the read operation. This method should only be used in asynchronous processing mode.
      */
     public abstract void signalRead();
 
     /**
-     * 是否立即关闭会话
+     * Closes the session.
      *
-     * @param immediate true:立即关闭,false:响应消息发送完后关闭
+     * @param immediate If `true`, closes immediately; if `false`, closes after flushing the write buffer.
      */
     public abstract void close(boolean immediate);
 
     /**
-     * 获取当前Session的唯一标识
+     * Gets the unique identifier for this session.
      *
-     * @return sessionId
+     * @return The session ID.
      */
     public String getSessionID() {
         return "Session-" + hashCode();
     }
 
     /**
-     * 当前会话是否已失效
+     * Checks if the current session is invalid (closing or closed).
      *
-     * @return 是否失效
+     * @return `true` if the session is invalid.
      */
     public boolean isInvalid() {
         return status != SESSION_STATUS_ENABLED;
     }
 
     /**
-     * 获取附件对象
+     * Gets the attachment object.
      *
-     * @param <A> 附件对象类型
-     * @return 附件
+     * @param <A> The type of the attachment.
+     * @return The attachment.
      */
     public final <A> A getAttachment() {
         return (A) attachment;
     }
 
     /**
-     * 存放附件，支持任意类型
+     * Attaches an object to this session.
      *
-     * @param <A>        附件对象类型
-     * @param attachment 附件对象
+     * @param <A>        The type of the attachment.
+     * @param attachment The object to attach.
      */
     public final <A> void setAttachment(A attachment) {
         this.attachment = attachment;
     }
 
     /**
-     * 获取当前会话的本地连接地址
+     * Gets the local address of this session.
      *
-     * @return 本地地址
-     * @throws IOException IO异常
+     * @return The local address.
+     * @throws IOException if an I/O error occurs.
      * @see AsynchronousSocketChannel#getLocalAddress()
      */
     public abstract InetSocketAddress getLocalAddress() throws IOException;
 
     /**
-     * 获取当前会话的远程连接地址
+     * Gets the remote address of this session.
      *
-     * @return 远程地址
-     * @throws IOException IO异常
+     * @return The remote address.
+     * @throws IOException if an I/O error occurs.
      * @see AsynchronousSocketChannel#getRemoteAddress()
      */
     public abstract InetSocketAddress getRemoteAddress() throws IOException;
 
     /**
-     * 获得数据输入流对象 faster模式下调用该方法会触发UnsupportedOperationException异常。 Handler采用异步处理消息的方式时，调用该方法可能会出现异常。
+     * Gets an `InputStream` for this session.
      *
-     * @return 输入流
-     * @throws IOException IO异常
+     * @return An `InputStream`.
+     * @throws IOException if an I/O error occurs.
      */
     public InputStream getInputStream() throws IOException {
         throw new UnsupportedOperationException();
     }
 
     /**
-     * 获取已知长度的InputStream
+     * Gets an `InputStream` of a known length.
      *
-     * @param length InputStream长度
-     * @return 输入流
-     * @throws IOException IO异常
+     * @param length The length of the `InputStream`.
+     * @return An `InputStream`.
+     * @throws IOException if an I/O error occurs.
      */
     public InputStream getInputStream(int length) throws IOException {
         throw new UnsupportedOperationException();

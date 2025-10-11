@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 数据脱敏，提供各种数据类型（字符串、数字等）的脱敏方法。
+ * Data masking, providing masking methods for various data types (strings, numbers, etc.).
  *
  * @author Kimi Liu
  * @since Java 17+

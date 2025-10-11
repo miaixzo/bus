@@ -52,20 +52,27 @@ import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
 
 /**
- * 存储服务-FTP
+ * Storage service provider for FTP (File Transfer Protocol). This provider integrates with FTP servers for file storage
+ * operations.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FtpFileProvider extends AbstractProvider {
 
+    /**
+     * The FTP client instance for interacting with the FTP server.
+     */
     private final Ftp client;
 
     /**
-     * 构造函数，初始化 FTP 客户端。
+     * Constructs an FTP file provider with the given context. Initializes the FTP client using the provided credentials
+     * and endpoint configuration.
      *
-     * @param context 存储上下文，包含端点、存储桶、访问密钥、秘密密钥等配置
-     * @throws IllegalArgumentException 如果配置参数无效或初始化失败
+     * @param context The storage context, containing endpoint, bucket, access key, secret key, and other
+     *                configurations.
+     * @throws IllegalArgumentException If required context parameters are missing or invalid, or if FTP client
+     *                                  initialization fails.
      */
     public FtpFileProvider(Context context) {
         this.context = context;
@@ -75,7 +82,7 @@ public class FtpFileProvider extends AbstractProvider {
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] cannot be blank");
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] cannot be blank");
 
-        // 从 endpoint 解析主机和端口
+        // Parse host and port from the endpoint
         String host = parseHostFromEndpoint(context.getEndpoint());
         int port = parsePortFromEndpoint(context.getEndpoint());
         String username = context.getAccessKey();
@@ -84,7 +91,7 @@ public class FtpFileProvider extends AbstractProvider {
         try {
             Connector connector = new Connector();
             connector.setHost(host);
-            connector.setPort(port != 0 ? port : 21); // 默认 FTP 端口 21
+            connector.setPort(port != 0 ? port : 21); // Default FTP port is 21
             connector.setUser(username);
             connector.setPassword(password);
             this.client = CommonsFtp.of(connector, Charset.UTF_8);
@@ -94,10 +101,11 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从默认存储桶下载文件。
+     * Downloads a file from the default storage bucket.
      *
-     * @param fileName 文件名
-     * @return 处理结果，包含文件内容流或错误信息
+     * @param fileName The name of the file to download.
+     * @return A {@link Message} containing the result of the operation, including the file content stream if
+     *         successful.
      */
     @Override
     public Message download(String fileName) {
@@ -105,11 +113,12 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶下载文件。
+     * Downloads a file from the specified storage bucket.
      *
-     * @param bucket   存储桶名称
-     * @param fileName 文件名
-     * @return 处理结果，包含文件内容流或错误信息
+     * @param bucket   The name of the storage bucket.
+     * @param fileName The name of the file to download.
+     * @return A {@link Message} containing the result of the operation, including the file content stream if
+     *         successful.
      */
     @Override
     public Message download(String bucket, String fileName) {
@@ -129,11 +138,11 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从默认存储桶下载文件并保存到本地文件。
+     * Downloads a file from the default storage bucket and saves it to a local file.
      *
-     * @param fileName 文件名
-     * @param file     本地目标文件
-     * @return 处理结果，包含成功或错误信息
+     * @param fileName The name of the file to download.
+     * @param file     The target local file to save the downloaded content.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message download(String fileName, File file) {
@@ -141,12 +150,12 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶下载文件并保存到本地文件。
+     * Downloads a file from the specified storage bucket and saves it to a local file.
      *
-     * @param bucket   存储桶名称
-     * @param fileName 文件名
-     * @param file     本地目标文件
-     * @return 处理结果，包含成功或错误信息
+     * @param bucket   The name of the storage bucket.
+     * @param fileName The name of the file to download.
+     * @param file     The target local file to save the downloaded content.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message download(String bucket, String fileName, File file) {
@@ -167,9 +176,10 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 列出默认存储桶中的文件。
+     * Lists files in the default storage bucket.
      *
-     * @return 处理结果，包含文件列表或错误信息
+     * @return A {@link Message} containing the result of the operation, including a list of {@link Material} objects if
+     *         successful.
      */
     @Override
     public Message list() {
@@ -188,11 +198,11 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 重命名默认存储桶中的文件。
+     * Renames a file in the default storage bucket.
      *
-     * @param oldName 原文件名
-     * @param newName 新文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String oldName, String newName) {
@@ -200,12 +210,12 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 在默认存储桶的指定路径中重命名文件。
+     * Renames a file within a specified path in the default storage bucket.
      *
-     * @param path    路径
-     * @param oldName 原文件名
-     * @param newName 新文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param path    The path where the file is located.
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String path, String oldName, String newName) {
@@ -213,13 +223,13 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 在指定存储桶和路径中重命名文件。
+     * Renames a file within the specified bucket and path.
      *
-     * @param bucket  存储桶名称
-     * @param path    路径
-     * @param oldName 原文件名
-     * @param newName 新文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param bucket  The name of the storage bucket.
+     * @param path    The path where the file is located.
+     * @param oldName The current name of the file.
+     * @param newName The new name for the file.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message rename(String bucket, String path, String oldName, String newName) {
@@ -245,11 +255,11 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传字节数组内容到默认存储桶。
+     * Uploads a byte array to the default storage bucket.
      *
-     * @param fileName 文件名
-     * @param content  字节数组内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String fileName, byte[] content) {
@@ -257,12 +267,12 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传字节数组内容到默认存储桶的指定路径。
+     * Uploads a byte array to a specified path in the default storage bucket.
      *
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  字节数组内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String path, String fileName, byte[] content) {
@@ -270,13 +280,13 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传字节数组内容到指定存储桶和路径。
+     * Uploads a byte array to the specified storage bucket and path.
      *
-     * @param bucket   存储桶名称
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  字节数组内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param bucket   The name of the storage bucket.
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as a byte array.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, byte[] content) {
@@ -284,11 +294,11 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传输入流内容到默认存储桶。
+     * Uploads an input stream to the default storage bucket.
      *
-     * @param fileName 文件名
-     * @param content  输入流内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String fileName, InputStream content) {
@@ -296,12 +306,12 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传输入流内容到默认存储桶的指定路径。
+     * Uploads an input stream to a specified path in the default storage bucket.
      *
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  输入流内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message upload(String path, String fileName, InputStream content) {
@@ -309,13 +319,13 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 上传输入流内容到指定存储桶和路径。
+     * Uploads an input stream to the specified storage bucket and path.
      *
-     * @param bucket   存储桶名称
-     * @param path     路径
-     * @param fileName 文件名
-     * @param content  输入流内容
-     * @return 处理结果，包含上传的文件信息或错误信息
+     * @param bucket   The name of the storage bucket.
+     * @param path     The target path for the file.
+     * @param fileName The name of the file to upload.
+     * @param content  The file content as an {@link InputStream}.
+     * @return A {@link Message} containing the result of the operation, including material details if successful.
      */
     @Override
     public Message upload(String bucket, String path, String fileName, InputStream content) {
@@ -325,7 +335,7 @@ public class FtpFileProvider extends AbstractProvider {
             if (!client.isDir(dirPath)) {
                 client.mkDirs(dirPath);
             }
-            // 使用临时文件上传流内容
+            // Use a temporary file to upload stream content
             File tempFile = File.createTempFile("ftp_upload_", ".tmp");
             try (OutputStream out = new FileOutputStream(tempFile)) {
                 IoKit.copy(content, out);
@@ -347,10 +357,10 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从默认存储桶删除文件。
+     * Removes a file from the default storage bucket.
      *
-     * @param fileName 文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String fileName) {
@@ -358,11 +368,11 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从默认存储桶的指定路径删除文件。
+     * Removes a file from a specified path in the default storage bucket.
      *
-     * @param path     路径
-     * @param fileName 文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param path     The storage path where the file is located.
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String path, String fileName) {
@@ -370,12 +380,12 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶和路径删除文件。
+     * Removes a file from the specified storage bucket and path.
      *
-     * @param bucket   存储桶名称
-     * @param path     路径
-     * @param fileName 文件名
-     * @return 处理结果，包含成功或错误信息
+     * @param bucket   The name of the storage bucket.
+     * @param path     The storage path where the file is located.
+     * @param fileName The name of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, String path, String fileName) {
@@ -398,11 +408,11 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从指定存储桶删除指定路径的文件。
+     * Removes a file from the specified storage bucket based on its path.
      *
-     * @param bucket 存储桶名称
-     * @param path   文件路径
-     * @return 处理结果，包含成功或错误信息
+     * @param bucket The name of the storage bucket.
+     * @param path   The target path of the file to remove.
+     * @return A {@link Message} containing the result of the operation.
      */
     @Override
     public Message remove(String bucket, Path path) {
@@ -410,18 +420,19 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从 endpoint 解析主机，确保不包含端口信息。
+     * Parses the host from the given endpoint string. This method extracts the hostname, ensuring that port information
+     * is not included.
      *
-     * @param endpoint FTP 服务器地址，格式如 ftp://hostname:port 或 hostname
-     * @return 主机名
+     * @param endpoint The FTP server address, e.g., ftp://hostname:port or hostname.
+     * @return The hostname.
      */
     private String parseHostFromEndpoint(String endpoint) {
         if (StringKit.isBlank(endpoint)) {
             return "";
         }
-        // 移除协议头（如 ftp://）
+        // Remove protocol header (e.g., ftp://)
         String host = endpoint.replaceFirst("^(ftp)://", "");
-        // 移除端口和路径
+        // Remove port and path
         int colonIndex = host.indexOf(':');
         int slashIndex = host.indexOf('/');
         if (colonIndex != -1) {
@@ -433,21 +444,21 @@ public class FtpFileProvider extends AbstractProvider {
     }
 
     /**
-     * 从 endpoint 解析端口。
+     * Parses the port from the given endpoint string.
      *
-     * @param endpoint FTP 服务器地址，格式如 ftp://hostname:port 或 hostname
-     * @return 端口号，0 表示使用默认端口 21
+     * @param endpoint The FTP server address, e.g., ftp://hostname:port or hostname.
+     * @return The port number, or 0 if no port is specified (indicating the default port 21 should be used).
      */
     private int parsePortFromEndpoint(String endpoint) {
         if (StringKit.isBlank(endpoint)) {
             return 0;
         }
         try {
-            // 提取端口部分
+            // Extract the port part
             String portStr = endpoint.replaceFirst("^(ftp)://[^:]+:?", "");
             int slashIndex = portStr.indexOf('/');
             if (slashIndex != -1) {
-                portStr = portStr.substring(0, slashIndex); // 移除路径部分
+                portStr = portStr.substring(0, slashIndex); // Remove path part
             }
             if (StringKit.isNotBlank(portStr)) {
                 return Integer.parseInt(portStr);
@@ -455,16 +466,16 @@ public class FtpFileProvider extends AbstractProvider {
         } catch (NumberFormatException e) {
             Logger.warn("Invalid port in endpoint: {}. Using default port 21.", endpoint);
         }
-        return 0; // 返回 0 表示使用默认端口 21
+        return 0; // Return 0 to indicate that the default port 21 should be used
     }
 
     /**
-     * 构建文件的绝对路径。
+     * Constructs the absolute path for a file.
      *
-     * @param bucket   存储桶名称，可为空
-     * @param path     路径，可为空
-     * @param fileName 文件名
-     * @return 规范化后的绝对路径
+     * @param bucket   The name of the storage bucket, can be empty.
+     * @param path     The path within the bucket, can be empty.
+     * @param fileName The name of the file.
+     * @return The normalized absolute path for the file.
      */
     private String getAbsolutePath(String bucket, String path, String fileName) {
         String prefix = StringKit.isBlank(bucket) ? Builder.buildNormalizedPrefix(context.getPrefix())

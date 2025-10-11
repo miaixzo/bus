@@ -41,7 +41,8 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeUtility;
 
 /**
- * 邮件内部工具类
+ * An internal utility class for mail-related operations, such as parsing addresses and encoding text. This class is not
+ * intended for public use and provides helper methods for the mail API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,11 +50,12 @@ import jakarta.mail.internet.MimeUtility;
 public class InternalMail {
 
     /**
-     * 将多个字符串邮件地址转为{@link InternetAddress}列表 单个字符串地址可以是多个地址合并的字符串
+     * Parses an array of email address strings into an array of {@link InternetAddress} objects. Each string in the
+     * input array can contain multiple addresses separated by standard delimiters.
      *
-     * @param addrStrs 地址数组
-     * @param charset  编码（主要用于中文用户名的编码）
-     * @return 地址数组
+     * @param addrStrs An array of email address strings.
+     * @param charset  The character set to use for encoding personal names (e.g., for non-ASCII characters).
+     * @return An array of {@link InternetAddress} objects.
      */
     public static InternetAddress[] parseAddressFromStrs(final String[] addrStrs, final Charset charset) {
         final List<InternetAddress> resultList = new ArrayList<>(addrStrs.length);
@@ -68,11 +70,12 @@ public class InternalMail {
     }
 
     /**
-     * 解析第一个地址
+     * Parses an address string and returns the first valid {@link InternetAddress} found.
      *
-     * @param address 地址字符串
-     * @param charset 编码，{@code null}表示使用系统属性定义的编码或系统编码
-     * @return 地址列表
+     * @param address The address string to parse.
+     * @param charset The character set to use for encoding the personal name. If null, the system default is used.
+     * @return The first parsed {@link InternetAddress}.
+     * @throws InternalException if parsing fails.
      */
     public static InternetAddress parseFirstAddress(final String address, final Charset charset) {
         final InternetAddress[] internetAddresses = parseAddress(address, charset);
@@ -87,11 +90,13 @@ public class InternalMail {
     }
 
     /**
-     * 将一个地址字符串解析为多个地址 地址间使用" "、","、";"分隔
+     * Parses a single address string, which may contain multiple addresses separated by spaces, commas, or semicolons,
+     * into an array of {@link InternetAddress} objects.
      *
-     * @param address 地址字符串
-     * @param charset 编码，{@code null}表示使用系统属性定义的编码或系统编码
-     * @return 地址列表
+     * @param address The address string to parse.
+     * @param charset The character set to use for encoding personal names. If null, the system default is used.
+     * @return An array of {@link InternetAddress} objects.
+     * @throws InternalException if parsing fails.
      */
     public static InternetAddress[] parseAddress(final String address, final Charset charset) {
         final InternetAddress[] addresses;
@@ -100,7 +105,7 @@ public class InternalMail {
         } catch (final AddressException e) {
             throw new InternalException(e);
         }
-        // 编码用户名
+        // Encode personal names
         if (ArrayKit.isNotEmpty(addresses)) {
             final String charsetStr = null == charset ? null : charset.name();
             for (final InternetAddress internetAddress : addresses) {
@@ -116,17 +121,18 @@ public class InternalMail {
     }
 
     /**
-     * 编码中文字符 编码失败返回原字符串
+     * Encodes a string with non-ASCII characters for use in email headers, using MIME encoding. If encoding fails, the
+     * original string is returned.
      *
-     * @param text    被编码的文本
-     * @param charset 编码
-     * @return 编码后的结果
+     * @param text    The text to be encoded.
+     * @param charset The character set to use for encoding.
+     * @return The encoded string.
      */
     public static String encodeText(final String text, final Charset charset) {
         try {
             return MimeUtility.encodeText(text, charset.name(), null);
         } catch (final UnsupportedEncodingException e) {
-            // ignore
+            // Ignore and return the original string if encoding fails
         }
         return text;
     }

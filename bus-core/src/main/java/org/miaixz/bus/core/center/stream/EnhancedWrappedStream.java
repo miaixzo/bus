@@ -31,10 +31,10 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
- * {@link WrappedStream}接口的公共实现，用于包装并增强一个已有的流实例
+ * A common implementation of the {@link WrappedStream} interface, used to wrap and enhance an existing stream instance.
  *
- * @param <T> 流中的元素类型
- * @param <S> {@link EnhancedWrappedStream}的实现类类型
+ * @param <T> the type of the elements in the stream
+ * @param <S> the type of the {@link EnhancedWrappedStream} implementation itself
  * @author Kimi Liu
  * @see EasyStream
  * @see EntryStream
@@ -44,22 +44,24 @@ public abstract class EnhancedWrappedStream<T, S extends EnhancedWrappedStream<T
         implements TerminableWrappedStream<T, S>, TransformableWrappedStream<T, S> {
 
     /**
-     * 原始流实例
+     * The original stream instance.
      */
     protected Stream<T> stream;
 
     /**
-     * 创建一个流包装器
+     * Constructs a stream wrapper.
      *
-     * @param stream 包装的流对象
-     * @throws NullPointerException 当{@code unwrap}为{@code null}时抛出
+     * @param stream the stream object to be wrapped
+     * @throws NullPointerException if {@code stream} is {@code null}
      */
     protected EnhancedWrappedStream(final Stream<T> stream) {
         this.stream = Objects.requireNonNull(stream, "unwrap must not null");
     }
 
     /**
-     * 获取被包装的元素流实例
+     * Retrieves the underlying stream instance wrapped by this object.
+     *
+     * @return the stream instance wrapped by this object
      */
     @Override
     public Stream<T> unwrap() {
@@ -67,9 +69,9 @@ public abstract class EnhancedWrappedStream<T, S extends EnhancedWrappedStream<T
     }
 
     /**
-     * 获取当前被包装的实例的哈希值
+     * Returns a hash code value for the object.
      *
-     * @return 哈希值
+     * @return a hash code value for this object
      */
     @Override
     public int hashCode() {
@@ -77,10 +79,10 @@ public abstract class EnhancedWrappedStream<T, S extends EnhancedWrappedStream<T
     }
 
     /**
-     * 比较被包装的实例是否相等
+     * Indicates whether some other object is "equal to" this one.
      *
-     * @param object 对象
-     * @return 是否相等
+     * @param object the reference object with which to compare
+     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise
      */
     @Override
     public boolean equals(final Object object) {
@@ -88,9 +90,9 @@ public abstract class EnhancedWrappedStream<T, S extends EnhancedWrappedStream<T
     }
 
     /**
-     * 将被包装的实例转为字符串
+     * Returns a string representation of the object.
      *
-     * @return 字符串
+     * @return a string representation of the object
      */
     @Override
     public String toString() {
@@ -98,7 +100,7 @@ public abstract class EnhancedWrappedStream<T, S extends EnhancedWrappedStream<T
     }
 
     /**
-     * 触发流的执行，这是一个终端操作
+     * Triggers the execution of the stream. This is a terminal operation.
      */
     public void exec() {
         stream.forEach(t -> {

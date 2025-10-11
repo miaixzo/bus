@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.validate;
 
+import org.miaixz.bus.core.lang.exception.NoSuchException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.validate.magic.ErrorCode;
+import org.miaixz.bus.validate.magic.Material;
+import org.miaixz.bus.validate.magic.annotation.Complex;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -36,15 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.core.lang.exception.NoSuchException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.validate.magic.ErrorCode;
-import org.miaixz.bus.validate.magic.Material;
-import org.miaixz.bus.validate.magic.annotation.Complex;
-
 /**
- * 服务提供者
+ * Service provider for validation operations. This class provides static methods to initiate validation and helper
+ * methods for the validation process.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,72 +53,78 @@ import org.miaixz.bus.validate.magic.annotation.Complex;
 public class Provider {
 
     /**
-     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Creates a new validation instance for the given object. A new object is created each time to avoid thread safety
+     * issues. {@link ThreadLocal} can be used for optimization.
      *
-     * @param <T>    对象
-     * @param object 原始对象
-     * @return the object
+     * @param <T>    the type of the object to be validated.
+     * @param object the original object.
+     * @return a validation instance for the object.
      */
     public static <T> T on(Object object) {
         return (T) new Verified(object).access();
     }
 
     /**
-     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Creates a new validation instance for the given object with context. A new object is created each time to avoid
+     * thread safety issues. {@link ThreadLocal} can be used for optimization.
      *
-     * @param <T>     对象
-     * @param object  原始对象
-     * @param context 上下文信息
-     * @return the object
+     * @param <T>     the type of the object to be validated.
+     * @param object  the original object.
+     * @param context the validation context.
+     * @return a validation instance for the object.
      */
     public static <T> T on(Object object, Context context) {
         return (T) new Verified(object, context).access();
     }
 
     /**
-     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Creates a new validation instance for the given object with annotations. A new object is created each time to
+     * avoid thread safety issues. {@link ThreadLocal} can be used for optimization.
      *
-     * @param <T>         对象
-     * @param object      原始对象
-     * @param annotations 注解信息
-     * @return the object
+     * @param <T>         the type of the object to be validated.
+     * @param object      the original object.
+     * @param annotations the validation annotations.
+     * @return a validation instance for the object.
      */
     public static <T> T on(Object object, Annotation[] annotations) {
         return (T) new Verified(object, annotations).access();
     }
 
     /**
-     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Creates a new validation instance for the given object with annotations and context. A new object is created each
+     * time to avoid thread safety issues. {@link ThreadLocal} can be used for optimization.
      *
-     * @param <T>         对象
-     * @param object      原始对象
-     * @param annotations 注解信息
-     * @param context     上下文信息
-     * @return the object
+     * @param <T>         the type of the object to be validated.
+     * @param object      the original object.
+     * @param annotations the validation annotations.
+     * @param context     the validation context.
+     * @return a validation instance for the object.
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context) {
         return (T) new Verified(object, annotations, context).access();
     }
 
     /**
-     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * Creates a new validation instance for the given object with annotations, context, and field name. A new object is
+     * created each time to avoid thread safety issues. {@link ThreadLocal} can be used for optimization.
      *
-     * @param <T>         对象
-     * @param field       当前属性
-     * @param object      原始对象
-     * @param annotations 注解信息
-     * @param context     上下文信息
-     * @return the object
+     * @param <T>         the type of the object to be validated.
+     * @param field       the name of the field being validated.
+     * @param object      the original object.
+     * @param annotations the validation annotations.
+     * @param context     the validation context.
+     * @return a validation instance for the object.
      */
     public static <T> T on(Object object, Annotation[] annotations, Context context, String field) {
         return (T) new Verified(object, annotations, context, field).access();
     }
 
     /**
-     * 是否为校验器注解
+     * Checks if the given annotation is a validation annotation. A validation annotation is one that is itself
+     * annotated with {@link Complex}.
      *
-     * @param annotation 注解
-     * @return the boolean
+     * @param annotation the annotation to check.
+     * @return {@code true} if it is a validation annotation, {@code false} otherwise.
      */
     public static boolean isAnnotation(Annotation annotation) {
         Class<? extends Annotation> annotationType = annotation.annotationType();
@@ -125,41 +132,43 @@ public class Provider {
     }
 
     /**
-     * 判断校验是否为数组
+     * Checks if the given object is an array.
      *
-     * @param object 当前校验组
-     * @return true/false
+     * @param object the object to check.
+     * @return {@code true} if the object is an array, {@code false} otherwise.
      */
     public static boolean isArray(Object object) {
         return object.getClass().isArray();
     }
 
     /**
-     * 判断校验是否为集合
+     * Checks if the given object is a {@link Collection}.
      *
-     * @param object 当前校验组
-     * @return true/false
+     * @param object the object to check.
+     * @return {@code true} if the object is a collection, {@code false} otherwise.
      */
     public static boolean isCollection(Object object) {
         return Collection.class.isAssignableFrom(object.getClass());
     }
 
     /**
-     * 判断校验是否为Map
+     * Checks if the given object is a {@link Map}.
      *
-     * @param object 当前校验组
-     * @return true/false
+     * @param object the object to check.
+     * @return {@code true} if the object is a map, {@code false} otherwise.
      */
     public static boolean isMap(Object object) {
         return Map.class.isAssignableFrom(object.getClass());
     }
 
     /**
-     * 判断校验组是否符合当前全局校验组范围
+     * Checks if the validation groups of a validator match the currently active groups in the validation context.
      *
-     * @param group 当前校验组
-     * @param list  校验环境中校验组属性
-     * @return true：当前校验组中为空,或任意一个组环境存在于校验环境中
+     * @param group the validation groups to check.
+     * @param list  the list of active groups in the validation context.
+     * @return {@code true} if the groups match (i.e., the validator should be executed), {@code false} otherwise.
+     *         Returns {@code true} if the validator defines no groups. Returns {@code false} if the validator defines
+     *         groups but the context has no active groups.
      */
     public static boolean isGroup(String[] group, List<String> list) {
         if (null == group || group.length == 0) {
@@ -174,29 +183,31 @@ public class Provider {
     }
 
     /**
-     * 根据校验规则和上下文解析并创建校验异常
+     * Resolves and creates a {@link ValidateException} based on the validation material and context.
      *
-     * @param material 校验规则材料，包含校验器、错误信息等配置
-     * @param context  校验上下文，包含异常类、错误码等运行时信息
-     * @return 根据规则和上下文创建的校验异常实例
-     * @throws NoSuchException 当自定义异常类不符合要求时抛出
+     * @param material the validation material, containing validator configuration, error messages, etc.
+     * @param context  the validation context, containing runtime information like exception class and error codes.
+     * @return a {@link ValidateException} instance created according to the rules and context.
+     * @throws NoSuchException if the custom exception class does not meet the requirements (e.g., missing constructor).
      */
     public static ValidateException resolve(Material material, Context context) {
-        // 1. 确定异常类：优先使用上下文的异常类，fallback 到材料的异常类，再 fallback 到 ValidateException
+        // 1. Determine the exception class: Priority is given to the context's exception class, then the material's,
+        // and finally ValidateException.
         Class<? extends ValidateException> exceptionClass = ObjectKit
                 .defaultIfNull(material.getException(), context.getException());
 
-        // 2. 确定错误码：优先使用材料中的错误码，如果是默认值则尝试上下文的错误码
+        // 2. Determine the error code: Priority is given to the material's error code; if it's the default, the
+        // context's error code is used.
         String errcode = ObjectKit.defaultIfNull(material.getErrcode(), context.getErrcode());
 
-        // 3. 获取错误信息：从 Errors 获取，如果 key 为 null 则使用原始 errorCode
+        // 3. Get the error message: Fetched from Errors; if the key is null, the original errorCode is used.
         String errmsg = ObjectKit.defaultIfNull(material.getErrmsg(), ErrorCode._115000.getValue());
 
-        // 4. 设置材料中的错误码和错误消息
+        // 4. Set the error code and message in the material.
         material.setErrcode(errcode);
         material.setErrmsg(errmsg);
 
-        // 5. 创建异常实例
+        // 5. Create the exception instance.
         if (exceptionClass == null) {
             return new ValidateException(errcode, material.getMessage());
         }
@@ -217,10 +228,10 @@ public class Provider {
     }
 
     /**
-     * 获取当前对象的注解信息
+     * Retrieves all validation annotations from a given class.
      *
-     * @param clazz 当前对象
-     * @return list
+     * @param clazz the class to inspect.
+     * @return a list of validation annotations found on the class.
      */
     public static List<Annotation> getAnnotation(Class<?> clazz) {
         Annotation[] annotations = clazz.getAnnotations();

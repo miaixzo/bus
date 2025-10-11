@@ -49,29 +49,62 @@ import org.miaixz.bus.pay.metric.paypal.api.PayPalApi;
 import org.miaixz.bus.pay.metric.paypal.entity.AccessToken;
 
 /**
- * PayPal Api
+ * PayPal API provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class PaypalProvider extends AbstractProvider<Material, Context> {
 
+    /**
+     * Constructs a new PaypalProvider.
+     *
+     * @param context The context.
+     */
     public PaypalProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Constructs a new PaypalProvider.
+     *
+     * @param context The context.
+     * @param complex The complex object.
+     */
     public PaypalProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
+    /**
+     * Constructs a new PaypalProvider.
+     *
+     * @param context The context.
+     * @param complex The complex object.
+     * @param cache   The cache.
+     */
     public PaypalProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
+    /**
+     * Gets the base headers for API requests.
+     *
+     * @param accessToken The access token.
+     * @return A map of base headers.
+     */
     public static Map<String, String> getBaseHeaders(AccessToken accessToken) {
         return getBaseHeaders(accessToken, String.valueOf(DateKit.current()), null, null);
     }
 
+    /**
+     * Gets the base headers for API requests.
+     *
+     * @param accessToken                The access token.
+     * @param payPalRequestId            The PayPal request ID.
+     * @param payPalPartnerAttributionId The PayPal partner attribution ID.
+     * @param prefer                     The prefer header value.
+     * @return A map of base headers.
+     */
     public static Map<String, String> getBaseHeaders(
             AccessToken accessToken,
             String payPalRequestId,
@@ -99,28 +132,28 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the complete URL for the API request.
      *
-     * @return {@link String} 返回完整的接口请求URL
+     * @return The complete URL.
      */
     public String getUrl() {
         return getUrl(this.complex);
     }
 
     /**
-     * 获取接口请求的 URL
+     * Gets the complete URL for the API request.
      *
-     * @param complex {@link PayPalApi} 支付 API 接口枚举
-     * @return {@link String} 返回完整的接口请求URL
+     * @param complex The payment API interface enumeration.
+     * @return The complete URL.
      */
     public String getUrl(Complex complex) {
         return (complex.isSandbox() ? Registry.PAYPAL.sandbox() : Registry.PAYPAL.service()).concat(complex.method());
     }
 
     /**
-     * 获取 AccessToken
+     * Gets the access token.
      *
-     * @return {@link Message} 请求返回的结果
+     * @return The result of the request as a {@link Message}.
      */
     public Message getToken() {
         Map<String, String> headers = new HashMap<>(3);
@@ -138,10 +171,10 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 创建订单
+     * Creates an order.
      *
-     * @param data 请求参数
-     * @return {@link Message} 请求返回的结果
+     * @param data The request data.
+     * @return The result of the request as a {@link Message}.
      */
     public Message createOrder(String data) {
         AccessToken accessToken = getAccessToken(false);
@@ -149,11 +182,11 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 更新订单
+     * Updates an order.
      *
-     * @param id   订单号
-     * @param data 请求参数
-     * @return {@link Message} 请求返回的结果
+     * @param id   The order ID.
+     * @param data The request data.
+     * @return The result of the request as a {@link Message}.
      */
     public Message updateOrder(String id, String data) {
         AccessToken accessToken = getAccessToken(false);
@@ -162,10 +195,10 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询订单
+     * Queries an order.
      *
-     * @param orderId 订单号
-     * @return {@link Message} 请求返回的结果
+     * @param orderId The order ID.
+     * @return The result of the request as a {@link Message}.
      */
     public Message queryOrder(String orderId) {
         AccessToken accessToken = getAccessToken(false);
@@ -174,11 +207,11 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 确认订单
+     * Captures an order.
      *
-     * @param id   订单号
-     * @param data 请求参数
-     * @return {@link Message} 请求返回的结果
+     * @param id   The order ID.
+     * @param data The request data.
+     * @return The result of the request as a {@link Message}.
      */
     public Message captureOrder(String id, String data) {
         AccessToken accessToken = getAccessToken(false);
@@ -187,11 +220,10 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询确认的订单
+     * Queries a captured order.
      *
-     * 
-     * @param captureId 订单号
-     * @return {@link Message} 请求返回的结果
+     * @param captureId The capture ID.
+     * @return The result of the request as a {@link Message}.
      */
     public Message captureQuery(String captureId) {
         AccessToken accessToken = getAccessToken(false);
@@ -200,12 +232,11 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 退款
+     * Refunds a captured payment.
      *
-     * 
-     * @param captureId 订单号
-     * @param data      请求参数
-     * @return {@link Message} 请求返回的结果
+     * @param captureId The capture ID.
+     * @param data      The request data.
+     * @return The result of the request as a {@link Message}.
      */
     public Message refund(String captureId, String data) {
         AccessToken accessToken = getAccessToken(false);
@@ -214,10 +245,10 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 查询退款
-     * 
-     * @param id 订单号
-     * @return {@link Message} 请求返回的结果
+     * Queries a refund.
+     *
+     * @param id The refund ID.
+     * @return The result of the request as a {@link Message}.
      */
     public Message refundQuery(String id) {
         AccessToken accessToken = getAccessToken(false);
@@ -226,14 +257,14 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 通过 clientId 来获取 AccessToken
+     * Gets the access token, retrieving it from the cache if available or fetching a new one.
      *
-     * @param forceRefresh 是否强制刷新
-     * @return {@link AccessToken}
+     * @param forceRefresh Whether to force a refresh of the token.
+     * @return The {@link AccessToken}.
      */
     public AccessToken getAccessToken(boolean forceRefresh) {
         PayCache accessTokenCache = PayCache.INSTANCE;
-        // 从缓存中获取 AccessToken
+        // Get AccessToken from cache
         if (!forceRefresh) {
             String json = (String) accessTokenCache.read(this.context.getAppKey());
             if (StringKit.isNotEmpty(json)) {
@@ -249,9 +280,10 @@ public class PaypalProvider extends AbstractProvider<Material, Context> {
             return new AccessToken(response.getBody(), response.getStatus());
         });
 
-        // 三次请求如果仍然返回了不可用的 AccessToken 仍然 put 进去，便于上层通过 AccessToken 中的属性判断底层的情况
+        // If the AccessToken is still unavailable after three requests, it is still put into the cache
+        // to facilitate troubleshooting by the upper layer through the properties in the AccessToken.
         if (null != result) {
-            // 利用 clientId 与 accessToken 建立关联，支持多账户
+            // Use clientId and accessToken to establish an association, supporting multiple accounts
             accessTokenCache.write(this.context.getAppKey(), result.getCacheJson());
         }
         return result;

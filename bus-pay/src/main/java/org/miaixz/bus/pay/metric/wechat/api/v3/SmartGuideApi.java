@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 接口-支付即服务接口
+ * WeChat Pay V3 API interfaces for "Pay as a Service" (Smart Guide).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,39 +38,45 @@ import org.miaixz.bus.pay.Matcher;
 public enum SmartGuideApi implements Matcher {
 
     /**
-     * 服务人员注册/查询
+     * Service staff registration/query.
      */
-    SMART_GUIDE("/v3/smartguide/guides", "服务人员注册/查询"),
+    SMART_GUIDE("/v3/smartguide/guides", "Service staff registration/query"),
 
     /**
-     * 服务人员分配
+     * Service staff assignment.
      */
-    SMART_GUIDE_ASSIGN("/v3/smartguide/guides/%s/assign", "服务人员分配"),
+    SMART_GUIDE_ASSIGN("/v3/smartguide/guides/%s/assign", "Service staff assignment"),
 
     /**
-     * 服务人员信息更新
+     * Service staff information update.
      */
-    SMART_GUIDE_UPDATE("/v3/smartguide/guides/%s", "服务人员信息更新");
+    SMART_GUIDE_UPDATE("/v3/smartguide/guides/%s", "Service staff information update");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new SmartGuideApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     SmartGuideApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -78,9 +84,9 @@ public enum SmartGuideApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -88,9 +94,9 @@ public enum SmartGuideApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

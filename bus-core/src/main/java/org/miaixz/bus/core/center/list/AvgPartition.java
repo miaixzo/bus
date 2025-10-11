@@ -32,34 +32,42 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 列表分区或分段 通过传入分区个数，将指定列表分区为不同的块，每块区域的长度均匀分布（个数差不超过1）
- * 
- * <pre>
- *     [1,2,3,4] - [1,2], [3, 4]
- *     [1,2,3,4] - [1,2], [3], [4]
- *     [1,2,3,4] - [1], [2], [3], [4]
- *     [1,2,3,4] - [1], [2], [3], [4], []
- * </pre>
- * 
- * 分区是在原List的基础上进行的，返回的分区是不可变的抽象列表，原列表元素变更，分区中元素也会变更。
+ * Partitions a list into a specified number of sublists of nearly equal size. The size difference between any two
+ * sublists will not exceed 1.
  *
- * @param <T> 元素类型
+ * <pre>{@code
+ * 
+ * List<Integer> list = List.of(1, 2, 3, 4, 5);
+ * AvgPartition<Integer> partition = new AvgPartition<>(list, 3);
+ * // partition.get(0) -> [1, 2]
+ * // partition.get(1) -> [3, 4]
+ * // partition.get(2) -> [5]
+ * }</pre>
+ * <p>
+ * The partitioning is done on the original list, and the returned sublists are views (backed by the original list).
+ * Changes to the original list will be reflected in the sublists.
+ *
+ * @param <T> The type of elements in the list.
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AvgPartition<T> extends Partition<T> {
 
+    /**
+     * The desired number of partitions.
+     */
     final int limit;
     /**
-     * 平均分完后剩余的个数，平均放在前remainder个分区中
+     * The number of remaining elements after division, which are distributed one by one among the first
+     * {@code remainder} partitions.
      */
     final int remainder;
 
     /**
-     * 列表分区
+     * Constructs a list partitioner.
      *
-     * @param list  被分区的列表
-     * @param limit 分区个数
+     * @param list  The list to be partitioned.
+     * @param limit The number of partitions.
      */
     public AvgPartition(final List<T> list, final int limit) {
         super(list, list.size() / (limit <= 0 ? 1 : limit));
@@ -68,20 +76,33 @@ public class AvgPartition<T> extends Partition<T> {
         this.remainder = list.size() % limit;
     }
 
+    /**
+     * Gets the sublist for the specified partition index.
+     *
+     * @param index The index of the partition.
+     * @return The sublist.
+     */
     @Override
     public List<T> get(final int index) {
+        // The base size of each partition
         final int size = this.size;
+        // The number of partitions that will get an extra element
         final int remainder = this.remainder;
-        // 当limit个数超过list的size时，size为0，此时每个分区分1个元素，直到remainder个分配完，剩余分区为[]
+        // Calculate the start index, accounting for the extra elements in previous partitions
         final int start = index * size + Math.min(index, remainder);
         int end = start + size;
-        if (index + 1 <= remainder) {
-            // 将remainder个元素平均分布在前面，每个分区分1个
+        if (index < remainder) {
+            // This partition is one of the first 'remainder' partitions, so it gets an extra element
             end += 1;
         }
         return list.subList(start, end);
     }
 
+    /**
+     * Returns the number of partitions.
+     *
+     * @return The number of partitions.
+     */
     @Override
     public int size() {
         return limit;

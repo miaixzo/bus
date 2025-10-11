@@ -39,37 +39,56 @@ import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符串格式化工具
+ * Utility class for formatting strings with placeholders. This class provides methods to replace placeholders in a
+ * string template with provided arguments, supporting both indexed and named placeholders.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StringFormatter {
 
+    /**
+     * Cache for compiled {@link StringTemplate} instances. The cache uses a weak-concurrent map to store templates,
+     * preventing memory leaks when templates are no longer referenced. The key is a combination of the template pattern
+     * and the placeholder (for single placeholder templates) or a flag for named placeholders.
+     */
     private static final WeakConcurrentMap<Map.Entry<CharSequence, Object>, StringTemplate> CACHE = new WeakConcurrentMap<>();
 
     /**
-     * 格式化字符串 此方法只是简单将占位符 {} 按照顺序替换为参数 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可 例： 通常使用：format("this is {}
-     * for {}", "a", "b") = this is a for b 转义{}： format("this is \\{} for {}", "a", "b") = this is {} for a 转义\：
-     * format("this is \\\\{} for {}", "a", "b") = this is \a for b
+     * Formats a string by replacing placeholders `{}` with provided arguments in order. To output `{}` literally,
+     * escape it with `\\{}`. To output a literal `\` before `{}`, use `\\\\{}`.
+     * <p>
+     * Example:
+     * <ul>
+     * <li>Normal usage: `format("this is {} for {}", "a", "b")` returns `"this is a for b"`</li>
+     * <li>Escaping `{}`: `format("this is \\{} for {}", "a", "b")` returns `"this is {} for a"`</li>
+     * <li>Escaping `\`: `format("this is \\\\{} for {}", "a", "b")` returns `"this is \a for b"`</li>
+     * </ul>
      *
-     * @param strPattern 字符串模板
-     * @param argArray   参数列表
-     * @return 结果
+     * @param strPattern The string template with `{}` placeholders.
+     * @param argArray   The array of arguments to replace the placeholders.
+     * @return The formatted string.
      */
     public static String format(final String strPattern, final Object... argArray) {
         return formatWith(strPattern, Symbol.DELIM, argArray);
     }
 
     /**
-     * 格式化字符串 此方法只是简单将指定占位符 按照顺序替换为参数 如果想输出占位符使用 \\转义即可，如果想输出占位符之前的 \ 使用双转义符 \\\\ 即可 例： 通常使用：format("this is {} for {}",
-     * "{}", "a", "b") = this is a for b 转义{}： format("this is \\{} for {}", "{}", "a", "b") = this is {} for a 转义\：
-     * format("this is \\\\{} for {}", "{}", "a", "b") = this is \a for b
+     * Formats a string by replacing specified placeholders with provided arguments in order. To output the placeholder
+     * literally, escape it with `\\` (e.g., `\\{}`). To output a literal `\` before the placeholder, use `\\\\` (e.g.,
+     * `\\\\{}`).
+     * <p>
+     * Example:
+     * <ul>
+     * <li>Normal usage: `formatWith("this is {} for {}", "{}", "a", "b")` returns `"this is a for b"`</li>
+     * <li>Escaping placeholder: `formatWith("this is \\{} for {}", "{}", "a", "b")` returns `"this is {} for a"`</li>
+     * <li>Escaping `\`: `formatWith("this is \\\\{} for {}", "{}", "a", "b")` returns `"this is \a for b"`</li>
+     * </ul>
      *
-     * @param strPattern  字符串模板
-     * @param placeHolder 占位符，例如{}
-     * @param argArray    参数列表
-     * @return 结果
+     * @param strPattern  The string template.
+     * @param placeHolder The placeholder string, e.g., `{}`.
+     * @param argArray    The array of arguments to replace the placeholders.
+     * @return The formatted string.
      */
     public static String formatWith(final String strPattern, final String placeHolder, final Object... argArray) {
         if (StringKit.isBlank(strPattern) || StringKit.isBlank(placeHolder) || ArrayKit.isEmpty(argArray)) {
@@ -81,12 +100,17 @@ public class StringFormatter {
     }
 
     /**
-     * 格式化文本，使用 {varName} 占位 bean = User:{a: "aValue", b: "bValue"} format("{a} and {b}", bean) --- aValue and bValue
+     * Formats text using named placeholders like `{varName}` and a JavaBean or Map as arguments.
+     * <p>
+     * Example: `bean = User:{a: "aValue", b: "bValue"}` `formatByBean("{a} and {b}", bean, false)` returns `"aValue and
+     * bValue"`
      *
-     * @param template   文本模板，被替换的部分用 {key} 表示
-     * @param bean       参数Bean
-     * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
-     * @return 格式化后的文本
+     * @param template   The text template, where parts to be replaced are denoted by `{key}`.
+     * @param bean       The JavaBean or Map containing the values for replacement.
+     * @param ignoreNull If {@code true}, {@code null} values in the bean will not replace their corresponding
+     *                   placeholders. If {@code false}, {@code null} values will replace placeholders with an empty
+     *                   string.
+     * @return The formatted text.
      */
     public static String formatByBean(final CharSequence template, final Object bean, final boolean ignoreNull) {
         if (null == template) {
@@ -98,7 +122,7 @@ public class StringFormatter {
                 return template.toString();
             }
         }
-        // Bean的空检查需要反射，性能很差，此处不检查
+        // Bean's null check requires reflection, which is very slow, so it is not checked here.
         return ((NamedPlaceholderString) CACHE.computeIfAbsent(MutableEntry.of(template, ignoreNull), k -> {
             final NamedPlaceholderString.Builder builder = StringTemplate.ofNamed(template.toString());
             if (ignoreNull) {
@@ -111,7 +135,8 @@ public class StringFormatter {
     }
 
     /**
-     * 清空缓存
+     * Clears the internal cache of compiled {@link StringTemplate} instances. This can be used to free up memory if
+     * many different templates have been used.
      */
     public static void clear() {
         CACHE.clear();

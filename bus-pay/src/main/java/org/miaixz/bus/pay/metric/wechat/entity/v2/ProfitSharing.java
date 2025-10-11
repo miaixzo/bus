@@ -36,7 +36,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 分账 支持: 请求单次分账、请求多次分账、添加分账接收方、删除分账接收方、完结分账
+ * Profit sharing model. Supports: single profit sharing request, multiple profit sharing requests, adding profit
+ * sharing receivers, deleting profit sharing receivers, completing profit sharing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,16 +49,49 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class ProfitSharing extends Material {
 
+    /**
+     * Sub-merchant App ID.
+     */
     private String sub_appid;
+    /**
+     * Merchant ID.
+     */
     private String mch_id;
+    /**
+     * Sub-merchant ID.
+     */
     private String sub_mch_id;
+    /**
+     * Random string.
+     */
     private String nonce_str;
+    /**
+     * Signature.
+     */
     private String sign;
+    /**
+     * Signature type.
+     */
     private String sign_type;
+    /**
+     * WeChat transaction ID.
+     */
     private String transaction_id;
+    /**
+     * Merchant order number.
+     */
     private String out_order_no;
+    /**
+     * Receivers for profit sharing.
+     */
     private String receivers;
+    /**
+     * Receiver for profit sharing.
+     */
     private String receiver;
+    /**
+     * Description of profit sharing.
+     */
     private String description;
 
 }

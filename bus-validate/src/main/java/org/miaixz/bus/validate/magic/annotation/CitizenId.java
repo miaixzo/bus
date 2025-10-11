@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.CitizenIdMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 判断是否为身份证号码
+ * Validates that the annotated string is a Chinese citizen ID number.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,30 +45,30 @@ import org.miaixz.bus.validate.metric.CitizenIdMatcher;
 public @interface CitizenId {
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}信息不正确";
+    String errmsg() default "${field} is not a valid citizen ID number";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

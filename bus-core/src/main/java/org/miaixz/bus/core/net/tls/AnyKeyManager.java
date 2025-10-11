@@ -36,8 +36,8 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * {@link KeyManager}相关工具 此工具用于读取和使用数字证书、对称密钥等相关信息
- *
+ * {@link KeyManager} related utility class. This utility is used to read and use digital certificates, symmetric keys,
+ * and other related information.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -45,30 +45,31 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AnyKeyManager {
 
     /**
-     * 获取{@link KeyManagerFactory}
+     * Gets the default {@link KeyManagerFactory}.
      *
-     * @return {@link KeyManagerFactory}
+     * @return The default {@link KeyManagerFactory}.
      */
     public static KeyManagerFactory getDefaultKeyManagerFactory() {
         return getDefaultKeyManagerFactory(null);
     }
 
     /**
-     * 获取{@link KeyManagerFactory}
+     * Gets the default {@link KeyManagerFactory}.
      *
-     * @param provider 算法提供者，{@code null}使用JDK默认
-     * @return {@link KeyManagerFactory}
+     * @param provider The algorithm provider, or {@code null} to use the default JDK provider.
+     * @return The default {@link KeyManagerFactory}.
      */
     public static KeyManagerFactory getDefaultKeyManagerFactory(final Provider provider) {
         return getKeyManagerFactory(null, provider);
     }
 
     /**
-     * 获取{@link KeyManagerFactory}
+     * Gets a {@link KeyManagerFactory} for a given algorithm and provider.
      *
-     * @param algorithm 算法，{@code null}表示默认算法，如SunX509
-     * @param provider  算法提供者，{@code null}使用JDK默认
-     * @return {@link KeyManagerFactory}
+     * @param algorithm The algorithm, or {@code null} for the default algorithm (e.g., SunX509).
+     * @param provider  The algorithm provider, or {@code null} to use the default JDK provider.
+     * @return A {@link KeyManagerFactory}.
+     * @throws CryptoException if the algorithm is not found.
      */
     public static KeyManagerFactory getKeyManagerFactory(String algorithm, final Provider provider) {
         if (StringKit.isBlank(algorithm)) {
@@ -84,13 +85,14 @@ public class AnyKeyManager {
     }
 
     /**
-     * 从KeyStore中获取{@link KeyManagerFactory}
+     * Gets a {@link KeyManagerFactory} from a {@link KeyStore}.
      *
-     * @param keyStore  KeyStore
-     * @param password  密码
-     * @param algorithm 算法，{@code null}表示默认算法，如SunX509
-     * @param provider  算法提供者，{@code null}使用JDK默认
-     * @return {@link KeyManager}列表
+     * @param keyStore  The {@link KeyStore}.
+     * @param password  The password.
+     * @param algorithm The algorithm, or {@code null} for the default algorithm (e.g., SunX509).
+     * @param provider  The algorithm provider, or {@code null} to use the default JDK provider.
+     * @return A {@link KeyManagerFactory}.
+     * @throws CryptoException if an error occurs during initialization.
      */
     public static KeyManagerFactory getKeyManagerFactory(
             final KeyStore keyStore,
@@ -107,24 +109,24 @@ public class AnyKeyManager {
     }
 
     /**
-     * 从KeyStore中获取{@link KeyManager}列表
+     * Gets a list of {@link KeyManager}s from a {@link KeyStore}.
      *
-     * @param keyStore KeyStore
-     * @param password 密码
-     * @return {@link KeyManager}列表
+     * @param keyStore The {@link KeyStore}.
+     * @param password The password.
+     * @return A list of {@link KeyManager}s.
      */
     public static KeyManager[] getKeyManagers(final KeyStore keyStore, final char[] password) {
         return getKeyManagers(keyStore, password, null, null);
     }
 
     /**
-     * 从KeyStore中获取{@link KeyManager}列表
+     * Gets a list of {@link KeyManager}s from a {@link KeyStore}.
      *
-     * @param keyStore  KeyStore
-     * @param password  密码
-     * @param algorithm 算法，{@code null}表示默认算法，如SunX509
-     * @param provider  算法提供者，{@code null}使用JDK默认
-     * @return {@link KeyManager}列表
+     * @param keyStore  The {@link KeyStore}.
+     * @param password  The password.
+     * @param algorithm The algorithm, or {@code null} for the default algorithm (e.g., SunX509).
+     * @param provider  The algorithm provider, or {@code null} to use the default JDK provider.
+     * @return A list of {@link KeyManager}s.
      */
     public static KeyManager[] getKeyManagers(
             final KeyStore keyStore,

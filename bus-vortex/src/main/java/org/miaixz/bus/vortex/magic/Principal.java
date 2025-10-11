@@ -58,12 +58,12 @@ public class Principal {
     protected String id;
 
     /**
-     * 类型 1.token 2. apiKey
+     * The type of principal: 1 for token, 2 for API key.
      */
     protected Integer type;
 
     /**
-     * 根据type确定是token还是apiKey
+     * The value of the principal, which can be either a token or an API key, depending on the {@code type}.
      */
     protected String value;
 

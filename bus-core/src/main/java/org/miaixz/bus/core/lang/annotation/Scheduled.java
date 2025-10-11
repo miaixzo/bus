@@ -32,7 +32,8 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 注解: 定时任务注解
+ * An annotation that marks a method to be executed as a scheduled task. This allows for flexible scheduling of tasks
+ * using cron expressions, fixed delays, or fixed rates.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,50 +44,51 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface Scheduled {
 
     /**
-     * cron
+     * A cron-like expression for scheduling the task. The specific syntax may depend on the underlying scheduling
+     * framework (e.g., Quartz).
      *
-     * @return cron
+     * @return The cron expression.
      */
     String cron() default Normal.EMPTY;
 
     /**
-     * 固定延迟 结束时间-开始时间 单位毫秒
+     * The fixed delay in milliseconds between the completion of the last execution and the start of the next. The value
+     * can be a numeric string or a placeholder to be resolved from configuration.
      *
-     * @return 延迟
+     * @return The fixed delay as a string.
      */
     String fixedDelay() default Normal.EMPTY;
 
     /**
-     * 固定周期 开始时间-开始时间
-     * <p>
-     * 单位毫秒
+     * The fixed period in milliseconds between the start of one execution and the start of the next. The value can be a
+     * numeric string or a placeholder to be resolved from configuration.
      *
-     * @return 周期
+     * @return The fixed rate as a string.
      */
     String fixedRate() default Normal.EMPTY;
 
     /**
-     * 第一次启动延迟
-     * <p>
-     * 单位毫秒
+     * The initial delay in milliseconds before the first execution of the task. The value can be a numeric string or a
+     * placeholder to be resolved from configuration.
      *
-     * @return 延迟
+     * @return The initial delay as a string.
      */
     String initialDelay() default Normal.EMPTY;
 
     /**
-     * 项目启动执行
+     * If set to {@code true}, the annotated method will be executed once when the application starts. This is useful
+     * for running initialization tasks.
      *
-     * @return true为执行
+     * @return {@code true} to execute on application startup, {@code false} otherwise.
      */
     boolean onApplicationStart() default false;
 
     /**
-     * 是否异步
-     * <p>
-     * 只对 onApplicationStart 方式有效
+     * Specifies whether the {@code onApplicationStart} execution should be asynchronous. If {@code true}, the task will
+     * run in a separate thread, allowing the application startup to proceed without waiting for it to complete. This
+     * setting only applies if {@link #onApplicationStart()} is {@code true}.
      *
-     * @return true为异步
+     * @return {@code true} for asynchronous execution, {@code false} for synchronous.
      */
     boolean async() default false;
 

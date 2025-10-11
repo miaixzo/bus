@@ -40,7 +40,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 文件写入器
+ * File writer. This class provides utility methods for writing content to files, supporting various data types,
+ * character encodings, and append/overwrite modes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,10 +52,11 @@ public class FileWriter extends FileWrapper {
     private static final long serialVersionUID = 2852227982959L;
 
     /**
-     * 构造
+     * Constructs a new {@code FileWriter} instance. The file is checked for validity upon construction.
      *
-     * @param file    文件
-     * @param charset 编码，使用 {@link Charset}
+     * @param file    The file to write to. Must not be {@code null}.
+     * @param charset The character set for writing, using {@link java.nio.charset.Charset}.
+     * @throws InternalException if the file is {@code null} or if it exists and is not a regular file.
      */
     public FileWriter(final File file, final java.nio.charset.Charset charset) {
         super(file, charset);
@@ -62,71 +64,81 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FileWriter} instance. The file path is resolved, and the file is checked for validity
+     * upon construction.
      *
-     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
-     * @param charset  编码，使用 {@link Charset}
+     * @param filePath The file path. Relative paths will be converted to paths relative to the ClassPath.
+     * @param charset  The character set for writing, using {@link java.nio.charset.Charset}.
+     * @throws InternalException if the file is {@code null} or if it exists and is not a regular file.
      */
     public FileWriter(final String filePath, final java.nio.charset.Charset charset) {
         this(FileKit.file(filePath), charset);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code FileWriter} instance. The file path is resolved, and the file is checked for validity
+     * upon construction.
      *
-     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
-     * @param charset  编码，使用 {@link Charset#charset(String)}
+     * @param filePath The file path. Relative paths will be converted to paths relative to the ClassPath.
+     * @param charset  The character set for writing, using {@link Charset#charset(String)}.
+     * @throws InternalException if the file is {@code null} or if it exists and is not a regular file.
      */
     public FileWriter(final String filePath, final String charset) {
         this(FileKit.file(filePath), Charset.charset(charset));
     }
 
     /**
-     * 构造 编码使用 {@link Charset#UTF_8}
+     * Constructs a new {@code FileWriter} instance with {@link Charset#UTF_8} encoding. The file is checked for
+     * validity upon construction.
      *
-     * @param file 文件
+     * @param file The file to write to. Must not be {@code null}.
+     * @throws InternalException if the file is {@code null} or if it exists and is not a regular file.
      */
     public FileWriter(final File file) {
         this(file, Charset.UTF_8);
     }
 
     /**
-     * 构造 编码使用 {@link Charset#UTF_8}
+     * Constructs a new {@code FileWriter} instance with {@link Charset#UTF_8} encoding. The file path is resolved, and
+     * the file is checked for validity upon construction.
      *
-     * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
+     * @param filePath The file path. Relative paths will be converted to paths relative to the ClassPath.
+     * @throws InternalException if the file is {@code null} or if it exists and is not a regular file.
      */
     public FileWriter(final String filePath) {
         this(filePath, Charset.UTF_8);
     }
 
     /**
-     * 创建 FileWriter
+     * Creates a {@code FileWriter} instance with the specified file and character set.
      *
-     * @param file    文件
-     * @param charset 编码，使用 {@link Charset}
-     * @return FileWriter
+     * @param file    The file to write to. Must not be {@code null}.
+     * @param charset The character set for writing, using {@link java.nio.charset.Charset}.
+     * @return A new {@code FileWriter} instance.
+     * @throws InternalException if the file is {@code null} or if it exists and is not a regular file.
      */
     public static FileWriter of(final File file, final java.nio.charset.Charset charset) {
         return new FileWriter(file, charset);
     }
 
     /**
-     * 创建 FileWriter, 编码：{@link Charset#UTF_8}
+     * Creates a {@code FileWriter} instance with the specified file and {@link Charset#UTF_8} encoding.
      *
-     * @param file 文件
-     * @return FileWriter
+     * @param file The file to write to. Must not be {@code null}.
+     * @return A new {@code FileWriter} instance.
+     * @throws InternalException if the file is {@code null} or if it exists and is not a regular file.
      */
     public static FileWriter of(final File file) {
         return new FileWriter(file);
     }
 
     /**
-     * 将String写入文件
+     * Writes a string to the file.
      *
-     * @param content  写入的内容
-     * @param isAppend 是否追加
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param content  The content string to write. Must not be {@code null}.
+     * @param isAppend {@code true} to append to the file; {@code false} to overwrite existing content.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public File write(final String content, final boolean isAppend) throws InternalException {
         BufferedWriter writer = null;
@@ -143,88 +155,95 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将String写入文件，覆盖模式
+     * Writes a string to the file, overwriting any existing content.
      *
-     * @param content 写入的内容
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param content The content string to write. Must not be {@code null}.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public File write(final String content) throws InternalException {
         return write(content, false);
     }
 
     /**
-     * 将String写入文件，追加模式
+     * Appends a string to the end of the file.
      *
-     * @param content 写入的内容
-     * @return 写入的文件
-     * @throws InternalException IO异常
+     * @param content The content string to append. Must not be {@code null}.
+     * @return The target file after the append operation.
+     * @throws InternalException if an I/O error occurs during appending.
      */
     public File append(final String content) throws InternalException {
         return write(content, true);
     }
 
     /**
-     * 将列表写入文件，覆盖模式
+     * Writes a list of strings to the file, overwriting existing content. Each string in the list will be written on a
+     * new line.
      *
-     * @param <T>  集合元素类型
-     * @param list 列表
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param <T>  The type of elements in the list, which will be converted to strings.
+     * @param list The list of objects to write. Each object's {@code toString()} method will be used.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public <T> File writeLines(final Iterable<T> list) throws InternalException {
         return writeLines(list, false);
     }
 
     /**
-     * 将列表写入文件，追加模式
+     * Appends a list of strings to the file. Each string in the list will be appended on a new line.
      *
-     * @param <T>  集合元素类型
-     * @param list 列表
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param <T>  The type of elements in the list, which will be converted to strings.
+     * @param list The list of objects to append. Each object's {@code toString()} method will be used.
+     * @return The target file after the append operation.
+     * @throws InternalException if an I/O error occurs during appending.
      */
     public <T> File appendLines(final Iterable<T> list) throws InternalException {
         return writeLines(list, true);
     }
 
     /**
-     * 将列表写入文件
+     * Writes a list of strings to the file, with an option to append or overwrite. Each string in the list will be
+     * written on a new line.
      *
-     * @param <T>      集合元素类型
-     * @param list     列表
-     * @param isAppend 是否追加
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param <T>      The type of elements in the list, which will be converted to strings.
+     * @param list     The list of objects to write. Each object's {@code toString()} method will be used.
+     * @param isAppend {@code true} to append to the file; {@code false} to overwrite existing content.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public <T> File writeLines(final Iterable<T> list, final boolean isAppend) throws InternalException {
         return writeLines(list, null, isAppend);
     }
 
     /**
-     * 将列表写入文件
+     * Writes a list of strings to the file with a specified line separator, and an option to append or overwrite.
      *
-     * @param <T>           集合元素类型
-     * @param list          列表
-     * @param lineSeparator 换行符枚举（Windows、Mac或Linux换行符）
-     * @param isAppend      是否追加
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param <T>           The type of elements in the list, which will be converted to strings.
+     * @param list          The list of objects to write. Each object's {@code toString()} method will be used.
+     * @param lineSeparator The {@link LineSeparator} to use between lines. If {@code null}, the default system line
+     *                      separator is used.
+     * @param isAppend      {@code true} to append to the file; {@code false} to overwrite existing content.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public <T> File writeLines(final Iterable<T> list, final LineSeparator lineSeparator, final boolean isAppend) {
         return writeLines(list, lineSeparator, isAppend, true);
     }
 
     /**
-     * 将列表写入文件
+     * Writes a list of strings to the file with a specified line separator and control over appending a line separator
+     * to the last line.
      *
-     * @param <T>                 集合元素类型
-     * @param list                列表
-     * @param lineSeparator       换行符枚举（Windows、Mac或Linux换行符）
-     * @param isAppend            是否追加
-     * @param appendLineSeparator 是否在最后一行末尾追加换行符，Linux下要求最后一行必须带有换行符
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param <T>                 The type of elements in the list, which will be converted to strings.
+     * @param list                The list of objects to write. Each object's {@code toString()} method will be used.
+     * @param lineSeparator       The {@link LineSeparator} to use between lines. If {@code null}, the default system
+     *                            line separator is used.
+     * @param isAppend            {@code true} to append to the file; {@code false} to overwrite existing content.
+     * @param appendLineSeparator {@code true} to append a line separator to the very last line written; {@code false}
+     *                            otherwise. In some systems (e.g., Linux), the last line is typically expected to have
+     *                            a line separator.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public <T> File writeLines(
             final Iterable<T> list,
@@ -238,7 +257,7 @@ public class FileWriter extends FileWrapper {
                     if (isFirst) {
                         isFirst = false;
                         if (isAppend && FileKit.isNotEmpty(this.file)) {
-                            // 追加模式下且文件非空，补充换行符
+                            // In append mode and file is not empty, add a newline before the first new content.
                             printNewLine(writer, lineSeparator);
                         }
                     } else {
@@ -256,13 +275,15 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将Map写入文件，每个键值对为一行，一行中键与值之间使用kvSeparator分隔
+     * Writes a map to the file, with each key-value pair on a new line, separated by {@code kvSeparator}. The file
+     * content will be overwritten if {@code isAppend} is {@code false}.
      *
-     * @param map         Map
-     * @param kvSeparator 键和值之间的分隔符，如果传入null使用默认分隔符" = "
-     * @param isAppend    是否追加
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param map         The map to write. Each entry's key and value will be converted to strings.
+     * @param kvSeparator The separator string between key and value. If {@code null}, the default separator " = " is
+     *                    used.
+     * @param isAppend    {@code true} to append to the file; {@code false} to overwrite existing content.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public File writeMap(final Map<?, ?> map, final String kvSeparator, final boolean isAppend)
             throws InternalException {
@@ -270,14 +291,17 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将Map写入文件，每个键值对为一行，一行中键与值之间使用kvSeparator分隔
+     * Writes a map to the file, with each key-value pair on a new line, separated by {@code kvSeparator} and using a
+     * specified line separator. The file content will be overwritten if {@code isAppend} is {@code false}.
      *
-     * @param map           Map
-     * @param lineSeparator 换行符枚举（Windows、Mac或Linux换行符）
-     * @param kvSeparator   键和值之间的分隔符，如果传入null使用默认分隔符" = "
-     * @param isAppend      是否追加
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param map           The map to write. Each entry's key and value will be converted to strings.
+     * @param lineSeparator The {@link LineSeparator} to use between lines. If {@code null}, the default system line
+     *                      separator is used.
+     * @param kvSeparator   The separator string between key and value. If {@code null}, the default separator " = " is
+     *                      used.
+     * @param isAppend      {@code true} to append to the file; {@code false} to overwrite existing content.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public File writeMap(
             final Map<?, ?> map,
@@ -300,40 +324,40 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 写入数据到文件
+     * Writes a byte array to the file, overwriting existing content.
      *
-     * @param data 数据
-     * @param off  数据开始位置
-     * @param len  数据长度
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param data The byte array containing the data to write. Must not be {@code null}.
+     * @param off  The start offset in the data array.
+     * @param len  The number of bytes to write from the data array.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public File write(final byte[] data, final int off, final int len) throws InternalException {
         return write(data, off, len, false);
     }
 
     /**
-     * 追加数据到文件
+     * Appends a byte array to the end of the file.
      *
-     * @param data 数据
-     * @param off  数据开始位置
-     * @param len  数据长度
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param data The byte array containing the data to append. Must not be {@code null}.
+     * @param off  The start offset in the data array.
+     * @param len  The number of bytes to append from the data array.
+     * @return The target file after the append operation.
+     * @throws InternalException if an I/O error occurs during appending.
      */
     public File append(final byte[] data, final int off, final int len) throws InternalException {
         return write(data, off, len, true);
     }
 
     /**
-     * 写入数据到文件
+     * Writes a byte array to the file with an option to append or overwrite.
      *
-     * @param data     数据
-     * @param off      数据开始位置
-     * @param len      数据长度
-     * @param isAppend 是否追加模式
-     * @return 目标文件
-     * @throws InternalException IO异常
+     * @param data     The byte array containing the data to write. Must not be {@code null}.
+     * @param off      The start offset in the data array.
+     * @param len      The number of bytes to write from the data array.
+     * @param isAppend {@code true} to append to the file; {@code false} to overwrite existing content.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public File write(final byte[] data, final int off, final int len, final boolean isAppend)
             throws InternalException {
@@ -347,22 +371,28 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将流的内容写入文件 此方法会自动关闭输入流
+     * Writes the entire content of an input stream to the file, overwriting existing content. This method automatically
+     * closes the input stream after writing.
      *
-     * @param in 输入流，不关闭
-     * @return dest
-     * @throws InternalException IO异常
+     * @param in The input stream to read data from. Must not be {@code null}.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public File writeFromStream(final InputStream in) throws InternalException {
         return writeFromStream(in, true);
     }
 
     /**
-     * 将流的内容写入文件
+     * Writes the content of an input stream to the file, with options for closing the input stream and file open
+     * options.
      *
-     * @param in      输入流，不关闭
-     * @param options 选项，如追加模式传{@link java.nio.file.StandardOpenOption#APPEND}
-     * @return file
+     * @param in        The input stream to read data from. Must not be {@code null}.
+     * @param isCloseIn {@code true} to close the input stream after writing; {@code false} otherwise.
+     * @param options   Options for opening the file, such as {@link java.nio.file.StandardOpenOption#APPEND} for append
+     *                  mode. If no options are provided, the file will be truncated if it exists, or created if it
+     *                  doesn't.
+     * @return The target file after the write operation.
+     * @throws InternalException if an I/O error occurs during writing.
      */
     public File writeFromStream(final InputStream in, final boolean isCloseIn, final OpenOption... options) {
         OutputStream out = null;
@@ -379,21 +409,25 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 获得一个输出流对象
+     * Gets a {@link BufferedOutputStream} object for this file. This stream can be used for efficient byte-based
+     * writing.
      *
-     * @param options 选项，如追加模式传{@link java.nio.file.StandardOpenOption#APPEND}
-     * @return 输出流对象
+     * @param options Options for opening the file, such as {@link java.nio.file.StandardOpenOption#APPEND} for append
+     *                mode. If no options are provided, the file will be truncated if it exists, or created if it
+     *                doesn't.
+     * @return A {@link BufferedOutputStream} object.
      */
     public BufferedOutputStream getOutputStream(final OpenOption... options) {
         return FileKit.getOutputStream(file, options);
     }
 
     /**
-     * 获得一个带缓存的写入对象
+     * Gets a buffered writer object for this file, using the configured character set. This writer can be used for
+     * efficient character-based writing.
      *
-     * @param isAppend 是否追加
-     * @return BufferedReader对象
-     * @throws InternalException IO异常
+     * @param isAppend {@code true} to append to the file; {@code false} to overwrite existing content.
+     * @return A {@link BufferedWriter} object.
+     * @throws InternalException if an I/O error occurs while creating the writer.
      */
     public BufferedWriter getWriter(final boolean isAppend) throws InternalException {
         try {
@@ -405,20 +439,22 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 获得一个打印写入对象，可以有print
+     * Gets a print writer object for this file, which supports convenient {@code print} and {@code println} methods.
+     * This writer uses the configured character set.
      *
-     * @param isAppend 是否追加
-     * @return 打印对象
-     * @throws InternalException IO异常
+     * @param isAppend {@code true} to append to the file; {@code false} to overwrite existing content.
+     * @return A {@link PrintWriter} object.
+     * @throws InternalException if an I/O error occurs while creating the writer.
      */
     public PrintWriter getPrintWriter(final boolean isAppend) throws InternalException {
         return new PrintWriter(getWriter(isAppend));
     }
 
     /**
-     * 检查文件
+     * Checks the validity of the file associated with this writer. Ensures that the file object is not null and, if the
+     * file exists, that it is a regular file.
      *
-     * @throws InternalException IO异常
+     * @throws InternalException if the file is {@code null} or if it exists and is not a regular file.
      */
     private void checkFile() throws InternalException {
         Assert.notNull(file, "File to write content is null !");
@@ -428,17 +464,17 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 打印新行
+     * Prints a new line to the provided {@link PrintWriter}. The line separator used can be customized.
      *
-     * @param writer        Writer
-     * @param lineSeparator 换行符枚举
+     * @param writer        The {@link PrintWriter} to write to. Must not be {@code null}.
+     * @param lineSeparator The {@link LineSeparator} enum. If {@code null}, the default system line separator is used.
      */
     private void printNewLine(final PrintWriter writer, final LineSeparator lineSeparator) {
         if (null == lineSeparator) {
-            // 默认换行符
+            // Default line separator
             writer.println();
         } else {
-            // 自定义换行符
+            // Custom line separator
             writer.print(lineSeparator.getValue());
         }
     }

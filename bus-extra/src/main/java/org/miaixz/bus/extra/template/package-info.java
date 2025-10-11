@@ -26,11 +26,12 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 第三方模板引擎封装，提供统一的接口用于适配第三方模板引擎，提供：
+ * This package provides a wrapper for third-party template engines, offering a unified interface to adapt various
+ * template engines. It includes:
  * <ul>
- * <li>TemplateEngine：模板引擎接口，用于不同引擎的实现。</li>
- * <li>Template： 模板接口，用于不同引擎模板对象包装。</li>
- * <li>TemplateConfig：模板配置，用于提供公共配置项。</li>
+ * <li>{@code TemplateEngine}: An interface for different template engine implementations.</li>
+ * <li>{@code Template}: An interface for wrapping template objects from different engines.</li>
+ * <li>{@code TemplateConfig}: A configuration class to provide common settings.</li>
  * </ul>
  *
  * @author Kimi Liu

@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Kotlin反射相关封装，需引入：
+ * Provides encapsulation for Kotlin reflection-related functionalities. To use this package, the following dependencies
+ * must be included:
  * <ul>
  * <li>kotlin-stdlib</li>
  * <li>kotlin-reflect</li>

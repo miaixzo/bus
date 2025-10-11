@@ -41,7 +41,8 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 import org.miaixz.bus.shade.screw.metadata.Table;
 
 /**
- * db2 数据库查询
+ * DB2 database query implementation. This class is a placeholder for DB2 support, and all methods currently throw an
+ * {@link InternalException} to indicate that the functionality is not yet implemented.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,18 +50,19 @@ import org.miaixz.bus.shade.screw.metadata.Table;
 public class Db2DataBaseQuery extends AbstractDatabaseQuery {
 
     /**
-     * 构造函数
+     * Constructs a {@code Db2DataBaseQuery}.
      *
-     * @param dataSource {@link DataSource}
+     * @param dataSource The JDBC data source.
      */
     public Db2DataBaseQuery(DataSource dataSource) {
         super(dataSource);
     }
 
     /**
-     * 获取数据库
+     * This method is not supported for this database type.
      *
-     * @return {@link Database} 数据库信息
+     * @return Never returns, always throws an exception.
+     * @throws InternalException always, as this database type is not supported.
      */
     @Override
     public Database getDataBase() throws InternalException {
@@ -68,9 +70,10 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 获取表信息
+     * This method is not supported for this database type.
      *
-     * @return {@link List} 所有表信息
+     * @return Never returns, always throws an exception.
+     * @throws InternalException always, as this database type is not supported.
      */
     @Override
     public List<Table> getTables() {
@@ -78,11 +81,11 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 获取列信息
+     * This method is not supported for this database type.
      *
-     * @param table {@link String} 表名
-     * @return {@link List} 表字段信息
-     * @throws InternalException 异常
+     * @param table The name of the table.
+     * @return Never returns, always throws an exception.
+     * @throws InternalException always, as this database type is not supported.
      */
     @Override
     public List<Column> getTableColumns(String table) throws InternalException {
@@ -91,10 +94,10 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 获取所有列信息
+     * This method is not supported for this database type.
      *
-     * @return {@link List} 表字段信息
-     * @throws InternalException 异常
+     * @return Never returns, always throws an exception.
+     * @throws InternalException always, as this database type is not supported.
      */
     @Override
     public List<? extends Column> getTableColumns() throws InternalException {
@@ -102,11 +105,11 @@ public class Db2DataBaseQuery extends AbstractDatabaseQuery {
     }
 
     /**
-     * 根据表名获取主键
+     * This method is not supported for this database type.
      *
-     * @param table {@link String}
-     * @return {@link List}
-     * @throws InternalException 异常
+     * @param table The name of the table.
+     * @return Never returns, always throws an exception.
+     * @throws InternalException always, as this database type is not supported.
      */
     @Override
     public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException {

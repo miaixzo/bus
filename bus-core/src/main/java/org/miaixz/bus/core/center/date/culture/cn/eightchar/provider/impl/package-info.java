@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 童限计算方式
+ * Provides default implementations for calculating "Child Limit" (童限) in Chinese astrology.
  *
  * @author Kimi Liu
  * @since Java 17+

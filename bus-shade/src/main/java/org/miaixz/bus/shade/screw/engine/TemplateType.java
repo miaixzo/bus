@@ -35,7 +35,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 模板类型
+ * Enumeration of supported template types for document generation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,38 +43,39 @@ import lombok.Setter;
 public enum TemplateType implements Serializable {
 
     /**
-     * freeMarker 模板
+     * Freemarker template engine.
      */
     FREEMARKER(Normal.META_INF + "/shade/beans/", FreemarkerEngine.class, ".ftl");
 
     /**
-     * 模板目录
+     * The directory where templates are located.
      */
     @Getter
     @Setter
     private String templateDir;
     /**
-     * 模板驱动实现类类型
+     * The implementation class for the template engine.
      */
     @Getter
     @Setter
     private Class<? extends TemplateEngine> implClass;
     /**
-     * 后缀
+     * The file extension for templates of this type.
      */
     @Getter
     @Setter
     private String suffix;
 
     /**
-     * 构造
+     * Constructs a {@code TemplateType} enum constant.
      *
-     * @param freemarker {@link String}
-     * @param template   {@link Class}
+     * @param templateDir The directory where templates are located.
+     * @param implClass   The implementation class for the template engine.
+     * @param suffix      The file extension for templates of this type.
      */
-    TemplateType(String freemarker, Class<? extends TemplateEngine> template, String suffix) {
-        this.templateDir = freemarker;
-        this.implClass = template;
+    TemplateType(String templateDir, Class<? extends TemplateEngine> implClass, String suffix) {
+        this.templateDir = templateDir;
+        this.implClass = implClass;
         this.suffix = suffix;
     }
 

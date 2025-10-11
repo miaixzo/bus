@@ -30,21 +30,38 @@ package org.miaixz.bus.pager.dialect.replace;
 import org.miaixz.bus.pager.dialect.ReplaceSql;
 
 /**
- * 简单处理 with(nolock)
+ * Simple implementation of {@link ReplaceSql} to handle SQL Server's `with(nolock)` hint. It replaces `with(nolock)`
+ * with a simple placeholder for SQL parsing and then restores it.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SimpleWithNolock implements ReplaceSql {
 
-    // with(nolock)
+    /**
+     * Placeholder for `with(nolock)` during SQL parsing.
+     */
     protected String WITHNOLOCK = ", PAGEWITHNOLOCK";
 
+    /**
+     * Replaces `with(nolock)` clauses in the SQL with a simple placeholder. This is done to prevent parsing errors with
+     * SQL parsers that do not understand `with(nolock)`.
+     *
+     * @param sql the original SQL string
+     * @return the SQL string with `with(nolock)` replaced by a placeholder
+     */
     @Override
     public String replace(String sql) {
         return sql.replaceAll("((?i)with\\s*\\(nolock\\))", WITHNOLOCK);
     }
 
+    /**
+     * Restores the `with(nolock)` clauses in the SQL from their simple placeholders. This is called after SQL parsing
+     * and modification.
+     *
+     * @param sql the SQL string with placeholders
+     * @return the SQL string with `with(nolock)` restored
+     */
     @Override
     public String restore(String sql) {
         return sql.replaceAll(WITHNOLOCK, " with(nolock)");

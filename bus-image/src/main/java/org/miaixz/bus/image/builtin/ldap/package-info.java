@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * LDAP支持
+ * Provides classes for LDAP (Lightweight Directory Access Protocol) support, which may be used for querying
+ * DICOM-related information stored in a directory service.
  *
  * @author Kimi Liu
  * @since Java 17+

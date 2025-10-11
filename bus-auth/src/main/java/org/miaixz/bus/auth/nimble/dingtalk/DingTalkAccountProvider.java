@@ -32,17 +32,28 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Registry;
 
 /**
- * 钉钉 账号登录
+ * DingTalk account login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class DingTalkAccountProvider extends AbstractDingtalkProvider {
 
+    /**
+     * Constructs a {@code DingTalkAccountProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public DingTalkAccountProvider(Context context) {
         super(context, Registry.DINGTALK_ACCOUNT);
     }
 
+    /**
+     * Constructs a {@code DingTalkAccountProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public DingTalkAccountProvider(Context context, CacheX cache) {
         super(context, Registry.DINGTALK_ACCOUNT, cache);
     }

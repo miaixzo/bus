@@ -31,8 +31,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 
- * 快速缓冲，将数据存放在缓冲集中，取代以往的单一数组
+ * A fast byte buffer implementation that stores data in a collection of byte arrays (chunks) instead of a single array.
+ * This approach reduces memory copying and improves performance for growing buffers.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,37 +40,39 @@ import org.miaixz.bus.core.lang.Normal;
 public class FastByteBuffer extends FastBuffer {
 
     /**
-     * 缓冲集
+     * The collection of byte array chunks that store the buffer's data.
      */
     private byte[][] buffers = new byte[16][];
     /**
-     * 当前缓冲
+     * The currently active byte array chunk for writing.
      */
     private byte[] currentBuffer;
 
     /**
-     * 构造
+     * Constructs a {@code FastByteBuffer} with a default minimum chunk size of 8192 bytes.
      */
     public FastByteBuffer() {
         this(Normal._8192);
     }
 
     /**
-     * 构造
+     * Constructs a {@code FastByteBuffer} with the specified minimum chunk size.
      *
-     * @param size 一个缓冲区的最小字节数
+     * @param size The minimum byte length for a single chunk.
      */
     public FastByteBuffer(final int size) {
         super(size);
     }
 
     /**
-     * 向快速缓冲加入数据
+     * Appends a portion of a byte array to this fast buffer.
      *
-     * @param array 数据
-     * @param off   偏移量
-     * @param len   字节数
-     * @return 快速缓冲自身 @see FastByteBuffer
+     * @param array The source byte array.
+     * @param off   The starting offset in the source array.
+     * @param len   The number of bytes to append.
+     * @return This {@code FastByteBuffer} instance.
+     * @throws IndexOutOfBoundsException If {@code off} or {@code len} are negative, or if {@code off + len} is greater
+     *                                   than {@code array.length}.
      */
     public FastByteBuffer append(final byte[] array, final int off, final int len) {
         final int end = off + len;
@@ -109,20 +111,20 @@ public class FastByteBuffer extends FastBuffer {
     }
 
     /**
-     * 向快速缓冲加入数据
+     * Appends an entire byte array to this fast buffer.
      *
-     * @param array 数据
-     * @return 快速缓冲自身 @see FastByteBuffer
+     * @param array The byte array to append.
+     * @return This {@code FastByteBuffer} instance.
      */
     public FastByteBuffer append(final byte[] array) {
         return append(array, 0, array.length);
     }
 
     /**
-     * 向快速缓冲加入一个字节
+     * Appends a single byte to this fast buffer.
      *
-     * @param element 一个字节的数据
-     * @return 快速缓冲自身 @see FastByteBuffer
+     * @param element The byte to append.
+     * @return This {@code FastByteBuffer} instance.
      */
     public FastByteBuffer append(final byte element) {
         if ((currentBuffer == null) || (offset == currentBuffer.length)) {
@@ -137,10 +139,10 @@ public class FastByteBuffer extends FastBuffer {
     }
 
     /**
-     * 将另一个快速缓冲加入到自身
+     * Appends the entire contents of another {@code FastByteBuffer} to this buffer.
      *
-     * @param buff 快速缓冲
-     * @return 快速缓冲自身 @see FastByteBuffer
+     * @param buff The {@code FastByteBuffer} to append.
+     * @return This {@code FastByteBuffer} instance.
      */
     public FastByteBuffer append(final FastByteBuffer buff) {
         if (buff.size == 0) {
@@ -154,31 +156,42 @@ public class FastByteBuffer extends FastBuffer {
     }
 
     /**
-     * 根据索引位返回缓冲集中的缓冲
+     * Returns the byte array chunk at the specified index.
      *
-     * @param index 索引位
-     * @return 缓冲
+     * @param index The index of the buffer chunk to retrieve.
+     * @return The byte array chunk.
      */
     public byte[] array(final int index) {
         return buffers[index];
     }
 
+    /**
+     * Resets the buffer to its initial empty state, clearing all data and resetting internal pointers.
+     */
     @Override
     public void reset() {
         super.reset();
         currentBuffer = null;
     }
 
+    /**
+     * Returns the total length of the data currently stored in the buffer. This method is an alias for {@link #size()}.
+     *
+     * @return The total length of the buffer in bytes.
+     */
     @Override
     public int length() {
         return this.size;
     }
 
     /**
-     * 返回快速缓冲中的数据，如果缓冲区中的数据长度固定，则直接返回原始数组<br>
-     * 注意此方法共享数组，不能修改数组内容！
+     * Returns the data in the fast buffer as a byte array. If the buffer contains data in a single, contiguous array
+     * and its length matches the buffer's size, a zero-copy operation is performed by returning the internal array
+     * directly. Otherwise, a new array is created and populated.
+     * <p>
+     * Note: If the internal array is returned, modifications to it will affect this buffer.
      *
-     * @return 快速缓冲中的数据
+     * @return A byte array containing the buffer's data.
      */
     public byte[] toArrayZeroCopyIfPossible() {
         if (1 == currentBufferIndex) {
@@ -192,20 +205,21 @@ public class FastByteBuffer extends FastBuffer {
     }
 
     /**
-     * 返回快速缓冲中的数据
+     * Returns the data in the fast buffer as a new byte array.
      *
-     * @return 快速缓冲中的数据
+     * @return A new byte array containing the buffer's data.
      */
     public byte[] toArray() {
         return toArray(0, this.size);
     }
 
     /**
-     * 返回快速缓冲中的数据
+     * Returns a portion of the data in the fast buffer as a new byte array.
      *
-     * @param start 逻辑起始位置
-     * @param len   逻辑字节长
-     * @return 快速缓冲中的数据
+     * @param start The logical starting position within the buffer (inclusive).
+     * @param len   The logical length of bytes to retrieve.
+     * @return A new byte array containing the specified portion of the buffer's data.
+     * @throws IllegalArgumentException If {@code start} or {@code len} is negative.
      */
     public byte[] toArray(int start, int len) {
         Assert.isTrue(start >= 0, "Start must be greater than zero!");
@@ -243,10 +257,12 @@ public class FastByteBuffer extends FastBuffer {
     }
 
     /**
-     * 根据索引位返回一个字节
+     * Returns the byte at the specified logical index within the buffer.
      *
-     * @param index 索引位
-     * @return 一个字节
+     * @param index The logical index of the byte to retrieve.
+     * @return The byte at the specified index.
+     * @throws IndexOutOfBoundsException If {@code index} is out of bounds (negative or greater than or equal to the
+     *                                   buffer's size).
      */
     public byte get(int index) {
         if ((index >= this.size) || (index < 0)) {
@@ -263,6 +279,13 @@ public class FastByteBuffer extends FastBuffer {
         }
     }
 
+    /**
+     * Ensures that the buffer has enough capacity to accommodate the specified amount of data. If the existing buffer
+     * is insufficient, a new byte array chunk will be allocated. The allocated chunk will not be smaller than
+     * {@link #minChunkLen}. If the {@code buffers} array itself needs to grow, it will be doubled in size.
+     *
+     * @param capacity The desired total capacity in bytes.
+     */
     @Override
     protected void ensureCapacity(final int capacity) {
         final int delta = capacity - this.size;

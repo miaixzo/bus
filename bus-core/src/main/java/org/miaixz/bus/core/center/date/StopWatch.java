@@ -39,27 +39,30 @@ import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 秒表封装 此工具用于存储一组任务的耗时时间，并一次性打印对比。 比如：我们可以记录多段代码耗时时间，然后一次性打印（StopWatch提供了一个prettyString()函数用于按照指定格式打印出耗时）
+ * StopWatch encapsulation. This tool is used to store the elapsed time of a group of tasks and print them for
+ * comparison. For example, we can record the elapsed time of multiple code segments and then print them all at once
+ * (StopWatch provides a prettyString() function to print the elapsed time in a specified format).
  *
  * <p>
- * 此工具来自：https://github.com/spring-projects/spring-framework/blob/master/spring-core/src/main/java/org/springframework/util/StopWatch.java
- * </p>
- * 使用方法如下：
+ * This tool is inspired by:
+ * https://github.com/spring-projects/spring-framework/blob/master/spring-core/src/main/java/org/springframework/util/StopWatch.java
+ * 
+ * Usage example:
  *
  * <pre>{@code
  * StopWatch stopWatch = StopWatch.of("任务名称");
  *
- * // 任务1
+ * // Task 1
  * stopWatch.start("任务一");
  * Thread.sleep(1000);
  * stopWatch.stop();
  *
- * // 任务2
+ * // Task 2
  * stopWatch.start("任务二");
  * Thread.sleep(2000);
  * stopWatch.stop();
  *
- * // 打印出耗时
+ * // Print elapsed time
  * Console.log(stopWatch.prettyPrint());
  *
  * }</pre>
@@ -70,52 +73,56 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StopWatch {
 
     /**
-     * 秒表唯一标识，用于多个秒表对象的区分
+     * Unique ID for the StopWatch, used to distinguish between multiple StopWatch objects.
      */
     private final String id;
+    /**
+     * List of tasks.
+     */
     private List<TaskInfo> taskList;
     /**
-     * 任务名称
+     * Current task name.
      */
     private String currentTaskName;
     /**
-     * 开始时间
+     * Start time of the current task in nanoseconds.
      */
     private long startTimeNanos;
     /**
-     * 最后一次任务对象
+     * Information about the last completed task.
      */
     private TaskInfo lastTaskInfo;
     /**
-     * 总任务数
+     * Total number of tasks.
      */
     private int taskCount;
     /**
-     * 总运行时间
+     * Total elapsed time in nanoseconds.
      */
     private long totalTimeNanos;
 
     /**
-     * 构造，不启动任何任务
+     * Constructs a StopWatch without starting any task.
      */
     public StopWatch() {
         this(Normal.EMPTY);
     }
 
     /**
-     * 构造，不启动任何任务
+     * Constructs a StopWatch without starting any task.
      *
-     * @param id 用于标识秒表的唯一ID
+     * @param id A unique ID to identify the StopWatch.
      */
     public StopWatch(final String id) {
         this(id, true);
     }
 
     /**
-     * 构造，不启动任何任务
+     * Constructs a StopWatch without starting any task.
      *
-     * @param id           用于标识秒表的唯一ID
-     * @param keepTaskList 是否在停止后保留任务，{@code false} 表示停止运行后不保留任务
+     * @param id           A unique ID to identify the StopWatch.
+     * @param keepTaskList Whether to keep the task list after stopping. {@code false} means tasks are not retained
+     *                     after stopping.
      */
     public StopWatch(final String id, final boolean keepTaskList) {
         this.id = id;
@@ -125,28 +132,28 @@ public class StopWatch {
     }
 
     /**
-     * 创建计时任务（秒表）
+     * Creates a new StopWatch instance.
      *
-     * @return StopWatch
+     * @return A new StopWatch instance.
      */
     public static StopWatch of() {
         return new StopWatch();
     }
 
     /**
-     * 创建计时任务（秒表）
+     * Creates a new StopWatch instance with a given ID.
      *
-     * @param id 用于标识秒表的唯一ID
-     * @return StopWatch
+     * @param id A unique ID to identify the StopWatch.
+     * @return A new StopWatch instance.
      */
     public static StopWatch of(final String id) {
         return new StopWatch(id);
     }
 
     /**
-     * 获取StopWatch 的ID，用于多个秒表对象的区分
+     * Gets the ID of this StopWatch, used to distinguish between multiple StopWatch objects.
      *
-     * @return the ID 默认为空字符串
+     * @return The ID. Defaults to an empty string if not specified.
      * @see #StopWatch(String)
      */
     public String getId() {
@@ -154,9 +161,9 @@ public class StopWatch {
     }
 
     /**
-     * 设置是否在停止后保留任务，{@code false} 表示停止运行后不保留任务
+     * Sets whether to keep the task list after stopping. {@code false} means tasks are not retained after stopping.
      *
-     * @param keepTaskList 是否在停止后保留任务
+     * @param keepTaskList Whether to keep the task list.
      */
     public void setKeepTaskList(final boolean keepTaskList) {
         if (keepTaskList) {
@@ -169,19 +176,19 @@ public class StopWatch {
     }
 
     /**
-     * 开始默认的新任务
+     * Starts a new task with a default name (empty string).
      *
-     * @throws IllegalStateException 前一个任务没有结束
+     * @throws IllegalStateException if a previous task has not been stopped.
      */
     public void start() throws IllegalStateException {
         start(Normal.EMPTY);
     }
 
     /**
-     * 开始指定名称的新任务
+     * Starts a new task with the specified name.
      *
-     * @param taskName 新开始的任务名称
-     * @throws IllegalStateException 前一个任务没有结束
+     * @param taskName The name of the new task to start.
+     * @throws IllegalStateException if a previous task has not been stopped.
      */
     public void start(final String taskName) throws IllegalStateException {
         if (null != this.currentTaskName) {
@@ -192,9 +199,9 @@ public class StopWatch {
     }
 
     /**
-     * 停止当前任务
+     * Stops the current running task.
      *
-     * @throws IllegalStateException 任务没有开始
+     * @throws IllegalStateException if no task is currently running.
      */
     public void stop() throws IllegalStateException {
         if (null == this.currentTaskName) {
@@ -212,9 +219,9 @@ public class StopWatch {
     }
 
     /**
-     * 检查是否有正在运行的任务
+     * Checks if there is a task currently running.
      *
-     * @return 是否有正在运行的任务
+     * @return {@code true} if a task is running, {@code false} otherwise.
      * @see #currentTaskName()
      */
     public boolean isRunning() {
@@ -222,9 +229,9 @@ public class StopWatch {
     }
 
     /**
-     * 获取当前任务名，{@code null} 表示无任务
+     * Gets the name of the current running task.
      *
-     * @return 当前任务名，{@code null} 表示无任务
+     * @return The name of the current task, or {@code null} if no task is running.
      * @see #isRunning()
      */
     public String currentTaskName() {
@@ -232,10 +239,10 @@ public class StopWatch {
     }
 
     /**
-     * 获取最后任务的花费时间（纳秒）
+     * Gets the elapsed time of the last task in nanoseconds.
      *
-     * @return 任务的花费时间（纳秒）
-     * @throws IllegalStateException 无任务
+     * @return The elapsed time of the last task in nanoseconds.
+     * @throws IllegalStateException if no tasks have been run.
      */
     public long getLastTaskTimeNanos() throws IllegalStateException {
         if (this.lastTaskInfo == null) {
@@ -245,10 +252,10 @@ public class StopWatch {
     }
 
     /**
-     * 获取最后任务的花费时间（毫秒）
+     * Gets the elapsed time of the last task in milliseconds.
      *
-     * @return 任务的花费时间（毫秒）
-     * @throws IllegalStateException 无任务
+     * @return The elapsed time of the last task in milliseconds.
+     * @throws IllegalStateException if no tasks have been run.
      */
     public long getLastTaskTimeMillis() throws IllegalStateException {
         if (this.lastTaskInfo == null) {
@@ -258,10 +265,10 @@ public class StopWatch {
     }
 
     /**
-     * 获取最后的任务名
+     * Gets the name of the last completed task.
      *
-     * @return 任务名
-     * @throws IllegalStateException 无任务
+     * @return The name of the last task.
+     * @throws IllegalStateException if no tasks have been run.
      */
     public String getLastTaskName() throws IllegalStateException {
         if (this.lastTaskInfo == null) {
@@ -271,10 +278,10 @@ public class StopWatch {
     }
 
     /**
-     * 获取最后的任务对象
+     * Gets the last completed task information object.
      *
-     * @return {@link TaskInfo} 任务对象，包括任务名和花费时间
-     * @throws IllegalStateException 无任务
+     * @return The {@link TaskInfo} object, including task name and elapsed time.
+     * @throws IllegalStateException if no tasks have been run.
      */
     public TaskInfo getLastTaskInfo() throws IllegalStateException {
         if (this.lastTaskInfo == null) {
@@ -284,19 +291,19 @@ public class StopWatch {
     }
 
     /**
-     * 获取所有任务的总花费时间
+     * Gets the total elapsed time of all tasks.
      *
-     * @param unit 时间单位，{@code null}表示默认{@link TimeUnit#NANOSECONDS}
-     * @return 花费时间
+     * @param unit The time unit to return the total time in. {@code null} defaults to {@link TimeUnit#NANOSECONDS}.
+     * @return The total elapsed time.
      */
     public long getTotal(final TimeUnit unit) {
         return unit.convert(this.totalTimeNanos, TimeUnit.NANOSECONDS);
     }
 
     /**
-     * 获取所有任务的总花费时间（纳秒）
+     * Gets the total elapsed time of all tasks in nanoseconds.
      *
-     * @return 所有任务的总花费时间（纳秒）
+     * @return The total elapsed time of all tasks in nanoseconds.
      * @see #getTotalTimeMillis()
      * @see #getTotalTimeSeconds()
      */
@@ -305,9 +312,9 @@ public class StopWatch {
     }
 
     /**
-     * 获取所有任务的总花费时间（毫秒）
+     * Gets the total elapsed time of all tasks in milliseconds.
      *
-     * @return 所有任务的总花费时间（毫秒）
+     * @return The total elapsed time of all tasks in milliseconds.
      * @see #getTotalTimeNanos()
      * @see #getTotalTimeSeconds()
      */
@@ -316,9 +323,9 @@ public class StopWatch {
     }
 
     /**
-     * 获取所有任务的总花费时间（秒）
+     * Gets the total elapsed time of all tasks in seconds.
      *
-     * @return 所有任务的总花费时间（秒）
+     * @return The total elapsed time of all tasks in seconds.
      * @see #getTotalTimeNanos()
      * @see #getTotalTimeMillis()
      */
@@ -327,18 +334,20 @@ public class StopWatch {
     }
 
     /**
-     * 获取任务数
+     * Gets the number of tasks recorded.
      *
-     * @return 任务数
+     * @return The number of tasks.
      */
     public int getTaskCount() {
         return this.taskCount;
     }
 
     /**
-     * 获取任务列表
+     * Gets the list of task information.
      *
-     * @return 任务列表
+     * @return An array of {@link TaskInfo} objects.
+     * @throws UnsupportedOperationException if task info is not being kept (i.e., {@code keepTaskList} was
+     *                                       {@code false}).
      */
     public TaskInfo[] getTaskInfo() {
         if (null == this.taskList) {
@@ -348,27 +357,27 @@ public class StopWatch {
     }
 
     /**
-     * 获取任务信息，类似于：
-     * 
+     * Generates a short summary of the StopWatch, similar to:
+     *
      * <pre>
-     *     StopWatch '[data]': running time = [total] ns
+     *     StopWatch '[id]': running time = [total] ns
      * </pre>
      *
-     * @return 任务信息
+     * @return A short summary string.
      */
     public String shortSummary() {
         return shortSummary(null);
     }
 
     /**
-     * 获取任务信息，类似于：
-     * 
+     * Generates a short summary of the StopWatch, similar to:
+     *
      * <pre>
-     *     StopWatch '[data]': running time = [total] [unit]
+     *     StopWatch '[id]': running time = [total] [unit]
      * </pre>
      *
-     * @param unit 时间单位，{@code null}则默认为{@link TimeUnit#NANOSECONDS}
-     * @return 任务信息
+     * @param unit The time unit. {@code null} defaults to {@link TimeUnit#NANOSECONDS}.
+     * @return A short summary string.
      */
     public String shortSummary(TimeUnit unit) {
         if (null == unit) {
@@ -379,19 +388,19 @@ public class StopWatch {
     }
 
     /**
-     * 生成所有任务的一个任务花费时间表，单位纳秒
+     * Generates a formatted table of all task elapsed times, in nanoseconds.
      *
-     * @return 任务时间表
+     * @return A pretty-printed table of task times.
      */
     public String prettyPrint() {
         return prettyPrint(null);
     }
 
     /**
-     * 生成所有任务的一个任务花费时间表
+     * Generates a formatted table of all task elapsed times.
      *
-     * @param unit 时间单位，{@code null}则默认{@link TimeUnit#NANOSECONDS} 纳秒
-     * @return 任务时间表
+     * @param unit The time unit. {@code null} defaults to {@link TimeUnit#NANOSECONDS}.
+     * @return A pretty-printed table of task times.
      */
     public String prettyPrint(TimeUnit unit) {
         if (null == unit) {
@@ -432,6 +441,11 @@ public class StopWatch {
         return sb.toString();
     }
 
+    /**
+     * Returns a string representation of the StopWatch, including a summary and details of each task.
+     *
+     * @return A string representation of the object.
+     */
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder(shortSummary());
@@ -448,7 +462,7 @@ public class StopWatch {
     }
 
     /**
-     * 存放任务名称和花费时间对象
+     * Represents information about a single task, including its name and elapsed time.
      */
     public static final class TaskInfo {
 
@@ -456,10 +470,10 @@ public class StopWatch {
         private final long timeNanos;
 
         /**
-         * 构造
+         * Constructs a TaskInfo object.
          *
-         * @param taskName  任务名称
-         * @param timeNanos 花费时间（纳秒）
+         * @param taskName  The name of the task.
+         * @param timeNanos The elapsed time of the task in nanoseconds.
          */
         TaskInfo(final String taskName, final long timeNanos) {
             this.taskName = taskName;
@@ -467,28 +481,28 @@ public class StopWatch {
         }
 
         /**
-         * 获取任务名
+         * Gets the name of the task.
          *
-         * @return 任务名
+         * @return The task name.
          */
         public String getTaskName() {
             return this.taskName;
         }
 
         /**
-         * 获取指定单位的任务花费时间
+         * Gets the elapsed time of the task in the specified unit.
          *
-         * @param unit 单位
-         * @return 任务花费时间
+         * @param unit The time unit.
+         * @return The elapsed time of the task.
          */
         public long getTime(final TimeUnit unit) {
             return unit.convert(this.timeNanos, TimeUnit.NANOSECONDS);
         }
 
         /**
-         * 获取任务花费时间（单位：纳秒）
+         * Gets the elapsed time of the task in nanoseconds.
          *
-         * @return 任务花费时间（单位：纳秒）
+         * @return The elapsed time of the task in nanoseconds.
          * @see #getTimeMillis()
          * @see #getTimeSeconds()
          */
@@ -497,9 +511,9 @@ public class StopWatch {
         }
 
         /**
-         * 获取任务花费时间（单位：毫秒）
+         * Gets the elapsed time of the task in milliseconds.
          *
-         * @return 任务花费时间（单位：毫秒）
+         * @return The elapsed time of the task in milliseconds.
          * @see #getTimeNanos()
          * @see #getTimeSeconds()
          */
@@ -508,9 +522,9 @@ public class StopWatch {
         }
 
         /**
-         * 获取任务花费时间（单位：秒）
+         * Gets the elapsed time of the task in seconds.
          *
-         * @return 任务花费时间（单位：秒）
+         * @return The elapsed time of the task in seconds.
          * @see #getTimeMillis()
          * @see #getTimeNanos()
          */

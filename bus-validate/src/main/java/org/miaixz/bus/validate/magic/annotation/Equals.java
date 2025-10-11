@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.EqualsMatcher;
 
+import java.lang.annotation.*;
+
 /**
- * 字符串equals
+ * Validates that the annotated string is equal to the specified value.
  * <p>
- * 默认被校验对象是null时,通过校验
- * </P>
+ * By default, if the object to be validated is null, the validation passes.
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,34 +47,39 @@ import org.miaixz.bus.validate.metric.EqualsMatcher;
 @Complex(value = Builder._EQUALS, clazz = EqualsMatcher.class)
 public @interface Equals {
 
+    /**
+     * The string value to compare against.
+     *
+     * @return the target string.
+     */
     @Filler("value")
     String value();
 
     /**
-     * 默认使用的异常码
+     * The error code to be used when validation fails.
      *
-     * @return the string
+     * @return the error code.
      */
     String errcode() default Builder.DEFAULT_ERRCODE;
 
     /**
-     * 默认使用的异常信息
+     * The error message to be used when validation fails. The message can be a template with placeholders.
      *
-     * @return the string
+     * @return the error message.
      */
-    String errmsg() default "${field}必须等于指定字符:${value}";
+    String errmsg() default "${field} must be equal to the specified string: ${value}";
 
     /**
-     * 校验器组
+     * The validation groups this constraint belongs to.
      *
-     * @return the array
+     * @return an array of group names.
      */
     String[] group() default {};
 
     /**
-     * 被校验字段名称
+     * The name of the field being validated.
      *
-     * @return the string
+     * @return the field name.
      */
     String field() default Builder.DEFAULT_FIELD;
 

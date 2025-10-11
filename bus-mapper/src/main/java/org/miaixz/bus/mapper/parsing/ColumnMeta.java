@@ -44,7 +44,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * 实体中字段和列的对应关系接口，记录字段上提供的列信息
+ * Represents the mapping between an entity field and a database column, storing column information provided on the
+ * field.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,114 +56,114 @@ import lombok.experimental.Accessors;
 public class ColumnMeta extends PropertyMeta<ColumnMeta> {
 
     /**
-     * 实体类字段
+     * The entity class field.
      */
     protected final FieldMeta fieldMeta;
 
     /**
-     * 所在实体类
+     * The entity class this column belongs to.
      */
     protected TableMeta tableMeta;
 
     /**
-     * 列名
+     * The column name.
      */
     protected String column;
 
     /**
-     * 是否为主键
+     * Whether this column is a primary key.
      */
     protected boolean id;
 
     /**
-     * 是否可以为空
+     * Whether this column can be null.
      */
     protected boolean nullable;
 
     /**
-     * 主键策略1，优先级1：是否使用 JDBC 方式获取主键，优先级最高，设置为 true 后，不对其他配置校验
+     * Primary key strategy 1 (Priority 1): Whether to use JDBC to get the primary key. This has the highest priority.
      */
     protected boolean useGeneratedKeys;
 
     /**
-     * 主键策略2，优先级2：取主键的 SQL，当前SQL只能在 INSERT 语句执行后执行
+     * Primary key strategy 2 (Priority 2): The SQL to get the primary key, executed after an INSERT statement.
      */
     protected String afterSql;
 
     /**
-     * 主键策略3，优先级3：Java 方式生成主键，可与发号器服务配合使用
+     * Primary key strategy 3 (Priority 3): Generate the primary key in Java, can be used with an ID generator service.
      */
     protected Class<? extends GenId> genId;
 
     /**
-     * 执行 genId 的时机，仅当 genId 不为空时有效，默认插入前执行
+     * The timing for executing `genId`, only effective when `genId` is not null. Defaults to before insertion.
      */
     protected boolean genIdExecuteBefore;
 
     /**
-     * 排序方式
+     * The sort order for this column.
      */
     protected String orderBy;
 
     /**
-     * 排序的优先级，数值越小优先级越高
+     * The priority of the sort order, lower values have higher priority.
      */
     protected int orderByPriority;
 
     /**
-     * 是否查询字段
+     * Whether this column is selectable.
      */
     protected boolean selectable = true;
 
     /**
-     * 是否插入字段
+     * Whether this column is insertable.
      */
     protected boolean insertable = true;
 
     /**
-     * 是否更新字段
+     * Whether this column is updatable.
      */
     protected boolean updatable = true;
 
     /**
-     * JDBC 类型
+     * The JDBC type of the column.
      */
     protected JdbcType jdbcType;
 
     /**
-     * 类型处理器
+     * The type handler for this column.
      */
     protected Class<? extends TypeHandler> typeHandler;
 
     /**
-     * 精度
+     * The numeric scale for this column.
      */
     protected String numericScale;
 
     /**
-     * 构造函数，初始化 MapperColumn
+     * Constructs a new MapperColumn.
      *
-     * @param fieldMeta 实体类字段
+     * @param fieldMeta The entity class field.
      */
     protected ColumnMeta(FieldMeta fieldMeta) {
         this.fieldMeta = fieldMeta;
     }
 
     /**
-     * 创建 MapperColumn 实例
+     * Creates a new MapperColumn instance.
      *
-     * @param field 实体类字段
-     * @return MapperColumn 实例
+     * @param field The entity class field.
+     * @return A new MapperColumn instance.
      */
     public static ColumnMeta of(FieldMeta field) {
         return new ColumnMeta(field);
     }
 
     /**
-     * 设置实体表
+     * Sets the entity table.
      *
-     * @param entityTable 实体表信息
-     * @return 当前 MapperColumn 实例
+     * @param entityTable The entity table information.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta tableMeta(TableMeta entityTable) {
         this.tableMeta = entityTable;
@@ -170,10 +171,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置列名
+     * Sets the column name.
      *
-     * @param column 列名
-     * @return 当前 MapperColumn 实例
+     * @param column The column name.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta column(String column) {
         this.column = column;
@@ -181,10 +182,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置是否为主键
+     * Sets whether this column is a primary key.
      *
-     * @param id 是否为主键
-     * @return 当前 MapperColumn 实例
+     * @param id Whether this column is a primary key.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta id(boolean id) {
         this.id = id;
@@ -192,10 +193,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置是否可以为空
+     * Sets whether this column can be null.
      *
-     * @param nullable 是否可以为空
-     * @return 当前 MapperColumn 实例
+     * @param nullable Whether this column can be null.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta nullable(boolean nullable) {
         this.nullable = nullable;
@@ -203,10 +204,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置是否使用 JDBC 方式获取主键
+     * Sets whether to use JDBC to get the primary key.
      *
-     * @param useGeneratedKeys 是否使用 JDBC 方式
-     * @return 当前 MapperColumn 实例
+     * @param useGeneratedKeys Whether to use JDBC.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta useGeneratedKeys(boolean useGeneratedKeys) {
         this.useGeneratedKeys = useGeneratedKeys;
@@ -214,10 +215,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置取主键的 SQL
+     * Sets the SQL to get the primary key.
      *
-     * @param afterSql 主键 SQL
-     * @return 当前 MapperColumn 实例
+     * @param afterSql The primary key SQL.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta afterSql(String afterSql) {
         this.afterSql = afterSql;
@@ -225,10 +226,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置 Java 方式生成主键的类
+     * Sets the class for generating the primary key in Java.
      *
-     * @param genId 主键生成器类
-     * @return 当前 MapperColumn 实例
+     * @param genId The primary key generator class.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta genId(Class<? extends GenId> genId) {
         this.genId = genId;
@@ -236,10 +237,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置执行 genId 的时机
+     * Sets the timing for executing `genId`.
      *
-     * @param genIdExecuteBefore 是否在插入前执行
-     * @return 当前 MapperColumn 实例
+     * @param genIdExecuteBefore Whether to execute before insertion.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta genIdExecuteBefore(boolean genIdExecuteBefore) {
         this.genIdExecuteBefore = genIdExecuteBefore;
@@ -247,10 +248,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置排序方式
+     * Sets the sort order.
      *
-     * @param orderBy 排序方式
-     * @return 当前 MapperColumn 实例
+     * @param orderBy The sort order.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta orderBy(String orderBy) {
         this.orderBy = orderBy;
@@ -258,10 +259,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置排序优先级
+     * Sets the sort priority.
      *
-     * @param orderByPriority 排序优先级
-     * @return 当前 MapperColumn 实例
+     * @param orderByPriority The sort priority.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta orderByPriority(int orderByPriority) {
         this.orderByPriority = orderByPriority;
@@ -269,10 +270,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置是否为查询字段
+     * Sets whether this is a selectable column.
      *
-     * @param selectable 是否查询字段
-     * @return 当前 MapperColumn 实例
+     * @param selectable Whether this is a selectable column.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta selectable(boolean selectable) {
         this.selectable = selectable;
@@ -280,10 +281,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置是否为插入字段
+     * Sets whether this is an insertable column.
      *
-     * @param insertable 是否插入字段
-     * @return 当前 MapperColumn 实例
+     * @param insertable Whether this is an insertable column.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta insertable(boolean insertable) {
         this.insertable = insertable;
@@ -291,10 +292,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置是否为更新字段
+     * Sets whether this is an updatable column.
      *
-     * @param updatable 是否更新字段
-     * @return 当前 MapperColumn 实例
+     * @param updatable Whether this is an updatable column.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta updatable(boolean updatable) {
         this.updatable = updatable;
@@ -302,10 +303,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置 JDBC 类型
+     * Sets the JDBC type.
      *
-     * @param jdbcType JDBC 类型
-     * @return 当前 MapperColumn 实例
+     * @param jdbcType The JDBC type.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta jdbcType(JdbcType jdbcType) {
         this.jdbcType = jdbcType;
@@ -313,10 +314,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置类型处理器
+     * Sets the type handler.
      *
-     * @param typeHandler 类型处理器类
-     * @return 当前 MapperColumn 实例
+     * @param typeHandler The type handler class.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta typeHandler(Class<? extends TypeHandler> typeHandler) {
         this.typeHandler = typeHandler;
@@ -324,10 +325,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 设置精度
+     * Sets the numeric scale.
      *
-     * @param numericScale 精度
-     * @return 当前 MapperColumn 实例
+     * @param numericScale The numeric scale.
+     * @return This MapperColumn instance.
      */
     public ColumnMeta numericScale(String numericScale) {
         this.numericScale = numericScale;
@@ -335,47 +336,47 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 获取 Java 类型
+     * Gets the Java type of the field.
      *
-     * @return 字段的 Java 类型
+     * @return The Java type of the field.
      */
     public Class<?> javaType() {
         return fieldMeta().getType();
     }
 
     /**
-     * 获取属性名
+     * Gets the property name.
      *
-     * @return 属性名
+     * @return The property name.
      */
     public String property() {
         return property("");
     }
 
     /**
-     * 获取带指定前缀的属性名
+     * Gets the property name with a specified prefix.
      *
-     * @param prefix 指定前缀，需包含 "."
-     * @return 带前缀的属性名
+     * @param prefix The prefix, which should include a ".".
+     * @return The prefixed property name.
      */
     public String property(String prefix) {
         return prefix + fieldMeta().getName();
     }
 
     /**
-     * 返回 XML 变量形式 #{property}
+     * Returns an XML variable in the form #{property}.
      *
-     * @return XML 变量字符串
+     * @return The XML variable string.
      */
     public String variables() {
         return variables("");
     }
 
     /**
-     * 返回带前缀的 XML 变量形式 #{prefixproperty}
+     * Returns a prefixed XML variable in the form #{prefix.property}.
      *
-     * @param prefix 指定前缀，需包含 "."
-     * @return 带前缀的 XML 变量字符串
+     * @param prefix The prefix, which should include a ".".
+     * @return The prefixed XML variable string.
      */
     public String variables(String prefix) {
         return "#{" + property(prefix) + jdbcTypeVariables().orElse("") + javaTypeVariables().orElse("")
@@ -383,9 +384,9 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 获取 Java 类型变量字符串，如 {, javaType=java.lang.String}
+     * Gets the Java type variable string, e.g., ", javaType=java.lang.String".
      *
-     * @return Java 类型变量字符串的 Optional 包装对象
+     * @return An {@link Optional} containing the Java type variable string.
      */
     public Optional<String> javaTypeVariables() {
         Class<?> javaType = this.javaType();
@@ -396,9 +397,9 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 获取数据库类型变量字符串，如 {, jdbcType=VARCHAR}
+     * Gets the database type variable string, e.g., ", jdbcType=VARCHAR".
      *
-     * @return 数据库类型变量字符串的 Optional 包装对象
+     * @return An {@link Optional} containing the database type variable string.
      */
     public Optional<String> jdbcTypeVariables() {
         if (this.jdbcType != null && this.jdbcType != JdbcType.UNDEFINED) {
@@ -408,9 +409,9 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 获取类型处理器变量字符串，如 {, typeHandler=XXTypeHandler}
+     * Gets the type handler variable string, e.g., ", typeHandler=XXTypeHandler".
      *
-     * @return 类型处理器变量字符串的 Optional 包装对象
+     * @return An {@link Optional} containing the type handler variable string.
      */
     public Optional<String> typeHandlerVariables() {
         if (this.typeHandler != null && this.typeHandler != UnknownTypeHandler.class) {
@@ -420,9 +421,9 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 获取精度变量字符串，如 {, numericScale=2}
+     * Gets the numeric scale variable string, e.g., ", numericScale=2".
      *
-     * @return 精度变量字符串的 Optional 包装对象
+     * @return An {@link Optional} containing the numeric scale variable string.
      */
     public Optional<String> numericScaleVariables() {
         if (StringKit.isNotEmpty(this.numericScale)) {
@@ -432,22 +433,23 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 返回 column AS property 形式的字符串，当 column 和 property 相同时无别名
+     * Returns a string in the format "column AS property". No alias is used if column and property are the same.
      *
-     * @return column AS property 字符串
+     * @return The "column AS property" string.
      */
     public String columnAsProperty() {
         return columnAsProperty("");
     }
 
     /**
-     * 返回 column AS prefixproperty 形式的字符串
+     * Returns a string in the format "column AS prefix.property".
      *
-     * @param prefix 指定前缀，需包含 "."
-     * @return column AS prefixproperty 字符串
+     * @param prefix The prefix, which should include a ".".
+     * @return The "column AS prefix.property" string.
      */
     public String columnAsProperty(String prefix) {
-        // 比较 column 和 property 时，忽略界定符（如 MySQL 中的 `order` 应视为与 field 的 order 相同）
+        // When comparing column and property, ignore delimiters (e.g., `order` in MySQL should be treated as the same
+        // as the field 'order').
         String column = column();
         Matcher matcher = DELIMITER.matcher(column());
         if (matcher.find()) {
@@ -460,69 +462,69 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 返回 column = #{property} 形式的字符串
+     * Returns a string in the format "column = #{property}".
      *
-     * @return column = #{property} 字符串
+     * @return The "column = #{property}" string.
      */
     public String columnEqualsProperty() {
         return columnEqualsProperty("");
     }
 
     /**
-     * 返回带前缀的 column = #{prefixproperty} 形式的字符串
+     * Returns a prefixed string in the format "column = #{prefix.property}".
      *
-     * @param prefix 指定前缀，需包含 "."
-     * @return column = #{prefixproperty} 字符串
+     * @param prefix The prefix, which should include a ".".
+     * @return The "column = #{prefix.property}" string.
      */
     public String columnEqualsProperty(String prefix) {
         return column() + " = " + variables(prefix);
     }
 
     /**
-     * 返回 property != null 形式的字符串
+     * Returns a string in the format "property != null".
      *
-     * @return property != null 字符串
+     * @return The "property != null" string.
      */
     public String notNullTest() {
         return notNullTest("");
     }
 
     /**
-     * 返回带前缀的 prefixproperty != null 形式的字符串
+     * Returns a prefixed string in the format "prefix.property != null".
      *
-     * @param prefix 指定前缀，需包含 "."
-     * @return prefixproperty != null 字符串
+     * @param prefix The prefix, which should include a ".".
+     * @return The "prefix.property != null" string.
      */
     public String notNullTest(String prefix) {
         return property(prefix) + " != null";
     }
 
     /**
-     * 当字段类型为 String 时，返回 property != null and property != '' 形式的字符串；其他类型与 notNullTest 相同
+     * Returns "property != null and property != ''" for String types; otherwise, same as `notNullTest`.
      *
-     * @return 非空判断字符串
+     * @return The non-empty check string.
      */
     public String notEmptyTest() {
         return notEmptyTest("");
     }
 
     /**
-     * 当字段类型为 String 时，返回 prefixproperty != null and prefixproperty != '' 形式的字符串；其他类型与 notNullTest 相同
+     * Returns "prefix.property != null and prefix.property != ''" for String types; otherwise, same as `notNullTest`.
      *
-     * @param prefix 指定前缀，需包含 "."
-     * @return 非空判断字符串
+     * @param prefix The prefix, which should include a ".".
+     * @return The non-empty check string.
      */
     public String notEmptyTest(String prefix) {
         if (fieldMeta().getType() == String.class) {
-            return notNullTest(prefix) + " and " + property(prefix) + " != '' ";
+            return notNullTest(prefix) + " and " + property(prefix) + " != \'\' ";
         }
         return notNullTest();
     }
 
     /**
-     * 判断当前字段是否设置了主键策略
+     * Checks if a primary key strategy is set for this column.
      *
-     * @return true 表示设置了主键策略，false 表示未设置
+     * @return {@code true} if a primary key strategy is set, {@code false} otherwise.
      */
     public boolean hasPrimaryKeyStrategy() {
         return id && (useGeneratedKeys || (afterSql != null && !afterSql.isEmpty())
@@ -530,10 +532,10 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 判断两个 MapperColumn 对象是否相等
+     * Compares this MapperColumn with another object for equality.
      *
-     * @param o 比较对象
-     * @return true 表示相等，false 表示不相等
+     * @param o The object to compare with.
+     * @return {@code true} if the objects are equal, {@code false} otherwise.
      */
     @Override
     public boolean equals(Object o) {
@@ -545,9 +547,9 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 计算对象的哈希值
+     * Computes the hash code for this object.
      *
-     * @return 哈希值
+     * @return The hash code.
      */
     @Override
     public int hashCode() {
@@ -555,9 +557,9 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * 返回字符串表示形式，格式为 column = #{property}
+     * Returns a string representation in the format "column = #{property}".
      *
-     * @return 字符串表示形式
+     * @return The string representation.
      */
     @Override
     public String toString() {

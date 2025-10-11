@@ -38,17 +38,29 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 腾讯云短信
+ * Tencent Cloud SMS service provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TencentSmsProvider extends AbstractProvider<TencentMaterial, Context> {
 
+    /**
+     * Constructs a {@code TencentSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public TencentSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using Tencent Cloud SMS service.
+     *
+     * @param entity The {@link TencentMaterial} containing SMS details such as App ID, signature, template, parameters,
+     *               and recipient.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(TencentMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
@@ -59,10 +71,11 @@ public class TencentSmsProvider extends AbstractProvider<TencentMaterial, Contex
         bodys.put("PhoneNumberSet", entity.getReceive());
 
         String response = Httpx.post(this.getUrl(entity), bodys);
-        int status = JsonKit.getValue(response, "status");
+        Integer status = JsonKit.getValue(response, "status");
 
-        String errcode = status == 200 ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = status == 200 ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
+        String errcode = (status != null && status == 200) ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String errmsg = (status != null && status == 200) ? ErrorCode._SUCCESS.getValue()
+                : ErrorCode._FAILURE.getValue();
 
         return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }

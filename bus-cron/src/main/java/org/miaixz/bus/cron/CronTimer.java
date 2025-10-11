@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.cron;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 import org.miaixz.bus.core.center.date.culture.en.Units;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.logger.Logger;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
- * 定时任务计时器 计时器线程每隔一分钟（一秒钟）检查一次任务列表，一旦匹配到执行对应的Task
+ * The timer thread for the cron scheduler. This thread checks the task list every minute (or second, depending on
+ * configuration) and executes any matching tasks.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,43 +47,43 @@ public class CronTimer extends Thread implements Serializable {
     private static final long serialVersionUID = 2852286896673L;
 
     /**
-     * 定时单元：秒
+     * Timer unit in milliseconds for a second.
      */
     private final long TIMER_UNIT_SECOND = Units.SECOND.getMillis();
     /**
-     * 定时单元：分
+     * Timer unit in milliseconds for a minute.
      */
     private final long TIMER_UNIT_MINUTE = Units.MINUTE.getMillis();
     private final Scheduler scheduler;
     /**
-     * 定时任务是否已经被强制关闭
+     * A flag indicating whether the timer has been forcibly stopped.
      */
-    private boolean isStop;
+    private volatile boolean isStop;
 
     /**
-     * 构造
+     * Constructs a new CronTimer.
      *
-     * @param scheduler {@link Scheduler}
+     * @param scheduler The {@link Scheduler}.
      */
     public CronTimer(final Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
     /**
-     * 检查是否为有效的sleep毫秒数，包括：
+     * Checks if the sleep time is valid. A valid sleep time must be:
      * 
      * <pre>
-     *     1. 是否&gt;0，防止用户向未来调整时间
-     *     1. 是否&lt;两倍的间隔单位，防止用户向历史调整时间
+     * 1. Greater than 0, to prevent issues if the system time is moved forward.
+     * 2. Less than twice the timer unit, to prevent long sleeps if the system time is moved backward.
      * </pre>
      *
-     * @param millis    毫秒数
-     * @param timerUnit 定时单位，为秒或者分的毫秒值
-     * @return 是否为有效的sleep毫秒数
+     * @param millis    The sleep time in milliseconds.
+     * @param timerUnit The timer unit (milliseconds for a second or a minute).
+     * @return {@code true} if the sleep time is valid, {@code false} otherwise.
      */
     private static boolean isValidSleepMillis(final long millis, final long timerUnit) {
         return millis > 0 &&
-        // 防止用户向前调整时间导致的长时间sleep
+        // Prevent long sleeps due to system time being moved backward.
                 millis < (2 * timerUnit);
     }
 
@@ -94,33 +95,37 @@ public class CronTimer extends Thread implements Serializable {
         long nextTime;
         long sleep;
         while (!isStop) {
-            // 下一时间计算是按照上一个执行点开始时间计算的
-            // 此处除以定时单位是为了清零单位以下部分，例如单位是分则秒和毫秒清零
+            // The next execution time is calculated based on the start time of the previous execution point.
+            // Dividing by the timer unit clears the lower parts (e.g., seconds and milliseconds if the unit is
+            // minutes).
             nextTime = ((thisTime / timerUnit) + 1) * timerUnit;
             sleep = nextTime - System.currentTimeMillis();
             if (isValidSleepMillis(sleep, timerUnit)) {
                 if (!ThreadKit.safeSleep(sleep)) {
-                    // 等待直到下一个时间点，如果被中断直接退出Timer
+                    // If interrupted while sleeping, exit the timer loop.
                     break;
                 }
 
-                // 执行点，时间记录为执行开始的时间，而非结束时间
+                // Record the execution time as the start of the tick, not the end.
                 spawnLauncher(nextTime);
 
-                // 采用叠加方式，确保正好是1分钟或1秒，避免sleep晚醒问题
-                // 此处无需校验，因为每次循环都是sleep与上触发点的时间差。
-                // 当上一次晚醒后，本次会减少sleep时间，保证误差在一个unit内，并不断修正。
+                // Use additive progression to ensure an interval of exactly one minute or one second,
+                // avoiding issues with `sleep` waking up late.
+                // No validation is needed here, as each loop sleeps for the difference between the next tick and the
+                // current time.
+                // If the previous wake-up was late, the current sleep time will be reduced, keeping the error within
+                // one unit and continuously correcting.
                 thisTime = nextTime;
             } else {
-                // 非正常时间重新计算
+                // Recalculate time if it's not a normal interval.
                 thisTime = System.currentTimeMillis();
             }
         }
-        Logger.debug("cron timer stopped.");
+        Logger.debug("Cron timer stopped.");
     }
 
     /**
-     * 关闭定时器
+     * Stops the timer thread gracefully.
      */
     synchronized public void stopTimer() {
         this.isStop = true;
@@ -128,9 +133,9 @@ public class CronTimer extends Thread implements Serializable {
     }
 
     /**
-     * 启动匹配
+     * Spawns a launcher to check for matching tasks at the given time.
      *
-     * @param millis 当前时间
+     * @param millis The current time in milliseconds.
      */
     private void spawnLauncher(final long millis) {
         this.scheduler.supervisor.spawnLauncher(millis);

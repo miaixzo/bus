@@ -39,17 +39,29 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Simple MyBatis Cache
+ * Simple MyBatis Cache implementation that wraps an {@link org.apache.ibatis.cache.Cache} instance. This class allows
+ * configuring the underlying MyBatis cache using properties.
  *
+ * @param <K> the type of keys maintained by this cache
+ * @param <V> the type of mapped values
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SimpleCache<K, V> implements CacheX<K, V> {
 
+    /**
+     * The underlying MyBatis cache instance.
+     */
     private final org.apache.ibatis.cache.Cache CACHE;
 
+    /**
+     * Constructs a new SimpleCache with the given properties. The properties are used to configure the underlying
+     * MyBatis cache, including its type, eviction policy, and size.
+     *
+     * @param properties the properties for configuring the cache
+     */
     public SimpleCache(Properties properties) {
-        // 获取参数前缀
+        // Get parameter prefix
         String prefix = StringKit.isNotEmpty(properties.getProperty("prefix")) ? properties.getProperty("prefix")
                 : Normal.EMPTY;
         CacheBuilder cacheBuilder = new CacheBuilder("SQL_CACHE");
@@ -86,6 +98,13 @@ public class SimpleCache<K, V> implements CacheX<K, V> {
         CACHE = cacheBuilder.build();
     }
 
+    /**
+     * Reads a value from the cache associated with the given key.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value to which the specified key is mapped, or {@code null} if this cache contains no mapping for the
+     *         key
+     */
     @Override
     public V read(K key) {
         Object value = CACHE.getObject(key);
@@ -95,29 +114,61 @@ public class SimpleCache<K, V> implements CacheX<K, V> {
         return null;
     }
 
+    /**
+     * Reads multiple values from the cache associated with the given keys. This implementation returns an empty map as
+     * it's not directly supported by the underlying MyBatis cache.
+     *
+     * @param keys a collection of keys for which to retrieve values
+     * @return an empty map
+     */
     @Override
     public Map<K, V> read(Collection<K> keys) {
         return Map.of();
     }
 
+    /**
+     * Writes a key-value pair to the cache with a specified expiration time. The expiration time is not directly used
+     * by the underlying MyBatis cache, which is configured via properties.
+     *
+     * @param key    the key with which the specified value is to be associated
+     * @param value  the value to be associated with the specified key
+     * @param expire the expiration time in milliseconds (not directly used by this implementation)
+     */
     @Override
     public void write(K key, V value, long expire) {
         CACHE.putObject(key, value);
     }
 
+    /**
+     * Writes multiple key-value pairs to the cache with a specified expiration time. This implementation does nothing
+     * as it's not directly supported by the underlying MyBatis cache.
+     *
+     * @param map    a map of key-value pairs to be stored in the cache
+     * @param expire the expiration time in milliseconds (not directly used by this implementation)
+     */
     @Override
     public void write(Map<K, V> map, long expire) {
-
+        // Not implemented for SimpleCache
     }
 
+    /**
+     * Removes the specified keys from the cache. This implementation does nothing as it's not directly supported by the
+     * underlying MyBatis cache.
+     *
+     * @param keys an array of keys to be removed from the cache
+     */
     @Override
     public void remove(K... keys) {
-
+        // Not implemented for SimpleCache
     }
 
+    /**
+     * Clears all entries from the cache. This implementation does nothing as it's not directly supported by the
+     * underlying MyBatis cache.
+     */
     @Override
     public void clear() {
-
+        // Not implemented for SimpleCache
     }
 
 }

@@ -34,10 +34,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * 自定义键和值转换的的Map 继承此类后，通过实现{@link #customKey(Object)}和{@link #customValue(Object)}，按照给定规则加入到map或获取值。
+ * An abstract map implementation that automatically transforms keys and values. Subclasses must implement the
+ * {@link #customKey(Object)} and {@link #customValue(Object)} methods to define the transformation logic. All map
+ * operations that involve keys or values will apply these transformations before interacting with the underlying map.
  *
- * @param <K> 键类型
- * @param <V> 值类型
+ * @param <K> The type of keys maintained by this map.
+ * @param <V> The type of mapped values.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -47,78 +49,119 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     private static final long serialVersionUID = 2852276161213L;
 
     /**
-     * 构造 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
+     * Constructs a {@code TransMap} using a map factory to create the underlying map instance. The factory should
+     * provide a new, empty map.
      *
-     * @param mapFactory 空Map创建工厂
+     * @param mapFactory A {@link Supplier} that creates an empty map for internal use.
      */
     public TransMap(final Supplier<Map<K, V>> mapFactory) {
         super(mapFactory);
     }
 
     /**
-     * 构造 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
+     * Constructs a {@code TransMap} by wrapping a provided empty map instance. It is crucial that the provided map is
+     * empty, as existing entries will not be transformed, which could lead to inconsistent behavior.
      *
-     * @param emptyMap Map 被包装的Map，必须为空Map，否则自定义key会无效
+     * @param emptyMap The map to be wrapped. Must be an empty map.
      */
     public TransMap(final Map<K, V> emptyMap) {
         super(emptyMap);
     }
 
+    /**
+     * {@inheritDoc} The key is transformed before being used for the lookup.
+     */
     @Override
     public V get(final Object key) {
         return super.get(customKey(key));
     }
 
+    /**
+     * {@inheritDoc} The key and value are transformed before being put into the map.
+     */
     @Override
     public V put(final K key, final V value) {
         return super.put(customKey(key), customValue(value));
     }
 
+    /**
+     * {@inheritDoc} Each key and value from the source map are transformed before being put into this map.
+     */
     @Override
     public void putAll(final Map<? extends K, ? extends V> m) {
         m.forEach(this::put);
     }
 
+    /**
+     * {@inheritDoc} The key is transformed before the contains check is performed.
+     */
     @Override
     public boolean containsKey(final Object key) {
         return super.containsKey(customKey(key));
     }
 
+    /**
+     * {@inheritDoc} The key is transformed before the removal operation.
+     */
     @Override
     public V remove(final Object key) {
         return super.remove(customKey(key));
     }
 
+    /**
+     * {@inheritDoc} The key and value are transformed before the removal operation.
+     */
     @Override
     public boolean remove(final Object key, final Object value) {
         return super.remove(customKey(key), customValue(value));
     }
 
+    /**
+     * {@inheritDoc} The key and values are transformed before the replacement operation.
+     */
     @Override
     public boolean replace(final K key, final V oldValue, final V newValue) {
         return super.replace(customKey(key), customValue(oldValue), customValue(newValue));
     }
 
+    /**
+     * {@inheritDoc} The key and value are transformed before the replacement operation.
+     */
     @Override
     public V replace(final K key, final V value) {
         return super.replace(customKey(key), customValue(value));
     }
 
+    /**
+     * {@inheritDoc} The key and default value are transformed before the operation.
+     */
     @Override
     public V getOrDefault(final Object key, final V defaultValue) {
         return super.getOrDefault(customKey(key), customValue(defaultValue));
     }
 
+    /**
+     * {@inheritDoc} The key is transformed, and the values passed to and returned from the remapping function are also
+     * transformed.
+     */
     @Override
     public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         return super.computeIfPresent(customKey(key), (k, v) -> remappingFunction.apply(customKey(k), customValue(v)));
     }
 
+    /**
+     * {@inheritDoc} The key is transformed, and the values passed to and returned from the remapping function are also
+     * transformed.
+     */
     @Override
     public V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         return super.compute(customKey(key), (k, v) -> remappingFunction.apply(customKey(k), customValue(v)));
     }
 
+    /**
+     * {@inheritDoc} The key and value are transformed, and the values passed to the remapping function are also
+     * transformed.
+     */
     @Override
     public V merge(final K key, final V value, final BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         return super.merge(
@@ -127,29 +170,38 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
                 (v1, v2) -> remappingFunction.apply(customValue(v1), customValue(v2)));
     }
 
+    /**
+     * {@inheritDoc} The key and value are transformed before being put into the map.
+     */
     @Override
     public V putIfAbsent(final K key, final V value) {
         return super.putIfAbsent(customKey(key), customValue(value));
     }
 
+    /**
+     * {@inheritDoc} The key is transformed before the operation.
+     */
     @Override
     public V computeIfAbsent(final K key, final Function<? super K, ? extends V> mappingFunction) {
         return super.computeIfAbsent(customKey(key), mappingFunction);
     }
 
     /**
-     * 自定义键
+     * Transforms a key before it is used in any map operation. Subclasses must implement this method to define their
+     * key conversion logic. For example, to create a case-insensitive map, this method could convert the key to
+     * lowercase.
      *
-     * @param key KEY
-     * @return 自定义KEY
+     * @param key The original key.
+     * @return The transformed key.
      */
     protected abstract K customKey(Object key);
 
     /**
-     * 自定义值
+     * Transforms a value before it is stored in the map. Subclasses must implement this method to define their value
+     * conversion logic. For example, this method could trim whitespace from string values.
      *
-     * @param value 值
-     * @return 自定义值
+     * @param value The original value.
+     * @return The transformed value.
      */
     protected abstract V customValue(Object value);
 

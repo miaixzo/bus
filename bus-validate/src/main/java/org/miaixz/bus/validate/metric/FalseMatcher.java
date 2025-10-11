@@ -33,13 +33,22 @@ import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.False;
 
 /**
- * FALSE 校验
+ * Validator for the {@link False} annotation. Checks if a Boolean value is {@code false}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class FalseMatcher implements Matcher<Boolean, False> {
 
+    /**
+     * Checks if the given Boolean object is {@code false}.
+     *
+     * @param object     The Boolean object to validate.
+     * @param annotation The {@link False} annotation instance, which provides the `nullable` property.
+     * @param context    The validation context (ignored).
+     * @return {@code true} if the object is `null` and `nullable` is true, or if the object is `Boolean.FALSE`;
+     *         {@code false} otherwise.
+     */
     @Override
     public boolean on(Boolean object, False annotation, Context context) {
         if (BooleanKit.isFalse(object)) {

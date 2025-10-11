@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.http.bodys;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
@@ -40,10 +35,17 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Headers;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- * MIME Multipart 请求体
+ * A MIME multipart request body.
  * <p>
- * 表示 MIME <code>multipart/related</code> 类型的复合请求体，用于上传多个部分（如文件、表单数据）。 每个部分由分隔符（boundary）分隔，支持自定义头部和内容类型。
+ * This class represents a composite request body of type {@code multipart/related}, used for uploading multiple parts
+ * (such as files and form data). Each part is separated by a boundary and can have its own custom headers and content
+ * type.
  * </p>
  *
  * @author Kimi Liu
@@ -52,60 +54,61 @@ import org.miaixz.bus.http.Headers;
 public class MultipartBody extends RequestBody {
 
     /**
-     * 冒号空格分隔符
+     * The colon-space separator.
      */
     private static final byte[] COLONSPACE = { Symbol.C_COLON, Symbol.C_SPACE };
     /**
-     * 换行符
+     * The carriage return-line feed separator.
      */
     private static final byte[] CRLF = { Symbol.C_CR, Symbol.C_LF };
     /**
-     * 双破折号
+     * The double-dash separator.
      */
     private static final byte[] DASHDASH = { Symbol.C_MINUS, Symbol.C_MINUS };
     /**
-     * 分隔符
+     * The boundary separator.
      */
     private final ByteString boundary;
     /**
-     * 原始媒体类型
+     * The original media type.
      */
     private final MediaType originalType;
     /**
-     * 完整媒体类型（包含分隔符）
+     * The full media type, including the boundary.
      */
     private final MediaType contentType;
     /**
-     * 部分列表
+     * The list of parts.
      */
     private final List<Part> parts;
     /**
-     * 内容长度
+     * The content length.
      */
     private long contentLength = -1L;
 
     /**
-     * 构造函数，初始化 MultipartBody 实例
+     * Constructs a new {@code MultipartBody} instance.
      *
-     * @param boundary    分隔符
-     * @param contentType 媒体类型
-     * @param parts       部分列表
+     * @param boundary    The boundary separator.
+     * @param contentType The media type.
+     * @param parts       The list of parts.
      */
     MultipartBody(ByteString boundary, MediaType contentType, List<Part> parts) {
         this.boundary = boundary;
         this.originalType = contentType;
-        this.contentType = MediaType.valueOf(contentType.toString() + "; boundary=" + boundary.utf8());
+        this.contentType = MediaType.valueOf(contentType + "; boundary=" + boundary.utf8());
         this.parts = org.miaixz.bus.http.Builder.immutableList(parts);
     }
 
     /**
-     * 追加引号字符串
+     * Appends a quoted string to a {@link StringBuilder}.
      * <p>
-     * 将键值追加到 StringBuilder，处理特殊字符（如换行、引号）的转义。 建议避免在字段名称中使用双引号、换行符或百分号等字符。
+     * This method appends a key to a {@link StringBuilder}, escaping special characters like newlines and quotes. It is
+     * recommended to avoid using double quotes, newlines, or percent signs in field names.
      * </p>
      *
-     * @param target 目标 StringBuilder
-     * @param key    键值
+     * @param target The target {@link StringBuilder}.
+     * @param key    The key to append.
      */
     static void appendQuotedString(StringBuilder target, String key) {
         target.append(Symbol.C_DOUBLE_QUOTES);
@@ -133,55 +136,55 @@ public class MultipartBody extends RequestBody {
     }
 
     /**
-     * 获取原始媒体类型
+     * Returns the original media type.
      *
-     * @return 原始媒体类型
+     * @return The original media type.
      */
     public MediaType type() {
         return originalType;
     }
 
     /**
-     * 获取分隔符
+     * Returns the boundary separator.
      *
-     * @return 分隔符字符串
+     * @return The boundary string.
      */
     public String boundary() {
         return boundary.utf8();
     }
 
     /**
-     * 获取部分数量
+     * Returns the number of parts in this multipart body.
      *
-     * @return 部分数量
+     * @return The number of parts.
      */
     public int size() {
         return parts.size();
     }
 
     /**
-     * 获取部分列表
+     * Returns the list of parts.
      *
-     * @return 不可修改的部分列表
+     * @return An unmodifiable list of parts.
      */
     public List<Part> parts() {
         return parts;
     }
 
     /**
-     * 获取指定索引的部分
+     * Returns the part at the specified index.
      *
-     * @param index 索引
-     * @return 部分实例
+     * @param index The index.
+     * @return The part instance.
      */
     public Part part(int index) {
         return parts.get(index);
     }
 
     /**
-     * 获取完整媒体类型
+     * Returns the full media type, including the boundary.
      *
-     * @return 包含分隔符的媒体类型
+     * @return The media type with the boundary.
      */
     @Override
     public MediaType contentType() {
@@ -189,13 +192,13 @@ public class MultipartBody extends RequestBody {
     }
 
     /**
-     * 获取请求体长度
+     * Returns the length of this request body in bytes.
      *
-     * @return 请求体字节长度
-     * @throws IOException 如果无法确定长度
+     * @return The content length.
+     * @throws IOException if the length cannot be determined.
      */
     @Override
-    public long length() throws IOException {
+    public long contentLength() throws IOException {
         long result = contentLength;
         if (result != -1L)
             return result;
@@ -203,10 +206,10 @@ public class MultipartBody extends RequestBody {
     }
 
     /**
-     * 将请求体写入输出流
+     * Writes the content of this request body to the given sink.
      *
-     * @param sink 输出流
-     * @throws IOException 如果写入失败
+     * @param sink The sink to write to.
+     * @throws IOException if an I/O error occurs.
      */
     @Override
     public void writeTo(BufferSink sink) throws IOException {
@@ -214,15 +217,16 @@ public class MultipartBody extends RequestBody {
     }
 
     /**
-     * 写入或计算请求体字节
+     * Writes the content to the given sink or counts the number of bytes that would be written.
      * <p>
-     * 用于写入请求体到输出流或计算其字节长度，确保内容一致性。
+     * This method is used to either write the request body to an output stream or to calculate its byte length,
+     * ensuring content consistency.
      * </p>
      *
-     * @param sink       输出流（计算长度时为 null）
-     * @param countBytes 是否仅计算字节数
-     * @return 字节长度（无法确定时为 -1）
-     * @throws IOException 如果写入失败
+     * @param sink       The sink to write to, or null if only counting bytes.
+     * @param countBytes {@code true} to only count bytes, {@code false} to write them.
+     * @return The number of bytes written or counted, or -1 if the length is unknown.
+     * @throws IOException if an I/O error occurs.
      */
     private long writeOrCountBytes(BufferSink sink, boolean countBytes) throws IOException {
         long byteCount = 0L;
@@ -249,13 +253,14 @@ public class MultipartBody extends RequestBody {
 
             MediaType contentType = body.contentType();
             if (null != contentType) {
-                sink.writeUtf8(HTTP.CONTENT_TYPE + ": ").writeUtf8(contentType.toString()).write(CRLF);
+                sink.writeUtf8("Content-Type: ").writeUtf8(contentType.toString()).write(CRLF);
             }
 
-            long contentLength = body.length();
+            long contentLength = body.contentLength();
             if (contentLength != -1) {
                 sink.writeUtf8("Content-Length: ").writeDecimalLong(contentLength).write(CRLF);
             } else if (countBytes) {
+                // We can't measure the body's size without the sink.
                 byteCountBuffer.clear();
                 return -1L;
             }
@@ -285,20 +290,24 @@ public class MultipartBody extends RequestBody {
     }
 
     /**
-     * MultipartBody 部分
+     * A part of a multipart body.
      */
-    public static class Part {
+    public static final class Part {
 
-        /** 部分头部 */
+        /**
+         * The headers of the part.
+         */
         final Headers headers;
-        /** 部分请求体 */
+        /**
+         * The body of the part.
+         */
         final RequestBody body;
 
         /**
-         * 构造函数，初始化 Part 实例
+         * Constructs a new {@code Part} instance.
          *
-         * @param headers 头部
-         * @param body    请求体
+         * @param headers The headers.
+         * @param body    The request body.
          */
         private Part(Headers headers, RequestBody body) {
             this.headers = headers;
@@ -306,24 +315,24 @@ public class MultipartBody extends RequestBody {
         }
 
         /**
-         * 创建 Part 实例（无头部）
+         * Creates a new part with no headers.
          *
-         * @param body 请求体
-         * @return Part 实例
-         * @throws NullPointerException 如果 body 为 null
+         * @param body The request body.
+         * @return A new {@link Part} instance.
+         * @throws NullPointerException if body is null.
          */
         public static Part create(RequestBody body) {
             return create(null, body);
         }
 
         /**
-         * 创建 Part 实例
+         * Creates a new part with the given headers and body.
          *
-         * @param headers 头部
-         * @param body    请求体
-         * @return Part 实例
-         * @throws NullPointerException     如果 body 为 null
-         * @throws IllegalArgumentException 如果 headers 包含 Content-Type 或 Content-Length
+         * @param headers The headers.
+         * @param body    The request body.
+         * @return A new {@link Part} instance.
+         * @throws NullPointerException     if body is null.
+         * @throws IllegalArgumentException if headers contains Content-Type or Content-Length.
          */
         public static Part create(Headers headers, RequestBody body) {
             if (null == body) {
@@ -339,25 +348,25 @@ public class MultipartBody extends RequestBody {
         }
 
         /**
-         * 创建表单数据 Part
+         * Creates a new form-data part.
          *
-         * @param name  字段名称
-         * @param value 字段值
-         * @return Part 实例
-         * @throws NullPointerException 如果 name 为 null
+         * @param name  The field name.
+         * @param value The field value.
+         * @return A new {@link Part} instance.
+         * @throws NullPointerException if name is null.
          */
         public static Part createFormData(String name, String value) {
             return createFormData(name, null, RequestBody.create(null, value));
         }
 
         /**
-         * 创建表单数据 Part（带文件名）
+         * Creates a new form-data part with a filename.
          *
-         * @param name     字段名称
-         * @param filename 文件名
-         * @param body     请求体
-         * @return Part 实例
-         * @throws NullPointerException 如果 name 为 null
+         * @param name     The field name.
+         * @param filename The filename.
+         * @param body     The request body.
+         * @return A new {@link Part} instance.
+         * @throws NullPointerException if name is null.
          */
         public static Part createFormData(String name, String filename, RequestBody body) {
             if (null == name) {
@@ -378,18 +387,18 @@ public class MultipartBody extends RequestBody {
         }
 
         /**
-         * 获取部分头部
+         * Returns the headers of this part.
          *
-         * @return 头部（可能为 null）
+         * @return The headers, which may be null.
          */
         public Headers headers() {
             return headers;
         }
 
         /**
-         * 获取部分请求体
+         * Returns the body of this part.
          *
-         * @return 请求体
+         * @return The request body.
          */
         public RequestBody body() {
             return body;
@@ -397,54 +406,51 @@ public class MultipartBody extends RequestBody {
     }
 
     /**
-     * MultipartBody 构建器
+     * A builder for creating {@link MultipartBody} instances.
      */
-    public static class Builder {
+    public static final class Builder {
 
         /**
-         * 分隔符
+         * The boundary separator.
          */
         private final ByteString boundary;
         /**
-         * 部分列表
+         * The list of parts.
          */
         private final List<Part> parts = new ArrayList<>();
         /**
-         * 媒体类型
+         * The media type.
          */
         private MediaType type = MediaType.MULTIPART_MIXED_TYPE;
 
         /**
-         * 默认构造函数
-         * <p>
-         * 使用随机 UUID 作为分隔符。
-         * </p>
+         * Default constructor that uses a random UUID as the boundary.
          */
         public Builder() {
             this(UUID.randomUUID().toString());
         }
 
         /**
-         * 构造函数，指定分隔符
+         * Constructs a new builder with a specified boundary.
          *
-         * @param boundary 分隔符
+         * @param boundary The boundary separator.
          */
         public Builder(String boundary) {
             this.boundary = ByteString.encodeUtf8(boundary);
         }
 
         /**
-         * 设置媒体类型
+         * Sets the media type.
          * <p>
-         * 支持的类型包括 {@link MediaType#MULTIPART_MIXED}（默认）、
-         * {@link MediaType#MULTIPART_ALTERNATIVE}、{@link MediaType#MULTIPART_DIGEST}、
-         * {@link MediaType#MULTIPART_PARALLEL} 和 {@link MediaType#APPLICATION_FORM_URLENCODED}。
+         * Supported types include {@link MediaType#MULTIPART_MIXED} (default), {@link MediaType#MULTIPART_ALTERNATIVE},
+         * {@link MediaType#MULTIPART_DIGEST}, {@link MediaType#MULTIPART_PARALLEL}, and
+         * {@link MediaType#MULTIPART_FORM_DATA}.
          * </p>
          *
-         * @param type 媒体类型
-         * @return 当前 Builder 实例
-         * @throws NullPointerException     如果 type 为 null
-         * @throws IllegalArgumentException 如果 type 不是 multipart 类型
+         * @param type The media type.
+         * @return this builder instance.
+         * @throws NullPointerException     if type is null.
+         * @throws IllegalArgumentException if the type is not a multipart type.
          */
         public Builder setType(MediaType type) {
             if (null == type) {
@@ -458,55 +464,55 @@ public class MultipartBody extends RequestBody {
         }
 
         /**
-         * 添加部分（无头部）
+         * Adds a part with no headers.
          *
-         * @param body 请求体
-         * @return 当前 Builder 实例
+         * @param body The request body.
+         * @return this builder instance.
          */
         public Builder addPart(RequestBody body) {
             return addPart(Part.create(body));
         }
 
         /**
-         * 添加部分
+         * Adds a part with the given headers and body.
          *
-         * @param headers 头部
-         * @param body    请求体
-         * @return 当前 Builder 实例
+         * @param headers The headers.
+         * @param body    The request body.
+         * @return this builder instance.
          */
         public Builder addPart(Headers headers, RequestBody body) {
             return addPart(Part.create(headers, body));
         }
 
         /**
-         * 添加表单数据部分
+         * Adds a form-data part.
          *
-         * @param name  字段名称
-         * @param value 字段值
-         * @return 当前 Builder 实例
+         * @param name  The field name.
+         * @param value The field value.
+         * @return this builder instance.
          */
         public Builder addFormDataPart(String name, String value) {
             return addPart(Part.createFormData(name, value));
         }
 
         /**
-         * 添加表单数据部分（带文件名）
+         * Adds a form-data part with a filename.
          *
-         * @param name     字段名称
-         * @param filename 文件名
-         * @param body     请求体
-         * @return 当前 Builder 实例
+         * @param name     The field name.
+         * @param filename The filename.
+         * @param body     The request body.
+         * @return this builder instance.
          */
         public Builder addFormDataPart(String name, String filename, RequestBody body) {
             return addPart(Part.createFormData(name, filename, body));
         }
 
         /**
-         * 添加部分
+         * Adds a part.
          *
-         * @param part 部分实例
-         * @return 当前 Builder 实例
-         * @throws NullPointerException 如果 part 为 null
+         * @param part The part instance.
+         * @return this builder instance.
+         * @throws NullPointerException if part is null.
          */
         public Builder addPart(Part part) {
             if (part == null)
@@ -516,10 +522,10 @@ public class MultipartBody extends RequestBody {
         }
 
         /**
-         * 构建 MultipartBody 实例
+         * Builds a new {@link MultipartBody} instance.
          *
-         * @return MultipartBody 实例
-         * @throws IllegalStateException 如果没有添加任何部分
+         * @return A new {@link MultipartBody} instance.
+         * @throws IllegalStateException if no parts have been added.
          */
         public MultipartBody build() {
             if (parts.isEmpty()) {

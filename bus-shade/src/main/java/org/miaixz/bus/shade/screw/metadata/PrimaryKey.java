@@ -30,7 +30,7 @@ package org.miaixz.bus.shade.screw.metadata;
 import java.io.Serializable;
 
 /**
- * 主键
+ * Interface for primary key metadata.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,30 +38,30 @@ import java.io.Serializable;
 public interface PrimaryKey extends Serializable {
 
     /**
-     * 表名
+     * Gets the table name.
      *
-     * @return {@link String}
+     * @return {@link String} The table name.
      */
     String getTableName();
 
     /**
-     * 主键名称
+     * Gets the primary key name.
      *
-     * @return {@link String}
+     * @return {@link String} The primary key name.
      */
     String getPkName();
 
     /**
-     * 列名
+     * Gets the column name that is part of the primary key.
      *
-     * @return {@link String}
+     * @return {@link String} The column name.
      */
     String getColumnName();
 
     /**
-     * 关键序列
+     * Gets the sequence number of the column within the primary key.
      *
-     * @return {@link String}
+     * @return {@link String} The key sequence.
      */
     String getKeySeq();
 

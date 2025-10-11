@@ -29,6 +29,7 @@ package org.miaixz.bus.core.convert.stringer;
 
 import java.io.InputStream;
 import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -36,7 +37,7 @@ import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * Blob转String
+ * Converts a {@link Blob} to a String.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,22 +45,23 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class BlobStringer implements Function<Object, String> {
 
     /**
-     * 单例
+     * Singleton instance.
      */
-    public static ClobStringer INSTANCE = new ClobStringer();
+    public static final BlobStringer INSTANCE = new BlobStringer();
 
     /**
-     * Blob字段值转字符串
+     * Converts a {@link Blob} object to a String.
      *
-     * @param blob {@link java.sql.Blob}
-     * @return 字符串
+     * @param blob The {@link Blob} to be converted.
+     * @return The String representation of the Blob.
+     * @throws ConvertException if a {@link SQLException} occurs.
      */
     private static String toString(final java.sql.Blob blob) {
         InputStream in = null;
         try {
             in = blob.getBinaryStream();
             return IoKit.read(in, Charset.UTF_8);
-        } catch (final java.sql.SQLException e) {
+        } catch (final SQLException e) {
             throw new ConvertException(e);
         } finally {
             IoKit.closeQuietly(in);

@@ -33,14 +33,15 @@ import org.miaixz.bus.extra.pinyin.PinyinProvider;
 import com.github.promeg.pinyinhelper.Pinyin;
 
 /**
- * 封装了TinyPinyin的引擎。
+ * Encapsulates the TinyPinyin engine.
  *
  * <p>
- * TinyPinyin(https://github.com/promeG/TinyPinyin)提供者未提交Maven中央库， 因此使用 https://github.com/biezhi/TinyPinyin打包的版本
+ * The TinyPinyin (https://github.com/promeG/TinyPinyin) provider has not been submitted to Maven Central. Therefore,
+ * the version packaged by https://github.com/biezhi/TinyPinyin is used.
  * </p>
  *
  * <p>
- * 引入：
+ * To introduce (dependency):
  * 
  * <pre>
  * &lt;dependency&gt;
@@ -56,16 +57,16 @@ import com.github.promeg.pinyinhelper.Pinyin;
 public class TinyPinyinProvider implements PinyinProvider {
 
     /**
-     * 构造
+     * Constructs a new TinyPinyinProvider instance. Initializes TinyPinyin with default configuration.
      */
     public TinyPinyinProvider() {
         this(null);
     }
 
     /**
-     * 构造
+     * Constructs a new TinyPinyinProvider instance with a custom configuration.
      *
-     * @param config 配置
+     * @param config The {@link Pinyin.Config} to use for TinyPinyin initialization.
      */
     public TinyPinyinProvider(final Pinyin.Config config) {
         Pinyin.init(config);
@@ -76,11 +77,13 @@ public class TinyPinyinProvider implements PinyinProvider {
         if (!Pinyin.isChinese(c)) {
             return String.valueOf(c);
         }
+        // TinyPinyin does not support tone marks, so the 'tone' parameter is ignored.
         return Pinyin.toPinyin(c).toLowerCase();
     }
 
     @Override
     public String getPinyin(final String str, final String separator, final boolean tone) {
+        // TinyPinyin does not support tone marks, so the 'tone' parameter is ignored.
         final String pinyin = Pinyin.toPinyin(str, separator);
         return StringKit.isEmpty(pinyin) ? pinyin : pinyin.toLowerCase();
     }

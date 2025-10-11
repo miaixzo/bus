@@ -45,21 +45,39 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Github 登录
+ * Github login provider.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class GithubProvider extends AbstractProvider {
 
+    /**
+     * Constructs a {@code GithubProvider} with the specified context.
+     *
+     * @param context the authentication context
+     */
     public GithubProvider(Context context) {
         super(context, Registry.GITHUB);
     }
 
+    /**
+     * Constructs a {@code GithubProvider} with the specified context and cache.
+     *
+     * @param context the authentication context
+     * @param cache   the cache implementation
+     */
     public GithubProvider(Context context, CacheX cache) {
         super(context, Registry.GITHUB, cache);
     }
 
+    /**
+     * Retrieves the access token from GitHub's authorization server.
+     *
+     * @param callback the callback object containing the authorization code
+     * @return the {@link AuthToken} containing access token details
+     * @throws AuthorizedException if parsing the response fails or required token information is missing
+     */
     @Override
     public AuthToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
@@ -76,6 +94,13 @@ public class GithubProvider extends AbstractProvider {
                 .build();
     }
 
+    /**
+     * Retrieves user information from GitHub's user info endpoint.
+     *
+     * @param authToken the {@link AuthToken} obtained after successful authorization
+     * @return {@link Material} containing the user's information
+     * @throws AuthorizedException if parsing the response fails or required user information is missing
+     */
     @Override
     public Material getUserInfo(AuthToken authToken) {
         Map<String, String> header = new HashMap<>();
@@ -110,6 +135,13 @@ public class GithubProvider extends AbstractProvider {
         }
     }
 
+    /**
+     * Checks the response for errors and throws an {@link AuthorizedException} if an error is present.
+     *
+     * @param error            a boolean indicating if an error occurred
+     * @param errorDescription the description of the error, if any
+     * @throws AuthorizedException if an error is present
+     */
     private void checkResponse(boolean error, String errorDescription) {
         if (error) {
             throw new AuthorizedException(errorDescription != null ? errorDescription : "Unknown error");
@@ -117,10 +149,11 @@ public class GithubProvider extends AbstractProvider {
     }
 
     /**
-     * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
+     * Returns the authorization URL with a {@code state} parameter. The {@code state} will be included in the
+     * authorization callback.
      *
-     * @param state state 验证授权流程的参数，可以防止csrf
-     * @return 返回授权地址
+     * @param state the parameter to verify the authorization process, which can prevent CSRF attacks
+     * @return the authorization URL
      */
     @Override
     public String authorize(String state) {

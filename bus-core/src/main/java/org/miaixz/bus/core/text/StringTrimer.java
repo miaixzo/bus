@@ -36,7 +36,8 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 字符串头尾指定字符去除器 按照断言，除去字符串头尾部的断言为真的字符，如果字符串是{@code null}，依然返回{@code null}
+ * String head and tail specified character trimmer. Removes characters from the head and/or tail of a string based on a
+ * predicate. If the string is {@code null}, {@code null} is returned.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,26 +48,34 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
     private static final long serialVersionUID = 2852235152928L;
 
     /**
-     * 去除两边空白符
+     * Trimmer instance to remove leading and trailing blank characters.
      */
     public static final StringTrimer TRIM_BLANK = new StringTrimer(TrimMode.BOTH, CharKit::isBlankChar);
     /**
-     * 去除头部空白符
+     * Trimmer instance to remove leading blank characters.
      */
     public static final StringTrimer TRIM_PREFIX_BLANK = new StringTrimer(TrimMode.PREFIX, CharKit::isBlankChar);
     /**
-     * 去除尾部空白符
+     * Trimmer instance to remove trailing blank characters.
      */
     public static final StringTrimer TRIM_SUFFIX_BLANK = new StringTrimer(TrimMode.SUFFIX, CharKit::isBlankChar);
 
+    /**
+     * The trimming mode, specifying whether to trim from the prefix, suffix, or both.
+     */
     private final TrimMode mode;
+    /**
+     * The predicate used to determine if a character should be trimmed. Returns {@code true} if the character should be
+     * filtered out, {@code false} otherwise.
+     */
     private final Predicate<Character> predicate;
 
     /**
-     * 构造
+     * Constructs a new {@code StringTrimer} with the specified trimming mode and predicate.
      *
-     * @param mode      去除模式，可选去除头部、尾部、两边
-     * @param predicate 断言是否过掉字符，返回{@code true}表述过滤掉，{@code false}表示不过滤
+     * @param mode      The trimming mode, specifying whether to trim from the prefix, suffix, or both.
+     * @param predicate The predicate to determine if a character should be trimmed. Returns {@code true} if the
+     *                  character should be filtered out, {@code false} otherwise.
      */
     public StringTrimer(final TrimMode mode, final Predicate<Character> predicate) {
         this.mode = mode;
@@ -81,16 +90,16 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
 
         final int length = text.length();
         int begin = 0;
-        int end = length;// 扫描字符串头部
+        int end = length;
 
         if (mode == TrimMode.PREFIX || mode == TrimMode.BOTH) {
-            // 扫描字符串头部
+            // Scan the head of the string
             while ((begin < end) && (predicate.test(text.charAt(begin)))) {
                 begin++;
             }
         }
         if (mode == TrimMode.SUFFIX || mode == TrimMode.BOTH) {
-            // 扫描字符串尾部
+            // Scan the tail of the string
             while ((begin < end) && (predicate.test(text.charAt(end - 1)))) {
                 end--;
             }
@@ -107,19 +116,19 @@ public class StringTrimer implements UnaryOperator<CharSequence>, Serializable {
     }
 
     /**
-     * 去除模式
+     * Trimming mode enumeration.
      */
     public enum TrimMode {
         /**
-         * 字符串头部
+         * Trim from the head (prefix) of the string.
          */
         PREFIX,
         /**
-         * 字符串尾部
+         * Trim from the tail (suffix) of the string.
          */
         SUFFIX,
         /**
-         * 字符串两边
+         * Trim from both the head and tail of the string.
          */
         BOTH
     }

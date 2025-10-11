@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 /**
- * 响应结果
+ * Represents a standard response message.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,17 +53,17 @@ public class Message implements Serializable {
     private static final long serialVersionUID = 2852291039238L;
 
     /**
-     * 响应码
+     * The response code, indicating the status of the request.
      */
     public String errcode;
 
     /**
-     * 提示信息
+     * A descriptive message providing details about the response.
      */
     public String errmsg;
 
     /**
-     * 数据集
+     * The data payload of the response.
      */
     public Object data;
 

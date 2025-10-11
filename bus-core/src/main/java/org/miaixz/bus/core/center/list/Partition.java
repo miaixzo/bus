@@ -33,35 +33,46 @@ import java.util.List;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 列表分区或分段 通过传入分区长度，将指定列表分区为不同的块，每块区域的长度相同（最后一块可能小于长度） 分区是在原List的基础上进行的，返回的分区是不可变的抽象列表，原列表元素变更，分区中元素也会变更。
- * 参考：Guava的Lists#Partition
+ * List partitioning or segmentation. By specifying the partition length, a given list is divided into different blocks,
+ * with each block having the same length (the last block may be shorter). Partitioning is performed on the original
+ * list. The returned partitions are immutable abstract lists, and changes to the original list's elements will also be
+ * reflected in the partitions. Inspired by Guava's Lists#Partition.
  *
- * @param <T> 元素类型
+ * @param <T> the type of elements in the list
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Partition<T> extends AbstractList<List<T>> {
 
     /**
-     * 被分区的列表
+     * The list to be partitioned.
      */
     protected final List<T> list;
     /**
-     * 每个分区的长度
+     * The length of each partition.
      */
     protected final int size;
 
     /**
-     * 列表分区
+     * Constructs a {@code Partition} for the given list and partition size.
      *
-     * @param list 被分区的列表
-     * @param size 每个分区的长度
+     * @param list the list to be partitioned, must not be {@code null}
+     * @param size the length of each partition. Must be greater than 0.
+     * @throws NullPointerException     if {@code list} is {@code null}
+     * @throws IllegalArgumentException if {@code size} is less than or equal to 0
      */
     public Partition(final List<T> list, final int size) {
         this.list = Assert.notNull(list);
         this.size = Math.min(size, list.size());
     }
 
+    /**
+     * Returns the partition (sub-list) at the specified index.
+     *
+     * @param index the index of the partition to retrieve
+     * @return the partition (a sub-list) at the specified index
+     * @throws IndexOutOfBoundsException if the index is out of range ({@code index < 0 || index >= size()})
+     */
     @Override
     public List<T> get(final int index) {
         final int start = index * size;
@@ -69,20 +80,30 @@ public class Partition<T> extends AbstractList<List<T>> {
         return list.subList(start, end);
     }
 
+    /**
+     * Returns the total number of partitions. This method dynamically calculates the number of partitions to account
+     * for changes in the underlying list.
+     *
+     * @return the number of partitions
+     */
     @Override
     public int size() {
-        // 此处采用动态计算，以应对list变
         final int size = this.size;
         if (0 == size) {
             return 0;
         }
 
         final int total = list.size();
-        // 类似于判断余数，当总数非整份size时，多余的数>=1，则相当于被除数多一个size，做到+1目的
-        // 类似于：if(total % size > 0){length += 1;}
+        // Similar to checking the remainder, if the total is not an exact multiple of size,
+        // and the remainder is >= 1, it means there's one more partition.
         return (total + size - 1) / size;
     }
 
+    /**
+     * Returns {@code true} if this list contains no elements.
+     *
+     * @return {@code true} if this list contains no elements
+     */
     @Override
     public boolean isEmpty() {
         return list.isEmpty();

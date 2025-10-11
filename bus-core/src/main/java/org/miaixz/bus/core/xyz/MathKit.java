@@ -32,7 +32,6 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -43,22 +42,10 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.math.*;
 
 /**
- * 数字工具类 对于精确值计算应该使用 {@link BigDecimal} JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性，例如：
- *
- * <pre>
- * new BigDecimal(0.1)和 BigDecimal.valueOf(0.1)
- * </pre>
- * <p>
- * 表示的不是<strong>0.1</strong>而是<strong>0.1000000000000000055511151231257827021181583404541015625</strong>
- * </p>
- *
- * <p>
- * 这是因为0.1无法准确的表示为double。因此应该使用<strong>new BigDecimal(String)</strong>。
- * </p>
- * 相关介绍：
- * <ul>
- * <li><a href="https://github.com/venusdrogon/feilong-core/wiki/one-jdk7-bug-thinking">one-jdk7-bug-thinking</a></li>
- * </ul>
+ * Number utility class. For precise calculations, {@link BigDecimal} should be used. Note that in JDK7, the
+ * `BigDecimal(double val)` constructor can have unpredictable results. For example, `new BigDecimal(0.1)` does not
+ * represent 0.1, but a much more complex number. This is because 0.1 cannot be represented exactly as a double.
+ * Therefore, it is recommended to use `new BigDecimal(String)`.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -66,17 +53,17 @@ import org.miaixz.bus.core.math.*;
 public class MathKit extends NumberValidator {
 
     /**
-     * 0-20对应的阶乘，超过20的阶乘会超过Long.MAX_VALUE
+     * Factorials for numbers 0-20. Factorials above 20 will exceed Long.MAX_VALUE.
      */
     private static final long[] FACTORIALS = new long[] { 1L, 1L, 2L, 6L, 24L, 120L, 720L, 5040L, 40320L, 362880L,
             3628800L, 39916800L, 479001600L, 6227020800L, 87178291200L, 1307674368000L, 20922789888000L,
             355687428096000L, 6402373705728000L, 121645100408832000L, 2432902008176640000L };
 
     /**
-     * 提供精确的加法运算 如果传入多个值为null或者空，则返回0
+     * Provides precise addition. Returns 0 if the input array is null or empty.
      *
-     * @param values 多个被加值
-     * @return 和
+     * @param values The numbers to be added.
+     * @return The sum as a BigDecimal.
      */
     public static BigDecimal add(final Number... values) {
         if (ArrayKit.isEmpty(values)) {
@@ -95,14 +82,11 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的加法运算 如果传入多个值为null或者空，则返回
+     * Provides precise addition for string representations of numbers. Note that number formats can differ by `Locale`.
+     * For example, many European countries use a comma as a decimal separator.
      *
-     * <p>
-     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如： 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数 也就是说，在这些国家地区，1.20表示120，而非1.2。
-     * </p>
-     *
-     * @param values 多个被加值
-     * @return 和
+     * @param values The string numbers to be added.
+     * @return The sum as a BigDecimal.
      */
     public static BigDecimal add(final String... values) {
         if (ArrayKit.isEmpty(values)) {
@@ -121,10 +105,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的减法运算 如果传入多个值为null或者空，则返回0
+     * Provides precise subtraction. Returns 0 if the input array is null or empty.
      *
-     * @param values 多个被减值
-     * @return 差
+     * @param values The numbers to be subtracted.
+     * @return The difference as a BigDecimal.
      */
     public static BigDecimal sub(final Number... values) {
         if (ArrayKit.isEmpty(values)) {
@@ -143,10 +127,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的减法运算 如果传入多个值为null或者空，则返回0
+     * Provides precise subtraction for string representations of numbers.
      *
-     * @param values 多个被减值
-     * @return 差
+     * @param values The string numbers to be subtracted.
+     * @return The difference as a BigDecimal.
      */
     public static BigDecimal sub(final String... values) {
         if (ArrayKit.isEmpty(values)) {
@@ -165,10 +149,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的乘法运算 如果传入多个值为null或者空，则返回0
+     * Provides precise multiplication. Returns 0 if the input array is null or empty, or contains a null.
      *
-     * @param values 多个被乘值
-     * @return 积
+     * @param values The numbers to be multiplied.
+     * @return The product as a BigDecimal.
      */
     public static BigDecimal mul(final Number... values) {
         if (ArrayKit.isEmpty(values) || ArrayKit.hasNull(values)) {
@@ -192,10 +176,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的乘法运算 如果传入多个值为null或者空，则返回0
+     * Provides precise multiplication for string representations of numbers.
      *
-     * @param values 多个被乘值
-     * @return 积
+     * @param values The string numbers to be multiplied.
+     * @return The product as a BigDecimal.
      */
     public static BigDecimal mul(final String... values) {
         if (ArrayKit.isEmpty(values) || ArrayKit.hasNull(values)) {
@@ -220,72 +204,74 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供(相对)精确的除法运算,当发生除不尽的情况的时候,精确到小数点后10位,后面的四舍五入
+     * Provides precise division. If the division results in a non-terminating decimal, it's rounded to 10 decimal
+     * places.
      *
-     * @param v1 被除数
-     * @param v2 除数
-     * @return 两个参数的商
+     * @param v1 The dividend.
+     * @param v2 The divisor.
+     * @return The quotient.
      */
     public static BigDecimal div(final Number v1, final Number v2) {
         return div(v1, v2, Normal._10);
     }
 
     /**
-     * 提供(相对)精确的除法运算,当发生除不尽的情况的时候,精确到小数点后10位,后面的四舍五入
+     * Provides precise division for string representations. If the division results in a non-terminating decimal, it's
+     * rounded to 10 decimal places.
      *
-     * @param v1 被除数
-     * @param v2 除数
-     * @return 两个参数的商
+     * @param v1 The dividend.
+     * @param v2 The divisor.
+     * @return The quotient.
      */
     public static BigDecimal div(final String v1, final String v2) {
         return div(v1, v2, Normal._10);
     }
 
     /**
-     * 提供(相对)精确的除法运算,当发生除不尽的情况时,由scale指定精确度,后面的四舍五入
+     * Provides precise division with a specified scale and HALF_UP rounding.
      *
-     * @param v1    被除数
-     * @param v2    除数
-     * @param scale 精确度，如果为负值，取绝对值
-     * @return 两个参数的商
+     * @param v1    The dividend.
+     * @param v2    The divisor.
+     * @param scale The number of decimal places to keep.
+     * @return The quotient.
      */
     public static BigDecimal div(final Number v1, final Number v2, final int scale) {
         return div(v1, v2, scale, RoundingMode.HALF_UP);
     }
 
     /**
-     * 提供(相对)精确的除法运算,当发生除不尽的情况时,由scale指定精确度,后面的四舍五入
+     * Provides precise division for string representations with a specified scale and HALF_UP rounding.
      *
-     * @param v1    被除数
-     * @param v2    除数
-     * @param scale 精确度，如果为负值，取绝对值
-     * @return 两个参数的商
+     * @param v1    The dividend.
+     * @param v2    The divisor.
+     * @param scale The number of decimal places to keep.
+     * @return The quotient.
      */
     public static BigDecimal div(final String v1, final String v2, final int scale) {
         return div(v1, v2, scale, RoundingMode.HALF_UP);
     }
 
     /**
-     * 提供(相对)精确的除法运算,当发生除不尽的情况时,由scale指定精确度
+     * Provides precise division with a specified scale and rounding mode for string representations.
      *
-     * @param v1           被除数
-     * @param v2           除数
-     * @param scale        精确度，如果为负值，取绝对值
-     * @param roundingMode 保留小数的模式 {@link RoundingMode}
-     * @return 两个参数的商
+     * @param v1           The dividend.
+     * @param v2           The divisor.
+     * @param scale        The number of decimal places to keep.
+     * @param roundingMode The rounding mode.
+     * @return The quotient.
      */
     public static BigDecimal div(final String v1, final String v2, final int scale, final RoundingMode roundingMode) {
         return div(toBigDecimal(v1), toBigDecimal(v2), scale, roundingMode);
     }
 
     /**
-     * 提供(相对)精确的除法运算,当发生除不尽的情况时,由scale指定精确度
+     * Provides precise division with a specified scale and rounding mode.
      *
-     * @param v1           被除数
-     * @param v2           除数
-     * @param scale        精确度，如果为负值，取绝对值
-     * @param roundingMode 保留小数的模式 {@link RoundingMode}
-     * @return 两个参数的商
+     * @param v1           The dividend.
+     * @param v2           The divisor.
+     * @param scale        The number of decimal places to keep.
+     * @param roundingMode The rounding mode.
+     * @return The quotient.
      */
     public static BigDecimal div(final Number v1, final Number v2, int scale, final RoundingMode roundingMode) {
         Assert.notNull(v2, "Divisor must be not null !");
@@ -300,34 +286,34 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 补充Math.ceilDiv() JDK8中添加了和 {@link Math#floorDiv(int, int)} 但却没有ceilDiv()
+     * Ceiling division for integers. Complements `Math.floorDiv()`.
      *
-     * @param v1 被除数
-     * @param v2 除数
-     * @return 两个参数的商
+     * @param v1 The dividend.
+     * @param v2 The divisor.
+     * @return The ceiling of the division.
      */
     public static int ceilDiv(final int v1, final int v2) {
         return (int) Math.ceil((double) v1 / v2);
     }
 
     /**
-     * 保留固定位数小数 采用四舍五入策略 {@link RoundingMode#HALF_UP} 例如保留2位小数：123.456789 = 123.46
+     * Rounds a number to a specified number of decimal places using `RoundingMode.HALF_UP`.
      *
-     * @param number 数字值
-     * @param scale  保留小数位数
-     * @return 新值
+     * @param number The number.
+     * @param scale  The number of decimal places to keep.
+     * @return The rounded number.
      */
     public static BigDecimal round(final Number number, final int scale) {
         return round(number, scale, RoundingMode.HALF_UP);
     }
 
     /**
-     * 保留固定位数小数 例如保留四位小数：123.456789 = 123.4567
+     * Rounds a number to a specified number of decimal places with a given rounding mode.
      *
-     * @param number       数字值
-     * @param scale        保留小数位数，如果传入小于0，则默认0
-     * @param roundingMode 保留小数的模式 {@link RoundingMode}，如果传入null则默认四舍五入
-     * @return 新值
+     * @param number       The number.
+     * @param scale        The number of decimal places to keep.
+     * @param roundingMode The rounding mode.
+     * @return The rounded number.
      */
     public static BigDecimal round(final Number number, int scale, RoundingMode roundingMode) {
         final BigDecimal bigDecimal = toBigDecimal(number);
@@ -337,104 +323,83 @@ public class MathKit extends NumberValidator {
         if (null == roundingMode) {
             roundingMode = RoundingMode.HALF_UP;
         }
-
         return bigDecimal.setScale(scale, roundingMode);
     }
 
     /**
-     * 保留固定位数小数 采用四舍五入策略 {@link RoundingMode#HALF_UP} 例如保留2位小数：123.456789 = 123.46
+     * Rounds a number string to a specified number of decimal places using `RoundingMode.HALF_UP`.
      *
-     * @param numberStr 数字值的字符串表现形式
-     * @param scale     保留小数位数
-     * @return 新值
+     * @param numberStr The number string.
+     * @param scale     The number of decimal places to keep.
+     * @return The rounded number as a string.
      */
     public static String roundString(final String numberStr, final int scale) {
         return roundString(numberStr, scale, RoundingMode.HALF_UP);
     }
 
     /**
-     * 保留固定位数小数 采用四舍五入策略 {@link RoundingMode#HALF_UP} 例如保留2位小数：123.456789 = 123.46
+     * Rounds a number to a specified number of decimal places using `RoundingMode.HALF_UP`.
      *
-     * @param number 数字值
-     * @param scale  保留小数位数
-     * @return 新值
+     * @param number The number.
+     * @param scale  The number of decimal places to keep.
+     * @return The rounded number as a string.
      */
     public static String roundString(final Number number, final int scale) {
         return roundString(number, scale, RoundingMode.HALF_UP);
     }
 
     /**
-     * 保留固定位数小数 例如保留四位小数：123.456789 = 123.4567
+     * Rounds a number string to a specified number of decimal places with a given rounding mode.
      *
-     * @param numberStr    数字值的字符串表现形式
-     * @param scale        保留小数位数
-     * @param roundingMode 保留小数的模式 {@link RoundingMode}
-     * @return 新值
+     * @param numberStr    The number string.
+     * @param scale        The number of decimal places to keep.
+     * @param roundingMode The rounding mode.
+     * @return The rounded number as a string.
      */
     public static String roundString(final String numberStr, final int scale, final RoundingMode roundingMode) {
         return roundString(toBigDecimal(numberStr), scale, roundingMode);
     }
 
     /**
-     * 保留固定位数小数 例如保留四位小数：123.456789 = 123.4567
+     * Rounds a number to a specified number of decimal places with a given rounding mode.
      *
-     * @param number       数字值
-     * @param scale        保留小数位数
-     * @param roundingMode 保留小数的模式 {@link RoundingMode}
-     * @return 新值
+     * @param number       The number.
+     * @param scale        The number of decimal places to keep.
+     * @param roundingMode The rounding mode.
+     * @return The rounded number as a string.
      */
     public static String roundString(final Number number, final int scale, final RoundingMode roundingMode) {
         return round(number, scale, roundingMode).toPlainString();
     }
 
     /**
-     * 四舍六入五成双计算法 四舍六入五成双是一种比较精确比较科学的计数保留法，是一种数字修约规则。
+     * Rounds a number using the "round half to even" method (also known as banker's rounding).
      *
-     * <pre>
-     * 算法规则:
-     * 四舍六入五考虑，
-     * 五后非零就进一，
-     * 五后皆零看奇偶，
-     * 五前为偶应舍去，
-     * 五前为奇要进一。
-     * </pre>
-     *
-     * @param number 需要科学计算的数据
-     * @param scale  保留的小数位
-     * @return 结果
+     * @param number The number.
+     * @param scale  The number of decimal places to keep.
+     * @return The rounded number.
      */
     public static BigDecimal roundHalfEven(final Number number, final int scale) {
         return round(toBigDecimal(number), scale, RoundingMode.HALF_EVEN);
     }
 
     /**
-     * 保留固定小数位数，舍去多余位数
+     * Rounds a number down (truncates).
      *
-     * @param number 需要科学计算的数据
-     * @param scale  保留的小数位
-     * @return 结果
+     * @param number The number.
+     * @param scale  The number of decimal places to keep.
+     * @return The rounded number.
      */
     public static BigDecimal roundDown(final Number number, final int scale) {
         return round(toBigDecimal(number), scale, RoundingMode.DOWN);
     }
 
     /**
-     * 格式化double 对 {@link DecimalFormat} 做封装
+     * Formats a number using a given pattern.
      *
-     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
-     *                <ul>
-     *                <li>0 = 取一位整数</li>
-     *                <li>0.00 = 取一位整数和两位小数</li>
-     *                <li>00.000 = 取两位整数和三位小数</li>
-     *                <li># = 取所有整数部分</li>
-     *                <li>#.##% = 以百分比方式计数，并取两位小数</li>
-     *                <li>#.## = 取两位小数，小数部分为0时忽略</li>
-     *                <li>#.#####E0 = 显示为科学计数法，并取五位小数</li>
-     *                <li>,### = 每三位以逗号进行分隔，例如：299,792,458</li>
-     *                <li>光速大小为每秒,###米 = 将格式嵌入文本</li>
-     *                </ul>
-     * @param value   值
-     * @return 格式化后的值
+     * @param pattern The format pattern.
+     * @param value   The value.
+     * @return The formatted string.
      */
     public static String format(final String pattern, final double value) {
         Assert.isTrue(isValid(value), "value is NaN or Infinite!");
@@ -442,64 +407,34 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 格式化double 对 {@link DecimalFormat} 做封装
+     * Formats a number using a given pattern.
      *
-     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
-     *                <ul>
-     *                <li>0 = 取一位整数</li>
-     *                <li>0.00 = 取一位整数和两位小数</li>
-     *                <li>00.000 = 取两位整数和三位小数</li>
-     *                <li># = 取所有整数部分</li>
-     *                <li>#.##% = 以百分比方式计数，并取两位小数</li>
-     *                <li>#.#####E0 = 显示为科学计数法，并取五位小数</li>
-     *                <li>,### = 每三位以逗号进行分隔，例如：299,792,458</li>
-     *                <li>光速大小为每秒,###米 = 将格式嵌入文本</li>
-     *                </ul>
-     * @param value   值
-     * @return 格式化后的值
+     * @param pattern The format pattern.
+     * @param value   The value.
+     * @return The formatted string.
      */
     public static String format(final String pattern, final long value) {
         return new DecimalFormat(pattern).format(value);
     }
 
     /**
-     * 格式化double 对 {@link DecimalFormat} 做封装
+     * Formats a number using a given pattern.
      *
-     * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
-     *                <ul>
-     *                <li>0 = 取一位整数</li>
-     *                <li>0.00 = 取一位整数和两位小数</li>
-     *                <li>00.000 = 取两位整数和三位小数</li>
-     *                <li># = 取所有整数部分</li>
-     *                <li>#.##% = 以百分比方式计数，并取两位小数</li>
-     *                <li>#.#####E0 = 显示为科学计数法，并取五位小数</li>
-     *                <li>,### = 每三位以逗号进行分隔，例如：299,792,458</li>
-     *                <li>光速大小为每秒,###米 = 将格式嵌入文本</li>
-     *                </ul>
-     * @param value   值，支持BigDecimal、BigInteger、Number等类型
-     * @return 格式化后的值
+     * @param pattern The format pattern.
+     * @param value   The value (supports BigDecimal, BigInteger, Number, etc.).
+     * @return The formatted string.
      */
     public static String format(final String pattern, final Object value) {
         return format(pattern, value, null);
     }
 
     /**
-     * 格式化double 对 {@link DecimalFormat} 做封装
+     * Formats a number using a given pattern and rounding mode.
      *
-     * @param pattern      格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
-     *                     <ul>
-     *                     <li>0 = 取一位整数</li>
-     *                     <li>0.00 = 取一位整数和两位小数</li>
-     *                     <li>00.000 = 取两位整数和三位小数</li>
-     *                     <li># = 取所有整数部分</li>
-     *                     <li>#.##% = 以百分比方式计数，并取两位小数</li>
-     *                     <li>#.#####E0 = 显示为科学计数法，并取五位小数</li>
-     *                     <li>,### = 每三位以逗号进行分隔，例如：299,792,458</li>
-     *                     <li>光速大小为每秒,###米 = 将格式嵌入文本</li>
-     *                     </ul>
-     * @param value        值，支持BigDecimal、BigInteger、Number等类型
-     * @param roundingMode 保留小数的方式枚举
-     * @return 格式化后的值
+     * @param pattern      The format pattern.
+     * @param value        The value.
+     * @param roundingMode The rounding mode.
+     * @return The formatted string.
      */
     public static String format(final String pattern, final Object value, final RoundingMode roundingMode) {
         if (value instanceof Number) {
@@ -513,21 +448,21 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 格式化金额输出，每三位用逗号分隔
+     * Formats a monetary value with thousands separators.
      *
-     * @param value 金额
-     * @return 格式化后的值
+     * @param value The monetary value.
+     * @return The formatted string.
      */
     public static String formatMoney(final double value) {
         return format(",##0.00", value);
     }
 
     /**
-     * 格式化百分比，小数采用四舍五入方式
+     * Formats a number as a percentage.
      *
-     * @param number 值
-     * @param scale  保留小数位数
-     * @return 百分比
+     * @param number The number.
+     * @param scale  The number of decimal places to keep.
+     * @return The percentage string.
      */
     public static String formatPercent(final double number, final int scale) {
         final NumberFormat format = NumberFormat.getPercentInstance();
@@ -536,11 +471,11 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 格式化千分位表示方式，小数采用四舍五入方式
+     * Formats a number with thousands separators.
      *
-     * @param number 值
-     * @param scale  保留小数位数
-     * @return 千分位数字
+     * @param number The number.
+     * @param scale  The number of decimal places to keep.
+     * @return The formatted string.
      */
     public static String formatThousands(final double number, final int scale) {
         final NumberFormat format = NumberFormat.getNumberInstance();
@@ -549,33 +484,33 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 生成一个从0开始的数字列表
+     * Generates an array of integers from 0 to `stopIncluded - 1`.
      *
-     * @param stopIncluded 结束的数字（不包含）
-     * @return 数字列表
+     * @param stopIncluded The exclusive end number.
+     * @return The array of integers.
      */
     public static int[] range(final int stopIncluded) {
         return range(0, stopIncluded, 1);
     }
 
     /**
-     * 生成一个数字列表 自动判定正序反序
+     * Generates an array of integers from `startInclude` to `stopIncluded`.
      *
-     * @param startInclude 开始的数字（包含）
-     * @param stopIncluded 结束的数字（包含）
-     * @return 数字列表
+     * @param startInclude The inclusive start number.
+     * @param stopIncluded The inclusive end number.
+     * @return The array of integers.
      */
     public static int[] range(final int startInclude, final int stopIncluded) {
         return range(startInclude, stopIncluded, 1);
     }
 
     /**
-     * 生成一个数字列表 自动判定正序反序
+     * Generates an array of integers within a range with a given step.
      *
-     * @param startInclude 开始的数字（包含）
-     * @param stopIncluded 结束的数字（不包含）
-     * @param step         步进
-     * @return 数字列表
+     * @param startInclude The inclusive start number.
+     * @param stopIncluded The exclusive end number.
+     * @param step         The step increment.
+     * @return The array of integers.
      */
     public static int[] range(int startInclude, int stopIncluded, int step) {
         if (startInclude > stopIncluded) {
@@ -602,25 +537,25 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 将给定范围内的整数添加到已有集合中，步进为1
+     * Appends a range of integers to an existing collection.
      *
-     * @param start  开始（包含）
-     * @param stop   结束（包含）
-     * @param values 集合
-     * @return 集合
+     * @param start  The inclusive start number.
+     * @param stop   The inclusive end number.
+     * @param values The collection to append to.
+     * @return The modified collection.
      */
     public static Collection<Integer> appendRange(final int start, final int stop, final Collection<Integer> values) {
         return appendRange(start, stop, 1, values);
     }
 
     /**
-     * 将给定范围内的整数添加到已有集合中
+     * Appends a range of integers to an existing collection with a given step.
      *
-     * @param startInclude 开始（包含）
-     * @param stopInclude  结束（包含）
-     * @param step         步进
-     * @param values       集合
-     * @return 集合
+     * @param startInclude The inclusive start number.
+     * @param stopInclude  The inclusive end number.
+     * @param step         The step increment.
+     * @param values       The collection to append to.
+     * @return The modified collection.
      */
     public static Collection<Integer> appendRange(
             final int startInclude,
@@ -631,7 +566,7 @@ public class MathKit extends NumberValidator {
             step = Math.abs(step);
         } else if (startInclude > stopInclude) {
             step = -Math.abs(step);
-        } else {// start == end
+        } else {
             values.add(startInclude);
             return values;
         }
@@ -643,10 +578,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 获得数字对应的二进制字符串
+     * Gets the binary string representation of a number.
      *
-     * @param number 数字
-     * @return 二进制字符串
+     * @param number The number.
+     * @return The binary string.
      */
     public static String getBinaryString(final Number number) {
         if (number instanceof Long) {
@@ -659,86 +594,75 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 二进制转int
+     * Converts a binary string to an integer.
      *
-     * @param binaryStr 二进制字符串
-     * @return int
+     * @param binaryStr The binary string.
+     * @return The integer.
      */
     public static int binaryToInt(final String binaryStr) {
         return Integer.parseInt(binaryStr, 2);
     }
 
     /**
-     * 二进制转long
+     * Converts a binary string to a long.
      *
-     * @param binaryStr 二进制字符串
-     * @return long
+     * @param binaryStr The binary string.
+     * @return The long.
      */
     public static long binaryToLong(final String binaryStr) {
         return Long.parseLong(binaryStr, 2);
     }
 
     /**
-     * 比较数字是否相等，相等返回{@code true} 需要注意的是{@link BigDecimal}需要特殊处理
-     * BigDecimal使用compareTo方式判断，因为使用equals方法也判断小数位数，如2.0和2.00就不相等， 此方法判断值相等时忽略精度的，即0.00 == 0
+     * Checks if two numbers are equal. Special handling for `BigDecimal` to ignore scale.
      *
-     * <ul>
-     * <li>如果用户提供两个Number都是{@link BigDecimal}，则通过调用{@link BigDecimal#compareTo(BigDecimal)}方法来判断是否相等</li>
-     * <li>其他情况调用{@link Number#equals(Object)}比较</li>
-     * </ul>
-     *
-     * @param number1 数字1
-     * @param number2 数字2
-     * @return 是否相等
-     * @see CompareKit#equals(Comparable, Comparable)
-     * @see Objects#equals(Object, Object)
+     * @param number1 The first number.
+     * @param number2 The second number.
+     * @return `true` if they are equal.
      */
     public static boolean equals(final Number number1, final Number number2) {
         if (number1 instanceof BigDecimal && number2 instanceof BigDecimal) {
-            // BigDecimal使用compareTo方式判断，因为使用equals方法也判断小数位数，如2.0和2.00就不相等
             return CompareKit.equals((BigDecimal) number1, (BigDecimal) number2);
         }
         return Objects.equals(number1, number2);
     }
 
     /**
-     * 数字转字符串 调用{@link Number#toString()}，并去除尾小数点儿后多余的0
+     * Converts a number to a string, returning a default value if the number is null.
      *
-     * @param number       A Number
-     * @param defaultValue 如果number参数为{@code null}，返回此默认值
-     * @return A String.
+     * @param number       The number.
+     * @param defaultValue The default value.
+     * @return The string representation.
      */
     public static String toString(final Number number, final String defaultValue) {
         return (null == number) ? defaultValue : toString(number);
     }
 
     /**
-     * 数字转字符串 调用{@link Number#toString()}或 {@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
+     * Converts a number to a string, stripping trailing zeros from the decimal part.
      *
-     * @param number A Number
-     * @return A String.
+     * @param number The number.
+     * @return The string representation.
      */
     public static String toString(final Number number) {
         return toString(number, true);
     }
 
     /**
-     * 数字转字符串 调用{@link Number#toString()}或 {@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
+     * Converts a number to a string.
      *
-     * @param number               A Number
-     * @param isStripTrailingZeros 是否去除末尾多余0，例如5.0返回5
-     * @return A String.
+     * @param number               The number.
+     * @param isStripTrailingZeros If true, strips trailing zeros from the decimal part.
+     * @return The string representation.
      */
     public static String toString(final Number number, final boolean isStripTrailingZeros) {
         Assert.notNull(number, "Number is null !");
 
-        // BigDecimal单独处理，使用非科学计数法
         if (number instanceof BigDecimal) {
             return toString((BigDecimal) number, isStripTrailingZeros);
         }
 
         Assert.isTrue(isValidNumber(number), "Number is non-finite!");
-        // 去掉小数点儿后多余的0
         String string = number.toString();
         if (isStripTrailingZeros) {
             if (string.indexOf('.') > 0 && string.indexOf('e') < 0 && string.indexOf('E') < 0) {
@@ -754,21 +678,21 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * {@link BigDecimal}数字转字符串 调用{@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
+     * Converts a `BigDecimal` to a string, stripping trailing zeros.
      *
-     * @param bigDecimal A {@link BigDecimal}
-     * @return A String.
+     * @param bigDecimal The `BigDecimal`.
+     * @return The string representation.
      */
     public static String toString(final BigDecimal bigDecimal) {
         return toString(bigDecimal, true);
     }
 
     /**
-     * {@link BigDecimal}数字转字符串 调用{@link BigDecimal#toPlainString()}，可选去除尾小数点儿后多余的0
+     * Converts a `BigDecimal` to a string.
      *
-     * @param bigDecimal           A {@link BigDecimal}
-     * @param isStripTrailingZeros 是否去除末尾多余0，例如5.0返回5
-     * @return A String.
+     * @param bigDecimal           The `BigDecimal`.
+     * @param isStripTrailingZeros If true, strips trailing zeros.
+     * @return The string representation using `toPlainString()`.
      */
     public static String toString(BigDecimal bigDecimal, final boolean isStripTrailingZeros) {
         Assert.notNull(bigDecimal, "BigDecimal is null !");
@@ -779,10 +703,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 数字转{@link BigDecimal} Float、Double等有精度问题，转换为字符串后再转换 null转换为0
+     * Converts a `Number` to a `BigDecimal`. `null` is converted to `BigDecimal.ZERO`.
      *
-     * @param number 数字
-     * @return {@link BigDecimal}
+     * @param number The number.
+     * @return The `BigDecimal`.
      */
     public static BigDecimal toBigDecimal(final Number number) {
         if (null == number) {
@@ -799,40 +723,33 @@ public class MathKit extends NumberValidator {
             return new BigDecimal((BigInteger) number);
         }
 
-        // Float、Double等有精度问题，转换为字符串后再转换
         return new BigDecimal(number.toString());
     }
 
     /**
-     * 数字转{@link BigDecimal} null或""或空白符抛出{@link IllegalArgumentException}异常 "NaN"转为{@link BigDecimal#ZERO}
+     * Converts a string to a `BigDecimal`.
      *
-     * @param numberStr 数字字符串
-     * @return {@link BigDecimal}
-     * @throws IllegalArgumentException null或""或"NaN"或空白符抛出此异常
+     * @param numberStr The number string.
+     * @return The `BigDecimal`.
+     * @throws IllegalArgumentException if the string is blank.
      */
     public static BigDecimal toBigDecimal(final String numberStr) throws IllegalArgumentException {
-        // 统一规则，不再转换带有歧义的null、""和空格
         Assert.notBlank(numberStr, "Number text must be not blank!");
-
-        // 优先调用构造解析
         try {
             return new BigDecimal(numberStr);
         } catch (final Exception ignore) {
-            // 忽略解析错误
+            // ignore
         }
-
-        // 支持类似于 1,234.55 格式的数字
         return toBigDecimal(parseNumber(numberStr));
     }
 
     /**
-     * 数字转{@link BigInteger} null或"NaN"转换为0
+     * Converts a `Number` to a `BigInteger`.
      *
-     * @param number 数字
-     * @return {@link BigInteger}
+     * @param number The number.
+     * @return The `BigInteger`.
      */
     public static BigInteger toBigInteger(final Number number) {
-        // 统一规则，不再转换带有歧义的null
         Assert.notNull(number, "Number must be not null!");
 
         if (number instanceof BigInteger) {
@@ -845,183 +762,172 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 数字转{@link BigInteger} null或""或空白符转换为0
+     * Converts a string to a `BigInteger`.
      *
-     * @param numberStr 数字字符串
-     * @return {@link BigInteger}
+     * @param numberStr The number string.
+     * @return The `BigInteger`.
      */
     public static BigInteger toBigInteger(final String numberStr) {
-        // 统一规则，不再转换带有歧义的null、""和空格
         Assert.notBlank(numberStr, "Number text must be not blank!");
-
         try {
             return new BigInteger(numberStr);
         } catch (final Exception ignore) {
-            // 忽略解析错误
+            // ignore
         }
-
         return parseBigInteger(numberStr);
     }
 
     /**
-     * 计算等份个数
-     * 
-     * <pre>
-     *     (每份2)12   34  57
-     *     (每份3)123  456 7
-     *     (每份4)1234 567
-     * </pre>
+     * Calculates the number of partitions.
      *
-     * @param total    总数
-     * @param pageSize 每份的个数
-     * @return 分成了几份
+     * @param total    The total number of items.
+     * @param pageSize The size of each partition.
+     * @return The number of partitions.
      */
     public static int count(final int total, final int pageSize) {
-        // 因为总条数除以页大小的最大余数是页大小数-1，
-        // 因此加一个最大余数，保证舍弃的余数与最大余数凑1.x，就是一旦有余数则+1页
         return total == 0 ? 0 : (total - 1) / pageSize + 1;
     }
 
     /**
-     * 如果给定值为0，返回1，否则返回原值
+     * Returns 1 if the given value is 0, otherwise returns the original value.
      *
-     * @param value 值
-     * @return 1或非0值
+     * @param value The value.
+     * @return 1 or the non-zero value.
      */
     public static int zeroToOne(final int value) {
         return 0 == value ? 1 : value;
     }
 
     /**
-     * 如果给定值为{@code null}，返回0，否则返回原值
+     * Returns 0 if the given number is `null`, otherwise returns the number's value.
      *
-     * @param number 值
-     * @return 0或非0值
+     * @param number The number.
+     * @return 0 or the number's value.
      */
     public static int nullToZero(final Integer number) {
         return number == null ? 0 : number;
     }
 
     /**
-     * 如果给定值为0，返回1，否则返回原值
+     * Returns 0 if the given number is `null`, otherwise returns the number's value.
      *
-     * @param number 值
-     * @return 0或非0值
+     * @param number The number.
+     * @return 0 or the number's value.
      */
     public static long nullToZero(final Long number) {
         return number == null ? 0L : number;
     }
 
     /**
-     * 如果给定值为{@code null}，返回0，否则返回原值
+     * Returns 0.0 if the given number is `null`, otherwise returns the number's value.
      *
-     * @param number 值
-     * @return 0或非0值
+     * @param number The number.
+     * @return 0.0 or the number's value.
      */
     public static double nullToZero(final Double number) {
         return number == null ? 0.0 : number;
     }
 
     /**
-     * 如果给定值为{@code null}，返回0，否则返回原值
+     * Returns 0.0f if the given number is `null`, otherwise returns the number's value.
      *
-     * @param number 值
-     * @return 0或非0值
+     * @param number The number.
+     * @return 0.0f or the number's value.
      */
     public static float nullToZero(final Float number) {
         return number == null ? 0.0f : number;
     }
 
     /**
-     * 如果给定值为{@code null}，返回0，否则返回原值
+     * Returns 0 if the given number is `null`, otherwise returns the number's value.
      *
-     * @param number 值
-     * @return 0或非0值
+     * @param number The number.
+     * @return 0 or the number's value.
      */
     public static short nullToZero(final Short number) {
         return number == null ? (short) 0 : number;
     }
 
     /**
-     * 如果给定值为{@code null}，返回0，否则返回原值
+     * Returns 0 if the given number is `null`, otherwise returns the number's value.
      *
-     * @param number 值
-     * @return 0或非0值
+     * @param number The number.
+     * @return 0 or the number's value.
      */
     public static byte nullToZero(final Byte number) {
         return number == null ? (byte) 0 : number;
     }
 
     /**
-     * 如果给定值为{@code null}，返回0，否则返回原值
+     * Returns `BigInteger.ZERO` if the given number is `null`, otherwise returns the number.
      *
-     * @param number 值
-     * @return 0或非0值
+     * @param number The number.
+     * @return `BigInteger.ZERO` or the number.
      */
     public static BigInteger nullToZero(final BigInteger number) {
         return ObjectKit.defaultIfNull(number, BigInteger.ZERO);
     }
 
     /**
-     * 如果给定值为{@code null}，返回0，否则返回原值
+     * Returns `BigDecimal.ZERO` if the given number is `null`, otherwise returns the number.
      *
-     * @param decimal {@link BigDecimal}，可以为{@code null}
-     * @return {@link BigDecimal}参数为空时返回0的值
+     * @param decimal The `BigDecimal`.
+     * @return `BigDecimal.ZERO` or the number.
      */
     public static BigDecimal nullToZero(final BigDecimal decimal) {
         return ObjectKit.defaultIfNull(decimal, BigDecimal.ZERO);
     }
 
     /**
-     * 创建{@link BigInteger}，支持16进制、10进制和8进制，如果传入空白串返回null from Apache Common Lang
+     * Parses a string into a `BigInteger`.
      *
-     * @param numberStr 数字字符串
-     * @return {@link BigInteger}
+     * @param numberStr The number string.
+     * @return The `BigInteger`.
      */
     public static BigInteger parseBigInteger(final String numberStr) {
         return NumberParser.INSTANCE.parseBigInteger(numberStr);
     }
 
     /**
-     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻 判断方法为做差取绝对值判断是否为1
+     * Checks if two numbers are adjacent (their absolute difference is 1).
      *
-     * @param number1 数字1
-     * @param number2 数字2
-     * @return 是否相邻
+     * @param number1 The first number.
+     * @param number2 The second number.
+     * @return `true` if they are adjacent.
      */
     public static boolean isBeside(final long number1, final long number2) {
         return Math.abs(number1 - number2) == 1;
     }
 
     /**
-     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻 判断方法为做差取绝对值判断是否为1
+     * Checks if two numbers are adjacent.
      *
-     * @param number1 数字1
-     * @param number2 数字2
-     * @return 是否相邻
+     * @param number1 The first number.
+     * @param number2 The second number.
+     * @return `true` if they are adjacent.
      */
     public static boolean isBeside(final int number1, final int number2) {
         return Math.abs(number1 - number2) == 1;
     }
 
     /**
-     * 把给定的总数平均分成N份，返回每份的个数 当除以分数有余数时每份+1
+     * Divides a total into a number of parts, returning the size of each part.
      *
-     * @param total     总数
-     * @param partCount 份数
-     * @return 每份的个数
+     * @param total     The total number.
+     * @param partCount The number of parts.
+     * @return The size of each part.
      */
     public static int partValue(final int total, final int partCount) {
         return partValue(total, partCount, true);
     }
 
     /**
-     * 把给定的总数平均分成N份，返回每份的个数 如果isPlusOneWhenHasRem为true，则当除以分数有余数时每份+1，否则丢弃余数部分
+     * Divides a total into a number of parts, returning the size of each part.
      *
-     * @param total               总数
-     * @param partCount           份数
-     * @param isPlusOneWhenHasRem 在有余数时是否每份+1
-     * @return 每份的个数
+     * @param total               The total number.
+     * @param partCount           The number of parts.
+     * @param isPlusOneWhenHasRem If true, adds 1 to each part if there is a remainder.
+     * @return The size of each part.
      */
     public static int partValue(final int total, final int partCount, final boolean isPlusOneWhenHasRem) {
         int partValue = total / partCount;
@@ -1032,35 +938,35 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的幂运算
+     * Provides precise exponentiation.
      *
-     * @param number 底数
-     * @param n      指数
-     * @return 幂的积
+     * @param number The base.
+     * @param n      The exponent.
+     * @return The result of the exponentiation.
      */
     public static BigDecimal pow(final Number number, final int n) {
         return pow(toBigDecimal(number), n);
     }
 
     /**
-     * 提供精确的幂运算 如果n为负数，则返回1/a的-n次方，默认四舍五入
+     * Provides precise exponentiation. If n is negative, returns 1 / (a^-n).
      *
-     * @param number 底数
-     * @param n      指数，如果为负数，则返回1/a的-n次方
-     * @return 幂的积
+     * @param number The base.
+     * @param n      The exponent.
+     * @return The result.
      */
     public static BigDecimal pow(final BigDecimal number, final int n) {
         return pow(number, n, 2, RoundingMode.HALF_UP);
     }
 
     /**
-     * 提供精确的幂运算 如果n为负数，则返回1/a的-n次方，默认四舍五入
+     * Provides precise exponentiation with a specified scale and rounding mode for negative exponents.
      *
-     * @param number       底数
-     * @param scale        保留小数位数
-     * @param roundingMode 舍入模式
-     * @param n            指数，如果为负数，则返回1/a的-n次方
-     * @return 幂的积
+     * @param number       The base.
+     * @param n            The exponent.
+     * @param scale        The scale for division when the exponent is negative.
+     * @param roundingMode The rounding mode for division.
+     * @return The result.
      */
     public static BigDecimal pow(
             final BigDecimal number,
@@ -1068,38 +974,27 @@ public class MathKit extends NumberValidator {
             final int scale,
             final RoundingMode roundingMode) {
         if (n < 0) {
-            // a的n次方，如果n为负数，则返回1/a的-n次方
             return BigDecimal.ONE.divide(pow(number, -n), scale, roundingMode);
         }
         return number.pow(n);
     }
 
     /**
-     * 判断一个整数是否是2的幂
+     * Checks if an integer is a power of two.
      *
-     * @param n 待验证的整数
-     * @return 如果n是2的幂返回true, 反之返回false
+     * @param n The integer to check.
+     * @return `true` if n is a power of two.
      */
     public static boolean isPowerOfTwo(final long n) {
         return (n > 0) && ((n & (n - 1)) == 0);
     }
 
     /**
-     * 解析转换数字字符串为 {@link java.lang.Integer } 规则如下：
+     * Parses a string into an `Integer`, returning a default value on failure.
      *
-     * <pre>
-     * 1、0x开头的视为16进制数字
-     * 2、0开头的忽略开头的0
-     * 3、其它情况按照10进制转换
-     * 4、空串返回0
-     * 5、.123形式返回0（按照小于0的小数对待）
-     * 6、123.56截取小数点之前的数字，忽略小数部分
-     * 7、解析失败返回默认值
-     * </pre>
-     *
-     * @param numberStr    数字字符串，支持0x开头、0开头和普通十进制
-     * @param defaultValue 如果解析失败, 将返回defaultValue, 允许null
-     * @return Integer
+     * @param numberStr    The number string.
+     * @param defaultValue The default value.
+     * @return The parsed `Integer` or the default value.
      */
     public static Integer parseInt(final String numberStr, final Integer defaultValue) {
         if (StringKit.isNotBlank(numberStr)) {
@@ -1113,55 +1008,34 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 解析转换数字字符串为int型数字，规则如下：
+     * Parses a string into an `int`.
      *
-     * <pre>
-     * 1、0x开头的视为16进制数字
-     * 2、0开头的忽略开头的0
-     * 3、其它情况按照10进制转换
-     * 4、空串返回0
-     * 5、.123形式返回0（按照小于0的小数对待）
-     * 6、123.56截取小数点之前的数字，忽略小数部分
-     * 7、科学计数法抛出NumberFormatException异常
-     * </pre>
-     *
-     * @param numberStr 数字，支持0x开头、0开头和普通十进制
-     * @return int
-     * @throws NumberFormatException 数字格式异常
+     * @param numberStr The number string.
+     * @return The parsed `int`.
+     * @throws NumberFormatException if the string is not a valid integer.
      */
     public static int parseInt(final String numberStr) throws NumberFormatException {
         return NumberParser.INSTANCE.parseInt(numberStr);
     }
 
     /**
-     * 转换char数组为一个int值，此方法拷贝自{@link Integer#parseInt(String, int)} 拷贝的原因是直接转换char[]避免创建String对象造成的多余拷贝。 此方法自动跳过首尾空白符
+     * Parses a char array into an `int`.
      *
-     * @param chars char数组
-     * @param radix 进制数
-     * @return int值
-     * @throws NumberFormatException 数字格式异常
-     * @see Integer#parseInt(String, int)
+     * @param chars The char array.
+     * @param radix The radix.
+     * @return The `int` value.
+     * @throws NumberFormatException if parsing fails.
      */
     public static int parseInt(final char[] chars, final int radix) throws NumberFormatException {
         return NumberParser.INSTANCE.parseInt(chars, radix);
     }
 
     /**
-     * 解析转换数字字符串为 {@link java.lang.Long } 规则如下：
+     * Parses a string into a `Long`, returning a default value on failure.
      *
-     * <pre>
-     * 1、0x开头的视为16进制数字
-     * 2、0开头的忽略开头的0
-     * 3、其它情况按照10进制转换
-     * 4、空串返回0
-     * 5、.123形式返回0（按照小于0的小数对待）
-     * 6、123.56截取小数点之前的数字，忽略小数部分
-     * 7、解析失败返回默认值
-     * </pre>
-     *
-     * @param numberStr    数字字符串，支持0x开头、0开头和普通十进制
-     * @param defaultValue 如果解析失败, 将返回defaultValue, 允许null
-     * @return Long
+     * @param numberStr    The number string.
+     * @param defaultValue The default value.
+     * @return The parsed `Long` or the default value.
      */
     public static Long parseLong(final String numberStr, final Long defaultValue) {
         if (StringKit.isNotBlank(numberStr)) {
@@ -1171,42 +1045,25 @@ public class MathKit extends NumberValidator {
                 // ignore
             }
         }
-
         return defaultValue;
     }
 
     /**
-     * 解析转换数字字符串为long型数字，规则如下：
+     * Parses a string into a `long`.
      *
-     * <pre>
-     * 1、0x开头的视为16进制数字
-     * 2、0开头的忽略开头的0
-     * 3、空串返回0
-     * 4、其它情况按照10进制转换
-     * 5、.123形式返回0（按照小于0的小数对待）
-     * 6、123.56截取小数点之前的数字，忽略小数部分
-     * </pre>
-     *
-     * @param numberStr 数字，支持0x开头、0开头和普通十进制
-     * @return long
+     * @param numberStr The number string.
+     * @return The parsed `long`.
      */
     public static long parseLong(final String numberStr) {
         return NumberParser.INSTANCE.parseLong(numberStr);
     }
 
     /**
-     * 解析转换数字字符串为 {@link java.lang.Float } 规则如下：
+     * Parses a string into a `Float`, returning a default value on failure.
      *
-     * <pre>
-     * 1、0开头的忽略开头的0
-     * 2、空串返回0
-     * 3、其它情况按照10进制转换
-     * 4、.123形式返回0.123（按照小于0的小数对待）
-     * </pre>
-     *
-     * @param numberStr    数字字符串，支持0x开头、0开头和普通十进制
-     * @param defaultValue 如果解析失败, 将返回defaultValue, 允许null
-     * @return Float
+     * @param numberStr    The number string.
+     * @param defaultValue The default value.
+     * @return The parsed `Float` or the default value.
      */
     public static Float parseFloat(final String numberStr, final Float defaultValue) {
         if (StringKit.isNotBlank(numberStr)) {
@@ -1216,40 +1073,25 @@ public class MathKit extends NumberValidator {
                 // ignore
             }
         }
-
         return defaultValue;
     }
 
     /**
-     * 解析转换数字字符串为long型数字，规则如下：
+     * Parses a string into a `float`.
      *
-     * <pre>
-     * 1、0开头的忽略开头的0
-     * 2、空串返回0
-     * 3、其它情况按照10进制转换
-     * 4、.123形式返回0.123（按照小于0的小数对待）
-     * </pre>
-     *
-     * @param numberStr 数字，支持0x开头、0开头和普通十进制
-     * @return long
+     * @param numberStr The number string.
+     * @return The parsed `float`.
      */
     public static float parseFloat(final String numberStr) {
         return NumberParser.INSTANCE.parseFloat(numberStr);
     }
 
     /**
-     * 解析转换数字字符串为 {@link java.lang.Double } 规则如下：
+     * Parses a string into a `Double`, returning a default value on failure.
      *
-     * <pre>
-     * 1、0开头的忽略开头的0
-     * 2、空串返回0
-     * 3、其它情况按照10进制转换
-     * 4、.123形式返回0.123（按照小于0的小数对待）
-     * </pre>
-     *
-     * @param numberStr    数字字符串，支持0x开头、0开头和普通十进制
-     * @param defaultValue 如果解析失败, 将返回defaultValue, 允许null
-     * @return Double
+     * @param numberStr    The number string.
+     * @param defaultValue The default value.
+     * @return The parsed `Double` or the default value.
      */
     public static Double parseDouble(final String numberStr, final Double defaultValue) {
         if (StringKit.isNotBlank(numberStr)) {
@@ -1263,29 +1105,21 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 解析转换数字字符串为long型数字，规则如下：
+     * Parses a string into a `double`.
      *
-     * <pre>
-     * 1、0开头的忽略开头的0
-     * 2、空串返回0
-     * 3、其它情况按照10进制转换
-     * 4、.123形式返回0.123（按照小于0的小数对待）
-     * 5、NaN返回0
-     * </pre>
-     *
-     * @param numberStr 数字，支持0x开头、0开头和普通十进制
-     * @return double
+     * @param numberStr The number string.
+     * @return The parsed `double`.
      */
     public static double parseDouble(final String numberStr) {
         return NumberParser.INSTANCE.parseDouble(numberStr);
     }
 
     /**
-     * 将指定字符串转换为{@link Number } 此方法不支持科学计数法
+     * Parses a string into a `Number`, returning a default value on failure.
      *
-     * @param numberStr    Number字符串
-     * @param defaultValue 如果解析失败, 将返回defaultValue, 允许null
-     * @return Number对象
+     * @param numberStr    The number string.
+     * @param defaultValue The default value.
+     * @return The parsed `Number` or the default value.
      */
     public static Number parseNumber(final String numberStr, final Number defaultValue) {
         if (StringKit.isNotBlank(numberStr)) {
@@ -1299,41 +1133,33 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 将指定字符串转换为{@link Number} 对象 此方法不支持科学计数法
+     * Parses a string into a `Number`.
      *
-     * <p>
-     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如： 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数 也就是说，在这些国家地区，1.20表示120，而非1.2。
-     * </p>
-     *
-     * @param numberStr Number字符串
-     * @return Number对象
-     * @throws NumberFormatException 包装了{@link ParseException}，当给定的数字字符串无法解析时抛出
+     * @param numberStr The number string.
+     * @return The `Number` object.
+     * @throws NumberFormatException if parsing fails.
      */
     public static Number parseNumber(final String numberStr) throws NumberFormatException {
         return NumberParser.INSTANCE.parseNumber(numberStr);
     }
 
     /**
-     * 将指定字符串转换为{@link Number} 对象 此方法不支持科学计数法
+     * Parses a string into a `Number` using a specific `Locale`.
      *
-     * <p>
-     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如： 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数 也就是说，在这些国家地区，1.20表示120，而非1.2。
-     * </p>
-     *
-     * @param numberStr Number字符串
-     * @param locale    地区，不同地区数字表示方式不同
-     * @return Number对象
-     * @throws NumberFormatException 包装了{@link ParseException}，当给定的数字字符串无法解析时抛出
+     * @param numberStr The number string.
+     * @param locale    The locale.
+     * @return The `Number` object.
+     * @throws NumberFormatException if parsing fails.
      */
     public static Number parseNumber(final String numberStr, final Locale locale) throws NumberFormatException {
         return NumberParser.of(locale).parseNumber(numberStr);
     }
 
     /**
-     * 检查是否为有效的数字 检查Double和Float是否为无限大，或者Not a Number 非数字类型和{@code null}将返回{@code false}
+     * Checks if a `Number` is valid (not infinite or NaN).
      *
-     * @param number 被检查类型
-     * @return 检查结果，非数字类型和Null将返回true
+     * @param number The number to check.
+     * @return `true` if the number is valid.
      */
     public static boolean isValidNumber(final Number number) {
         if (null == number) {
@@ -1348,44 +1174,40 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 检查是否为有效的数字 检查double否为无限大，或者Not a Number（NaN）
+     * Checks if a `double` is valid (not infinite or NaN).
      *
-     * @param number 被检查double
-     * @return 检查结果
+     * @param number The double to check.
+     * @return `true` if valid.
      */
     public static boolean isValid(final double number) {
         return !(Double.isNaN(number) || Double.isInfinite(number));
     }
 
     /**
-     * 检查是否为有效的数字 检查double否为无限大，或者Not a Number（NaN）
+     * Checks if a `float` is valid (not infinite or NaN).
      *
-     * @param number 被检查double
-     * @return 检查结果
+     * @param number The float to check.
+     * @return `true` if valid.
      */
     public static boolean isValid(final float number) {
         return !(Float.isNaN(number) || Float.isInfinite(number));
     }
 
     /**
-     * 计算数学表达式的值，只支持加减乘除和取余 如：
-     * 
-     * <pre class="code">
-     * calculate("(0*1--3)-5/-4-(3*(-2.13))") - 10.64
-     * </pre>
+     * Calculates the value of a mathematical expression (supports +, -, *, /, %).
      *
-     * @param expression 数学表达式
-     * @return 结果
+     * @param expression The mathematical expression.
+     * @return The result.
      */
     public static double calculate(final String expression) {
         return Calculator.conversion(expression);
     }
 
     /**
-     * Number值转换为double float强制转换存在精度问题，此方法避免精度丢失
+     * Converts a `Number` value to a `double` with better precision for `Float`.
      *
-     * @param value 被转换的float值
-     * @return double值
+     * @param value The number to convert.
+     * @return The double value.
      */
     public static double toDouble(final Number value) {
         if (value instanceof Float) {
@@ -1396,37 +1218,30 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 检查是否为奇数
+     * Checks if a number is odd.
      *
-     * @param num 被判断的数值
-     * @return 是否是奇数
+     * @param num The number.
+     * @return `true` if odd.
      */
     public static boolean isOdd(final int num) {
         return (num & 1) == 1;
     }
 
     /**
-     * 检查是否为偶数
+     * Checks if a number is even.
      *
-     * @param num 被判断的数值
-     * @return 是否是偶数
+     * @param num The number.
+     * @return `true` if even.
      */
     public static boolean isEven(final int num) {
         return !isOdd(num);
     }
 
     /**
-     * 判断给定数字是否为0
-     * <ul>
-     * <li>如果是{@link Byte}、{@link Short}、{@link Integer}、{@link Long}，直接转为long和0L比较</li>
-     * <li>如果是{@link BigInteger}，使用{@link BigInteger#equals(Object)}</li>
-     * <li>如果是{@link Float}，转为float与0f比较</li>
-     * <li>如果是{@link Double}，转为double与0d比较</li>
-     * <li>其它情况转为{@link BigDecimal}与{@link BigDecimal#ZERO}比较大小（使用compare）</li>
-     * </ul>
+     * Checks if a number is zero.
      *
-     * @param n 数字
-     * @return 是否为0
+     * @param n The number.
+     * @return `true` if the number is zero.
      */
     public static boolean isZero(final Number n) {
         Assert.notNull(n);
@@ -1444,114 +1259,105 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 整数转罗马数字 限制：[1,3999]的正整数
-     * <ul>
-     * <li>I 1</li>
-     * <li>V 5</li>
-     * <li>X 10</li>
-     * <li>L 50</li>
-     * <li>C 100</li>
-     * <li>D 500</li>
-     * <li>M 1000</li>
-     * </ul>
+     * Converts an integer to a Roman numeral.
      *
-     * @param num [1,3999]的正整数
-     * @return 罗马数字
+     * @param num An integer between 1 and 3999.
+     * @return The Roman numeral string.
      */
     public static String intToRoman(final int num) {
         return RomanNumberFormatter.intToRoman(num);
     }
 
     /**
-     * 罗马数字转整数
+     * Converts a Roman numeral to an integer.
      *
-     * @param roman 罗马字符
-     * @return 整数
-     * @throws IllegalArgumentException 如果传入非罗马字符串，抛出异常
+     * @param roman The Roman numeral string.
+     * @return The integer.
+     * @throws IllegalArgumentException if the input is not a valid Roman numeral.
      */
     public static int romanToInt(final String roman) {
         return RomanNumberFormatter.romanToInt(roman);
     }
 
     /**
-     * 计算排列数，即A(n, m) = n!/(n-m)!
+     * Calculates the number of arrangements (permutations), i.e., P(n, m) = n! / (n-m)!.
      *
-     * @param n 总数
-     * @param m 选择的个数
-     * @return 排列数
+     * @param n The total number of items.
+     * @param m The number of items to choose.
+     * @return The number of arrangements.
      */
     public static long arrangementCount(final int n, final int m) {
         return Arrangement.count(n, m);
     }
 
     /**
-     * 计算排列数，即A(n, n) = n!
+     * Calculates the number of arrangements of n items, i.e., P(n, n) = n!.
      *
-     * @param n 总数
-     * @return 排列数
+     * @param n The total number of items.
+     * @return The number of arrangements.
      */
     public static long arrangementCount(final int n) {
         return Arrangement.count(n);
     }
 
     /**
-     * 排列选择（从列表中选择n个排列）
+     * Selects `m` permutations from a list of items.
      *
-     * @param datas 待选列表
-     * @param m     选择个数
-     * @return 所有排列列表
+     * @param datas The list of items.
+     * @param m     The number of items to choose.
+     * @return A list of all permutations.
      */
     public static List<String[]> arrangementSelect(final String[] datas, final int m) {
         return new Arrangement(datas).select(m);
     }
 
     /**
-     * 全排列选择（列表全部参与排列）
+     * Selects all permutations from a list of items.
      *
-     * @param datas 待选列表
-     * @return 所有排列列表
+     * @param datas The list of items.
+     * @return A list of all permutations.
      */
     public static List<String[]> arrangementSelect(final String[] datas) {
         return new Arrangement(datas).select();
     }
 
     /**
-     * 计算组合数，即C(n, m) = n!/((n-m)!* m!)
+     * Calculates the number of combinations, i.e., C(n, m) = n! / ((n-m)! * m!).
      *
-     * @param n 总数
-     * @param m 选择的个数
-     * @return 组合数
+     * @param n The total number of items.
+     * @param m The number of items to choose.
+     * @return The number of combinations.
      */
     public static long combinationCount(final int n, final int m) {
         return Combination.count(n, m);
     }
 
     /**
-     * 组合选择（从列表中选择n个组合）
+     * Selects `m` combinations from a list of items.
      *
-     * @param datas 待选列表
-     * @param m     选择个数
-     * @return 所有组合列表
+     * @param datas The list of items.
+     * @param m     The number of items to choose.
+     * @return A list of all combinations.
      */
     public static List<String[]> combinationSelect(final String[] datas, final int m) {
         return new Combination(datas).select(m);
     }
 
     /**
-     * 金额元转换为分
+     * Converts an amount in yuan to cents.
      *
-     * @param yuan 金额，单位元
-     * @return 金额，单位分
+     * @param yuan The amount in yuan.
+     * @return The amount in cents.
      */
     public static long yuanToCent(final double yuan) {
         return new Money(yuan).getCent();
     }
 
     /**
-     * 金额分转换为元
+     * Converts an amount in cents to yuan.
      *
-     * @param cent 金额，单位分
-     * @return 金额，单位元
+     * @param cent The amount in cents.
+     * @return The amount in yuan.
      */
     public static double centToYuan(final long cent) {
         final long yuan = cent / 100;
@@ -1560,13 +1366,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 计算阶乘
-     * <p>
-     * n!= n * (n-1) * ... * 2 * 1
-     * </p>
+     * Calculates the factorial of a `BigInteger`.
      *
-     * @param n 阶乘起始
-     * @return 结果
+     * @param n The number.
+     * @return The factorial result.
      */
     public static BigInteger factorial(final BigInteger n) {
         if (n.equals(BigInteger.ZERO)) {
@@ -1576,14 +1379,11 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 计算范围阶乘
-     * <p>
-     * factorial(start, end) = start * (start - 1) * ... * (end + 1)
-     * </p>
+     * Calculates the factorial over a range.
      *
-     * @param start 阶乘起始（包含）
-     * @param end   阶乘结束，必须小于起始（不包括）
-     * @return 结果
+     * @param start The start of the factorial (inclusive).
+     * @param end   The end of the factorial (exclusive).
+     * @return The result.
      */
     public static BigInteger factorial(BigInteger start, BigInteger end) {
         Assert.notNull(start, "Factorial start must be not null!");
@@ -1592,15 +1392,12 @@ public class MathKit extends NumberValidator {
             throw new IllegalArgumentException(
                     StringKit.format("Factorial start and end both must be > 0, but got start={}, end={}", start, end));
         }
-
         if (start.equals(BigInteger.ZERO)) {
             start = BigInteger.ONE;
         }
-
         if (end.compareTo(BigInteger.ONE) < 0) {
             end = BigInteger.ONE;
         }
-
         BigInteger result = start;
         end = end.add(BigInteger.ONE);
         while (start.compareTo(end) > 0) {
@@ -1611,17 +1408,13 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 计算范围阶乘
-     * <p>
-     * factorial(start, end) = start * (start - 1) * ... * (end + 1)
-     * </p>
+     * Calculates the factorial over a range for `long` values.
      *
-     * @param start 阶乘起始（包含）
-     * @param end   阶乘结束，必须小于起始（不包括）
-     * @return 结果
+     * @param start The start of the factorial (inclusive).
+     * @param end   The end of the factorial (exclusive).
+     * @return The result.
      */
     public static long factorial(final long start, final long end) {
-        // 负数没有阶乘
         if (start < 0 || end < 0) {
             throw new IllegalArgumentException(StringKit
                     .format("Factorial start and end both must be >= 0, but got start={}, end={}", start, end));
@@ -1636,11 +1429,11 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 计算范围阶乘中校验中间的计算是否存在溢出，factorial提前做了负数和0的校验，因此这里没有校验数字的正负
-     *
-     * @param a 乘数
-     * @param b 被乘数
-     * @return 如果 a * b的结果没有溢出直接返回，否则抛出异常
+     * Calculates factorial, checking for overflow.
+     * 
+     * @param a multiplier
+     * @param b multiplicand
+     * @return the result of a * b, or throw an exception if overflow occurs
      */
     private static long factorialMultiplyAndCheck(final long a, final long b) {
         if (a <= Long.MAX_VALUE / b) {
@@ -1650,13 +1443,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 计算阶乘
-     * <p>
-     * n!= n * (n-1) * ... * 2 * 1
-     * </p>
+     * Calculates the factorial of a number (0-20).
      *
-     * @param n 阶乘起始
-     * @return 结果
+     * @param n The number.
+     * @return The factorial result.
      */
     public static long factorial(final long n) {
         if (n < 0 || n > 20) {
@@ -1667,10 +1457,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 平方根算法 推荐使用 {@link Math#sqrt(double)}
+     * Square root algorithm. `Math.sqrt(double)` is recommended.
      *
-     * @param x 值
-     * @return 平方根
+     * @param x The value.
+     * @return The square root.
      */
     public static long sqrt(long x) {
         long y = 0;
@@ -1689,11 +1479,11 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 可以用于计算双色球、大乐透注数的方法 比如大乐透35选5可以这样调用processMultiple(7,5); 就是数学中的：C75=7*6/2*1
+     * Calculates the number of combinations for lottery-style selections.
      *
-     * @param selectNum 选中小球个数
-     * @param minNum    最少要选中多少个小球
-     * @return 注数
+     * @param selectNum The number of items selected.
+     * @param minNum    The number of items in a combination.
+     * @return The number of combinations.
      */
     public static int processMultiple(final int selectNum, final int minNum) {
         final int result;
@@ -1702,67 +1492,52 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 最大公约数 见：https://stackoverflow.com/questions/4009198/java-get-greatest-common-divisor 来自Guava的IntMath.gcd
+     * Calculates the greatest common divisor (GCD).
      *
-     * @param a 第一个值
-     * @param b 第二个值
-     * @return 最大公约数
+     * @param a The first value.
+     * @param b The second value.
+     * @return The GCD.
      */
     public static int gcd(int a, int b) {
-        /*
-         * The reason we require both arguments to be >= 0 is because otherwise, what do you return on gcd(0,
-         * Integer.MIN_VALUE)? BigInteger.gcd would return positive 2^31, but positive 2^31 isn't an int.
-         */
         Assert.isTrue(a >= 0, "a must be >= 0");
         Assert.isTrue(b >= 0, "b must be >= 0");
         if (a == 0) {
-            // 0 % b == 0, so b divides a, but the converse doesn't hold.
-            // BigInteger.gcd is consistent with this decision.
             return b;
         } else if (b == 0) {
-            return a; // similar logic
+            return a;
         }
-        /*
-         * Uses the binary GCD algorithm; see http://en.wikipedia.org/wiki/Binary_GCD_algorithm. This is >40% faster
-         * than the Euclidean algorithm in benchmarks.
-         */
         final int aTwos = Integer.numberOfTrailingZeros(a);
-        a >>= aTwos; // divide out all 2s
+        a >>= aTwos;
         final int bTwos = Integer.numberOfTrailingZeros(b);
-        b >>= bTwos; // divide out all 2s
-        while (a != b) { // both a, b are odd
-            // The data to the binary GCD algorithm is as follows:
-            // Both a and b are odd. Assume a > b; then gcd(a - b, b) = gcd(a, b).
-            // But in gcd(a - b, b), a - b is even and b is odd, so we can divide out powers of two.
-
-            // We bend over backwards to avoid branching, adapting a technique from
-            // http://graphics.stanford.edu/~seander/bithacks.html#IntegerMinOrMax
-
+        b >>= bTwos;
+        while (a != b) {
             final int delta = a - b;
-
             final int minDeltaOrZero = delta & (delta >> (Integer.SIZE - 1));
-            // equivalent to Math.min(delta, 0)
-
-            a = delta - minDeltaOrZero - minDeltaOrZero; // sets a to Math.abs(a - b)
-            // a is now nonnegative and even
-
-            b += minDeltaOrZero; // sets b to min(old a, b)
-            a >>= Integer.numberOfTrailingZeros(a); // divide out all 2s, since 2 doesn't divide b
+            a = delta - minDeltaOrZero - minDeltaOrZero;
+            b += minDeltaOrZero;
+            a >>= Integer.numberOfTrailingZeros(a);
         }
         return a << Math.min(aTwos, bTwos);
     }
 
     /**
-     * 最小公倍数
+     * Calculates the least common multiple (LCM).
      *
-     * @param m 第一个值
-     * @param n 第二个值
-     * @return 最小公倍数
+     * @param m The first value.
+     * @param n The second value.
+     * @return The LCM.
      */
     public static int multiple(final int m, final int n) {
         return m * n / gcd(m, n);
     }
 
+    /**
+     * Helper for permutation calculation.
+     * 
+     * @param selectNum The number of items to select from.
+     * @param minNum    The number of items to select.
+     * @return The result of the sub-calculation.
+     */
     private static int mathSubNode(final int selectNum, final int minNum) {
         if (selectNum == minNum) {
             return 1;
@@ -1771,6 +1546,12 @@ public class MathKit extends NumberValidator {
         }
     }
 
+    /**
+     * Helper for factorial calculation.
+     * 
+     * @param selectNum The number to calculate factorial for.
+     * @return The factorial result.
+     */
     private static int mathNode(final int selectNum) {
         if (selectNum == 0) {
             return 1;

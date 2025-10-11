@@ -34,110 +34,115 @@ import org.miaixz.bus.mapper.Caching;
 import org.miaixz.bus.mapper.provider.EntityProvider;
 
 /**
- * 实体类基本操作接口，提供对实体类的增删改查等常用方法
+ * An interface for basic entity operations, providing common methods for CRUD (Create, Read, Update, Delete).
  *
- * @param <T> 实体类类型
- * @param <I> 主键类型
+ * @param <T> The type of the entity class.
+ * @param <I> The type of the primary key.
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface EntityMapper<T, I> extends ClassMapper<T> {
 
     /**
-     * 保存实体对象
+     * Saves an entity object.
      *
-     * @param entity 实体对象
-     * @return 1表示成功，0表示失败
+     * @param entity The entity object to save.
+     * @param <S>    A subtype of the entity class.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @InsertProvider(type = EntityProvider.class, method = "insert")
     <S extends T> int insert(S entity);
 
     /**
-     * 保存实体对象中非空字段
+     * Saves only the non-null fields of an entity object.
      *
-     * @param entity 实体对象
-     * @return 1表示成功，0表示失败
+     * @param entity The entity object to save.
+     * @param <S>    A subtype of the entity class.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @InsertProvider(type = EntityProvider.class, method = "insertSelective")
     <S extends T> int insertSelective(S entity);
 
     /**
-     * 根据主键删除实体
+     * Deletes an entity by its primary key.
      *
-     * @param id 主键
-     * @return 1表示成功，0表示失败
+     * @param id The primary key of the entity to delete.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @DeleteProvider(type = EntityProvider.class, method = "deleteByPrimaryKey")
     int deleteByPrimaryKey(I id);
 
     /**
-     * 根据实体条件批量删除
+     * Deletes entities based on the conditions provided in the entity object.
      *
-     * @param entity 实体对象
-     * @return 大于等于1表示成功，0表示失败
+     * @param entity The entity object containing the deletion criteria.
+     * @return The number of deleted records (>=1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @DeleteProvider(type = EntityProvider.class, method = "delete")
     int delete(T entity);
 
     /**
-     * 根据主键更新实体对象
+     * Updates an entity object by its primary key.
      *
-     * @param entity 实体对象
-     * @return 1表示成功，0表示失败
+     * @param entity The entity object with updated values.
+     * @param <S>    A subtype of the entity class.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = EntityProvider.class, method = "updateByPrimaryKey")
     <S extends T> int updateByPrimaryKey(S entity);
 
     /**
-     * 根据主键更新实体对象中非空字段
+     * Updates only the non-null fields of an entity object by its primary key.
      *
-     * @param entity 实体对象
-     * @return 1表示成功，0表示失败
+     * @param entity The entity object with updated values.
+     * @param <S>    A subtype of the entity class.
+     * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = EntityProvider.class, method = "updateByPrimaryKeySelective")
     <S extends T> int updateByPrimaryKeySelective(S entity);
 
     /**
-     * 根据主键查询实体对象
+     * Selects an entity by its primary key.
      *
-     * @param id 主键
-     * @return 实体对象，可能为空
+     * @param id The primary key of the entity to retrieve.
+     * @return The entity object, or null if not found.
      */
     @Lang(Caching.class)
     @SelectProvider(type = EntityProvider.class, method = "selectByPrimaryKey")
     T selectByPrimaryKey(I id);
 
     /**
-     * 根据实体条件查询唯一实体
+     * Selects a single entity based on the conditions provided in the entity object. Throws an exception if more than
+     * one record is found.
      *
-     * @param entity 实体对象
-     * @return 唯一实体对象，若结果多条则抛出异常，可能为空
+     * @param entity The entity object containing the query criteria.
+     * @return The unique entity object, or null if not found.
      */
     @Lang(Caching.class)
     @SelectProvider(type = EntityProvider.class, method = "select")
     T selectOne(T entity);
 
     /**
-     * 根据实体条件批量查询
+     * Selects a list of entities based on the conditions provided in the entity object.
      *
-     * @param entity 实体对象
-     * @return 实体对象列表
+     * @param entity The entity object containing the query criteria.
+     * @return A list of entity objects.
      */
     @Lang(Caching.class)
     @SelectProvider(type = EntityProvider.class, method = "select")
     List<T> selectList(T entity);
 
     /**
-     * 根据实体条件查询记录总数
+     * Selects the total number of records matching the conditions provided in the entity object.
      *
-     * @param entity 实体对象
-     * @return 记录总数
+     * @param entity The entity object containing the query criteria.
+     * @return The total number of matching records.
      */
     @Lang(Caching.class)
     @SelectProvider(type = EntityProvider.class, method = "selectCount")

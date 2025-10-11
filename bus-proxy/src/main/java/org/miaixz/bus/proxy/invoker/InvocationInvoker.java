@@ -27,38 +27,40 @@
 */
 package org.miaixz.bus.proxy.invoker;
 
-import java.lang.reflect.Method;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
+import java.lang.reflect.Method;
+
 /**
- * 切面实现类
+ * An implementation of {@link ProxyChain} that adapts an AspectJ {@link ProceedingJoinPoint}. This allows AspectJ join
+ * points to be used within this proxy framework.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class InvocationInvoker implements ProxyChain {
 
-    /**
-     * 切点
-     */
+    /** The underlying AspectJ join point. */
     private final ProceedingJoinPoint joinPoint;
-    /**
-     * 方法
-     */
+    /** The lazily initialized method from the join point. */
     private Method method;
 
+    /**
+     * Constructs a new InvocationInvoker.
+     *
+     * @param joinPoint The AspectJ {@link ProceedingJoinPoint} to wrap.
+     */
     public InvocationInvoker(ProceedingJoinPoint joinPoint) {
         this.joinPoint = joinPoint;
     }
 
     /**
-     * 获取拦截的方法的参数列表
+     * Gets the names of the parameters of the intercepted method.
      *
-     * @return 返回参数列表
+     * @return An array of parameter names.
      */
     @Override
     public Object[] getNames() {
@@ -68,9 +70,9 @@ public class InvocationInvoker implements ProxyChain {
     }
 
     /**
-     * 获取拦截的方法的参数列表
+     * Gets the arguments passed to the intercepted method.
      *
-     * @return 返回参数列表
+     * @return An array of arguments.
      */
     @Override
     public Object[] getArguments() {
@@ -78,9 +80,9 @@ public class InvocationInvoker implements ProxyChain {
     }
 
     /**
-     * 获取要拦截的目标实例
+     * Gets the target instance being intercepted.
      *
-     * @return 返回目标实例
+     * @return The target instance.
      */
     @Override
     public Object getProxy() {
@@ -88,9 +90,9 @@ public class InvocationInvoker implements ProxyChain {
     }
 
     /**
-     * 获取拦截的方法
+     * Gets the intercepted method.
      *
-     * @return 获取拦截的方法
+     * @return The {@link Method} being invoked.
      */
     @Override
     public Method getMethod() {
@@ -103,10 +105,10 @@ public class InvocationInvoker implements ProxyChain {
     }
 
     /**
-     * 执行方法
+     * Proceeds with the original method execution.
      *
-     * @return 返回对象
-     * @throws Throwable 抛出异常
+     * @return The result of the method execution.
+     * @throws Throwable if the underlying method throws an exception.
      */
     @Override
     public Object proceed() throws Throwable {
@@ -114,11 +116,11 @@ public class InvocationInvoker implements ProxyChain {
     }
 
     /**
-     * 执行方法
+     * Proceeds with the original method execution, but with a new set of arguments.
      *
-     * @param arguments 参数
-     * @return 返回对象
-     * @throws Throwable 抛出异常
+     * @param arguments The new arguments to use for the invocation.
+     * @return The result of the method execution.
+     * @throws Throwable if the underlying method throws an exception.
      */
     @Override
     public Object proceed(Object[] arguments) throws Throwable {

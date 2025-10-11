@@ -20,13 +20,24 @@
  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ OUT of OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 缓存注解
+ * Provides the annotations used to drive the caching behavior of the framework.
+ * <p>
+ * This package contains the core annotations that developers can use to declaratively manage caching on their methods.
+ * The primary annotations include:
+ * </p>
+ * <ul>
+ * <li>{@link org.miaixz.bus.cache.magic.annotation.Cached}: For read-through caching (read, and write on miss).</li>
+ * <li>{@link org.miaixz.bus.cache.magic.annotation.CachedGet}: For read-only caching (read, but no write on miss).</li>
+ * <li>{@link org.miaixz.bus.cache.magic.annotation.Invalid}: For cache invalidation.</li>
+ * <li>{@link org.miaixz.bus.cache.magic.annotation.CacheKey}: To designate a parameter's role in forming the cache
+ * key.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+

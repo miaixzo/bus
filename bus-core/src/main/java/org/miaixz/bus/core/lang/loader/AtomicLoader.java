@@ -34,16 +34,19 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.miaixz.bus.core.Loader;
 
 /**
- * 原子引用加载器 使用{@link AtomicReference} 实懒加载，过程如下
+ * An atomic reference-based lazy loader. It implements lazy loading using {@link AtomicReference}, following this
+ * process:
  * 
  * <pre>
- * 1. 检查引用中是否有加载好的对象，有则返回
- * 2. 如果没有则初始化一个对象，并再次比较引用中是否有其它线程加载好的对象，无则加入，有则返回已有的
+ * 1. Checks if a loaded object already exists in the reference; if so, returns it.
+ * 2. If not, it initializes an object and then re-checks if another thread has already loaded an object into the reference.
+ *    If not, it sets its newly created object; otherwise, it returns the existing object.
  * </pre>
  * 
- * 当对象未被创建，对象的初始化操作在多线程情况下可能会被调用多次（多次创建对象），但是总是返回同一对象
+ * Although the object initialization operation might be called multiple times in a multi-threaded environment when the
+ * object has not yet been created, it always ensures that the same object is eventually returned.
  *
- * @param <T> 被加载对象类型
+ * @param <T> The type of the object to be loaded.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -53,12 +56,15 @@ public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
     private static final long serialVersionUID = 2852267211560L;
 
     /**
-     * 被加载对象的引用
+     * The atomic reference holding the lazily loaded object.
      */
     private final AtomicReference<T> reference = new AtomicReference<>();
 
     /**
-     * 获取一个对象，第一次调用此方法时初始化对象然后返回，之后调用此方法直接返回原对象
+     * Retrieves the lazily loaded object. The first time this method is called, the object is initialized and then
+     * returned. Subsequent calls directly return the already initialized object.
+     *
+     * @return The lazily loaded object.
      */
     @Override
     public T get() {
@@ -67,7 +73,7 @@ public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
         if (result == null) {
             result = init();
             if (!reference.compareAndSet(null, result)) {
-                // 其它线程已经创建好此对象
+                // Another thread has already created this object
                 result = reference.get();
             }
         }
@@ -75,15 +81,20 @@ public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
         return result;
     }
 
+    /**
+     * Checks if the object has been initialized.
+     *
+     * @return {@code true} if the object has been initialized, {@code false} otherwise.
+     */
     @Override
     public boolean isInitialized() {
         return null != reference.get();
     }
 
     /**
-     * 初始化被加载的对象 如果对象从未被加载过，调用此方法初始化加载对象，此方法只被调用一次
+     * Initializes the object to be loaded. This method is called only once when the object is first accessed.
      *
-     * @return 被加载的对象
+     * @return The initialized object.
      */
     protected abstract T init();
 

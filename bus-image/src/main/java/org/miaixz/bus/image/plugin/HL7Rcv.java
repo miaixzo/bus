@@ -27,19 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import java.io.*;
-import java.net.URL;
-import java.util.Date;
-import java.util.UUID;
-
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamSource;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.galaxy.io.SAXTransformer;
@@ -51,25 +38,77 @@ import org.miaixz.bus.image.metric.hl7.net.HL7MessageListener;
 import org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message;
 import org.miaixz.bus.logger.Logger;
 
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
+import java.net.URL;
+import java.util.Date;
+import java.util.UUID;
+
 /**
+ * The {@code HL7Rcv} class implements an HL7 receiver that listens for incoming HL7 messages over an MLLP connection.
+ * It can store received messages to the file system and send back a standard or custom acknowledgment. The response can
+ * be generated using an XSLT transformation.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class HL7Rcv {
 
+    /**
+     * The SAX transformer factory for creating XSLT handlers.
+     */
     private static final SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory.newInstance();
 
+    /**
+     * The main device for this receiver.
+     */
     private final Device device = new Device("hl7rcv");
+    /**
+     * The HL7 device extension.
+     */
     private final HL7DeviceExtension hl7Ext = new HL7DeviceExtension();
+    /**
+     * The HL7 application that handles all message types.
+     */
     private final HL7Application hl7App = new HL7Application(Symbol.STAR);
+    /**
+     * The network connection configuration.
+     */
     private final Connection conn = new Connection();
+    /**
+     * The directory to store received messages.
+     */
     private String storageDir;
+    /**
+     * The default character set to use if not specified in the message.
+     */
     private String charset;
+    /**
+     * The compiled XSLT templates for response generation.
+     */
     private Templates tpls;
+    /**
+     * Parameters to be passed to the XSLT transformation.
+     */
     private String[] xsltParams;
+    /**
+     * A flag to use UUIDs for filenames when storing messages.
+     */
     private boolean useUUIDForFilename;
+    /**
+     * A delay in milliseconds before sending a response.
+     */
     private int responseDelay;
 
+    /**
+     * The message listener that processes incoming HL7 messages.
+     */
     private final HL7MessageListener handler = (hl7App, conn, s, msg) -> {
         try {
             return HL7Rcv.this.onMessage(msg);
@@ -78,6 +117,9 @@ public class HL7Rcv {
         }
     };
 
+    /**
+     * Constructs a new {@code HL7Rcv} instance and initializes its components.
+     */
     public HL7Rcv() {
         conn.setProtocol(Connection.Protocol.HL7);
         device.addDeviceExtension(hl7Ext);
@@ -88,26 +130,61 @@ public class HL7Rcv {
         hl7App.setHL7MessageListener(handler);
     }
 
+    /**
+     * Sets the directory where received HL7 messages will be stored.
+     *
+     * @param storageDir The path to the storage directory.
+     */
     public void setStorageDirectory(String storageDir) {
         this.storageDir = storageDir;
     }
 
+    /**
+     * Sets the XSLT stylesheet to be used for transforming the response message.
+     *
+     * @param xslt The URL of the XSLT file.
+     * @throws Exception if the templates cannot be created.
+     */
     public void setXSLT(URL xslt) throws Exception {
         tpls = SAXTransformer.newTemplates(new StreamSource(xslt.openStream(), xslt.toExternalForm()));
     }
 
+    /**
+     * Sets the parameters to be passed to the XSLT transformation.
+     *
+     * @param xsltParams An array of key-value pairs for the XSLT parameters.
+     */
     public void setXSLTParameters(String[] xsltParams) {
         this.xsltParams = xsltParams;
     }
 
+    /**
+     * Sets the default character set to use if not specified in the MSH-18 field.
+     *
+     * @param charset The name of the character set.
+     */
     public void setCharacterSet(String charset) {
         this.charset = charset;
     }
 
+    /**
+     * Sets whether to use a UUID for the filename when storing messages. If false, the Message Control ID (MSH-10) is
+     * used.
+     *
+     * @param useUUIDForFilename {@code true} to use UUIDs, {@code false} otherwise.
+     */
     public void setUseUUIDForFilename(boolean useUUIDForFilename) {
         this.useUUIDForFilename = useUUIDForFilename;
     }
 
+    /**
+     * Handles an incoming HL7 message. It stores the message to a file if a storage directory is configured, applies a
+     * delay if specified, and generates a response.
+     *
+     * @param msg The received unparsed HL7 message.
+     * @return The response message.
+     * @throws Exception if an error occurs during processing.
+     */
     private UnparsedHL7Message onMessage(UnparsedHL7Message msg) throws Exception {
         if (storageDir != null)
             storeToFile(
@@ -124,17 +201,28 @@ public class HL7Rcv {
                 tpls == null ? HL7Message.makeACK(msg.msh(), HL7Exception.AA, null).getBytes(null) : xslt(msg));
     }
 
+    /**
+     * Stores the raw byte data of a message to a file.
+     *
+     * @param data The byte array of the message.
+     * @param f    The file to write to.
+     * @throws IOException if an I/O error occurs.
+     */
     private void storeToFile(byte[] data, File f) throws IOException {
         Logger.info("M-WRITE {}", f);
         f.getParentFile().mkdirs();
-        FileOutputStream out = new FileOutputStream(f);
-        try {
+        try (FileOutputStream out = new FileOutputStream(f)) {
             out.write(data);
-        } finally {
-            out.close();
         }
     }
 
+    /**
+     * Transforms an HL7 message using the configured XSLT stylesheet to generate a response.
+     *
+     * @param msg The incoming message.
+     * @return The transformed message as a byte array.
+     * @throws Exception if an error occurs during transformation.
+     */
     private byte[] xslt(UnparsedHL7Message msg) throws Exception {
         String charsetName = HL7Charset.toCharsetName(msg.msh().getField(17, charset));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -150,10 +238,20 @@ public class HL7Rcv {
         return out.toByteArray();
     }
 
+    /**
+     * Gets the main device object for this receiver.
+     *
+     * @return The device.
+     */
     public Device getDevice() {
         return device;
     }
 
+    /**
+     * Gets the network connection configuration.
+     *
+     * @return The connection.
+     */
     public Connection getConn() {
         return conn;
     }

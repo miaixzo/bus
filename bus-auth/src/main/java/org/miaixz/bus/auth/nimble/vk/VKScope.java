@@ -33,7 +33,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * VK 授权范围
+ * VK authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,24 +43,88 @@ import lombok.Getter;
 public enum VKScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Personal information scope. Includes last name, first name, gender, profile photo, and date of birth. This is the
+     * basic permission used by default for all apps. The meaning of {@code scope} is subject to {@code description}.
      */
     PERSONAL("vkid.personal_info",
             "Last name, first name, gender, profile photo and date of birth. The basic permission used by default for all apps",
             true),
-    EMAIL("email", "Access to the user's email", true), PHONE("phone", "Access to the user's phone number", false),
-    FRIENDS("friends", "Access to friends", false), WALL("wall", "Access to standard and advanced wall methods", false),
-    GROUPS("groups", "Access to the user's groups", false), STORIES("stories", "Access to stories", false),
-    DOCS("docs", "Access to documents", false), PHOTOS("photos", "Access to photos", false),
-    ADS("ads", "Access to advanced methods of the advertising API", false), VIDEO("video", "Access to videos", false),
-    STATUS("status", "Access to the user's status", false), MARKET("market", "Access to products", false),
+    /**
+     * Access to the user's email address.
+     */
+    EMAIL("email", "Access to the user's email", true),
+    /**
+     * Access to the user's phone number.
+     */
+    PHONE("phone", "Access to the user's phone number", false),
+    /**
+     * Access to friends.
+     */
+    FRIENDS("friends", "Access to friends", false),
+    /**
+     * Access to standard and advanced wall methods.
+     */
+    WALL("wall", "Access to standard and advanced wall methods", false),
+    /**
+     * Access to the user's groups.
+     */
+    GROUPS("groups", "Access to the user's groups", false),
+    /**
+     * Access to stories.
+     */
+    STORIES("stories", "Access to stories", false),
+    /**
+     * Access to documents.
+     */
+    DOCS("docs", "Access to documents", false),
+    /**
+     * Access to photos.
+     */
+    PHOTOS("photos", "Access to photos", false),
+    /**
+     * Access to advanced methods of the advertising API.
+     */
+    ADS("ads", "Access to advanced methods of the advertising API", false),
+    /**
+     * Access to videos.
+     */
+    VIDEO("video", "Access to videos", false),
+    /**
+     * Access to the user's status.
+     */
+    STATUS("status", "Access to the user's status", false),
+    /**
+     * Access to products in the market.
+     */
+    MARKET("market", "Access to products", false),
+    /**
+     * Access to wiki pages.
+     */
     PAGES("pages", "Access to wiki pages", false),
+    /**
+     * Access to notifications about responses to the user.
+     */
     NOTIFICATIONS("notifications", "Access to notifications about responses to the user", false),
+    /**
+     * Access to statistics of the user's groups and apps for which they are an administrator.
+     */
     STATS("stats", "Access to statistics of the user's groups and apps for which they are an administrator", false),
+    /**
+     * Access to notes.
+     */
     NOTES("notes", "Access to notes", false);
 
+    /**
+     * The scope string as defined by VK.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

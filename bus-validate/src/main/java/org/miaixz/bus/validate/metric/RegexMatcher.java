@@ -36,23 +36,35 @@ import org.miaixz.bus.validate.magic.annotation.Regex;
 import java.util.regex.Pattern;
 
 /**
- * 正则匹配校验
+ * Validator for the {@link Regex} annotation, checking if a string matches a given regular expression.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class RegexMatcher implements Matcher<Object, Regex> {
 
+    /**
+     * Checks if the given object, when converted to a string, matches the regular expression specified in the
+     * {@link Regex} annotation.
+     *
+     * @param object        The object to validate.
+     * @param regexValidate The {@link Regex} annotation instance, providing the regular expression pattern and zeroAble
+     *                      property.
+     * @param context       The validation context (ignored).
+     * @return {@code true} if the object matches the regex or if it's a zero-length string and zeroAble is true,
+     *         {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, Regex regexValidate, Context context) {
         if (ObjectKit.isEmpty(object)) {
             return false;
         }
-        if (regexValidate.zeroAble() && StringKit.toString(object).length() == 0) {
+        String value = StringKit.toString(object);
+        if (regexValidate.zeroAble() && value.length() == 0) {
             return false;
         }
         Pattern pattern = Pattern.compile(regexValidate.pattern());
-        return pattern.matcher(StringKit.toString(object)).matches();
+        return pattern.matcher(value).matches();
     }
 
 }

@@ -27,13 +27,15 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import java.net.Proxy;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.UnoUrl;
 
+import java.net.Proxy;
+
 /**
+ * This class generates the request line of an HTTP/1.1 request.
+ *
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -42,6 +44,13 @@ public class RequestLine {
     private RequestLine() {
     }
 
+    /**
+     * Returns the request line for a given request.
+     *
+     * @param request   The request.
+     * @param proxyType The type of proxy being used.
+     * @return The request line.
+     */
     public static String get(Request request, Proxy.Type proxyType) {
         StringBuilder result = new StringBuilder();
         result.append(request.method());
@@ -60,6 +69,10 @@ public class RequestLine {
     /**
      * Returns true if the request line should contain the full URL with host and port (like "GET http://android.com/foo
      * HTTP/1.1") or only the path (like "GET /foo HTTP/1.1").
+     *
+     * @param request   The request.
+     * @param proxyType The type of proxy being used.
+     * @return {@code true} if the authority should be included.
      */
     private static boolean includeAuthorityInRequestLine(Request request, Proxy.Type proxyType) {
         return !request.isHttps() && proxyType == Proxy.Type.HTTP;
@@ -68,6 +81,9 @@ public class RequestLine {
     /**
      * Returns the path to request, like the '/' in 'GET / HTTP/1.1'. Never empty, even if the request URL is. Includes
      * the query component if it exists.
+     *
+     * @param url The URL.
+     * @return The request path.
      */
     public static String requestPath(UnoUrl url) {
         String path = url.encodedPath();

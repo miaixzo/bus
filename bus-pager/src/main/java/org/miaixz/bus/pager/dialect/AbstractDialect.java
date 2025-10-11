@@ -41,7 +41,8 @@ import org.miaixz.bus.pager.parsing.DefaultCountSqlParser;
 import org.miaixz.bus.pager.parsing.DefaultOrderBySqlParser;
 
 /**
- * 基于 CountSqlParser 的智能 Count 查询
+ * Abstract base class for database dialects, providing common functionality for SQL parsing. This class integrates
+ * {@link CountSqlParser} for intelligent count queries and {@link OrderBySqlParser} for order by clause handling.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,11 +50,24 @@ import org.miaixz.bus.pager.parsing.DefaultOrderBySqlParser;
 public abstract class AbstractDialect implements Dialect {
 
     /**
-     * 处理SQL
+     * The SQL parser for generating count queries.
      */
     protected CountSqlParser countSqlParser;
+    /**
+     * The SQL parser for handling order by clauses.
+     */
     protected OrderBySqlParser orderBySqlParser;
 
+    /**
+     * Generates the SQL for the count query using an intelligent SQL parser.
+     *
+     * @param ms              the MappedStatement object
+     * @param boundSql        the BoundSql object containing the original SQL and parameters
+     * @param parameterObject the parameter object for the query
+     * @param rowBounds       the RowBounds object containing pagination parameters
+     * @param countKey        the CacheKey for the count query
+     * @return the generated count SQL string
+     */
     @Override
     public String getCountSql(
             MappedStatement ms,
@@ -64,6 +78,12 @@ public abstract class AbstractDialect implements Dialect {
         return countSqlParser.getSmartCountSql(boundSql.getSql());
     }
 
+    /**
+     * Sets the properties for the dialect, initializing the {@link CountSqlParser} and {@link OrderBySqlParser}. Custom
+     * implementations of these parsers can be specified via properties.
+     *
+     * @param properties the properties to set, typically from the plugin configuration
+     */
     @Override
     public void setProperties(Properties properties) {
         this.countSqlParser = Builder.newInstance(

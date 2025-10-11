@@ -33,7 +33,7 @@ import org.ansj.domain.Term;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
 /**
- * Ansj分词中的一个单词包装
+ * Wrapper for a word in Ansj segmentation.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,32 +43,55 @@ public class AnsjWord implements NLPWord {
     @Serial
     private static final long serialVersionUID = 2852285815563L;
 
+    /**
+     * The Term object from the Ansj library.
+     */
     private final Term term;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param term {@link Term}
+     * @param term The {@link Term} object.
      */
     public AnsjWord(final Term term) {
         this.term = term;
     }
 
+    /**
+     * Gets the text of the word.
+     *
+     * @return The text of the word.
+     */
     @Override
     public String getText() {
         return term.getName();
     }
 
+    /**
+     * Gets the start offset of the word in the original text.
+     *
+     * @return The start offset.
+     */
     @Override
     public int getStartOffset() {
         return this.term.getOffe();
     }
 
+    /**
+     * Gets the end offset of the word in the original text.
+     *
+     * @return The end offset.
+     */
     @Override
     public int getEndOffset() {
         return getStartOffset() + getText().length();
     }
 
+    /**
+     * Returns the text of the word.
+     *
+     * @return The text of the word.
+     */
     @Override
     public String toString() {
         return getText();

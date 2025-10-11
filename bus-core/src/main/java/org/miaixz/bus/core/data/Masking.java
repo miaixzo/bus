@@ -36,22 +36,22 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数据脱敏（Data Masking）工具类，对某些敏感信息（比如，身份证号、手机号、卡号、姓名、地址、邮箱等 ）屏蔽敏感数据。
+ * Data Masking utility class for masking sensitive information (e.g., ID card number, mobile phone number, card number,
+ * name, address, email, etc.).
  * <p>
- * 支持以下类型信息的脱敏自动处理：
- * </p>
+ * Supports automatic masking for the following types of information:
  *
  * <ul>
- * <li>用户ID</li>
- * <li>中文名</li>
- * <li>身份证</li>
- * <li>座机号</li>
- * <li>手机号</li>
- * <li>地址</li>
- * <li>电子邮件</li>
- * <li>密码</li>
- * <li>车牌</li>
- * <li>银行卡号</li>
+ * <li>User ID</li>
+ * <li>Chinese Name</li>
+ * <li>ID Card</li>
+ * <li>Landline Number</li>
+ * <li>Mobile Phone Number</li>
+ * <li>Address</li>
+ * <li>Email</li>
+ * <li>Password</li>
+ * <li>License Plate</li>
+ * <li>Bank Card Number</li>
  * <li>IPv4</li>
  * <li>IPv6</li>
  * </ul>
@@ -62,245 +62,249 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Masking {
 
     /**
-     * 默认的富文本脱敏处理器
+     * The default rich text masking processor.
      */
     private static final MaskingProcessor DEFAULT_PROCESSOR = createDefaultProcessor();
 
     /**
-     * 对富文本内容进行脱敏处理
+     * Masks the rich text content.
      *
-     * @param text 富文本内容
-     * @return 脱敏后的文本
+     * @param text The rich text content.
+     * @return The masked text.
      */
     public static String mask(final String text) {
         return DEFAULT_PROCESSOR.mask(text);
     }
 
     /**
-     * 使用自定义处理器对富文本内容进行脱敏处理
+     * Masks the rich text content using a custom processor.
      *
-     * @param text      富文本内容
-     * @param processor 自定义处理器
-     * @return 脱敏后的文本
+     * @param text      The rich text content.
+     * @param processor The custom processor.
+     * @return The masked text.
      */
     public static String mask(final String text, final MaskingProcessor processor) {
         return processor.mask(text);
     }
 
     /**
-     * 脱敏，使用默认的脱敏策略
+     * Masks the text using the default masking strategy.
      *
-     * @param text    字符串
-     * @param masking 脱敏类型;可以脱敏：用户id、中文名、身份证号、座机号、手机号、地址、电子邮件、密码
-     * @return 脱敏之后的字符串
+     * @param text    The string.
+     * @param masking The masking type; can be used for: user ID, Chinese name, ID card number, landline number, mobile
+     *                phone number, address, email, password.
+     * @return The masked string.
      */
     public static String masking(final EnumValue.Masking masking, final CharSequence text) {
         return MaskingManager.getInstance().masking(masking.name(), text);
     }
 
     /**
-     * 清空为空字符串
+     * Clears to an empty string.
      *
-     * @return 清空后的值
+     * @return The cleared value.
      */
     public static String clear() {
         return Normal.EMPTY;
     }
 
     /**
-     * 清空为{@code null}
+     * Clears to {@code null}.
      *
-     * @return 清空后的值(null)
+     * @return The cleared value (null).
      */
     public static String clearToNull() {
         return null;
     }
 
     /**
-     * 【用户id】不对外提供userId
+     * [User ID] Do not provide userId externally.
      *
-     * @return 脱敏后的主键
+     * @return The masked primary key.
      */
     public static Long userId() {
         return 0L;
     }
 
     /**
-     * 定义了一个first_mask的规则，只显示第一个字符。 脱敏前：123456789；脱敏后：1********。
+     * Defines a "first_mask" rule that only displays the first character. Before masking: 123456789; After masking:
+     * 1********.
      *
-     * @param text 字符串
-     * @return 脱敏后的字符串
+     * @param text The string.
+     * @return The masked string.
      */
     public static String firstMask(final CharSequence text) {
         return MaskingManager.EMPTY.firstMask(text);
     }
 
     /**
-     * 【中文姓名】只显示第一个汉字，其他隐藏为2个星号，比如：李**
+     * [Chinese Name] Only displays the first character, hiding the rest with two asterisks, e.g., Li**.
      *
-     * @param fullName 姓名
-     * @return 脱敏后的姓名
+     * @param fullName The full name.
+     * @return The masked name.
      */
     public static String chineseName(final CharSequence fullName) {
         return firstMask(fullName);
     }
 
     /**
-     * 【身份证号】前1位 和后2位
+     * [ID Card Number] Shows the first 1 and last 2 digits.
      *
-     * @param idCardNum 身份证
-     * @param front     保留：前面的front位数；从1开始
-     * @param end       保留：后面的end位数；从1开始
-     * @return 脱敏后的身份证
+     * @param idCardNum The ID card number.
+     * @param front     The number of digits to keep at the beginning; starts from 1.
+     * @param end       The number of digits to keep at the end; starts from 1.
+     * @return The masked ID card number.
      */
     public static String idCardNum(final CharSequence idCardNum, final int front, final int end) {
         return MaskingManager.EMPTY.idCardNum(idCardNum, front, end);
     }
 
     /**
-     * 【固定电话 前四位，后两位
+     * [Fixed-line Phone] Shows the first four and last two digits.
      *
-     * @param num 固定电话
-     * @return 脱敏后的固定电话；
+     * @param num The fixed-line phone number.
+     * @return The masked fixed-line phone number.
      */
     public static String fixedPhone(final CharSequence num) {
         return MaskingManager.EMPTY.fixedPhone(num);
     }
 
     /**
-     * 【手机号码】前三位，后4位，其他隐藏，比如135****3966
+     * [Mobile Phone Number] Shows the first three and last four digits, hiding the rest, e.g., 135****3966.
      *
-     * @param num 移动电话；
-     * @return 脱敏后的移动电话；
+     * @param num The mobile phone number.
+     * @return The masked mobile phone number.
      */
     public static String mobilePhone(final CharSequence num) {
         return MaskingManager.EMPTY.mobilePhone(num);
     }
 
     /**
-     * 【地址】只显示到地区，不显示详细地址，比如：北京市海淀区****
+     * [Address] Only displays the district, not the detailed address, e.g., Beijing Haidian District****.
      *
-     * @param address       家庭住址
-     * @param sensitiveSize 敏感信息长度
-     * @return 脱敏后的家庭地址
+     * @param address       The home address.
+     * @param sensitiveSize The length of the sensitive information.
+     * @return The masked home address.
      */
     public static String address(final CharSequence address, final int sensitiveSize) {
         return MaskingManager.EMPTY.address(address, sensitiveSize);
     }
 
     /**
-     * 【电子邮箱】邮箱前缀仅显示第一个字母，前缀其他隐藏，用星号代替，@及后面的地址显示，比如：d**@qq.com
+     * [Email] Only displays the first letter of the email prefix, hiding the rest with asterisks, while showing the @
+     * and the domain, e.g., d**@qq.com.
      *
-     * @param email 邮箱
-     * @return 脱敏后的邮箱
+     * @param email The email address.
+     * @return The masked email address.
      */
     public static String email(final CharSequence email) {
         return MaskingManager.EMPTY.email(email);
     }
 
     /**
-     * 【密码】密码的全部字符都用*代替，比如：******
+     * [Password] All characters of the password are replaced with *, e.g., ******.
      *
-     * @param password 密码
-     * @return 脱敏后的密码
+     * @param password The password.
+     * @return The masked password.
      */
     public static String password(final CharSequence password) {
         if (StringKit.isBlank(password)) {
             return Normal.EMPTY;
         }
-        // 密码位数不能被猜测，因此固定10位
+        // The password length cannot be guessed, so it is fixed at 10 characters.
         return StringKit.repeat(Symbol.C_STAR, 10);
     }
 
     /**
-     * 【中国车牌】车牌中间用*代替 eg1：null - "" eg1："" - "" eg3：苏A60000 - 苏A6***0 eg4：陕A12345D - 陕A1****D eg5：京A123 - 京A123
-     * 如果是错误的车牌，不处理
+     * [Chinese License Plate] The middle of the license plate is replaced with *. e.g.1: null - "" e.g.2: "" - ""
+     * e.g.3: 苏A60000 - 苏A6***0 e.g.4: 陕A12345D - 陕A1****D e.g.5: 京A123 - 京A123. If it is an incorrect license plate, it
+     * is not processed.
      *
-     * @param carLicense 完整的车牌号
-     * @return 脱敏后的车牌
+     * @param carLicense The full license plate number.
+     * @return The masked license plate.
      */
     public static String carLicense(final CharSequence carLicense) {
         return MaskingManager.EMPTY.carLicense(carLicense);
     }
 
     /**
-     * 银行卡号脱敏 eg: 1101 **** **** **** 3256
+     * Bank card number masking, e.g., 1101 **** **** **** 3256.
      *
-     * @param bankCardNo 银行卡号
-     * @return 脱敏之后的银行卡号
+     * @param bankCardNo The bank card number.
+     * @return The masked bank card number.
      */
     public static String bankCard(final CharSequence bankCardNo) {
         return MaskingManager.EMPTY.bankCard(bankCardNo);
     }
 
     /**
-     * IPv4脱敏，如：脱敏前：192.0.2.1；脱敏后：192.*.*.*。
+     * IPv4 masking, e.g., Before: 192.0.2.1; After: 192.*.*.*.
      *
-     * @param ipv4 IPv4地址
-     * @return 脱敏后的地址
+     * @param ipv4 The IPv4 address.
+     * @return The masked address.
      */
     public static String ipv4(final CharSequence ipv4) {
         return MaskingManager.EMPTY.ipv4(ipv4);
     }
 
     /**
-     * IPv6脱敏，如：脱敏前：2001:0db8:86a3:08d3:1319:8a2e:0370:7344；脱敏后：2001:*:*:*:*:*:*:*
+     * IPv6 masking, e.g., Before: 2001:0db8:86a3:08d3:1319:8a2e:0370:7344; After: 2001:*:*:*:*:*:*:*.
      *
-     * @param ipv6 IPv6地址
-     * @return 脱敏后的地址
+     * @param ipv6 The IPv6 address.
+     * @return The masked address.
      */
     public static String ipv6(final CharSequence ipv6) {
         return MaskingManager.EMPTY.ipv6(ipv6);
     }
 
     /**
-     * 创建一个新的富文本脱敏处理器
+     * Creates a new rich text masking processor.
      *
-     * @param preserveHtmlTags 是否保留HTML标签
-     * @return 富文本脱敏处理器
+     * @param preserveHtmlTags Whether to preserve HTML tags.
+     * @return The rich text masking processor.
      */
     public static MaskingProcessor createProcessor(final boolean preserveHtmlTags) {
         return new MaskingProcessor(preserveHtmlTags);
     }
 
     /**
-     * 创建一个邮箱脱敏规则
+     * Creates an email masking rule.
      *
-     * @return 邮箱脱敏规则
+     * @return The email masking rule.
      */
     public static TextMaskingRule createEmailRule() {
-        return new TextMaskingRule("邮箱", "[\\w.-]+@[\\w.-]+\\.\\w+", EnumValue.Masking.PARTIAL, null).setPreserveLeft(1)
-                .setPreserveRight(0).setMaskChar('*');
+        return new TextMaskingRule("Email", "[\\w.-]+@[\\w.-]+\\.\\w+", EnumValue.Masking.PARTIAL, null)
+                .setPreserveLeft(1).setPreserveRight(0).setMaskChar('*');
     }
 
     /**
-     * 创建一个网址脱敏规则
+     * Creates a URL masking rule.
      *
-     * @param replacement 替换文本
-     * @return 网址脱敏规则
+     * @param replacement The replacement text.
+     * @return The URL masking rule.
      */
     public static TextMaskingRule createUrlRule(final String replacement) {
-        return new TextMaskingRule("网址", "https?://[\\w.-]+(?:/[\\w.-]*)*", EnumValue.Masking.REPLACE, replacement);
+        return new TextMaskingRule("URL", "https?://[\\w.-]+(?:/[\\w.-]*)*", EnumValue.Masking.REPLACE, replacement);
     }
 
     /**
-     * 创建一个敏感词脱敏规则
+     * Creates a sensitive word masking rule.
      *
-     * @param pattern 敏感词正则表达式
-     * @return 敏感词脱敏规则
+     * @param pattern The sensitive word regular expression.
+     * @return The sensitive word masking rule.
      */
     public static TextMaskingRule createSensitiveWordRule(final String pattern) {
-        return new TextMaskingRule("敏感词", pattern, EnumValue.Masking.FULL, null).setMaskChar('*');
+        return new TextMaskingRule("Sensitive Word", pattern, EnumValue.Masking.FULL, null).setMaskChar('*');
     }
 
     /**
-     * 创建一个自定义脱敏规则
+     * Creates a custom masking rule.
      *
-     * @param name        规则名称
-     * @param pattern     匹配模式（正则表达式）
-     * @param masking     脱敏类型
-     * @param replacement 替换内容
-     * @return 自定义脱敏规则
+     * @param name        The name of the rule.
+     * @param pattern     The matching pattern (regular expression).
+     * @param masking     The masking type.
+     * @param replacement The replacement content.
+     * @return The custom masking rule.
      */
     public static TextMaskingRule createCustomRule(
             final String name,
@@ -311,14 +315,14 @@ public class Masking {
     }
 
     /**
-     * 创建一个部分脱敏规则
+     * Creates a partial masking rule.
      *
-     * @param name          规则名称
-     * @param pattern       匹配模式（正则表达式）
-     * @param preserveLeft  保留左侧字符数
-     * @param preserveRight 保留右侧字符数
-     * @param maskChar      脱敏字符
-     * @return 部分脱敏规则
+     * @param name          The name of the rule.
+     * @param pattern       The matching pattern (regular expression).
+     * @param preserveLeft  The number of characters to preserve on the left.
+     * @param preserveRight The number of characters to preserve on the right.
+     * @param maskChar      The masking character.
+     * @return The partial masking rule.
      */
     public static TextMaskingRule createPartialMaskRule(
             final String name,
@@ -330,27 +334,29 @@ public class Masking {
     }
 
     /**
-     * 创建默认的富文本脱敏处理器
+     * Creates the default rich text masking processor.
      *
-     * @return 默认的富文本脱敏处理器
+     * @return The default rich text masking processor.
      */
     private static MaskingProcessor createDefaultProcessor() {
         final MaskingProcessor processor = new MaskingProcessor(true);
 
-        // 添加一些常用的脱敏规则
+        // Add some common masking rules
 
-        // 邮箱脱敏规则
+        // Email masking rule
         processor.addRule(
-                new TextMaskingRule("邮箱", "[\\w.-]+@[\\w.-]+\\.\\w+", EnumValue.Masking.PARTIAL, "[邮箱已隐藏]")
+                new TextMaskingRule("Email", "[\\w.-]+@[\\w.-]+\\.\\w+", EnumValue.Masking.PARTIAL, "[Email Hidden]")
                         .setPreserveLeft(1).setPreserveRight(0).setMaskChar('*'));
 
-        // 网址脱敏规则
+        // URL masking rule
         processor.addRule(
-                new TextMaskingRule("网址", "https?://[\\w.-]+(?:/[\\w.-]*)*", EnumValue.Masking.REPLACE, "[网址已隐藏]"));
+                new TextMaskingRule("URL", "https?://[\\w.-]+(?:/[\\w.-]*)*", EnumValue.Masking.REPLACE,
+                        "[URL Hidden]"));
 
-        // 敏感词脱敏规则（示例）
+        // Sensitive word masking rule (example)
         processor.addRule(
-                new TextMaskingRule("敏感词", "(机密|绝密|内部资料|秘密|保密)", EnumValue.Masking.FULL, "***").setMaskChar('*'));
+                new TextMaskingRule("Sensitive Word", "(Confidential|Top Secret|Internal|Secret|Proprietary)",
+                        EnumValue.Masking.FULL, "***").setMaskChar('*'));
 
         return processor;
     }

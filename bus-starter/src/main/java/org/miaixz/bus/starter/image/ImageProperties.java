@@ -27,14 +27,13 @@
 */
 package org.miaixz.bus.starter.image;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 影像解析配置
+ * Configuration properties for image processing and analysis, particularly for DICOM.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,59 +43,73 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = GeniusBuilder.IMAGE)
 public class ImageProperties {
 
+    /**
+     * Configuration for the DICOM node/server.
+     */
     private Node node = new Node();
 
     /**
-     * 是否启用opencv
+     * Whether to enable OpenCV for advanced image processing tasks.
      */
     private boolean opencv;
+
     /**
-     * 是否启用server
+     * Whether to enable the DICOM server functionality.
      */
     private boolean server;
+
     /**
-     * 原始文件保存路径
+     * The directory path for saving original DICOM (.dcm) files.
      */
     private String dcmDir;
+
     /**
-     * 转换后图片保存路径
+     * The directory path for saving converted image files (e.g., JPEG, PNG).
      */
     private String imgDir;
 
     /**
-     * 服务器信息
+     * Nested class for DICOM server (node) information.
      */
     @Getter
     @Setter
     public class Node {
 
         /**
-         * 服务器地址
+         * The hostname or IP address of the DICOM server.
          */
         private String host;
+
         /**
-         * 端口信息
+         * The port number of the DICOM server.
          */
         private String port;
+
         /**
-         * 服务名称
+         * The Application Entity (AE) title of the DICOM server.
          */
         private String aeTitle;
 
         /**
-         * 是否启用通过UID或名称指定传输
+         * Whether to enable negotiation of transfer syntax by UID or name.
          */
         private boolean negociation;
+
         /**
-         * SOP类和传输语法可以通过其UID或名称指定 sop-classes.properties
+         * Specifies the SOP classes and transfer syntaxes by their UID or name. Corresponds to the
+         * {@code sop-classes.properties} file.
          */
         private String sopClasses;
+
         /**
-         * 根据DICOM Part 4, B.3.1.4定义相关的通用SOP类 sop-classes-uid.properties
+         * Defines related general-purpose SOP classes according to DICOM Part 4, B.3.1.4. Corresponds to the
+         * {@code sop-classes-uid.properties} file.
          */
         private String sopClassesUID;
+
         /**
-         * 扩展Sop类和传输语法的存储传输能力 sop-classes-tcs.properties
+         * Extended storage transfer capabilities for SOP classes and transfer syntaxes. Corresponds to the
+         * {@code sop-classes-tcs.properties} file.
          */
         private String sopClassesTCS;
 

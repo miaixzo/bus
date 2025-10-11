@@ -42,15 +42,19 @@ import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.cipher.JceCipher;
 
 /**
- * 非对称加密算法
- *
- * <pre>
- * 1、签名：使用私钥加密，公钥解密。
- * 用于让所有公钥所有者验证私钥所有者的身份并且用来防止私钥所有者发布的内容被篡改，但是不用来保证内容不被他人获得。
- *
- * 2、加密：用公钥加密，私钥解密。
- * 用于向公钥所有者发布信息,这个信息可能被他人篡改,但是无法被他人获得。
- * </pre>
+ * Asymmetric cryptographic algorithm implementation.
+ * <p>
+ * Asymmetric encryption involves two main use cases:
+ * </p>
+ * <ol>
+ * <li><b>Signing:</b> Uses the private key for encryption and the public key for decryption. This is used to allow all
+ * public key holders to verify the identity of the private key owner and to prevent tampering with the content
+ * published by the private key owner. It does not, however, guarantee that the content cannot be obtained by others.
+ * </li>
+ * <li><b>Encryption:</b> Uses the public key for encryption and the private key for decryption. This is used to send
+ * information to the public key owner. This information might be tampered with by others, but it cannot be obtained by
+ * others.</li>
+ * </ol>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,103 +65,122 @@ public class Crypto extends AbstractCrypto<Crypto> {
     private static final long serialVersionUID = 2852288768007L;
 
     /**
-     * Cipher负责完成加密或解密工作
+     * The {@link Cipher} responsible for performing encryption or decryption operations.
      */
     protected Cipher cipher;
     /**
-     * 加密的块大小
+     * The block size for encryption. A value of -1 indicates that the block size is not explicitly set and should be
+     * determined dynamically.
      */
     protected int encryptBlockSize = -1;
     /**
-     * 解密的块大小
+     * The block size for decryption. A value of -1 indicates that the block size is not explicitly set and should be
+     * determined dynamically.
      */
     protected int decryptBlockSize = -1;
     /**
-     * 算法参数
+     * Algorithm-specific parameters, such as initialization vectors (IVs) or other cryptographic settings.
      */
     private AlgorithmParameterSpec algorithmParameterSpec;
     /**
-     * 自定义随机数
+     * Custom {@link SecureRandom} instance for generating random numbers, allowing for custom seeds.
      */
     private SecureRandom random;
 
     /**
-     * 构造，创建新的私钥公钥对
+     * Constructs an asymmetric crypto instance, generating a new private-public key pair.
      *
-     * @param algorithm {@link Algorithm}
+     * @param algorithm The {@link Algorithm} to use for asymmetric cryptography.
      */
     public Crypto(final Algorithm algorithm) {
         this(algorithm, null, (byte[]) null);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructs an asymmetric crypto instance with the specified algorithm and an existing {@link KeyPair}. If the
+     * {@code keyPair} is {@code null}, a new key pair will be randomly generated. If only one key (private or public)
+     * is provided within the {@code keyPair}, the crypto object can only be used for operations corresponding to that
+     * key.
      *
-     * @param algorithm 算法
-     * @param keyPair   密钥对，包含私钥和公钥，如果为{@code null}，则生成随机键值对
+     * @param algorithm The {@link Algorithm} to use for asymmetric cryptography.
+     * @param keyPair   The {@link KeyPair} containing the private and public keys. If {@code null}, a new random key
+     *                  pair is generated.
      */
     public Crypto(final Algorithm algorithm, final KeyPair keyPair) {
         super(algorithm.getValue(), keyPair);
     }
 
     /**
-     * 构造，创建新的私钥公钥对
+     * Constructs an asymmetric crypto instance, generating a new private-public key pair.
      *
-     * @param algorithm 算法
+     * @param algorithm The name of the asymmetric algorithm.
      */
     public Crypto(final String algorithm) {
         this(algorithm, null, (byte[]) null);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructs an asymmetric crypto instance with the specified algorithm name and an existing {@link KeyPair}. If
+     * the {@code keyPair} is {@code null}, a new key pair will be randomly generated. If only one key (private or
+     * public) is provided within the {@code keyPair}, the crypto object can only be used for operations corresponding
+     * to that key.
      *
-     * @param algorithm 算法
-     * @param keyPair   密钥对，包含私钥和公钥，如果为{@code null}，则生成随机键值对
+     * @param algorithm The name of the asymmetric algorithm.
+     * @param keyPair   The {@link KeyPair} containing the private and public keys. If {@code null}, a new random key
+     *                  pair is generated.
      */
     public Crypto(final String algorithm, final KeyPair keyPair) {
         super(algorithm, keyPair);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructs an asymmetric crypto instance with the specified algorithm and private/public keys provided as Hex or
+     * Base64 encoded strings. If both private and public keys are {@code null}, a new key pair will be generated. If
+     * only one key is provided, the crypto object can only be used for operations corresponding to that key.
      *
-     * @param algorithm  {@link Algorithm}
-     * @param privateKey 私钥Hex或Base64表示
-     * @param publicKey  公钥Hex或Base64表示
+     * @param algorithm  The {@link Algorithm} to use for asymmetric cryptography.
+     * @param privateKey The private key as a Hex or Base64 encoded string.
+     * @param publicKey  The public key as a Hex or Base64 encoded string.
      */
     public Crypto(final Algorithm algorithm, final String privateKey, final String publicKey) {
         this(algorithm.getValue(), Builder.decode(privateKey), Builder.decode(publicKey));
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructs an asymmetric crypto instance with the specified algorithm and private/public keys provided as byte
+     * arrays. If both private and public keys are {@code null}, a new key pair will be generated. If only one key is
+     * provided, the crypto object can only be used for operations corresponding to that key.
      *
-     * @param algorithm  {@link Algorithm}
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param algorithm  The {@link Algorithm} to use for asymmetric cryptography.
+     * @param privateKey The private key as a byte array.
+     * @param publicKey  The public key as a byte array.
      */
     public Crypto(final Algorithm algorithm, final byte[] privateKey, final byte[] publicKey) {
         this(algorithm.getValue(), privateKey, publicKey);
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructs an asymmetric crypto instance with the specified algorithm name and private/public keys provided as
+     * Hex or Base64 encoded strings. If both private and public keys are {@code null}, a new key pair will be
+     * generated. If only one key is provided, the crypto object can only be used for operations corresponding to that
+     * key.
      *
-     * @param algorithm  非对称加密算法
-     * @param privateKey 私钥Base64
-     * @param publicKey  公钥Base64
+     * @param algorithm  The name of the asymmetric algorithm.
+     * @param privateKey The private key as a Base64 encoded string.
+     * @param publicKey  The public key as a Base64 encoded string.
      */
     public Crypto(final String algorithm, final String privateKey, final String publicKey) {
         this(algorithm, Base64.decode(privateKey), Base64.decode(publicKey));
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructs an asymmetric crypto instance with the specified algorithm name and private/public keys provided as
+     * byte arrays. If both private and public keys are {@code null}, a new key pair will be generated. If only one key
+     * is provided, the crypto object can only be used for operations corresponding to that key.
      *
-     * @param algorithm  算法
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param algorithm  The name of the asymmetric algorithm.
+     * @param privateKey The private key as a byte array.
+     * @param publicKey  The public key as a byte array.
      */
     public Crypto(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
         this(algorithm, new KeyPair(Keeper.generatePublicKey(algorithm, publicKey),
@@ -165,66 +188,70 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * Constructs an asymmetric crypto instance with the specified algorithm and existing {@link PrivateKey} and
+     * {@link PublicKey} objects. If both private and public keys are {@code null}, a new key pair will be generated. If
+     * only one key is provided, the crypto object can only be used for operations corresponding to that key.
      *
-     * @param algorithm  {@link Algorithm}
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param algorithm  The {@link Algorithm} to use for asymmetric cryptography.
+     * @param privateKey The {@link PrivateKey}.
+     * @param publicKey  The {@link PublicKey}.
      */
     public Crypto(final Algorithm algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
         this(algorithm.getValue(), new KeyPair(publicKey, privateKey));
     }
 
     /**
-     * 获取加密块大小
+     * Retrieves the encryption block size.
      *
-     * @return 加密块大小
+     * @return The encryption block size in bytes.
      */
     public int getEncryptBlockSize() {
         return encryptBlockSize;
     }
 
     /**
-     * 设置加密块大小
+     * Sets the encryption block size.
      *
-     * @param encryptBlockSize 加密块大小
+     * @param encryptBlockSize The encryption block size in bytes.
      */
     public void setEncryptBlockSize(final int encryptBlockSize) {
         this.encryptBlockSize = encryptBlockSize;
     }
 
     /**
-     * 获取解密块大小
+     * Retrieves the decryption block size.
      *
-     * @return 解密块大小
+     * @return The decryption block size in bytes.
      */
     public int getDecryptBlockSize() {
         return decryptBlockSize;
     }
 
     /**
-     * 设置解密块大小
+     * Sets the decryption block size.
      *
-     * @param decryptBlockSize 解密块大小
+     * @param decryptBlockSize The decryption block size in bytes.
      */
     public void setDecryptBlockSize(final int decryptBlockSize) {
         this.decryptBlockSize = decryptBlockSize;
     }
 
     /**
-     * 获取{@link AlgorithmParameterSpec} 在某些算法中，需要特别的参数，例如在ECIES中，此处为IESParameterSpec
+     * Retrieves the {@link AlgorithmParameterSpec} used by this crypto instance. In some algorithms, specific
+     * parameters are required, such as {@code IESParameterSpec} in ECIES.
      *
-     * @return {@link AlgorithmParameterSpec}
+     * @return The {@link AlgorithmParameterSpec}.
      */
     public AlgorithmParameterSpec getAlgorithmParameterSpec() {
         return this.algorithmParameterSpec;
     }
 
     /**
-     * 设置{@link AlgorithmParameterSpec} 在某些算法中，需要特别的参数，例如在ECIES中，此处为IESParameterSpec
+     * Sets the {@link AlgorithmParameterSpec} for this crypto instance. In some algorithms, specific parameters are
+     * required, such as {@code IESParameterSpec} in ECIES.
      *
-     * @param algorithmParameterSpec {@link AlgorithmParameterSpec}
-     * @return this
+     * @param algorithmParameterSpec The {@link AlgorithmParameterSpec} to set.
+     * @return This {@code Crypto} instance.
      */
     public Crypto setAlgorithmParameterSpec(final AlgorithmParameterSpec algorithmParameterSpec) {
         this.algorithmParameterSpec = algorithmParameterSpec;
@@ -232,10 +259,10 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 设置随机数生成器，可自定义随机数种子
+     * Sets the {@link SecureRandom} instance for generating random numbers, allowing for custom seeds.
      *
-     * @param random 随机数生成器，可自定义随机数种子
-     * @return this
+     * @param random The {@link SecureRandom} instance to use.
+     * @return This {@code Crypto} instance.
      */
     public Crypto setRandom(final SecureRandom random) {
         this.random = random;
@@ -257,7 +284,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
             final Cipher cipher = initMode(Algorithm.Type.ENCRYPT, key);
 
             if (this.encryptBlockSize < 0) {
-                // 在引入BC库情况下，自动获取块大小
+                // If BC library is introduced, automatically get block size
                 final int blockSize = cipher.getBlockSize();
                 if (blockSize > 0) {
                     this.encryptBlockSize = blockSize;
@@ -280,7 +307,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
             final Cipher cipher = initMode(Algorithm.Type.DECRYPT, key);
 
             if (this.decryptBlockSize < 0) {
-                // 在引入BC库情况下，自动获取块大小
+                // If BC library is introduced, automatically get block size
                 final int blockSize = cipher.getBlockSize();
                 if (blockSize > 0) {
                     this.decryptBlockSize = blockSize;
@@ -296,56 +323,59 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 获得加密或解密器
+     * Retrieves the underlying {@link Cipher} instance.
      *
-     * @return 加密或解密
+     * @return The {@link Cipher} instance.
      */
     public Cipher getCipher() {
         return this.cipher;
     }
 
     /**
-     * 初始化{@link Cipher}，默认尝试加载BC库
+     * Initializes the {@link Cipher}, attempting to load the Bouncy Castle provider by default.
      */
     protected void initCipher() {
         this.cipher = new JceCipher(this.algorithm);
     }
 
     /**
-     * 加密或解密
+     * Performs the final encryption or decryption operation on the given data. Data is processed in blocks if its
+     * length exceeds {@code maxBlockSize}.
      *
-     * @param data         被加密或解密的内容数据
-     * @param maxBlockSize 最大块（分段）大小
-     * @return 加密或解密后的数据
-     * @throws IOException IO异常，不会被触发
+     * @param data         The content data to be encrypted or decrypted.
+     * @param maxBlockSize The maximum block size for processing data in segments.
+     * @return The encrypted or decrypted data.
+     * @throws IOException     This exception should theoretically not be triggered in this context.
+     * @throws CryptoException if the cryptographic operation fails.
      */
     private byte[] doFinal(final byte[] data, final int maxBlockSize) throws IOException {
-        // 不足分段
+        // If data length is less than or equal to maxBlockSize, process in one go
         if (data.length <= maxBlockSize) {
             return this.cipher.processFinal(data, 0, data.length);
         }
 
-        // 分段解密
+        // Process in blocks
         return doFinalWithBlock(data, maxBlockSize);
     }
 
     /**
-     * 分段加密或解密
+     * Performs encryption or decryption in blocks (segments).
      *
-     * @param data         数据
-     * @param maxBlockSize 最大分段的段大小，不能为小于1
-     * @return 加密或解密后的数据
-     * @throws IOException IO异常，不会被触发
+     * @param data         The data to be encrypted or decrypted.
+     * @param maxBlockSize The maximum size of each segment. Must be greater than 0.
+     * @return The encrypted or decrypted data.
+     * @throws IOException     This exception should theoretically not be triggered in this context.
+     * @throws CryptoException if the cryptographic operation fails.
      */
     private byte[] doFinalWithBlock(final byte[] data, final int maxBlockSize) throws IOException {
         final int dataLength = data.length;
         final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
 
         int offSet = 0;
-        // 剩余长度
+        // Remaining length
         int remainLength = dataLength;
         int blockSize;
-        // 对数据分段处理
+        // Process data in segments
         while (remainLength > 0) {
             blockSize = Math.min(remainLength, maxBlockSize);
             out.write(this.cipher.processFinal(data, offSet, blockSize));
@@ -358,11 +388,12 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 初始化{@link Cipher}的模式，如加密模式或解密模式
+     * Initializes the {@link Cipher} with the specified mode (encryption or decryption) and key.
      *
-     * @param mode 模式，可选{@link Algorithm.Type#ENCRYPT}或者{@link Algorithm.Type#DECRYPT}
-     * @param key  密钥
-     * @return {@link Cipher}
+     * @param mode The operation mode, either {@link Algorithm.Type#ENCRYPT} or {@link Algorithm.Type#DECRYPT}.
+     * @param key  The cryptographic key.
+     * @return The initialized {@link Cipher} instance.
+     * @throws CryptoException if cipher initialization fails.
      */
     private Cipher initMode(final Algorithm.Type mode, final Key key) {
         final Cipher cipher = this.cipher;

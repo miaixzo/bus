@@ -32,7 +32,7 @@ import lombok.Getter;
 import org.miaixz.bus.auth.nimble.AuthorizeScope;
 
 /**
- * Coding 授权范围
+ * Coding authorization scopes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,14 +42,42 @@ import org.miaixz.bus.auth.nimble.AuthorizeScope;
 public enum CodingScope implements AuthorizeScope {
 
     /**
-     * {@code scope} 含义，以{@code description} 为准
+     * Read user's basic information. The meaning of {@code scope} is subject to {@code description}.
      */
-    USER("user", "读取用户的基本信息", false), USER_EMAIL("user:email", "读取用户的邮件", false),
-    USER_PHONE("user:phone", "读取用户的手机号", false), PROJECT("project", "授权项目信息、项目列表，仓库信息，公钥列表、成员", false),
-    PROJECT_DEPOT("project:depot", "完整的仓库控制权限", false), PROJECT_WIKI("project:wiki", "授权读取与操作 wiki", false);
+    USER("user", "Read user's basic information", false),
+    /**
+     * Read user's email.
+     */
+    USER_EMAIL("user:email", "Read user's email", false),
+    /**
+     * Read user's phone number.
+     */
+    USER_PHONE("user:phone", "Read user's phone number", false),
+    /**
+     * Authorize project information, project list, repository information, public key list, and members.
+     */
+    PROJECT("project",
+            "Authorize project information, project list, repository information, public key list, and members", false),
+    /**
+     * Full control over the repository.
+     */
+    PROJECT_DEPOT("project:depot", "Full control over the repository", false),
+    /**
+     * Authorize reading and operating on wikis.
+     */
+    PROJECT_WIKI("project:wiki", "Authorize reading and operating on wikis", false);
 
+    /**
+     * The scope string as defined by Coding.
+     */
     private final String scope;
+    /**
+     * A description of what the scope grants access to.
+     */
     private final String description;
+    /**
+     * Indicates if this scope is enabled by default.
+     */
     private final boolean isDefault;
 
 }

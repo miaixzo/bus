@@ -27,18 +27,17 @@
 */
 package org.miaixz.bus.starter.cache;
 
-import java.util.Map;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.jdbc.JdbcProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
 
 /**
- * 缓存相关配置
+ * Configuration properties for caching.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,23 +48,30 @@ import lombok.Setter;
 public class CacheProperties {
 
     /**
-     * 缓存类型
+     * The type of cache to use (e.g., "redis", "caffeine", "default").
      */
     private String type;
+
     /**
-     * 缓存配置
+     * A map of cache configurations, allowing for multiple named cache instances. The key is the name of the cache, and
+     * the value is the {@link CacheX} configuration.
      */
     private Map<String, CacheX> map;
+
     /**
-     * 缓存前缀
+     * A global prefix to be applied to all cache keys.
      */
     private String prefix;
+
     /**
-     * 超时时长,目前只对redis缓存生效,默认3分钟
+     * The default expiration timeout for cache entries, in a format parsable by Spring. This is currently only
+     * effective for the Redis cache. Defaults to 3 minutes.
      */
     private String timeout;
+
     /**
-     * 存储信息
+     * Configuration for the data provider, used for certain cache types that might require a backing store (e.g., a
+     * database).
      */
     private JdbcProperties provider;
 

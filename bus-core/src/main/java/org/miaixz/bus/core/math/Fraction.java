@@ -35,17 +35,16 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MathKit;
 
 /**
- * {@code Fraction} 是一个 {@link Number} 实现， 可以准确地存储分数。
+ * {@code Fraction} is a {@link Number} implementation that can accurately store fractions.
  *
  * <p>
- * 此类是不可变的，并且与大多数接受 {@link Number} 的方法兼容。
- * </p>
+ * This class is immutable and compatible with most methods that accept a {@link Number}.
  *
  * <p>
- * 请注意，此类适用于常见用例，它是基于 <em>int</em> 的， 因此容易受到各种溢出问题的影响。对于基于 BigInteger 的等效类， 请参见 Commons Math 库中的 BigFraction 类。
- * </p>
+ * Note that this class is intended for common use cases and is based on <em>int</em>, making it susceptible to various
+ * overflow issues. For an equivalent class based on BigInteger, see the BigFraction class in the Commons Math library.
  * <p>
- * 此类来自：Apache Commons Lang3
+ * This class is derived from Apache Commons Lang3.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,39 +55,39 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     private static final long serialVersionUID = 2852228119600L;
 
     /**
-     * {@link Fraction} 表示 0.
+     * {@link Fraction} representing 0.
      */
     public static final Fraction ZERO = new Fraction(0, 1);
     /**
-     * {@link Fraction} 表示 1.
+     * {@link Fraction} representing 1.
      */
     public static final Fraction ONE = new Fraction(1, 1);
     /**
-     * 分子数部分（三个七分之三的 3）。
+     * The numerator part of the fraction (the 3 in 3/7).
      */
     private final int numerator;
     /**
-     * 分母是分数的一部分（三个七分之一中的 7）。
+     * The denominator part of the fraction (the 7 in 3/7).
      */
     private final int denominator;
     /**
-     * 缓存输出 hashCode（类是不可变的）。
+     * Cached output hashCode (class is immutable).
      */
     private transient int hashCode;
     /**
-     * 缓存输出 toString（类是不可变的）。
+     * Cached output toString (class is immutable).
      */
     private transient String toString;
     /**
-     * 缓存输出到 ProperString（类是不可变的）。
+     * Cached output toProperString (class is immutable).
      */
     private transient String toProperString;
 
     /**
-     * 使用分数的两个部分构造一个 {@code Fraction} 实例，例如 Y/Z。
+     * Constructs a {@code Fraction} instance with the two parts of the fraction, e.g., Y/Z.
      *
-     * @param numerator   分子，例如在“七分之三”中的三
-     * @param denominator 分母，例如在“七分之三”中的七
+     * @param numerator   The numerator, e.g., the 3 in "three sevenths".
+     * @param denominator The denominator, e.g., the 7 in "three sevenths".
      */
     public Fraction(final int numerator, final int denominator) {
         this.numerator = numerator;
@@ -96,19 +95,18 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 从 {@code double} 值创建一个 {@code Fraction} 实例。
+     * Creates a {@code Fraction} instance from a {@code double} value.
      *
      * <p>
-     * 此方法使用
+     * This method uses the
      * <a href="https://web.archive.org/web/20210516065058/http%3A//archives.math.utk.edu/articles/atuyl/confrac/">
-     * 连分数算法</a>，最多计算 25 个收敛项，并将分母限制在 10,000 以内。
-     * </p>
+     * continued fraction algorithm</a>, which calculates up to 25 convergents and limits the denominator to 10,000.
      *
-     * @param value 要转换的 double 值
-     * @return 一个新的分数实例，接近该值
-     * @throws ArithmeticException 如果 {@code |value| > Integer.MAX_VALUE} 或 {@code value = NaN}
-     * @throws ArithmeticException 如果计算出的分母为 {@code zero}
-     * @throws ArithmeticException 如果算法不收敛
+     * @param value The double value to convert.
+     * @return A new fraction instance that is close to the value.
+     * @throws ArithmeticException If {@code |value| > Integer.MAX_VALUE} or {@code value = NaN}.
+     * @throws ArithmeticException If the calculated denominator is {@code zero}.
+     * @throws ArithmeticException If the algorithm does not converge.
      */
     public static Fraction of(double value) {
         final int sign = value < 0 ? -1 : 1;
@@ -159,12 +157,13 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 使用分数的两个部分 Y/Z 创建一个 {@code Fraction} 实例。 任何负号都会被解析到分子上。
+     * Creates a {@code Fraction} instance with the two parts Y/Z. Any negative sign is resolved to the numerator.
      *
-     * @param numerator   分子，例如 '3/7' 中的 3
-     * @param denominator 分母，例如 '3/7' 中的 7
-     * @return 一个新的分数实例
-     * @throws ArithmeticException 如果分母为 {@code zero} 或分母为 {@code negative} 且分子为 {@code Integer#MIN_VALUE}
+     * @param numerator   The numerator, e.g., the 3 in '3/7'.
+     * @param denominator The denominator, e.g., the 7 in '3/7'.
+     * @return A new fraction instance.
+     * @throws ArithmeticException If the denominator is {@code zero} or the denominator is {@code negative} and the
+     *                             numerator is {@code Integer#MIN_VALUE}.
      */
     public static Fraction of(int numerator, int denominator) {
         if (denominator == 0) {
@@ -181,16 +180,17 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 使用分数的三个部分 X Y/Z 创建一个 {@code Fraction} 实例。 负号必须传递到整数部分。
+     * Creates a {@code Fraction} instance with the three parts X Y/Z. The negative sign must be passed to the integer
+     * part.
      *
-     * @param whole       整数部分，例如 '一又七分之三' 中的 一
-     * @param numerator   分子，例如 '一又七分之三' 中的 三
-     * @param denominator 分母，例如 '一又七分之三' 中的 七
-     * @return 一个新的分数实例
-     * @throws ArithmeticException 如果分母为 {@code zero}
-     * @throws ArithmeticException 如果分母为负数
-     * @throws ArithmeticException 如果分子为负数
-     * @throws ArithmeticException 如果结果分子超过 {@code Integer.MAX_VALUE}
+     * @param whole       The integer part, e.g., the 1 in 'one and three sevenths'.
+     * @param numerator   The numerator, e.g., the 3 in 'one and three sevenths'.
+     * @param denominator The denominator, e.g., the 7 in 'one and three sevenths'.
+     * @return A new fraction instance.
+     * @throws ArithmeticException If the denominator is {@code zero}.
+     * @throws ArithmeticException If the denominator is negative.
+     * @throws ArithmeticException If the numerator is negative.
+     * @throws ArithmeticException If the resulting numerator exceeds {@code Integer.MAX_VALUE}.
      */
     public static Fraction of(final int whole, final int numerator, final int denominator) {
         if (denominator == 0) {
@@ -215,26 +215,24 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 从 {@link String} 创建一个 Fraction。
+     * Creates a Fraction from a {@link String}.
      *
      * <p>
-     * 接受的格式有：
-     * </p>
+     * The accepted formats are:
      *
      * <ol>
-     * <li>包含点的 {@code double} 字符串</li>
+     * <li>A {@code double} string containing a dot.</li>
      * <li>'X Y/Z'</li>
      * <li>'Y/Z'</li>
-     * <li>'X'（一个简单的整数）</li>
+     * <li>'X' (a simple integer)</li>
      * </ol>
      * <p>
-     * 和一个 .。
-     * </p>
+     * and a ..
      *
-     * @param str 要解析的字符串，必须不为 {@code null}
-     * @return 新的 {@code Fraction} 实例
-     * @throws NullPointerException  如果字符串为 {@code null}
-     * @throws NumberFormatException 如果数字格式无效
+     * @param str The string to parse, must not be {@code null}.
+     * @return The new {@code Fraction} instance.
+     * @throws NullPointerException  If the string is {@code null}.
+     * @throws NumberFormatException If the number format is invalid.
      */
     public static Fraction of(String str) {
         Objects.requireNonNull(str, "str");
@@ -270,20 +268,18 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 使用分数的两个部分 Y/Z 创建一个简化后的 {@code Fraction} 实例。
+     * Creates a reduced {@code Fraction} instance with the two parts Y/Z.
      *
      * <p>
-     * 例如，如果输入参数表示 2/4，则创建的分数将是 1/2。
-     * </p>
+     * For example, if the input parameters represent 2/4, the created fraction will be 1/2.
      *
      * <p>
-     * 任何负号都会被解析到分子上。
-     * </p>
+     * Any negative sign is resolved to the numerator.
      *
-     * @param numerator   分子，例如 '3/7' 中的 3
-     * @param denominator 分母，例如 '3/7' 中的 7
-     * @return 一个新的分数实例，分子和分母已简化
-     * @throws ArithmeticException 如果分母为 {@code zero}
+     * @param numerator   The numerator, e.g., the 3 in '3/7'.
+     * @param denominator The denominator, e.g., the 7 in '3/7'.
+     * @return A new fraction instance with the numerator and denominator reduced.
+     * @throws ArithmeticException If the denominator is {@code zero}.
      */
     public static Fraction ofReduced(int numerator, int denominator) {
         if (denominator == 0) {
@@ -312,12 +308,12 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 添加两个整数，检查溢出。
+     * Adds two integers, checking for overflow.
      *
-     * @param x 加数
-     * @param y 加数
-     * @return 和 {@code x+y}
-     * @throws ArithmeticException 如果结果不能表示为 int
+     * @param x The first addend.
+     * @param y The second addend.
+     * @return The sum {@code x+y}.
+     * @throws ArithmeticException If the result cannot be represented as an int.
      */
     private static int addAndCheck(final int x, final int y) {
         final long s = (long) x + (long) y;
@@ -328,12 +324,12 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 乘以两个整数，并检查是否溢出。
+     * Multiplies two integers, checking for overflow.
      *
-     * @param x 一个乘数
-     * @param y 另一个乘数
-     * @return 乘积 {@code x*y}
-     * @throws ArithmeticException 如果结果不能表示为 int 类型
+     * @param x One multiplicand.
+     * @param y The other multiplicand.
+     * @return The product {@code x*y}.
+     * @throws ArithmeticException If the result cannot be represented as an int.
      */
     private static int mulAndCheck(final int x, final int y) {
         final long m = (long) x * (long) y;
@@ -344,12 +340,12 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 乘以两个正整数，并检查是否溢出。
+     * Multiplies two positive integers, checking for overflow.
      *
-     * @param x 一个正乘数
-     * @param y 另一个正乘数
-     * @return 乘积 {@code x*y}
-     * @throws ArithmeticException 如果结果不能表示为 int 类型 或者任意一个参数不是正数
+     * @param x One positive multiplicand.
+     * @param y The other positive multiplicand.
+     * @return The product {@code x*y}.
+     * @throws ArithmeticException If the result cannot be represented as an int or if either parameter is not positive.
      */
     private static int mulPosAndCheck(final int x, final int y) {
         /* assert x>=0 && y>=0; */
@@ -361,12 +357,12 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 从一个整数中减去另一个整数，并检查是否溢出。
+     * Subtracts one integer from another, checking for overflow.
      *
-     * @param x 被减数
-     * @param y 减数
-     * @return 差值 {@code x - y}
-     * @throws ArithmeticException 如果结果不能表示为 int 类型
+     * @param x The minuend.
+     * @param y The subtrahend.
+     * @return The difference {@code x - y}.
+     * @throws ArithmeticException If the result cannot be represented as an int.
      */
     private static int subAndCheck(final int x, final int y) {
         final long s = (long) x - (long) y;
@@ -377,15 +373,15 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 获取与此分数等值的正分数。
+     * Gets the positive fraction equivalent to this fraction.
      * <p>
-     * 更精确地说：{@code (fraction >= 0 ? this : -fraction)}
-     * </p>
-     * <p>
-     * 返回的分数不会被约简。
-     * </p>
+     * More precisely: {@code (fraction >= 0 ? this : -fraction)}
      *
-     * @return 如果此分数为正，则返回 {@code this}；否则返回一个新的正分数实例，其分子符号相反
+     * <p>
+     * The returned fraction is not reduced.
+     *
+     * @return {@code this} if this fraction is positive; otherwise, a new positive fraction instance with the opposite
+     *         sign of the numerator.
      */
     public Fraction abs() {
         if (numerator >= 0) {
@@ -395,25 +391,27 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 将此分数与另一个分数相加，并返回约简后的结果。 该算法遵循 Knuth 的 4.5.1 节。
+     * Adds this fraction to another fraction, returning the reduced result. The algorithm follows Knuth's section
+     * 4.5.1.
      *
-     * @param fraction 要添加的分数，不能为空
-     * @return 包含结果值的 {@code Fraction} 实例
-     * @throws NullPointerException 如果传入的分数为 {@code null}
-     * @throws ArithmeticException  如果结果的分子或分母超出 {@code Integer.MAX_VALUE}
+     * @param fraction The fraction to add, not null.
+     * @return A {@code Fraction} instance with the resulting value.
+     * @throws NullPointerException If the passed fraction is {@code null}.
+     * @throws ArithmeticException  If the numerator or denominator of the result exceeds {@code Integer.MAX_VALUE}.
      */
     public Fraction add(final Fraction fraction) {
         return addSub(fraction, true /* add */);
     }
 
     /**
-     * 使用 Knuth 4.5.1 节中描述的算法实现加法和减法。
+     * Implements addition and subtraction using the algorithm described in Knuth's section 4.5.1.
      *
-     * @param fraction 要加或减的分数，不能为空
-     * @param isAdd    如果为 true，则执行加法；如果为 false，则执行减法
-     * @return 包含结果值的 {@code Fraction} 实例
-     * @throws IllegalArgumentException 如果传入的分数为 {@code null}
-     * @throws ArithmeticException      如果结果的分子或分母无法表示为 {@code int}
+     * @param fraction The fraction to add or subtract, not null.
+     * @param isAdd    If true, performs addition; if false, performs subtraction.
+     * @return A {@code Fraction} instance with the resulting value.
+     * @throws IllegalArgumentException If the passed fraction is {@code null}.
+     * @throws ArithmeticException      If the numerator or denominator of the result cannot be represented as an
+     *                                  {@code int}.
      */
     private Fraction addSub(final Fraction fraction, final boolean isAdd) {
         Objects.requireNonNull(fraction, "fraction");
@@ -454,13 +452,13 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 将此分数除以另一个分数。
+     * Divides this fraction by another fraction.
      *
-     * @param fraction 要除以的分数，不能为空
-     * @return 包含结果值的 {@code Fraction} 实例
-     * @throws NullPointerException 如果传入的分数为 {@code null}
-     * @throws ArithmeticException  如果要除以的分数为零
-     * @throws ArithmeticException  如果结果的分子或分母超出 {@code Integer.MAX_VALUE}
+     * @param fraction The fraction to divide by, not null.
+     * @return A {@code Fraction} instance with the resulting value.
+     * @throws NullPointerException If the passed fraction is {@code null}.
+     * @throws ArithmeticException  If the fraction to divide by is zero.
+     * @throws ArithmeticException  If the numerator or denominator of the result exceeds {@code Integer.MAX_VALUE}.
      */
     public Fraction divideBy(final Fraction fraction) {
         Objects.requireNonNull(fraction, "fraction");
@@ -471,70 +469,68 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 获取分数的分母部分。
+     * Gets the denominator part of the fraction.
      *
-     * @return 分数的分母部分
+     * @return The denominator part of the fraction.
      */
     public int getDenominator() {
         return denominator;
     }
 
     /**
-     * 获取分数的分子部分。
+     * Gets the numerator part of the fraction.
      *
      * <p>
-     * 此方法可能返回一个大于分母的值，即一个假分数，例如 7/4 中的七。
-     * </p>
+     * This method may return a value greater than the denominator, i.e., an improper fraction, such as the 7 in 7/4.
      *
-     * @return 分数的分子部分
+     * @return The numerator part of the fraction.
      */
     public int getNumerator() {
         return numerator;
     }
 
     /**
-     * 获取真分数的分子部分，始终为正数。
+     * Gets the numerator part of the proper fraction, which is always positive.
      *
      * <p>
-     * 一个假分数 7/4 可以分解为真分数 1 3/4。 此方法返回真分数中的 3。
-     * </p>
+     * An improper fraction 7/4 can be decomposed into a proper fraction 1 3/4. This method returns the 3 from the
+     * proper fraction.
      *
      * <p>
-     * 如果分数为负数，例如 -7/4，可以分解为 -1 3/4， 因此此方法返回正数的真分数分子，即 3。
-     * </p>
+     * If the fraction is negative, e.g., -7/4, it can be decomposed into -1 3/4, so this method returns the positive
+     * proper fraction numerator, which is 3.
      *
-     * @return 真分数的分子部分，始终为正数
+     * @return The numerator part of the proper fraction, always positive.
      */
     public int getProperNumerator() {
         return Math.abs(numerator % denominator);
     }
 
     /**
-     * 获取真分数的整数部分，包括符号。
+     * Gets the integer part of the proper fraction, including the sign.
      *
      * <p>
-     * 一个假分数 7/4 可以分解为真分数 1 3/4。 此方法返回真分数中的 1。
-     * </p>
+     * An improper fraction 7/4 can be decomposed into a proper fraction 1 3/4. This method returns the 1 from the
+     * proper fraction.
      *
      * <p>
-     * 如果分数为负数，例如 -7/4，可以分解为 -1 3/4， 因此此方法返回真分数的整数部分 -1。
-     * </p>
+     * If the fraction is negative, e.g., -7/4, it can be decomposed into -1 3/4, so this method returns the integer
+     * part of the proper fraction, -1.
      *
-     * @return 真分数的整数部分，包括符号
+     * @return The integer part of the proper fraction, including the sign.
      */
     public int getProperWhole() {
         return numerator / denominator;
     }
 
     /**
-     * 获取此分数的倒数 (1/fraction)。
+     * Gets the reciprocal of this fraction (1/fraction).
      *
      * <p>
-     * 返回的分数不会被约简。
-     * </p>
+     * The returned fraction is not reduced.
      *
-     * @return 一个新分数实例，其分子和分母互换
-     * @throws ArithmeticException 如果分数表示零
+     * @return A new fraction instance with its numerator and denominator swapped.
+     * @throws ArithmeticException If the fraction represents zero.
      */
     public Fraction invert() {
         if (numerator == 0) {
@@ -550,12 +546,12 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 将此分数与另一个分数相乘，并返回约简后的结果。
+     * Multiplies this fraction by another fraction, returning the reduced result.
      *
-     * @param fraction 要乘以的分数，不能为空
-     * @return 包含结果值的 {@code Fraction} 实例
-     * @throws NullPointerException 如果传入的分数为 {@code null}
-     * @throws ArithmeticException  如果结果的分子或分母超出 {@code Integer.MAX_VALUE}
+     * @param fraction The fraction to multiply by, not null.
+     * @return A {@code Fraction} instance with the resulting value.
+     * @throws NullPointerException If the passed fraction is {@code null}.
+     * @throws ArithmeticException  If the numerator or denominator of the result exceeds {@code Integer.MAX_VALUE}.
      */
     public Fraction multiplyBy(final Fraction fraction) {
         Objects.requireNonNull(fraction, "fraction");
@@ -572,13 +568,12 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 获取此分数的负数 (-fraction)。
+     * Gets the negative of this fraction (-fraction).
      *
      * <p>
-     * 返回的分数不会被约简。
-     * </p>
+     * The returned fraction is not reduced.
      *
-     * @return 一个新分数实例，其分子符号相反
+     * @return A new fraction instance with the opposite sign of the numerator.
      */
     public Fraction negate() {
         // the positive range is one smaller than the negative range of an int.
@@ -589,15 +584,15 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 获取此分数的指定幂次。
+     * Gets this fraction to the specified power.
      *
      * <p>
-     * 返回的分数已约简。
-     * </p>
+     * The returned fraction is reduced.
      *
-     * @param power 要将分数提升到的幂次
-     * @return 如果幂次为一，则返回 {@code this}；如果幂次为零（即使分数等于零），则返回 {@link #ONE}； 否则返回一个新的分数实例，提升到相应的幂次
-     * @throws ArithmeticException 如果结果的分子或分母超出 {@code Integer.MAX_VALUE}
+     * @param power The power to raise the fraction to.
+     * @return {@code this} if the power is one; {@link #ONE} if the power is zero (even if the fraction is zero);
+     *         otherwise, a new fraction instance raised to the corresponding power.
+     * @throws ArithmeticException If the numerator or denominator of the result exceeds {@code Integer.MAX_VALUE}.
      */
     public Fraction pow(final int power) {
         if (power == 1) {
@@ -620,13 +615,12 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 将分数约简为分子和分母的最小值，并返回结果。
+     * Reduces the fraction to its smallest numerator and denominator, and returns the result.
      *
      * <p>
-     * 例如，如果此分数表示 2/4，则结果将是 1/2。
-     * </p>
+     * For example, if this fraction represents 2/4, the result will be 1/2.
      *
-     * @return 一个新的约简后的分数实例，如果无法进一步简化，则返回此实例
+     * @return A new reduced fraction instance, or this instance if it cannot be further simplified.
      */
     public Fraction reduce() {
         if (numerator == 0) {
@@ -640,25 +634,26 @@ public final class Fraction extends Number implements Comparable<Fraction> {
     }
 
     /**
-     * 从此分数中减去另一个分数的值，并返回约简后的结果。
+     * Subtracts the value of another fraction from this fraction, returning the reduced result.
      *
-     * @param fraction 要减去的分数，不能为空
-     * @return 包含结果值的 {@code Fraction} 实例
-     * @throws NullPointerException 如果传入的分数为 {@code null}
-     * @throws ArithmeticException  如果结果的分子或分母无法表示为 {@code int}
+     * @param fraction The fraction to subtract, not null.
+     * @return A {@code Fraction} instance with the resulting value.
+     * @throws NullPointerException If the passed fraction is {@code null}.
+     * @throws ArithmeticException  If the numerator or denominator of the result cannot be represented as an
+     *                              {@code int}.
      */
     public Fraction subtract(final Fraction fraction) {
         return addSub(fraction, false /* subtract */);
     }
 
     /**
-     * 获取此分数的真分数形式的字符串表示，格式为 X Y/Z。
+     * Gets the string representation of this fraction in proper form, as X Y/Z.
      *
      * <p>
-     * 使用的格式为 '<em>整数部分</em> <em>分子</em>/<em>分母</em>'。 如果整数部分为零，则省略整数部分。如果分子为零，则仅返回整数部分。
-     * </p>
+     * The format used is '<em>integer part</em> <em>numerator</em>/<em>denominator</em>'. If the integer part is zero,
+     * it is omitted. If the numerator is zero, only the integer part is returned.
      *
-     * @return 分数的字符串表示形式
+     * @return The string representation of the fraction.
      */
     public String toProperString() {
         if (toProperString == null) {
@@ -748,6 +743,5 @@ public final class Fraction extends Number implements Comparable<Fraction> {
         }
         return toString;
     }
-    // endregion
 
 }

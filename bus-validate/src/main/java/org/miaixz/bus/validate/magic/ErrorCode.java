@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.ErrorRegistry;
 import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
- * 验证错误码: 115xxx
+ * Validation error codes, starting from 115xxx.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -39,8 +39,9 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ErrorCode extends org.miaixz.bus.core.basic.normal.ErrorCode {
 
     /**
-     * 参数校验失败
+     * Parameter validation failed.
      */
-    public static final Errors _115000 = ErrorRegistry.builder().key("115000").value("参数校验失败").build();
+    public static final Errors _115000 = ErrorRegistry.builder().key("115000").value("Parameter validation failed")
+            .build();
 
 }

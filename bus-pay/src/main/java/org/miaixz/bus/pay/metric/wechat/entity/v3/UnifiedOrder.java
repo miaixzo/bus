@@ -34,7 +34,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * V3 统一下单
+ * Model for the V3 Unified Order API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,75 +47,75 @@ import lombok.experimental.SuperBuilder;
 public class UnifiedOrder {
 
     /**
-     * 公众号ID
+     * The AppID of the Official Account or Mini Program.
      */
     private String appid;
     /**
-     * 服务商公众号ID
+     * The AppID of the service provider.
      */
     private String sp_appid;
     /**
-     * 直连商户号
+     * The merchant ID for a direct merchant.
      */
     private String mchid;
     /**
-     * 服务商户号
+     * The merchant ID for a service provider.
      */
     private String sp_mchid;
     /**
-     * 子商户公众号ID
+     * The AppID of the sub-merchant.
      */
     private String sub_appid;
     /**
-     * 子商户号
+     * The ID of the sub-merchant.
      */
     private String sub_mchid;
     /**
-     * 商品描述
+     * A description of the goods or service.
      */
     private String description;
     /**
-     * 商户订单号
+     * The merchant's unique order number.
      */
     private String out_trade_no;
     /**
-     * 交易结束时间
+     * The time when the transaction expires, in RFC3339 format.
      */
     private String time_expire;
     /**
-     * 附加数据
+     * Additional data that will be returned in the payment notification.
      */
     private String attach;
     /**
-     * 通知地址
+     * The URL to receive asynchronous payment notifications.
      */
     private String notify_url;
     /**
-     * 订单优惠标记
+     * A tag for the order, used for promotional purposes.
      */
     private String goods_tag;
     /**
-     * 结算信息
+     * Settlement information, including profit sharing details.
      */
     private SettleInfo settle_info;
     /**
-     * 订单金额
+     * The order amount details.
      */
     private Amount amount;
     /**
-     * 支付者
+     * Information about the payer.
      */
     private Payer payer;
     /**
-     * 优惠功能
+     * Discount and promotion details.
      */
     private Detail detail;
     /**
-     * 场景信息
+     * Scene information, such as the client IP and store details.
      */
     private SceneInfo scene_info;
     /**
-     * 电子发票入口开放标识
+     * A flag indicating whether an electronic invoice (fapiao) is supported.
      */
     private boolean support_fapiao;
 

@@ -35,34 +35,41 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
- * SPI机制中的服务加载工具类，流程如下
- *
- * <pre>
- *     1、创建接口，并创建实现类
- *     2、ClassPath/META-INF/services下创建与接口全限定类名相同的文件
- *     3、文件内容填写实现类的全限定类名
- * </pre>
+ * A utility class for loading services using the SPI (Service Provider Interface) mechanism. The process is as follows:
  * 
+ * <pre>
+ *     1. Create an interface and its implementation classes.
+ *     2. Create a file with the same name as the fully qualified name of the interface
+ *        under {@code
+ * META - INF / services
+ * } on the classpath.
+ *     3. Write the fully qualified names of the implementation classes in this file.
+ * </pre>
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
 public class NormalSpiLoader {
 
     /**
-     * 加载第一个可用服务，如果用户定义了多个接口实现类，只获取第一个不报错的服务
+     * Loads the first available service. If multiple implementations are defined, it returns the first one that can be
+     * instantiated without errors.
      *
-     * @param <S>   服务类型
-     * @param clazz 服务接口
-     * @return 第一个服务接口实现对象，无实现返回{@code null}
+     * @param <S>   The type of the service.
+     * @param clazz The service interface class.
+     * @return The first available service implementation, or {@code null} if no implementation is found.
      */
     public static <S> S loadFirstAvailable(final Class<S> clazz) {
         return loadFirstAvailable(loadList(clazz));
     }
 
     /**
-     * 加载第一个可用服务，如果用户定义了多个接口实现类，只获取第一个不报错的服务
+     * Loads the first available service from the given {@link ServiceLoader}. If multiple implementations are defined,
+     * it returns the first one that can be instantiated without errors.
      *
-     * @param <S>           服务类型
-     * @param serviceLoader {@link ServiceLoader}
-     * @return 第一个服务接口实现对象，无实现返回{@code null}
+     * @param <S>           The type of the service.
+     * @param serviceLoader The {@link ServiceLoader} to load from.
+     * @return The first available service implementation, or {@code null} if no implementation is found.
      */
     public static <S> S loadFirstAvailable(final ServiceLoader<S> serviceLoader) {
         final Iterator<S> iterator = serviceLoader.iterator();
@@ -70,76 +77,80 @@ public class NormalSpiLoader {
             try {
                 return iterator.next();
             } catch (final Throwable ignore) {
-                // ignore
+                // Ignore exceptions during service instantiation.
             }
         }
         return null;
     }
 
     /**
-     * 加载服务
+     * Loads services using the standard {@link java.util.ServiceLoader}.
      *
-     * @param <T>   接口类型
-     * @param clazz 服务接口
-     * @return 服务接口实现列表
+     * @param <T>   The type of the service interface.
+     * @param clazz The service interface class.
+     * @return A {@link java.util.ServiceLoader} for the given service interface.
      */
     public static <T> java.util.ServiceLoader<T> load(final Class<T> clazz) {
         return load(clazz, null);
     }
 
     /**
-     * 加载服务
+     * Loads services using the standard {@link java.util.ServiceLoader} and a specified {@link ClassLoader}.
      *
-     * @param <T>    接口类型
-     * @param clazz  服务接口
-     * @param loader {@link ClassLoader}
-     * @return 服务接口实现列表
+     * @param <T>    The type of the service interface.
+     * @param clazz  The service interface class.
+     * @param loader The {@link ClassLoader} to be used to load provider-configuration files and provider classes.
+     * @return A {@link java.util.ServiceLoader} for the given service interface.
      */
     public static <T> java.util.ServiceLoader<T> load(final Class<T> clazz, final ClassLoader loader) {
         return java.util.ServiceLoader.load(clazz, ObjectKit.defaultIfNull(loader, ClassKit::getClassLoader));
     }
 
     /**
-     * 加载服务
+     * Loads services and returns them as a {@link ServiceLoader}.
      *
-     * @param <T>   接口类型
-     * @param clazz 服务接口
-     * @return 服务接口实现列表
+     * @param <T>   The type of the service interface.
+     * @param clazz The service interface class.
+     * @return A {@link ServiceLoader} containing the service implementations.
      */
     public static <T> ServiceLoader<T> loadList(final Class<T> clazz) {
         return loadList(clazz, null);
     }
 
     /**
-     * 加载服务
+     * Loads services with a specified {@link ClassLoader} and returns them as a {@link ServiceLoader}.
      *
-     * @param <T>    接口类型
-     * @param clazz  服务接口
-     * @param loader {@link ClassLoader}
-     * @return 服务接口实现列表
+     * @param <T>    The type of the service interface.
+     * @param clazz  The service interface class.
+     * @param loader The {@link ClassLoader} to use.
+     * @return A {@link ServiceLoader} containing the service implementations.
      */
     public static <T> ServiceLoader<T> loadList(final Class<T> clazz, final ClassLoader loader) {
         return ListServiceLoader.of(clazz, loader);
     }
 
     /**
-     * 加载服务 并已list列表返回
+     * Loads services and returns them as a {@link List}.
      *
-     * @param <T>   接口类型
-     * @param clazz 服务接口
-     * @return 服务接口实现列表
+     * @param <T>      The type of the service interface.
+     * @param isLinked If {@code true}, a {@link java.util.LinkedList} is returned; otherwise, an
+     *                 {@link java.util.ArrayList}.
+     * @param clazz    The service interface class.
+     * @return A list of service implementations.
      */
     public static <T> List<T> loadList(final boolean isLinked, final Class<T> clazz) {
         return loadList(isLinked, clazz, null);
     }
 
     /**
-     * 加载服务 并已list列表返回
+     * Loads services with a specified {@link ClassLoader} and returns them as a {@link List}.
      *
-     * @param <T>    接口类型
-     * @param clazz  服务接口
-     * @param loader {@link ClassLoader}
-     * @return 服务接口实现列表
+     * @param <T>      The type of the service interface.
+     * @param isLinked If {@code true}, a {@link java.util.LinkedList} is returned; otherwise, an
+     *                 {@link java.util.ArrayList}.
+     * @param clazz    The service interface class.
+     * @param loader   The {@link ClassLoader} to use.
+     * @return A list of service implementations.
      */
     public static <T> List<T> loadList(final boolean isLinked, final Class<T> clazz, final ClassLoader loader) {
         return ListKit.of(isLinked, load(clazz, loader));

@@ -39,7 +39,8 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * 集合的stream操作封装
+ * Provides a rich set of stream-based operations for Java collections. This utility class offers convenient methods for
+ * transforming, grouping, and merging collections by leveraging the power of the Java Stream API.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,27 +48,33 @@ import org.miaixz.bus.core.xyz.*;
 public class CollectionStream extends CollectionValidator {
 
     /**
-     * 将collection转化为类型不变的map <B>{@code Collection<V>  ---->  Map<K,V>}</B>
+     * Converts a collection into a map, where the keys are derived from the elements and the values are the elements
+     * themselves.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<V> -> Map<K, V>}
      *
-     * @param collection 需要转化的集合
-     * @param key        V类型转化为K类型的lambda方法
-     * @param <V>        collection中的泛型
-     * @param <K>        map中的key类型
-     * @return 转化后的map
+     * @param <V>        The type of elements in the collection and values in the map.
+     * @param <K>        The type of keys in the map.
+     * @param collection The source collection to be converted.
+     * @param key        A function to extract the key from an element.
+     * @return A map where keys are extracted from elements and values are the elements themselves.
      */
     public static <V, K> Map<K, V> toIdentityMap(final Collection<V> collection, final FunctionX<V, K> key) {
         return toIdentityMap(collection, key, false);
     }
 
     /**
-     * 将collection转化为类型不变的map <B>{@code Collection<V>  ---->  Map<K,V>}</B>
+     * Converts a collection into a map, where the keys are derived from the elements and the values are the elements
+     * themselves, with an option for parallel processing.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<V> -> Map<K, V>}
      *
-     * @param collection 需要转化的集合
-     * @param key        V类型转化为K类型的lambda方法
-     * @param isParallel 是否并行流
-     * @param <V>        collection中的泛型
-     * @param <K>        map中的key类型
-     * @return 转化后的map
+     * @param <V>        The type of elements in the collection and values in the map.
+     * @param <K>        The type of keys in the map.
+     * @param collection The source collection to be converted.
+     * @param key        A function to extract the key from an element.
+     * @param isParallel If {@code true}, the conversion is performed in parallel.
+     * @return A map where keys are extracted from elements and values are the elements themselves.
      */
     public static <V, K> Map<K, V> toIdentityMap(
             final Collection<V> collection,
@@ -80,15 +87,17 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将Collection转化为map(value类型与collection的泛型不同) <B>{@code Collection<E> -----> Map<K,V>  }</B>
+     * Converts a collection into a map by applying separate key and value mapping functions to each element.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Map<K, V>}
      *
-     * @param collection 需要转化的集合
-     * @param key        E类型转化为K类型的lambda方法
-     * @param value      E类型转化为V类型的lambda方法
-     * @param <E>        collection中的泛型
-     * @param <K>        map中的key类型
-     * @param <V>        map中的value类型
-     * @return 转化后的map
+     * @param <E>        The type of elements in the source collection.
+     * @param <K>        The type of keys in the resulting map.
+     * @param <V>        The type of values in the resulting map.
+     * @param collection The source collection to be converted.
+     * @param key        A function to extract the key from an element.
+     * @param value      A function to extract the value from an element.
+     * @return A map created by applying the key and value functions to each element.
      */
     public static <E, K, V> Map<K, V> toMap(
             final Collection<E> collection,
@@ -98,14 +107,19 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * @param collection 需要转化的集合
-     * @param key        E类型转化为K类型的lambda方法
-     * @param value      E类型转化为V类型的lambda方法
-     * @param isParallel 是否并行流
-     * @param <E>        collection中的泛型
-     * @param <K>        map中的key类型
-     * @param <V>        map中的value类型
-     * @return 转化后的map
+     * Converts a collection into a map by applying separate key and value mapping functions to each element, with an
+     * option for parallel processing.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Map<K, V>}
+     *
+     * @param <E>        The type of elements in the source collection.
+     * @param <K>        The type of keys in the resulting map.
+     * @param <V>        The type of values in the resulting map.
+     * @param collection The source collection to be converted.
+     * @param key        A function to extract the key from an element.
+     * @param value      A function to extract the value from an element.
+     * @param isParallel If {@code true}, the conversion is performed in parallel.
+     * @return A map created by applying the key and value functions to each element.
      */
     public static <E, K, V> Map<K, V> toMap(
             final Collection<E> collection,
@@ -120,27 +134,32 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照规则(比如有相同的班级id)分组成map <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
+     * Groups elements of a collection into a map, where keys are derived from the elements.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Map<K, List<E>>}
      *
-     * @param collection 需要分组的集合
-     * @param key        分组的规则
-     * @param <E>        collection中的泛型
-     * @param <K>        map中的key类型
-     * @return 分组后的map
+     * @param <E>        The type of elements in the collection.
+     * @param <K>        The type of keys in the map.
+     * @param collection The collection to be grouped.
+     * @param key        A function to extract the grouping key from an element.
+     * @return A map where elements are grouped by the extracted key.
      */
     public static <E, K> Map<K, List<E>> groupByKey(final Collection<E> collection, final Function<E, K> key) {
         return groupByKey(collection, key, false);
     }
 
     /**
-     * 将collection按照规则(比如有相同的班级id)分组成map <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
+     * Groups elements of a collection into a map, where keys are derived from the elements, with an option for parallel
+     * processing.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Map<K, List<E>>}
      *
-     * @param collection 需要分组的集合
-     * @param key        键分组的规则
-     * @param isParallel 是否并行流
-     * @param <E>        collection中的泛型
-     * @param <K>        map中的key类型
-     * @return 分组后的map
+     * @param <E>        The type of elements in the collection.
+     * @param <K>        The type of keys in the map.
+     * @param collection The collection to be grouped.
+     * @param key        A function to extract the grouping key from an element.
+     * @param isParallel If {@code true}, the grouping is performed in parallel.
+     * @return A map where elements are grouped by the extracted key.
      */
     public static <E, K> Map<K, List<E>> groupByKey(
             final Collection<E> collection,
@@ -153,15 +172,17 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map <B>{@code Collection<E>  --->  Map<T,Map<U,List<E>>> } </B>
+     * Groups a collection into a two-level nested map based on two key extraction functions.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Map<K, Map<U, List<E>>>}
      *
-     * @param collection 需要分组的集合
-     * @param key1       第一个分组的规则
-     * @param key2       第二个分组的规则
-     * @param <E>        集合元素类型
-     * @param <K>        第一个map中的key类型
-     * @param <U>        第二个map中的key类型
-     * @return 分组后的map
+     * @param <E>        The type of elements in the collection.
+     * @param <K>        The type of keys in the first-level map.
+     * @param <U>        The type of keys in the second-level map.
+     * @param collection The collection to be grouped.
+     * @param key1       A function to extract the first-level key.
+     * @param key2       A function to extract the second-level key.
+     * @return A two-level nested map representing the grouped elements.
      */
     public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(
             final Collection<E> collection,
@@ -171,16 +192,19 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map <B>{@code Collection<E>  --->  Map<T,Map<U,List<E>>> } </B>
+     * Groups a collection into a two-level nested map based on two key extraction functions, with an option for
+     * parallel processing.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Map<K, Map<U, List<E>>>}
      *
-     * @param collection 需要分组的集合
-     * @param key1       第一个分组的规则
-     * @param key2       第二个分组的规则
-     * @param isParallel 是否并行流
-     * @param <E>        集合元素类型
-     * @param <K>        第一个map中的key类型
-     * @param <U>        第二个map中的key类型
-     * @return 分组后的map
+     * @param <E>        The type of elements in the collection.
+     * @param <K>        The type of keys in the first-level map.
+     * @param <U>        The type of keys in the second-level map.
+     * @param collection The collection to be grouped.
+     * @param key1       A function to extract the first-level key.
+     * @param key2       A function to extract the second-level key.
+     * @param isParallel If {@code true}, the grouping is performed in parallel.
+     * @return A two-level nested map representing the grouped elements.
      */
     public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(
             final Collection<E> collection,
@@ -194,15 +218,18 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map <B>{@code Collection<E>  --->  Map<T,Map<U,E>> } </B>
+     * Groups a collection into a two-level map where the innermost value is a single element. This assumes that the
+     * combination of the two keys is unique for each element.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Map<T, Map<U, E>>}
      *
-     * @param collection 需要分组的集合
-     * @param key1       第一个分组的规则
-     * @param key2       第二个分组的规则
-     * @param <T>        第一个map中的key类型
-     * @param <U>        第二个map中的key类型
-     * @param <E>        collection中的泛型
-     * @return 分组后的map
+     * @param <T>        The type of keys in the first-level map.
+     * @param <U>        The type of keys in the second-level map.
+     * @param <E>        The type of elements in the collection.
+     * @param collection The collection to be grouped.
+     * @param key1       A function to extract the first-level key.
+     * @param key2       A function to extract the second-level key.
+     * @return A two-level map where each key pair maps to a single element.
      */
     public static <E, T, U> Map<T, Map<U, E>> group2Map(
             final Collection<E> collection,
@@ -212,16 +239,19 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map <B>{@code Collection<E>  --->  Map<T,Map<U,E>> } </B>
+     * Groups a collection into a two-level map where the innermost value is a single element, with an option for
+     * parallel processing.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Map<T, Map<U, E>>}
      *
-     * @param collection 需要分组的集合
-     * @param key1       第一个分组的规则
-     * @param key2       第二个分组的规则
-     * @param isParallel 是否并行流
-     * @param <T>        第一个map中的key类型
-     * @param <U>        第二个map中的key类型
-     * @param <E>        collection中的泛型
-     * @return 分组后的map
+     * @param <T>        The type of keys in the first-level map.
+     * @param <U>        The type of keys in the second-level map.
+     * @param <E>        The type of elements in the collection.
+     * @param collection The collection to be grouped.
+     * @param key1       A function to extract the first-level key.
+     * @param key2       A function to extract the second-level key.
+     * @param isParallel If {@code true}, the grouping is performed in parallel.
+     * @return A two-level map where each key pair maps to a single element.
      */
     public static <E, T, U> Map<T, Map<U, E>> group2Map(
             final Collection<E> collection,
@@ -235,15 +265,17 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照规则(比如有相同的班级id)分组成map，map中的key为班级id，value为班级名 <B>{@code Collection<E> -------> Map<K,List<V>> } </B>
+     * Groups a collection into a map where keys are extracted and values are transformed into a list.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Map<K, List<V>>}
      *
-     * @param collection 需要分组的集合
-     * @param key        键分组的规则
-     * @param value      值分组的规则
-     * @param <E>        collection中的泛型
-     * @param <K>        map中的key类型
-     * @param <V>        List中的value类型
-     * @return 分组后的map
+     * @param <E>        The type of elements in the collection.
+     * @param <K>        The type of keys in the map.
+     * @param <V>        The type of values in the list.
+     * @param collection The collection to be grouped.
+     * @param key        A function to extract the key for grouping.
+     * @param value      A function to transform elements into the desired value type.
+     * @return A map with grouped keys and lists of transformed values.
      */
     public static <E, K, V> Map<K, List<V>> groupKeyValue(
             final Collection<E> collection,
@@ -253,16 +285,19 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照规则(比如有相同的班级id)分组成map，map中的key为班级id，value为班级名 <B>{@code Collection<E> -------> Map<K,List<V>> } </B>
+     * Groups a collection into a map where keys are extracted and values are transformed into a list, with an option
+     * for parallel processing.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Map<K, List<V>>}
      *
-     * @param collection 需要分组的集合
-     * @param key        键分组的规则
-     * @param value      值分组的规则
-     * @param isParallel 是否并行流
-     * @param <E>        collection中的泛型
-     * @param <K>        map中的key类型
-     * @param <V>        List中的value类型
-     * @return 分组后的map
+     * @param <E>        The type of elements in the collection.
+     * @param <K>        The type of keys in the map.
+     * @param <V>        The type of values in the list.
+     * @param collection The collection to be grouped.
+     * @param key        A function to extract the key for grouping.
+     * @param value      A function to transform elements into the desired value type.
+     * @param isParallel If {@code true}, the grouping is performed in parallel.
+     * @return A map with grouped keys and lists of transformed values.
      */
     public static <E, K, V> Map<K, List<V>> groupKeyValue(
             final Collection<E> collection,
@@ -280,15 +315,15 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 作为所有groupingBy的公共方法，更接近于原生，灵活性更强
+     * A generic grouping method that provides flexibility similar to native stream grouping.
      *
-     * @param collection 需要分组的集合
-     * @param key        第一次分组时需要的key
-     * @param downstream 分组后需要进行的操作
-     * @param <E>        collection中的泛型
-     * @param <K>        map中的key类型
-     * @param <D>        后续操作的返回值
-     * @return 分组后的map
+     * @param <E>        The type of elements in the collection.
+     * @param <K>        The type of keys in the map.
+     * @param <D>        The type of the result from the downstream collector.
+     * @param collection The collection to be grouped.
+     * @param key        A function to extract the first-level grouping key.
+     * @param downstream The downstream {@link Collector} to apply to elements in each group.
+     * @return The resulting grouped map.
      */
     public static <E, K, D> Map<K, D> groupBy(
             final Collection<E> collection,
@@ -301,16 +336,17 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 作为所有groupingBy的公共方法，更接近于原生，灵活性更强
+     * A generic grouping method that provides flexibility similar to native stream grouping, with an option for
+     * parallel processing.
      *
-     * @param collection 需要分组的集合
-     * @param key        第一次分组时需要的key
-     * @param downstream 分组后需要进行的操作
-     * @param isParallel 是否并行流
-     * @param <E>        collection中的泛型
-     * @param <K>        map中的key类型
-     * @param <D>        后续操作的返回值
-     * @return 分组后的map
+     * @param <E>        The type of elements in the collection.
+     * @param <K>        The type of keys in the map.
+     * @param <D>        The type of the result from the downstream collector.
+     * @param collection The collection to be grouped.
+     * @param key        A function to extract the first-level grouping key.
+     * @param downstream The downstream {@link Collector} to apply to elements in each group.
+     * @param isParallel If {@code true}, the grouping is performed in parallel.
+     * @return The resulting grouped map.
      * @see Collectors#groupingBy(Function, Collector)
      */
     public static <E, K, D> Map<K, D> groupBy(
@@ -325,27 +361,32 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection转化为List集合，但是两者的泛型不同 <B>{@code Collection<E>  ------>  List<T> } </B>
+     * Converts a collection to a list by applying a transformation function to each element.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> List<T>}
      *
-     * @param collection 需要转化的集合
-     * @param function   collection中的泛型转化为list泛型的lambda表达式
-     * @param <E>        collection中的泛型
-     * @param <T>        List中的泛型
-     * @return 转化后的list
+     * @param <E>        The type of elements in the source collection.
+     * @param <T>        The type of elements in the resulting list.
+     * @param collection The collection to be converted.
+     * @param function   A function to transform elements from type E to type T.
+     * @return A new list containing the transformed elements.
      */
     public static <E, T> List<T> toList(final Collection<E> collection, final Function<E, T> function) {
         return toList(collection, function, false);
     }
 
     /**
-     * 将collection转化为List集合，但是两者的泛型不同 <B>{@code Collection<E>  ------>  List<T> } </B>
+     * Converts a collection to a list by applying a transformation function to each element, with an option for
+     * parallel processing.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> List<T>}
      *
-     * @param collection 需要转化的集合
-     * @param function   collection中的泛型转化为list泛型的lambda表达式
-     * @param isParallel 是否并行流
-     * @param <E>        collection中的泛型
-     * @param <T>        List中的泛型
-     * @return 转化后的list
+     * @param <E>        The type of elements in the source collection.
+     * @param <T>        The type of elements in the resulting list.
+     * @param collection The collection to be converted.
+     * @param function   A function to transform elements from type E to type T.
+     * @param isParallel If {@code true}, the conversion is performed in parallel.
+     * @return A new list containing the transformed elements.
      */
     public static <E, T> List<T> toList(
             final Collection<E> collection,
@@ -358,27 +399,32 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection转化为Set集合，但是两者的泛型不同 <B>{@code Collection<E>  ------>  Set<T> } </B>
+     * Converts a collection to a set by applying a transformation function to each element.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Set<T>}
      *
-     * @param collection 需要转化的集合
-     * @param function   collection中的泛型转化为set泛型的lambda表达式
-     * @param <E>        collection中的泛型
-     * @param <T>        Set中的泛型
-     * @return 转化后的Set
+     * @param <E>        The type of elements in the source collection.
+     * @param <T>        The type of elements in the resulting set.
+     * @param collection The collection to be converted.
+     * @param function   A function to transform elements from type E to type T.
+     * @return A new set containing the transformed elements.
      */
     public static <E, T> Set<T> toSet(final Collection<E> collection, final Function<E, T> function) {
         return toSet(collection, function, false);
     }
 
     /**
-     * 将collection转化为Set集合，但是两者的泛型不同 <B>{@code Collection<E>  ------>  Set<T> } </B>
+     * Converts a collection to a set by applying a transformation function to each element, with an option for parallel
+     * processing.
+     * <p>
+     * <b>Transformation:</b> {@code Collection<E> -> Set<T>}
      *
-     * @param collection 需要转化的集合
-     * @param function   collection中的泛型转化为set泛型的lambda表达式
-     * @param isParallel 是否并行流
-     * @param <E>        collection中的泛型
-     * @param <T>        Set中的泛型
-     * @return 转化后的Set
+     * @param <E>        The type of elements in the source collection.
+     * @param <T>        The type of elements in the resulting set.
+     * @param collection The collection to be converted.
+     * @param function   A function to transform elements from type E to type T.
+     * @param isParallel If {@code true}, the conversion is performed in parallel.
+     * @return A new set containing the transformed elements.
      */
     public static <E, T> Set<T> toSet(
             final Collection<E> collection,
@@ -391,16 +437,17 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 合并两个相同key类型的map
+     * Merges two maps with the same key type into a new map.
      *
-     * @param map1  第一个需要合并的 map
-     * @param map2  第二个需要合并的 map
-     * @param merge 合并的lambda，将key value1 value2合并成最终的类型,注意value可能为空的情况
-     * @param <K>   map中的key类型
-     * @param <X>   第一个 map的value类型
-     * @param <Y>   第二个 map的value类型
-     * @param <V>   最终map的value类型
-     * @return 合并后的map
+     * @param <K>   The type of keys in the maps.
+     * @param <X>   The type of values in the first map.
+     * @param <Y>   The type of values in the second map.
+     * @param <V>   The type of values in the resulting merged map.
+     * @param map1  The first map to merge.
+     * @param map2  The second map to merge.
+     * @param merge A {@link BiFunction} to combine values from {@code map1} and {@code map2} for a given key. Note that
+     *              values from either map might be {@code null}.
+     * @return The merged map.
      */
     public static <K, X, Y, V> Map<K, V> merge(Map<K, X> map1, Map<K, Y> map2, final BiFunction<X, Y, V> merge) {
         if (MapKit.isEmpty(map1) && MapKit.isEmpty(map2)) {
@@ -426,11 +473,13 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 笛卡尔积 参考：https://www.baeldung-cn.com/java-cartesian-product-sets
+     * Computes the Cartesian product of a list of sets. For more information, see:
+     * <a href="https://www.baeldung-cn.com/java-cartesian-product-sets">Java Cartesian Product of Sets</a>
      *
-     * @param sets  集合列表
-     * @param index 索引
-     * @return 笛卡尔积
+     * @param sets  A list of sets, where each set is represented as a {@code List<Object>}.
+     * @param index The current index in the list of sets, used for recursion.
+     * @return A {@link Stream} of {@code List<Object>}, where each inner list represents a unique combination from the
+     *         Cartesian product.
      */
     public static Stream<List<Object>> cartesianProduct(final List<List<Object>> sets, final int index) {
         if (index == sets.size()) {

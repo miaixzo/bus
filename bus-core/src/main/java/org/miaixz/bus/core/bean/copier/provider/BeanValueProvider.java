@@ -36,30 +36,39 @@ import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.xyz.BeanKit;
 
 /**
- * Bean值提供器
+ * A {@link ValueProvider} implementation that retrieves values from a Bean object. This provider uses {@link BeanDesc}
+ * to access properties of the bean.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class BeanValueProvider implements ValueProvider<String> {
 
+    /**
+     * The bean object from which values are retrieved.
+     */
     private final Object bean;
+    /**
+     * The {@link BeanDesc} describing the properties of the bean.
+     */
     private final BeanDesc beanDesc;
 
     /**
-     * 构造
+     * Constructs a new {@code BeanValueProvider} for the given bean. It uses the default {@link BeanDesc} obtained from
+     * {@link BeanKit#getBeanDesc(Class)}.
      *
-     * @param bean Bean
+     * @param bean The bean object.
      */
     public BeanValueProvider(final Object bean) {
         this(bean, null);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code BeanValueProvider} for the given bean with a custom {@link BeanDesc}. If {@code beanDesc}
+     * is {@code null}, the default {@link BeanDesc} will be used.
      *
-     * @param bean     Bean
-     * @param beanDesc 自定义的{@link BeanDesc}，默认为{@link BeanKit#getBeanDesc(Class)}
+     * @param bean     The bean object.
+     * @param beanDesc A custom {@link BeanDesc} for the bean, or {@code null} to use the default.
      */
     public BeanValueProvider(final Object bean, BeanDesc beanDesc) {
         this.bean = bean;
@@ -69,6 +78,15 @@ public class BeanValueProvider implements ValueProvider<String> {
         this.beanDesc = beanDesc;
     }
 
+    /**
+     * Retrieves the value of a property from the bean based on its key (field name). The value is converted to the
+     * specified {@code valueType} if necessary.
+     *
+     * @param key       The name of the property (field name) in the Bean object.
+     * @param valueType The type to which the retrieved value should be converted.
+     * @return The value of the property, converted to {@code valueType}, or {@code null} if the property does not
+     *         exist.
+     */
     @Override
     public Object value(final String key, final Type valueType) {
         final PropDesc prop = beanDesc.getProp(key);
@@ -78,6 +96,12 @@ public class BeanValueProvider implements ValueProvider<String> {
         return null;
     }
 
+    /**
+     * Checks if the bean contains a property with the specified key (field name).
+     *
+     * @param key The name of the property (field name) in the Bean object.
+     * @return {@code true} if the bean contains the property, {@code false} otherwise.
+     */
     @Override
     public boolean containsKey(final String key) {
         return null != beanDesc.getProp(key);

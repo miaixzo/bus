@@ -40,45 +40,55 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * 泛型变量和泛型实际类型映射关系缓存
+ * Cache for mapping relationships between generic type variables and their actual types. This class provides utility
+ * methods to resolve actual type arguments for generic types.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ActualTypeMapper {
 
+    /**
+     * A weak concurrent map to cache the mapping between a generic type and its resolved actual type arguments. The
+     * keys are generic types (e.g., ParameterizedType), and the values are maps from TypeVariable to their actual Type.
+     */
     private static final WeakConcurrentMap<Type, Map<Type, Type>> CACHE = new WeakConcurrentMap<>();
 
     /**
-     * 获取泛型变量和泛型实际类型的对应关系Map
+     * Retrieves the mapping between generic type variables and their actual types for a given type. The result is
+     * cached for performance.
      *
-     * @param type 被解析的包含泛型参数的类
-     * @return 泛型对应关系Map
+     * @param type The type containing generic parameters to be resolved.
+     * @return A map where keys are generic type variables and values are their actual types.
      */
     public static Map<Type, Type> get(final Type type) {
         return CACHE.computeIfAbsent(type, (key) -> createTypeMap(type));
     }
 
     /**
-     * 获取泛型变量名（字符串）和泛型实际类型的对应关系Map
+     * Retrieves the mapping between generic type variable names (as strings) and their actual types for a given type.
      *
-     * @param type 被解析的包含泛型参数的类
-     * @return 泛型对应关系Map
+     * @param type The type containing generic parameters to be resolved.
+     * @return A map where keys are generic type variable names (e.g., "T") and values are their actual types.
      */
     public static Map<String, Type> getStringKeyMap(final Type type) {
         return Convert.toMap(String.class, Type.class, get(type));
     }
 
     /**
-     * 获得泛型变量对应的泛型实际类型，如果此变量没有对应的实际类型，返回null
+     * Retrieves the actual type corresponding to a given generic type variable within the context of a specific type.
+     * If the type variable does not have a corresponding actual type, {@code null} is returned.
      *
-     * @param type         类
-     * @param typeVariable 泛型变量，例如T等
-     * @return 实际类型，可能为Class等
+     * @param type         The context type (e.g., a class or parameterized type) from which to resolve the type
+     *                     variable.
+     * @param typeVariable The generic type variable (e.g., 'T' in {@code List<T>}).
+     * @return The actual type (e.g., {@code String.class}) corresponding to the type variable, or {@code null} if not
+     *         found.
      */
     public static Type getActualType(final Type type, final TypeVariable<?> typeVariable) {
         final Map<Type, Type> typeTypeMap = get(type);
         Type result = typeTypeMap.get(typeVariable);
+        // Recursively resolve if the result is still a TypeVariable (e.g., A extends B, B extends C)
         while (result instanceof TypeVariable) {
             result = typeTypeMap.get(result);
         }
@@ -86,17 +96,20 @@ public class ActualTypeMapper {
     }
 
     /**
-     * 获得泛型变量对应的泛型实际类型，如果此变量没有对应的实际类型，返回null
+     * Retrieves the actual type corresponding to a given generic array type within the context of a specific type. If
+     * the generic array type does not have a corresponding actual type, {@code null} is returned.
      *
-     * @param type             类
-     * @param genericArrayType 泛型数组
-     * @return 实际类型，可能为Class等
+     * @param type             The context type (e.g., a class or parameterized type) from which to resolve the generic
+     *                         array type.
+     * @param genericArrayType The generic array type (e.g., {@code T[]}).
+     * @return The actual array type (e.g., {@code String[].class}) corresponding to the generic array type, or
+     *         {@code null} if not found.
      */
     public static Type getActualType(final Type type, final GenericArrayType genericArrayType) {
         final Map<Type, Type> typeTypeMap = get(type);
         Type actualType = typeTypeMap.get(genericArrayType);
         if (actualType == null) {
-            // 获取泛型数组元素泛型对应的确切类型
+            // Resolve the actual type of the generic array component type
             final Type componentType = typeTypeMap.get(genericArrayType.getGenericComponentType());
             if (componentType instanceof Class) {
                 actualType = ArrayKit.getArrayType((Class<?>) componentType);
@@ -108,14 +121,18 @@ public class ActualTypeMapper {
     }
 
     /**
-     * 获取指定泛型变量对应的真实类型 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的，因此可以通过对应关系找到泛型实现类型
+     * Retrieves the actual types corresponding to an array of generic type variables within the context of a specific
+     * type. The mapping between generic parameters in a subclass and those in a superclass (or interface) is
+     * one-to-one.
      *
-     * @param type          真实类型所在类，此类中记录了泛型参数对应的实际类型
-     * @param typeVariables 泛型变量，需要的实际类型对应的泛型参数
-     * @return 给定泛型参数对应的实际类型，如果无对应类型，对应位置返回null
+     * @param type          The actual type's declaring class, which holds the mapping of generic parameters to actual
+     *                      types.
+     * @param typeVariables An array of generic type variables for which to find the actual types.
+     * @return An array of actual types corresponding to the given generic type variables. If a type variable has no
+     *         corresponding actual type, the corresponding position in the array will be {@code null}.
      */
     public static Type[] getActualTypes(final Type type, final Type... typeVariables) {
-        // 查找方法定义所在类或接口中此泛型参数的位置
+        // Find the position of this generic parameter in the method definition's declaring class or interface.
         final Type[] result = new Type[typeVariables.length];
         for (int i = 0; i < typeVariables.length; i++) {
             result[i] = (typeVariables[i] instanceof TypeVariable)
@@ -126,21 +143,27 @@ public class ActualTypeMapper {
     }
 
     /**
-     * 创建类中所有的泛型变量和泛型实际类型的对应关系Map
+     * Creates a map of all generic type variables to their actual types for a given type. This method traverses the
+     * inheritance hierarchy to resolve all generic type arguments.
+     * <p>
+     * The mapping process considers two main scenarios:
+     * <ol>
+     * <li>A superclass defines a type variable, and a subclass specifies its actual type.</li>
+     * <li>A superclass defines a type variable, and a subclass inherits this variable, leaving its resolution to a
+     * further subclass, and so on.</li>
+     * </ol>
+     * This method adds all such relationships at each level of the hierarchy to the map. When looking up an actual
+     * type, if the mapped value is still a type variable, the lookup continues recursively until an actual type is
+     * found or {@code null} is returned. If the input type is not a {@code Class} (e.g., {@code TypeReference}), it
+     * extracts the actual generic object class from its generic parameters and processes it as a class.
      *
-     * @param type 被解析的包含泛型参数的类
-     * @return 泛型对应关系Map
+     * @param type The type (e.g., a class or parameterized type) to analyze for generic type mappings.
+     * @return A map where keys are generic type variables and values are their actual types.
      */
     private static Map<Type, Type> createTypeMap(Type type) {
         final Map<Type, Type> typeMap = new HashMap<>();
 
-        // 按继承层级寻找泛型变量和实际类型的对应关系
-        // 在类中，对应关系分为两类：
-        // 1. 父类定义变量，子类标注实际类型
-        // 2. 父类定义变量，子类继承这个变量，让子类的子类去标注，以此类推
-        // 此方法中我们将每一层级的对应关系全部加入到Map中，查找实际类型的时候，根据传入的泛型变量，
-        // 找到对应关系，如果对应的是继承的泛型变量，则递归继续找，直到找到实际或返回null为止。
-        // 如果传入的非Class，例如TypeReference，获取到泛型参数中实际的泛型对象类，继续按照类处理
+        // Traverse the inheritance hierarchy to find the mapping between generic variables and actual types.
         while (null != type) {
             final ParameterizedType parameterizedType = TypeKit.toParameterizedType(type);
             if (null == parameterizedType) {
@@ -153,7 +176,7 @@ public class ActualTypeMapper {
             Type value;
             for (int i = 0; i < typeParameters.length; i++) {
                 value = typeArguments[i];
-                // 跳过泛型变量对应泛型变量的情况
+                // Skip cases where a generic variable maps to another generic variable.
                 if (!(value instanceof TypeVariable)) {
                     typeMap.put(typeParameters[i], value);
                 }

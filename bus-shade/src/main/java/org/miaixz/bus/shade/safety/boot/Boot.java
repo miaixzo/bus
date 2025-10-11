@@ -38,7 +38,8 @@ import org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
 
 /**
- * Spring-Boot JAR包加解密工具类,在不提供过滤器的情况下会加密BOOT-INF/下的所有资源,及包括项目本身的资源和依赖jar资源
+ * Utility class for encrypting and decrypting Spring Boot JAR packages. By default, it encrypts all resources under
+ * BOOT-INF/, including the project's own resources and dependency JARs.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,37 +47,37 @@ import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
 public class Boot {
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src  原文包
-     * @param dest 加密包
-     * @param key  密钥
-     * @throws Exception 加密异常
+     * @param src  The source JAR file path.
+     * @param dest The destination encrypted JAR file path.
+     * @param key  The encryption key.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(String src, String dest, Key key) throws Exception {
         encrypt(new File(src), new File(dest), key);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src  原文包
-     * @param dest 加密包
-     * @param key  密钥
-     * @param mode 加密模式
-     * @throws Exception 加密异常
+     * @param src  The source JAR file path.
+     * @param dest The destination encrypted JAR file path.
+     * @param key  The encryption key.
+     * @param mode The encryption mode.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(String src, String dest, Key key, int mode) throws Exception {
         encrypt(new File(src), new File(dest), key, mode);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src  原文包
-     * @param dest 加密包
-     * @param key  密钥
-     * @throws Exception 加密异常
+     * @param src  The source JAR file.
+     * @param dest The destination encrypted JAR file.
+     * @param key  The encryption key.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(File src, File dest, Key key) throws Exception {
         try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
@@ -85,13 +86,13 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src  原文包
-     * @param dest 加密包
-     * @param key  密钥
-     * @param mode 加密模式
-     * @throws Exception 加密异常
+     * @param src  The source JAR file.
+     * @param dest The destination encrypted JAR file.
+     * @param key  The encryption key.
+     * @param mode The encryption mode.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(File src, File dest, Key key, int mode) throws Exception {
         try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
@@ -100,12 +101,12 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in  原文包输入流
-     * @param out 加密包输出流
-     * @param key 密钥
-     * @throws Exception 加密异常
+     * @param in  The input stream of the source JAR.
+     * @param out The output stream for the encrypted JAR.
+     * @param key The encryption key.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(InputStream in, OutputStream out, Key key) throws Exception {
         BootEncryptorProvider xBootEncryptor = new BootEncryptorProvider(new JdkEncryptorProvider(key.getAlgorithm()));
@@ -113,13 +114,13 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in   原文包输入流
-     * @param out  加密包输出流
-     * @param key  密钥
-     * @param mode 加密模式
-     * @throws Exception 加密异常
+     * @param in   The input stream of the source JAR.
+     * @param out  The output stream for the encrypted JAR.
+     * @param key  The encryption key.
+     * @param mode The encryption mode.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(InputStream in, OutputStream out, Key key, int mode) throws Exception {
         BootEncryptorProvider xBootEncryptor = new BootEncryptorProvider(new JdkEncryptorProvider(key.getAlgorithm()),
@@ -128,27 +129,27 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src    原文包
-     * @param dest   加密包
-     * @param key    密钥
-     * @param filter 过滤器
-     * @throws Exception 加密异常
+     * @param src    The source JAR file path.
+     * @param dest   The destination encrypted JAR file path.
+     * @param key    The encryption key.
+     * @param filter The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(String src, String dest, Key key, Complex<JarArchiveEntry> filter) throws Exception {
         encrypt(new File(src), new File(dest), key, filter);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src    原文包
-     * @param dest   加密包
-     * @param key    密钥
-     * @param mode   加密模式
-     * @param filter 过滤器
-     * @throws Exception 加密异常
+     * @param src    The source JAR file path.
+     * @param dest   The destination encrypted JAR file path.
+     * @param key    The encryption key.
+     * @param mode   The encryption mode.
+     * @param filter The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(String src, String dest, Key key, int mode, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -156,13 +157,13 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src    原文包
-     * @param dest   加密包
-     * @param key    密钥
-     * @param filter 过滤器
-     * @throws Exception 加密异常
+     * @param src    The source JAR file.
+     * @param dest   The destination encrypted JAR file.
+     * @param key    The encryption key.
+     * @param filter The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(File src, File dest, Key key, Complex<JarArchiveEntry> filter) throws Exception {
         try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
@@ -171,14 +172,14 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src    原文包
-     * @param dest   加密包
-     * @param key    密钥
-     * @param mode   加密模式
-     * @param filter 过滤器
-     * @throws Exception 加密异常
+     * @param src    The source JAR file.
+     * @param dest   The destination encrypted JAR file.
+     * @param key    The encryption key.
+     * @param mode   The encryption mode.
+     * @param filter The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(File src, File dest, Key key, int mode, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -188,13 +189,13 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in     原文包输入流
-     * @param out    加密包输出流
-     * @param key    密钥
-     * @param filter 过滤器
-     * @throws Exception 加密异常
+     * @param in     The input stream of the source JAR.
+     * @param out    The output stream for the encrypted JAR.
+     * @param key    The encryption key.
+     * @param filter The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(InputStream in, OutputStream out, Key key, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -204,14 +205,14 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in     原文包输入流
-     * @param out    加密包输出流
-     * @param key    密钥
-     * @param mode   加密模式
-     * @param filter 过滤器
-     * @throws Exception 加密异常
+     * @param in     The input stream of the source JAR.
+     * @param out    The output stream for the encrypted JAR.
+     * @param key    The encryption key.
+     * @param mode   The encryption mode.
+     * @param filter The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(InputStream in, OutputStream out, Key key, int mode, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -221,39 +222,39 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src      原文包
-     * @param dest     加密包
-     * @param password 密码
-     * @throws Exception 加密异常
+     * @param src      The source JAR file path.
+     * @param dest     The destination encrypted JAR file path.
+     * @param password The password to use for encryption.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(String src, String dest, String password) throws Exception {
         encrypt(src, dest, password, Builder.ALGORITHM);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @throws Exception 加密异常
+     * @param src       The source JAR file path.
+     * @param dest      The destination encrypted JAR file path.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(String src, String dest, String password, String algorithm) throws Exception {
         encrypt(src, dest, password, algorithm, Builder.DEFAULT_KEYSIZE);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @throws Exception 加密异常
+     * @param src       The source JAR file path.
+     * @param dest      The destination encrypted JAR file path.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(String src, String dest, String password, String algorithm, int keysize)
             throws Exception {
@@ -261,15 +262,15 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @throws Exception 加密异常
+     * @param src       The source JAR file path.
+     * @param dest      The destination encrypted JAR file path.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize)
             throws Exception {
@@ -277,54 +278,54 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src      原文包
-     * @param dest     加密包
-     * @param password 密码
-     * @throws Exception 加密异常
+     * @param src      The source JAR file.
+     * @param dest     The destination encrypted JAR file.
+     * @param password The password to use for encryption.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(File src, File dest, String password) throws Exception {
         encrypt(src, dest, password, Builder.ALGORITHM);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @throws Exception 加密异常
+     * @param src       The source JAR file.
+     * @param dest      The destination encrypted JAR file.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(File src, File dest, String password, String algorithm) throws Exception {
         encrypt(src, dest, password, algorithm, Builder.DEFAULT_KEYSIZE);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @throws Exception 加密异常
+     * @param src       The source JAR file.
+     * @param dest      The destination encrypted JAR file.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(File src, File dest, String password, String algorithm, int keysize) throws Exception {
         encrypt(src, dest, password, algorithm, keysize, Builder.DEFAULT_IVSIZE);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @throws Exception 加密异常
+     * @param src       The source JAR file.
+     * @param dest      The destination encrypted JAR file.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize)
             throws Exception {
@@ -334,39 +335,39 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in       原文包输入流
-     * @param out      加密包输出流
-     * @param password 密码
-     * @throws Exception 加密异常
+     * @param in       The input stream of the source JAR.
+     * @param out      The output stream for the encrypted JAR.
+     * @param password The password to use for encryption.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(InputStream in, OutputStream out, String password) throws Exception {
         encrypt(in, out, password, Builder.ALGORITHM);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in        原文包输入流
-     * @param out       加密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @throws Exception 加密异常
+     * @param in        The input stream of the source JAR.
+     * @param out       The output stream for the encrypted JAR.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(InputStream in, OutputStream out, String password, String algorithm) throws Exception {
         encrypt(in, out, password, algorithm, Builder.DEFAULT_KEYSIZE);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in        原文包输入流
-     * @param out       加密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @throws Exception 加密异常
+     * @param in        The input stream of the source JAR.
+     * @param out       The output stream for the encrypted JAR.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize)
             throws Exception {
@@ -374,15 +375,15 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in        原文包输入流
-     * @param out       加密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @throws Exception 加密异常
+     * @param in        The input stream of the source JAR.
+     * @param out       The output stream for the encrypted JAR.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(
             InputStream in,
@@ -397,13 +398,13 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src      原文包
-     * @param dest     加密包
-     * @param password 密码
-     * @param filter   过滤器
-     * @throws Exception 加密异常
+     * @param src      The source JAR file path.
+     * @param dest     The destination encrypted JAR file path.
+     * @param password The password to use for encryption.
+     * @param filter   The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(String src, String dest, String password, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -411,14 +412,14 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param filter    过滤器
-     * @throws Exception 加密异常
+     * @param src       The source JAR file path.
+     * @param dest      The destination encrypted JAR file path.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param filter    The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(
             String src,
@@ -430,15 +431,15 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param filter    过滤器
-     * @throws Exception 加密异常
+     * @param src       The source JAR file path.
+     * @param dest      The destination encrypted JAR file path.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @param filter    The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(
             String src,
@@ -451,16 +452,16 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @param filter    过滤器
-     * @throws Exception 加密异常
+     * @param src       The source JAR file path.
+     * @param dest      The destination encrypted JAR file path.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @param filter    The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(
             String src,
@@ -474,27 +475,27 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src      原文包
-     * @param dest     加密包
-     * @param password 密码
-     * @param filter   过滤器
-     * @throws Exception 加密异常
+     * @param src      The source JAR file.
+     * @param dest     The destination encrypted JAR file.
+     * @param password The password to use for encryption.
+     * @param filter   The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(File src, File dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
         encrypt(src, dest, password, Builder.ALGORITHM, filter);
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param filter    过滤器
-     * @throws Exception 加密异常
+     * @param src       The source JAR file.
+     * @param dest      The destination encrypted JAR file.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param filter    The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(File src, File dest, String password, String algorithm, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -502,15 +503,15 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param filter    过滤器
-     * @throws Exception 加密异常
+     * @param src       The source JAR file.
+     * @param dest      The destination encrypted JAR file.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @param filter    The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(
             File src,
@@ -523,16 +524,16 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param src       原文包
-     * @param dest      加密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @param filter    过滤器
-     * @throws Exception 加密异常
+     * @param src       The source JAR file.
+     * @param dest      The destination encrypted JAR file.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @param filter    The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(
             File src,
@@ -548,13 +549,13 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in       原文包输入流
-     * @param out      加密包输出流
-     * @param password 密码
-     * @param filter   过滤器
-     * @throws Exception 加密异常
+     * @param in       The input stream of the source JAR.
+     * @param out      The output stream for the encrypted JAR.
+     * @param password The password to use for encryption.
+     * @param filter   The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(InputStream in, OutputStream out, String password, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -562,14 +563,14 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in        原文包输入流
-     * @param out       加密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param filter    过滤器
-     * @throws Exception 加密异常
+     * @param in        The input stream of the source JAR.
+     * @param out       The output stream for the encrypted JAR.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param filter    The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(
             InputStream in,
@@ -581,15 +582,15 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in        原文包输入流
-     * @param out       加密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param filter    过滤器
-     * @throws Exception 加密异常
+     * @param in        The input stream of the source JAR.
+     * @param out       The output stream for the encrypted JAR.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @param filter    The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(
             InputStream in,
@@ -602,16 +603,16 @@ public class Boot {
     }
 
     /**
-     * 加密 Spring-Boot JAR 包
+     * Encrypts a Spring Boot JAR package.
      *
-     * @param in        原文包输入流
-     * @param out       加密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @param filter    过滤器
-     * @throws Exception 加密异常
+     * @param in        The input stream of the source JAR.
+     * @param out       The output stream for the encrypted JAR.
+     * @param password  The password to use for encryption.
+     * @param algorithm The encryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @param filter    The filter to apply.
+     * @throws Exception If an encryption error occurs.
      */
     public static void encrypt(
             InputStream in,
@@ -627,24 +628,24 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src  加密包
-     * @param dest 解密包
-     * @param key  密钥
-     * @throws Exception 解密异常
+     * @param src  The source encrypted JAR file path.
+     * @param dest The destination decrypted JAR file path.
+     * @param key  The decryption key.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(String src, String dest, Key key) throws Exception {
         decrypt(new File(src), new File(dest), key);
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src  加密包
-     * @param dest 解密包
-     * @param key  密钥
-     * @throws Exception 解密异常
+     * @param src  The source encrypted JAR file.
+     * @param dest The destination decrypted JAR file.
+     * @param key  The decryption key.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(File src, File dest, Key key) throws Exception {
         try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
@@ -653,12 +654,12 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param in  加密包输入流
-     * @param out 解密包输出流
-     * @param key 密钥
-     * @throws Exception 解密异常
+     * @param in  The input stream of the encrypted JAR.
+     * @param out The output stream for the decrypted JAR.
+     * @param key The decryption key.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(InputStream in, OutputStream out, Key key) throws Exception {
         BootDecryptorProvider xBootDecryptor = new BootDecryptorProvider(new JdkDecryptorProvider(key.getAlgorithm()));
@@ -666,26 +667,26 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src    加密包
-     * @param dest   解密包
-     * @param key    密钥
-     * @param filter 过滤器
-     * @throws Exception 解密异常
+     * @param src    The source encrypted JAR file path.
+     * @param dest   The destination decrypted JAR file path.
+     * @param key    The decryption key.
+     * @param filter The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(String src, String dest, Key key, Complex<JarArchiveEntry> filter) throws Exception {
         decrypt(new File(src), new File(dest), key, filter);
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src    加密包
-     * @param dest   解密包
-     * @param key    密钥
-     * @param filter 过滤器
-     * @throws Exception 解密异常
+     * @param src    The source encrypted JAR file.
+     * @param dest   The destination decrypted JAR file.
+     * @param key    The decryption key.
+     * @param filter The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(File src, File dest, Key key, Complex<JarArchiveEntry> filter) throws Exception {
         try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
@@ -694,13 +695,13 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param in     加密包输入流
-     * @param out    解密包输出流
-     * @param key    密钥
-     * @param filter 过滤器
-     * @throws Exception 解密异常
+     * @param in     The input stream of the encrypted JAR.
+     * @param out    The output stream for the decrypted JAR.
+     * @param key    The decryption key.
+     * @param filter The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(InputStream in, OutputStream out, Key key, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -710,39 +711,39 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src      加密包
-     * @param dest     解密包
-     * @param password 密码
-     * @throws Exception 解密异常
+     * @param src      The source encrypted JAR file path.
+     * @param dest     The destination decrypted JAR file path.
+     * @param password The password to use for decryption.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(String src, String dest, String password) throws Exception {
         decrypt(src, dest, password, Builder.ALGORITHM);
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file path.
+     * @param dest      The destination decrypted JAR file path.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(String src, String dest, String password, String algorithm) throws Exception {
         decrypt(src, dest, password, algorithm, Builder.DEFAULT_KEYSIZE);
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file path.
+     * @param dest      The destination decrypted JAR file path.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(String src, String dest, String password, String algorithm, int keysize)
             throws Exception {
@@ -750,15 +751,15 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file path.
+     * @param dest      The destination decrypted JAR file path.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize)
             throws Exception {
@@ -766,54 +767,54 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src      加密包
-     * @param dest     解密包
-     * @param password 密码
-     * @throws Exception 解密异常
+     * @param src      The source encrypted JAR file.
+     * @param dest     The destination decrypted JAR file.
+     * @param password The password to use for decryption.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(File src, File dest, String password) throws Exception {
         decrypt(src, dest, password, Builder.ALGORITHM);
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file.
+     * @param dest      The destination decrypted JAR file.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(File src, File dest, String password, String algorithm) throws Exception {
         decrypt(src, dest, password, algorithm, Builder.DEFAULT_KEYSIZE);
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file.
+     * @param dest      The destination decrypted JAR file.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(File src, File dest, String password, String algorithm, int keysize) throws Exception {
         decrypt(src, dest, password, algorithm, keysize, Builder.DEFAULT_IVSIZE);
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file.
+     * @param dest      The destination decrypted JAR file.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize)
             throws Exception {
@@ -823,39 +824,39 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param in       加密包输入流
-     * @param out      解密包输出流
-     * @param password 密码
-     * @throws Exception 解密异常
+     * @param in       The input stream of the encrypted JAR.
+     * @param out      The output stream for the decrypted JAR.
+     * @param password The password to use for decryption.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(InputStream in, OutputStream out, String password) throws Exception {
         decrypt(in, out, password, Builder.ALGORITHM);
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param in        加密包输入流
-     * @param out       解密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @throws Exception 解密异常
+     * @param in        The input stream of the encrypted JAR.
+     * @param out       The output stream for the decrypted JAR.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(InputStream in, OutputStream out, String password, String algorithm) throws Exception {
         decrypt(in, out, password, algorithm, Builder.DEFAULT_KEYSIZE);
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param in        加密包输入流
-     * @param out       解密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @throws Exception 解密异常
+     * @param in        The input stream of the encrypted JAR.
+     * @param out       The output stream for the decrypted JAR.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize)
             throws Exception {
@@ -863,15 +864,15 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param in        加密包输入流
-     * @param out       解密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @throws Exception 解密异常
+     * @param in        The input stream of the encrypted JAR.
+     * @param out       The output stream for the decrypted JAR.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(
             InputStream in,
@@ -886,13 +887,13 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src      加密包
-     * @param dest     解密包
-     * @param password 密码
-     * @param filter   过滤器
-     * @throws Exception 解密异常
+     * @param src      The source encrypted JAR file path.
+     * @param dest     The destination decrypted JAR file path.
+     * @param password The password to use for decryption.
+     * @param filter   The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(String src, String dest, String password, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -900,14 +901,14 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param filter    过滤器
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file path.
+     * @param dest      The destination decrypted JAR file path.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param filter    The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(
             String src,
@@ -919,15 +920,15 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param filter    过滤器
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file path.
+     * @param dest      The destination decrypted JAR file path.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @param filter    The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(
             String src,
@@ -940,16 +941,16 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @param filter    过滤器
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file path.
+     * @param dest      The destination decrypted JAR file path.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @param filter    The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(
             String src,
@@ -963,27 +964,27 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src      加密包
-     * @param dest     解密包
-     * @param password 密码
-     * @param filter   过滤器
-     * @throws Exception 解密异常
+     * @param src      The source encrypted JAR file.
+     * @param dest     The destination decrypted JAR file.
+     * @param password The password to use for decryption.
+     * @param filter   The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(File src, File dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
         decrypt(src, dest, password, Builder.ALGORITHM, filter);
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param filter    过滤器
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file.
+     * @param dest      The destination decrypted JAR file.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param filter    The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(File src, File dest, String password, String algorithm, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -991,15 +992,15 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param filter    过滤器
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file.
+     * @param dest      The destination decrypted JAR file.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @param filter    The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(
             File src,
@@ -1012,16 +1013,16 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param src       加密包
-     * @param dest      解密包
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @param filter    过滤器
-     * @throws Exception 解密异常
+     * @param src       The source encrypted JAR file.
+     * @param dest      The destination decrypted JAR file.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @param filter    The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(
             File src,
@@ -1037,13 +1038,13 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param in       加密包输入流
-     * @param out      解密包输出流
-     * @param password 密码
-     * @param filter   过滤器
-     * @throws Exception 解密异常
+     * @param in       The input stream of the encrypted JAR.
+     * @param out      The output stream for the decrypted JAR.
+     * @param password The password to use for decryption.
+     * @param filter   The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(InputStream in, OutputStream out, String password, Complex<JarArchiveEntry> filter)
             throws Exception {
@@ -1051,14 +1052,14 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param in        加密包输入流
-     * @param out       解密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param filter    过滤器
-     * @throws Exception 解密异常
+     * @param in        The input stream of the encrypted JAR.
+     * @param out       The output stream for the decrypted JAR.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param filter    The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(
             InputStream in,
@@ -1070,15 +1071,15 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param in        加密包输入流
-     * @param out       解密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param filter    过滤器
-     * @throws Exception 解密异常
+     * @param in        The input stream of the encrypted JAR.
+     * @param out       The output stream for the decrypted JAR.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @param filter    The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(
             InputStream in,
@@ -1091,16 +1092,16 @@ public class Boot {
     }
 
     /**
-     * 解密 Spring-Boot JAR 包
+     * Decrypts a Spring Boot JAR package.
      *
-     * @param in        加密包输入流
-     * @param out       解密包输出流
-     * @param password  密码
-     * @param algorithm 加密算法
-     * @param keysize   密钥长度
-     * @param ivsize    向量长度
-     * @param filter    过滤器
-     * @throws Exception 解密异常
+     * @param in        The input stream of the encrypted JAR.
+     * @param out       The output stream for the decrypted JAR.
+     * @param password  The password to use for decryption.
+     * @param algorithm The decryption algorithm.
+     * @param keysize   The key size.
+     * @param ivsize    The IV size.
+     * @param filter    The filter to apply.
+     * @throws Exception If a decryption error occurs.
      */
     public static void decrypt(
             InputStream in,

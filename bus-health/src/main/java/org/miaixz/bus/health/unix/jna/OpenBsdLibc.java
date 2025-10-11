@@ -23,7 +23,7 @@
  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ a~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.health.unix.jna;
 
@@ -33,53 +33,152 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 
 /**
- * C library. This class should be considered non-API as it may be removed if/when its code is incorporated into the JNA
- * project.
+ * C library for OpenBSD. This class should be considered non-API as it may be removed if/when its code is incorporated
+ * into the JNA project.
  */
 public interface OpenBsdLibc extends CLibrary {
 
+    /**
+     * Singleton instance of the OpenBsdLibc library.
+     */
     OpenBsdLibc INSTANCE = Native.load(null, OpenBsdLibc.class);
 
-    int CTL_KERN = 1; // "high kernel": proc, limits
-    int CTL_VM = 1; // "high kernel": proc, limits
-    int CTL_HW = 6; // generic cpu/io
-    int CTL_MACHDEP = 7; // machine dependent
-    int CTL_VFS = 10; // VFS sysctl's
+    /**
+     * High kernel: proc, limits
+     */
+    int CTL_KERN = 1;
+    /**
+     * High kernel: proc, limits
+     */
+    int CTL_VM = 1;
+    /**
+     * Generic CPU/IO
+     */
+    int CTL_HW = 6;
+    /**
+     * Machine dependent
+     */
+    int CTL_MACHDEP = 7;
+    /**
+     * VFS sysctls
+     */
+    int CTL_VFS = 10;
 
-    int KERN_OSTYPE = 1; // string: system version
-    int KERN_OSRELEASE = 2; // string: system release
-    int KERN_OSREV = 3; // int: system revision
-    int KERN_VERSION = 4; // string: compile time info
-    int KERN_MAXVNODES = 5; // int: max vnodes
-    int KERN_MAXPROC = 6; // int: max processes
-    int KERN_ARGMAX = 8; // int: max arguments to exec
-    int KERN_CPTIME = 40; // array: cp_time
-    int KERN_CPTIME2 = 71; // array: cp_time2
+    /**
+     * String: system version
+     */
+    int KERN_OSTYPE = 1;
+    /**
+     * String: system release
+     */
+    int KERN_OSRELEASE = 2;
+    /**
+     * Int: system revision
+     */
+    int KERN_OSREV = 3;
+    /**
+     * String: compile time info
+     */
+    int KERN_VERSION = 4;
+    /**
+     * Int: max vnodes
+     */
+    int KERN_MAXVNODES = 5;
+    /**
+     * Int: max processes
+     */
+    int KERN_MAXPROC = 6;
+    /**
+     * Int: max arguments to exec
+     */
+    int KERN_ARGMAX = 8;
+    /**
+     * Array: cp_time
+     */
+    int KERN_CPTIME = 40;
+    /**
+     * Array: cp_time2
+     */
+    int KERN_CPTIME2 = 71;
 
-    int VM_UVMEXP = 4; // struct uvmexp
+    /**
+     * Struct uvmexp
+     */
+    int VM_UVMEXP = 4;
 
-    int HW_MACHINE = 1; // string: machine class
-    int HW_MODEL = 2; // string: specific machine model
-    int HW_PAGESIZE = 7; // int: software page size
-    int HW_CPUSPEED = 12; // get CPU frequency
-    int HW_NCPUFOUND = 21; // CPU found (includes offline)
-    int HW_SMT = 24; // enable SMT/HT/CMT
-    int HW_NCPUONLINE = 25; // number of cpus being used
+    /**
+     * String: machine class
+     */
+    int HW_MACHINE = 1;
+    /**
+     * String: specific machine model
+     */
+    int HW_MODEL = 2;
+    /**
+     * Int: software page size
+     */
+    int HW_PAGESIZE = 7;
+    /**
+     * Get CPU frequency
+     */
+    int HW_CPUSPEED = 12;
+    /**
+     * CPU found (includes offline)
+     */
+    int HW_NCPUFOUND = 21;
+    /**
+     * Enable SMT/HT/CMT
+     */
+    int HW_SMT = 24;
+    /**
+     * Number of cpus being used
+     */
+    int HW_NCPUONLINE = 25;
 
-    int VFS_GENERIC = 0; // generic filesystem information
-    int VFS_BCACHESTAT = 3; // struct: buffer cache statistics given as next argument
+    /**
+     * Generic filesystem information
+     */
+    int VFS_GENERIC = 0;
+    /**
+     * Struct: buffer cache statistics given as next argument
+     */
+    int VFS_BCACHESTAT = 3;
 
     /*
      * CPU state indices
      */
+    /**
+     * Number of CPU states.
+     */
     int CPUSTATES = 5;
+    /**
+     * CPU user state index.
+     */
     int CP_USER = 0;
+    /**
+     * CPU nice state index.
+     */
     int CP_NICE = 1;
+    /**
+     * CPU system state index.
+     */
     int CP_SYS = 2;
-    int CP_INTR = 3; // 4 on 6.4 and later
-    int CP_IDLE = 4; // 5 on 6.4 and later
+    /**
+     * CPU interrupt state index (4 on 6.4 and later).
+     */
+    int CP_INTR = 3;
+    /**
+     * CPU idle state index (5 on 6.4 and later).
+     */
+    int CP_IDLE = 4;
 
+    /**
+     * Size of a 64-bit unsigned integer.
+     */
     int UINT64_SIZE = Native.getNativeSize(long.class);
+    /**
+     * Size of an integer.
+     */
     int INT_SIZE = Native.getNativeSize(int.class);
 
     /**
@@ -129,8 +228,14 @@ public interface OpenBsdLibc extends CLibrary {
     @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
 
-        public long tv_sec; // seconds
-        public long tv_usec; // microseconds
+        /**
+         * Seconds.
+         */
+        public long tv_sec;
+        /**
+         * Microseconds.
+         */
+        public long tv_usec;
     }
 
 }

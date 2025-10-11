@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 注解包，提供项目环境增强
+ * This package provides annotations for environment-specific enhancements, allowing components or configurations to be
+ * conditionally enabled based on the active application environment (e.g., development, production).
  *
  * @author Kimi Liu
  * @since Java 17+

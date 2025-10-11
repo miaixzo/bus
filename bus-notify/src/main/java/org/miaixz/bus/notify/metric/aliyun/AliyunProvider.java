@@ -51,27 +51,35 @@ import org.miaixz.bus.notify.magic.Material;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 阿里云抽象类提供者
+ * Abstract provider for Alibaba Cloud notification services, handling common logic like signing requests.
  *
+ * @param <T> The type of {@link Material} this provider handles.
+ * @param <K> The type of {@link Context} this provider uses.
  * @author Justubborn
  * @since Java 17+
  */
 public class AliyunProvider<T extends Material, K extends Context> extends AbstractProvider<T, K> {
 
     /**
-     * 发送成功后返回code
+     * The success result code returned by Alibaba Cloud services.
      */
     private static final String SUCCESS_RESULT = "OK";
 
+    /**
+     * Constructs an {@code AliyunProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public AliyunProvider(K context) {
         super(context);
     }
 
     /**
-     * pop编码
+     * URL-encodes a string value according to Alibaba Cloud's specific requirements (POP encoding). This involves
+     * replacing '+' with '%20', '*' with '%2A', and '~' with '%7E'.
      *
-     * @param value 原值
-     * @return 编码值
+     * @param value The original string value to encode.
+     * @return The URL-encoded string.
      */
     protected String specialUrlEncode(String value) {
         return URLEncoder.encode(value, Charset.UTF_8).replace(Symbol.PLUS, "%20").replace(Symbol.STAR, "%2A")
@@ -79,10 +87,12 @@ public class AliyunProvider<T extends Material, K extends Context> extends Abstr
     }
 
     /**
-     * 构造签名
+     * Constructs the signature for an Alibaba Cloud API request. This involves sorting parameters, building a
+     * canonicalized query string, and then signing it.
      *
-     * @param params 参数
-     * @return 签名值
+     * @param params A map of parameters to be signed.
+     * @return The generated signature string.
+     * @throws InternalException if a security algorithm is not found or the key is invalid during signing.
      */
     protected String getSign(Map<String, String> params) {
         // 4. 参数KEY排序
@@ -103,10 +113,11 @@ public class AliyunProvider<T extends Material, K extends Context> extends Abstr
     }
 
     /**
-     * 密钥签名
+     * Signs a given string using HMAC-SHA1 algorithm with the application secret.
      *
-     * @param stringToSign 代签名字符串
-     * @return 签名后字符串
+     * @param stringToSign The string to be signed.
+     * @return The Base64 encoded signature string.
+     * @throws InternalException if a security algorithm is not found or the key is invalid.
      */
     protected String sign(String stringToSign) {
         try {
@@ -121,6 +132,12 @@ public class AliyunProvider<T extends Material, K extends Context> extends Abstr
         }
     }
 
+    /**
+     * Checks the response from Alibaba Cloud and converts it into a {@link Message} object.
+     *
+     * @param response The raw JSON response string from Alibaba Cloud.
+     * @return A {@link Message} indicating the success or failure of the operation.
+     */
     protected Message checkResponse(String response) {
         String code = JsonKit.getValue(response, "Code");
         return Message.builder().errcode(SUCCESS_RESULT.equals(code) ? ErrorCode._SUCCESS.getKey() : code).errmsg(code)

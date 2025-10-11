@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.http.bodys;
 
-import java.io.*;
-
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -37,11 +35,15 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
 
+import java.io.*;
+
 /**
- * HTTP 响应体
+ * The body of an HTTP response.
  * <p>
- * 表示从源服务器到客户端的响应内容，是一次性流，仅能读取一次。 响应体依赖有限资源（如网络套接字或缓存文件），必须通过关闭释放资源。 支持以字节流、字符流或完整字节数组/字符串形式读取内容，适合处理大型响应。
- * </p>
+ * This class represents the content of a response from the origin server to the client. It is a one-shot stream that
+ * can only be read once. The response body relies on limited resources (like network sockets or cached files) and must
+ * be closed to release them. It supports reading content as a byte stream, character stream, or a complete byte
+ * array/string, making it suitable for handling large responses.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,19 +51,19 @@ import org.miaixz.bus.http.Builder;
 public abstract class ResponseBody implements Closeable {
 
     /**
-     * 字符流读取器
+     * The character stream reader.
      */
     private Reader reader;
 
     /**
-     * 从字符串创建响应体
+     * Creates a new response body from a string.
      * <p>
-     * 如果 <code>contentType</code> 非空且缺少字符集，则使用 UTF-8。
+     * If {@code contentType} is non-null and lacks a charset, UTF-8 will be used.
      * </p>
      *
-     * @param contentType 媒体类型（可能为 null）
-     * @param content     内容字符串
-     * @return 响应体实例
+     * @param contentType The media type of the content, which may be null.
+     * @param content     The content string.
+     * @return A new {@link ResponseBody} instance.
      */
     public static ResponseBody create(MediaType contentType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
@@ -77,11 +79,11 @@ public abstract class ResponseBody implements Closeable {
     }
 
     /**
-     * 从字节数组创建响应体
+     * Creates a new response body from a byte array.
      *
-     * @param contentType 媒体类型（可能为 null）
-     * @param content     内容字节数组
-     * @return 响应体实例
+     * @param contentType The media type of the content, which may be null.
+     * @param content     The content as a byte array.
+     * @return A new {@link ResponseBody} instance.
      */
     public static ResponseBody create(final MediaType contentType, byte[] content) {
         Buffer buffer = new Buffer().write(content);
@@ -89,11 +91,11 @@ public abstract class ResponseBody implements Closeable {
     }
 
     /**
-     * 从 ByteString 创建响应体
+     * Creates a new response body from a {@link ByteString}.
      *
-     * @param contentType 媒体类型（可能为 null）
-     * @param content     内容 ByteString
-     * @return 响应体实例
+     * @param contentType The media type of the content, which may be null.
+     * @param content     The content as a {@link ByteString}.
+     * @return A new {@link ResponseBody} instance.
      */
     public static ResponseBody create(MediaType contentType, ByteString content) {
         Buffer buffer = new Buffer().write(content);
@@ -101,13 +103,13 @@ public abstract class ResponseBody implements Closeable {
     }
 
     /**
-     * 从数据源创建响应体
+     * Creates a new response body from a data source.
      *
-     * @param contentType 媒体类型（可能为 null）
-     * @param length      内容长度
-     * @param content     数据源
-     * @return 响应体实例
-     * @throws NullPointerException 如果 content 为 null
+     * @param contentType The media type of the content, which may be null.
+     * @param length      The content length.
+     * @param content     The data source.
+     * @return A new {@link ResponseBody} instance.
+     * @throws NullPointerException if content is null.
      */
     public static ResponseBody create(final MediaType contentType, final long length, final BufferSource content) {
         if (null == content) {
@@ -122,7 +124,7 @@ public abstract class ResponseBody implements Closeable {
             }
 
             @Override
-            public long length() {
+            public long contentLength() {
                 return length;
             }
 
@@ -134,49 +136,47 @@ public abstract class ResponseBody implements Closeable {
     }
 
     /**
-     * 获取媒体类型
+     * Returns the media type of this response body.
      *
-     * @return 媒体类型（可能为 null）
+     * @return The media type, which may be null.
      */
     public abstract MediaType contentType();
 
     /**
-     * 获取内容长度
-     * <p>
-     * 返回响应的字节数，未知时返回 -1。
-     * </p>
+     * Returns the number of bytes in the response. This will be -1 if the size is unknown.
      *
-     * @return 内容长度
+     * @return The content length.
      */
-    public abstract long length();
+    public abstract long contentLength();
 
     /**
-     * 获取字节流
+     * Returns the response body as a byte stream.
      *
-     * @return 输入流
+     * @return The input stream.
      */
     public final InputStream byteStream() {
         return source().inputStream();
     }
 
     /**
-     * 获取数据源
+     * Returns the data source for this response body.
      *
-     * @return 数据源
+     * @return The data source.
      */
     public abstract BufferSource source();
 
     /**
-     * 获取响应内容的字节数组
+     * Returns the response body as a byte array.
      * <p>
-     * 将整个响应体加载到内存中，适合小型响应。 对于大型响应可能引发 {@link OutOfMemoryError}，建议使用流式读取。
+     * This method loads the entire response body into memory and is suitable for small responses. For large responses,
+     * this may cause an {@link OutOfMemoryError}, and stream-based reading is recommended.
      * </p>
      *
-     * @return 字节数组
-     * @throws IOException 如果读取失败或长度不匹配
+     * @return The byte array.
+     * @throws IOException if reading fails or the length does not match.
      */
     public final byte[] bytes() throws IOException {
-        long contentLength = length();
+        long contentLength = contentLength();
         if (contentLength > Integer.MAX_VALUE) {
             throw new IOException("Cannot buffer entire body for content length: " + contentLength);
         }
@@ -193,12 +193,13 @@ public abstract class ResponseBody implements Closeable {
     }
 
     /**
-     * 获取字符流
+     * Returns the response body as a character stream.
      * <p>
-     * 自动处理字节顺序标记（BOM）或 Content-Type 指定的字符集，默认使用 UTF-8。 多次调用返回同一实例。
+     * This method automatically handles the Byte Order Mark (BOM) or the charset specified in the Content-Type,
+     * defaulting to UTF-8. Multiple calls will return the same instance.
      * </p>
      *
-     * @return 字符流读取器
+     * @return The character stream reader.
      */
     public final Reader charStream() {
         Reader r = reader;
@@ -206,14 +207,15 @@ public abstract class ResponseBody implements Closeable {
     }
 
     /**
-     * 获取响应内容的字符串
+     * Returns the response body as a string.
      * <p>
-     * 将整个响应体加载到内存中，适合小型响应。 自动处理字节顺序标记（BOM）或 Content-Type 指定的字符集，默认使用 UTF-8。 对于大型响应可能引发
-     * {@link OutOfMemoryError}，建议使用流式读取。
+     * This method loads the entire response body into memory and is suitable for small responses. It automatically
+     * handles the Byte Order Mark (BOM) or the charset specified in the Content-Type, defaulting to UTF-8. For large
+     * responses, this may cause an {@link OutOfMemoryError}, and stream-based reading is recommended.
      * </p>
      *
-     * @return 字符串
-     * @throws IOException 如果读取失败
+     * @return The string.
+     * @throws IOException if reading fails.
      */
     public final String string() throws IOException {
         try (BufferSource source = source()) {
@@ -223,9 +225,9 @@ public abstract class ResponseBody implements Closeable {
     }
 
     /**
-     * 获取字符集
+     * Returns the character set of this response body.
      *
-     * @return 字符集（默认 UTF-8）
+     * @return The character set, defaulting to UTF-8.
      */
     private java.nio.charset.Charset charset() {
         MediaType contentType = contentType();
@@ -233,10 +235,7 @@ public abstract class ResponseBody implements Closeable {
     }
 
     /**
-     * 关闭响应体
-     * <p>
-     * 释放关联的资源（如网络套接字或缓存文件）。
-     * </p>
+     * Closes the response body, releasing any associated resources (like network sockets or cached files).
      */
     @Override
     public void close() {
@@ -244,32 +243,32 @@ public abstract class ResponseBody implements Closeable {
     }
 
     /**
-     * 支持 BOM 的字符流读取器
+     * A character stream reader that is aware of the Byte Order Mark (BOM).
      */
-    static class BomAwareReader extends Reader {
+    static final class BomAwareReader extends Reader {
 
         /**
-         * 数据源
+         * The data source.
          */
         private final BufferSource source;
         /**
-         * 字符集
+         * The character set.
          */
         private final java.nio.charset.Charset charset;
         /**
-         * 是否已关闭
+         * Whether the reader is closed.
          */
         private boolean closed;
         /**
-         * 委托读取器
+         * The delegate reader.
          */
         private Reader delegate;
 
         /**
-         * 构造函数
+         * Constructs a new {@code BomAwareReader}.
          *
-         * @param source  数据源
-         * @param charset 字符集
+         * @param source  The data source.
+         * @param charset The character set.
          */
         BomAwareReader(BufferSource source, java.nio.charset.Charset charset) {
             this.source = source;
@@ -277,13 +276,13 @@ public abstract class ResponseBody implements Closeable {
         }
 
         /**
-         * 读取字符
+         * Reads characters into a portion of an array.
          *
-         * @param cbuf 字符缓冲区
-         * @param off  偏移量
-         * @param len  读取长度
-         * @return 读取的字符数
-         * @throws IOException 如果流已关闭或读取失败
+         * @param cbuf The character buffer.
+         * @param off  The starting offset.
+         * @param len  The number of characters to read.
+         * @return The number of characters read.
+         * @throws IOException if the stream is closed or an I/O error occurs.
          */
         @Override
         public int read(char[] cbuf, int off, int len) throws IOException {
@@ -299,9 +298,9 @@ public abstract class ResponseBody implements Closeable {
         }
 
         /**
-         * 关闭读取器
+         * Closes the reader.
          *
-         * @throws IOException 如果关闭失败
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void close() throws IOException {

@@ -34,18 +34,34 @@ import org.miaixz.bus.validate.magic.Validator;
 import org.miaixz.bus.validate.magic.annotation.NotBlank;
 
 /**
- * NOT blank 校验
+ * Validator for the {@link NotBlank} annotation. Checks if a value is not blank. A value is considered blank if it is
+ * null, or if it is a string that is empty or contains only whitespace.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NotBlankMatcher implements Validator<Object>, Matcher<Object, NotBlank> {
 
+    /**
+     * Checks if the given object is not blank.
+     *
+     * @param object     The object to validate.
+     * @param annotation The {@link NotBlank} annotation instance (ignored).
+     * @param context    The validation context.
+     * @return {@code true} if the object is not blank, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, NotBlank annotation, Context context) {
         return on(object, context);
     }
 
+    /**
+     * Checks if the given object is not blank.
+     *
+     * @param object  The object to validate.
+     * @param context The validation context (ignored).
+     * @return {@code true} if the object is not blank, {@code false} otherwise.
+     */
     @Override
     public boolean on(Object object, Context context) {
         return !ObjectKit.isBlankIfString(object);

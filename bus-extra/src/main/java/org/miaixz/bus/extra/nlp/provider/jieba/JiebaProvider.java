@@ -35,33 +35,51 @@ import com.huaban.analysis.jieba.JiebaSegmenter;
 import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 
 /**
- * Jieba分词引擎实现 项目地址：https://github.com/huaban/jieba-analysis {@link JiebaSegmenter#process(String, SegMode)} 线程安全
+ * Jieba word segmentation engine implementation. This class serves as a concrete {@link NLPProvider} for the Jieba NLP
+ * library, adapting its word segmentation capabilities to the common NLP interface. The underlying
+ * {@link JiebaSegmenter#process(String, SegMode)} method is thread-safe. Project homepage:
+ * <a href="https://github.com/huaban/jieba-analysis">https://github.com/huaban/jieba-analysis</a>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class JiebaProvider implements NLPProvider {
 
+    /**
+     * The underlying Jieba {@link JiebaSegmenter} instance used for performing word segmentation.
+     */
     private final JiebaSegmenter jiebaSegmenter;
+    /**
+     * The segmentation mode used by the Jieba segmenter (e.g., SEARCH or INDEX).
+     */
     private final SegMode mode;
 
     /**
-     * 构造
+     * Constructs a new {@code JiebaProvider} instance with the default segmentation mode, which is
+     * {@link SegMode#SEARCH}.
      */
     public JiebaProvider() {
         this(SegMode.SEARCH);
     }
 
     /**
-     * 构造
+     * Constructs a new {@code JiebaProvider} instance with a specified segmentation mode.
      *
-     * @param mode 模式{@link SegMode}
+     * @param mode The {@link SegMode} to use for word segmentation (e.g., {@link SegMode#SEARCH} or
+     *             {@link SegMode#INDEX}).
      */
     public JiebaProvider(final SegMode mode) {
         this.jiebaSegmenter = new JiebaSegmenter();
         this.mode = mode;
     }
 
+    /**
+     * Performs word segmentation on the given text using the configured Jieba {@link JiebaSegmenter} instance. The
+     * result is wrapped in a {@link JiebaResult} to conform to the {@link NLPResult} interface.
+     *
+     * @param text The input text {@link CharSequence} to be segmented.
+     * @return An {@link NLPResult} object containing the segmented words from Jieba.
+     */
     @Override
     public NLPResult parse(final CharSequence text) {
         return new JiebaResult(jiebaSegmenter.process(StringKit.toStringOrEmpty(text), mode));

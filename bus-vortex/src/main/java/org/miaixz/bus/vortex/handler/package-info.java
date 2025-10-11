@@ -26,7 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 权限等相关参数校验
+ * Provides handler implementations for various request processing stages, including authentication and parameter
+ * validation. This package contains classes that define how requests are handled, pre-processed, and post-processed
+ * within the Vortex module, ensuring proper security and data integrity.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数字检查器
+ * Number validator.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,52 +42,104 @@ public class NumberValidator {
     public static final double DOUBLE_EPSILON = 1e-6;
     public static final double FLOAT_EPSILON = 1e-5;
 
+    /**
+     * Checks if a float value is equal to zero within a small tolerance.
+     * 
+     * @param val The float value.
+     * @return {@code true} if the value is close to zero.
+     */
     public static boolean isEqualToZero(float val) {
         return Math.copySign(val, 1.0) < FLOAT_EPSILON;
     }
 
+    /**
+     * Checks if a float value is not equal to zero within a small tolerance.
+     * 
+     * @param val The float value.
+     * @return {@code true} if the value is not close to zero.
+     */
     public static boolean isDifferentFromZero(float val) {
         return Math.copySign(val, 1.0) > FLOAT_EPSILON;
     }
 
+    /**
+     * Checks if two float values are equal within a small tolerance.
+     * 
+     * @param a The first float value.
+     * @param b The second float value.
+     * @return {@code true} if the values are close to each other.
+     */
     public static boolean isEqual(float a, float b) {
         return Math.copySign(a - b, 1.0) <= FLOAT_EPSILON || (a == b) || (Float.isNaN(a) && Float.isNaN(b));
     }
 
+    /**
+     * Checks if two float values are not equal within a small tolerance.
+     * 
+     * @param a The first float value.
+     * @param b The second float value.
+     * @return {@code true} if the values are not close to each other.
+     */
     public static boolean isDifferent(float a, float b) {
         return Math.copySign(a - b, 1.0) >= FLOAT_EPSILON;
     }
 
+    /**
+     * Checks if a double value is equal to zero within a small tolerance.
+     * 
+     * @param val The double value.
+     * @return {@code true} if the value is close to zero.
+     */
     public static boolean isEqualToZero(double val) {
         return Math.copySign(val, 1.0) < DOUBLE_EPSILON;
     }
 
+    /**
+     * Checks if a double value is not equal to zero within a small tolerance.
+     * 
+     * @param val The double value.
+     * @return {@code true} if the value is not close to zero.
+     */
     public static boolean isDifferentFromZero(double val) {
         return Math.copySign(val, 1.0) > DOUBLE_EPSILON;
     }
 
+    /**
+     * Checks if two double values are equal within a small tolerance.
+     * 
+     * @param a The first double value.
+     * @param b The second double value.
+     * @return {@code true} if the values are close to each other.
+     */
     public static boolean isEqual(double a, double b) {
         return Math.copySign(a - b, 1.0) <= DOUBLE_EPSILON || (a == b) || (Double.isNaN(a) && Double.isNaN(b));
     }
 
+    /**
+     * Checks if two double values are not equal within a small tolerance.
+     * 
+     * @param a The first double value.
+     * @param b The second double value.
+     * @return {@code true} if the values are not close to each other.
+     */
     public static boolean isDifferent(double a, double b) {
         return Math.copySign(a - b, 1.0) >= DOUBLE_EPSILON;
     }
 
     /**
-     * 是否为数字，支持包括：
+     * Checks if the character sequence is a number. Supported formats include:
      *
      * <pre>
-     * 1、10进制
-     * 2、16进制数字（0x开头）
-     * 3、科学计数法形式（1234E3）
-     * 4、类型标识形式（123D）
-     * 5、正负数标识形式（+123、-234）
-     * 6、八进制数字(0开头)
+     * 1. Decimal
+     * 2. Hexadecimal (starting with 0x)
+     * 3. Scientific notation (e.g., 1234E3)
+     * 4. Type-qualified format (e.g., 123D)
+     * 5. Signed format (e.g., +123, -234)
+     * 6. Octal (starting with 0)
      * </pre>
      *
-     * @param text 字符串值, 不可以含有任何空白字符
-     * @return 是否为数字
+     * @param text The character sequence to check. It should not contain any whitespace.
+     * @return {@code true} if the character sequence is a number, {@code false} otherwise.
      */
     public static boolean isNumber(final CharSequence text) {
         if (StringKit.isBlank(text)) {
@@ -199,18 +251,18 @@ public class NumberValidator {
     }
 
     /**
-     * 判断字符串是否是整数
+     * Checks if the string is an integer.
      *
      * <p>
-     * 支持格式:
+     * Supported formats:
      * <ol>
-     * <li>10进制, 不能包含前导零</li>
-     * <li>8进制(以0开头)</li>
-     * <li>16进制(以0x或者0X开头)</li>
+     * <li>Decimal, cannot contain leading zeros.</li>
+     * <li>Octal (starting with 0).</li>
+     * <li>Hexadecimal (starting with 0x or 0X).</li>
      * </ol>
      *
-     * @param s 校验的字符串, 只能含有 正负号、数字字符 和 {@literal X/x}
-     * @return 是否为 {@link Integer}类型
+     * @param s The string to validate. It can only contain signs, digits, and {@literal X/x}.
+     * @return {@code true} if the string is an {@link Integer}, {@code false} otherwise.
      * @see Integer#decode(String)
      */
     public static boolean isInteger(final String s) {
@@ -226,17 +278,18 @@ public class NumberValidator {
     }
 
     /**
-     * 判断字符串是否是Long类型
+     * Checks if the string is a Long.
      * <p>
-     * 支持格式:
+     * Supported formats:
      * <ol>
-     * <li>10进制, 不能包含前导零</li>
-     * <li>8进制(以0开头)</li>
-     * <li>16进制(以0x或者0X开头)</li>
+     * <li>Decimal, cannot contain leading zeros.</li>
+     * <li>Octal (starting with 0).</li>
+     * <li>Hexadecimal (starting with 0x or 0X).</li>
      * </ol>
      *
-     * @param s 校验的字符串, 只能含有 正负号、数字字符、{@literal X/x} 和 后缀{@literal L/l}
-     * @return 是否为 {@link Long}类型
+     * @param s The string to validate. It can only contain signs, digits, {@literal X/x}, and the suffix
+     *          {@literal L/l}.
+     * @return {@code true} if the string is a {@link Long}, {@code false} otherwise.
      */
     public static boolean isLong(final String s) {
         if (!isNumber(s)) {
@@ -255,10 +308,10 @@ public class NumberValidator {
     }
 
     /**
-     * 判断字符串是否是浮点数
+     * Checks if the string is a floating-point number.
      *
-     * @param s String
-     * @return 是否为 {@link Double}类型
+     * @param s The string to check.
+     * @return {@code true} if the string is a {@link Double}, {@code false} otherwise.
      */
     public static boolean isDouble(final String s) {
         if (StringKit.isBlank(s)) {
@@ -273,17 +326,18 @@ public class NumberValidator {
     }
 
     /**
-     * 是否是质数（素数） 质数表的质数又称素数。指整数在一个大于1的自然数中,除了1和此整数自身外,没法被其他自然数整除的数。
+     * Checks if a number is a prime number. A prime number is a natural number greater than 1 that has no positive
+     * divisors other than 1 and itself.
      *
-     * @param n 数字
-     * @return 是否是质数
+     * @param n The number to check.
+     * @return {@code true} if the number is prime, {@code false} otherwise.
      */
     public static boolean isPrime(final int n) {
         Assert.isTrue(n > 1, "The number must be > 1");
         if (n <= 3) {
             return true;
         } else if ((n & 1) == 0) {
-            // 快速排除偶数
+            // Quickly exclude even numbers.
             return false;
         }
         final int end = (int) Math.sqrt(n);

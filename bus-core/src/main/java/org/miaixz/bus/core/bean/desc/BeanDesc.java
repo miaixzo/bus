@@ -34,13 +34,24 @@ import java.util.Map;
 import org.miaixz.bus.core.lang.reflect.Invoker;
 
 /**
- * Bean信息描述做为BeanInfo替代方案，此对象持有JavaBean中的setters和getters等相关信息描述 查找Getter和Setter方法时会：
+ * Describes the properties of a JavaBean, serving as an alternative to {@link java.beans.BeanInfo}. This object holds
+ * information about the bean's setters and getters. When searching for Getter and Setter methods, it will:
  *
  * <pre>
- * 1. 忽略字段和方法名的大小写
- * 2. Getter查找getXXX、isXXX、getIsXXX
- * 3. Setter查找setXXX、setIsXXX
- * 4. Setter忽略参数值与字段值不匹配的情况，因此有多个参数类型的重载时，会调用首次匹配的
+ * 1. Ignore case for field and method names.
+ * 2. For Getters, search for methods like {@code
+ * getXXX
+ * }, {@code
+ * isXXX
+ * }, and {@code
+ * getIsXXX
+ * }.
+ * 3. For Setters, search for methods like {@code
+ * setXXX
+ * } and {@code
+ * setIsXXX
+ * }.
+ * 4. For Setters, it ignores cases where parameter values do not match field values. Therefore, if there are multiple overloaded methods with different parameter types, the first matching one will be called.
  * </pre>
  *
  * @author Kimi Liu
@@ -49,36 +60,36 @@ import org.miaixz.bus.core.lang.reflect.Invoker;
 public interface BeanDesc extends Serializable {
 
     /**
-     * 获取字段名-字段属性Map
+     * Retrieves a map of field names to their corresponding {@link PropDesc} objects.
      *
-     * @param ignoreCase 是否忽略大小写，true为忽略，false不忽略
-     * @return 字段名-字段属性Map
+     * @param ignoreCase {@code true} to ignore case when matching field names, {@code false} otherwise.
+     * @return A map where keys are field names and values are {@link PropDesc} objects.
      */
     Map<String, PropDesc> getPropMap(final boolean ignoreCase);
 
     /**
-     * 获取Bean属性数量
+     * Retrieves the number of properties (fields) in the Bean.
      *
-     * @return 字段数量
+     * @return The number of properties.
      */
     default int size() {
         return getPropMap(false).size();
     }
 
     /**
-     * 是否为空
+     * Checks if the Bean has no properties.
      *
-     * @return 是否为空
+     * @return {@code true} if the Bean has no properties, {@code false} otherwise.
      */
     default boolean isEmpty() {
         return size() == 0;
     }
 
     /**
-     * 是否有可读字段，即有getter方法或public字段
+     * Checks if the Bean has any readable fields (i.e., fields with a getter method or public access).
      *
-     * @param checkTransient 是否检查transient字段，true表示检查，false表示不检查
-     * @return 是否有可读字段
+     * @param checkTransient {@code true} to include transient fields in the check, {@code false} to ignore them.
+     * @return {@code true} if there is at least one readable field, {@code false} otherwise.
      */
     default boolean isReadable(final boolean checkTransient) {
         for (final Map.Entry<String, PropDesc> entry : getPropMap(false).entrySet()) {
@@ -90,10 +101,10 @@ public interface BeanDesc extends Serializable {
     }
 
     /**
-     * 是否有可写字段，即有setter方法或public字段
+     * Checks if the Bean has any writable fields (i.e., fields with a setter method or public access).
      *
-     * @param checkTransient 是否检查transient字段，true表示检查，false表示不检查
-     * @return 是否有可写字段
+     * @param checkTransient {@code true} to include transient fields in the check, {@code false} to ignore them.
+     * @return {@code true} if there is at least one writable field, {@code false} otherwise.
      */
     default boolean isWritable(final boolean checkTransient) {
         for (final Map.Entry<String, PropDesc> entry : getPropMap(false).entrySet()) {
@@ -105,29 +116,29 @@ public interface BeanDesc extends Serializable {
     }
 
     /**
-     * 获取字段属性列表
+     * Retrieves a collection of all property descriptors for the Bean.
      *
-     * @return {@link PropDesc} 列表
+     * @return A {@link Collection} of {@link PropDesc} objects.
      */
     default Collection<PropDesc> getProps() {
         return getPropMap(false).values();
     }
 
     /**
-     * 获取属性，如果不存在返回null
+     * Retrieves the property descriptor for a given field name.
      *
-     * @param fieldName 字段名
-     * @return {@link PropDesc}
+     * @param fieldName The name of the field.
+     * @return The {@link PropDesc} object for the field, or {@code null} if not found.
      */
     default PropDesc getProp(final String fieldName) {
         return getPropMap(false).get(fieldName);
     }
 
     /**
-     * 获取Getter方法，如果不存在返回null
+     * Retrieves the {@link Invoker} for the getter method of a given field.
      *
-     * @param fieldName 字段名
-     * @return Getter方法
+     * @param fieldName The name of the field.
+     * @return The {@link Invoker} for the getter method, or {@code null} if no getter exists.
      */
     default Invoker getGetter(final String fieldName) {
         final PropDesc desc = getProp(fieldName);
@@ -135,10 +146,10 @@ public interface BeanDesc extends Serializable {
     }
 
     /**
-     * 获取Setter方法，如果不存在返回null
+     * Retrieves the {@link Invoker} for the setter method of a given field.
      *
-     * @param fieldName 字段名
-     * @return Setter方法
+     * @param fieldName The name of the field.
+     * @return The {@link Invoker} for the setter method, or {@code null} if no setter exists.
      */
     default Invoker getSetter(final String fieldName) {
         final PropDesc desc = getProp(fieldName);

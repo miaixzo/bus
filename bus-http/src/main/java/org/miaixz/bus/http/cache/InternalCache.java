@@ -27,48 +27,67 @@
 */
 package org.miaixz.bus.http.cache;
 
-import java.io.IOException;
-
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 
+import java.io.IOException;
+
 /**
- * Http's 的内部缓存接口 应用程序不应该实现这个:而是使用{@link Cache}
+ * An internal interface for Http's cache. Applications should not implement this interface directly. Instead, they
+ * should use {@link Cache} to configure a cache for an {@code Httpd} instance.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public interface InternalCache {
 
+    /**
+     * Returns the cached response for the given {@code request}, or null if no cached response exists or is not
+     * suitable.
+     *
+     * @param request The request to get the cached response for.
+     * @return The cached response, or null.
+     * @throws IOException if an I/O error occurs.
+     */
     Response get(Request request) throws IOException;
 
+    /**
+     * Stores the given {@code response} in the cache and returns a {@link CacheRequest} to write the response body, or
+     * null if the response cannot be cached.
+     *
+     * @param response The response to store.
+     * @return A {@link CacheRequest} to write the response body, or null.
+     * @throws IOException if an I/O error occurs.
+     */
     CacheRequest put(Response response) throws IOException;
 
     /**
-     * 删除提供的{@code request}的所有缓存项。当客户端使缓存无效时(如发出POST请求时)，将调用此方法
+     * Removes any cached entries for the given {@code request}. This is called when the client invalidates the cache,
+     * such as when making a POST, PUT, or DELETE request.
      *
-     * @param request 请求
-     * @throws IOException 异常
+     * @param request The request to remove from the cache.
+     * @throws IOException if an I/O error occurs.
      */
     void remove(Request request) throws IOException;
 
     /**
-     * 通过使用来自{@code network}的报头更新存储的缓存响应来处理条件请求 如果存储的响应在返回{@code cached}后发生了变化，这将不起任何作用
+     * Updates the stored cached response with headers from the new {@code network} response. This is called to handle
+     * conditional requests. If the stored response has changed since {@code cached} was returned, this does nothing.
      *
-     * @param cached  缓存请求
-     * @param network 网络请求
+     * @param cached  The stale cached response.
+     * @param network The new network response.
      */
     void update(Response cached, Response network);
 
     /**
-     * 跟踪此缓存满足的条件GET
+     * Tracks a conditional GET that was satisfied by this cache. This is used for statistics.
      */
     void trackConditionalCacheHit();
 
     /**
-     * 跟踪一个满足{@code cacheStrategy}的HTTP响应
+     * Tracks an HTTP response that was satisfied by the given {@code cacheStrategy}. This is used for statistics.
      *
-     * @param cacheStrategy 请求和缓存的响应
+     * @param cacheStrategy The cache strategy used for the response.
      */
     void trackResponse(CacheStrategy cacheStrategy);
 

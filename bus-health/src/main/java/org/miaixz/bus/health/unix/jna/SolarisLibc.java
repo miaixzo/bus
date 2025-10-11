@@ -38,11 +38,14 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 
 /**
- * C library. This class should be considered non-API as it may be removed if/when its code is incorporated into the JNA
- * project.
+ * C library for Solaris. This class should be considered non-API as it may be removed if/when its code is incorporated
+ * into the JNA project.
  */
 public interface SolarisLibc extends CLibrary {
 
+    /**
+     * Singleton instance of the SolarisLibc library.
+     */
     SolarisLibc INSTANCE = Native.load("c", SolarisLibc.class);
 
     int UTX_USERSIZE = 32;

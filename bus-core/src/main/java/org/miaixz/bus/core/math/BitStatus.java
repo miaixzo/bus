@@ -28,7 +28,8 @@
 package org.miaixz.bus.core.math;
 
 /**
- * 通过位运算表示状态的工具类 参数必须是 `偶数` 且 `大于等于0`
+ * A utility class for representing states using bitwise operations. Parameters must be `even` and `greater than or
+ * equal to 0`.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,11 +37,11 @@ package org.miaixz.bus.core.math;
 public class BitStatus {
 
     /**
-     * 增加状态
+     * Adds a status.
      *
-     * @param states 原状态
-     * @param stat   要添加的状态
-     * @return 新的状态值
+     * @param states The original status collection.
+     * @param stat   The status to add.
+     * @return The new status value.
      */
     public static int add(final int states, final int stat) {
         check(states, stat);
@@ -48,11 +49,11 @@ public class BitStatus {
     }
 
     /**
-     * 判断是否含有状态
+     * Checks if a status is present.
      *
-     * @param states 原状态
-     * @param stat   要判断的状态
-     * @return true：有
+     * @param states The original status collection.
+     * @param stat   The status to check for.
+     * @return {@code true} if the status is present, {@code false} otherwise.
      */
     public static boolean has(final int states, final int stat) {
         check(states, stat);
@@ -60,11 +61,11 @@ public class BitStatus {
     }
 
     /**
-     * 删除一个状态
+     * Removes a status.
      *
-     * @param states 原状态
-     * @param stat   要删除的状态
-     * @return 新的状态值
+     * @param states The original status collection.
+     * @param stat   The status to remove.
+     * @return The new status value.
      */
     public static int remove(final int states, final int stat) {
         check(states, stat);
@@ -75,7 +76,7 @@ public class BitStatus {
     }
 
     /**
-     * 清空状态就是0
+     * Clears all statuses, returning 0.
      *
      * @return 0
      */
@@ -84,25 +85,30 @@ public class BitStatus {
     }
 
     /**
-     * 检查
+     * Checks the validity of status values.
      * <ul>
-     * <li>必须大于0</li>
-     * <li>必须为偶数</li>
+     * <li>Must be greater than or equal to 0.</li>
+     * <li>Must be an even number.</li>
      * </ul>
      *
-     * @param args 被检查的状态
+     * @param args The status values to check.
      */
     private static void check(final int... args) {
         for (final int arg : args) {
             if (arg < 0) {
-                // 位运算中 0 在二进制表示中所有位都是 0，它并不能代表任何特定状态
-                // 如果 0 被允许作为一个合法状态值，那么在检查状态时（比如通过 has() 方法），它将无法有效区分 0 是代表“无状态”还是代表某个特定状态。
-                // 如果允许 0 作为状态，它可能会与清空状态的操作（clear() 方法返回 0）发生混淆，从而导致逻辑上的错误。
-                throw new IllegalArgumentException(arg + " 必须大于等于0");
+                // In bitwise operations, 0 has all bits as 0 in its binary representation and cannot represent any
+                // specific state.
+                // If 0 were allowed as a legal status value, it would be impossible to distinguish whether 0 represents
+                // "no status" or a specific status when checking (e.g., via the has() method).
+                // Allowing 0 as a status could also cause confusion with the clear() operation (which returns 0),
+                // leading to logical errors.
+                throw new IllegalArgumentException(arg + " must be greater than or equal to 0");
             }
             if ((arg & 1) == 1) {
-                // 使用偶数作为状态值，确保每个状态只占用二进制中的一位，从而避免不同状态之间的混淆，确保位运算的准确性。
-                throw new IllegalArgumentException(arg + " 不是偶数");
+                // Using even numbers as status values ensures that each status occupies only one bit in the binary
+                // representation,
+                // thus avoiding confusion between different statuses and ensuring the accuracy of bitwise operations.
+                throw new IllegalArgumentException(arg + " is not an even number");
             }
         }
     }

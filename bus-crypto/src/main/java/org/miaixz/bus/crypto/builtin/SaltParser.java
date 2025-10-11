@@ -36,29 +36,48 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.center.MD5;
 
 /**
- * OpenSSL中加盐解析器 参考：
- * 
- * <pre>
- *     https://stackoverflow.com/questions/11783062/how-to-decrypt-file-in-java-encrypted-with-openssl-command-using-aes
- *     https://stackoverflow.com/questions/32508961/java-equivalent-of-an-openssl-aes-cbc-encryption
- * </pre>
+ * OpenSSL salt parser. This utility is used to derive key and IV from a password and salt, typically for compatibility
+ * with OpenSSL's salted encryption format.
+ * <p>
+ * References:
+ * </p>
+ * <ul>
+ * <li><a href=
+ * "https://stackoverflow.com/questions/11783062/how-to-decrypt-file-in-java-encrypted-with-openssl-command-using-aes">How
+ * to decrypt file in Java encrypted with openssl command using AES</a></li>
+ * <li><a href="https://stackoverflow.com/questions/32508961/java-equivalent-of-an-openssl-aes-cbc-encryption">Java
+ * equivalent of an openssl aes cbc encryption</a></li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SaltParser {
 
+    /**
+     * The message digest algorithm used for key derivation.
+     */
     private final MessageDigest digest;
+    /**
+     * The desired key length in bytes.
+     */
     private final int keyLength;
+    /**
+     * The desired IV (Initialization Vector) length in bytes.
+     */
     private final int ivLength;
+    /**
+     * The algorithm name, used to determine default IV length for some algorithms.
+     */
     private String algorithm;
 
     /**
-     * 构造
+     * Constructs a {@code SaltParser} with the specified message digest, key length, and algorithm. The IV length is
+     * determined based on the algorithm (8 for DES, 16 for others).
      *
-     * @param digest    {@link MessageDigest}
-     * @param keyLength 密钥长度
-     * @param algorithm 算法
+     * @param digest    The {@link MessageDigest} instance to use for key derivation.
+     * @param keyLength The desired key length in bytes.
+     * @param algorithm The algorithm name (e.g., "AES", "DES").
      */
     public SaltParser(final MessageDigest digest, final int keyLength, final String algorithm) {
         int ivLength = 16;
@@ -72,11 +91,11 @@ public class SaltParser {
     }
 
     /**
-     * 构造
+     * Constructs a {@code SaltParser} with the specified message digest, key length, and IV length.
      *
-     * @param digest    {@link MessageDigest}
-     * @param keyLength 密钥长度
-     * @param ivLength  IV长度
+     * @param digest    The {@link MessageDigest} instance to use for key derivation.
+     * @param keyLength The desired key length in bytes.
+     * @param ivLength  The desired IV length in bytes.
      */
     public SaltParser(final MessageDigest digest, final int keyLength, final int ivLength) {
         this.digest = digest;
@@ -85,34 +104,37 @@ public class SaltParser {
     }
 
     /**
-     * 创建MD5 OpenSSLSaltParser
+     * Creates an MD5-based {@code SaltParser} with the specified key length and algorithm.
      *
-     * @param keyLength 密钥长度
-     * @param algorithm 算法
-     * @return OpenSSLSaltParser
+     * @param keyLength The desired key length in bytes.
+     * @param algorithm The algorithm name.
+     * @return A new {@code SaltParser} instance using MD5 as the digest algorithm.
      */
     public static SaltParser ofMd5(final int keyLength, final String algorithm) {
         return of(MD5.of().getRaw(), keyLength, algorithm);
     }
 
     /**
-     * 创建OpenSSLSaltParser
+     * Creates a {@code SaltParser} with the specified message digest, key length, and algorithm.
      *
-     * @param digest    {@link MessageDigest}
-     * @param keyLength 密钥长度
-     * @param algorithm 算法
-     * @return OpenSSLSaltParser
+     * @param digest    The {@link MessageDigest} instance to use for key derivation.
+     * @param keyLength The desired key length in bytes.
+     * @param algorithm The algorithm name.
+     * @return A new {@code SaltParser} instance.
      */
     public static SaltParser of(final MessageDigest digest, final int keyLength, final String algorithm) {
         return new SaltParser(digest, keyLength, algorithm);
     }
 
     /**
-     * 通过密钥和salt值，获取实际的密钥
+     * Derives a key and IV (Initialization Vector) from a password and salt. This method simulates OpenSSL's key
+     * derivation function.
      *
-     * @param pass 密钥
-     * @param salt 加盐值
-     * @return 实际密钥
+     * @param pass The password as a byte array.
+     * @param salt The salt value as a byte array. If {@code null}, no salt is used, and the password itself is used as
+     *             the key.
+     * @return A 2D byte array where the first element is the derived key and the second element is the derived IV.
+     * @throws IllegalArgumentException if the salt is not 8 bytes long when provided.
      */
     public byte[][] getKeyAndIV(final byte[] pass, final byte[] salt) {
         final byte[][] keyAndIvResult = new byte[2][];

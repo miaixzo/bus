@@ -36,21 +36,21 @@ import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * MongoDB ID生成策略实现 ObjectId由以下几部分组成：
+ * A MongoDB ObjectId generator. An ObjectId is composed of:
  *
  * <pre>
- * 1. Time 时间戳。
- * 2. Machine 所在主机的唯一标识符，一般是机器主机名的散列值。
- * 3. 随机数
- * 4. INC 自增计数器。确保同一秒内产生objectId的唯一性。
+ * 1. Time: A timestamp.
+ * 2. Machine: A unique identifier for the host, typically a hash of the machine's hostname.
+ * 3. Random number.
+ * 4. INC: An auto-incrementing counter to ensure uniqueness within the same second.
  * </pre>
  *
  * <pre>
- *     | 时间戳 | 随机数 | 自增计数器 |
- *     |   4   |   4   |    4     |
+ *     | Timestamp | Random Number | Auto-incrementing Counter |
+ *     |   4 bytes |   4 bytes     |    4 bytes                |
  * </pre>
  * 
- * 参考：<a href=
+ * Reference: <a href=
  * "https://github.com/mongodb/mongo-java-driver/blob/master/bson/src/main/org/bson/types/ObjectId.java">ObjectId</a>
  *
  * @author Kimi Liu
@@ -59,19 +59,19 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ObjectId {
 
     /**
-     * 线程安全的下一个随机数,每次生成自增+1
+     * A thread-safe counter for generating unique IDs.
      */
     private static final AtomicInteger NEXT_INC = new AtomicInteger(RandomKit.randomInt());
     /**
-     * 机器信息
+     * The machine identifier.
      */
     private static final char[] MACHINE_CODE = initMachineCode();
 
     /**
-     * 给定的字符串是否为有效的ObjectId
+     * Checks if the given string is a valid ObjectId.
      *
-     * @param s 字符串
-     * @return 是否为有效的ObjectId
+     * @param s The string to check.
+     * @return {@code true} if the string is a valid ObjectId, {@code false} otherwise.
      */
     public static boolean isValid(String s) {
         if (s == null) {
@@ -101,39 +101,39 @@ public class ObjectId {
     }
 
     /**
-     * 获取一个objectId的bytes表现形式
+     * Gets the byte representation of a new ObjectId.
      *
-     * @return objectId
+     * @return The byte array of the ObjectId.
      */
     public static byte[] nextBytes() {
         return next().getBytes();
     }
 
     /**
-     * 获取一个objectId【没有下划线】。
+     * Gets a new ObjectId string (without hyphens).
      *
-     * @return objectId
+     * @return The ObjectId string.
      */
     public static String id() {
         return next();
     }
 
     /**
-     * 获取一个objectId【没有下划线】。
+     * Gets a new ObjectId string (without hyphens).
      *
-     * @return objectId
+     * @return The ObjectId string.
      */
     public static String next() {
         final char[] ids = new char[24];
         int epoch = (int) ((System.currentTimeMillis() / 1000));
-        // 4位字节 ： 时间戳
+        // 4 bytes: timestamp
         for (int i = 7; i >= 0; i--) {
             ids[i] = Normal.DIGITS_16_LOWER[(epoch & 15)];
             epoch >>>= 4;
         }
-        // 4位字节 ： 随机数
+        // 4 bytes: random number
         System.arraycopy(MACHINE_CODE, 0, ids, 8, 8);
-        // 4位字节： 自增序列。溢出后，相当于从0开始算。
+        // 4 bytes: auto-incrementing sequence. Wraps around on overflow.
         int seq = NEXT_INC.incrementAndGet();
         for (int i = 23; i >= 16; i--) {
             ids[i] = Normal.DIGITS_16_LOWER[(seq & 15)];
@@ -143,10 +143,10 @@ public class ObjectId {
     }
 
     /**
-     * 获取一个objectId
+     * Gets a new ObjectId string.
      *
-     * @param withHyphen 是否包含分隔符
-     * @return objectId
+     * @param withHyphen Whether to include hyphens as separators.
+     * @return The ObjectId string.
      */
     public static String next(final boolean withHyphen) {
         if (!withHyphen) {
@@ -156,14 +156,14 @@ public class ObjectId {
         ids[8] = Symbol.C_MINUS;
         ids[17] = Symbol.C_MINUS;
         int epoch = (int) ((System.currentTimeMillis() / 1000));
-        // 4位字节 ： 时间戳
+        // 4 bytes: timestamp
         for (int i = 7; i >= 0; i--) {
             ids[i] = Normal.DIGITS_16_LOWER[(epoch & 15)];
             epoch >>>= 4;
         }
-        // 4位字节 ： 随机数
+        // 4 bytes: random number
         System.arraycopy(MACHINE_CODE, 0, ids, 9, 8);
-        // 4位字节： 自增序列。溢出后，相当于从0开始算。
+        // 4 bytes: auto-incrementing sequence. Wraps around on overflow.
         int seq = NEXT_INC.incrementAndGet();
         for (int i = 25; i >= 18; i--) {
             ids[i] = Normal.DIGITS_16_LOWER[(seq & 15)];
@@ -173,12 +173,13 @@ public class ObjectId {
     }
 
     /**
-     * 初始化机器码
+     * Initializes the machine code.
      *
-     * @return 机器码
+     * @return The machine code.
      */
     private static char[] initMachineCode() {
-        // 机器码 : 4位随机数，8个字节。避免docker容器中生成相同机器码的bug
+        // Machine code: 4-byte random number, 8 hex characters. Avoids bugs with identical machine codes in Docker
+        // containers.
         final char[] macAndPid = new char[8];
         final Random random = new Random();
         for (int i = 7; i >= 0; i--) {

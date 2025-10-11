@@ -34,11 +34,12 @@ import java.util.function.Function;
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 两个函数的叠加函数. 叠加 {@code f: A->B} 和 {@code g: B->C}，效果等同于：{@code h(a) == g(f(a))}
+ * A composite function that combines two functions. Composes {@code f: A->B} and {@code g: B->C}, such that the effect
+ * is equivalent to: {@code h(a) == g(f(a))}.
  *
- * @param <A> 第一个函数的传入参数类型
- * @param <B> 第一个函数的返回类型（第二个函数有的参数类型）
- * @param <C> 最终结果类型
+ * @param <A> The input parameter type of the first function.
+ * @param <B> The return type of the first function (and the input parameter type of the second function).
+ * @param <C> The final result type.
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -47,14 +48,20 @@ public class ComposeX<A, B, C> implements Function<A, C>, Serializable {
     @Serial
     private static final long serialVersionUID = 2852258708782L;
 
+    /**
+     * The second function in the composition, which takes input of type B and returns type C.
+     */
     private final Function<B, C> g;
+    /**
+     * The first function in the composition, which takes input of type A and returns type B.
+     */
     private final Function<A, ? extends B> f;
 
     /**
-     * 构造
+     * Constructs a {@code ComposeX} instance with the given functions.
      *
-     * @param g 函数1
-     * @param f 函数2
+     * @param g The second function.
+     * @param f The first function.
      */
     public ComposeX(final Function<B, C> g, final Function<A, ? extends B> f) {
         this.g = Assert.notNull(g);
@@ -62,19 +69,26 @@ public class ComposeX<A, B, C> implements Function<A, C>, Serializable {
     }
 
     /**
-     * 两个函数的叠加函数. 叠加 {@code f: A->B} 和 {@code g: B->C}，效果等同于：{@code h(a) == g(f(a))}
+     * Creates a composite function that combines two functions. Composes {@code f: A->B} and {@code g: B->C}, such that
+     * the effect is equivalent to: {@code h(a) == g(f(a))}.
      *
-     * @param g   第二个函数
-     * @param f   第一个函数
-     * @param <A> 第一个函数的传入参数类型
-     * @param <B> 第一个函数的返回类型（第二个函数有的参数类型）
-     * @param <C> 最终结果类型
-     * @return 叠加函数
+     * @param g   The second function.
+     * @param f   The first function.
+     * @param <A> The input parameter type of the first function.
+     * @param <B> The return type of the first function (and the input parameter type of the second function).
+     * @param <C> The final result type.
+     * @return A new {@code ComposeX} instance representing the composite function.
      */
     public static <A, B, C> ComposeX<A, B, C> of(final Function<B, C> g, final Function<A, ? extends B> f) {
         return new ComposeX<>(g, f);
     }
 
+    /**
+     * Applies this composite function to the given argument.
+     *
+     * @param a The input argument of type A.
+     * @return The result of applying the composite function, of type C.
+     */
     @Override
     public C apply(final A a) {
         return g.apply(f.apply(a));

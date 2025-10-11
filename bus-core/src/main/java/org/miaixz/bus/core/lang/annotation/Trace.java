@@ -32,7 +32,9 @@ import java.lang.annotation.*;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 注解: 日志追溯
+ * An annotation used for logging and tracing business operations. When applied to a method, it provides metadata that
+ * can be used by an aspect or interceptor to create detailed log entries for auditing, monitoring, or debugging
+ * purposes.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,42 +45,59 @@ import org.miaixz.bus.core.lang.Normal;
 public @interface Trace {
 
     /**
-     * @return 业务标题
+     * The main title or a brief description of the business operation.
+     *
+     * @return The business title.
      */
     String value() default Normal.EMPTY;
 
     /**
-     * @return 业务编号
+     * A unique identifier for the business transaction or operation.
+     *
+     * @return The business ID.
      */
     String id() default Normal.EMPTY;
 
     /**
-     * @return 业务模块
+     * The business module or component to which this operation belongs.
+     *
+     * @return The business module name.
      */
     String module() default Normal.EMPTY;
 
     /**
-     * @return 业务功能
+     * The specific business function or feature being executed.
+     *
+     * @return The business function name.
      */
     String business() default Normal.EMPTY;
 
     /**
-     * @return 参数信息
+     * A description of the parameters involved in the operation. This can be used to provide additional context about
+     * the data being processed.
+     *
+     * @return The parameter information.
      */
     String params() default Normal.EMPTY;
 
     /**
-     * @return 操作人类别
+     * The category or type of the operator performing the action (e.g., "USER", "SYSTEM").
+     *
+     * @return The operator type.
      */
     String operator() default Normal.EMPTY;
 
     /**
-     * @return 扩展信息
+     * A field for any additional or custom information that should be included in the trace log.
+     *
+     * @return The extended information.
      */
     String extend() default Normal.EMPTY;
 
     /**
-     * @return 是否保存请求参数
+     * A flag indicating whether to save the request parameters of the annotated method in the log.
+     *
+     * @return {@code true} to save request parameters, {@code false} otherwise.
      */
     boolean isSaveRequest() default true;
 

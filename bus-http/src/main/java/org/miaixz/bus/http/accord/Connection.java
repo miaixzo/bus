@@ -27,29 +27,22 @@
 */
 package org.miaixz.bus.http.accord;
 
-import java.net.Socket;
-
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.Route;
 import org.miaixz.bus.http.socket.Handshake;
 
+import java.net.Socket;
+
 /**
- * HTTP、HTTPS或HTTPS+HTTP/2连接的套接字和流。 可以用于多个HTTP请求/响应交换。连接可以直接到源服务器，也可以通过代理
- *
+ * The socket and streams of an HTTP, HTTPS, or HTTPS+HTTP/2 connection. May be used for multiple HTTP request/response
+ * exchanges. Connections may be direct to the origin server or via a proxy.
  * <p>
- * 通常，此类的实例由HTTP客户机自动创建、连接和执行。 应用程序可以使用这个类 作为{@linkplain ConnectionPool connection pool}的成员来监视HTTP连接.
- * 不要将这个类与错误命名的{@code HttpURLConnection}混淆，后者与其说是一个连接， 不如说是一个请求/响应交换 在协商到远程主机的安全连接时，在选择包括哪些选项时需要进行权衡。更新的TLS选项非常有用
- * 当最大并发流限制降低时，一些分配将被取消。尝试在这些分配上创建新流将失败
- * </p>
- *
- * <ul>
- * <li>服务器名称指示(SNI)允许一个IP地址为多个域名协商安全连接
- * <li>应用层协议协商(ALPN)允许使用HTTPS端口(443)协商HTTP/2.
- * </ul>
- *
+ * Typically instances of this class are created, connected, and exercised automatically by the HTTP client.
+ * Applications may use this class to monitor HTTP connections as members of a {@linkplain ConnectionPool connection
+ * pool}.
  * <p>
- * 注意，一个分配可能在它的流完成之前被释放。这是为了使调用者更容易地进行簿记: 一旦找到终端流，就释放分配。但仅在其数据流耗尽后才完成流
- * </p>
+ * Do not confuse this class with the misnamed {@code HttpURLConnection}, which isn't so much a connection as a single
+ * request/response exchange.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,23 +50,33 @@ import org.miaixz.bus.http.socket.Handshake;
 public interface Connection {
 
     /**
-     * @return 返回此连接使用的路由
+     * Returns the route that this connection follows.
+     *
+     * @return The route of this connection.
      */
     Route route();
 
     /**
-     * @return 此连接使用的套接字。如果此连接是HTTPS， 则返回{@linkplain javax.net.ssl.SSLSocket SSL套接字}。 如果这是一个HTTP/2连接，则套接字可能由多个并发调用共享
+     * Returns the socket that this connection uses. If this connection is HTTPS, this is an
+     * {@link javax.net.ssl.SSLSocket SSLSocket}. If this is an HTTP/2 connection the socket may be shared by multiple
+     * concurrent calls.
+     *
+     * @return The socket for this connection.
      */
     Socket socket();
 
     /**
-     * @return 用于建立此连接的TLS握手，如果连接不是HTTPS则返回null
+     * Returns the TLS handshake used to establish this connection, or null if the connection is not HTTPS.
+     *
+     * @return The TLS handshake, or null.
      */
     Handshake handshake();
 
     /**
-     * @return 此连接协商的协议，如果没有协商协议，则返回{@link Protocol #HTTP_1_1}。
-     *         此方法返回{@link Protocol#HTTP_1_1}，即使远程对等方使用{@link Protocol#HTTP_1_0}
+     * Returns the protocol negotiated by this connection, or {@link Protocol#HTTP_1_1} if no protocol was negotiated.
+     * This method returns {@link Protocol#HTTP_1_1} even if the remote peer is using {@link Protocol#HTTP_1_0}.
+     *
+     * @return The negotiated protocol.
      */
     Protocol protocol();
 

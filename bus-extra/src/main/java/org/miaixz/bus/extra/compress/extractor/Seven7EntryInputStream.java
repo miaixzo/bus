@@ -34,32 +34,41 @@ import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 
 /**
- * 7z解压中文件流读取的封装
+ * Wrapper for reading file streams during 7z decompression.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Seven7EntryInputStream extends InputStream {
 
+    /**
+     * The {@link SevenZFile} being read.
+     */
     private final SevenZFile sevenZFile;
+    /**
+     * The total size of the entry in bytes.
+     */
     private final long size;
+    /**
+     * The number of bytes already read from the stream.
+     */
     private long readSize = 0;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param sevenZFile {@link SevenZFile}
-     * @param entry      {@link SevenZArchiveEntry}
+     * @param sevenZFile The {@link SevenZFile}.
+     * @param entry      The {@link SevenZArchiveEntry}.
      */
     public Seven7EntryInputStream(final SevenZFile sevenZFile, final SevenZArchiveEntry entry) {
         this(sevenZFile, entry.getSize());
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param sevenZFile {@link SevenZFile}
-     * @param size       读取长度
+     * @param sevenZFile The {@link SevenZFile}.
+     * @param size       The length to read.
      */
     public Seven7EntryInputStream(final SevenZFile sevenZFile, final long size) {
         this.sevenZFile = sevenZFile;
@@ -76,9 +85,9 @@ public class Seven7EntryInputStream extends InputStream {
     }
 
     /**
-     * 获取读取的长度（字节数）
+     * Gets the number of bytes read.
      *
-     * @return 读取的字节数
+     * @return The number of bytes read.
      */
     public long getReadSize() {
         return this.readSize;

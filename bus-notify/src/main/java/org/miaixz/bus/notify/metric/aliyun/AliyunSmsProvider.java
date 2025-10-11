@@ -39,34 +39,60 @@ import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.notify.Context;
 
 /**
- * 阿里云短信
+ * Alibaba Cloud SMS service provider.
  *
  * @author Justubborn
  * @since Java 17+
  */
 public class AliyunSmsProvider extends AliyunProvider<AliyunMaterial, Context> {
 
+    /**
+     * Constructs an {@code AliyunSmsProvider} with the given context.
+     *
+     * @param context The context containing configuration information for the provider.
+     */
     public AliyunSmsProvider(Context context) {
         super(context);
     }
 
+    /**
+     * Sends an SMS notification using Alibaba Cloud SMS service.
+     *
+     * @param entity The {@link AliyunMaterial} containing SMS details like recipient, signature, template, and
+     *               parameters.
+     * @return A {@link Message} indicating the result of the SMS sending operation.
+     */
     @Override
     public Message send(AliyunMaterial entity) {
         Map<String, String> bodys = new HashMap<>();
-        // 1. 系统参数
+        // 1. System parameters
+        // The signature method used for authentication.
         bodys.put("SignatureMethod", "HMAC-SHA1");
+        // A unique random number to prevent replay attacks.
         bodys.put("SignatureNonce", UUID.randomUUID().toString());
+        // The AccessKey ID of your Alibaba Cloud account.
         bodys.put("AccessKeyId", context.getAppKey());
+        // The version of the signature algorithm.
         bodys.put("SignatureVersion", "1.0");
+        // The timestamp of the API request in UTC format.
         bodys.put("Timestamp", DateKit.format(new Date(), Fields.UTC));
+        // The format of the response, typically JSON.
         bodys.put("Format", "JSON");
-        // 2. 业务API参数
+
+        // 2. Business API parameters
+        // The API action to be performed, e.g., SendSms.
         bodys.put("Action", "SendSms");
+        // The API version.
         bodys.put("Version", "2017-05-25");
+        // The region ID of the service, e.g., cn-hangzhou.
         bodys.put("RegionId", "cn-hangzhou");
+        // The recipient's mobile number(s).
         bodys.put("PhoneNumbers", entity.getReceive());
+        // The SMS signature name.
         bodys.put("SignName", entity.getSignature());
+        // The parameters for the SMS template in JSON format.
         bodys.put("TemplateParam", entity.getParams());
+        // The SMS template code.
         bodys.put("TemplateCode", entity.getTemplate());
 
         bodys.put("Signature", getSign(bodys));

@@ -27,21 +27,25 @@
 */
 package org.miaixz.bus.starter.annotation;
 
-import java.lang.annotation.*;
-
 import org.miaixz.bus.starter.cors.CorsConfiguration;
 import org.springframework.context.annotation.Import;
 
+import java.lang.annotation.*;
+
 /**
- * 启用跨域支持
+ * Enables Cross-Origin Resource Sharing (CORS) support.
+ * <p>
+ * This annotation, when placed on a Spring {@code @Configuration} class, imports the {@link CorsConfiguration}, which
+ * sets up a {@link org.springframework.web.filter.CorsFilter} based on the properties defined under the
+ * {@code bus.cors} prefix.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Inherited
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
 @Import({ CorsConfiguration.class })
 public @interface EnableCors {
 

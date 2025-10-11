@@ -29,10 +29,11 @@ package org.miaixz.bus.vortex;
 
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
 import reactor.core.publisher.Mono;
 
 /**
- * 调度接口，定义请求路由的基本行为
+ * A routing interface that defines the basic behavior for request routing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,12 +41,12 @@ import reactor.core.publisher.Mono;
 public interface Router {
 
     /**
-     * 路由请求到目标服务
+     * Routes the request to the target service.
      *
-     * @param request 当前 ServerRequest 对象
-     * @param context 请求上下文，包含请求参数和配置信息
-     * @param assets  配置资产，包含目标服务的配置信息
-     * @return {@code Mono<ServerResponse>} 异步返回响应
+     * @param request The current `ServerRequest` object.
+     * @param context The request context, containing request parameters and configuration information.
+     * @param assets  The configuration assets, containing configuration information for the target service.
+     * @return A {@code Mono<ServerResponse>} representing the asynchronous response.
      */
     Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets);
 

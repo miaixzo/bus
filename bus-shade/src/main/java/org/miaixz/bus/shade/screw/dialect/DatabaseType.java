@@ -41,7 +41,7 @@ import org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery;
 import lombok.Getter;
 
 /**
- * 数据库类型
+ * Enumeration of supported database types.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,68 +51,68 @@ public enum DatabaseType implements Serializable {
     /**
      * CacheDB
      */
-    CACHEDB("cachedb", "Cache 数据库", CacheDbDataBaseQuery.class),
+    CACHEDB("cachedb", "Cache Database", CacheDbDataBaseQuery.class),
     /**
      * DB2
      */
-    DB2("db2", "DB2数据库", Db2DataBaseQuery.class),
+    DB2("db2", "DB2 Database", Db2DataBaseQuery.class),
     /**
      * H2
      */
-    H2("h2", "H2数据库", H2DataBaseQuery.class),
+    H2("h2", "H2 Database", H2DataBaseQuery.class),
     /**
-     * MARIA DB
+     * MariaDB
      */
-    MARIADB("mariadb", "MariaDB数据库", MariaDbDataBaseQuery.class),
+    MARIADB("mariadb", "MariaDB Database", MariaDbDataBaseQuery.class),
     /**
-     * MYSQL
+     * MySQL
      */
-    MYSQL("mysql", "MySql数据库", MySqlDataBaseQuery.class),
+    MYSQL("mysql", "MySQL Database", MySqlDataBaseQuery.class),
     /**
-     * ORACLE
+     * Oracle
      */
-    ORACLE("oracle", "Oracle数据库", OracleDataBaseQuery.class),
+    ORACLE("oracle", "Oracle Database", OracleDataBaseQuery.class),
     /**
-     * POSTGRE
+     * PostgreSQL
      */
-    POSTGRE_SQL("PostgreSql", "Postgre数据库", PostgreSqlDataBaseQuery.class),
+    POSTGRE_SQL("PostgreSql", "PostgreSQL Database", PostgreSqlDataBaseQuery.class),
     /**
-     * SQL SERVER 2005
+     * SQL Server 2005
      */
-    SQL_SERVER2005("sqlServer2005", "SQLServer2005数据库", SqlServerDataBaseQuery.class),
+    SQL_SERVER2005("sqlServer2005", "SQL Server 2005 Database", SqlServerDataBaseQuery.class),
 
     /**
-     * SQLSERVER
+     * SQL Server
      */
-    SQL_SERVER("sqlserver", "SQLServer数据库", SqlServerDataBaseQuery.class),
+    SQL_SERVER("sqlserver", "SQL Server Database", SqlServerDataBaseQuery.class),
 
     /**
-     * UNKONWN DB
+     * Represents an unknown or unsupported database type.
      */
-    OTHER("other", "其他数据库", OtherDataBaseQuery.class);
+    OTHER("other", "Other Database", OtherDataBaseQuery.class);
 
     /**
-     * 数据库名称
+     * The unique name of the database type.
      */
     @Getter
     private final String name;
     /**
-     * 描述
+     * A descriptive string for the database type.
      */
     @Getter
     private final String desc;
     /**
-     * 查询实现
+     * The class that implements the database query logic for this type.
      */
     @Getter
     private final Class<? extends DatabaseQuery> implClass;
 
     /**
-     * 构造
+     * Constructs a {@code DatabaseType} enum constant.
      *
-     * @param name  {@link String} 名称
-     * @param desc  {@link String} 描述
-     * @param query {@link Class}
+     * @param name  The unique name of the database type.
+     * @param desc  A descriptive string for the database type.
+     * @param query The class that implements the database query logic.
      */
     DatabaseType(String name, String desc, Class<? extends DatabaseQuery> query) {
         this.name = name;
@@ -121,14 +121,13 @@ public enum DatabaseType implements Serializable {
     }
 
     /**
-     * 获取数据库类型
+     * Retrieves a {@code DatabaseType} by its name.
      *
-     * @param dbType {@link String} 数据库类型字符串
-     * @return {@link DatabaseType}
+     * @param dbType The name of the database type (case-insensitive).
+     * @return The corresponding {@link DatabaseType}, or {@link #OTHER} if not found.
      */
     public static DatabaseType getType(String dbType) {
-        DatabaseType[] dts = DatabaseType.values();
-        for (DatabaseType dt : dts) {
+        for (DatabaseType dt : DatabaseType.values()) {
             if (dt.getName().equalsIgnoreCase(dbType)) {
                 return dt;
             }
@@ -137,10 +136,10 @@ public enum DatabaseType implements Serializable {
     }
 
     /**
-     * 根据连接地址判断数据库类型
+     * Determines the database type from a JDBC connection URL.
      *
-     * @param jdbcUrl {@link String} 连接地址
-     * @return {@link DatabaseType} DatabaseType
+     * @param jdbcUrl The JDBC connection URL.
+     * @return The corresponding {@link DatabaseType}.
      */
     public static DatabaseType getDbType(String jdbcUrl) {
         if (jdbcUrl.contains(":Cache:")) {

@@ -35,26 +35,40 @@ import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.nimble.AbstractProvider;
 
 /**
- * 微信 登录
+ * Abstract base class for WeChat login providers.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractWeChatProvider extends AbstractProvider {
 
+    /**
+     * Constructs an {@code AbstractWeChatProvider} with the specified context and complex configuration.
+     *
+     * @param context the authentication context
+     * @param complex the complex configuration for WeChat
+     */
     public AbstractWeChatProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
+    /**
+     * Constructs an {@code AbstractWeChatProvider} with the specified context, complex configuration, and cache.
+     *
+     * @param context the authentication context
+     * @param complex the complex configuration for WeChat
+     * @param cache   the cache implementation
+     */
     public AbstractWeChatProvider(Context context, Complex complex, CacheX cache) {
         super(context, complex, cache);
     }
 
     /**
-     * 获取微信平台用户的实际性别，0表示未定义，1表示男性，2表示女性
+     * Retrieves the actual gender of a WeChat platform user. 0 indicates undefined, 1 indicates male, 2 indicates
+     * female.
      *
-     * @param originalGender 用户第三方标注的原始性别
-     * @return 用户性别
+     * @param originalGender the original gender marked by the third-party platform
+     * @return the user's gender
      */
     public static Gender getWechatRealGender(String originalGender) {
         if (StringKit.isEmpty(originalGender) || "0".equals(originalGender)) {

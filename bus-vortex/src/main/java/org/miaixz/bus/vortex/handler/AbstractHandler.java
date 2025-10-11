@@ -30,7 +30,8 @@ package org.miaixz.bus.vortex.handler;
 import org.miaixz.bus.vortex.Handler;
 
 /**
- * 抽象 API 处理类，提供异步拦截器实现的基类 子类可选择性覆盖 Handler 接口的默认实现
+ * Abstract API handler class, providing a base for asynchronous interceptor implementations. Subclasses can optionally
+ * override the default implementations of the {@link Handler} interface.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -48,7 +48,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.compress.CompressBuilder;
 
 /**
- * 数据归档封装，归档即将几个文件或目录打成一个压缩包 支持的归档文件格式为：
+ * Data archiver wrapper, which archives several files or directories into a compressed package. Supported archive file
+ * formats are:
  * <ul>
  * <li>{@link ArchiveStreamFactory#AR}</li>
  * <li>{@link ArchiveStreamFactory#CPIO}</li>
@@ -62,29 +63,32 @@ import org.miaixz.bus.extra.compress.CompressBuilder;
  */
 public class StreamArchiver implements Archiver {
 
+    /**
+     * The underlying ArchiveOutputStream from Apache Commons Compress.
+     */
     private final ArchiveOutputStream<? extends ArchiveEntry> out;
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param charset      编码
-     * @param archiverName 归档类型名称，见{@link ArchiveStreamFactory}
-     * @param file         归档输出的文件
+     * @param charset      The character encoding.
+     * @param archiverName The name of the archive format, see {@link ArchiveStreamFactory}.
+     * @param file         The output archive file.
      */
     public StreamArchiver(final Charset charset, final String archiverName, final File file) {
         this(charset, archiverName, FileKit.getOutputStream(file));
     }
 
     /**
-     * 构造
+     * Constructor.
      *
-     * @param charset      编码
-     * @param archiverName 归档类型名称，见{@link ArchiveStreamFactory}
-     * @param targetStream 归档输出的流
+     * @param charset      The character encoding.
+     * @param archiverName The name of the archive format, see {@link ArchiveStreamFactory}.
+     * @param targetStream The output stream for the archive.
      */
     public StreamArchiver(final Charset charset, final String archiverName, final OutputStream targetStream) {
         if ("tgz".equalsIgnoreCase(archiverName) || "tar.gz".equalsIgnoreCase(archiverName)) {
-            // 支持tgz格式解压
+            // Support for tgz format archiving
             try {
                 this.out = new TarArchiveOutputStream(new GzipCompressorOutputStream(targetStream));
             } catch (final IOException e) {
@@ -99,7 +103,7 @@ public class StreamArchiver implements Archiver {
             }
         }
 
-        // 特殊设置
+        // Special settings
         if (this.out instanceof TarArchiveOutputStream) {
             ((TarArchiveOutputStream) out).setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
         } else if (this.out instanceof ArArchiveOutputStream) {
@@ -108,24 +112,24 @@ public class StreamArchiver implements Archiver {
     }
 
     /**
-     * 创建归档器
+     * Creates an archiver.
      *
-     * @param charset      编码
-     * @param archiverName 归档类型名称，见{@link ArchiveStreamFactory}
-     * @param file         归档输出的文件
-     * @return StreamArchiver
+     * @param charset      The character encoding.
+     * @param archiverName The name of the archive format, see {@link ArchiveStreamFactory}.
+     * @param file         The output archive file.
+     * @return A new StreamArchiver instance.
      */
     public static StreamArchiver of(final Charset charset, final String archiverName, final File file) {
         return new StreamArchiver(charset, archiverName, file);
     }
 
     /**
-     * 创建归档器
+     * Creates an archiver.
      *
-     * @param charset      编码
-     * @param archiverName 归档类型名称，见{@link ArchiveStreamFactory}
-     * @param out          归档输出的流
-     * @return StreamArchiver
+     * @param charset      The character encoding.
+     * @param archiverName The name of the archive format, see {@link ArchiveStreamFactory}.
+     * @param out          The output stream for the archive.
+     * @return A new StreamArchiver instance.
      */
     public static StreamArchiver of(final Charset charset, final String archiverName, final OutputStream out) {
         return new StreamArchiver(charset, archiverName, out);
@@ -146,7 +150,8 @@ public class StreamArchiver implements Archiver {
     }
 
     /**
-     * 结束已经增加的文件归档，此方法不会关闭归档流，可以继续添加文件
+     * Finishes archiving the added files. This method does not close the archive stream, allowing more files to be
+     * added.
      *
      * @return this
      */
@@ -171,12 +176,14 @@ public class StreamArchiver implements Archiver {
     }
 
     /**
-     * 将文件或目录加入归档包，目录采取递归读取方式按照层级加入
+     * Adds a file or directory to the archive package. Directories are added recursively level by level.
      *
-     * @param file           文件或目录
-     * @param path           文件或目录的初始路径，{@code null}表示位于根路径
-     * @param fileNameEditor 文件名编辑器
-     * @param predicate      文件过滤器，指定哪些文件或目录可以加入，当{@link Predicate#test(Object)}为{@code true}加入。
+     * @param file           The file or directory.
+     * @param path           The initial path of the file or directory. If {@code null}, it is placed at the root level.
+     * @param fileNameEditor A function to edit the file name.
+     * @param predicate      A file filter that specifies which files or directories can be added. When
+     *                       {@link Predicate#test(Object)} is {@code true}, the file is added.
+     * @throws IOException if an I/O error occurs
      */
     private void addInternal(
             final File file,
@@ -192,19 +199,19 @@ public class StreamArchiver implements Archiver {
         out.putArchiveEntry(out.createArchiveEntry(file, entryName));
 
         if (file.isDirectory()) {
-            // 目录遍历写入
+            // Traverse and write directory
             final File[] files = file.listFiles();
             if (ArrayKit.isNotEmpty(files)) {
                 for (final File childFile : files) {
                     addInternal(childFile, entryName, fileNameEditor, predicate);
                 }
             } else {
-                // 空文件夹也需要关闭
+                // Empty folders also need to be closed
                 out.closeArchiveEntry();
             }
         } else {
             if (file.isFile()) {
-                // 文件直接写入
+                // Write file directly
                 FileKit.copy(file, out);
             }
             out.closeArchiveEntry();

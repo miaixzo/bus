@@ -30,7 +30,9 @@ package org.miaixz.bus.core.text.bloom;
 import java.io.Serial;
 
 /**
- * 组合BloomFilter 实现 1.构建hash算法 2.散列hash映射到数组的bit位置 3.验证 此实现方式可以指定Hash算法
+ * A {@link BloomFilter} implementation that combines multiple Bloom filters. An element is considered to be in this
+ * combined filter only if it is present in <em>all</em> of the underlying filters. Adding an element adds it to
+ * <em>all</em> underlying filters.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,41 +42,46 @@ public class CombinedBloomFilter implements BloomFilter {
     @Serial
     private static final long serialVersionUID = 2852235531853L;
 
+    /**
+     * The array of underlying Bloom filters.
+     */
     private final BloomFilter[] filters;
 
     /**
-     * 使用自定的多个过滤器建立BloomFilter
+     * Constructs a new {@code CombinedBloomFilter} with the specified filters.
      *
-     * @param filters Bloom过滤器列表
+     * @param filters A list of Bloom filters to combine.
      */
     public CombinedBloomFilter(final BloomFilter... filters) {
         this.filters = filters;
     }
 
     /**
-     * 增加字符串到Filter映射中
+     * Adds the given string to all underlying filters.
      *
-     * @param text 字符串
+     * @param text The string to add.
+     * @return {@code true} if any of the underlying filters changed as a result of this operation.
      */
     @Override
     public boolean add(final String text) {
-        boolean flag = false;
+        boolean changed = false;
         for (final BloomFilter filter : filters) {
-            flag |= filter.add(text);
+            changed |= filter.add(text);
         }
-        return flag;
+        return changed;
     }
 
     /**
-     * 是否可能包含此字符串，此处存在误判
+     * Checks if the given string is potentially contained in the filter. This method returns {@code true} only if the
+     * string is present in <em>all</em> underlying filters. False positives are possible, but false negatives are not.
      *
-     * @param text 字符串
-     * @return 是否存在
+     * @param text The string to check.
+     * @return {@code true} if the string is likely present, {@code false} if it is definitely not.
      */
     @Override
     public boolean contains(final String text) {
         for (final BloomFilter filter : filters) {
-            if (filter.contains(text) == false) {
+            if (!filter.contains(text)) {
                 return false;
             }
         }

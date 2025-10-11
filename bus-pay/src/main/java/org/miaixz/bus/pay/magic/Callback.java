@@ -28,7 +28,7 @@
 package org.miaixz.bus.pay.magic;
 
 /**
- * 回调结果检查
+ * Interface for checking callback results.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -36,16 +36,16 @@ package org.miaixz.bus.pay.magic;
 public interface Callback {
 
     /**
-     * 是否匹配
+     * Checks if the callback data matches the expected format or signature.
      *
-     * @return 匹配结果
+     * @return {@code true} if it matches, {@code false} otherwise.
      */
     boolean matching();
 
     /**
-     * 获取 JSON
+     * Gets the JSON representation of the callback data.
      *
-     * @return json
+     * @return The JSON string.
      */
     String getJson();
 

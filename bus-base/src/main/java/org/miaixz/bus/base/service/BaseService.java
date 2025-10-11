@@ -28,10 +28,9 @@
 package org.miaixz.bus.base.service;
 
 /**
- * 基础服务接口，继承BasicService，指定主键类型为String
+ * Base service interface, extending {@link SharedService} and specifying {@link String} as the primary key type.
  *
- * @param <T> 实体类型
- *
+ * @param <T> the entity type
  * @author Kimi Liu
  * @since Java 17+
  */

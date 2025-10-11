@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 对称加密算法支持，包括AES、DES、DESede等
+ * Provides support for symmetric encryption algorithms, including AES, DES, DESede, and others.
  *
  * @author Kimi Liu
  * @since Java 17+

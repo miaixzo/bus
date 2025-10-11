@@ -33,15 +33,15 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.ip.IPv4;
 
 /**
- * ID生成器工具类，此工具类中主要封装：
+ * ID generator utility class. This class encapsulates several ID generation strategies:
  *
  * <pre>
- * 1. 唯一性ID生成器：UUID、ObjectId（MongoDB）、Snowflake
+ * 1. Unique ID generators: UUID, ObjectId (MongoDB), Snowflake
  * </pre>
  *
  * <p>
- * ID相关文章见：<a href="http://calvin1978.blogcn.com/articles/uuid.html">http://calvin1978.blogcn.com/articles/uuid.html</a>
- * </p>
+ * For more information on IDs, see:
+ * <a href="http://calvin1978.blogcn.com/articles/uuid.html">http://calvin1978.blogcn.com/articles/uuid.html</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,140 +49,149 @@ import org.miaixz.bus.core.net.ip.IPv4;
 public class ID {
 
     /**
-     * 获取随机UUID
+     * Gets a random UUID.
      *
-     * @return 随机UUID
+     * @return A random UUID.
      */
     public static String randomUUID() {
         return UUID.randomUUID().toString();
     }
 
     /**
-     * 简化的UUID，去掉了横线
+     * Gets a simplified UUID, with hyphens removed.
      *
-     * @return 简化的UUID，去掉了横线
+     * @return A simplified UUID with hyphens removed.
      */
     public static String simpleUUID() {
         return UUID.randomUUID().toString(true);
     }
 
     /**
-     * 获取随机UUID，使用性能更好的ThreadLocalRandom生成UUID
+     * Gets a random UUID, using the more performant ThreadLocalRandom to generate the UUID.
      *
-     * @return 随机UUID
+     * @return A random UUID.
      */
     public static String fastUUID() {
         return UUID.fastUUID().toString();
     }
 
     /**
-     * 简化的UUID，去掉了横线，使用性能更好的ThreadLocalRandom生成UUID
+     * Gets a simplified UUID, with hyphens removed, using the more performant ThreadLocalRandom.
      *
-     * @return 简化的UUID，去掉了横线
+     * @return A simplified UUID with hyphens removed.
      */
     public static String fastSimpleUUID() {
         return UUID.fastUUID().toString(true);
     }
 
     /**
-     * 创建MongoDB ID生成策略实现 ObjectId由以下几部分组成：
+     * Creates a MongoDB ID generation strategy implementation. An ObjectId consists of the following parts:
      *
      * <pre>
-     * 1. Time 时间戳。
-     * 2. Machine 所在主机的唯一标识符，一般是机器主机名的散列值。
-     * 3. PID 进程ID。确保同一机器中不冲突
-     * 4. INC 自增计数器。确保同一秒内产生objectId的唯一性。
+     * 1. Time: A timestamp.
+     * 2. Machine: A unique identifier for the host, usually a hash of the machine's hostname.
+     * 3. PID: The process ID, ensuring no conflicts within the same machine.
+     * 4. INC: An auto-incrementing counter, ensuring uniqueness of ObjectIds generated within the same second.
      * </pre>
      * <p>
-     * 参考：<a href=
+     * Reference: <a href=
      * "http://blog.csdn.net/qxc1281/article/details/54021882">http://blog.csdn.net/qxc1281/article/details/54021882</a>
      *
-     * @return ObjectId
+     * @return An ObjectId.
      */
     public static String objectId() {
         return ObjectId.next();
     }
 
     /**
-     * 获取单例的Twitter的Snowflake 算法生成器对象 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
+     * Gets a singleton instance of Twitter's Snowflake algorithm generator. In distributed systems, there are scenarios
+     * that require globally unique IDs. Sometimes, we want to use a simpler ID, and we want the ID to be generated in
+     * chronological order.
      *
      * <p>
-     * snowflake的结构如下(每部分用-分开):
+     * The structure of a snowflake ID is as follows (each part is separated by a hyphen):
      * 
      * <pre>
      * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
      * </pre>
      * <p>
-     * 第一位为未使用，接下来的41位为毫秒级时间(41位的长度可以使用69年) 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
-     * 最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号）
-     * </p>
-     * <p>
-     * 参考：<a href="http://www.cnblogs.com/relucent/p/4955340.html">http://www.cnblogs.com/relucent/p/4955340.html</a>
-     * </p>
+     * The first bit is unused. The next 41 bits are for the timestamp in milliseconds (41 bits can be used for 69
+     * years). Then there are 5 bits for datacenterId and 5 bits for workerId (10 bits can support up to 1024 nodes).
+     * The last 12 bits are a counter within the millisecond (a 12-bit counter supports 4096 IDs per node per
+     * millisecond).
      *
-     * @param workerId     终端ID
-     * @param datacenterId 数据中心ID
-     * @return {@link Snowflake}
+     * <p>
+     * Reference:
+     * <a href="http://www.cnblogs.com/relucent/p/4955340.html">http://www.cnblogs.com/relucent/p/4955340.html</a>
+     *
+     * @param workerId     The worker ID.
+     * @param datacenterId The data center ID.
+     * @return A {@link Snowflake} instance.
      */
     public static Snowflake getSnowflake(final long workerId, final long datacenterId) {
         return Instances.get(Snowflake.class, workerId, datacenterId);
     }
 
     /**
-     * 获取单例的Twitter的Snowflake 算法生成器对象 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
-     * snowflake的结构如下(每部分用-分开):
+     * Gets a singleton instance of Twitter's Snowflake algorithm generator. In distributed systems, there are scenarios
+     * that require globally unique IDs. Sometimes, we want to use a simpler ID, and we want the ID to be generated in
+     * chronological order.
+     *
+     * <p>
+     * The structure of a snowflake ID is as follows (each part is separated by a hyphen):
      * 
      * <pre>
      * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
      * </pre>
-     *
      * <p>
-     * 第一位为未使用，接下来的41位为毫秒级时间(41位的长度可以使用69年) 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
-     * 最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号）
-     * </p>
-     *
+     * The first bit is unused. The next 41 bits are for the timestamp in milliseconds (41 bits can be used for 69
+     * years). Then there are 5 bits for datacenterId and 5 bits for workerId (10 bits can support up to 1024 nodes).
+     * The last 12 bits are a counter within the millisecond (a 12-bit counter supports 4096 IDs per node per
+     * millisecond).
      * <p>
-     * 参考：<a href="http://www.cnblogs.com/relucent/p/4955340.html">http://www.cnblogs.com/relucent/p/4955340.html</a>
-     * </p>
+     * Reference:
+     * <a href="http://www.cnblogs.com/relucent/p/4955340.html">http://www.cnblogs.com/relucent/p/4955340.html</a>
      *
-     * @param workerId 终端ID
-     * @return {@link Snowflake}
+     * @param workerId The worker ID.
+     * @return A {@link Snowflake} instance.
      */
     public static Snowflake getSnowflake(final long workerId) {
         return Instances.get(Snowflake.class, workerId);
     }
 
     /**
-     * 获取单例的Twitter的Snowflake 算法生成器对象 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
-     * snowflake的结构如下(每部分用-分开):
+     * Gets a singleton instance of Twitter's Snowflake algorithm generator. In distributed systems, there are scenarios
+     * that require globally unique IDs. Sometimes, we want to use a simpler ID, and we want the ID to be generated in
+     * chronological order.
+     *
+     * <p>
+     * The structure of a snowflake ID is as follows (each part is separated by a hyphen):
      * 
      * <pre>
      * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
      * </pre>
-     *
      * <p>
-     * 第一位为未使用，接下来的41位为毫秒级时间(41位的长度可以使用69年) 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
-     * 最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号）
-     * </p>
-     *
+     * The first bit is unused. The next 41 bits are for the timestamp in milliseconds (41 bits can be used for 69
+     * years). Then there are 5 bits for datacenterId and 5 bits for workerId (10 bits can support up to 1024 nodes).
+     * The last 12 bits are a counter within the millisecond (a 12-bit counter supports 4096 IDs per node per
+     * millisecond).
      * <p>
-     * 参考：<a href="http://www.cnblogs.com/relucent/p/4955340.html">http://www.cnblogs.com/relucent/p/4955340.html</a>
-     * </p>
+     * Reference:
+     * <a href="http://www.cnblogs.com/relucent/p/4955340.html">http://www.cnblogs.com/relucent/p/4955340.html</a>
      *
-     * @return {@link Snowflake}
+     * @return A {@link Snowflake} instance.
      */
     public static Snowflake getSnowflake() {
         return Instances.get(Snowflake.class);
     }
 
     /**
-     * 获取数据中心ID 数据中心ID依赖于本地网卡MAC地址。
+     * Gets the data center ID. The data center ID depends on the local network card's MAC address.
      * <p>
-     * 此算法来自于mybatis-plus#Sequence
-     * </p>
+     * This algorithm comes from mybatis-plus#Sequence.
      *
-     * @param maxDatacenterId 最大的中心ID
-     * @return 数据中心ID
+     * @param maxDatacenterId The maximum data center ID.
+     * @return The data center ID.
      */
     public static long getDataCenterId(long maxDatacenterId) {
         Assert.isTrue(maxDatacenterId > 0, "maxDatacenterId must be > 0");
@@ -205,15 +214,15 @@ public class ID {
     }
 
     /**
-     * 获取机器ID，使用进程ID配合数据中心ID生成 机器依赖于本进程ID或进程名的Hash值。
+     * Gets the worker ID, generated using the process ID in conjunction with the data center ID. The worker ID depends
+     * on the hash value of the current process ID or process name.
      *
      * <p>
-     * 此算法来自于mybatis-plus#Sequence
-     * </p>
+     * This algorithm comes from mybatis-plus#Sequence.
      *
-     * @param datacenterId 数据中心ID
-     * @param maxWorkerId  最大的机器节点ID
-     * @return the long
+     * @param datacenterId The data center ID.
+     * @param maxWorkerId  The maximum worker node ID.
+     * @return The worker ID.
      */
     public static long getWorkerId(final long datacenterId, final long maxWorkerId) {
         final StringBuilder mpid = new StringBuilder();
@@ -223,42 +232,44 @@ public class ID {
         } catch (final InternalException igonre) {
             // ignore
         }
-        // MAC + PID 的 hashcode 获取16个低位
+        // Get the lower 16 bits of the hashcode of (MAC + PID)
         return (mpid.toString().hashCode() & 0xffff) % (maxWorkerId + 1);
     }
 
     /**
-     * 获取随机NanoId
+     * Gets a random NanoId.
      *
-     * @return the string
+     * @return The random NanoId string.
      */
     public static String nanoId() {
         return NanoId.randomNanoId();
     }
 
     /**
-     * 获取随机NanoId
+     * Gets a random NanoId.
      *
-     * @param size ID中的字符数量
-     * @return the string
+     * @param size The number of characters in the ID.
+     * @return The random NanoId string.
      */
     public static String nanoId(final int size) {
         return NanoId.randomNanoId(size);
     }
 
     /**
-     * 简单获取Snowflake 的 nextId 终端ID 数据中心ID 默认为PID和MAC地址生成
+     * Simply gets the next ID from Snowflake. The worker ID and data center ID are generated by default from the PID
+     * and MAC address.
      *
-     * @return the long
+     * @return The next ID.
      */
     public static long getSnowflakeNextId() {
         return getSnowflake().next();
     }
 
     /**
-     * 简单获取Snowflake 的 nextId 终端ID 数据中心ID 默认为PID和MAC地址生成
+     * Simply gets the next ID as a string from Snowflake. The worker ID and data center ID are generated by default
+     * from the PID and MAC address.
      *
-     * @return the string
+     * @return The next ID as a string.
      */
     public static String getSnowflakeNextIds() {
         return getSnowflake().nextString();

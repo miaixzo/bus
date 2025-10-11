@@ -26,7 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 二维码封装，基于zxing库，入口为QrCodeKit
+ * Provides QR code encapsulation based on the zxing library, with {@link org.miaixz.bus.extra.qrcode.QrCodeKit} as the
+ * entry point.
  *
  * @author Kimi Liu
  * @since Java 17+

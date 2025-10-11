@@ -39,31 +39,54 @@ import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.xyz.IoKit;
 
 /**
- * 使用<a href="http://tools.ietf.org/html/rfc1951">DEFLATE</a> 解压缩从另一个源读取的数据的源。
+ * A {@link Source} that decompresses data from another source using the
+ * <a href="http://tools.ietf.org/html/rfc1951">DEFLATE</a> algorithm. This class wraps a {@link BufferSource} and uses
+ * an {@link Inflater} to perform the decompression, writing the decompressed data to a {@link Buffer}.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public final class InflaterSource implements Source {
 
+    /**
+     * The underlying {@link BufferSource} providing the compressed data.
+     */
     private final BufferSource source;
+    /**
+     * The {@link Inflater} instance used for decompression.
+     */
     private final Inflater inflater;
 
     /**
-     * 当调用 Inflater.setInput() 时，inflater 会保留字节数组，直到再次需要输入。
+     * The number of bytes from the {@code source} buffer that are currently held by the {@code inflater}. This is used
+     * to track how many bytes need to be skipped from the {@code source} buffer once the {@code inflater} has consumed
+     * them.
      */
     private int bufferBytesHeldByInflater;
+    /**
+     * A flag indicating whether this source has been closed.
+     */
     private boolean closed;
 
+    /**
+     * Constructs an {@code InflaterSource} that decompresses data from the given {@link Source}. The provided source
+     * will be buffered internally.
+     *
+     * @param source   The source of compressed data.
+     * @param inflater The inflater to use for decompression.
+     * @throws IllegalArgumentException If {@code source} or {@code inflater} is null.
+     */
     public InflaterSource(Source source, Inflater inflater) {
         this(IoKit.buffer(source), inflater);
     }
 
     /**
-     * 此包私有构造函数与其受信任的调用者共享一个缓冲区。 一般来说，我们不能共享 BufferSource，因为 inflater 会保留输入字节，直到它们被溢出为止。
+     * Internal constructor that shares a buffer with its trusted caller. We cannot generally share a
+     * {@link BufferSource} because the inflater retains input bytes until they are deflated.
      *
-     * @param source   缓冲源
-     * @param inflater 缓冲区
+     * @param source   The buffered source of compressed data.
+     * @param inflater The inflater to use for decompression.
+     * @throws IllegalArgumentException If {@code source} or {@code inflater} is null.
      */
     InflaterSource(BufferSource source, Inflater inflater) {
         if (source == null)
@@ -74,6 +97,22 @@ public final class InflaterSource implements Source {
         this.inflater = inflater;
     }
 
+    /**
+     * Reads at least 1 byte and at most {@code byteCount} bytes of decompressed data from this source and appends them
+     * to {@code sink}. Returns the number of bytes read, or -1 if this source has been exhausted.
+     *
+     * <p>
+     * This method handles refilling the inflater with compressed data from the underlying source and decompressing it
+     * into the sink buffer.
+     *
+     * @param sink      The buffer to which decompressed bytes will be appended.
+     * @param byteCount The maximum number of bytes to read.
+     * @return The number of bytes read, or -1 if the source is exhausted.
+     * @throws IOException              If an I/O error occurs during decompression or if the compressed data is
+     *                                  malformed.
+     * @throws IllegalArgumentException If {@code byteCount} is negative.
+     * @throws IllegalStateException    If this source is closed.
+     */
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
         if (byteCount < 0)
@@ -86,7 +125,7 @@ public final class InflaterSource implements Source {
         while (true) {
             boolean sourceExhausted = refill();
 
-            // 将缓冲区的压缩数据解压到接收器中
+            // Decompress data from the buffer into the sink.
             try {
                 SectionBuffer tail = sink.writableSegment(1);
                 int toRead = (int) Math.min(byteCount, SectionBuffer.SIZE - tail.limit);
@@ -99,7 +138,7 @@ public final class InflaterSource implements Source {
                 if (inflater.finished() || inflater.needsDictionary()) {
                     releaseInflatedBytes();
                     if (tail.pos == tail.limit) {
-                        // 分配了一个尾段，但最终并不需要它。回收！
+                        // A tail segment was allocated but not ultimately needed. Recycle!
                         sink.head = tail.pop();
                         LifeCycle.recycle(tail);
                     }
@@ -114,7 +153,12 @@ public final class InflaterSource implements Source {
     }
 
     /**
-     * 如果需要输入，则用压缩数据重新填充缓冲区。（并且仅在需要输入时才有效） 如果缓冲区需要输入但源已耗尽，则返回 true。
+     * Refills the inflater with compressed data if it needs input. This method is only effective when the inflater
+     * requires more input. It returns true if the underlying source is exhausted while the inflater still needs input.
+     *
+     * @return True if the source is exhausted and the inflater still needs input, false otherwise.
+     * @throws IOException           If an I/O error occurs while reading from the source.
+     * @throws IllegalStateException If the inflater has remaining bytes after being reset.
      */
     public boolean refill() throws IOException {
         if (!inflater.needsInput())
@@ -122,14 +166,14 @@ public final class InflaterSource implements Source {
 
         releaseInflatedBytes();
         if (inflater.getRemaining() != 0)
-            throw new IllegalStateException("?");
+            throw new IllegalStateException("?"); // Should not happen if releaseInflatedBytes is called correctly.
 
-        // 如果源中有压缩字节，则将它们分配给缓冲区
+        // If there are compressed bytes in the source, assign them to the inflater.
         if (source.exhausted()) {
             return true;
         }
 
-        // 将缓冲区字节分配给缓冲区
+        // Assign buffer bytes to the inflater.
         SectionBuffer head = source.getBuffer().head;
         bufferBytesHeldByInflater = head.limit - head.pos;
         inflater.setInput(head.data, head.pos, bufferBytesHeldByInflater);
@@ -137,7 +181,10 @@ public final class InflaterSource implements Source {
     }
 
     /**
-     * 当缓冲区处理完压缩数据后，将其从缓冲区中移除。
+     * Releases the bytes from the underlying source's buffer that have already been consumed by the inflater. This
+     * method should be called after the inflater has processed a portion of the input buffer.
+     *
+     * @throws IOException If an I/O error occurs while skipping bytes from the source.
      */
     private void releaseInflatedBytes() throws IOException {
         if (bufferBytesHeldByInflater == 0)
@@ -147,11 +194,22 @@ public final class InflaterSource implements Source {
         source.skip(toRelease);
     }
 
+    /**
+     * Returns the timeout for this source, delegated to the underlying source.
+     *
+     * @return The timeout instance.
+     */
     @Override
     public Timeout timeout() {
         return source.timeout();
     }
 
+    /**
+     * Closes this source and the underlying source, releasing any resources held by them. This method also ends the
+     * {@link Inflater} to release native resources. This method can be called multiple times safely.
+     *
+     * @throws IOException If an I/O error occurs during closing.
+     */
     @Override
     public void close() throws IOException {
         if (closed)

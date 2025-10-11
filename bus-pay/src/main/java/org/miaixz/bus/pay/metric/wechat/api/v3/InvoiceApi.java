@@ -30,7 +30,7 @@ package org.miaixz.bus.pay.metric.wechat.api.v3;
 import org.miaixz.bus.pay.Matcher;
 
 /**
- * 微信支付 v3 版本接口-电子发票接口
+ * WeChat Pay V3 API interfaces related to electronic invoices.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,84 +38,96 @@ import org.miaixz.bus.pay.Matcher;
 public enum InvoiceApi implements Matcher {
 
     /**
-     * 创建电子发票卡券模板
+     * Create electronic invoice card coupon template.
      */
-    CARD_TEMPLATE("/v3/new-tax-control-fapiao/card-template", "创建电子发票卡券模板"),
+    CARD_TEMPLATE("/v3/new-tax-control-fapiao/card-template", "Create electronic invoice card coupon template"),
 
     /**
-     * 开具电子发票
+     * Issue electronic invoice.
      */
-    INVOICING("/v3/new-tax-control-fapiao/fapiao-applications", "开具电子发票"),
+    INVOICING("/v3/new-tax-control-fapiao/fapiao-applications", "Issue electronic invoice"),
 
     /**
-     * 上传电子发票文件
+     * Upload electronic invoice file.
      */
-    UPDATE_INVOICE_FILE("/v3/new-tax-control-fapiao/fapiao-applications/upload-fapiao-file", "上传电子发票文件"),
+    UPDATE_INVOICE_FILE("/v3/new-tax-control-fapiao/fapiao-applications/upload-fapiao-file",
+            "Upload electronic invoice file"),
 
     /**
-     * 查询电子发票
+     * Query electronic invoice.
      */
-    QUERY_INVOICE("/v3/new-tax-control-fapiao/fapiao-applications/%s", "查询电子发票"),
+    QUERY_INVOICE("/v3/new-tax-control-fapiao/fapiao-applications/%s", "Query electronic invoice"),
 
     /**
-     * 获取发票下载信息
+     * Get invoice download information.
      */
-    QUERY_INVOICE_DOWNLOAD_INFO("/v3/new-tax-control-fapiao/fapiao-applications/%s/fapiao-files", "获取发票下载信息"),
+    QUERY_INVOICE_DOWNLOAD_INFO("/v3/new-tax-control-fapiao/fapiao-applications/%s/fapiao-files",
+            "Get invoice download information"),
 
     /**
-     * 将电子发票插入微信用户卡包
+     * Insert electronic invoice into WeChat user card package.
      */
-    INSERT_CARDS("/v3/new-tax-control-fapiao/fapiao-applications/%s/insert-cards", "将电子发票插入微信用户卡包"),
+    INSERT_CARDS("/v3/new-tax-control-fapiao/fapiao-applications/%s/insert-cards",
+            "Insert electronic invoice into WeChat user card package"),
 
     /**
-     * 冲红电子发票
+     * Reverse electronic invoice.
      */
-    REVERSE("/v3/new-tax-control-fapiao/fapiao-applications/%s/reverse", "冲红电子发票"),
+    REVERSE("/v3/new-tax-control-fapiao/fapiao-applications/%s/reverse", "Reverse electronic invoice"),
 
     /**
-     * 获取商户开票基础信息
+     * Get merchant invoicing basic information.
      */
-    MERCHANT_BASE_INFO("/v3/new-tax-control-fapiao/merchant/base-information", "获取商户开票基础信息"),
+    MERCHANT_BASE_INFO("/v3/new-tax-control-fapiao/merchant/base-information",
+            "Get merchant invoicing basic information"),
 
     /**
-     * 查询商户配置的开发选项/配置开发选项
+     * Query/configure merchant development options.
      */
-    MERCHANT_DEVELOPMENT_CONFIG("/v3/new-tax-control-fapiao/merchant/development-config", "查询商户配置的开发选项/配置开发选项"),
+    MERCHANT_DEVELOPMENT_CONFIG("/v3/new-tax-control-fapiao/merchant/development-config",
+            "Query/configure merchant development options"),
 
     /**
-     * 获取商户可开具的商品和服务税收分类编码对照表
+     * Get merchant's available goods and services tax classification code comparison table.
      */
-    MERCHANT_TAX_CODES("/v3/new-tax-control-fapiao/merchant/tax-codes", "获取商户可开具的商品和服务税收分类编码对照表"),
+    MERCHANT_TAX_CODES("/v3/new-tax-control-fapiao/merchant/tax-codes",
+            "Get merchant's available goods and services tax classification code comparison table"),
 
     /**
-     * 获取用户填写的抬头
+     * Get user-filled invoice title.
      */
-    USER_TITLE("/v3/new-tax-control-fapiao/user-title", "获取用户填写的抬头"),
+    USER_TITLE("/v3/new-tax-control-fapiao/user-title", "Get user-filled invoice title"),
 
     /**
-     * 获取抬头填写链接
+     * Get invoice title filling link.
      */
-    USER_TITLE_URL("/v3/new-tax-control-fapiao/user-title/title-url", "获取抬头填写链接");
+    USER_TITLE_URL("/v3/new-tax-control-fapiao/user-title/title-url", "Get invoice title filling link");
 
     /**
-     * 接口方法
+     * The API method.
      */
     private final String method;
 
     /**
-     * 接口描述
+     * The API description.
      */
     private final String desc;
 
+    /**
+     * Constructs a new InvoiceApi enum.
+     *
+     * @param method The API method.
+     * @param desc   The API description.
+     */
     InvoiceApi(String method, String desc) {
         this.method = method;
         this.desc = desc;
     }
 
     /**
-     * 交易类型
+     * Gets the transaction type.
      *
-     * @return the string
+     * @return The transaction type.
      */
     @Override
     public String type() {
@@ -123,9 +135,9 @@ public enum InvoiceApi implements Matcher {
     }
 
     /**
-     * 类型描述
+     * Gets the type description.
      *
-     * @return the string
+     * @return The type description.
      */
     @Override
     public String desc() {
@@ -133,9 +145,9 @@ public enum InvoiceApi implements Matcher {
     }
 
     /**
-     * 接口方法
+     * Gets the API method.
      *
-     * @return the string
+     * @return The API method.
      */
     @Override
     public String method() {

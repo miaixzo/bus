@@ -36,25 +36,40 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 代理选择器 返回{@link Proxy#NO_PROXY}
+ * A {@link ProxySelector} that always returns {@link Proxy#NO_PROXY}. This can be used to effectively disable proxy
+ * usage.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NullProxySelector extends ProxySelector {
 
+    /**
+     * Selects a list of proxies to use for a given URI. This implementation always returns a list containing only
+     * {@link Proxy#NO_PROXY}.
+     *
+     * @param uri The URI to select a proxy for.
+     * @return A list containing only {@link Proxy#NO_PROXY}.
+     * @throws IllegalArgumentException if the URI is null.
+     */
     @Override
     public List<Proxy> select(URI uri) {
         if (null == uri) {
             throw new IllegalArgumentException("URI must not be null");
         }
         return Collections.singletonList(Proxy.NO_PROXY);
-
     }
 
+    /**
+     * Called to indicate that a connection to a proxy has failed. This implementation does nothing.
+     *
+     * @param uri           The URI that the proxy failed to connect to.
+     * @param socketAddress The address of the proxy that failed.
+     * @param ex            The I/O exception that occurred.
+     */
     @Override
     public void connectFailed(URI uri, SocketAddress socketAddress, IOException ex) {
-
+        // Do nothing.
     }
 
 }

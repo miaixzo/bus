@@ -36,7 +36,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * 消息模版
+ * Represents the material or content of a message template.
  *
  * @author Justubborn
  * @since Java 17+
@@ -49,89 +49,95 @@ import lombok.experimental.SuperBuilder;
 public class Material {
 
     /**
-     * 地址
+     * The URL associated with the material, if any.
      */
     protected String url;
     /**
-     * 发送者
+     * The sender of the message.
      */
     protected String sender;
 
     /**
-     * 接收者 采用','风格
+     * The recipient(s) of the message, typically comma-separated.
      */
     protected String receive;
 
     /**
-     * 主题
+     * The subject of the message.
      */
     protected String subject;
 
     /**
-     * 内容 Limit 28K
+     * The main content of the message. Limited to 28K characters.
      */
     protected String content;
 
     /**
-     * 模版/模版ID
+     * The template or template ID to be used.
      */
     protected String template;
 
     /**
-     * 签名/签名ID
+     * The signature or signature ID for the message.
      */
     protected String signature;
 
     /**
-     * 模版参数
+     * Parameters for the message template.
      */
     protected String params;
 
     /**
-     * 扩展字段
+     * Extension fields or additional properties.
      */
     protected Map<String, Object> extend;
 
     /**
-     * 内容类型
+     * The type of the content.
      */
     protected Type type;
 
     /**
-     * 发送模型
+     * The sending mode of the message.
      */
     protected Mode mode;
 
+    /**
+     * Enumerates the types of content that can be sent.
+     */
     public enum Type {
         /**
-         * html
+         * HTML content type.
          */
         HTML,
         /**
-         * 文本
+         * Plain text content type.
          */
         TEXT,
         /**
-         * 语音
+         * Voice message content type.
          */
         VOICE,
         /**
-         * 文件
+         * File content type.
          */
         FILE,
         /**
-         * 文件
+         * Other content type not explicitly defined.
          */
         OTHER
     }
 
+    /**
+     * Enumerates the sending modes for messages.
+     */
     public enum Mode {
         /**
-         * 单发
+         * Single message sending mode.
          */
         SINGLE,
         /**
-         * 批量
+         * Batch message sending mode.
          */
         BATCH
     }

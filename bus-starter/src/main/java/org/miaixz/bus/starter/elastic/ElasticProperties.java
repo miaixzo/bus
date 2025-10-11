@@ -27,20 +27,19 @@
 */
 package org.miaixz.bus.starter.elastic;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * ElasticSearch 配置属性类
+ * Configuration properties for Elasticsearch.
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
  * @since Java 17+
@@ -51,52 +50,55 @@ import lombok.Setter;
 public class ElasticProperties {
 
     /**
-     * 集群主机地址, 多个用英文逗号,隔开 格式: ip1:port,ip2:port
+     * Comma-separated list of cluster host addresses. Format: ip1:port,ip2:port
      */
     private String hosts;
 
     /**
-     * 用户
+     * The username for authentication.
      */
     private String username;
 
     /**
-     * 密码
+     * The password for authentication.
      */
     private String password;
 
     /**
-     * 通讯协议
+     * The communication protocol (e.g., "http" or "https"). Default is "http".
      */
     private String schema = "http";
 
     /**
-     * 建立连接超时时间: 毫秒, 默认 6000， 0 - 无限制，-1 - OS 适配
+     * The connection timeout in milliseconds. Default is 6000. 0 means no timeout, -1 means OS-adaptive.
      */
     private int connectTimeout = 6000;
+
     /**
-     * 读超时: 毫秒，默认 60000， 0 - 无限制，-1 - OS 适配
+     * The socket read timeout in milliseconds. Default is 60000. 0 means no timeout, -1 means OS-adaptive.
      */
     private int socketTimeout = 60000;
+
     /**
-     * 连接请求超时: 毫秒，默认 6000， 0 - 无限制，-1 - OS 适配
+     * The connection request timeout in milliseconds. Default is 6000. 0 means no timeout, -1 means OS-adaptive.
      */
     private int connectionRequestTimeout = 6000;
 
     /**
-     * 最大连接数: 默认 2000， 0 - 无限制，-1 - OS 适配
+     * The maximum total number of connections. Default is 2000. 0 means no limit, -1 means OS-adaptive.
      */
     private int maxConnectTotal = 2000;
+
     /**
-     * 最大每批连接数: 默认 200， 0 - 无限制，-1 - OS 适配
+     * The maximum number of connections per route. Default is 500. 0 means no limit, -1 means OS-adaptive.
      */
     private int maxConnectPerRoute = 500;
 
     /**
-     * 集群主机地址列表
+     * Lazily parses the {@link #hosts} string into a list of individual hosts.
+     *
+     * @return A list of host strings, or an empty list if {@link #hosts} is not set.
      */
-    private List<String> hostList;
-
     public List<String> getHostList() {
         if (null == this.hosts || Normal.EMPTY.equalsIgnoreCase(this.hosts.trim())) {
             return Collections.emptyList();
