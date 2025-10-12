@@ -27,23 +27,27 @@
 */
 package org.miaixz.bus.vortex.handler;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.support.HttpRequestRouter;
-import org.miaixz.bus.vortex.support.MqRequestRouter;
 import org.miaixz.bus.vortex.support.McpRequestRouter;
+import org.miaixz.bus.vortex.support.MqRequestRouter;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Request handling entry class, responsible for routing requests and asynchronously invoking multiple interceptor
@@ -185,10 +189,9 @@ public class VortexHandler {
                                     method,
                                     path,
                                     error.getMessage());
-                            return Mono.whenDelayError(
-                                    handlers.stream().map(
-                                            handler -> handler.afterCompletion(exchange, router, null, null, error))
-                                            .collect(Collectors.toList()))
+                            // Sequentially run afterCompletion for all handlers before re-throwing the error
+                            return Flux.fromIterable(handlers)
+                                    .concatMap(handler -> handler.afterCompletion(exchange, router, null, null, error))
                                     .then(Mono.error(error));
                         });
             });
@@ -204,11 +207,11 @@ public class VortexHandler {
     }
 
     /**
-     * Executes the pre-processing logic of all interceptors.
+     * Executes the pre-processing logic of all interceptors sequentially.
      * <p>
-     * This method calls the {@code preHandle} method of all interceptors in parallel and collects their results. It
-     * returns {@code true} only if all interceptors return {@code true}, indicating that all pre-processing steps have
-     * passed.
+     * This method calls the {@code preHandle} method of all interceptors in a sequential chain. If any interceptor
+     * returns {@code false}, the chain is immediately terminated, and the method returns {@code Mono<Boolean>} with a
+     * value of {@code false}, effectively "short-circuiting" the execution.
      * </p>
      *
      * @param exchange The {@link ServerWebExchange} object, containing request and response context information.
@@ -217,39 +220,33 @@ public class VortexHandler {
      *         interceptor blocked the request ({@code false}).
      */
     private Mono<Boolean> executePreHandle(ServerWebExchange exchange, Router router) {
-        return Mono.zip(
-                handlers.stream().map(handler -> handler.preHandle(exchange, router, null))
-                        .collect(Collectors.toList()),
-                results -> results.length > 0 && Arrays.stream(results).allMatch(Boolean.class::cast));
+        return Flux.fromIterable(handlers).concatMap(handler -> handler.preHandle(exchange, router, null))
+                .all(result -> result);
     }
 
     /**
-     * Executes the post-processing logic of all interceptors.
+     * Executes the post-processing logic of all interceptors sequentially.
      * <p>
-     * This method calls the {@code postHandle} and {@code afterCompletion} methods of all interceptors in parallel. The
-     * {@code postHandle} method is executed before the response is sent to the client, and the {@code afterCompletion}
-     * method is executed after the request has been fully processed.
+     * This method first calls the {@code postHandle} method of all interceptors in sequence. After that completes, it
+     * calls the {@code afterCompletion} method of all interceptors, also in sequence.
      * </p>
      *
      * @param exchange The {@link ServerWebExchange} object, containing request and response context information.
      * @param router   The routing strategy, used to determine how to route the request.
      * @param response The {@link ServerResponse} object, containing the response status, headers, and body.
-     * @return {@code Mono<ServerResponse>} The processed response, which may have been modified by the interceptors.
+     * @return {@code Mono<ServerResponse>} The original response, after all interceptors have been processed.
      */
     private Mono<ServerResponse> executePostHandlers(
             ServerWebExchange exchange,
             Router router,
             ServerResponse response) {
-        return Mono
-                .whenDelayError(
-                        handlers.stream().map(handler -> handler.postHandle(exchange, router, null, response))
-                                .collect(Collectors.toList()))
-                .thenReturn(response).flatMap(
-                        res -> Mono.whenDelayError(
-                                handlers.stream()
-                                        .map(handler -> handler.afterCompletion(exchange, router, null, res, null))
-                                        .collect(Collectors.toList()))
-                                .thenReturn(res));
+        Mono<Void> postHandleChain = Flux.fromIterable(handlers)
+                .concatMap(handler -> handler.postHandle(exchange, router, null, response)).then();
+
+        Mono<Void> afterCompletionChain = Flux.fromIterable(handlers)
+                .concatMap(handler -> handler.afterCompletion(exchange, router, null, response, null)).then();
+
+        return postHandleChain.then(afterCompletionChain).thenReturn(response);
     }
 
 }

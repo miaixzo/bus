@@ -25,7 +25,9 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.filter;
+package org.miaixz.bus.vortex.strategy;
+
+import java.util.Optional;
 
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -37,24 +39,18 @@ import org.miaixz.bus.vortex.provider.LicenseProvider;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilterChain;
+
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
 /**
- * License validation filter.
- * <p>
- * As one of the highest priority filters in the system, it enforces license validity checks at the very beginning of
- * all requests. If license validation fails, the request will be immediately interrupted and will not proceed to
- * subsequent business logic.
- * </p>
+ * A filter strategy for license validation. This strategy enforces license validity checks based on the request's
+ * authority (host and port).
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Order(Ordered.HIGHEST_PRECEDENCE + 4)
-public class LicenseFilter extends AbstractFilter {
+public class LicenseStrategy extends AbstractStrategy {
 
     /**
      * The license provider, used for handling the actual logic of license validation.
@@ -66,7 +62,7 @@ public class LicenseFilter extends AbstractFilter {
      *
      * @param provider The license provider responsible for handling license validation.
      */
-    public LicenseFilter(LicenseProvider provider) {
+    public LicenseStrategy(LicenseProvider provider) {
         this.provider = provider;
     }
 
@@ -86,7 +82,7 @@ public class LicenseFilter extends AbstractFilter {
      * @throws ValidateException If license validation fails.
      */
     @Override
-    protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
+    protected Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain, Context context) {
         Assets assets = getAssets(context);
 
         // Get the domain name and port
@@ -108,7 +104,7 @@ public class LicenseFilter extends AbstractFilter {
         }
 
         // Validation passed, request continues.
-        return chain.filter(exchange);
+        return chain.apply(exchange);
     }
 
 }

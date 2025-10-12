@@ -99,6 +99,19 @@ public class Assets {
      */
     private Integer scope;
     /**
+     * The scope of applicability.
+     */
+    private Integer retries;
+
+    /**
+     * The scope of applicability.
+     */
+    private Integer balance;
+    /**
+     * The weight of applicability.
+     */
+    private Integer weight;
+    /**
      * Exception rules for firewall.
      */
     private Integer firewall;

@@ -25,10 +25,12 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.filter;
+package org.miaixz.bus.vortex.strategy;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.magic.Limiter;
@@ -36,62 +38,46 @@ import org.miaixz.bus.vortex.registry.LimiterRegistry;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilterChain;
+
 import reactor.core.publisher.Mono;
 
 /**
- * Rate limiting filter that applies traffic restrictions to requests based on the token bucket algorithm.
+ * A filter strategy for rate limiting. This strategy applies traffic restrictions to requests based on the token bucket
+ * algorithm, using configurations from the {@link LimiterRegistry}.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 3)
-public class LimitFilter extends AbstractFilter {
+@Order(Ordered.HIGHEST_PRECEDENCE + 5)
+public class LimitStrategy extends AbstractStrategy {
 
-    /**
-     * The registry for rate limiters.
-     */
     private final LimiterRegistry registry;
 
-    /**
-     * Constructs a {@code LimitFilter} with the specified rate limiter registry.
-     *
-     * @param registry The rate limiter registry.
-     */
-    public LimitFilter(LimiterRegistry registry) {
+    public LimitStrategy(LimiterRegistry registry) {
         this.registry = registry;
     }
 
-    /**
-     * Internal filtering method, executing the rate limiting logic.
-     *
-     * @param exchange The current {@link ServerWebExchange} object.
-     * @param chain    The filter chain.
-     * @param context  The request context.
-     * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
-     */
     @Override
-    protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
-        String ip = getRequestMap(context).get("x-remote_ip");
-        String methodVersion = getAssets(context).getMethod() + getAssets(context).getVersion();
+    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain, Context context) {
+        Assert.notNull(context, "Context must be initialized by a preceding strategy.");
+        Assert.notNull(context.getAssets(), "Assets must be resolved by a preceding strategy.");
+
+        String ip = context.getRequestMap().get("x_request_ipv4");
+        String methodVersion = context.getAssets().getMethod() + context.getAssets().getVersion();
+
         Set<Limiter> cfgList = getLimiter(methodVersion, ip);
         for (Limiter cfg : cfgList) {
             cfg.acquire();
         }
+
         Logger.info(
-                "==>     Filter: Rate limit applied - Path: {}, Method: {}",
+                "==>     Strategy: Rate limit applied - Path: {}, Method: {}",
                 exchange.getRequest().getURI().getPath(),
                 methodVersion);
-        return chain.filter(exchange);
+
+        return chain.apply(exchange);
     }
 
-    /**
-     * Retrieves the applicable rate limiter configurations.
-     *
-     * @param methodVersion The combination of method name and version number.
-     * @param ip            The IP address of the request.
-     * @return A set of applicable {@link Limiter} configurations.
-     */
     private Set<Limiter> getLimiter(String methodVersion, String ip) {
         String[] limitKeys = new String[] { methodVersion, ip + methodVersion };
         Set<Limiter> limitCfgList = new HashSet<>();

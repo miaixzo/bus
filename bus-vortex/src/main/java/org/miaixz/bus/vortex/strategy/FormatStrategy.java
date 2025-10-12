@@ -25,7 +25,9 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.filter;
+package org.miaixz.bus.vortex.strategy;
+
+import java.util.List;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.logger.Logger;
@@ -38,20 +40,19 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilterChain;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 /**
- * Response formatting filter that ensures all response data is in JSON format.
+ * A filter strategy for response formatting. This strategy ensures that if a request asks for XML, the response is
+ * converted to JSON format.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-@Order(Ordered.LOWEST_PRECEDENCE - 2)
-public class FormatFilter extends AbstractFilter {
+@Order(Ordered.HIGHEST_PRECEDENCE + 6)
+public class FormatStrategy extends AbstractStrategy {
 
     /**
      * Internal filtering method, executing the response formatting logic.
@@ -66,7 +67,7 @@ public class FormatFilter extends AbstractFilter {
      * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
      */
     @Override
-    protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
+    protected Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain, Context context) {
         Logger.info(
                 "==>     Filter: Request started - Method: {}, Path: {}, Query: {}",
                 exchange.getRequest().getMethod(),
@@ -79,7 +80,7 @@ public class FormatFilter extends AbstractFilter {
             exchange = exchange.mutate().response(process(exchange)).build();
         }
 
-        return chain.filter(exchange);
+        return chain.apply(exchange);
     }
 
     /**

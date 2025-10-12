@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.filter;
+package org.miaixz.bus.vortex.strategy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,24 +55,19 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilterChain;
 
 import reactor.core.publisher.Mono;
 
 /**
- * Access authorization filter responsible for verifying the legality of requests, including method, token, and
- * application ID.
- * <p>
- * This filter is a crucial part of the request processing chain. It validates the legality of requests by checking the
- * request method, version, token (if required), and application ID. The filter ensures that only legitimate requests
- * are allowed to proceed by verifying the HTTP method, token, and application ID against the configured asset
- * information.
+ * A filter strategy for access authorization. This strategy verifies the legality of requests by checking the method,
+ * token, and application ID. It is designed to work on traditional REST requests that contain method and version
+ * parameters.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 2)
-public class AuthorizeFilter extends AbstractFilter {
+@Order(Ordered.HIGHEST_PRECEDENCE + 3)
+public class AuthorizeStrategy extends AbstractStrategy {
 
     /**
      * The authorization provider, used for handling token validation and authorization logic.
@@ -98,7 +93,7 @@ public class AuthorizeFilter extends AbstractFilter {
      * @param provider The authorization provider, used for handling token validation and authorization logic.
      * @param registry The assets registry, used for storing and retrieving API asset information.
      */
-    public AuthorizeFilter(AuthorizeProvider provider, AssetsRegistry registry) {
+    public AuthorizeStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
         this.provider = provider;
         this.registry = registry;
     }
@@ -125,7 +120,7 @@ public class AuthorizeFilter extends AbstractFilter {
      *         execution if all validations pass.
      */
     @Override
-    protected Mono<Void> doFilter(ServerWebExchange exchange, WebFilterChain chain, Context context) {
+    protected Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain, Context context) {
         // Get the request parameter map from the context
         Map<String, String> params = getRequestMap(context);
 
@@ -162,7 +157,7 @@ public class AuthorizeFilter extends AbstractFilter {
         Logger.info("==>     Filter: Method: {}, Version: {} validated successfully", method, version);
 
         // Continue with the filter chain
-        return chain.filter(exchange);
+        return chain.apply(exchange);
     }
 
     /**
