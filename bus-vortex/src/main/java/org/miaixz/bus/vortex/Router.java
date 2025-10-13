@@ -44,8 +44,10 @@ public interface Router {
      * Routes the request to the target service.
      *
      * @param request The current `ServerRequest` object.
+     * @param context The request context, containing request parameters and configuration information.
+     * @param assets  The configuration assets, containing configuration information for the target service.
      * @return A {@code Mono<ServerResponse>} representing the asynchronous response.
      */
-    Mono<ServerResponse> route(ServerRequest request);
+    Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets);
 
 }

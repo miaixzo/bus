@@ -27,25 +27,21 @@
 */
 package org.miaixz.bus.vortex;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import org.miaixz.bus.core.basic.entity.Tracer;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.codec.multipart.Part;
+import java.util.stream.Collectors;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.core.basic.entity.Tracer;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.codec.multipart.Part;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.server.ServerWebExchange;
 
 /**
- * Represents the request context, a stateful object that is created at the beginning of a request and enriched as it
- * passes through the strategy chain.
- * <p>
- * This class acts as a central data carrier for a single request, holding everything from request parameters and
- * headers to authorization details and matched API asset information. It is created once per request in the
- * {@link org.miaixz.bus.vortex.filter.PrimaryFilter} and shared across all components via the Reactor context.
+ * Context parameter class, used to store and pass request-related context information.
  *
- * @author Kimi Liu
+ * @author Justubborn
  * @since Java 17+
  */
 @Getter
@@ -56,70 +52,110 @@ import lombok.experimental.SuperBuilder;
 public class Context extends Tracer {
 
     /**
-     * The key used to store and retrieve this Context object from the attributes of a {@code ServerWebExchange}.
+     * The key name for the context object in ServerWebExchange or ServerRequest attributes.
      */
-    public static final String $ = "X.CONTEXT";
+    private static final String $ = "_context";
 
     /**
-     * A map of the HTTP request headers. This map is a direct, single-value representation of the incoming request's
-     * headers.
+     * Request parameters, stored as key-value pairs.
      */
-    @Builder.Default
-    private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> requestMap;
 
     /**
-     * A map of the request's business parameters. This map aggregates parameters from the URL query, the request body
-     * (form or JSON), and any additional parameters derived during processing.
+     * Request headers, stored as key-value pairs.
      */
-    @Builder.Default
-    private Map<String, String> parameters = new HashMap<>();
+    private Map<String, String> headerMap;
 
     /**
-     * A map of uploaded files for multipart/form-data requests. The key is the form field name, and the value is the
-     * {@link Part} object representing the uploaded file.
+     * File upload parameters, storing a map of file parts.
      */
-    @Builder.Default
-    private Map<String, Part> fileParts = new HashMap<>();
+    private Map<String, Part> filePartMap;
 
     /**
-     * The requested data format for the response, such as JSON or XML. This is determined from the request parameters.
+     * Data format, defaults to JSON format.
      */
     @Builder.Default
-    private Formats format = Formats.JSON;
+    private Formats formats = Formats.JSON;
 
     /**
-     * The channel through which the request was made, e.g., WEB, APP, etc. This is determined from the request
-     * parameters or headers.
+     * Request channel, defaults to the web channel.
      */
     @Builder.Default
     private Channel channel = Channel.WEB;
 
     /**
-     * The HTTP method of the incoming request (e.g., GET, POST).
+     * The HTTP method of the request.
      */
     private HttpMethod httpMethod;
 
     /**
-     * The resolved API asset that matches the incoming request's method and version. This object contains all
-     * configuration for the requested API endpoint.
+     * Asset information, specifically defined by the {@link Assets} class.
      */
     private Assets assets;
 
     /**
-     * The access token extracted from the request headers, used for authentication and authorization.
+     * Token, used for authentication or session management.
      */
     private String token;
 
     /**
-     * A flag indicating the security mode of the request, typically used to enable or disable features like
-     * encryption/decryption.
+     * Indicates whether the data is encrypted and signed.
      */
     private Integer sign;
 
     /**
-     * The timestamp in milliseconds when the request processing started. This is used for calculating total execution
-     * time.
+     * Request start time, used for performance monitoring or logging.
      */
     private long timestamp;
+
+    /**
+     * Retrieves or initializes the context object from {@link ServerWebExchange}. It automatically extracts header
+     * information from the request and sets it into the headerMap.
+     *
+     * @param exchange The current {@link ServerWebExchange} object.
+     * @return The context object; if it does not exist, a new empty context is created and header information is set.
+     */
+    public static Context get(ServerWebExchange exchange) {
+        Context context = exchange.getAttribute(Context.$);
+        if (context == null) {
+            context = new Context();
+            // Extracts header information from the request
+            Map<String, String> headers = exchange.getRequest().getHeaders().toSingleValueMap().entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            context.setHeaderMap(headers);
+            exchange.getAttributes().put(Context.$, context);
+        } else if (context.getHeaderMap() == null) {
+            // If context exists but headerMap is null, also set header information
+            Map<String, String> headers = exchange.getRequest().getHeaders().toSingleValueMap().entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            context.setHeaderMap(headers);
+        }
+        return context;
+    }
+
+    /**
+     * Retrieves or initializes the context object from {@link ServerRequest}. It automatically extracts header
+     * information from the request and sets it into the headerMap.
+     *
+     * @param request The current {@link ServerRequest} object.
+     * @return The context object; if it does not exist, a new empty context is created and header information is set.
+     */
+    public static Context get(ServerRequest request) {
+        Context context = (Context) request.attribute(Context.$).orElse(null);
+        if (context == null) {
+            context = new Context();
+            // Extracts header information from the request
+            Map<String, String> headers = request.headers().asHttpHeaders().toSingleValueMap().entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            context.setHeaderMap(headers);
+            request.attributes().put(Context.$, context);
+        } else if (context.getHeaderMap() == null) {
+            // If context exists but headerMap is null, also set header information
+            Map<String, String> headers = request.headers().asHttpHeaders().toSingleValueMap().entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            context.setHeaderMap(headers);
+        }
+        return context;
+    }
 
 }

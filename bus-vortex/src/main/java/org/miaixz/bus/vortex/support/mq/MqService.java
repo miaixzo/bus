@@ -28,6 +28,7 @@
 package org.miaixz.bus.vortex.support.mq;
 
 import java.time.Duration;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,7 +38,6 @@ import org.miaixz.bus.extra.mq.MQFactory;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
 
 import jakarta.annotation.PreDestroy;
 import reactor.core.publisher.Mono;
@@ -50,38 +50,48 @@ import reactor.core.scheduler.Schedulers;
 public class MqService {
 
     /**
-     * A dedicated thread pool for asynchronously handling MQ message sending operations. This prevents blocking the
-     * main reactive threads.
-     */
-    private final ExecutorService executor;
-    /**
      * The underlying message queue producer used for sending messages. It is initialized based on the provided MQ
      * properties.
      */
     private Producer producer;
 
     /**
-     * Constructs a new MqProducerService.
+     * A dedicated thread pool for asynchronously handling MQ message sending operations. This prevents blocking the
+     * main reactive threads.
      */
-    public MqService() {
+    private final ExecutorService executor;
+
+    /**
+     * Constructs a new MqProducerService.
+     * 
+     * @param mqProperties The properties used to configure the MQ connection and producer.
+     */
+    public MqService(Properties mqProperties) {
         this.executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2, r -> {
             Thread t = new Thread(r, "vortex-mq-producer-pool");
             t.setDaemon(true);
             return t;
         });
+        initializeProducer(mqProperties);
     }
 
     /**
      * Initializes the MQ producer based on the given properties.
      * 
-     * @param assets The configuration properties for the message queue.
+     * @param mqProperties The configuration properties for the message queue.
      */
-    private void init(Assets assets) {
-        String brokerUrl = assets.getHost() + ":" + assets.getPort();
+    private void initializeProducer(Properties mqProperties) {
+        String brokerUrl = mqProperties.getProperty("mq.broker.url");
         if (brokerUrl == null) {
             throw new IllegalArgumentException("mq.broker.url property is missing.");
         }
         MQConfig config = MQConfig.of(brokerUrl);
+        mqProperties.forEach((key, value) -> {
+            if (key instanceof String && value instanceof String) {
+                config.addProperty((String) key, (String) value);
+            }
+        });
+
         this.producer = MQFactory.createEngine(config).getProducer();
         Logger.info("MQ Producer initialized successfully for broker: {}", brokerUrl);
     }
@@ -92,7 +102,7 @@ public class MqService {
      * @param topic   The topic to which the message will be sent.
      * @param payload The string content of the message.
      * @param timeout The timeout duration for the send operation.
-     * @return A Mono that completes when the message is sent, or errors out on failure or timeout.
+     * @return A Mono<Void> that completes when the message is sent, or errors out on failure or timeout.
      */
     public Mono<Void> send(String topic, String payload, Duration timeout) {
         Message message = new Message() {

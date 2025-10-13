@@ -72,38 +72,35 @@ public class MqRouter implements Router {
      * operation to the MqProducerService.
      *
      * @param request The client's {@link ServerRequest} object, containing request information.
+     * @param context The request context, containing request parameters and configuration information.
+     * @param assets  The configuration assets, containing configuration information for the target service.
      * @return A {@link Mono<ServerResponse>} indicating the status of the message forwarding.
      */
     @Override
-    public Mono<ServerResponse> route(ServerRequest request) {
-        return Mono.deferContextual(contextView -> {
-            final Context context = contextView.get(Context.class);
-            final Assets assets = context.getAssets();
+    public Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets) {
+        long startTime = System.currentTimeMillis();
+        Logger.info("MQ Router: Routing request for topic: {}", assets.getMethod());
 
-            long startTime = System.currentTimeMillis();
-            Logger.info("MQ Router: Routing request for topic: {}", assets.getMethod());
-
-            return request.bodyToMono(String.class).flatMap(
-                    payload -> this.service.send(assets.getMethod(), payload, Duration.ofMillis(assets.getTimeout())))
-                    .then(Mono.defer(() -> {
-                        long duration = System.currentTimeMillis() - startTime;
-                        Logger.info(
-                                "MQ Router: Successfully forwarded request for topic: {} in {}ms",
-                                assets.getMethod(),
-                                duration);
-                        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue("{\"status\": \"Request forwarded to MQ\"}");
-                    })).onErrorResume(e -> {
-                        long duration = System.currentTimeMillis() - startTime;
-                        Logger.error(
-                                "MQ Router: Failed to forward request for topic: {} in {}ms",
-                                assets.getMethod(),
-                                duration,
-                                e);
-                        return ServerResponse.status(500).contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue("{\"error\": \"Failed to forward request to MQ: " + e.getMessage() + "\"}");
-                    });
-        });
+        return request.bodyToMono(String.class).flatMap(
+                payload -> this.service.send(assets.getMethod(), payload, Duration.ofMillis(assets.getTimeout())))
+                .then(Mono.defer(() -> {
+                    long duration = System.currentTimeMillis() - startTime;
+                    Logger.info(
+                            "MQ Router: Successfully forwarded request for topic: {} in {}ms",
+                            assets.getMethod(),
+                            duration);
+                    return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue("{\"status\": \"Request forwarded to MQ\"}");
+                })).onErrorResume(e -> {
+                    long duration = System.currentTimeMillis() - startTime;
+                    Logger.error(
+                            "MQ Router: Failed to forward request for topic: {} in {}ms",
+                            assets.getMethod(),
+                            duration,
+                            e);
+                    return ServerResponse.status(500).contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue("{\"error\": \"Failed to forward request to MQ: " + e.getMessage() + "\"}");
+                });
     }
 
 }

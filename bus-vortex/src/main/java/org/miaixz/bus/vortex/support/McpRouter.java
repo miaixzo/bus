@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.support.mcp.McpClient;
 import org.miaixz.bus.vortex.support.mcp.McpService;
@@ -49,14 +51,15 @@ import reactor.core.publisher.Mono;
 public class McpRouter implements Router {
 
     /**
-     * The separator used to create unique tool names by prefixing the service name.
-     */
-    private static final String TOOL_NAME_SEPARATOR = "::";
-    /**
      * The service responsible for managing the lifecycle of all MCP clients. This dependency will be injected by the
      * Spring container.
      */
     private final McpService service;
+
+    /**
+     * The separator used to create unique tool names by prefixing the service name.
+     */
+    private static final String TOOL_NAME_SEPARATOR = "::";
 
     /**
      * Constructs a new McpRouter with an injected McpLifecycleService.
@@ -72,10 +75,12 @@ public class McpRouter implements Router {
      * appropriate handler.
      *
      * @param request The incoming {@link ServerRequest}.
+     * @param context The request context.
+     * @param assets  The configuration assets for the request (less relevant in MCP mode).
      * @return A {@link Mono<ServerResponse>} with the result of the operation.
      */
     @Override
-    public Mono<ServerResponse> route(ServerRequest request) {
+    public Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets) {
         String action = request.queryParam("action").orElse("listTools");
         if ("listTools".equalsIgnoreCase(action)) {
             return listTools();

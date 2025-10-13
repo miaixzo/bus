@@ -35,7 +35,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.core.Ordered;
@@ -57,18 +56,9 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 /**
- * The foundational strategy responsible for request parsing, body caching, and context initialization.
- * <p>
- * As the first strategy in the chain (with the highest precedence), its primary roles are:
- * <ol>
- * <li>Performing initial security checks, such as path validation and path traversal detection.</li>
- * <li>Dispatching the request to a specific handler based on its HTTP method and {@code Content-Type}.</li>
- * <li>Reading and parsing the request body (for POST, PUT, etc.), populating the {@link Context#getParameters()}
- * map.</li>
- * <li><b>Caching the request body:</b> Since a reactive request body can only be consumed once, this strategy reads the
- * body into memory and wraps the request with a {@link ServerHttpRequestDecorator}. This crucial step allows downstream
- * strategies or controllers to re-read the body if necessary.</li>
- * </ol>
+ * The foundational filter strategy, responsible for request parsing and context initialization. This strategy must run
+ * first to prepare the {@link Context} object, which is then attached to the exchange attributes for all subsequent
+ * strategies and handlers to use.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -76,105 +66,92 @@ import reactor.util.retry.Retry;
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class RequestStrategy extends AbstractStrategy {
 
+    private static final List<String> ALLOW_PATHS = Arrays.asList("/router/rest", "/router/mcp");
     /**
-     * A whitelist of URI paths that are allowed to be processed by the gateway.
-     */
-    private static final List<String> ALLOW_PATHS = Arrays
-            .asList(Args.REST_PATH_PREFIX, Args.MCP_PATH_PREFIX, Args.MQ_PATH_PREFIX);
-    /**
-     * The maximum number of automatic retry attempts allowed when processing a request body fails.
+     * The maximum number of of automatic retry attempts allowed when processing the request body.
      */
     private static final int MAX_RETRY_ATTEMPTS = 3;
 
     /**
-     * The base delay in milliseconds between automatic retry attempts for request body processing.
+     * The base delay time in milliseconds between automatic retry attempts.
      */
     private static final long RETRY_DELAY_MS = 1000;
 
     /**
-     * The maximum allowed size in bytes for a non-multipart request body (e.g., JSON, form-urlencoded). This is a
-     * crucial defense against Denial-of-Service (DoS) attacks via memory exhaustion.
-     */
-    private static final int MAX_REQUEST_SIZE = 100 * 1024 * 1024;
-
-    /**
-     * The maximum allowed size in bytes for a multipart/form-data request, typically used for file uploads.
-     */
-    private static final long MAX_MULTIPART_REQUEST_SIZE = 512 * 1024 * 1024;
-
-    /**
-     * Applies the request parsing and validation logic.
+     * The core execution method of the filter, responsible for initial security checks and request dispatching.
      * <p>
-     * This is the main entry point for the strategy. It performs initial path validation and then dispatches the
-     * request to the appropriate handler (e.g., {@code handleGetRequest}, {@code handleJsonRequest}) based on the HTTP
-     * method and {@code Content-Type}.
+     * This method first performs path security checks, including blacklisted path filtering and path traversal attack
+     * detection. After passing the checks, it dispatches the {@link ServerWebExchange} to the appropriate handling
+     * method (e.g., {@code handleGetRequest}, {@code handleJsonRequest}) based on the request type (GET or other
+     * methods and Content-Type).
+     * </p>
      *
-     * @param exchange The current server exchange.
-     * @param chain    The next strategy in the chain.
-     * @return A {@code Mono<Void>} that signals the completion of this strategy.
+     * @param exchange The current {@link ServerWebExchange} object.
+     * @param chain    The filter chain.
+     * @param context  The context object used to pass data throughout the request lifecycle.
+     * @return {@link Mono<Void>} indicating the asynchronous completion of the filtering operation.
+     * @throws ValidateException If the request path is blocked or a path traversal attack is detected.
      */
     @Override
-    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain) {
-        return Mono.deferContextual(contextView -> {
-            final Context context = contextView.get(Context.class);
+    protected Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain, Context context) {
+        String path = exchange.getRequest().getPath().value();
+        // Check for blacklisted paths, such as favicon.ico, to avoid unnecessary processing.
+        if (!ALLOW_PATHS.contains(path)) {
+            Logger.warn("==>     Filter: Blocked request to path: {}", path);
+            // Throw an exception to prevent further processing
+            throw new ValidateException(ErrorCode._BLOCKED);
+        }
+        // Check for attempts at path traversal attacks to enhance system security.
+        if (isPathTraversalAttempt(path)) {
+            Logger.warn("==>     Filter: Path traversal attempt detected: {}", path);
+            // Throw an exception to prevent further processing
+            throw new ValidateException(ErrorCode._LIMITER);
+        }
 
-            String path = exchange.getRequest().getPath().value();
-            // 1. Check if the request path is in the whitelist.
-            if (!ALLOW_PATHS.contains(path)) {
-                Logger.warn("==>     Filter: Blocked request to path: {}", path);
-                throw new ValidateException(ErrorCode._BLOCKED);
-            }
-            // 2. Check for path traversal attack patterns.
-            if (isPathTraversalAttempt(path)) {
-                Logger.warn("==>     Filter: Path traversal attempt detected: {}", path);
-                throw new ValidateException(ErrorCode._LIMITER);
-            }
+        ServerWebExchange mutate = setContentType(exchange);
+        context.setTimestamp(DateKit.current());
+        ServerHttpRequest request = mutate.getRequest();
 
-            // 3. Set default Content-Type if missing and record the request start time.
-            ServerWebExchange mutate = setContentType(exchange);
-            context.setTimestamp(DateKit.current());
-            ServerHttpRequest request = mutate.getRequest();
-
-            // 4. Dispatch to the appropriate handler based on method and Content-Type.
-            if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
-                return handleGetRequest(mutate, chain, context);
-            } else {
-                MediaType contentType = mutate.getRequest().getHeaders().getContentType();
-                if (contentType == null) {
-                    return handleFormRequest(mutate, chain, context);
-                } else if (MediaType.APPLICATION_JSON.isCompatibleWith(contentType)) {
-                    return handleJsonRequest(mutate, chain, context);
-                } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(contentType)) {
-                    long contentLength = request.getHeaders().getContentLength();
-                    if (contentLength > MAX_MULTIPART_REQUEST_SIZE) {
-                        throw new ValidateException(ErrorCode._100530);
-                    }
-                    return handleMultipartRequest(mutate, chain, context);
-                } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(contentType)) {
-                    return handleFormRequest(mutate, chain, context);
-                } else {
-                    // Default to form processing for other unknown Content-Types.
-                    return handleFormRequest(mutate, chain, context);
-                }
+        // Dispatch to different handlers based on HTTP method and Content-Type
+        if (Objects.equals(request.getMethod(), HttpMethod.GET)) {
+            return handleGetRequest(mutate, chain, context);
+        } else {
+            MediaType contentType = mutate.getRequest().getHeaders().getContentType();
+            if (contentType == null) {
+                // If no Content-Type, default to form processing
+                return handleFormRequest(mutate, chain, context);
+            } else if (MediaType.APPLICATION_JSON.isCompatibleWith(contentType)) {
+                return handleJsonRequest(mutate, chain, context);
+            } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(contentType)) {
+                // Multipart requests have a dedicated handling method and do not read the request body beforehand
+                return handleMultipartRequest(mutate, chain, context);
+            } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(contentType)) {
+                return handleFormRequest(mutate, chain, context);
             }
-        });
+            // For other unknown Content-Types, attempt to process as a general form
+            return handleFormRequest(mutate, chain, context);
+        }
     }
 
     /**
-     * Handles GET requests by extracting parameters directly from the URL query.
+     * Handles GET requests.
+     * <p>
+     * Extracts data directly from URL query parameters, stores it in the context, and then continues the filter chain.
+     * </p>
      *
-     * @param exchange The current server exchange.
-     * @param chain    The next strategy in the chain.
-     * @param context  The request context to be populated.
-     * @return A {@code Mono<Void>} that signals the completion of processing.
+     * @param exchange The {@link ServerWebExchange} object.
+     * @param chain    The filter chain.
+     * @param context  The request context.
+     * @return {@link Mono<Void>} indicating the completion of asynchronous processing.
      */
     private Mono<Void> handleGetRequest(ServerWebExchange exchange, StrategyChain chain, Context context) {
-        context.getParameters().putAll(exchange.getRequest().getQueryParams().toSingleValueMap());
-        this.validateParameters(exchange, context);
+        MultiValueMap<String, String> params = exchange.getRequest().getQueryParams();
+        context.setRequestMap(params.toSingleValueMap());
+        this.validate(exchange);
         Logger.info(
                 "==>     Filter: GET request processed - Path: {}, Params: {}",
                 exchange.getRequest().getURI().getPath(),
-                JsonKit.toJsonString(context.getParameters()));
+                JsonKit.toJsonString(context.getRequestMap()));
 
         return chain.apply(exchange).doOnSuccess(
                 v -> Logger.info(
@@ -184,27 +161,32 @@ public class RequestStrategy extends AbstractStrategy {
     }
 
     /**
-     * Handles {@code application/json} requests. It reads the request body and delegates to
-     * {@link #processJsonData(ServerWebExchange, StrategyChain, Context, List)}.
+     * Handles requests with Content-Type as application/json.
      * <p>
-     * This process is wrapped in a retry mechanism to handle transient network or parsing errors.
+     * This method asynchronously reads and parses the JSON data from the request body, storing the result in the
+     * context. To handle potential transient network or parsing errors, this process is wrapped in a retry mechanism
+     * with a backoff strategy.
+     * </p>
      *
-     * @param exchange The current server exchange.
-     * @param chain    The next strategy in the chain.
+     * @param exchange The {@link ServerWebExchange} object.
+     * @param chain    The filter chain.
      * @param context  The request context.
-     * @return A {@code Mono<Void>} that signals the completion of processing.
+     * @return {@link Mono<Void>} indicating the completion of asynchronous processing.
      */
     private Mono<Void> handleJsonRequest(ServerWebExchange exchange, StrategyChain chain, Context context) {
+        // Asynchronously collect all data fragments from the request body
         return exchange.getRequest().getBody().collectList()
                 .flatMap(dataBuffers -> processJsonData(exchange, chain, context, dataBuffers)).retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
                                 .maxBackoff(java.time.Duration.ofMillis(500)).jitter(0.75)
-                                .doBeforeRetry(
-                                        retrySignal -> Logger.warn(
-                                                "==>     Filter: Retrying JSON request processing, attempt: {}, error: {}",
-                                                (retrySignal.totalRetries() + 1),
-                                                retrySignal.failure().getMessage()))
-                                .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
+                                .doBeforeRetry(retrySignal -> {
+                                    // Log each retry attempt
+                                    Logger.warn(
+                                            "==>     Filter: Retrying JSON request processing, attempt: {}, error: {}",
+                                            (retrySignal.totalRetries() + 1),
+                                            retrySignal.failure().getMessage());
+                                }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
+                                    // Log severe error and throw exception after retry exhaustion
                                     Logger.error(
                                             "==>     Filter: JSON request processing failed after {} attempts, error: {}",
                                             MAX_RETRY_ATTEMPTS,
@@ -214,16 +196,20 @@ public class RequestStrategy extends AbstractStrategy {
     }
 
     /**
-     * Performs the actual parsing of a JSON request body.
+     * The core logic for actually processing and parsing the JSON request body.
      * <p>
-     * This method merges the data buffers, parses the resulting JSON string into a map, and populates the
-     * {@link Context}. It then decorates the request to allow the body to be re-read downstream.
+     * This method is responsible for merging fragmented {@link DataBuffer}s into a complete byte array, and then
+     * parsing the result into a JSON-formatted Map. <b>Key Operation:</b> Since the request body is a
+     * single-consumption stream, after reading, this method creates a {@link ServerHttpRequestDecorator} that re-wraps
+     * the read byte data into a new {@code Flux<DataBuffer>} and places it into a new request object. This ensures that
+     * downstream filters or controllers can still access the original request body.
+     * </p>
      *
-     * @param exchange    The current server exchange.
-     * @param chain       The next strategy in the chain.
-     * @param context     The request context to be populated.
-     * @param dataBuffers A list of data buffer fragments from the request body.
-     * @return A {@code Mono<Void>} that signals the completion of processing.
+     * @param exchange    The {@link ServerWebExchange} object.
+     * @param chain       The filter chain.
+     * @param context     The request context.
+     * @param dataBuffers A list of data buffer fragments collected from the request body.
+     * @return {@link Mono<Void>} indicating the completion of asynchronous processing.
      */
     private Mono<Void> processJsonData(
             ServerWebExchange exchange,
@@ -231,16 +217,21 @@ public class RequestStrategy extends AbstractStrategy {
             Context context,
             List<DataBuffer> dataBuffers) {
         try {
-            byte[] bytes = readBodyToBytes(dataBuffers);
+            // Merge all data buffers into a single byte array
+            byte[] bytes = new byte[dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum()];
+            int pos = 0;
+            for (DataBuffer buffer : dataBuffers) {
+                int length = buffer.readableByteCount();
+                buffer.read(bytes, pos, length);
+                pos += length;
+            }
 
             String jsonBody = new String(bytes, Charset.UTF_8);
-            Map<String, String> jsonMap = new HashMap<>();
-            Map<String, Object> rawMap = JsonKit.toMap(jsonBody);
-            if (rawMap != null) {
-                rawMap.forEach((k, v) -> jsonMap.put(k, String.valueOf(v)));
-            }
-            context.getParameters().putAll(jsonMap);
+            Map<String, String> jsonMap = JsonKit.toMap(jsonBody);
+            context.setRequestMap(jsonMap);
 
+            // Create a request decorator to override the getBody method, allowing downstream components to re-consume
+            // the request body
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
                 @Override
@@ -250,9 +241,10 @@ public class RequestStrategy extends AbstractStrategy {
                 }
             };
 
+            // Build a new ServerWebExchange with the decorated request
             ServerWebExchange newExchange = exchange.mutate().request(newRequest).build();
 
-            this.validateParameters(newExchange, context);
+            this.validate(newExchange);
             Logger.info(
                     "==>     Filter: JSON request processed - Path: {}, Params: {}",
                     newExchange.getRequest().getURI().getPath(),
@@ -264,32 +256,33 @@ public class RequestStrategy extends AbstractStrategy {
                             (System.currentTimeMillis() - context.getTimestamp())));
         } catch (Exception e) {
             Logger.error("==>     Filter: Failed to process JSON: {}", e.getMessage());
-            return Mono.error(e);
+            return Mono.error(e); // Convert synchronous exception to asynchronous error
         }
     }
 
     /**
-     * Handles {@code application/x-www-form-urlencoded} requests. It reads the request body and delegates to
-     * {@link #processFormData(ServerWebExchange, StrategyChain, Context, List)}.
+     * Handles form requests with Content-Type application/x-www-form-urlencoded or no Content-Type.
      * <p>
-     * This process is wrapped in a retry mechanism.
+     * This method is similar to the JSON request handling logic, also including request body reading, reusability, and
+     * a retry mechanism.
+     * </p>
      *
-     * @param exchange The current server exchange.
-     * @param chain    The next strategy in the chain.
+     * @param exchange The {@link ServerWebExchange} object.
+     * @param chain    The filter chain.
      * @param context  The request context.
-     * @return A {@code Mono<Void>} that signals the completion of processing.
+     * @return {@link Mono<Void>} indicating the completion of asynchronous processing.
      */
     private Mono<Void> handleFormRequest(ServerWebExchange exchange, StrategyChain chain, Context context) {
         return exchange.getRequest().getBody().collectList()
                 .flatMap(dataBuffers -> processFormData(exchange, chain, context, dataBuffers)).retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
                                 .maxBackoff(java.time.Duration.ofMillis(500)).jitter(0.75)
-                                .doBeforeRetry(
-                                        retrySignal -> Logger.warn(
-                                                "==>     Filter: Retrying form request processing, attempt: {}, error: {}",
-                                                (retrySignal.totalRetries() + 1),
-                                                retrySignal.failure().getMessage()))
-                                .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
+                                .doBeforeRetry(retrySignal -> {
+                                    Logger.warn(
+                                            "==>     Filter: Retrying form request processing, attempt: {}, error: {}",
+                                            (retrySignal.totalRetries() + 1),
+                                            retrySignal.failure().getMessage());
+                                }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
                                     Logger.error(
                                             "==>     Filter: Form request processing failed after {} attempts, error: {}",
                                             MAX_RETRY_ATTEMPTS,
@@ -299,16 +292,18 @@ public class RequestStrategy extends AbstractStrategy {
     }
 
     /**
-     * Performs the actual parsing of a form-data request body.
+     * The core logic for actually processing and parsing form-data from the request body.
      * <p>
-     * This method caches the request body, decorates the request to make it re-readable, and then uses the built-in
-     * {@link ServerWebExchange#getFormData()} to parse the parameters into the {@link Context}.
+     * This method first caches the request body data and wraps it with a {@link ServerHttpRequestDecorator} to support
+     * downstream consumption. Subsequently, it uses Spring Framework's {@code getFormData()} method to parse form
+     * parameters from the re-readable request body.
+     * </p>
      *
-     * @param exchange    The current server exchange.
-     * @param chain       The next strategy in the chain.
-     * @param context     The request context to be populated.
-     * @param dataBuffers A list of data buffer fragments from the request body.
-     * @return A {@code Mono<Void>} that signals the completion of processing.
+     * @param exchange    The {@link ServerWebExchange} object.
+     * @param chain       The filter chain.
+     * @param context     The request context.
+     * @param dataBuffers A list of data buffer fragments collected from the request body.
+     * @return {@link Mono<Void>} indicating the completion of asynchronous processing.
      */
     private Mono<Void> processFormData(
             ServerWebExchange exchange,
@@ -316,8 +311,15 @@ public class RequestStrategy extends AbstractStrategy {
             Context context,
             List<DataBuffer> dataBuffers) {
         try {
-            byte[] bytes = readBodyToBytes(dataBuffers);
+            byte[] bytes = new byte[dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum()];
+            int pos = 0;
+            for (DataBuffer buffer : dataBuffers) {
+                int length = buffer.readableByteCount();
+                buffer.read(bytes, pos, length);
+                pos += length;
+            }
 
+            // Similarly, create a request decorator to support repeated reading of the request body
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
                 @Override
@@ -329,13 +331,14 @@ public class RequestStrategy extends AbstractStrategy {
 
             ServerWebExchange newExchange = exchange.mutate().request(newRequest).build();
 
+            // Parse form data from the re-readable request
             return newExchange.getFormData().flatMap(params -> {
-                context.getParameters().putAll(params.toSingleValueMap());
-                this.validateParameters(newExchange, context);
+                context.setRequestMap(params.toSingleValueMap());
+                this.validate(newExchange);
                 Logger.info(
                         "==>     Filter: Form request processed - Path: {}, Params: {}",
                         newExchange.getRequest().getURI().getPath(),
-                        JsonKit.toJsonString(context.getParameters()));
+                        JsonKit.toJsonString(context.getRequestMap()));
                 return chain.apply(newExchange).doOnTerminate(
                         () -> Logger.info(
                                 "==>     Filter: Request processed - Path: {}, ExecutionTime: {}ms",
@@ -349,33 +352,34 @@ public class RequestStrategy extends AbstractStrategy {
     }
 
     /**
-     * Handles {@code multipart/form-data} requests, typically used for file uploads.
+     * Handles requests of type multipart/form-data, typically used for file uploads.
      * <p>
-     * This method delegates directly to
-     * {@link #processMultipartData(ServerWebExchange, StrategyChain, Context, MultiValueMap)} after using the built-in
-     * {@link ServerWebExchange#getMultipartData()} parser.
+     * For such requests, Spring WebFlux provides a direct parsing method {@code getMultipartData()}, eliminating the
+     * need to manually process the request body stream. The parsing process is also protected by a retry mechanism.
+     * </p>
      *
-     * @param exchange The current server exchange.
-     * @param chain    The next strategy in the chain.
+     * @param exchange The {@link ServerWebExchange} object.
+     * @param chain    The filter chain.
      * @param context  The request context.
-     * @return A {@code Mono<Void>} that signals the completion of processing.
+     * @return {@link Mono<Void>} indicating the completion of asynchronous processing.
      */
     private Mono<Void> handleMultipartRequest(ServerWebExchange exchange, StrategyChain chain, Context context) {
         return exchange.getMultipartData().flatMap(params -> processMultipartData(exchange, chain, context, params))
                 .retryWhen(
                         Retry.backoff(MAX_RETRY_ATTEMPTS, java.time.Duration.ofMillis(RETRY_DELAY_MS))
                                 .maxBackoff(java.time.Duration.ofMillis(500)).jitter(0.75)
-                                .doBeforeRetry(
-                                        retrySignal -> Logger.warn(
-                                                "==>     Filter: Retrying multipart request processing, attempt: {}, error: {}",
-                                                (retrySignal.totalRetries() + 1),
-                                                retrySignal.failure().getMessage()))
-                                .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
+                                .doBeforeRetry(retrySignal -> {
+                                    Logger.warn(
+                                            "==>     Filter: Retrying multipart request processing, attempt: {}, error: {}",
+                                            (retrySignal.totalRetries() + 1),
+                                            retrySignal.failure().getMessage());
+                                }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
                                     Logger.error(
                                             "==>     Filter: Multipart request processing failed after {} attempts, error: {}",
                                             MAX_RETRY_ATTEMPTS,
                                             retrySignal.failure().getMessage());
 
+                                    // For specific boundary errors, return a more explicit error code
                                     if (retrySignal.failure().getMessage() != null && retrySignal.failure().getMessage()
                                             .contains("Could not find first boundary")) {
                                         return new InternalException(ErrorCode._100303);
@@ -385,16 +389,17 @@ public class RequestStrategy extends AbstractStrategy {
     }
 
     /**
-     * Performs the actual processing of multipart form data.
+     * The core logic for actually processing and parsing multipart/form-data.
      * <p>
-     * This method iterates through the parsed parts, separating them into form fields (which are added to
-     * {@link Context#getParameters()}) and file parts (which are added to {@link Context#getFileParts()}).
+     * This method iterates through the parsed parts, storing form fields and file parts separately into the context's
+     * {@code requestMap} and {@code filePartMap} respectively, for use by subsequent business logic.
+     * </p>
      *
-     * @param exchange The current server exchange.
-     * @param chain    The next strategy in the chain.
-     * @param context  The request context to be populated.
-     * @param params   A {@link MultiValueMap} containing all parsed parts of the multipart request.
-     * @return A {@code Mono<Void>} that signals the completion of processing.
+     * @param exchange The {@link ServerWebExchange} object.
+     * @param chain    The filter chain.
+     * @param context  The request context.
+     * @param params   A {@link MultiValueMap} containing form fields and file parts.
+     * @return {@link Mono<Void>} indicating the completion of asynchronous processing.
      */
     private Mono<Void> processMultipartData(
             ServerWebExchange exchange,
@@ -405,18 +410,19 @@ public class RequestStrategy extends AbstractStrategy {
             Map<String, String> formMap = new LinkedHashMap<>();
             Map<String, Part> fileMap = new LinkedHashMap<>();
 
+            // Iterate through all parts, distinguishing between form fields and files
             params.toSingleValueMap().forEach((k, v) -> {
                 if (v instanceof FormFieldPart) {
                     formMap.put(k, ((FormFieldPart) v).value());
-                } else if (v instanceof FilePart) {
+                }
+                if (v instanceof FilePart) {
                     fileMap.put(k, v);
                 }
             });
 
-            context.getParameters().putAll(formMap);
-            context.setFileParts(fileMap);
-
-            this.validateParameters(exchange, context);
+            context.setRequestMap(formMap);
+            context.setFilePartMap(fileMap);
+            this.validate(exchange);
 
             Logger.info(
                     "==>     Filter: Multipart request processed - Path: {}, Params: {}",
@@ -435,38 +441,20 @@ public class RequestStrategy extends AbstractStrategy {
     }
 
     /**
-     * Checks if the given URL path contains patterns indicative of a path traversal attack.
+     * Checks if the given URL path contains characteristics of a path traversal (directory traversal) attack.
+     * <p>
+     * Path traversal is a common security vulnerability where attackers attempt to access restricted directories by
+     * manipulating file paths with "..". This method checks for various common traversal sequences and their
+     * URL-encoded forms.
+     * </p>
      *
      * @param path The URL path string to check.
-     * @return {@code true} if a potential traversal attempt is detected, {@code false} otherwise.
+     * @return {@code true} if a traversal attempt is detected, {@code false} otherwise.
      */
     private boolean isPathTraversalAttempt(String path) {
-        // Check for various characteristics of path traversal attacks, including plain text and URL-encoded forms.
+        // Check for various characteristics of path traversal attacks, including plain text and URL-encoded forms
         return path.contains("../") || path.contains("..\\") || path.contains("%2e%2e%2f") || path.contains("%2e%2e\\")
                 || path.contains("..%2f") || path.contains("..%5c");
-    }
-
-    /**
-     * Reads a list of {@link DataBuffer}s into a single byte array, while enforcing a maximum size limit.
-     *
-     * @param dataBuffers The list of {@link DataBuffer}s to read.
-     * @return A byte array containing the merged data from all buffers.
-     * @throws ValidateException if the total size of the data buffers exceeds {@code MAX_REQUEST_SIZE}.
-     */
-    private byte[] readBodyToBytes(List<DataBuffer> dataBuffers) {
-        int totalSize = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();
-        if (totalSize > MAX_REQUEST_SIZE) {
-            throw new ValidateException(ErrorCode._100530);
-        }
-
-        byte[] bytes = new byte[totalSize];
-        int pos = 0;
-        for (DataBuffer buffer : dataBuffers) {
-            int length = buffer.readableByteCount();
-            buffer.read(bytes, pos, length);
-            pos += length;
-        }
-        return bytes;
     }
 
 }
