@@ -62,7 +62,7 @@ public class XmlProvider implements Provider {
             buffer.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
 
             // Convert the object to a Map structure and serialize to XML
-            Map<String, Object> map = JsonKit.getProvider().toMap(object);
+            Map<String, Object> map = JsonKit.toMap(object);
             buffer.append(XmlKit.mapToXmlString(map));
 
             return buffer.toString();

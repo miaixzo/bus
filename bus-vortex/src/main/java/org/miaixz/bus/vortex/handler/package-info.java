@@ -1,34 +1,17 @@
-/*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
 /**
- * Provides handler implementations for various request processing stages, including authentication and parameter
- * validation. This package contains classes that define how requests are handled, pre-processed, and post-processed
- * within the Vortex module, ensuring proper security and data integrity.
+ * Provides the final request handlers and global exception handling for the gateway.
+ * <p>
+ * This package contains the components that act at the end of the request processing lifecycle:
+ * <ul>
+ * <li>{@link org.miaixz.bus.vortex.handler.VortexHandler}: The main handler for Spring WebFlux functional endpoints. It
+ * receives the fully populated {@link org.miaixz.bus.vortex.Context} after the strategy chain has completed and routes
+ * the request to the appropriate downstream service via a {@link org.miaixz.bus.vortex.Router}.</li>
+ * <li>{@link org.miaixz.bus.vortex.handler.ErrorsHandler}: A global
+ * {@link org.springframework.web.server.WebExceptionHandler} that catches all exceptions thrown during the request
+ * lifecycle and produces a standardized error response.</li>
+ * <li>{@link org.miaixz.bus.vortex.handler.AccessHandler}: An interceptor-style handler for cross-cutting concerns like
+ * logging.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+

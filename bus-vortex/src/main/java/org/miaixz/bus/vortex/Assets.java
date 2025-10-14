@@ -39,7 +39,7 @@ import lombok.experimental.SuperBuilder;
  * Represents an API definition or asset within the Vortex module. This class holds various properties defining an API
  * endpoint, including its identification, network details, request characteristics, and security settings.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
@@ -121,6 +121,10 @@ public class Assets {
      * The scope of applicability.
      */
     private String command;
+    /**
+     * The metadata of applicability.
+     */
+    private String metadata;
     /**
      * Exception rules for firewall.
      */

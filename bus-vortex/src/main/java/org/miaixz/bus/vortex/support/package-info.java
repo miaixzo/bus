@@ -1,34 +1,16 @@
-/*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
 /**
- * Provides routing strategies for different protocols within the Vortex module. This package contains implementations
- * of the {@link org.miaixz.bus.vortex.Router} interface, allowing the gateway to dispatch requests based on protocols
- * like HTTP, MQ, and MCP.
+ * Provides concrete implementations of the {@link org.miaixz.bus.vortex.Router} interface for different downstream
+ * protocols.
+ * <p>
+ * This package contains the specific logic for routing requests to various backend services based on the protocol
+ * determined by the API's configuration. Each router encapsulates the details of communicating with a specific
+ * protocol.
+ * <ul>
+ * <li>{@link org.miaixz.bus.vortex.support.HttpRouter}: Forwards requests to standard HTTP/HTTPS endpoints.</li>
+ * <li>{@link org.miaixz.bus.vortex.support.McpRouter}: Forwards requests to services implementing the Miaixz
+ * Communication Protocol.</li>
+ * <li>{@link org.miaixz.bus.vortex.support.MqRouter}: Sends requests as messages to a message queue.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+

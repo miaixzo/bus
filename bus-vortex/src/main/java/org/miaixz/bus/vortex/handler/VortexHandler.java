@@ -72,14 +72,6 @@ public class VortexHandler {
     private final Map<String, Router> routers;
 
     /**
-     * The default router strategy, used when a specific strategy is not provided or found.
-     * <p>
-     * The HTTP strategy is used as a fallback behavior by default.
-     * </p>
-     */
-    private final Router defaultRouter;
-
-    /**
      * A list of ordered interceptors, used to process requests in a specific sequence.
      * <p>
      * Interceptors are invoked at different stages of request processing (e.g., pre-processing, post-processing).
@@ -97,8 +89,7 @@ public class VortexHandler {
      */
     public VortexHandler(List<Handler> handlers, Map<String, Router> routers) {
         this.routers = routers;
-        this.defaultRouter = routers.get(Protocol.HTTP.name);
-        Objects.requireNonNull(defaultRouter, "Default strategy cannot be null");
+        Objects.requireNonNull(this.routers, "Default router cannot be null");
         // If handlers is empty, use the default AccessHandler
         this.handlers = handlers.isEmpty() ? List.of(new AccessHandler())
                 : handlers.stream().sorted(Comparator.comparingInt(Handler::getOrder)).collect(Collectors.toList());
@@ -123,13 +114,13 @@ public class VortexHandler {
      */
     @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
-        return Mono.defer(() -> {
+        return Mono.deferContextual(contextView -> {
             // Get request method and path for logging
             String method = request.methodName();
             String path = request.path();
 
             // 1. Initialize and validate the request context
-            Context context = Context.get(request);
+            final Context context = contextView.get(Context.class);
             if (context == null) {
                 Logger.info("==>    Handler: [N/A] [{}] [{}] [CONTEXT_ERROR] - Request context is null", method, path);
                 throw new ValidateException(ErrorCode._116000);
@@ -149,13 +140,13 @@ public class VortexHandler {
 
             // 3. Select the routing strategy
             String mode = switch (assets.getMode()) {
-                case 1 -> Protocol.HTTP.name();
-                case 2 -> Protocol.MQ.name();
-                case 3 -> Protocol.MCP.name();
-                default -> Protocol.HTTP.name();
+                case 1 -> Protocol.HTTP.getName();
+                case 2 -> Protocol.MQ.getName();
+                case 3 -> Protocol.MCP.getName();
+                default -> Protocol.HTTP.getName();
             };
 
-            Router router = routers.getOrDefault(mode, defaultRouter);
+            Router router = routers.get(mode);
             Logger.info(
                     "==>    Handler: [N/A] [{}] [{}] [ROUTER_SELECT] - Using route strategy: {}",
                     method,
@@ -173,15 +164,20 @@ public class VortexHandler {
                 }
 
                 // 5. Delegate to the strategy implementer to handle the request
-                return router.route(request, context, assets)
-                        .flatMap(response -> executePostHandlers(exchange, router, response)).doOnSuccess(response -> {
+                return router.route(request).flatMap(response -> executePostHandlers(exchange, router, response))
+                        .doOnSuccess(response -> {
                             long duration = System.currentTimeMillis() - context.getTimestamp();
                             Logger.info(
-                                    "==>    Handler: [N/A] [{}] [{}] [REQUEST_SUCCESS] - Method: {}, Duration: {}ms",
+                                    "==>    Handler: [N A] [{}] [{}] [REQUEST_SUCCESS] - Method: {}, Duration: {}ms",
                                     method,
                                     path,
                                     assets.getMethod(),
                                     duration);
+                            Logger.info(
+                                    "==>    Handler: [N/A] [{}] [{}] [REQUEST_COMPLETE] - Request completed with status: {}",
+                                    method,
+                                    path,
+                                    response.statusCode().value());
                         }).onErrorResume(error -> {
                             Logger.info(
                                     "==>    Handler: [N/A] [{}] [{}] [REQUEST_ERROR] - Error processing request: {}",
@@ -194,14 +190,6 @@ public class VortexHandler {
                                     .then(Mono.error(error));
                         });
             });
-        }).doOnSuccess(response -> {
-            String method = request.methodName();
-            String path = request.path();
-            Logger.info(
-                    "==>    Handler: [N/A] [{}] [{}] [REQUEST_COMPLETE] - Request completed with status: {}",
-                    method,
-                    path,
-                    response.statusCode().value());
         });
     }
 

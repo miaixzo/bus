@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.vortex.support.mcp;
 
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Assets;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import reactor.core.publisher.Mono;
 
 /**
  * Abstract base class for HTTP-based MCP clients. It encapsulates the common logic for communicating with remote MCP
@@ -121,4 +122,5 @@ public abstract class HttpClient implements McpClient {
         Tool remoteTool = new Tool("remote_tool", "A tool from a remote HTTP service", Collections.emptyMap());
         return Mono.just(List.of(remoteTool));
     }
+
 }

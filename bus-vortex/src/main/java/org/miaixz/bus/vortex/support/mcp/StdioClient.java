@@ -27,25 +27,22 @@
 */
 package org.miaixz.bus.vortex.support.mcp;
 
-import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.Assets;
-import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
-import reactor.core.scheduler.Schedulers;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.vortex.Assets;
+
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * Implementation of McpClient for the STDIO protocol. It manages a local subprocess and communicates with it through
@@ -54,16 +51,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StdioClient implements McpClient {
 
     private final Assets assets;
-    private Process process;
-    private BufferedWriter writer;
-    private Thread readerThread;
-    private List<Tool> tools;
-
     /**
      * A thread-safe map to hold pending requests, waiting for a response from the subprocess. The key is the unique
      * request ID, and the value is a Sink that the caller can subscribe to.
      */
     private final Map<String, Sinks.One<String>> pendingRequests = new ConcurrentHashMap<>();
+    private Process process;
+    private BufferedWriter writer;
+    private Thread readerThread;
+    private List<Tool> tools;
 
     /**
      * Constructs a new StdioClient.

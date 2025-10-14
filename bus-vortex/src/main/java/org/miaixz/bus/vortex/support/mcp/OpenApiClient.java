@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.vortex.support.mcp;
 
+import java.time.Duration;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
@@ -34,15 +39,8 @@ import org.miaixz.bus.vortex.Assets;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Mono;
 
 /**
  * A client that adapts manually configured REST API endpoints to function as MCP tools. It does not parse an OpenAPI
@@ -92,12 +90,12 @@ public class OpenApiClient implements McpClient {
      * @return A map of tools, keyed by their name.
      */
     private Map<String, Tool> initializeTools() {
-        if (StringKit.isEmpty(assets.getConfig())) {
+        if (StringKit.isEmpty(assets.getMetadata())) {
             Logger.warn("OpenAPI asset '{}' has no config field. No tools will be loaded.", assets.getName());
             return Collections.emptyMap();
         }
 
-        Map<String, Object> rawConfig = JsonKit.toMap(assets.getConfig());
+        Map<String, Object> rawConfig = JsonKit.toMap(assets.getMetadata());
         List<Map<String, Object>> toolConfigs = (List<Map<String, Object>>) rawConfig.get("tools");
 
         if (toolConfigs == null || toolConfigs.isEmpty()) {
@@ -110,7 +108,10 @@ public class OpenApiClient implements McpClient {
             String description = (String) toolConfig.get("description");
             Map<String, Object> schema = (Map<String, Object>) toolConfig.get("inputSchema");
             if (schema == null) {
-                schema = Collections.emptyMap();
+                schema = new HashMap<>(); // 确保是一个可变的Map
+            } else {
+                // 如果schema不是null，也需要确保它是可变的，因为JsonKit.toMap可能返回不可变的Map
+                schema = new HashMap<>(schema);
             }
             // Store the raw config map in the schema for later use in callTool
             schema.put("_rawConfig", toolConfig);

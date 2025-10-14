@@ -39,8 +39,8 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
-import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Strategy;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -49,39 +49,39 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ServerWebExchange;
 
-import reactor.core.publisher.Mono;
-
 /**
- * Abstract base class for filters, providing common methods and implementing the template method pattern. All concrete
- * filters should extend this class and implement the {@link #apply(ServerWebExchange, StrategyChain, Context)} method.
+ * An abstract base class for {@link Strategy} implementations, providing a collection of common utility methods.
+ * <p>
+ * This class offers helper methods for tasks frequently performed by strategies, such as validating parameters,
+ * enriching the context with request details (like IP and domain), and handling HTTP-specific logic. Concrete
+ * strategies should extend this class to reduce boilerplate code.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 public abstract class AbstractStrategy implements Strategy {
 
     /**
-     * Safely retrieves the original Authority (host + port) of the request from multiple channels, designed for proxy
-     * environments.
+     * Safely retrieves the original authority (host + port) of the request, even in a reverse-proxy environment.
      * <p>
      * This method searches for host information in the following priority order, ensuring the returned result always
      * includes the port number:
      * <ol>
      * <li><b>Forwarded Header (RFC 7239):</b> The most modern and standard header, parsed first.</li>
      * <li><b>X-Forwarded-Host Header:</b> The most common de facto standard, widely used in various proxies.</li>
-     * <li><b>Host Header:</b> The HTTP/1.1 standard header, which a correctly configured proxy should pass.</li>
+     * <li><b>Host Header:</b> The standard HTTP/1.1 header, which a correctly configured proxy should pass.</li>
      * <li><b>Request URI Host:</b> The last fallback, directly obtained from the request URI.</li>
      * </ol>
-     * If the found host information does not contain a port, the default 80/443 port will be automatically appended
-     * based on the request protocol (http/https).
+     * If the found host information does not contain a port, the default port (80/443) will be automatically appended
+     * based on the request protocol.
      *
      * @param request The {@link ServerHttpRequest} object.
-     * @return An {@link Optional} object containing the host and port. If no valid host can be found from any source,
-     *         {@link Optional#empty()} is returned.
+     * @return An {@link Optional} containing the authority string (e.g., "example.com:443"), or
+     *         {@link Optional#empty()} if no valid host can be found.
      */
-    public static Optional<String> getOriginalAuthority(ServerHttpRequest request) {
+    public static Optional<String> getAuthority(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
-        String protocol = getOriginalProtocol(request);
+        String protocol = getProtocol(request);
 
         // Priority 1: Try to parse 'Forwarded' (RFC 7239)
         String forwardedHeader = headers.getFirst("Forwarded");
@@ -124,18 +124,18 @@ public abstract class AbstractStrategy implements Strategy {
     }
 
     /**
-     * Retrieves the original protocol (http or https) of the request.
+     * Retrieves the original protocol (http or https) of the request, prioritizing proxy headers.
      * <p>
-     * Prioritizes retrieval from proxy headers to ensure correct results even after a reverse proxy. Search order:
-     * 'Forwarded' (proto=) -> 'X-Forwarded-Proto' -> request.getURI().getScheme().
+     * This ensures correct protocol detection even when the application is behind a reverse proxy that terminates TLS.
+     * The search order is: 'Forwarded' (proto=) -> 'X-Forwarded-Proto' -> {@code request.getURI().getScheme()}.
      *
      * @param request The {@link ServerHttpRequest} object.
      * @return The protocol string, either "https" or "http".
      */
-    protected static String getOriginalProtocol(ServerHttpRequest request) {
+    protected static String getProtocol(ServerHttpRequest request) {
         HttpHeaders headers = request.getHeaders();
 
-        // Try to parse from 'Forwarded' header
+        // Priority 1: Try to parse from 'Forwarded' header (RFC 7239)
         String forwardedHeader = headers.getFirst("Forwarded");
         if (StringKit.hasText(forwardedHeader)) {
             Optional<String> proto = Arrays.stream(forwardedHeader.split(Symbol.SEMICOLON)).map(String::trim)
@@ -146,22 +146,22 @@ public abstract class AbstractStrategy implements Strategy {
             }
         }
 
-        // Try to parse from 'X-Forwarded-Proto' header
+        // Priority 2: Try to parse from 'X-Forwarded-Proto' header
         String forwardedProtoHeader = headers.getFirst("X-Forwarded-Proto");
         if (StringKit.hasText(forwardedProtoHeader)) {
             return forwardedProtoHeader.split(Symbol.COMMA)[0].trim();
         }
 
-        // Use URI scheme as a last fallback
+        // Priority 3: Use URI scheme as a last fallback
         return request.getURI().getScheme();
     }
 
     /**
-     * Appends a default port to the given authority (host, potentially with a port) if the port is missing.
+     * Appends a default port to a given authority (host) if the port is missing.
      *
      * @param authority The host information, e.g., "example.com" or "example.com:8080".
      * @param protocol  The protocol, either "http" or "https".
-     * @return The host information always including a port, e.g., "example.com:443" or "example.com:8080".
+     * @return The authority string, guaranteed to include a port (e.g., "example.com:443").
      */
     private static String appendPortIfMissing(String authority, String protocol) {
         if (authority.contains(Symbol.COLON)) {
@@ -174,79 +174,32 @@ public abstract class AbstractStrategy implements Strategy {
     }
 
     /**
-     * Applies the filtering logic to the request.
+     * Converts an integer representation of an HTTP method to the corresponding {@link HttpMethod} enum.
      *
-     * @param exchange The current server exchange.
-     * @param chain    The chain of remaining strategies to be executed.
-     * @return A Mono that signals the completion of this strategy's execution.
+     * @param type The integer representation of the request method (e.g., 1 for GET, 2 for POST).
+     * @return The matching {@link HttpMethod} enum.
+     * @throws ValidateException if the type is not a valid or supported HTTP method.
      */
-    @Override
-    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain) {
-        Logger.info("==>     Filter: {}", this.getClass().getSimpleName());
-        return apply(exchange, chain, getContext(exchange))
-                .doOnTerminate(() -> Logger.debug("<==     Filter: {}", this.getClass().getSimpleName()))
-                .doOnError(e -> Logger.error("Error in {}: {}", this.getClass().getSimpleName(), e.getMessage()));
+    public HttpMethod valueOf(int type) {
+        return switch (type) {
+            case 1 -> HttpMethod.GET;
+            case 2 -> HttpMethod.POST;
+            case 3 -> HttpMethod.HEAD;
+            case 4 -> HttpMethod.PUT;
+            case 5 -> HttpMethod.PATCH;
+            case 6 -> HttpMethod.DELETE;
+            case 7 -> HttpMethod.OPTIONS;
+            case 8 -> HttpMethod.TRACE;
+            default -> throw new ValidateException(ErrorCode._100802);
+        };
     }
 
     /**
-     * Internal filtering method, to be implemented by subclasses for specific logic.
+     * Ensures the request has a {@code Content-Type} header, defaulting to {@code application/x-www-form-urlencoded} if
+     * it is missing. This is useful for downstream consumers that expect this header to be present.
      *
-     * @param exchange The current {@link ServerWebExchange} object.
-     * @param chain    The filter chain.
-     * @param context  The request context.
-     * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
-     */
-    protected abstract Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain, Context context);
-
-    /**
-     * Retrieves the request context.
-     *
-     * @param exchange The {@link ServerWebExchange} object.
-     * @return The request context.
-     * @throws ValidateException if the context is null.
-     */
-    protected Context getContext(ServerWebExchange exchange) {
-        Context context = Context.get(exchange);
-        if (context == null) {
-            throw new ValidateException(ErrorCode._100805);
-        }
-        context.setHttpMethod(exchange.getRequest().getMethod());
-        return context;
-    }
-
-    /**
-     * Retrieves the asset information.
-     *
-     * @param context The request context.
-     * @return The asset information.
-     * @throws ValidateException if the context is null.
-     */
-    protected Assets getAssets(Context context) {
-        if (context == null) {
-            throw new ValidateException(ErrorCode._100805);
-        }
-        return context.getAssets();
-    }
-
-    /**
-     * Retrieves the request parameter map.
-     *
-     * @param context The request context.
-     * @return The request parameter map.
-     * @throws ValidateException if the context is null.
-     */
-    protected Map<String, String> getRequestMap(Context context) {
-        if (context == null) {
-            throw new ValidateException(ErrorCode._100805);
-        }
-        return context.getRequestMap();
-    }
-
-    /**
-     * Sets the default Content-Type if the request header is missing.
-     *
-     * @param exchange The {@link ServerWebExchange} object.
-     * @return The updated {@link ServerWebExchange} with the Content-Type header set if it was missing.
+     * @param exchange The current {@link ServerWebExchange}.
+     * @return The original exchange, or a new exchange with the default header if it was missing.
      */
     protected ServerWebExchange setContentType(ServerWebExchange exchange) {
         ServerHttpRequest request = exchange.getRequest();
@@ -269,26 +222,33 @@ public abstract class AbstractStrategy implements Strategy {
     }
 
     /**
-     * Validates request parameters, ensuring that necessary parameters exist and are valid.
+     * Validates standard gateway parameters and enriches the context with additional request information.
+     * <p>
+     * This method performs two main functions:
+     * <ol>
+     * <li><b>Validation:</b> It checks for the presence and validity of essential gateway parameters like
+     * {@code method}, {@code version}, and {@code format}.</li>
+     * <li><b>Enrichment:</b> It calls {@link #enrich(ServerWebExchange, Context)} to add derived information like
+     * client IP and domain to the context.</li>
+     * </ol>
+     * This method has the side effect of modifying the passed-in {@code Context} object.
      *
-     * @param exchange The {@link ServerWebExchange} object.
-     * @throws ValidateException if parameters are invalid or missing.
+     * @param exchange The current server exchange.
+     * @param context  The request context to be validated and enriched.
+     * @throws ValidateException if any standard parameter is missing or invalid.
      */
-    protected void validate(ServerWebExchange exchange) {
-        Context context = getContext(exchange);
-        Map<String, String> params = getRequestMap(context);
+    protected void validateParameters(ServerWebExchange exchange, Context context) {
+        Map<String, String> params = context.getParameters();
         for (Map.Entry<String, String> entry : params.entrySet()) {
-            // Check if the key is null or undefined
+            // Check for "undefined" string values, which can be sent by some clients.
             if (entry.getKey() != null && Normal.UNDEFINED.equals(entry.getKey().toLowerCase())) {
                 throw new ValidateException(ErrorCode._100101);
             }
-            // Check if the value is a string and is undefined
-            if (entry.getValue() instanceof String) {
-                if (Normal.UNDEFINED.equals(entry.getValue().toLowerCase())) {
-                    throw new ValidateException(ErrorCode._100101);
-                }
+            if (Normal.UNDEFINED.equals(String.valueOf(entry.getValue()).toLowerCase())) {
+                throw new ValidateException(ErrorCode._100101);
             }
         }
+        // Validate presence of core gateway parameters.
         if (StringKit.isBlank(params.get(Args.METHOD))) {
             throw new ValidateException(ErrorCode._100108);
         }
@@ -301,44 +261,48 @@ public abstract class AbstractStrategy implements Strategy {
         if (StringKit.isNotBlank(params.get(Args.SIGN))) {
             context.setSign(Integer.valueOf(params.get(Args.SIGN)));
         }
+
+        // Add additional derived parameters to the context.
+        this.enrich(exchange, context);
     }
 
     /**
-     * Converts an integer type to its corresponding {@link HttpMethod}.
+     * Enriches the context with derived information about the client and request authority.
+     * <p>
+     * This method extracts the client's IP address and the request's authority (domain and port), then adds them to the
+     * context's parameter map. This ensures that this information is available to all downstream strategies and the
+     * final service.
+     * <p>
+     * This method has the side effect of modifying the passed-in {@code Context} object.
      *
-     * @param type The integer representation of the request method.
-     * @return The {@link HttpMethod} enum corresponding to the given type.
-     * @throws ValidateException if the type is not a valid HTTP method.
+     * @param exchange The current server exchange.
+     * @param context  The request context to be enriched.
      */
-    public HttpMethod valueOf(int type) {
-        switch (type) {
-            case 1:
-                return HttpMethod.GET;
+    protected void enrich(ServerWebExchange exchange, Context context) {
+        // Extract the client's IP address, respecting proxy headers.
+        String clientIp = Optional.ofNullable(exchange.getRequest().getHeaders().getFirst("x_request_ip")).orElseGet(
+                () -> Optional.ofNullable(exchange.getRequest().getHeaders().getFirst("X-Forwarded-For")).orElseGet(
+                        () -> exchange.getRequest().getRemoteAddress() != null
+                                ? exchange.getRequest().getRemoteAddress().getAddress().getHostAddress()
+                                : "unknown"));
 
-            case 2:
-                return HttpMethod.POST;
+        context.setX_request_ipv4(clientIp);
+        context.getParameters().put("x_request_ipv4", clientIp);
 
-            case 3:
-                return HttpMethod.HEAD;
+        // Extract the request authority (domain and port), respecting proxy headers.
+        Optional<String> authority = getAuthority(exchange.getRequest());
 
-            case 4:
-                return HttpMethod.PUT;
+        String unknown = Normal.UNKNOWN + Symbol.COLON + Symbol.ZERO;
+        String domain = authority.orElse(unknown);
 
-            case 5:
-                return HttpMethod.PATCH;
-
-            case 6:
-                return HttpMethod.DELETE;
-
-            case 7:
-                return HttpMethod.OPTIONS;
-
-            case 8:
-                return HttpMethod.TRACE;
-
-            default:
-                throw new ValidateException(ErrorCode._100802);
+        if (unknown.equals(domain)) {
+            Logger.warn(
+                    "==> Filter: Unable to determine the request domain (host:port). Using default value: {}",
+                    domain);
         }
+
+        context.setX_request_domain(domain);
+        context.getParameters().put("x_request_domain", domain);
     }
 
 }

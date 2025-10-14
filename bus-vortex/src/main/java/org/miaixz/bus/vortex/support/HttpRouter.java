@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.vortex.support;
 
-import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.support.http.HttpService;
@@ -50,7 +49,7 @@ public class HttpRouter implements Router {
      * <p>
      * 在当前 VortexHandler 的设计中，每次请求都创建一个新的执行器实例是可行的。
      */
-    private HttpService service;
+    private final HttpService service;
 
     public HttpRouter(HttpService service) {
         this.service = service;
@@ -60,14 +59,15 @@ public class HttpRouter implements Router {
      * 将 HTTP 请求路由到下游服务。 此方法仅作为协调者，将所有实际工作委托给 HttpExecutor。
      *
      * @param request The client's {@link ServerRequest} object.
-     * @param context The request context, containing request parameters and configuration information.
-     * @param assets  The configuration assets, containing configuration information for the target service.
      * @return {@link Mono<ServerResponse>} containing the response from the target service.
      */
     @NonNull
     @Override
-    public Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets) {
-        return this.service.execute(request, context, assets);
+    public Mono<ServerResponse> route(ServerRequest request) {
+        return Mono.deferContextual(contextView -> {
+            final Context context = contextView.get(Context.class);
+            return this.service.execute(request, context);
+        });
     }
 
 }

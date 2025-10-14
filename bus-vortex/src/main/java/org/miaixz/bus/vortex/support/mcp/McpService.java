@@ -54,20 +54,25 @@ import reactor.core.scheduler.Schedulers;
  */
 public class McpService implements SmartLifecycle {
 
+    /**
+     * The interval in seconds for performing health checks.
+     */
+    private static final long HEALTH_CHECK_INTERVAL_SECONDS = 30;
+    /**
+     * The separator used to create unique tool names by prefixing the service name.
+     */
+    private static final String TOOL_NAME_SEPARATOR = "::";
     private final AssetsRegistry registry;
-
     /**
      * A thread-safe cache holding all active and initialized MCP client instances. The key is the service name (asset
      * name), and the value is the corresponding McpClient instance.
      */
     private final Map<String, McpClient> clientCache = new ConcurrentHashMap<>();
-
     /**
      * A map to store the original Assets configuration for each client. This is needed for re-initialization during
      * self-healing.
      */
     private final Map<String, Assets> assetsCache = new ConcurrentHashMap<>();
-
     /**
      * Scheduler for periodic health checks. Uses a single thread to avoid concurrent health check executions.
      */
@@ -76,17 +81,6 @@ public class McpService implements SmartLifecycle {
         t.setDaemon(true);
         return t;
     });
-
-    /**
-     * The interval in seconds for performing health checks.
-     */
-    private static final long HEALTH_CHECK_INTERVAL_SECONDS = 30;
-
-    /**
-     * The separator used to create unique tool names by prefixing the service name.
-     */
-    private static final String TOOL_NAME_SEPARATOR = "::";
-
     private final AtomicBoolean running = new AtomicBoolean(false);
 
     /**
@@ -171,7 +165,7 @@ public class McpService implements SmartLifecycle {
      * replaced.
      * 
      * @param asset The Assets configuration for the client to register.
-     * @return A Mono<Void> that completes when the client is successfully registered and initialized.
+     * @return A Mono that completes when the client is successfully registered and initialized.
      */
     public Mono<Void> register(Assets asset) {
         // Close existing client if any
@@ -228,7 +222,7 @@ public class McpService implements SmartLifecycle {
      * Dynamically unregisters and closes an existing MCP client.
      * 
      * @param serviceName The name of the service (asset name) to unregister.
-     * @return A Mono<Void> that completes when the client is successfully unregistered and closed.
+     * @return A Mono that completes when the client is successfully unregistered and closed.
      */
     public Mono<Void> destroy(String serviceName) {
         return Mono.<Void>fromRunnable(() -> {
@@ -248,7 +242,7 @@ public class McpService implements SmartLifecycle {
      * new one with the updated configuration.
      * 
      * @param asset The updated Assets configuration for the client.
-     * @return A Mono<Void> that completes when the client is successfully updated.
+     * @return A Mono that completes when the client is successfully updated.
      */
     public Mono<Void> refresh(Assets asset) {
         Logger.info("Attempting to update client '{}'.", asset.getName());

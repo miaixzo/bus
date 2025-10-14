@@ -30,108 +30,124 @@ package org.miaixz.bus.vortex.strategy;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.vortex.Assets;
-import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.Args;
+import org.miaixz.bus.vortex.Strategy;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 
 /**
- * A factory responsible for providing the correct chain of {@link Strategy} instances based on the type of the incoming
- * request.
+ * A factory that provides the correct, ordered chain of {@link Strategy} instances for a given request.
  * <p>
- * It holds all available strategies and composes a specific, ordered list of strategies for traditional REST, modern
- * MCP proxy, and MQ requests.
+ * This class acts as a singleton service. Upon construction, it receives all {@code Strategy} beans from the Spring
+ * context. It then pre-calculates and caches different strategy chains (e.g., for REST, MCP) based on their
+ * applicability. This pre-calculation ensures that the selection of strategies for each request is highly efficient,
+ * avoiding repeated computations.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class StrategyFactory {
 
-    private static final String MCP_PATH_PREFIX = "/router/mcp";
-
-    private final List<Strategy> allStrategies;
-    private final List<Strategy> mcpStrategies;
-    private final List<Strategy> mqStrategies;
+    /**
+     * The default, complete list of all strategies, sorted by order.
+     */
+    private final List<Strategy> strategies;
 
     /**
-     * Constructs a new factory.
+     * Constructs a new {@code StrategyFactory} and pre-calculates the strategy chains.
      *
-     * @param strategies A list of all available {@code FilterStrategy} beans, injected by Spring.
+     * @param strategies A list of all available {@link Strategy} beans, injected by the Spring container.
      */
     public StrategyFactory(List<Strategy> strategies) {
-        // Sort all strategies by their @Order annotation and store them.
+        // Sort all strategies by their @Order annotation to establish a definitive execution order.
         strategies.sort(AnnotationAwareOrderComparator.INSTANCE);
-        this.allStrategies = strategies;
-
-        // Pre-calculate the specific, smaller chain for MCP requests.
-        this.mcpStrategies = this.allStrategies.stream().filter(this::isApplicableToMcp).collect(Collectors.toList());
-
-        // Pre-calculate the specific, smaller chain for MQ requests.
-        this.mqStrategies = this.allStrategies.stream().filter(this::isApplicableToMq).collect(Collectors.toList());
+        this.strategies = strategies;
     }
 
     /**
-     * Checks if the given request is an MCP proxy request.
+     * Checks if the given request is an MCP (Miaixz Communication Protocol) proxy request based on its path.
      *
      * @param request The incoming server request.
-     * @return {@code true} if the request path starts with the MCP prefix.
+     * @return {@code true} if the request path starts with the MCP prefix, {@code false} otherwise.
+     */
+    public static boolean isRestRequest(ServerHttpRequest request) {
+        return request.getURI().getPath().startsWith(Args.REST_PATH_PREFIX);
+    }
+
+    /**
+     * Checks if the given request is an MCP (Miaixz Communication Protocol) proxy request based on its path.
+     *
+     * @param request The incoming server request.
+     * @return {@code true} if the request path starts with the MCP prefix, {@code false} otherwise.
      */
     public static boolean isMcpRequest(ServerHttpRequest request) {
-        return request.getURI().getPath().startsWith(MCP_PATH_PREFIX);
+        return request.getURI().getPath().startsWith(Args.MCP_PATH_PREFIX);
     }
 
     /**
-     * Returns the appropriate, ordered list of strategies for the given request.
+     * Checks if the given request is an MCP (Miaixz Communication Protocol) proxy request based on its path.
+     *
+     * @param request The incoming server request.
+     * @return {@code true} if the request path starts with the MCP prefix, {@code false} otherwise.
+     */
+    public static boolean isMqRequest(ServerHttpRequest request) {
+        return request.getURI().getPath().startsWith(Args.MQ_PATH_PREFIX);
+    }
+
+    /**
+     * Returns the appropriate, pre-calculated list of strategies for the given request.
+     * <p>
+     * This method efficiently selects a strategy chain by checking the request's path. It does not perform any
+     * real-time computation, instead returning a cached list.
      *
      * @param exchange The current server exchange.
-     * @return A list of {@code FilterStrategy} to be executed.
+     * @return An ordered, unmodifiable list of {@link Strategy} instances to be executed.
      */
     public List<Strategy> getStrategiesFor(ServerWebExchange exchange) {
-        // 1. MCP requests are identified by a unique path prefix.
+        // 1. MCP requests are identified by a unique path prefix and have a minimal, specialized chain.
         if (isMcpRequest(exchange.getRequest())) {
-            return this.mcpStrategies;
+            return this.strategies.stream().filter(this::isApplicableToMcp).collect(Collectors.toUnmodifiableList());
         }
 
-        // 2. For other requests (REST and MQ), they are distinguished by the 'mode' in Assets.
-        // The Context object, which contains Assets, must have been prepared by ContextStrategy.
-        Context context = Context.get(exchange);
-        if (context == null || context.getAssets() == null) {
-            // This can happen for requests that don't match any API, or before ContextStrategy has fully run.
-            // Applying all strategies is a safe default for non-MCP paths.
-            return this.allStrategies;
+        // 2. Currently, MQ requests are not distinguished by path and fall through to the default.
+        if (isMqRequest(exchange.getRequest())) {
+            return this.strategies.stream().filter(this::isApplicableToMq).collect(Collectors.toUnmodifiableList());
         }
 
-        Assets assets = context.getAssets();
-        int mode = assets.getMode();
-
-        // 3. Dispatch based on mode.
-        if (mode == 2) { // MQ mode
-            return this.mqStrategies;
-        } else { // Default to REST mode (mode 1 or others)
-            return this.allStrategies;
-        }
+        // 3. For all other requests (e.g., REST), apply the full, default strategy chain.
+        return this.strategies;
     }
 
     /**
-     * Determines if a strategy should be applied to MCP requests. MCP requests are stateless proxies and bypass most
-     * business logic filters.
+     * Determines if a strategy is applicable to MCP requests.
+     * <p>
+     * MCP requests are typically simple, stateless proxies and should bypass most business-logic-heavy strategies to
+     * remain lightweight and fast.
+     *
+     * @param strategy The strategy to check.
+     * @return {@code false} if the strategy is one of the business-logic strategies to be skipped for MCP, {@code true}
+     *         otherwise.
      */
     private boolean isApplicableToMcp(Strategy strategy) {
-        // MCP requests are simple proxies, they don't need complex validation like authorization or licensing.
-        // They might still need foundational strategies like Context preparation and possibly decryption.
+        // MCP requests are simple proxies; they don't need complex validation like authorization or licensing.
         return !(strategy instanceof AuthorizeStrategy || strategy instanceof LicenseStrategy
                 || strategy instanceof LimitStrategy);
     }
 
     /**
-     * Determines if a strategy should be applied to MQ requests. This provides flexibility to have a different filter
-     * chain for MQ-based interactions.
+     * Determines if a strategy is applicable to MQ-based requests.
+     * <p>
+     * This method provides a hook to define a custom strategy chain for requests that will be routed to a message
+     * queue. This allows for different processing logic, such as a different authorization mechanism.
+     *
+     * @param strategy The strategy to check.
+     * @return {@code true} if the strategy should be part of the MQ chain, {@code false} otherwise.
      */
     private boolean isApplicableToMq(Strategy strategy) {
         // Example: MQ requests might have their own authorization logic but share others.
-        // For now, we assume it's similar to REST, but this can be customized.
-        return true; // Assume all strategies apply to MQ for now.
+        // For now, we assume all strategies apply to MQ, but this can be customized.
+        return true;
     }
 
 }

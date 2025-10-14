@@ -413,6 +413,12 @@ public class ErrorCode {
             .build();
 
     /**
+     * Request body is too large.
+     */
+    public static final Errors _100530 = ErrorRegistry.builder().key("100530").value("Request body is too large")
+            .build();
+
+    /**
      * Operation: Permission denied.
      */
     public static final Errors _100800 = ErrorRegistry.builder().key("100800").value("Permission denied").build();

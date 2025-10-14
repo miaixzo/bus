@@ -35,7 +35,7 @@ import org.miaixz.bus.vortex.magic.Principal;
  * Implementations of this interface are responsible for validating principals (e.g., tokens, API keys) and returning
  * the result of the authorization process.
  *
- * @author Justubborn
+ * @author Kimi Liu
  * @since Java 17+
  */
 public interface AuthorizeProvider {

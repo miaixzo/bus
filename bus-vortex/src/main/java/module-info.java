@@ -44,6 +44,7 @@ module bus.vortex {
     requires jakarta.servlet;
     requires spring.core;
     requires spring.beans;
+    requires spring.context;
     requires spring.web;
     requires spring.webflux;
     requires reactor.core;

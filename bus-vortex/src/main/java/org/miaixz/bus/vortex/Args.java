@@ -69,6 +69,12 @@ public class Args {
      */
     public static final String X_REMOTE_CHANNEL = "x_remote_channel";
 
+    public static final String REST_PATH_PREFIX = "/router/rest";
+
+    public static final String MCP_PATH_PREFIX = "/router/mcp";
+
+    public static final String MQ_PATH_PREFIX = "/router/mq";
+
     /**
      * Encryption configuration class, defining encryption-related parameters.
      */

@@ -40,7 +40,7 @@ public interface McpClient {
     /**
      * Asynchronously initializes the client and connects to the backend service.
      * 
-     * @return A Mono<Void> that completes upon successful initialization and connection.
+     * @return A Mono that completes upon successful initialization and connection.
      */
     Mono<Void> initialize();
 
@@ -61,14 +61,14 @@ public interface McpClient {
      * 
      * @param toolName  The name of the tool to call.
      * @param arguments The arguments required by the tool.
-     * @return A Mono<String> containing the execution result as a JSON string.
+     * @return A Mono containing the execution result as a JSON string.
      */
     Mono<String> callTool(String toolName, Map<String, Object> arguments);
 
     /**
      * Asynchronously checks the health of the underlying connection or process.
      * 
-     * @return A Mono<Boolean> that emits true if the client is healthy, false otherwise.
+     * @return A Mono that emits true if the client is healthy, false otherwise.
      */
     Mono<Boolean> isHealthy();
 
