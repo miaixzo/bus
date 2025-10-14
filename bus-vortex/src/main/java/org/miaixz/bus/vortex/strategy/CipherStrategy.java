@@ -61,8 +61,6 @@ import reactor.core.publisher.Mono;
  * <p>
  * This strategy is conditionally activated based on the API asset's configuration. Its primary responsibilities are:
  * <ol>
- * <li><b>Request Decryption:</b> If an API requires encryption, this strategy decrypts the incoming request parameters
- * (from the {@link Context#getParameters()}) before they are passed to subsequent strategies.</li>
  * <li><b>Response Encryption:</b> For the same APIs, it intercepts the outgoing response and encrypts the main data
  * payload before sending it to the client.</li>
  * </ol>
@@ -123,10 +121,6 @@ public class CipherStrategy extends AbstractStrategy {
 
     /**
      * Applies decryption and/or encryption logic based on the API's configuration.
-     * <p>
-     * This method retrieves the {@link Context} and checks the {@code sign} flag of the matched
-     * {@link Context#getAssets()}. If signing is active, it performs request decryption and decorates the response for
-     * eventual encryption.
      *
      * @param exchange The current server exchange.
      * @param chain    The next strategy in the chain.
@@ -206,7 +200,6 @@ public class CipherStrategy extends AbstractStrategy {
              * <li>It subscribes to the original response body publisher ({@code body}).</li>
              * <li>It uses {@code .collectList()} to buffer all data chunks of the response into memory.</li>
              * <li>Once the full body is received, it deserializes the JSON into a {@link Message} object.</li>
-             * <li>It calls {@link #doEncrypt(Message)} to encrypt the {@code data} field of the message.</li>
              * <li>It serializes the modified {@code Message} object back into a JSON string.</li>
              * <li>Finally, it wraps the new encrypted string in a new {@code DataBuffer} and passes it to the original
              * {@code writeWith} method to be sent to the client.</li>

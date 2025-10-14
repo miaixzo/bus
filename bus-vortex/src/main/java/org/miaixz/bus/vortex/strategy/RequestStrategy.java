@@ -63,8 +63,6 @@ import reactor.util.retry.Retry;
  * <ol>
  * <li>Performing initial security checks, such as path validation and path traversal detection.</li>
  * <li>Dispatching the request to a specific handler based on its HTTP method and {@code Content-Type}.</li>
- * <li>Reading and parsing the request body (for POST, PUT, etc.), populating the {@link Context#getParameters()}
- * map.</li>
  * <li><b>Caching the request body:</b> Since a reactive request body can only be consumed once, this strategy reads the
  * body into memory and wraps the request with a {@link ServerHttpRequestDecorator}. This crucial step allows downstream
  * strategies or controllers to re-read the body if necessary.</li>
