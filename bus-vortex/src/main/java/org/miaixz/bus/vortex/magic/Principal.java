@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.vortex.magic;
 
-import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.vortex.Assets;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Represents an authentication token and its associated context. This class encapsulates all necessary information for
@@ -58,12 +58,12 @@ public class Principal {
     protected String id;
 
     /**
-     * The type of principal: 1 for token, 2 for API key.
+     * The type of principal: 1 for token, 2 for API key. 3 for License key.
      */
     protected Integer type;
 
     /**
-     * The value of the principal, which can be either a token or an API key, depending on the {@code type}.
+     * The value of the principal, which can be a token, API key, or license key, depending on the {@code type}.
      */
     protected String value;
 

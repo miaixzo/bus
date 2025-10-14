@@ -130,6 +130,10 @@ public class Assets {
      */
     private Integer firewall;
     /**
+     * Exception rules for firewall.
+     */
+    private Integer license;
+    /**
      * The version of the asset.
      */
     private String version;

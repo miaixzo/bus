@@ -129,9 +129,9 @@ public class StrategyFactory {
      * @return {@code false} if the strategy is one of the business-logic strategies to be skipped for MCP, {@code true}
      *         otherwise.
      */
-    private boolean isApplicableToMcp(Strategy strategy) {
+    public boolean isApplicableToMcp(Strategy strategy) {
         // MCP requests are simple proxies; they don't need complex validation like authorization or licensing.
-        return !(strategy instanceof AuthorizeStrategy || strategy instanceof LicenseStrategy
+        return !(strategy instanceof AuthorizeStrategy || strategy instanceof CipherStrategy
                 || strategy instanceof LimitStrategy);
     }
 
@@ -144,7 +144,7 @@ public class StrategyFactory {
      * @param strategy The strategy to check.
      * @return {@code true} if the strategy should be part of the MQ chain, {@code false} otherwise.
      */
-    private boolean isApplicableToMq(Strategy strategy) {
+    public boolean isApplicableToMq(Strategy strategy) {
         // Example: MQ requests might have their own authorization logic but share others.
         // For now, we assume all strategies apply to MQ, but this can be customized.
         return true;

@@ -39,16 +39,12 @@ import org.miaixz.bus.vortex.Vortex;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.handler.VortexHandler;
-import org.miaixz.bus.vortex.magic.Delegate;
-import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
-import org.miaixz.bus.vortex.provider.LicenseProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
 import org.miaixz.bus.vortex.strategy.AuthorizeStrategy;
 import org.miaixz.bus.vortex.strategy.CipherStrategy;
 import org.miaixz.bus.vortex.strategy.FormatStrategy;
-import org.miaixz.bus.vortex.strategy.LicenseStrategy;
 import org.miaixz.bus.vortex.strategy.LimitStrategy;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
 import org.miaixz.bus.vortex.Strategy;
@@ -153,48 +149,6 @@ public class VortexConfiguration {
         return new MqService();
     }
 
-    // --- Strategy Dependencies ---
-
-    /**
-     * Default LicenseProvider implementation. This bean provides a default license validation mechanism that always
-     * returns true. Users can provide their own {@code @Bean} of type {@link LicenseProvider} to override this default
-     * behavior.
-     *
-     * @return A default implementation of LicenseProvider.
-     */
-    @Bean
-    public LicenseProvider licenseProvider() {
-        return new LicenseProvider() {
-
-            @Override
-            public boolean validate(String principal) {
-                // Default implementation: always valid
-                return true;
-            }
-        };
-    }
-
-    /**
-     * Default AuthorizeProvider implementation. This bean provides a default authorization mechanism that always
-     * returns a successful delegate. Users can provide their own {@code @Bean} of type {@link AuthorizeProvider} to
-     * override this default behavior.
-     *
-     * @return A default implementation of AuthorizeProvider.
-     */
-    @Bean
-    public AuthorizeProvider authorizeProvider() {
-        return new AuthorizeProvider() {
-
-            @Override
-            public Delegate authorize(Principal principal) {
-                // Default implementation: always authorized
-                return new Delegate();
-            }
-        };
-    }
-
-    // --- Strategy Implementations ---
-
     /**
      * Provides the RequestStrategy bean. This strategy is responsible for initial request parsing and context
      * initialization.
@@ -229,17 +183,6 @@ public class VortexConfiguration {
     @Bean
     public AuthorizeStrategy authorizeStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
         return new AuthorizeStrategy(authorizeProvider, assetsRegistry);
-    }
-
-    /**
-     * Provides the LicenseStrategy bean. This strategy enforces license validity checks.
-     *
-     * @param licenseProvider The LicenseProvider for handling license validation logic.
-     * @return A new instance of LicenseStrategy.
-     */
-    @Bean
-    public LicenseStrategy licenseStrategy(LicenseProvider licenseProvider) {
-        return new LicenseStrategy(licenseProvider);
     }
 
     /**

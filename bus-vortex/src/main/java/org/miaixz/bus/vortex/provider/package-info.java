@@ -8,8 +8,6 @@
  * <ul>
  * <li>{@link org.miaixz.bus.vortex.provider.AuthorizeProvider}: Defines the contract for authenticating and authorizing
  * requests.</li>
- * <li>{@link org.miaixz.bus.vortex.provider.LicenseProvider}: Defines the contract for validating deployment
- * licenses.</li>
  * </ul>
  *
  * @author Kimi Liu
