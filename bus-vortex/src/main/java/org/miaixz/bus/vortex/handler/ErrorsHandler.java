@@ -27,9 +27,13 @@
 */
 package org.miaixz.bus.vortex.handler;
 
-import lombok.*;
+import java.net.UnknownHostException;
+
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.exception.*;
+import org.miaixz.bus.core.lang.exception.BusinessException;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.UncheckedException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -43,10 +47,9 @@ import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 
+import lombok.*;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.NonNull;
-
-import java.net.UnknownHostException;
 
 /**
  * Global exception handler that processes exceptions in Web applications and returns standardized JSON responses.
@@ -81,8 +84,8 @@ public class ErrorsHandler implements WebExceptionHandler {
         response.setStatusCode(HttpStatus.OK);
         response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        // Get the request context
-        Context context = Context.get(exchange);
+        // Get the request context from the exchange attributes
+        Context context = exchange.getAttribute(Context.$);
 
         // Get request information for logging
         ServerHttpRequest request = exchange.getRequest();
@@ -90,7 +93,7 @@ public class ErrorsHandler implements WebExceptionHandler {
         String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
 
         // Generate an error message based on the exception type
-        Message message = buildErrorMessage(ex, exchange);
+        Message message = buildErrorMessage(ex);
 
         // Direct log output without creating methods
         if (ex instanceof WebClientException) {
@@ -131,8 +134,13 @@ public class ErrorsHandler implements WebExceptionHandler {
                     ex.getMessage());
         }
 
-        // Force JSON serialization to ensure a JSON format is returned
-        String formatBody = context.getFormats().getProvider().serialize(message);
+        // If context is available, use its format provider; otherwise, default to a simple JSON representation.
+        String formatBody;
+        if (context != null) {
+            formatBody = context.getFormat().getProvider().serialize(message);
+        } else {
+            formatBody = "{\"errcode\":\"" + message.getErrcode() + "\",\"errmsg\":\"" + message.getErrmsg() + "\"}";
+        }
 
         // Wrap the formatted response into a DataBuffer
         DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes(Charset.UTF_8));
@@ -166,11 +174,10 @@ public class ErrorsHandler implements WebExceptionHandler {
      * {@link BusinessException}), and other unknown exceptions.
      * </p>
      *
-     * @param ex       The exception object.
-     * @param exchange The {@link ServerWebExchange} object.
+     * @param ex The exception object.
      * @return An error {@link Message} object.
      */
-    protected Message buildErrorMessage(Throwable ex, ServerWebExchange exchange) {
+    protected Message buildErrorMessage(Throwable ex) {
         // 1. First, handle specific exceptions that do not belong to the UncheckedException inheritance hierarchy
         if (ex instanceof WebClientException) {
             if (ex.getCause() instanceof UnknownHostException) {

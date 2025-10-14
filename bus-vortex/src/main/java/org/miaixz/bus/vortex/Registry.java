@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.vortex;
 
+import java.util.List;
+
 /**
  * Generic registry interface for managing and operating key-value pair data (e.g., routes, rate limiting
  * configurations).
@@ -40,7 +42,9 @@ public interface Registry<T> {
     /**
      * Initializes the registry, loading initial data or configurations.
      */
-    void init();
+    default void init() {
+
+    }
 
     /**
      * Adds a key-value pair to the registry.
@@ -80,5 +84,12 @@ public interface Registry<T> {
      * @return The corresponding value, or {@code null} if not found.
      */
     T get(String id);
+
+    /**
+     * Initializes the registry. This is an empty default implementation, intended for subclasses to extend as needed.
+     */
+    default List<T> getAll() {
+        return List.of();
+    }
 
 }

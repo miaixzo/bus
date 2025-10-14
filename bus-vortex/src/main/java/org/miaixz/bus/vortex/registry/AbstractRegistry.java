@@ -62,11 +62,6 @@ public abstract class AbstractRegistry<T> implements Registry<T>, InitializingBe
     }
 
     /**
-     * Initializes the registry. Subclasses must implement specific initialization logic.
-     */
-    public abstract void init();
-
-    /**
      * Adds a key-value pair to the registry.
      *
      * @param key The key.

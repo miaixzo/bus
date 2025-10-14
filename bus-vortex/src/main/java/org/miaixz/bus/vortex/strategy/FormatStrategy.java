@@ -51,36 +51,29 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 6)
+@Order(Ordered.HIGHEST_PRECEDENCE + 11)
 public class FormatStrategy extends AbstractStrategy {
 
-    /**
-     * Internal filtering method, executing the response formatting logic.
-     * <p>
-     * This method logs the start of the request. If the request explicitly asks for XML format, it intercepts the
-     * response and ensures it is converted to JSON format before being sent.
-     * </p>
-     *
-     * @param exchange The current {@link ServerWebExchange} object.
-     * @param chain    The filter chain.
-     * @param context  The request context.
-     * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
-     */
     @Override
-    protected Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain, Context context) {
-        Logger.info(
-                "==>     Filter: Request started - Method: {}, Path: {}, Query: {}",
-                exchange.getRequest().getMethod(),
-                exchange.getRequest().getPath().value(),
-                exchange.getRequest().getQueryParams());
+    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain) {
+        return Mono.deferContextual(contextView -> {
+            final Context context = contextView.get(Context.class);
+            ServerWebExchange newExchange = exchange;
 
-        // If the request explicitly asks for XML format, convert to JSON
-        if (Formats.XML.equals(context.getFormats())) {
-            Logger.info("==>     Filter: Converting XML request to JSON response");
-            exchange = exchange.mutate().response(process(exchange)).build();
-        }
+            Logger.info(
+                    "==>     Filter: Request started - Method: {}, Path: {}, Query: {}",
+                    exchange.getRequest().getMethod(),
+                    exchange.getRequest().getPath().value(),
+                    exchange.getRequest().getQueryParams());
 
-        return chain.apply(exchange);
+            // If the request explicitly asks for XML format, convert to JSON
+            if (Formats.XML.equals(context.getFormat())) {
+                Logger.info("==>     Filter: Converting XML request to JSON response");
+                newExchange = exchange.mutate().response(process(exchange, context)).build();
+            }
+
+            return chain.apply(newExchange);
+        });
     }
 
     /**
@@ -92,9 +85,10 @@ public class FormatStrategy extends AbstractStrategy {
      * </p>
      *
      * @param exchange The {@link ServerWebExchange} object.
+     * @param context  The request context.
      * @return The decorated {@link ServerHttpResponseDecorator}.
      */
-    private ServerHttpResponseDecorator process(ServerWebExchange exchange) {
+    private ServerHttpResponseDecorator process(ServerWebExchange exchange, Context context) {
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
 
             /**
@@ -119,17 +113,14 @@ public class FormatStrategy extends AbstractStrategy {
                     // Merge all data buffers
                     byte[] allBytes = merge(dataBuffers);
 
-                    // Get the context
-                    Context context = Context.get(exchange);
-
                     // Set the response content type to the media type specified in the context
-                    exchange.getResponse().getHeaders().setContentType(context.getFormats().getMediaType());
+                    exchange.getResponse().getHeaders().setContentType(context.getFormat().getMediaType());
 
                     // Convert byte array to string
                     String bodyString = new String(allBytes, Charset.UTF_8);
 
                     // Serialize the message using the provider specified in the context
-                    String formatBody = context.getFormats().getProvider().serialize(bodyString);
+                    String formatBody = context.getFormat().getProvider().serialize(bodyString);
 
                     // Log TRACE (if enabled)
                     Logger.trace("==>     Filter: Response formatted: {}", formatBody);

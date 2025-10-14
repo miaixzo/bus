@@ -57,35 +57,46 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * A filter strategy for data encryption and decryption.
+ * A strategy for data encryption and decryption, acting as a security layer in the processing chain.
  * <p>
- * This strategy is responsible for two main tasks:
+ * This strategy is conditionally activated based on the API asset's configuration. Its primary responsibilities are:
  * <ol>
- * <li><b>Request Decryption:</b> It inspects the incoming request parameters and, if decryption is enabled and required
- * by the service, decrypts the parameter values.</li>
- * <li><b>Response Encryption:</b> It intercepts the outgoing response and, if encryption is enabled, encrypts the
- * response body before it is sent to the client.</li>
+ * <li><b>Request Decryption:</b> If an API requires encryption, this strategy decrypts the incoming request parameters
+ * (from the {@link Context#getParameters()}) before they are passed to subsequent strategies.</li>
+ * <li><b>Response Encryption:</b> For the same APIs, it intercepts the outgoing response and encrypts the main data
+ * payload before sending it to the client.</li>
  * </ol>
- * Its order is set to run after {@link RequestStrategy} to ensure the request context and parameters are available, but
- * before strategies like {@link AuthorizeStrategy} that may need to inspect the decrypted data.
- * </p>
+ * It is ordered to run after {@link RequestStrategy} (to ensure parameters are available for decryption) but before
+ * {@link AuthorizeStrategy} (to allow authorization logic to operate on decrypted, plaintext data).
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 2)
+@Order(Ordered.HIGHEST_PRECEDENCE + 3)
 public class CipherStrategy extends AbstractStrategy {
 
+    /**
+     * Configuration for request decryption, injected from application properties.
+     */
     private final Args.Decrypt decryptConfig;
+    /**
+     * Configuration for response encryption, injected from application properties.
+     */
     private final Args.Encrypt encryptConfig;
+    /**
+     * A reusable crypto instance for decryption, initialized at startup.
+     */
     private Crypto decryptCrypto;
+    /**
+     * A reusable crypto instance for encryption, initialized at startup.
+     */
     private Crypto encryptCrypto;
 
     /**
-     * Constructs a new CipherStrategy.
+     * Constructs a new {@code CipherStrategy}.
      *
-     * @param decryptConfig The configuration for decryption, typically from application properties.
-     * @param encryptConfig The configuration for encryption, typically from application properties.
+     * @param decryptConfig The configuration for decryption.
+     * @param encryptConfig The configuration for encryption.
      */
     public CipherStrategy(Args.Decrypt decryptConfig, Args.Encrypt encryptConfig) {
         this.decryptConfig = decryptConfig;
@@ -93,7 +104,8 @@ public class CipherStrategy extends AbstractStrategy {
     }
 
     /**
-     * Initializes AES crypto instances based on the provided configuration after bean construction.
+     * Initializes the AES crypto instances based on the provided configuration. This method is automatically called by
+     * the Spring container after the bean has been constructed.
      */
     @PostConstruct
     public void init() {
@@ -110,55 +122,63 @@ public class CipherStrategy extends AbstractStrategy {
     }
 
     /**
-     * Applies the decryption and encryption logic. It decides whether to act based on the {@code sign} flag in the
-     * request context.
+     * Applies decryption and/or encryption logic based on the API's configuration.
+     * <p>
+     * This method retrieves the {@link Context} and checks the {@code sign} flag of the matched
+     * {@link Context#getAssets()}. If signing is active, it performs request decryption and decorates the response for
+     * eventual encryption.
      *
      * @param exchange The current server exchange.
-     * @param chain    The chain of remaining strategies.
-     * @return A {@code Mono<Void>} signaling completion.
+     * @param chain    The next strategy in the chain.
+     * @return A {@code Mono<Void>} that signals the completion of this strategy.
      */
     @Override
-    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain, Context context) {
-        ServerWebExchange mutatedExchange = exchange;
-        // The 'sign' flag is used to indicate if encryption/decryption is active for this request.
-        if (context.getAssets() != null && Consts.ONE == context.getAssets().getSign()) {
-            // 1. Handle request decryption if enabled.
-            if (decryptConfig != null && decryptConfig.isEnabled()) {
-                doDecrypt(context.getRequestMap());
-                Logger.info(
-                        "==> Strategy: Decryption performed for path: {}",
-                        exchange.getRequest().getURI().getPath());
-            }
+    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain) {
+        return Mono.deferContextual(contextView -> {
+            final Context context = contextView.get(Context.class);
+            ServerWebExchange newExchange = exchange;
 
-            // 2. Decorate the response for encryption if enabled.
-            if (encryptConfig != null && encryptConfig.isEnabled()) {
-                mutatedExchange = exchange.mutate().response(decorateResponse(exchange)).build();
+            // The 'sign' flag, derived from the API asset, indicates if encryption/decryption is active for this
+            // request.
+            if (context.getAssets() != null && Consts.ONE == context.getAssets().getSign()) {
+                // 1. Handle request parameter decryption if enabled.
+                if (decryptConfig != null && decryptConfig.isEnabled()) {
+                    doDecrypt(context.getParameters());
+                    Logger.info(
+                            "==> Strategy: Decryption performed for path: {}",
+                            exchange.getRequest().getURI().getPath());
+                }
+
+                // 2. Decorate the response to enable response body encryption if enabled.
+                if (encryptConfig != null && encryptConfig.isEnabled()) {
+                    newExchange = exchange.mutate().response(decorateResponse(exchange, context)).build();
+                }
             }
-        }
-        return chain.apply(mutatedExchange);
+            return chain.apply(newExchange);
+        });
     }
 
     /**
-     * Performs in-place decryption of the request parameter map.
+     * Performs in-place decryption of the request parameter values.
      *
-     * @param requestMap The map of request parameters from the context.
+     * @param parameters The map of request parameters from the {@link Context}.
      */
-    private void doDecrypt(Map<String, String> requestMap) {
+    private void doDecrypt(Map<String, String> parameters) {
         if (null == decryptCrypto) {
             Logger.warn("==> Strategy: Decrypt crypto instance not initialized, skipping decryption.");
             return;
         }
-        requestMap.forEach((k, v) -> {
+        parameters.forEach((k, v) -> {
             if (StringKit.isNotBlank(v)) {
-                requestMap.put(k, decryptCrypto.decryptString(v.replaceAll(Symbol.SPACE, Symbol.PLUS), Charset.UTF_8));
+                parameters.put(k, decryptCrypto.decryptString(v.replaceAll(Symbol.SPACE, Symbol.PLUS), Charset.UTF_8));
             }
         });
     }
 
     /**
-     * Performs in-place encryption of the data within the response message object.
+     * Performs in-place encryption of the {@code data} field within the response {@link Message} object.
      *
-     * @param message The response message object.
+     * @param message The response message object, which will be mutated.
      */
     private void doEncrypt(Message message) {
         if (ObjectKit.isNotNull(message.getData()) && null != encryptCrypto) {
@@ -169,21 +189,37 @@ public class CipherStrategy extends AbstractStrategy {
     }
 
     /**
-     * Creates a response decorator to intercept and encrypt the response body before it is written.
+     * Creates a response decorator to intercept and encrypt the response body before it is written to the client.
      *
      * @param exchange The current server exchange.
-     * @return The decorated ServerHttpResponse.
+     * @param context  The request context, needed to check the encryption flag again inside the decorator.
+     * @return The decorated {@link ServerHttpResponseDecorator}.
      */
-    private ServerHttpResponseDecorator decorateResponse(ServerWebExchange exchange) {
+    private ServerHttpResponseDecorator decorateResponse(ServerWebExchange exchange, Context context) {
         return new ServerHttpResponseDecorator(exchange.getResponse()) {
 
             /**
-             * Intercepts the response body publisher, buffers the data, encrypts it, and writes the new body.
+             * Intercepts the response body publisher to perform encryption.
+             * <p>
+             * This method implements the core reactive logic for response encryption:
+             * <ol>
+             * <li>It subscribes to the original response body publisher ({@code body}).</li>
+             * <li>It uses {@code .collectList()} to buffer all data chunks of the response into memory.</li>
+             * <li>Once the full body is received, it deserializes the JSON into a {@link Message} object.</li>
+             * <li>It calls {@link #doEncrypt(Message)} to encrypt the {@code data} field of the message.</li>
+             * <li>It serializes the modified {@code Message} object back into a JSON string.</li>
+             * <li>Finally, it wraps the new encrypted string in a new {@code DataBuffer} and passes it to the original
+             * {@code writeWith} method to be sent to the client.</li>
+             * </ol>
+             *
+             * @param body The original (plaintext) response body publisher.
+             * @return A {@code Mono<Void>} that signals the completion of the write operation.
              */
             @Override
             public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                Context context = getContext(exchange);
-                // Double-check the sign flag in case the context has changed.
+                // Double-check the sign flag. This is a safeguard, as the decorator is only applied if signing is
+                // active,
+                // but it ensures correctness if the context were to change unexpectedly.
                 if (context.getAssets() != null && Consts.ONE == context.getAssets().getSign()) {
                     Flux<? extends DataBuffer> flux = Flux.from(body);
                     return flux.collectList().flatMap(dataBuffers -> {
@@ -200,14 +236,17 @@ public class CipherStrategy extends AbstractStrategy {
                         return super.writeWith(Mono.just(encryptedBuffer));
                     });
                 }
-                // If encryption is not required, write the original body.
+                // If encryption is not required for some reason, write the original body.
                 return super.writeWith(body);
             }
         };
     }
 
     /**
-     * Helper method to merge a list of DataBuffers into a single byte array.
+     * A utility method to merge a list of {@link DataBuffer}s into a single byte array.
+     *
+     * @param dataBuffers The list of data buffers to merge.
+     * @return A single byte array containing the merged data.
      */
     private byte[] merge(List<? extends DataBuffer> dataBuffers) {
         int totalBytes = dataBuffers.stream().mapToInt(DataBuffer::readableByteCount).sum();

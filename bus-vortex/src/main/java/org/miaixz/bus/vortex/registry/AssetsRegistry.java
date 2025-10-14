@@ -57,12 +57,4 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
         return this.get(method + version);
     }
 
-    /**
-     * Initializes the registry. This is an empty default implementation, intended for subclasses to extend as needed.
-     */
-    @Override
-    public void init() {
-        // Empty implementation, for subclasses to extend as needed
-    }
-
 }

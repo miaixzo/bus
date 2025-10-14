@@ -27,10 +27,9 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
-import java.util.Optional;
-
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
@@ -43,68 +42,82 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
- * A filter strategy for license validation. This strategy enforces license validity checks based on the request's
- * authority (host and port).
+ * A strategy that enforces license validation based on the request's authority (domain and port).
+ * <p>
+ * This strategy acts as a gatekeeper for commercial deployments, ensuring that incoming requests are targeted at a host
+ * that holds a valid license. It collaborates with a {@link LicenseProvider}, which encapsulates the actual logic for
+ * checking the license status (e.g., by consulting a database, a file, or a remote service).
+ * <p>
+ * It is ordered to run after {@link AuthorizeStrategy}, as license validation is typically a broader,
+ * infrastructure-level check performed after the caller's identity has been established.
  *
  * @author Kimi Liu
+ * @see LicenseProvider
  * @since Java 17+
  */
-@Order(Ordered.HIGHEST_PRECEDENCE + 4)
+@Order(Ordered.HIGHEST_PRECEDENCE + 7)
 public class LicenseStrategy extends AbstractStrategy {
 
     /**
-     * The license provider, used for handling the actual logic of license validation.
+     * The provider responsible for the actual logic of license validation.
      */
     private final LicenseProvider provider;
 
     /**
-     * Constructs a {@code LicenseFilter} with the specified license validation provider.
+     * Constructs a new {@code LicenseStrategy}.
      *
-     * @param provider The license provider responsible for handling license validation.
+     * @param provider The license provider, which must not be {@code null}.
      */
     public LicenseStrategy(LicenseProvider provider) {
         this.provider = provider;
     }
 
     /**
-     * The core execution method of the filter.
+     * Applies the license validation logic.
      * <p>
-     * This method extracts the hostname and port (Authority) from the current request and passes it as the validation
-     * subject to the {@link LicenseProvider}. If the {@code provider.validate} method fails, it should throw an
-     * exception, which will be caught by the framework's global exception handler, thereby interrupting the request and
-     * returning a unified error response.
-     * </p>
+     * This method orchestrates the validation by performing the following steps:
+     * <ol>
+     * <li>Retrieves the {@link Context} from the reactive stream.</li>
+     * <li>Extracts the request's authority (domain and port) from the context, which was populated by
+     * {@link RequestStrategy}.</li>
+     * <li>Checks if the authority is present; if not, it throws an exception as validation is impossible.</li>
+     * <li>Checks the {@code firewall} flag on the API {@link Assets}. If the flag indicates a license check is
+     * required, it calls the {@link LicenseProvider#validate(String)} method.</li>
+     * <li>If validation is successful, it proceeds to the next strategy in the chain. If validation fails, the provider
+     * is expected to throw an exception, which will be caught by the global error handler.</li>
+     * </ol>
      *
-     * @param exchange The current {@link ServerWebExchange} object.
-     * @param chain    The filter chain.
-     * @param context  The request context.
-     * @return {@link Mono<Void>} representing the completion of the asynchronous filtering operation.
-     * @throws ValidateException If license validation fails.
+     * @param exchange The current server exchange.
+     * @param chain    The next strategy in the chain.
+     * @return A {@code Mono<Void>} that signals the completion of this strategy.
      */
     @Override
-    protected Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain, Context context) {
-        Assets assets = getAssets(context);
+    public Mono<Void> apply(ServerWebExchange exchange, StrategyChain chain) {
+        return Mono.deferContextual(contextView -> {
+            final Context context = contextView.get(Context.class);
+            final Assets assets = context.getAssets();
 
-        // Get the domain name and port
-        Optional<String> authorityOptional = getOriginalAuthority(exchange.getRequest());
+            // The request authority (domain:port) is expected to be populated by a preceding strategy.
+            String authority = context.getX_request_domain();
 
-        // Use Optional's API to handle the result
-        String authority = authorityOptional.orElseThrow(() -> {
-            // If Optional is empty, it means no valid host information was found, construct and throw an exception
-            String errorMessage = "Unable to determine the request authority (host:port) for license validation. The request will be ignored.";
-            Logger.error("==>     Filter: {}", errorMessage);
-            throw new ValidateException(ErrorCode._100527);
+            if (StringKit.isEmpty(authority)) {
+                String errorMessage = "Unable to determine the request authority (host:port) for license validation. The request will be ignored.";
+                Logger.error("==>     Filter: {}", errorMessage);
+                throw new ValidateException(ErrorCode._100527);
+            }
+
+            // The 'firewall' flag on the asset determines if a license check is mandatory.
+            // A value of '2' might indicate a strict, license-required endpoint.
+            if (Consts.TWO == assets.getFirewall()) {
+                Logger.info("==>     Filter: Validating license for authority: {}", authority);
+                // Delegate the actual validation logic to the provider.
+                // The provider should throw an exception on validation failure.
+                this.provider.validate(authority);
+            }
+
+            // If validation is not required or is successful, continue the chain.
+            return chain.apply(exchange);
         });
-
-        Logger.info("==>     Filter: Validating license for authority: {}", authority);
-        if (Consts.TWO == assets.getFirewall()) {
-            // Call the provider to perform validation.
-            // If validation fails, provider.validate(authority) should throw an exception.
-            this.provider.validate(authority);
-        }
-
-        // Validation passed, request continues.
-        return chain.apply(exchange);
     }
 
 }

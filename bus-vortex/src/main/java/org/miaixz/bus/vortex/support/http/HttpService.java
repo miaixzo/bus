@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.vortex.support;
+package org.miaixz.bus.vortex.support.http;
 
 import java.time.Duration;
 import java.util.Map;
@@ -33,8 +33,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.NonNull;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.vortex.*;
+import org.miaixz.bus.vortex.Assets;
+import org.miaixz.bus.vortex.Context;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -53,19 +55,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClientRequest;
-import reactor.util.annotation.NonNull;
 
 /**
- * HTTP strategy router, responsible for routing requests to HTTP services.
- * <p>
- * This class implements the {@link Router} interface to handle HTTP requests. It uses {@link WebClient} to forward
- * incoming requests to target HTTP services, managing request headers, body, and response processing.
- *
- *
- * @author Kimi Liu
- * @since Java 17+
+ * HTTP 请求的实际执行器。 封装了所有使用 WebClient 与下游服务交互的逻辑。
  */
-public class HttpRequestRouter implements Router {
+public class HttpService {
 
     /**
      * Pre-defined {@link ExchangeStrategies} instance for WebClient configuration.
@@ -94,15 +88,15 @@ public class HttpRequestRouter implements Router {
      *
      * @param request The client's {@link ServerRequest} object.
      * @param context The request context, containing request parameters and configuration information.
-     * @param assets  The configuration assets, containing configuration information for the target service.
      * @return {@link Mono<ServerResponse>} containing the response from the target service.
      */
     @NonNull
-    @Override
-    public Mono<ServerResponse> route(ServerRequest request, Context context, Assets assets) {
+    public Mono<ServerResponse> execute(ServerRequest request, Context context) {
         // Get request method and path for logging
         String method = request.methodName();
         String path = request.path();
+
+        Assets assets = context.getAssets();
 
         // 1. Build the base URL for the target service
         String baseUrl = buildBaseUrl(assets);
@@ -140,8 +134,8 @@ public class HttpRequestRouter implements Router {
             if (mediaType != null) {
                 if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
                     // Handle multipart request body
-                    Map<String, Part> fileParts = context.getFilePartMap();
-                    Map<String, String> params = context.getRequestMap();
+                    Map<String, Part> fileParts = context.getFileParts();
+                    Map<String, String> params = context.getParameters();
                     if (!fileParts.isEmpty() || !params.isEmpty()) {
                         MultiValueMap<String, Part> partMap = new LinkedMultiValueMap<>(fileParts.size());
                         partMap.setAll(fileParts);
@@ -225,7 +219,7 @@ public class HttpRequestRouter implements Router {
             Context context,
             String method,
             String path) {
-        Map<String, String> params = context.getRequestMap();
+        Map<String, String> params = context.getParameters();
         if (!params.isEmpty()) {
             MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>(params.size());
             params.forEach(multiValueMap::add);
@@ -279,7 +273,7 @@ public class HttpRequestRouter implements Router {
     private String buildTargetUri(Assets assets, Context context) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(assets.getUrl());
         if (HttpMethod.GET.equals(context.getHttpMethod())) {
-            Map<String, String> params = context.getRequestMap();
+            Map<String, String> params = context.getParameters();
             if (!params.isEmpty()) {
                 MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>(params.size());
                 params.forEach(multiValueMap::add);

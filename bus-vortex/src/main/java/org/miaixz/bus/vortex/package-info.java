@@ -1,34 +1,17 @@
-/*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
 /**
- * Provides the core components for the Vortex API Gateway, built on Spring WebFlux. This package includes fundamental
- * interfaces and classes for defining assets, configurations, filters, handlers, and routers, forming the backbone of
- * the gateway's functionality.
+ * Provides the core interfaces and data structures for the Vortex reactive gateway.
+ * <p>
+ * This package defines the fundamental contracts of the gateway's architecture, including:
+ * <ul>
+ * <li>{@link org.miaixz.bus.vortex.Strategy}: The primary interface for implementing individual processing steps in the
+ * request chain (Chain of Responsibility pattern).</li>
+ * <li>{@link org.miaixz.bus.vortex.Router}: The interface for routing requests to different downstream protocols (e.g.,
+ * HTTP, MCP, MQ).</li>
+ * <li>{@link org.miaixz.bus.vortex.Handler}: The interface for handling the final request processing and for
+ * implementing interceptor-style logic.</li>
+ * <li>{@link org.miaixz.bus.vortex.Context}: The central data carrier object that holds the state for a single request
+ * as it flows through the gateway.</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+

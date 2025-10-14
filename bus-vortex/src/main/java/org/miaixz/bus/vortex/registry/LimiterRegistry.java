@@ -58,12 +58,4 @@ public class LimiterRegistry extends AbstractRegistry<Limiter> {
         return this.get(ip + method + version);
     }
 
-    /**
-     * Initializes the registry. This is an empty default implementation, intended for subclasses to extend as needed.
-     */
-    @Override
-    public void init() {
-        // Empty implementation, for subclasses to extend as needed
-    }
-
 }

@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.vortex.strategy;
 
+import org.miaixz.bus.vortex.Strategy;
 import org.springframework.web.server.ServerWebExchange;
 
 import reactor.core.publisher.Mono;
 
 /**
- * Represents the chain of filter strategies, implementing the Chain of Responsibility pattern.
+ * Represents the ongoing execution of the strategy chain, implementing the Chain of Responsibility pattern.
  * <p>
  * An instance of this interface is passed to each {@link Strategy#apply(ServerWebExchange, StrategyChain)} method,
- * allowing the strategy to delegate control to the next strategy in the chain. The final link in the chain delegates
- * back to the main Spring WebFlux {@code WebFilterChain}.
- * </p>
+ * allowing a strategy to delegate control to the next strategy in the chain. The final link in the chain, implemented
+ * in {@link org.miaixz.bus.vortex.filter.PrimaryChain}, delegates control back to the main Spring WebFlux
+ * {@code WebFilterChain}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -46,6 +47,9 @@ public interface StrategyChain {
 
     /**
      * Delegates control to the next strategy in the chain.
+     * <p>
+     * A {@link Strategy} must invoke this method to continue the processing of the request. Failure to do so will
+     * effectively halt the request handling pipeline.
      *
      * @param exchange The current server exchange, which may have been mutated by the calling strategy.
      * @return A {@code Mono<Void>} that signals the completion of the rest of the chain.
