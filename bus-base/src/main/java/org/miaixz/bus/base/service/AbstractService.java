@@ -394,7 +394,7 @@ public class AbstractService<T extends BaseEntity, I extends Serializable, M ext
      */
     @Override
     public Object selectOne(Condition<T> condition) {
-        return mapper.selectOneByCondition(condition).orElse(null);
+        return mapper.selectOneByCondition(condition);
     }
 
     /**

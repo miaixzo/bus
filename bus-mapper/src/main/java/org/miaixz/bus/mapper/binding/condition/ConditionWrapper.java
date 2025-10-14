@@ -1059,7 +1059,7 @@ public class ConditionWrapper<T, I extends Serializable> {
      *
      * @return An {@link Optional} containing the entity object, or an empty Optional if not found.
      */
-    public Optional<T> one() {
+    public T one() {
         return basicMapper.selectOneByCondition(condition);
     }
 
@@ -1068,9 +1068,9 @@ public class ConditionWrapper<T, I extends Serializable> {
      *
      * @return An {@link Optional} containing the entity object, or an empty Optional if not found.
      */
-    public Optional<T> first() {
+    public T first() {
         List<T> result = basicMapper.selectByCondition(condition, new RowBounds(0, 1));
-        return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
+        return result.isEmpty() ? null : result.get(0);
     }
 
     /**

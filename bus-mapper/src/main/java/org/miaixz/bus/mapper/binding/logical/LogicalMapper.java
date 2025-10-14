@@ -286,7 +286,7 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
     @Override
     @Lang(Caching.class)
     @SelectProvider(type = LogicalProvider.class, method = "selectByCondition")
-    Optional<T> selectOneByCondition(Condition<T> condition);
+    T selectOneByCondition(Condition<T> condition);
 
     /**
      * Counts the number of records matching a {@link Condition}, excluding logically deleted records.
