@@ -250,7 +250,7 @@ public class AuthorizeStrategy extends AbstractStrategy {
         }
 
         Delegate delegate = this.provider.authorize(
-                Principal.builder().type(Consts.ONE).value(context.getToken()).channel(context.getChannel().getType())
+                Principal.builder().type(Consts.ONE).key(context.getToken()).channel(context.getChannel().getType())
                         .assets(assets).build());
 
         if (delegate.isOk()) {
@@ -300,8 +300,8 @@ public class AuthorizeStrategy extends AbstractStrategy {
         }
 
         Delegate delegate = this.provider.authorize(
-                Principal.builder().type(Consts.TWO).value(apiKey).channel(context.getChannel().getType())
-                        .assets(assets).build());
+                Principal.builder().type(Consts.TWO).key(apiKey).channel(context.getChannel().getType()).assets(assets)
+                        .build());
 
         if (delegate.isOk()) {
             Map<String, Object> authMap = new HashMap<>();
@@ -355,7 +355,7 @@ public class AuthorizeStrategy extends AbstractStrategy {
         }
 
         Delegate delegate = this.provider.authorize(
-                Principal.builder().type(Consts.THREE).value(domain).channel(context.getChannel().getType())
+                Principal.builder().type(Consts.THREE).key(domain).channel(context.getChannel().getType())
                         .assets(assets).build());
 
         if (delegate.isOk()) {

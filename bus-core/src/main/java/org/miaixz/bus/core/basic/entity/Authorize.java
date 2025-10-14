@@ -134,6 +134,6 @@ public class Authorize extends Entity {
      * Extended parameter information.
      */
     @Transient
-    protected String x_extension;
+    protected String x_raw_data;
 
 }

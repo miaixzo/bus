@@ -55,7 +55,7 @@ public class Principal {
      * prevent it from being included in serialization, as it's typically used for runtime request routing and context,
      * not for persistent state.
      */
-    protected String id;
+    protected String key;
 
     /**
      * The type of principal: 1 for token, 2 for API key. 3 for License key.

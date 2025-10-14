@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.NonNull;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Assets;
 import org.miaixz.bus.vortex.Context;
@@ -153,18 +154,7 @@ public class HttpService {
                     }
                 } else if (MediaType.APPLICATION_JSON.isCompatibleWith(mediaType)) {
                     // Handle JSON request body
-                    return request.bodyToMono(String.class).defaultIfEmpty(Normal.EMPTY).flatMap(jsonBody -> {
-                        Logger.info(
-                                "==>       HTTP: [N/A] [{}] [{}] [HTTP_ROUTER_JSON] - JSON request body size: {}",
-                                method,
-                                path,
-                                jsonBody.length());
-                        return bodySpec.contentType(MediaType.APPLICATION_JSON).bodyValue(jsonBody)
-                                .httpRequest(clientHttpRequest -> {
-                                    HttpClientRequest reactorRequest = clientHttpRequest.getNativeRequest();
-                                    reactorRequest.responseTimeout(Duration.ofMillis(assets.getTimeout()));
-                                }).retrieve().toEntity(DataBuffer.class).flatMap(this::processResponse);
-                    });
+                    handleJsonRequestBody(bodySpec, context, method, path);
                 } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
                     // Handle form-urlencoded request body
                     handleFormRequestBody(bodySpec, context, method, path);
@@ -201,6 +191,40 @@ public class HttpService {
             HttpClientRequest reactorRequest = clientHttpRequest.getNativeRequest();
             reactorRequest.responseTimeout(Duration.ofMillis(assets.getTimeout()));
         }).retrieve().toEntity(DataBuffer.class).flatMap(this::processResponse);
+    }
+
+    /**
+     * Handles the JSON request body.
+     * <p>
+     * This method converts the parameters from the request context into a JSON string and sets it as the request body.
+     * If the parameters map is empty, no request body is set.
+     *
+     * @param bodySpec The request body specification, used to configure the request body.
+     * @param context  The request context, containing request parameters.
+     * @param method   The HTTP method for logging.
+     * @param path     The request path for logging.
+     */
+    private void handleJsonRequestBody(
+            WebClient.RequestBodySpec bodySpec,
+            Context context,
+            String method,
+            String path) {
+        Map<String, String> params = context.getParameters();
+        if (!params.isEmpty()) {
+            String jsonBody = JsonKit.toJsonString(params);
+            bodySpec.contentType(MediaType.APPLICATION_JSON).bodyValue(jsonBody);
+            Logger.info(
+                    "==>       HTTP: [N''A] [{}] [{}] [HTTP_ROUTER_JSON] - JSON body configured with {} parameters, size: {}",
+                    method,
+                    path,
+                    params.size(),
+                    jsonBody.length());
+        } else {
+            Logger.info(
+                    "==>       HTTP: [N''A] [{}] [{}] [HTTP_ROUTER_JSON] - No JSON parameters to configure",
+                    method,
+                    path);
+        }
     }
 
     /**
