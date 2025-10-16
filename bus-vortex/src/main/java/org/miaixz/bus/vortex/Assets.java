@@ -36,8 +36,12 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Represents an API definition or asset within the Vortex module. This class holds various properties defining an API
- * endpoint, including its identification, network details, request characteristics, and security settings.
+ * Represents a configured API endpoint, acting as a blueprint for routing and processing requests in the Vortex
+ * gateway.
+ * <p>
+ * This class encapsulates all the necessary information for the gateway to handle an incoming request and forward it to
+ * the appropriate downstream service. It includes details for service discovery, network addressing, request
+ * transformation, security policies, and load balancing.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,101 +54,149 @@ import lombok.experimental.SuperBuilder;
 public class Assets {
 
     /**
-     * The unique identifier for this asset.
+     * A unique identifier for this API asset, used for caching and equality checks.
      */
     private String id;
+
     /**
-     * The name of the asset.
+     * A human-readable name for the API asset, used for display and logging purposes.
      */
     private String name;
+
     /**
-     * The icon of the asset.
+     * An optional URL or identifier for an icon representing this asset, typically for use in administrative UIs.
      */
     private String icon;
+
     /**
-     * The host address of the server.
+     * The hostname or IP address of the downstream service. Example: {@code api.downstream.com} or {@code 10.0.0.5}.
      */
     private String host;
+
     /**
-     * The context path of the API.
+     * The base path on the downstream service, which is prefixed to the final request URI. Example: {@code /v2/api}.
      */
     private String path;
+
     /**
-     * The port number of the server.
+     * The network port of the downstream service. Example: {@code 8080}.
      */
     private Integer port;
+
     /**
-     * The full URL of the method.
+     * The specific endpoint path on the downstream service. This is combined with the host, port, and base path to form
+     * the final target URL. Example: {@code /users/{id}}.
      */
     private String url;
+
     /**
-     * The method Key.
+     * The logical API method name defined by the gateway's contract (e.g., {@code user.getProfile}). This is distinct
+     * from the HTTP method ({@code type}).
      */
     private String method;
+
     /**
-     * The routing mode: 1.HTTP, 2.MQ, 3.SSE, 4.STDIO ,5.OPENAPI, 6.STREAMABLE-HTTP.
+     * Defines the routing mechanism or protocol used to forward the request.
+     * <ul>
+     * <li>{@code 1}: HTTP/HTTPS</li>
+     * <li>{@code 2}: Message Queue (e.g., RabbitMQ, Kafka)</li>
+     * <li>{@code 3}: Server-Sent Events (SSE)</li>
+     * <li>{@code 4}: Standard I/O (STDIO) - for invoking local command-line tools</li>
+     * <li>{@code 5}: OpenAPI discovery</li>
+     * <li>{@code 6}: Streamable HTTP (for large data streaming)</li>
+     * </ul>
      */
     private Integer mode;
+
     /**
-     * The request type: 1.GET, 2.POST, 3.HEAD, 4.PUT, 5.PATCH, 6.DELETE, 7.OPTIONS, 8.TRACE.
+     * Specifies the HTTP method to be used when forwarding the request (if applicable).
+     * <ul>
+     * <li>{@code 1}: GET</li>
+     * <li>{@code 2}: POST</li>
+     * <li>{@code 3}: HEAD</li>
+     * <li>{@code 4}: PUT</li>
+     * <li>{@code 5}: PATCH</li>
+     * <li>{@code 6}: DELETE</li>
+     * <li>{@code 7}: OPTIONS</li>
+     * <li>{@code 8}: TRACE</li>
+     * </ul>
      */
     private Integer type;
+
     /**
-     * Authorization setting: 0. No validation, 1. required.
+     * Specifies whether an authentication token is required for this API call.
+     * <ul>
+     * <li>{@code 0}: No validation required.</li>
+     * <li>{@code 1}: Authentication token is required.</li>
+     * </ul>
      */
     private Integer token;
+
     /**
-     * Signature setting.
+     * Specifies whether the request must be cryptographically signed and which signature validation scheme to apply.
      */
     private Integer sign;
+
     /**
-     * The scope of applicability.
+     * Defines the required authorization scope (e.g., OAuth2 scope like {@code read:profile}) that the provided token
+     * must possess to access this API.
      */
     private Integer scope;
+
     /**
-     * The scope of applicability.
+     * The number of automatic retry attempts if the initial request to the downstream service fails with a transient
+     * error.
      */
     private Integer retries;
+
     /**
-     * The scope of applicability.
+     * The maximum time in milliseconds to wait for a response from the downstream service before timing out.
+     */
+    private Integer timeout;
+
+    /**
+     * The load balancing strategy to use when multiple downstream service instances are available (e.g., round-robin,
+     * least-connections).
      */
     private Integer balance;
+
     /**
-     * The weight of applicability.
+     * In a weighted load balancing scenario, this value determines the proportion of traffic this service instance
+     * should receive relative to others.
      */
     private Integer weight;
+
     /**
-     * The scope of applicability.
+     * For non-HTTP routing modes (e.g., {@code STDIO}), this field can hold command-line arguments for the target
+     * process.
      */
     private String args;
+
     /**
-     * The scope of applicability.
+     * For {@code STDIO} routing mode, this specifies the executable command or script to be run.
      */
     private String command;
+
     /**
-     * The metadata of applicability.
+     * A flexible JSON string for storing any additional, custom configuration or metadata related to this asset.
      */
     private String metadata;
+
     /**
-     * Exception rules for firewall.
+     * Defines a set of firewall rules or policies to be applied to this request, such as rate limiting or IP
+     * blacklisting.
      */
     private Integer firewall;
+
     /**
-     * Exception rules for firewall.
-     */
-    private Integer license;
-    /**
-     * The version of the asset.
+     * The specific version of the API endpoint (e.g., {@code v1}, {@code 2.5.0}), used for version-based routing.
      */
     private String version;
+
     /**
-     * A description of the asset.
+     * A detailed, human-readable description of what this API asset does.
      */
     private String description;
-    /**
-     * The timeout duration in milliseconds for requests. Default is 10000 milliseconds.
-     */
-    private long timeout = 10000;
 
     /**
      * Compares this Assets object with the specified object for equality. The comparison is based on the {@code id}

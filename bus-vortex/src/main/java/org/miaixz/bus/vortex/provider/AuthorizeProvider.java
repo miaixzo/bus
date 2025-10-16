@@ -59,82 +59,61 @@ public interface AuthorizeProvider {
      * @throws ValidateException If the principal is null or empty, with error code {@link ErrorCode#_100806}.
      */
     default Delegate authorize(Principal principal) {
-        // Validate the principal parameter
+        // Validate the principal object itself.
         if (ObjectKit.isEmpty(principal)) {
-            Logger.warn("Authorization failed: empty principal entity");
+            Logger.warn("Authorization failed: The principal entity is null or empty.");
             throw new ValidateException(ErrorCode._100806);
         }
 
-        // Delegate to specific authorization method based on principal type
+        // Default workflow: Dispatch based on credential type.
         if (Consts.ONE.equals(principal.getType())) {
             return this.token(principal);
-        } else if (Consts.TWO.equals(principal.getType())) {
+        }
+        if (Consts.TWO.equals(principal.getType())) {
             return this.apiKey(principal);
-        } else if (Consts.THREE.equals(principal.getType())) {
-            return this.license(principal);
         }
 
-        // Handle unsupported authorization type
-        Logger.warn("Unsupported authorization type: {}", principal.getType());
-        return Delegate.builder().message(
-                Message.builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue()).build())
+        // The default implementation does not handle other types (e.g., type '3' for licenses).
+        // To support them, the user must override this `authorize` method.
+        Logger.warn(
+                "==>     Provider: Unsupported or unhandled principal type: {}. "
+                        + "Override the 'authorize' method in your provider to handle custom types.",
+                principal.getType());
+        return Delegate.builder()
+                .message(
+                        Message.builder().errcode(ErrorCode._100802.getKey())
+                                .errmsg("Unsupported credential type: " + principal.getType()).build())
                 .build();
     }
 
     /**
-     * Validates a token-based principal and returns the authorization result. This method is invoked when the principal
-     * type is {@link Consts#ONE}. The default implementation returns a successful authorization result with an empty
-     * {@link Authorize} object. Implementations should override this method to provide specific token validation logic.
-     *
+     * Validates a token-based principal. Users should override this method to implement their specific token validation
+     * logic (e.g., JWT parsing, database lookup, Redis cache check).
      * <p>
-     * 1. By default, all returns are successful 2. In actual business, please override this method according to
-     * business rules
+     * The default implementation always returns a successful result, effectively "skipping" the validation. This is
+     * useful for deployments that do not use token-based authentication.
      *
-     * @param principal The {@link Principal} object containing token-based authentication details.
-     * @return A {@link Delegate} object containing the authorization result, including a {@link Message} indicating
-     *         success or failure and an optional {@link Authorize} object with authorization details.
+     * @param principal The {@link Principal} object containing the token in its {@code key} field.
+     * @return A {@link Delegate} object containing the authorization result.
      */
     default Delegate token(Principal principal) {
+        Logger.debug("Executing default `token` method. Returning success without validation.");
         return Delegate.builder().message(
                 Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build())
                 .authorize(Authorize.builder().build()).build();
     }
 
     /**
-     * Validates an API key-based principal and returns the authorization result. This method is invoked when the
-     * principal type is {@link Consts#TWO}. The default implementation returns a successful authorization result with
-     * an empty {@link Authorize} object. Implementations should override this method to provide specific API key
-     * validation logic.
-     *
+     * Validates an API key-based principal. Users should override this method to implement their specific API key
+     * validation logic (e.g., database lookup).
      * <p>
-     * 1. By default, all returns are successful 2. In actual business, please override this method according to
-     * business rules
+     * The default implementation always returns a successful result, effectively "skipping" the validation.
      *
-     * @param principal The {@link Principal} object containing API key-based authentication details.
-     * @return A {@link Delegate} object containing the authorization result, including a {@link Message} indicating
-     *         success or failure and an optional {@link Authorize} object with authorization details.
+     * @param principal The {@link Principal} object containing the API key in its {@code key} field.
+     * @return A {@link Delegate} object containing the authorization result.
      */
     default Delegate apiKey(Principal principal) {
-        return Delegate.builder().message(
-                Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build())
-                .authorize(Authorize.builder().build()).build();
-    }
-
-    /**
-     * Validates a license-based principal and returns the authorization result. This method is invoked when the
-     * principal type is {@link Consts#THREE}. The default implementation returns a successful authorization result with
-     * an empty {@link Authorize} object. Implementations should override this method to provide specific license
-     * validation logic.
-     *
-     * <p>
-     * 1. By default, all returns are successful 2. In actual business, please override this method according to
-     * business rules
-     *
-     * @param principal The {@link Principal} object containing license-based authentication details.
-     * @return A {@link Delegate} object containing the authorization result, including a {@link Message} indicating
-     *         success or failure and an optional {@link Authorize} object with authorization details.
-     */
-    default Delegate license(Principal principal) {
+        Logger.debug("Executing default `apiKey` method. Returning success without validation.");
         return Delegate.builder().message(
                 Message.builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue()).build())
                 .authorize(Authorize.builder().build()).build();

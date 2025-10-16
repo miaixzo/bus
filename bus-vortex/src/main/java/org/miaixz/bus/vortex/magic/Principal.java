@@ -34,14 +34,23 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.vortex.Context;
 
 /**
- * Represents an authentication token and its associated context. This class encapsulates all necessary information for
- * authorizing and processing a request, including the token string, the source channel, related resource
- * configurations, and transient runtime data like tenant ID and API key.
+ * Represents an authenticated principal with authentication credentials and request context.
+ * <p>
+ * This class encapsulates authentication information for multi-tenant API gateway scenarios, including credential type,
+ * tenant identifier, source channel, and associated request context. Used in OAuth 2.0, API Key, and license key
+ * authentication flows.
+ * <p>
+ * <b>Thread Safety:</b> Immutable after construction (channel and context are final).
+ * <p>
+ * <b>Serialization:</b> Key field is transient to exclude runtime tenant context from persistent storage.
  *
  * @author Justubborn
  * @since Java 17+
+ * @see Context Request context information
+ * @see Assets Resource configuration and permissions
  */
 @Getter
 @Setter
@@ -51,33 +60,135 @@ import lombok.experimental.SuperBuilder;
 public class Principal {
 
     /**
-     * The identifier for the tenant in a multi-tenant architecture. This field is marked as {@code transient} to
-     * prevent it from being included in serialization, as it's typically used for runtime request routing and context,
-     * not for persistent state.
-     */
-    protected String key;
-
-    /**
-     * The type of principal: 1 for token, 2 for API key. 3 for License key.
+     * Authentication credential type identifier.
+     * <p>
+     * Defines the type of authentication credential for validation and processing:
+     * <ul>
+     * <li>{@code 1} = Access Token (OAuth 2.0 Bearer Token, JWT, Opaque Token)</li>
+     * <li>{@code 2} = API Key (Static service credentials)</li>
+     * </ul>
+     * <p>
+     * Determines:
+     * <ul>
+     * <li>Token validation strategy and issuer verification</li>
+     * <li>Header extraction method (Authorization vs custom headers)</li>
+     * <li>Expiration, refresh, and revocation policies</li>
+     * <li>JWT signature verification or API key lookup</li>
+     * </ul>
+     * <p>
+     * <b>Standards:</b>
+     * <ul>
+     * <li>RFC 6749 (OAuth 2.0 Framework) - Access Tokens</li>
+     * <li>RFC 6750 (Bearer Token Usage)</li>
+     * <li>RFC 7519 (JSON Web Token - JWT)</li>
+     * </ul>
      */
     protected Integer type;
 
     /**
-     * The value of the principal, which can be a token, API key, or license key, depending on the {@code type}.
+     * Raw authentication credential value.
+     * <p>
+     * Contains the actual credential string based on {@code type}:
+     * <ul>
+     * <li><b>Type 1 (Token):</b> Complete bearer token including prefix
+     * 
+     * <pre>
+     * Authorization: Bearer eyJhbGciOiJSUzI1NiJ9...
+     * </pre>
+     * 
+     * </li>
+     * <li><b>Type 2 (API Key):</b> Static API secret
+     * 
+     * <pre>
+     * X-API-Key: sk_live_51ABC123xyz...
+     * </pre>
+     * 
+     * </li>
+     * <li><b>Type 3 (License):</b> Product activation key
+     * 
+     * <pre>
+     * License: LIC-2025-PRO-001-ABCDEF
+     * </pre>
+     * 
+     * </li>
+     * </ul>
+     * <p>
+     * <b>Security Requirements:</b>
+     * <ul>
+     * <li><b>Storage:</b> Encrypt at rest using strong encryption (AES-256)</li>
+     * <li><b>Logging:</b> Mask or truncate in logs (show first/last 4 chars only)</li>
+     * <li><b>Transmission:</b> Always use TLS 1.2+ with strong ciphers</li>
+     * <li><b>Memory:</b> Clear from memory after use (overwrite with zeros)</li>
+     * </ul>
+     * <p>
+     * <b>Validation:</b> Must not be null or empty. Length and format validated by type-specific validators.
      */
     protected String value;
 
     /**
-     * An integer identifier for the source channel of the request. This can be used to differentiate between various
-     * clients or platforms, such as a mobile app, web application, or third-party integrations (e.g., WeChat,
-     * DingTalk). It is a required, immutable field.
+     * Source channel identifier.
+     * <p>
+     * Identifies the originating client platform or integration channel:
+     * <ul>
+     * <li>Mobile applications (iOS, Android)</li>
+     * <li>Web applications (SPA, traditional web)</li>
+     * <li>Server-to-server integrations</li>
+     * <li>Third-party platforms (WeChat, DingTalk, Slack)</li>
+     * <li>IoT devices and embedded systems</li>
+     * </ul>
+     * <p>
+     * Enables channel-specific policies:
+     * <ul>
+     * <li>Differentiated rate limiting and quotas</li>
+     * <li>Platform-specific feature flags</li>
+     * <li>Client version compatibility checks</li>
+     * <li>Analytics and usage tracking</li>
+     * <li>A/B testing and canary deployments</li>
+     * </ul>
+     * <p>
+     * <b>Immutable:</b> Final field set during authentication, cannot be modified during request lifecycle.
+     * <p>
+     * <b>Typical Values:</b> 1=Web, 2=iOS, 3=Android, 4=Server, 5=ThirdParty, etc.
      */
-    protected Integer channel;
+    protected final Integer channel;
 
     /**
-     * Contains configuration and information about the resources or "assets" associated with this token. This could
-     * include permissions, rate limits, or other service-specific settings. It is a required, immutable field.
+     * Request context information.
+     * <p>
+     * Contains runtime request context data populated during the authentication and request processing pipeline:
+     * <ul>
+     * <li><b>Request Metadata:</b> Request ID, timestamps, IP address, user agent</li>
+     * <li><b>Session Data:</b> Session attributes, temporary state</li>
+     * <li><b>Routing Information:</b> Target service, route parameters, query params</li>
+     * <li><b>Processing Context:</b> Middleware execution state, correlation IDs</li>
+     * <li><b>Business Context:</b> Tenant-specific configuration, feature flags</li>
+     * </ul>
+     * <p>
+     * <b>Population Timing:</b>
+     * <ul>
+     * <li>Pre-authentication: Initial request metadata capture</li>
+     * <li>Authentication: Token validation results and user context</li>
+     * <li>Authorization: Permission checks and policy decisions</li>
+     * <li>Routing: Service discovery and load balancing context</li>
+     * </ul>
+     * <p>
+     * <b>Usage Scenarios:</b>
+     * <ul>
+     * <li>Request tracing and distributed logging</li>
+     * <li>Cross-service context propagation</li>
+     * <li>Dynamic routing and service mesh integration</li>
+     * <li>Middleware chain execution context</li>
+     * <li>Request/response transformation</li>
+     * </ul>
+     * <p>
+     * <b>Immutable:</b> Final field established during request lifecycle initialization.
+     * <p>
+     * <b>Thread Safety:</b> Designed for single request processing; should not be shared across threads.
+     * <p>
+     * <b>Performance Note:</b> Context should be lightweight; avoid storing large payloads or complex objects.
+     *
+     * @see Context Request context structure and lifecycle
      */
-    protected Assets assets;
+    protected final Context context;
 
 }

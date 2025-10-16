@@ -55,15 +55,15 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
- * A strategy that serves as the primary gatekeeper for API access, handling authentication and authorization.
+ * The strategy responsible for orchestrating authentication and authorization.
  * <p>
- * This strategy verifies the caller's identity and permissions by collaborating with two key components:
+ * This class acts as a high-level workflow engine. Its primary responsibilities are:
  * <ul>
- * <li>{@link AssetsRegistry}: Retrieves the configuration ({@link Assets}) for the requested API method and
- * version.</li>
- * <li>{@link AuthorizeProvider}: Validates credentials (e.g., tokens, API keys, or licenses) and retrieves user
- * permissions.</li>
+ * <li>Defining the credential discovery order (e.g., Token first, then API Key).</li>
+ * <li>Extracting the found credential into a {@link Principal} object.</li>
+ * <li>Delegating the actual, complex validation logic to a single, pluggable {@link AuthorizeProvider}.</li>
  * </ul>
+ * It does not contain any specific validation logic itself, making it a stable part of the framework's core.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -123,29 +123,28 @@ public class AuthorizeStrategy extends AbstractStrategy {
             // Extract and set context parameters
             context.setFormat(Formats.valueOf(StringKit.toUpperCase(params.get(Args.FORMAT))));
             context.setChannel(Channel.get(params.get(Args.X_REMOTE_CHANNEL)));
-            context.setToken(exchange.getRequest().getHeaders().getFirst(Args.X_ACCESS_TOKEN));
 
             // Retrieve API asset configuration
             String method = params.get(Args.METHOD);
             String version = params.get(Args.VERSION);
-            Assets assets = registry.get(method, version);
+            Assets assets = this.registry.get(method, version);
             if (null == assets) {
                 Logger.warn("==>     Filter: Assets not found for method: {}, version: {}", method, version);
                 return Mono.error(new ValidateException(ErrorCode._100800));
             }
 
+            // Set assets in context for downstream strategies
+            context.setAssets(assets);
+
             // Validate HTTP method
             this.method(exchange, assets);
 
-            // Perform authorization if the asset is not public
-            if (Consts.ZERO != assets.getFirewall()) {
-                this.authorize(context, assets);
+            // If the API is protected, orchestrate the authorization process.
+            if (Consts.ONE != assets.getFirewall()) {
+                this.authorize(context);
             }
 
-            // Set assets in context
-            context.setAssets(assets);
-
-            // Remove internal gateway parameters
+            // Remove internal gateway parameters before forwarding
             params.remove(Args.METHOD);
             params.remove(Args.FORMAT);
             params.remove(Args.VERSION);
@@ -190,69 +189,48 @@ public class AuthorizeStrategy extends AbstractStrategy {
     }
 
     /**
-     * Authenticates the request using a prioritized strategy: token, then API key, then license.
+     * Orchestrates the authorization process by finding credentials and delegating validation to the
+     * {@link AuthorizeProvider}.
      * <p>
-     * This method attempts authentication in the following order:
+     * This method implements the framework's core credential discovery logic:
      * <ol>
-     * <li><b>Token Authentication:</b> Checks for a valid token in the request headers.</li>
-     * <li><b>API Key Authentication:</b> If token authentication fails or no token is present, checks for a valid API
-     * key in the request parameters or headers.</li>
-     * <li><b>License Authentication:</b> If API key authentication fails or no API key is present, checks for a valid
-     * license in the request parameters or headers.</li>
+     * <li>It first checks for a bearer token in the request.</li>
+     * <li>If no token is found, it then searches for an API key.</li>
+     * <li>It packages the found credential into a {@link Principal} object.</li>
+     * <li>It makes a single call to {@code provider.authorize(principal)}, delegating all further validation
+     * steps.</li>
      * </ol>
-     * If all authentication methods fail, a {@link ValidateException} is thrown with error code
-     * {@link ErrorCode#_100806}.
      *
-     * @param context The {@link Context} containing request details such as token, parameters, and headers.
-     * @param assets  The {@link Assets} configuration for the requested API.
-     * @throws ValidateException If all authentication methods fail.
+     * @param context The request context.
+     * @throws ValidateException if no credentials are found or if the provider reports a validation failure.
      */
-    protected void authorize(Context context, Assets assets) {
-        // Try token-based authentication
-        if (tryToken(context, assets)) {
-            Logger.info("==>     Filter: Token authentication succeeded.");
-            return;
+    protected void authorize(Context context) {
+        Principal principal;
+        // 1. Prioritize finding a token.
+        String accessToken = findAccessTokenInRequest(context);
+        if (StringKit.isNotBlank(accessToken)) {
+            context.setBearer(accessToken);
+            principal = Principal.builder().type(Consts.ONE) // Type 1: Token
+                    .value(context.getBearer()).channel(context.getChannel().getType()).context(context).build();
+            Logger.info("==>     Filter: Attempting authentication with Token.");
+        }
+        // 2. If no token, search for an API key.
+        else {
+            String apiKey = findApiKeyInRequest(context);
+            if (StringKit.isBlank(apiKey)) {
+                // 3. No credentials found for a protected resource.
+                Logger.warn("==>     Filter: No valid credentials (Token or API Key) were provided.");
+                throw new ValidateException(ErrorCode._100806);
+            }
+            principal = Principal.builder().type(Consts.TWO) // Type 2: API Key
+                    .value(apiKey).channel(context.getChannel().getType()).context(context).build();
+            Logger.info("==>     Filter: No token found. Attempting authentication with API Key.");
         }
 
-        // Fallback to API key-based authentication
-        if (tryApiKey(context, assets)) {
-            Logger.info("==>     Filter: API Key authentication succeeded.");
-            return;
-        }
+        // 4. Delegate the entire validation process to the provider.
+        Delegate delegate = this.provider.authorize(principal);
 
-        // Fallback to license-based authentication
-        if (tryLicense(context, assets)) {
-            Logger.info("==>     Filter: License authentication succeeded.");
-            return;
-        }
-
-        // If all authentication methods fail, deny access
-        Logger.warn("==>     Filter: Token, API Key, and License authentication failed.");
-        throw new ValidateException(ErrorCode._100806);
-    }
-
-    /**
-     * Attempts to authenticate the request using a token from the request headers.
-     * <p>
-     * This method checks for a token in the {@link Context} and, if present, delegates validation to the
-     * {@link AuthorizeProvider}. If validation succeeds, the resulting authorization details are added to the context
-     * parameters.
-     *
-     * @param context The {@link Context} containing the token and other request details.
-     * @param assets  The {@link Assets} configuration for the requested API.
-     * @return {@code true} if a token was present and successfully validated, {@code false} if no token was present.
-     * @throws ValidateException If a token was present but failed validation, with the error code and message from the
-     *                           {@link Delegate}.
-     */
-    protected boolean tryToken(Context context, Assets assets) {
-        if (StringKit.isBlank(context.getToken())) {
-            return false; // No token present
-        }
-
-        Delegate delegate = this.provider.authorize(
-                Principal.builder().type(Consts.ONE).key(context.getToken()).channel(context.getChannel().getType())
-                        .assets(assets).build());
-
+        // 5. Process the final result from the provider.
         if (delegate.isOk()) {
             Map<String, Object> authMap = new HashMap<>();
             BeanKit.beanToMap(
@@ -260,119 +238,63 @@ public class AuthorizeStrategy extends AbstractStrategy {
                     authMap,
                     CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
             authMap.forEach((k, v) -> context.getParameters().put(k, String.valueOf(v)));
-            return true;
+            Logger.info("==>     Filter: Authentication successful.");
+            return;
         }
-
         Logger.error(
-                "==>     Filter: Token validation failed - Error code: {}, message: {}",
+                "==>     Filter: Authentication failed - Error code: {}, message: {}",
                 delegate.getMessage().errcode,
                 delegate.getMessage().errmsg);
         throw new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
     }
 
     /**
-     * Attempts to authenticate the request using an API key from the request parameters or headers.
-     * <p>
-     * This method searches for an API key in a predefined list of parameter or header names. If found, it delegates
-     * validation to the {@link AuthorizeProvider}. If validation succeeds, the resulting authorization details are
-     * added to the context parameters.
+     * Extracts the authentication token from the request headers, supporting both the standard `Authorization: Bearer`
+     * scheme and a custom `X-Access-Token` header for backward compatibility.
      *
-     * @param context The {@link Context} containing request parameters and headers.
-     * @param assets  The {@link Assets} configuration for the requested API.
-     * @return {@code true} if an API key was found and successfully validated, {@code false} if no API key was found.
-     * @throws ValidateException If an API key was found but failed validation, with the error code and message from the
-     *                           {@link Delegate}.
+     * @param context The incoming {@link ServerHttpRequest}.
+     * @return The extracted token string, or {@code null} if no token is found.
      */
-    protected boolean tryApiKey(Context context, Assets assets) {
-        String[] apiKeyParams = { "apiKey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID", "X-API-KEY",
+    protected String findAccessTokenInRequest(Context context) {
+        // 1. Prioritize the standard `Authorization` header with the `Bearer` scheme.
+        final String[] keys = { Args.X_ACCESS_TOKEN, Args.X_ACCESS_TOKEN.toUpperCase(),
+                Args.X_ACCESS_TOKEN.toLowerCase(), "X_Access_Token", "X_ACCESS_TOKEN", "x_access_token" };
+
+        String accessToken = MapKit.getFirstNonNull(context.getHeaders(), keys);
+        if (StringKit.startWithAnyIgnoreCase(accessToken, "Bearer ")) {
+            return accessToken.substring(7);
+        }
+        if (StringKit.isNotEmpty(accessToken)) {
+            return accessToken;
+        }
+
+        // If not found, search in request headers.
+        if (StringKit.isBlank(accessToken)) {
+            accessToken = MapKit.getFirstNonNull(context.getParameters(), keys);
+        }
+
+        return accessToken;
+    }
+
+    /**
+     * Searches for an API key in a predefined list of request parameters and headers.
+     *
+     * @param context The request context.
+     * @return The found API key, or {@code null} if not present.
+     */
+    protected String findApiKeyInRequest(Context context) {
+        final String[] keys = { "apiKey", "api_key", "x_api_key", "api_id", "x_api_id", "X-API-ID", "X-API-KEY",
                 "API-KEY", "API-ID" };
 
-        // Try to get API key from request parameters
-        String apiKey = MapKit.getFirstNonNull(context.getParameters(), apiKeyParams);
+        // First, search in request parameters.
+        String apiKey = MapKit.getFirstNonNull(context.getParameters(), keys);
 
-        // If not found in parameters, try headers
+        // If not found, search in request headers.
         if (StringKit.isBlank(apiKey)) {
-            apiKey = MapKit.getFirstNonNull(context.getHeaders(), apiKeyParams);
+            apiKey = MapKit.getFirstNonNull(context.getHeaders(), keys);
         }
 
-        if (StringKit.isBlank(apiKey)) {
-            return false; // No API key present
-        }
-
-        Delegate delegate = this.provider.authorize(
-                Principal.builder().type(Consts.TWO).key(apiKey).channel(context.getChannel().getType()).assets(assets)
-                        .build());
-
-        if (delegate.isOk()) {
-            Map<String, Object> authMap = new HashMap<>();
-            BeanKit.beanToMap(
-                    delegate.getAuthorize(),
-                    authMap,
-                    CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
-            authMap.forEach((k, v) -> context.getParameters().put(k, String.valueOf(v)));
-            return true;
-        }
-
-        Logger.error(
-                "==>     Filter: API Key validation failed - Error code: {}, message: {}",
-                delegate.getMessage().errcode,
-                delegate.getMessage().errmsg);
-        throw new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
-    }
-
-    /**
-     * Attempts to authenticate the request using a license from the request parameters or headers.
-     * <p>
-     * This method checks if a license is required (i.e., {@code assets.getLicense() != Consts.ZERO}) and searches for a
-     * domain in the request parameters or headers (e.g., "x_request_domain"). If found, it delegates validation to the
-     * {@link AuthorizeProvider}. If validation succeeds, the resulting authorization details are added to the context
-     * parameters.
-     *
-     * @param context The {@link Context} containing request parameters, headers, and domain information.
-     * @param assets  The {@link Assets} configuration for the requested API.
-     * @return {@code true} if no license is required or if a domain was found and successfully validated, {@code false}
-     *         if no domain was found.
-     * @throws ValidateException If a domain was found but failed validation, with the error code and message from the
-     *                           {@link Delegate}.
-     */
-    protected boolean tryLicense(Context context, Assets assets) {
-        if (Consts.ZERO == assets.getLicense()) {
-            return true; // No license required
-        }
-
-        String[] keys = { "x_request_domain", "X_REQUEST_DOMAIN" };
-
-        // Try to get domain from context
-        String domain = context.getX_request_domain();
-
-        // If not found in context, try parameters
-        if (StringKit.isBlank(domain)) {
-            domain = MapKit.getFirstNonNull(context.getParameters(), keys);
-        }
-
-        if (StringKit.isBlank(domain)) {
-            return false; // No domain present
-        }
-
-        Delegate delegate = this.provider.authorize(
-                Principal.builder().type(Consts.THREE).key(domain).channel(context.getChannel().getType())
-                        .assets(assets).build());
-
-        if (delegate.isOk()) {
-            Map<String, Object> authMap = new HashMap<>();
-            BeanKit.beanToMap(
-                    delegate.getAuthorize(),
-                    authMap,
-                    CopyOptions.of().setTransientSupport(false).setIgnoreCase(true));
-            authMap.forEach((k, v) -> context.getParameters().put(k, String.valueOf(v)));
-            return true;
-        }
-
-        Logger.error(
-                "==>     Filter: License validation failed - Error code: {}, message: {}",
-                delegate.getMessage().errcode,
-                delegate.getMessage().errmsg);
-        throw new ValidateException(delegate.getMessage().errcode, delegate.getMessage().errmsg);
+        return apiKey;
     }
 
 }

@@ -95,9 +95,15 @@ public class Context extends Tracer {
     private Channel channel = Channel.WEB;
 
     /**
-     * The HTTP method of the incoming request (e.g., GET, POST).
+     * A flag indicating the security mode of the request, typically used to enable or disable features like
+     * encryption/decryption.
      */
-    private HttpMethod httpMethod;
+    private Integer sign;
+
+    /**
+     * The access token extracted from the request headers, used for authentication and authorization.
+     */
+    private String bearer;
 
     /**
      * The resolved API asset that matches the incoming request's method and version. This object contains all
@@ -106,20 +112,13 @@ public class Context extends Tracer {
     private Assets assets;
 
     /**
-     * The access token extracted from the request headers, used for authentication and authorization.
-     */
-    private String token;
-
-    /**
-     * A flag indicating the security mode of the request, typically used to enable or disable features like
-     * encryption/decryption.
-     */
-    private Integer sign;
-
-    /**
      * The timestamp in milliseconds when the request processing started. This is used for calculating total execution
      * time.
      */
     private long timestamp;
 
+    /**
+     * The HTTP method of the incoming request (e.g., GET, POST).
+     */
+    private HttpMethod httpMethod;
 }
